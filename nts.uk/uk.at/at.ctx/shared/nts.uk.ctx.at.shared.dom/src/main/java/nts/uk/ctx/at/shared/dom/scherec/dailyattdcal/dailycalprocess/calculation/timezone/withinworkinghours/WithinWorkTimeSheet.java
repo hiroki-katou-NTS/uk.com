@@ -1071,7 +1071,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	public AttendanceTime getDeductionTime(
 			ConditionAtr conditionAtr, DeductionAtr dedAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
 		
-		return ActualWorkTimeSheetListService.calcDeductionTime(conditionAtr, dedAtr, goOutSet,
+		return ActualWorkTimeSheetListService.calcDeductionTime(ActualWorkTimeSheetAtr.WithinWorkTime, conditionAtr, dedAtr, goOutSet,
 				this.withinWorkTimeFrame.stream().map(tc -> (ActualWorkingTimeSheet)tc).collect(Collectors.toList()));
 	}
 	

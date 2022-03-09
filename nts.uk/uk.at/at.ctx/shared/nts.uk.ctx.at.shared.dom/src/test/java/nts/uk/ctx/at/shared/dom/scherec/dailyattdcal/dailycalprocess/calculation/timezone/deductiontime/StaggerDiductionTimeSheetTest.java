@@ -250,6 +250,75 @@ public class StaggerDiductionTimeSheetTest {
 		assertThat(result.valueAsMinutes()).isEqualTo(TimeWithDayAttr.hourMinute(17, 10).valueAsMinutes());	//終了時刻 17:10
 	}
 	
+	/**
+	 * 実働時間帯区分="就業時間内"→就業時間内の丸め設定を参照
+	 */
+	@Test
+	public void getForwardEndTest_withinRounding() {
+		StaggerDiductionTimeSheet target = new StaggerDiductionTimeSheet(
+				new TimeSpanForDailyCalc(TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(17, 0)),	//8:00~17:00
+				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
+				Helper.createGoOuts(
+						TimeRoundingSetting.oneMinDown(),
+						new TimeSpanForDailyCalc(TimeWithDayAttr.hourMinute(10, 0), TimeWithDayAttr.hourMinute(10, 02))));	//外出 10:00~10:02
+		TimeWithDayAttr result = target.getForwardEnd(
+				ActualWorkTimeSheetAtr.WithinWorkTime,
+				Helper.createCommonSet(new WorkTimezoneGoOutSet(
+						GoOutTimeRoundingMethod.IN_FRAME,
+						GoOutSetHelper.createGoOutTimezoneRoundingSet(
+								new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
+								new TimeRoundingSetting(Unit.ROUNDING_TIME_5MIN, Rounding.ROUNDING_UP),			//就業時間内のみ 5分切り上げ
+								new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)))),
+				HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+		assertThat(result.valueAsMinutes()).isEqualTo(TimeWithDayAttr.hourMinute(17, 05).valueAsMinutes());		//終了時刻 17:05
+	}
+	
+	/**
+	 * 実働時間帯区分="休出"→休出の丸め設定を参照
+	 */
+	@Test
+	public void getForwardEndTest_holidayRounding() {
+		StaggerDiductionTimeSheet target = new StaggerDiductionTimeSheet(
+				new TimeSpanForDailyCalc(TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(17, 0)),	//8:00~17:00
+				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
+				Helper.createGoOuts(
+						TimeRoundingSetting.oneMinDown(),
+						new TimeSpanForDailyCalc(TimeWithDayAttr.hourMinute(10, 0), TimeWithDayAttr.hourMinute(10, 02))));	//外出 10:00~10:02
+		TimeWithDayAttr result = target.getForwardEnd(
+				ActualWorkTimeSheetAtr.HolidayWork,
+				Helper.createCommonSet(new WorkTimezoneGoOutSet(
+						GoOutTimeRoundingMethod.IN_FRAME,
+						GoOutSetHelper.createGoOutTimezoneRoundingSet(
+								new TimeRoundingSetting(Unit.ROUNDING_TIME_10MIN, Rounding.ROUNDING_UP),		//休出のみ 10分切り上げ
+								new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
+								new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)))),
+				HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+		assertThat(result.valueAsMinutes()).isEqualTo(TimeWithDayAttr.hourMinute(17, 10).valueAsMinutes());		//終了時刻 17:10
+	}
+	
+	/**
+	 * 実働時間帯区分="残業"→残業の丸め設定を参照
+	 */
+	@Test
+	public void getForwardEndTest_overTimeRounding() {
+		StaggerDiductionTimeSheet target = new StaggerDiductionTimeSheet(
+				new TimeSpanForDailyCalc(TimeWithDayAttr.hourMinute(17, 0), TimeWithDayAttr.hourMinute(19, 0)),	//17:00~19:00
+				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
+				Helper.createGoOuts(
+						TimeRoundingSetting.oneMinDown(),
+						new TimeSpanForDailyCalc(TimeWithDayAttr.hourMinute(18, 0), TimeWithDayAttr.hourMinute(18, 02))));	//外出 18:00~18:02
+		TimeWithDayAttr result = target.getForwardEnd(
+				ActualWorkTimeSheetAtr.OverTimeWork,
+				Helper.createCommonSet(new WorkTimezoneGoOutSet(
+						GoOutTimeRoundingMethod.IN_FRAME,
+						GoOutSetHelper.createGoOutTimezoneRoundingSet(
+								new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
+								new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
+								new TimeRoundingSetting(Unit.ROUNDING_TIME_15MIN, Rounding.ROUNDING_UP)))),		//残業のみ 15分切り上げ
+				HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+		assertThat(result.valueAsMinutes()).isEqualTo(TimeWithDayAttr.hourMinute(19, 15).valueAsMinutes());		//終了時刻 19:15
+	}
+	
 	private static class Helper {
 		private static TimeSheetOfDeductionItem createGoOut(TimeSpanForDailyCalc timeSheet, TimeRoundingSetting rounding) {
 			return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(

@@ -215,8 +215,8 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 	 * @return 休出時間
 	 */
 	public TimeDivergenceWithCalculation correctCalculationTime(AutoCalSetting autoCalcSet, Optional<WorkTimezoneGoOutSet> goOutSet) {
-		AttendanceTime time = autoCalcSet.getCalAtr().isCalculateEmbossing() ? this.calcTime(goOutSet) : AttendanceTime.ZERO;
-		AttendanceTime calcTime = this.calcTime(goOutSet);
+		AttendanceTime time = autoCalcSet.getCalAtr().isCalculateEmbossing() ? this.calcTime(ActualWorkTimeSheetAtr.HolidayWork, goOutSet) : AttendanceTime.ZERO;
+		AttendanceTime calcTime = this.calcTime(ActualWorkTimeSheetAtr.HolidayWork, goOutSet);
 		return TimeDivergenceWithCalculation.createTimeWithCalculation(time, calcTime);
 	}
 	
