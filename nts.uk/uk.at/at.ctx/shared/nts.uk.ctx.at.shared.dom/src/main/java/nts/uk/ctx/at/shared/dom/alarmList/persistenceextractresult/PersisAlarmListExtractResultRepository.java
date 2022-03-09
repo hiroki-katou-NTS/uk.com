@@ -15,6 +15,4 @@ public interface PersisAlarmListExtractResultRepository {
     List<PersistenceAlarmListExtractResult> getAlarmExtractResult(String companyId, List<String> employeeIds);
 
     void onlyDeleteParent(String cid, String patternCode, String runCode);
-
-    Optional<PersistenceAlarmListExtractResult> getAlarm(String companyId, String patternCode, String runCode);
 }

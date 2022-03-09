@@ -244,7 +244,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 		} // end list employmentcode
 
 		for (String code : listPatternCode) {
-			Optional<PersistenceAlarmListExtractResult> persisAlarmExtractOpt = alarmExtractResultRepo.getAlarm(companyId, code, runCode);
+			Optional<PersistenceAlarmListExtractResult> persisAlarmExtractOpt = alarmExtractResultRepo.getAlarmExtractResult(companyId, code, runCode);
 			if (!persisAlarmExtractOpt.isPresent() || persisAlarmExtractOpt.get().getAlarmListExtractResults().isEmpty()) {
 				alarmExtractResultRepo.onlyDeleteParent(companyId, code, runCode);
 			}

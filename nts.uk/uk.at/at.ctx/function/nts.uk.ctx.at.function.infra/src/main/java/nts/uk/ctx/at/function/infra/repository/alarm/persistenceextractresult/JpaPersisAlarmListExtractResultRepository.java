@@ -87,11 +87,8 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
         if (domain == null || domain.getAlarmListExtractResults().isEmpty()) {
             return;
         }
-        val data = this.queryProxy().query("select distinct a from KfndtPersisAlarmExt a join a.extractResults b " +
-                "where a.autoRunCode = :runCode and a.patternCode = :patternCode ", KfndtPersisAlarmExt.class)
-                .setParameter("runCode", domain.getAutoRunCode())
-                .setParameter("patternCode", domain.getAlarmPatternCode().v())
-                .getSingle(KfndtPersisAlarmExt::toDomain);
+
+        val data = this.getAlarmExtractResult(AppContexts.user().companyId(), domain.getAlarmPatternCode().v(), domain.getAutoRunCode());
 
         if (!data.isPresent()) {
             String processId = IdentifierUtil.randomUniqueId();
@@ -154,9 +151,6 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
             }
         }
 
-        String delete = "DELETE FROM KFNDT_ALARM_EXTRAC_RESULT WHERE CID = ? AND SID = ? "
-                + " AND CATEGORY = ? AND ALARM_CHECK_CODE = ? AND CHECK_ATR = ? "
-                + " AND CONDITION_NO = ? AND START_DATE = ? ";
         for (KfndtAlarmExtracResultPK x : lstDelete) {
             Optional<KfndtAlarmExtracResult> rs = this.queryProxy().query("select a from KfndtAlarmExtracResult a where a.pk.cid = :cid and a.pk.sid = :sid and a.pk.category = :category and a.pk.alarmCheckCode = :alarmCheckCode and a.pk.checkAtr = :checkAtr and a.pk.conditionNo = :conditionNo and a.pk.startDate = :startDate",
                     KfndtAlarmExtracResult.class)
@@ -229,16 +223,5 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
             e.printStackTrace();
             System.out.println("Exception: " + e.getMessage());
         }
-    }
-
-    @Override
-    public Optional<PersistenceAlarmListExtractResult> getAlarm(String companyId, String patternCode, String runCode) {
-        String sql = "select distinct a from KfndtPersisAlarmExt a join a.extractResults b where a.pk.cid = :companyId and a.patternCode = :patternCode and a.autoRunCode = :runCode";
-
-        return this.queryProxy().query(sql, KfndtPersisAlarmExt.class)
-                .setParameter("companyId", companyId)
-                .setParameter("patternCode", patternCode)
-                .setParameter("runCode", runCode)
-                .getSingle(KfndtPersisAlarmExt::toDomain);
     }
 }
