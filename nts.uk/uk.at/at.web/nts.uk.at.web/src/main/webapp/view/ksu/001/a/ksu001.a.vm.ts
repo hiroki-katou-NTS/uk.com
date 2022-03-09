@@ -1039,7 +1039,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 // set Deco phần leftMost ver6
                 if(emp.supportType == SupportType.GO_TO_SUPPORT || emp.supportType == SupportType.COME_TO_SUPPORT)
-                    detailLeftMostDeco.push(new CellColor('codeNameOfEmp', rowId, "bg-schedule-support", 0));
+                    detailLeftMostDeco.push(new CellColor('codeNameOfEmp', rowId, "bg-schedule-support-2", 0));
                 
                 
                 // set data to detailContent : datasource va deco
@@ -1084,7 +1084,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         } else if (cell.supportStatus == SupportStatus.GO_ALLDAY || cell.supportStatus == SupportStatus.GO_TIMEZONE ||  cell.supportStatus == SupportStatus.COME_ALLDAY) {
                             // 勤務予定（シフト）dto．応援状況 <>（応援に来ない/応援に来る(時間帯)/応援に行かない）
                             // supportStatus != (SupportStatus.DO_NOT_COME, SupportStatus.DO_NOT_GO,  SupportStatus.COME_TIMEZONE)
-                            detailContentDecoNormal.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 0));
+                            detailContentDecoNormal.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-2", 0));
                         } else {
                             if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
                                 // HAND_CORRECTION_MYSELF(0), 手修正（本人）
@@ -1237,8 +1237,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         } else if (cell.supportStatus == SupportStatus.GO_ALLDAY || cell.supportStatus == SupportStatus.GO_TIMEZONE || cell.supportStatus == SupportStatus.COME_ALLDAY) {
                             // 勤務予定（シフト）dto．応援状況 <>（応援に来ない/応援に来る(時間帯)/応援に行かない）
                             // supportStatus != (SupportStatus.DO_NOT_COME, SupportStatus.DO_NOT_GO,  SupportStatus.COME_TIMEZONE)
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 0));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 1));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-2", 0));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-2", 1));
                         } else {
                             if (cell.workTypeEditStatus != null) {
                                 if (cell.workTypeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
@@ -1390,12 +1390,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 3));
                             
                         }  else if (cell.supportStatus == SupportStatus.GO_ALLDAY || cell.supportStatus == SupportStatus.GO_TIMEZONE || cell.supportStatus == SupportStatus.COME_ALLDAY) {
-                            // 勤務予定（シフト）dto．応援状況 <>（応援に来ない/応援に来る(時間帯)/応援に行かない）
+                            // 勤務予定（シフト）dto．応援状況 <>（応援に来ない/応援に来る(時1間帯)/応援に行かない）
                             // supportStatus != (SupportStatus.DO_NOT_COME, SupportStatus.DO_NOT_GO,  SupportStatus.COME_TIMEZONE)
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 0));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 1));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 2));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 3));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-2", 0));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-2", 1));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-2", 2));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-2", 3));
                             
                         } else {
                             if (cell.workTypeEditStatus != null) {
@@ -4112,7 +4112,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             self.enableCellStartEndTime(rowIdx + '', key);
                         }
                         if (workStyle == WorkStyle.ONE_DAY_WORK) {
-                            if (innerIdx === 0 || innerIdx === 1) return { textColor: "#0000ff" }; // color-attendance
+                            if (innerIdx === 0 || innerIdx === 1) return { textColor: "#0362D0" }; // color-attendance
                             else if (innerIdx === 2 || innerIdx === 3) return { textColor: self.timeColor };
                         }
                         if (workStyle == WorkStyle.MORNING_WORK) {
@@ -4137,7 +4137,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if (!_.isNil(data)) {
                         let workStyle = data.workHolidayCls;
                         if (workStyle == WorkStyle.ONE_DAY_WORK) {
-                            if (innerIdx === 0 || innerIdx === 1) return { textColor: "#0000ff" }; // color-attendance
+                            if (innerIdx === 0 || innerIdx === 1) return { textColor: "#0362D0" }; // color-attendance
                         }
                         if (workStyle == WorkStyle.MORNING_WORK) {
                             if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
