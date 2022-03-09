@@ -1309,7 +1309,7 @@ public class ProgramIdConsts {
 	public static final String KDP005A = "KDP005A";
 	public static final String KDP005H = "KDP005H";
 	public static final String KDP005I = "KDP005I";
-	public static final String KDP005Q = "KDP005Q";
+	public static final String KDP005H2 = "KDP005H2";
 	
 	/** CAS004 */
 	public static final String CAS004A = "CAS004A";

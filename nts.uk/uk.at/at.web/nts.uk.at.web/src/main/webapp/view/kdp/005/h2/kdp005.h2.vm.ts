@@ -1,9 +1,14 @@
-module nts.uk.at.view.kdp005.q {
+module nts.uk.at.view.kdp005.h2 {
 
 	const config = { fps: 10, qrbox: 200 };
 	const html5QrCode = new Html5Qrcode("reader");
 
 	export module viewmodel {
+		var constraints = {
+			video: true,
+			audio: true
+		}
+
 		$(document).ready(function() {
 			// Scanner
 			function onScanSuccess(cardNumber: any) {
@@ -14,14 +19,24 @@ module nts.uk.at.view.kdp005.q {
 			}
 
 			html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess).then(function() {
-				$('#render-action').show();
+				navigator.mediaDevices.getUserMedia(constraints).then(function success() {
+					$('#lbl-error').css('display', 'none');
+					$('#render-action').show();
+				});
+
+			}).catch(function(err: any) {
+				console.log(err);
+				if (err) {
+					$('#btn-cancel').css('bottom', '-260px');
+					$('#btn-clear').css('visibility', 'hidden');
+					
+				}
 			});
 
 			// Event click button clear
 			$('#btn-clear').on('click', function() {
 				$('#render-action').hide();
 				$('#output-qrcode-scanner').text('※ここに読み取り結果が表示されれます※');
-				$('#btn-send').attr('disabled', 'disabled');
 
 				// Stop, clear old scanner and start new scanner
 				html5QrCode.stop().then(() => {
@@ -39,5 +54,6 @@ module nts.uk.at.view.kdp005.q {
 			});
 
 		});
+
 	}
 }

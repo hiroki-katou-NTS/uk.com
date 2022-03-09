@@ -3151,8 +3151,8 @@ public class ProgramsManager {
             "/view/kdp/005/h/index.xhtml");
     public static final Program KDP005I = new Program(WebAppId.AT, ProgramIdConsts.KDP005I, "KDP002_12",
             "/view/kdp/005/i/index.xhtml");
-    public static final Program KDP005Q = new Program(WebAppId.AT, ProgramIdConsts.KDP005Q, "KDP002_11",
-            "/view/kdp/005/q/index.xhtml");
+    public static final Program KDP005H2 = new Program(WebAppId.AT, ProgramIdConsts.KDP005H2, "KDP002_11",
+            "/view/kdp/005/h2/index.xhtml");
     public static final Program CMF007 = new Program(WebAppId.COM, ProgramIdConsts.CMF007, "CMF007_1",
             "/view/cmf/007/a/index.xhtml");
 
