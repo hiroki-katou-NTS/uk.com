@@ -72,7 +72,9 @@ public class AddAggrPeriodCommandHandler
 						optionalAggrPeriodID,startDateTime,endDateTime);
 
 				// Add Aggr Period Excution
-				excutionrRepository.addExcution(periodExcution);
+				excutionrRepository.addExcution(periodExcution,command.getAggrPeriodCommand().getOptionalAggrName()
+						,command.getAggrPeriodCommand().getStartDate(),
+						command.getAggrPeriodCommand().getEndDate());
 				
 				// Thêm lỗi khi chưa có xử lý tính toán
 //				if(optionalAggrPeriod.getAggrFrameCode().v().equals("001")){
@@ -96,12 +98,13 @@ public class AddAggrPeriodCommandHandler
 					optionalAggrPeriodID,startDateTime,endDateTime);
 
 			// Add Aggr Period Excution
-			excutionrRepository.addExcution(periodExcution);
+			excutionrRepository.addExcution(periodExcution,command.getAggrPeriodCommand().getOptionalAggrName()
+					,command.getAggrPeriodCommand().getStartDate(),
+					command.getAggrPeriodCommand().getEndDate());
 			//EA4209
 			if(command.isReintegration()){
 				periodCommandHandler.deletionOfaggreDataForAnyPeriod(command.getAggrPeriodCommand().getAggrFrameCode(),companyId);
 			}
-
 			// Thêm lỗi khi chưa có xử lý tính toán
 //			if(optionalAggrPeriod.getAggrFrameCode().v().equals("001")){
 //			AggrPeriodInfor periodInfors = command.getInforCommand().toDomain(executionEmpId,optionalAggrPeriodID);

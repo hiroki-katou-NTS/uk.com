@@ -2580,7 +2580,11 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 						.startDateTime(startDate).executionAtr(executionAtr)
 						.executionStatus(Optional.empty()).presenceOfError(PresenceOfError.NO_ERROR.value)
 						.endDateTime(endDate).build();
-				this.aggrPeriodExcutionAdapter.addExcution(aggrPeriodExcution);
+				this.aggrPeriodExcutionAdapter.addExcution(
+				        aggrPeriodExcution,
+                        anyAggrPeriod.get().getOptionalAggrName(),
+                        anyAggrPeriod.get().getPeriod().start(),
+                        anyAggrPeriod.get().getPeriod().end());
 
 				// Step ドメインモデル「L」を新規登録する - Registering a new domain model "any period Aggregate
 				// Target

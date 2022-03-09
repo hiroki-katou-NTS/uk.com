@@ -2601,7 +2601,10 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 						.startDateTime(startDate).executionAtr(executionAtr)
 						.executionStatus(Optional.empty()).presenceOfError(PresenceOfError.NO_ERROR.value)
 						.endDateTime(endDate).build();
-				this.aggrPeriodExcutionAdapter.addExcution(aggrPeriodExcution);
+				this.aggrPeriodExcutionAdapter.addExcution(aggrPeriodExcution,
+						anyAggrPeriod.get().getOptionalAggrName(),
+						anyAggrPeriod.get().getPeriod().start(),
+						anyAggrPeriod.get().getPeriod().end());
 
 				// 取得した「社員ID＜List＞」の分だけ「任意期間集計対象者」を登録する
 				List<AggrPeriodTargetImport> targetLists = new ArrayList<>();

@@ -53,13 +53,13 @@ public interface AggrPeriodExcutionRepository {
 	 * 
 	 * @param excution
 	 */
-	void addExcution(AggrPeriodExcution excution);
+	void addExcution(AggrPeriodExcution excution,String aggrFrameName,GeneralDate startYmd,GeneralDate endYmd);
 
 	/**
 	 * 
 	 * @param excution
 	 */
-	void updateExcution(AggrPeriodExcution excution);
+	void updateExcution(AggrPeriodExcution excution,String aggrFrameName,GeneralDate startYmd,GeneralDate endYmd);
 	/**
 	 * 
 	 * @param companyId
@@ -81,4 +81,12 @@ public interface AggrPeriodExcutionRepository {
 	void updateAll(List<AggrPeriodExcution> domains);
 	
 	Optional<AggrPeriodExcution> findByAggrId(String cid, String aggrId);
+
+	void addExcution(AggrPeriodExcution excution);
+
+	/**
+	 *
+	 * @param excution
+	 */
+	void updateExcution(AggrPeriodExcution excution);
 }

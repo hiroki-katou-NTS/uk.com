@@ -5,6 +5,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcution;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionRepository;
 import nts.uk.ctx.at.record.pub.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionPub;
@@ -28,5 +29,10 @@ public class AggrPeriodExcutionPubImpl implements AggrPeriodExcutionPub {
 	@Override
 	public void addExcution(AggrPeriodExcution excution) {
 		this.repo.addExcution(excution);
+	}
+
+	@Override
+	public void addExcution(AggrPeriodExcution excution, String aggrFrameName, GeneralDate startYmd, GeneralDate endYmd) {
+		this.repo.addExcution(excution,aggrFrameName,startYmd,endYmd);
 	}
 }
