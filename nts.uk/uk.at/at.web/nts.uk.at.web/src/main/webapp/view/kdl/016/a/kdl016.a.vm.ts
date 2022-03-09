@@ -17,15 +17,10 @@ module nts.uk.at.view.kdl016.a {
 
         supportModes: KnockoutObservableArray<any>;
         selectedMode: any;
-
-        selectedRow: KnockoutObservableArray<number> = ko.observableArray([]);
         selectedCode: KnockoutObservableArray<number> = ko.observableArray([]);
-        // selectRowChanged: KnockoutObservable<boolean> = ko.observable(false);
         igGridDataSource: ISupportInformation[] = [];
 
         canDelete: KnockoutObservable<boolean> = ko.observable(false);
-
-        // $grid!: JQuery;
 
         constructor(params: IScreenParameter) {
             super();
@@ -36,8 +31,6 @@ module nts.uk.at.view.kdl016.a {
                 vm.periodEnd(params.endDate);
                 vm.employeeIds(params.employeeIds);
             }
-
-            // vm.$grid = $("#grid");
 
             vm.targetOrgUnitName = ko.computed(() => {
                 return vm.targetOrg().unit == TARGET_ORG.WORKPLACE ? vm.$i18n('Com_Workplace') : vm.$i18n('Com_WorkplaceGroup');
@@ -140,10 +133,6 @@ module nts.uk.at.view.kdl016.a {
                     {id: '時間帯', Name: '時間帯'},
                 ];
 
-            // if (vm.$grid.data("igGrid")) {
-            //     vm.$grid.ntsGrid("destroy");
-            // }
-
             $("#grid").igGrid({
                 // width: "929px",
                 height: "352px",
@@ -222,10 +211,7 @@ module nts.uk.at.view.kdl016.a {
                                         requireExpr: true,
                                         filterFunc: vm.beforeAndEqual
                                     }
-                                },
-                                // defaultExpressions: [
-                                //     {cond: "equal"}
-                                // ]
+                                }
                             },
                             {
                                 columnKey: 'supportOrgName',
@@ -288,14 +274,12 @@ module nts.uk.at.view.kdl016.a {
                         checkBoxStateChanging: function (event: any, ui: any) {
                             if (!_.isEqual(ui.currentState, ui.newState)) {
                                 if (ui.newState == 'on')
-                                    vm.selectedCode(vm.selectedCode().concat(ui.rowKey));
+                                    vm.selectedCode(_.uniq(vm.selectedCode().concat(ui.rowKey)));
                                 else
-                                    vm.selectedCode(_.filter(vm.selectedCode(), item => item !== ui.rowKey));
+                                    vm.selectedCode(_.uniq(_.filter(vm.selectedCode(), item => item !== ui.rowKey)));
                             }
                         },
-                        // checkBoxStateChanged: function(evt : any, ui : any) {
-                        //     // Handle event
-                        // }
+                        // checkBoxStateChanged: function(evt : any, ui : any) {}
                     },
                     {
                         name: 'Selection',
@@ -507,13 +491,13 @@ module nts.uk.at.view.kdl016.a {
         });
 
         nts.uk.ui.windows.setShared("shareFromKdl016a", dataShare);
-        if (mode == DISPLAY_MODE.GO_TO_SUPPORT) {
+        if (dataShare.supportType === SUPPORT_TYPE.ALLDAY) {
             nts.uk.ui.windows.sub.modal("/view/kdl/016/d/index.xhtml").onClosed(() => {
-                vm.loadSupportInfo(DISPLAY_MODE.GO_TO_SUPPORT);
+                vm.loadSupportInfo(vm.selectedMode());
             });
         } else {
             nts.uk.ui.windows.sub.modal("/view/kdl/016/e/index.xhtml").onClosed(() => {
-                vm.loadSupportInfo(DISPLAY_MODE.COME_TO_SUPPORT);
+                vm.loadSupportInfo(vm.selectedMode());
             });
         }
     }
@@ -584,5 +568,10 @@ module nts.uk.at.view.kdl016.a {
     enum TARGET_ORG {
         WORKPLACE = 0,
         WORKPLACE_GROUP = 1,
+    }
+
+    enum SUPPORT_TYPE {
+        ALLDAY = 0,
+        TIMEZONE = 1
     }
 }

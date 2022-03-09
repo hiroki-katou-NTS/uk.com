@@ -288,7 +288,7 @@ public class SupportInformationFinder {
 
         return new Kdl016ScreenBOutput(
                 employeeInfos.stream().map(e -> new EmployeeInformationDto(e.getEmployeeId(), e.getEmployeeCode(), e.getBusinessName())).collect(Collectors.toList()),
-                orgDisplayInfoList
+                orgDisplayInfoList.stream().sorted(Comparator.comparing(OrganizationDisplayInfoDto::getOrgCode)).collect(Collectors.toList())
         );
     }
 
@@ -348,7 +348,7 @@ public class SupportInformationFinder {
             ));
         }
 
-        return orgDisplayInfoList;
+        return orgDisplayInfoList.stream().sorted(Comparator.comparing(OrganizationDisplayInfoDto::getOrgCode)).collect(Collectors.toList());
     }
 
     public Kdl016ScreenBOutput.Kdl016ScreenBOutputV2 getDataInitScreenCV2(String orgId, int orgUnit, DatePeriod period) {

@@ -1,7 +1,5 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.at.view.kdl016.b {
-    import Moment = moment.Moment;
-
     const API = {
         get: "screen/at/kdl016/b/init",
         register: "screen/at/kdl016/register"
@@ -14,7 +12,6 @@ module nts.uk.at.view.kdl016.b {
 
         // kcp005
         listComponentOption: any;
-        // date: KnockoutObservable<string> = ko.observable(new Date().toISOString());
         startDate: KnockoutObservable<string> = ko.observable(new Date().toISOString());
         endDate: KnockoutObservable<string> = ko.observable(new Date().toISOString());
         enableEndDate: KnockoutObservable<boolean> = ko.observable(true);
