@@ -32,3 +32,6 @@
 .flex-row .flex-row_right {
 	flex: 3;
 }
+#useSingleSignOn label.radio-wrapper > span {
+	width: 100px;
+}
