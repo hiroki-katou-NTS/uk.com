@@ -14,7 +14,6 @@ import nts.uk.ctx.at.function.dom.supportworklist.outputsetting.outputdata.Total
 import nts.uk.ctx.at.function.dom.supportworklist.outputsetting.outputdata.WorkplaceSupportWorkData;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.file.at.app.export.supportworklist.SupportWorkListDataSource;
 import nts.uk.file.at.app.export.supportworklist.SupportWorkListGenerator;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -30,9 +29,11 @@ import javax.ejb.TransactionAttributeType;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -156,7 +157,8 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
 
         Cells cells = worksheet.getCells();
         int startRow = 3;
-        val supportWorkDataList = dataSource.getSupportWorkOutputData().getSupportWorkDataList();
+        val supportWorkDataList = dataSource.getSupportWorkOutputData().getSupportWorkDataList().stream()
+                .sorted(Comparator.comparing(WorkplaceSupportWorkData::getWorkplace)).collect(Collectors.toList());
         for (int i = 0; i < supportWorkDataList.size(); i++) {   // loop for each workplace
             WorkplaceSupportWorkData workDataByWkp = supportWorkDataList.get(i);
             // C5_1
