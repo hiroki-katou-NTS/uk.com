@@ -203,7 +203,7 @@ public class TimeActualStamp {
 	public TimeActualStamp createByAutomaticSet() {
 			
 			return new TimeActualStamp(
-					this.actualStamp.map(x -> x.createByAutomaticSet()), 
+					this.actualStamp, 
 					this.stamp.map(x -> x.createByAutomaticSet()),
 					this.numberOfReflectionStamp, 
 					this.overtimeDeclaration, 

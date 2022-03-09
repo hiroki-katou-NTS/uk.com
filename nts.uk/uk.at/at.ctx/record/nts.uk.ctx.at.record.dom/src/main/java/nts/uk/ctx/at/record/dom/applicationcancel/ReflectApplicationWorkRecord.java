@@ -133,12 +133,6 @@ public class ReflectApplicationWorkRecord {
 	public static interface Require extends GetTargetDateRecordApplication.Require,
 	        CorrectionAttendanceRule.Require, CreateApplicationReflectionHist.Require,
 			TimeStampApplicationNRMode.Require, RCCreateDailyAfterApplicationeReflect.Require, CorrectDailyAttendanceService.Require {
-		/**
-		 * 
-		 * require{ 社員の作業データ設定を取得する(社員ID） }
-		 * 
-		 */
-		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId);
 
 		// DailyRecordShareFinder
 		public Optional<IntegrationOfDaily> findDaily(String employeeId, GeneralDate date);

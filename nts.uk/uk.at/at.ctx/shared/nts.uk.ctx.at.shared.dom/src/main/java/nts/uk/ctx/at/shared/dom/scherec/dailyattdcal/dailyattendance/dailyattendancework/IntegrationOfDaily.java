@@ -413,6 +413,12 @@ public class IntegrationOfDaily {
 				,	this.outingTime);
 	}
 	
+	/**
+	 * 応援別勤務職場の編集状態と応援別勤務場所の編集状態をクリアする
+	 * 
+	 * @param List<勤怠項目ID>
+	 * @return void
+	 */
 	public void clearEditStateByDeletedTimeSheet(List<Integer> lstExcludedApp) {
 		val itemIds = IntStream.range(1, MaximumNumberOfSupport.getMax() + 1).boxed()
 				.filter(y -> !this.ouenTimeSheet.stream()
@@ -427,6 +433,11 @@ public class IntegrationOfDaily {
 		});
 	}
 	
+	/**
+	 * 応援別勤務職場の勤怠項目IDと応援別勤務場所の勤怠項目IDを取得する
+	 * 
+	 * @return List<勤怠項目ID>
+	 */
 	public List<Integer> getListWplLocationIdFromOuen(){
 		return this.ouenTimeSheet.stream().flatMap(x -> {
 			return Arrays.asList(CancelAppStamp.createItemId(921, x.getWorkNo().v(), 10),

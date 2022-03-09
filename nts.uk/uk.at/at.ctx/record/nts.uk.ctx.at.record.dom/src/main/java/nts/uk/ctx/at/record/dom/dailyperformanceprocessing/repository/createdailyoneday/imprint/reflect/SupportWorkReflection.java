@@ -77,8 +77,7 @@ public class SupportWorkReflection {
 
 		// 日別勤怠（Work）から応援時間帯を取得する - 応援データ一覧 - lấy dữ liệu support từ 日別勤怠（Work）
 		List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime = integrationOfDaily.getOuenTimeSheet();
-		// 反映前状態の応援データ一覧を作る TODO - 反映前の応援データ一覧 - tạo ra list data support trước khi phản
-		// ánh
+		// 反映前状態の応援データ一覧を作る
 		List<OuenWorkTimeSheetOfDailyAttendance> lstOuenBefore = new ArrayList<>();
 		lstOuenBefore.addAll(lstOuenWorkTime);
 		
@@ -107,6 +106,7 @@ public class SupportWorkReflection {
 		// 日別勤怠（Work）にデータ入れる
 		integrationOfDaily.setOuenTimeSheet(lstCorrectMaximum);
 		List<Integer> lstId = new ArrayList<Integer>();
+		//応援別勤務職場と応援別勤務場所が反映された勤怠項目IDを取得する
 		if (integrationOfDaily instanceof DailyRecordOfApplication) {
 			val lstReflectId = ((DailyRecordOfApplication) integrationOfDaily).getAttendanceBeforeReflect().stream()
 					.map(x -> x.getAttendanceId()).collect(Collectors.toList());
@@ -117,6 +117,7 @@ public class SupportWorkReflection {
 				}).filter(y -> lstReflectId.contains(y)).distinct().collect(Collectors.toList()));
 			});
 		}
+		// 応援時刻開始と応援時刻終了がemptyの場合、応援別勤務職場と応援別勤務場所が反映されたのを除外する応援時刻の編集状態をクリアする
 		integrationOfDaily.clearEditStateByDeletedTimeSheet(lstId);
 
 		// 反映状態＝反映済みを返す
@@ -1136,7 +1137,8 @@ public class SupportWorkReflection {
 		}
 
 		/** 開始応援かを確認する */
-		if (lstOuenWorkTime.get(0).getTimeSheet().getStart().isPresent()) {
+		if (lstOuenWorkTime.get(0).getTimeSheet().getStart().isPresent()
+				&& lstOuenWorkTime.get(0).getTimeSheet().getStart().get().getTimeWithDay().isPresent()) {
 
 			// 開始の場合
 			WorkContent workContent = lstOuenWorkTime.get(0).getWorkContent();
@@ -1312,37 +1314,45 @@ public class SupportWorkReflection {
 				.ifPresent(wl -> ouen.getWorkContent().getWorkplace().setWorkLocationCD(Optional.of(wl)));
 	}
 
-	// 応援に打刻申請データを反映して、修正の状態を作成する。
+	// 打刻申請で出退勤応援打刻の補正する
 	private static void correctWithStampApp(AppStampShare app, IntegrationOfDaily domainDaily, StartAtr startAtr,
 			OuenWorkTimeSheetOfDailyAttendance ouen, Optional<TimeWithDayAttr> timeLeave) {
 		List<Integer> lstItemId = new ArrayList<Integer>();
+		//申請取り消しの処理を確認するかどうか。
 		if (!timeLeave.isPresent() && startAtr.equals(StartAtr.START_OF_SUPPORT)) {
+			//input.打刻申請から時刻の取消を取得
 			val appStampRemoved= app.getListDestinationTimeApp().stream().filter(x -> {
 				return x.getStartEndClassification() == StartEndClassificationShare
 						.valueOf(startAtr.value);
 			}).findFirst();
 			if (appStampRemoved.isPresent()) {
+				//応援の職場IDの 勤怠項目IDを取得する
 				lstItemId.add(CancelAppStamp.createItemId(922, appStampRemoved.get().getStampNo(), 10));
+				//応援の勤務場所コードの 勤怠項目IDを取得する
 				lstItemId.add(CancelAppStamp.createItemId(921, appStampRemoved.get().getStampNo(), 10));
 			}
 			DailyRecordOfApplication dailyApp = (DailyRecordOfApplication) domainDaily;
+			//編集状態の更新と申請反映前リストの作成
 			UpdateEditSttCreateBeforeAppReflect.update(dailyApp, lstItemId);
 			return;
 		}
 		
+		//input.打刻申請から時刻を取得
 		val appStampEdited = app.getListTimeStampApp().stream().filter(x -> {
 			return x.getDestinationTimeApp().getStartEndClassification() == StartEndClassificationShare
 					.valueOf(startAtr.value);
 		}).findFirst();
 
+		//職場と場所を反映しているかどうかを確認する
 		if (appStampEdited.map(x -> x.getTimeOfDay().valueAsMinutes() == timeLeave.map(y -> y.v().intValue())
 				.orElse(Integer.MAX_VALUE)).orElse(false)) {
 			appStampEdited.get().getWorkPlaceId().ifPresent(x -> {
+				//職場を反映する
 				ouen.getWorkContent().getWorkplace().setWorkplaceId(new WorkplaceId(x.v()));
 				lstItemId.add(CancelAppStamp.createItemId(922,
 						appStampEdited.get().getDestinationTimeApp().getStampNo(), 10));
 			});
-
+			//場所を反映する
 			appStampEdited.get().getWorkLocationCd().ifPresent(x -> {
 				ouen.getWorkContent().getWorkplace().setWorkLocationCD(Optional.of(new WorkLocationCD(x.v())));
 				lstItemId.add(CancelAppStamp.createItemId(921,
@@ -1350,6 +1360,7 @@ public class SupportWorkReflection {
 			});
 		}
 
+		//編集状態の更新と申請反映前リストの作成
 		DailyRecordOfApplication dailyApp = (DailyRecordOfApplication) domainDaily;
 		UpdateEditSttCreateBeforeAppReflect.update(dailyApp, lstItemId);
 	}

@@ -391,11 +391,6 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		}
 
 		@Override
-		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId) {
-			return Optional.empty();
-		}
-
-		@Override
 		public Optional<IntegrationOfDaily> findDaily(String employeeId, GeneralDate date) {
 			return dailyRecordShareFinder.find(employeeId, date);
 		}

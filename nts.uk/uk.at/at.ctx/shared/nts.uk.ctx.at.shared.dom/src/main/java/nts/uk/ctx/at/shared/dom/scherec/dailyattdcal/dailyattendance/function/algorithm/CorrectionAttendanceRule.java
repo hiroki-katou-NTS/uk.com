@@ -75,16 +75,20 @@ public class CorrectionAttendanceRule {
 		// 手修正を基に戻す
 		DailyRecordToAttendanceItemConverter afterConverter = require.createDailyConverter(companyId).setData(afterDomain)
 				.completed();
+		//応援別勤務職場と応援別勤務場所が反映された場合、手修正の状態しても復元されません
 		if(!beforeItems.isEmpty()) {
 			if (afterDomain instanceof DailyRecordOfApplication && require.appStamp().isPresent()) {
+				//反映された勤怠項目IDを取得する
 				val lstReflectId = ((DailyRecordOfApplication) afterDomain).getAttendanceBeforeReflect().stream()
 						.map(x -> x.getAttendanceId()).collect(Collectors.toList());
+				//日別勤怠(Work)から応援別勤務職場と援別勤務場所の勤怠項目IDを取得する
 				val lstOuenWplLocaId = afterDomain.getListWplLocationIdFromOuen().stream().filter(x -> {
 					return lstReflectId.stream().anyMatch(y -> y == x);
 				}).collect(Collectors.toList());
 				beforeItems = beforeItems.stream().filter(x -> !lstOuenWplLocaId.contains(x.getItemId()))
 						.collect(Collectors.toList());
 			}
+			//	復元する
 			afterConverter.merge(beforeItems);
 		}
 		IntegrationOfDaily integrationOfDaily = afterConverter.toDomain();
