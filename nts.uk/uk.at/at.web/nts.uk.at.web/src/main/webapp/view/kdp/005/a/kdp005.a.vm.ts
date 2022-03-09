@@ -1056,34 +1056,9 @@ module nts.uk.at.view.kdp005.a {
 
 					vm.$window.storage("contractInfo")
 						.then((data: any) => {
-							if (data) {
-								const param = {
-									contractCode: data.contractCode,
-									workLocationCode: locationCd
-								}
-								vm.$ajax(API.GET_LOCATION, param)
-									.done((data: IBasyo) => {
-										if (data) {
-											if (data.workLocationName != null || data.workpalceId != null) {
-												self.worklocationCode = locationCd;
-												dfd.resolve();
-											}
-
-											if (data.workpalceId) {
-												if (data.workpalceId.length > 0) {
-													self.modeBasyo(true);
-													self.workplace = data.workpalceId;
-												}
-
-												if (data.workpalceId.length == 0) {
-													self.modeBasyo(false);
-												}
-												dfd.resolve();
-											}
-										} else {
-											dfd.resolve();
-										}
-									});
+							if (data) {                                
+                                self.worklocationCode = locationCd;
+                                dfd.resolve();
 							} else {
 								dfd.resolve();
 							}
