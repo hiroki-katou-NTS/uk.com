@@ -219,3 +219,8 @@ DOMAIN_ID,ITEM_NO,ITEM_NAME,ITEM_TYPE,REQUIRED,IS_PRIMARYKEY,CHECK_METHOD,FQN
 131,201,"打刻区分",0,true,false,1,"nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise.pv.EnterpriseStampDataStampAttr"
 131,202,"ファンクションNO",1,true,false,1,"nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise.pv.EnterpriseStampDataFunctionNo"
 131,203,"端末区分",0,true,false,1,"nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise.pv.EnterpriseStampDataTerminalAttr"
+992,1,"社員コード",0,true,true,1,"nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode"
+992,200,"開始年月日",3,true,true,,""
+992,201,"終了年月日",0,true,false,1,"nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.tempabsemce.smile.pv.SmileTempAbsenceDataEndDate"
+992,202,"理由コード",0,true,false,1,"nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.tempabsemce.smile.pv.SmileTempAbsenceDataReasonCode"
+992,203,"休職理由",0,false,false,1,"nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.tempabsemce.smile.pv.SmileTempAbsenceReason"

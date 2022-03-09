@@ -13,6 +13,7 @@ import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -37,7 +38,7 @@ public class Cas012CompanyAdRegisterCommandHandler extends CommandHandler<Cas012
             throw new BusinessException("Msg_61","Com_User");
         }
         DatePeriod validPeriod = new DatePeriod(command.getStartDate(),command.getEndDate());
-        RequireImpl require = new RequireImpl(roleRepository,userRepo);
+        RequireImpl require = new RequireImpl(AppContexts.user().companyId(), roleRepository,userRepo);
         RoleIndividualGrant domain = RoleIndividualGrant.createGrantInfoOfCompanyManager(require,command.getUId(),command.getCId(),validPeriod);
         roleIndividualGrantRepo.add(domain);
 
@@ -45,11 +46,12 @@ public class Cas012CompanyAdRegisterCommandHandler extends CommandHandler<Cas012
     @AllArgsConstructor
     public class RequireImpl implements RoleIndividualGrant.Require{
 
+        private String companyId;
         private RoleRepository roleRepository;
         private UserRepository userRepo;
         @Override
         public Role getRoleByRoleType(RoleType roleType) {
-            val listRole = roleRepository.findByType(roleType.value);
+            val listRole = roleRepository.findByType(companyId, roleType.value);
             if(listRole.isEmpty()){
                 return null;
             }else {

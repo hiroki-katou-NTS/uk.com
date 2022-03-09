@@ -13,7 +13,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffWorkplaceHisto
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmploymentHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.ShortWorkTimeCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.TempAbsenceHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.WorkConditionCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.annualleave.AnnualLeaveRemainingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.annualleave.EmployeeAnnualLeaveSettingCanonicalization;
@@ -25,6 +24,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantRemainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantSettingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.stock.StockHolidayRemainingCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.tempabsemce.TempAbsenceHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace.WorkplaceCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.EquipmentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.EquipmentClassiicationCanonicalization;
@@ -32,6 +32,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.StampCanonica
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise.EnterpriseStampCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskChildCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.tempabsemce.smile.SmileTempAbsenceHistoryCanonicalization;
 
 /**
  * 受入グループID
@@ -121,6 +122,8 @@ public enum ImportingDomainId {
 	/** 打刻データE版 */
 	STAMP_ENTERPRISE(131, EnterpriseStampCanonicalization::new),
 	
+	/** Smile休職情報 */
+	TEMP_ABSENCE_HISTORY_SMILE(992, SmileTempAbsenceHistoryCanonicalization::new),
 	;
 	
 	public final int value;

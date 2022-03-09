@@ -123,10 +123,10 @@ module nts.uk.com.view.smm001.b {
               return;
             }
             const employmentDtos = _.map(filterEmp, (item: any, index: number) =>
-              new GridItem(item.scd, vm.findEmp(vm.empListTemp, item.scd),
+              new GridItem(item.scd, vm.findEmp(response.employments, item.scd),
                 vm.CURRENT_MONTH_TEXT(),
                 vm.LAST_MONTH_TEXT(),
-                item.interlockingMonthAdjustment === 'CURRENT_MONTH' ? 0 : 1,
+                item.interlockingMonthAdjustment,
                 index)
             );
             vm.rightEmployments().push(...employmentDtos);
