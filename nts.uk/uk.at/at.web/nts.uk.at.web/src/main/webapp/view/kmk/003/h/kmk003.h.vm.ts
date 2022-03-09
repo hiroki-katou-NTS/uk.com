@@ -54,8 +54,8 @@ module nts.uk.at.view.kmk003.h {
                     }
                 });
                 
-                self.useStamp.subscribe((value: number) =>{
-                    if(value == 1){
+                self.useStamp.subscribe((value: boolean) =>{
+                    if(value == true){
                         self.timeManagerSetAtr(0);
                     }
                 });
