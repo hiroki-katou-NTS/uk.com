@@ -197,7 +197,11 @@ module nts.uk.at.view.kdp.share {
 
 				if (regionalTime) {
 					vm.regionalTime = regionalTime;
-				}
+				}else{
+                    vm.$window.storage("workLocationInfo").then((workLocInfo) => {
+                        vm.regionalTime = workLocInfo.regional;
+                    });
+                }
 
 				if (events) {
 					// convert setting event to binding object
