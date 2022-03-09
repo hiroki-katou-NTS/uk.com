@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.app.nrl.Command;
+import nts.uk.ctx.at.function.app.nrl.ConditionMonitor;
 import nts.uk.ctx.at.function.app.nrl.DefaultValue;
 import nts.uk.ctx.at.function.app.nrl.data.MarshalResult;
 import nts.uk.ctx.at.function.app.nrl.data.RequestData;
@@ -28,11 +29,15 @@ import nts.uk.ctx.at.function.app.nrl.xml.Element;
 import nts.uk.ctx.at.function.app.nrl.xml.Frame;
 import nts.uk.ctx.at.function.app.nrlremote.ReceiveNRLRemoteDataSetting;
 import nts.uk.ctx.at.function.app.nrlremote.SendToNRLRemote;
+import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.DeleteRequestSettingTRAdapter;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.FuncEmpInfoTerminalImport;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.RQEmpInfoTerminalAdapter;
 import nts.uk.ctx.at.function.dom.adapter.stamp.FuncStampCardAdapter;
 import nts.uk.ctx.at.function.dom.adapter.stamp.StampCard;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.AuthenticateNRCommunicationQuery;
+import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.ReqComStatusMonitoringAdapter;
+import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.SendNRDataAdapter;
+import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.SendTimeRecordSettingImport;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.ContractCode;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.EmpInfoTerComAbPeriod;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
@@ -94,6 +99,15 @@ public class RequestDispatcher {
 	
 	@Inject
 	private FuncStampCardAdapter funcStampCardAdapter;
+
+	@Inject
+	private ReqComStatusMonitoringAdapter reqComStatusMonitoringAdapter;
+	
+	@Inject
+	private SendNRDataAdapter sendNRDataAdapter;
+	
+	@Inject
+	private DeleteRequestSettingTRAdapter deleteRequestSettingTRAdapter;
 	
 	/**
 	 * Ignite.
@@ -132,7 +146,8 @@ public class RequestDispatcher {
 			}
 			
 			RequireImpl impl = new RequireImpl(rqEmpInfoTerminalAdapter, empInfoTerminalComStatusRepo,
-					empInfoTerComAbPeriodRepo, funcStampCardAdapter);
+					empInfoTerComAbPeriodRepo, funcStampCardAdapter, reqComStatusMonitoringAdapter, sendNRDataAdapter,
+					deleteRequestSettingTRAdapter);
 			//タイムレコーダの通信を認証する
 			boolean checkAuthen = AuthenticateNRCommunicationQuery.process(impl, contractCode, macAddr);
 			if(!checkAuthen) {
@@ -149,8 +164,14 @@ public class RequestDispatcher {
 			val status = RecordCommunicationStatus.recordStatus(impl, new ContractCode(contractCode),
 					new EmpInfoTerminalCode(empInfoTerCodeOpt.get()));
 			status.run();
-
-			NRLResponse reponse =  request.responseTo(empInfoTerCodeOpt.get(), frame);
+			
+			// リクエスト通信の状態監視を作成する
+			ReqComStatusMonitoringProcess.updateStatus(impl, command, contractCode, empInfoTerCodeOpt.get(),
+					ConditionMonitor.START);
+			NRLResponse reponse = request.responseTo(empInfoTerCodeOpt.get(), frame);
+			// リクエスト通信の状態監視をキャンセルする
+			ReqComStatusMonitoringProcess.updateStatus(impl, command, contractCode, empInfoTerCodeOpt.get(),
+					ConditionMonitor.FINISH);
 			
 			return reponse;
 			
@@ -167,7 +188,7 @@ public class RequestDispatcher {
 	}
 
 	@AllArgsConstructor
-	public class RequireImpl implements RecordCommunicationStatus.Require, AuthenticateNRCommunicationQuery.Require {
+	public class RequireImpl implements RecordCommunicationStatus.Require, AuthenticateNRCommunicationQuery.Require, ReqComStatusMonitoringProcess.Require {
 
 		private final RQEmpInfoTerminalAdapter rQEmpInfoTerminalAdapter;
 
@@ -176,7 +197,13 @@ public class RequestDispatcher {
 		private final EmpInfoTerComAbPeriodRepository empInfoTerComAbPeriodRepo;
 		
 		private final FuncStampCardAdapter funcStampCardAdapter;
-
+		
+		private final ReqComStatusMonitoringAdapter reqComStatusMonitoringAdapter;
+		
+		private final SendNRDataAdapter sendNRDataAdapter;
+		
+		private final DeleteRequestSettingTRAdapter deleteRequestSettingTRAdapter;
+		
 		@Override
 		public Optional<FuncEmpInfoTerminalImport> getEmpInfoTerminal(String empInfoTerCode, String contractCode) {
 			return rQEmpInfoTerminalAdapter.getEmpInfoTerminal(empInfoTerCode, contractCode);
@@ -216,6 +243,21 @@ public class RequestDispatcher {
 		@Override
 		public Optional<String> getEmpInfoTerminalCodeMac(String contractCode, String macAddr) {
 			return rQEmpInfoTerminalAdapter.getEmpInfoTerminalCode(contractCode, macAddr);
+		}
+		
+		public void updateReqComStatusMonitor(String contractCode, String terminalCode, boolean statusConnect) {
+
+			reqComStatusMonitoringAdapter.update(contractCode, terminalCode, statusConnect);
+		}
+
+		@Override
+		public Optional<SendTimeRecordSettingImport> sendTimeRecordSetting(String empInfoTerCode, String contractCode) {
+			return sendNRDataAdapter.sendTimeRecordSetting(empInfoTerCode, contractCode);
+		}
+
+		@Override
+		public void removeAllSetting(String empInfoTerCode, String contractCode) {
+			deleteRequestSettingTRAdapter.remove(empInfoTerCode, contractCode).run();
 		}
 		
 	}

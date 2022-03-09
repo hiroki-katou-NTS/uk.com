@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.employmentinfoterminal.infotermina
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -53,6 +54,13 @@ public class JpaReqComStatusMonitoringRepository extends JpaRepository implement
 					.getList()
 					.stream()
 					.map(e -> e.toDomain()).collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<ReqComStatusMonitoring> getWithKey(ContractCode contractCode, EmpInfoTerminalCode terCode) {
+		return this.queryProxy().find(new KrcdtTrRqStMonitorPK(contractCode.v(), terCode.v()), KrcdtTrRqStMonitor.class).map(x -> {
+			return new ReqComStatusMonitoring(contractCode, terCode, x.connecting);
+		});
 	}
 
 }
