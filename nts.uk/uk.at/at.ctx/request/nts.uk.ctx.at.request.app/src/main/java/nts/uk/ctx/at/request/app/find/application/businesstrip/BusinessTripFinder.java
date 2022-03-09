@@ -320,7 +320,10 @@ public class BusinessTripFinder {
         if (!CollectionUtil.isEmpty(dateNotHaveContentLst)) {
         	for(GeneralDate loopDate : dateNotHaveContentLst.stream().map(x -> x.getDate()).collect(Collectors.toList())) {
         		// 社員の労働条件を取得する
-        		Optional<WorkingConditionItem> opWorkingConditionItem = WorkingConditionService.findWorkConditionByEmployee(createRequireM1(), applicationDto.getEmployeeID(), loopDate);
+        		Optional<WorkingConditionItem> opWorkingConditionItem = WorkingConditionService.findWorkConditionByEmployee(
+        				createRequireM1(), 
+        				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
+        				loopDate);
         		if(!opWorkingConditionItem.isPresent()) {
         			// エラーメッセージ（Msg_3267）を表示する
         			throw new BusinessException("Msg_3267");
