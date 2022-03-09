@@ -25,7 +25,14 @@ module nts.uk.at.view.kdl016.a {
         constructor(params: IScreenParameter) {
             super();
             const vm = this;
-            if (!_.isNil(params)) {
+            if(!_.isNil(nts.uk.ui.windows.getShared('dataShareKDL016'))){
+                let dataShare = nts.uk.ui.windows.getShared('dataShareKDL016');
+                vm.targetOrg(dataShare.targetOrg);
+                vm.periodStart(dataShare.startDate);
+                vm.periodEnd(dataShare.endDate);
+                vm.employeeIds(dataShare.employeeIds);
+
+            } else if (!_.isNil(params)) {
                 vm.targetOrg(params.targetOrg);
                 vm.periodStart(params.startDate);
                 vm.periodEnd(params.endDate);
