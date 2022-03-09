@@ -27,6 +27,14 @@ module nts.uk.at.kha002.c {
                     if (setting.standardHierarchy) vm.standardHierarchy(setting.standardHierarchy);
                 } else {
                     vm.aggregateUnit(0);
+                    const command = {
+                        aggregateUnit: vm.aggregateUnit(),
+                        judgmentAtr: vm.aggregateUnit() == 0 ? vm.judgmentAtr() : null,
+                        standardHierarchy: vm.aggregateUnit() == 0 && vm.judgmentAtr() == 1 ? vm.standardHierarchy() : null
+                    };
+                    vm.$ajax(API.register, command).fail(error => {
+                        vm.$dialog.error(error);
+                    });
                 }
                 $("#C1_2").focus()
             }).fail(error => {

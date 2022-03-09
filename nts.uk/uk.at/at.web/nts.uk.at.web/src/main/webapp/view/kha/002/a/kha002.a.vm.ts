@@ -84,7 +84,7 @@ module nts.uk.at.kha002.a {
             const vm = this;
             vm.$blockui("show");
             vm.$ajax(API.getAllOutputSettings).done(settings => {
-                vm.layoutSettings(settings);
+                vm.layoutSettings(_.sortBy(settings, ["code"]));
                 if (_.isEmpty(settings)) {
                     vm.selectedLayout() == null ? vm.selectedLayout.valueHasMutated() : vm.selectedLayout(null);
                     vm.$dialog.error({messageId: "Msg_2154"}).then(() => {

@@ -176,7 +176,7 @@ public class WorkplaceSupportWorkDataTest {
         );
 
         assertThat(data.getSupportDetails().size()).isEqualTo(1);
-        assertThat(data.getSupportDetails().get(0).getSupportDestination()).isEqualTo("affiliationInfo");
+        assertThat(data.getSupportDetails().get(0).getSupportDestination()).isEqualTo("workInfo");
     }
 
     @Test
@@ -201,6 +201,6 @@ public class WorkplaceSupportWorkDataTest {
         );
 
         assertThat(data.getSupportDetails().size()).isEqualTo(1);
-        assertThat(data.getSupportDetails().get(0).getSupportDestination()).isEqualTo("workInfo");
+        assertThat(data.getSupportDetails().get(0).getSupportDestination()).isEqualTo("affiliationInfo");
     }
 }

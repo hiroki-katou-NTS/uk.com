@@ -116,8 +116,8 @@ public class WorkplaceSupportWorkData {
         this.supportDetails = supportWorkDetails.stream().filter(i -> i.isSupportWork())
                 .collect(Collectors.groupingBy(i -> {
                     return extractCondition == EmployeeExtractCondition.EXTRACT_EMPLOYEES_GO_TO_SUPPORT
-                            ? i.getAffiliationInfo()
-                            : i.getWorkInfo();
+                            ? i.getWorkInfo()
+                            : i.getAffiliationInfo();
                 }))
                 .entrySet().stream().map(e -> {
                     return SupportDetail.create(require, companyId, e.getKey(), e.getValue());

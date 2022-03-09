@@ -63,7 +63,7 @@ module nts.uk.at.kha002.b {
             const vm = this;
             vm.$blockui("show");
             vm.$ajax(API.getAll).done(settings => {
-                vm.layoutSettings(settings);
+                vm.layoutSettings(_.sortBy(settings, ["code"]));
                 if (_.isEmpty(settings)) {
                     vm.createNewSetting();
                 } else {
