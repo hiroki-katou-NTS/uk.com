@@ -1054,16 +1054,33 @@ module nts.uk.at.view.kdp005.a {
 
 				// URLOption basyoが存在している場合
 				if (locationCd) {
+                    vm.$window.storage("contractInfo")
+                        .then((info: any) => {
+                            if (info) {
+                                vm.$ajax(API.GET_IP_URL, { contractCode: info.contractCode }).done((response) => {
+                                    let getWkLocParam = { contractCode: info.contractCode, worklocationCode: locationCd, ipv4Address: response.ipaddress };
 
-					vm.$window.storage("contractInfo")
-						.then((data: any) => {
-							if (data) {                                
-                                self.worklocationCode = locationCd;
+                                    vm.$ajax(API.GET_WORKLOCATION, getWkLocParam).done((workLoc: IWorkPlaceRegionalTimeDto) => {
+
+                                        let {regional, workLocationCD, workLocationName, workPlaceId } = workLoc;
+
+                                        if (workLoc && workLocationCD != null && workLocationName != null && workPlaceId != null) {
+
+                                            self.worklocationCode = locationCd;
+                                            self.modeBasyo(true);
+                                            dfd.resolve();
+
+                                        } else {
+
+                                            self.modeBasyo(false);
+                                            dfd.resolve();
+                                        }
+                                    });
+                                });
+                            } else {
                                 dfd.resolve();
-							} else {
-								dfd.resolve();
-							}
-						});
+                            }
+                        });
 				} else {
 					dfd.resolve();
 				}
