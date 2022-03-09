@@ -25,6 +25,7 @@ module nts.uk.com.view.cmm030.g {
           vm.$blockui("grayout");
           nts.uk.request.exportFile(API.export, param)
           .then(() => vm.closeDialog())
+          .fail(err => vm.$dialog.error({ messageId: err.messageId }))
           .always(() => vm.$blockui("clear"));
         }
       });

@@ -27,11 +27,11 @@ public class UpdateApprovalRootHistoryDomainService {
 		List<AtomTask> atomTasks = new ArrayList<>();
 		// 基準日後の開始日がある履歴を削除する（開始日＞＝基準日）
 		List<PersonApprovalRoot> personApprovalRoots = require.getHistoryWithStartDate(sid, baseDate);
-		List<String> approverIds = personApprovalRoots.stream()
+		List<String> approvalIds = personApprovalRoots.stream()
 				.map(PersonApprovalRoot::getApprovalId).filter(Objects::nonNull)
 				.distinct().collect(Collectors.toList());
-		if (!approverIds.isEmpty()) {
-			atomTasks.add(AtomTask.of(() -> require.deletePersonApprovalRoots(approverIds)));
+		if (!approvalIds.isEmpty()) {
+			atomTasks.add(AtomTask.of(() -> require.deletePersonApprovalRoots(approvalIds)));
 		}
 		// 前の履歴を変更する（条件：基準日を含む → 終了日＝基準日の前日）
 		List<PersonApprovalRoot> previousHistories = require.getHistoryWithEndDate(sid, baseDate);
@@ -55,6 +55,6 @@ public class UpdateApprovalRootHistoryDomainService {
 		void updatePersonApprovalRoot(PersonApprovalRoot personApprovalRoot);
 
 		// [R-4]承認IDListから履歴を削除する
-		void deletePersonApprovalRoots(List<String> approverIds);
+		void deletePersonApprovalRoots(List<String> approvalIds);
 	}
 }

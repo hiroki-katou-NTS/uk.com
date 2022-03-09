@@ -312,7 +312,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				+ " WHERE m.wwfmtPsApprovalRootPK.companyId = :cid"
 				+ " AND m.wwfmtPsApprovalRootPK.employeeId = :sid"
 				+ " AND m.sysAtr = :sysAtr"
-				+ " AND m.startDate = :baseDate"
+				+ " AND m.endDate = :baseDate"
 				+ " AND m.opeMode = 1"
 				+ " ORDER BY m.startDate DESC";
 		
@@ -1106,7 +1106,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				 .setParameter("cid", cid)
 				 .setParameter("sid", sid)
 				 .setParameter("sysAtr", SystemAtr.WORK.value)
-				 .setParameter("baseDate", GeneralDate.ymd(999, 12, 31))
+				 .setParameter("baseDate", GeneralDate.ymd(9999, 12, 31))
 				 .getList()
 				 .stream()
 				 .findFirst();

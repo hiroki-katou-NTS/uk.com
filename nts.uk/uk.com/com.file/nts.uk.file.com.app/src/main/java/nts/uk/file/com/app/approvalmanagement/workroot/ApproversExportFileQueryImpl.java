@@ -10,6 +10,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
@@ -83,6 +84,10 @@ public class ApproversExportFileQueryImpl implements ApproversExportFileQuery {
 		// 取得する(会社ID, 社員ID, 年月日, システム区分)
 		List<ApprovalSettingInformationExport> settingInfos = this.personApprovalRootPub.findApproverList(cid, sids,
 				query.getBaseDate(), SystemAtr.WORK.value);
+		// [List<承認者設定情報>=NULL]
+		if (settingInfos.isEmpty()) {
+			throw new BusinessException("Msg_3300");
+		}
 		// [RQ600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
 		List<String> targetSids = settingInfos.stream().map(ApprovalSettingInformationExport::getApprovalPhases)
 				.flatMap(List::stream).map(ApprovalPhaseExport::getApprover).flatMap(List::stream)
