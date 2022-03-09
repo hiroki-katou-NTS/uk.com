@@ -51,7 +51,8 @@ module nts.uk.ui.kdp001.a {
         getLocation: 'at/record/stamp/employment_system/get_location_stamp_input',
         WORKPLACE_INFO: "screen/at/kdp003/workplace-info",
         GetWorkLocationRagionalTime: "at/record/kdp/common/get-work-location-regional-time",
-        GetWorkPlaceRegionalTime: "at/record/kdp/common/get-work-place-regional-time"
+        GetWorkPlaceRegionalTime: "at/record/kdp/common/get-work-place-regional-time",
+		GetIPAddress: "at/record/stamp/finger/get-ip-address"
     };
 
     //個人
@@ -806,9 +807,9 @@ module nts.uk.ui.kdp001.a {
 
             if (locationCd) {
                 vm.modeBasyo(true)
-                $.getJSON("https://api.ipify.org?format=json").then((address: any) => {
-                    vm.ipAddress = address.ip;
-                }).then(() => {
+                vm.$ajax('at', REST_API.GetIPAddress, {contactCode: vm.$user.contractCode}).then((address: any) => {
+					vm.ipAddress = address.ipaddress;
+				}).then(() => {
                     const param = {
                         contractCode: vm.$user.contractCode,
                         workLocationCode: locationCd,

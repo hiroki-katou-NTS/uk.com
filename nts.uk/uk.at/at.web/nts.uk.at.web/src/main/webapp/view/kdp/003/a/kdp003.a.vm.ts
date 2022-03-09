@@ -26,7 +26,8 @@ module nts.uk.at.kdp003.a {
 		getContractCode: "at/record/stamp/finger/get-contractCode",
 		getAuthenticate: "at/record/stamp/finger/get-authenticate",
 		GetWorkLocationRagionalTime: "at/record/kdp/common/get-work-location-regional-time",
-		GetWorkPlaceRegionalTime: "at/record/kdp/common/get-work-place-regional-time"
+		GetWorkPlaceRegionalTime: "at/record/kdp/common/get-work-place-regional-time",
+		GetIPAddress: "at/record/stamp/finger/get-ip-address"
 
 	};
 
@@ -279,8 +280,8 @@ module nts.uk.at.kdp003.a {
 			let dfd = $.Deferred<void>();
 
 			if (locationCd) {
-				$.getJSON("https://api.ipify.org?format=json").then((address: any) => {
-					ipv4Address = address.ip;
+				vm.$ajax('at',API.GetIPAddress, {contactCode: vm.$user.contractCode}).then((address: any) => {
+					ipv4Address = address.ipaddress;
 				}).done(() => {
 					const param = {
 						contractCode: vm.contractCode,
