@@ -35,13 +35,21 @@ public class AppLstApprovalLstDispSetCmd {
 	 * 申請対象日に対して警告表示
 	 */
 	private int appDateWarningDisp;
+
+	/**
+	 * 承認機能を利用する (申請⑧EA4134)
+	 */
+	private int useApprovalFunction;
 	
 	// AnhNM add to domain
 	public AppLstApprovalLstDispSet toDomain() {
-		return new AppLstApprovalLstDispSet(GeneralDate.fromString(startDateDisp, "yyyy/MM/dd"),
+		return new AppLstApprovalLstDispSet(
+				GeneralDate.fromString(startDateDisp, "yyyy/MM/dd"),
 				prePostAtrDisp,
 				GeneralDate.fromString(endDateDisp, "yyyy/MM/dd"),
 				workplaceNameDisp,
-				appDateWarningDisp);
+				appDateWarningDisp,
+				useApprovalFunction
+		);
 	}
 }

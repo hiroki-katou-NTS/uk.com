@@ -13,6 +13,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCan
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace.WorkplaceCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeIndependentCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.StampCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
@@ -23,13 +24,13 @@ import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
  * 受入グループ別の正準化
  */
 public interface DomainCanonicalization {
-	
+
 	ItemNoMap getItemNoMap();
-	
+
 	default int getItemNoByName(String itemName) {
 		return getItemNoMap().getItemNo(itemName);
 	}
-	
+
 	default String getItemNameByNo(int itemNo) {
 		return getItemNoMap().getItemName(itemNo);
 	}
@@ -40,14 +41,14 @@ public interface DomainCanonicalization {
 	 * @param context
 	 */
 	void canonicalize(RequireCanonicalize require, ExecutionContext context);
-	
+
 	/**
 	 * メタ情報を追記する
 	 * @param source
 	 * @return
 	 */
 	ImportingDataMeta appendMeta(ImportingDataMeta source);
-	
+
 	/**
 	 * 受入に影響される既存データを補正する
 	 * @param require
@@ -60,7 +61,7 @@ public interface DomainCanonicalization {
 			ExecutionContext context,
 			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete);
-	
+
 	/**
 	 * この受入グループにおける社員IDの項目Noを返す
 	 * @return
@@ -69,32 +70,33 @@ public interface DomainCanonicalization {
 	default int getItemNoOfEmployeeId() {
 		return this.getItemNoByName("SID");
 	}
-	
+
 	public static interface RequireCanonicalize extends
-		CanonicalizationMethodRequire,
-		IndependentCanonicalization.RequireCanonicalize,
-		WorkplaceCanonicalization.RequireCanonicalize,
-		EmployeeIndependentCanonicalization.RequireCanonicalize,
-		EmployeeBasicCanonicalization.RequireCanonicalize,
-		EmployeeHistoryCanonicalization.RequireCanonicalize,
-		AffJobTitleHistoryCanonicalization.RequireCanonicalize,
-		AffWorkplaceHistoryCanonicalization.RequireCanonicalize,
-		OccurenceHolidayCanonicalizationBase.RequireCanonicalize, 
-		CardNumberCanonicalaization.RequireCanonicalize{
-		
+			CanonicalizationMethodRequire,
+			IndependentCanonicalization.RequireCanonicalize,
+			WorkplaceCanonicalization.RequireCanonicalize,
+			EmployeeIndependentCanonicalization.RequireCanonicalize,
+			EmployeeBasicCanonicalization.RequireCanonicalize,
+			EmployeeHistoryCanonicalization.RequireCanonicalize,
+			AffJobTitleHistoryCanonicalization.RequireCanonicalize,
+			AffWorkplaceHistoryCanonicalization.RequireCanonicalize,
+			OccurenceHolidayCanonicalizationBase.RequireCanonicalize,
+			CardNumberCanonicalaization.RequireCanonicalize,
+			StampCanonicalization.RequireCanonicalize{
+
 		void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord);
 
 	}
-	
+
 	public static interface RequireAdjsut extends
-		IndependentCanonicalization.RequireAdjust,
-		WorkplaceCanonicalization.RequireAdjust,
-		EmployeeBasicCanonicalization.RequireAdjust,
-		EmployeeHistoryCanonicalization.RequireAdjust,
-		AffJobTitleHistoryCanonicalization.RequireAdjust,
-		AffWorkplaceHistoryCanonicalization.RequireAdjust,
-		OccurenceHolidayCanonicalizationBase.RequireAdjust, 
-		CardNumberCanonicalaization.RequireAdjust{
-		
+			IndependentCanonicalization.RequireAdjust,
+			WorkplaceCanonicalization.RequireAdjust,
+			EmployeeBasicCanonicalization.RequireAdjust,
+			EmployeeHistoryCanonicalization.RequireAdjust,
+			AffJobTitleHistoryCanonicalization.RequireAdjust,
+			AffWorkplaceHistoryCanonicalization.RequireAdjust,
+			OccurenceHolidayCanonicalizationBase.RequireAdjust,
+			CardNumberCanonicalaization.RequireAdjust{
+
 	}
 }

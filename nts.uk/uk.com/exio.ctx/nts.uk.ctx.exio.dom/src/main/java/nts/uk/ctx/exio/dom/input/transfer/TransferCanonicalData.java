@@ -58,12 +58,24 @@ public class TransferCanonicalData {
 	
 	private static AtomTask transfer(Require require, ExecutionContext context, List<WhereSentence> whereList) {
 		
-		val importingDomain = require.getImportingDomain(context.getDomainId());
-		
+
+		String importingDomainName;
+		{
+			ImportingDomainId domainId = context.getDomainId();
+			if (domainId == ImportingDomainId.STAMP_ENTERPRISE) {
+				domainId = ImportingDomainId.STAMP;
+			}
+			importingDomainName = require.getImportingDomain(domainId).getName();
+		}
+
 		val conversionTables = require.getConversionTable(
 				getConversionSource(require, context),
-				importingDomain.getName(),
+				importingDomainName,
 				context.getMode().getType());
+
+		if (conversionTables.isEmpty()) {
+			throw new RuntimeException("コンバート表がありません");
+		}
 
 		val itemNames = getImportingItemNames(require, context);
 		val sqls = conversionTables.stream()
@@ -133,7 +145,16 @@ public class TransferCanonicalData {
 	private static ConversionSource getConversionSource(Require require, ExecutionContext context) {
 		
 		val importingDomain = require.getImportingDomain(context.getDomainId());
-		val base = require.getConversionSource(importingDomain.getName());
+
+		String imporingDomainName = importingDomain.getName();
+
+		// 他の受入ドメインの移送表を流用したいケースは、今のところ打刻データE版のみだが、
+		// 今後も増えるならここのif文を肥大化させず、リファクタリングして対処したい。
+		if (context.getDomainId() == ImportingDomainId.STAMP_ENTERPRISE) {
+			imporingDomainName = require.getImportingDomain(ImportingDomainId.STAMP).getName();
+		}
+
+		val base = require.getConversionSource(imporingDomainName);
 		
 		val tableName = new WorkspaceTableName(context);
 		

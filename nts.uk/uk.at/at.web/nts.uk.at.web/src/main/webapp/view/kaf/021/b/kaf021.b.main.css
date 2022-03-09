@@ -16,7 +16,7 @@
 #tbl-control{
     margin-top: 5px;
     width: 100%;
-    max-width: 1260px;
+    max-width: 1216px;
     min-width: 800px;
 }
 
@@ -31,7 +31,6 @@
 #tbl-control .cell:nth-child(3){
     width: 200px;
     text-align: right;
-    padding-right: 27px;
 }
 
 #grid{
