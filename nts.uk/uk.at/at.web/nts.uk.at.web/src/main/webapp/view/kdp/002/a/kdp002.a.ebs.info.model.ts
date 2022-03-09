@@ -20,14 +20,14 @@ module nts.uk.at.view.kdp002.a {
 
 				self.displayMethod = ko.observable(setting.historyDisplayMethod);
 				self.dateValue = ko.observable({
-					startDate: moment(moment()).add(ko.unwrap(regionalTime), 'h').add(-3, 'days').format('YYYY/MM/DD'),
-					endDate: moment(moment()).add(ko.unwrap(regionalTime), 'h').format('YYYY/MM/DD')
+					startDate: moment(moment()).add(ko.unwrap(regionalTime), 'm').add(-3, 'days').format('YYYY/MM/DD'),
+					endDate: moment(moment()).add(ko.unwrap(regionalTime), 'm').format('YYYY/MM/DD')
 				});
 
 				vm.$ajax('at', '/server/time/now')
 					.then((c) => {
-						const sysDate = moment(c).add(ko.unwrap(regionalTime), 'h').utc().format('YYYY/MM/DD');;
-						const yearMonth = moment(c).add(ko.unwrap(regionalTime), 'h').utc().format('YYYY/MM');
+						const sysDate = moment(c).add(ko.unwrap(regionalTime), 'm').utc().format('YYYY/MM/DD');;
+						const yearMonth = moment(c).add(ko.unwrap(regionalTime), 'm').utc().format('YYYY/MM');
 
 						self.yearMonth(yearMonth);
 						self.systemDate(sysDate);
