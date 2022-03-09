@@ -133,21 +133,25 @@ module nts.uk.at.view.kdl016.b {
                 }
             };
 
-            if (moment.utc(vm.startDate()).isBefore(moment.utc().format('YYYY/MM/DD'))) {
-                vm.$dialog.confirm({messageId: 'Msg_3280'}).then((result: 'no' | 'yes') => {
-                    vm.$blockui("invisible");
-                    if (result === 'yes') {
+            vm.$validate(".nts-input:not(:disabled)").then((valid: boolean) => {
+                if (valid) {
+                    if (moment.utc(vm.startDate()).isBefore(moment.utc().format('YYYY/MM/DD'))) {
+                        vm.$dialog.confirm({messageId: 'Msg_3280'}).then((result: 'no' | 'yes') => {
+                            vm.$blockui("invisible");
+                            if (result === 'yes') {
+                                vm.execute(command);
+                            }
+
+                            if (result === 'no') {
+                                vm.$blockui("hide");
+                            }
+                        });
+                    } else {
+                        vm.$blockui("invisible");
                         vm.execute(command);
                     }
-
-                    if (result === 'no') {
-                        vm.$blockui("hide");
-                    }
-                });
-            } else {
-                vm.$blockui("invisible");
-                vm.execute(command);
-            }
+                }
+            });
         }
 
         execute(command: any) {

@@ -54,7 +54,7 @@ module nts.uk.at.view.kdl016.c {
             });
 
             vm.selectedOrgCode.subscribe((newValue: any) => {
-                if(!_.isNil(newValue)) {
+                if (!_.isNil(newValue)) {
                     vm.reloadEmployeeInfo(newValue);
                 }
             });
@@ -167,21 +167,25 @@ module nts.uk.at.view.kdl016.c {
                 }
             };
 
-            if (moment.utc(vm.startDate()).isBefore(moment.utc().format('YYYY/MM/DD'))) {
-                vm.$dialog.confirm({messageId: 'Msg_3280'}).then((result: 'no' | 'yes') => {
-                    vm.$blockui("invisible");
-                    if (result === 'yes') {
+            vm.$validate(".nts-input:not(:disabled)").then((valid: boolean) => {
+                if (valid) {
+                    if (moment.utc(vm.startDate()).isBefore(moment.utc().format('YYYY/MM/DD'))) {
+                        vm.$dialog.confirm({messageId: 'Msg_3280'}).then((result: 'no' | 'yes') => {
+                            vm.$blockui("invisible");
+                            if (result === 'yes') {
+                                vm.execute(command);
+                            }
+
+                            if (result === 'no') {
+                                vm.$blockui("hide");
+                            }
+                        });
+                    } else {
+                        vm.$blockui("invisible");
                         vm.execute(command);
                     }
-
-                    if (result === 'no') {
-                        vm.$blockui("hide");
-                    }
-                });
-            } else {
-                vm.$blockui("invisible");
-                vm.execute(command);
-            }
+                }
+            });
         }
 
         execute(command: any) {
