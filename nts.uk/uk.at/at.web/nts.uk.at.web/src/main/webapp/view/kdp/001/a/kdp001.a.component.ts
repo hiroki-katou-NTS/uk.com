@@ -817,7 +817,7 @@ module nts.uk.ui.kdp001.a {
 
                     vm.$blockui('invisible')
                         .then(() => {
-                            vm.$ajax(REST_API.GetWorkLocationRagionalTime, param)
+                            vm.$ajax('at', REST_API.GetWorkLocationRagionalTime, param)
                                 .done((data: GetWorkPlaceRegionalTime) => {
                                     if (data) {
                                         if (data.workPlaceId != null) {
@@ -831,7 +831,7 @@ module nts.uk.ui.kdp001.a {
                                                 sid: vm.$user.employeeId,
                                                 workPlaceId: ""
                                             }
-                                            vm.$ajax(REST_API.GetWorkPlaceRegionalTime, inputWorkPlace).then((data: GetWorkPlaceRegionalTime) => {
+                                            vm.$ajax('at', REST_API.GetWorkPlaceRegionalTime, inputWorkPlace).then((data: GetWorkPlaceRegionalTime) => {
                                                 if (data) {
                                                     vm.workplaceId(data.workPlaceId)
                                                     vm.workLocationName(data.workLocationName);
@@ -853,7 +853,7 @@ module nts.uk.ui.kdp001.a {
                     sid: vm.$user.employeeId,
                     workPlaceId: ""
                 }
-                vm.$ajax(REST_API.GetWorkPlaceRegionalTime, inputWorkPlace).then((data: GetWorkPlaceRegionalTime) => {
+                vm.$ajax('at', REST_API.GetWorkPlaceRegionalTime, inputWorkPlace).then((data: GetWorkPlaceRegionalTime) => {
                     if (data) {
                         vm.workplaceId(data.workPlaceId)
                         vm.workLocationName(data.workLocationName);
