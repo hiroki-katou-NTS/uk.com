@@ -12,7 +12,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudCriteriaSa
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudgmentCriteriaSameStampOfSupport;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.RangeRegardedSupportStamp;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.KrcmtSupportStampSet;
-import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.MaximumNumberOfSupport;
 
 /**
  * 応援の同一打刻の判断基準Repository 
@@ -27,9 +26,9 @@ public class JudCriteriaSameStampOfSupportRepoImpl extends JpaRepository impleme
 		KrcmtSupportStampSet entity = queryProxy().query("SELECT o FROM KrcmtSupportStampSet o WHERE o.cid = :cid", KrcmtSupportStampSet.class)
 				.setParameter("cid", cid)
 				.getSingleOrNull();
-		if(entity == null)
+		if(entity == null) {
 			return null;
-		
+		}
 		JudgmentCriteriaSameStampOfSupport rs = toDomain(entity);
 		return rs;
 	}
