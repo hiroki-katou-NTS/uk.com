@@ -219,28 +219,29 @@ module nts.uk.at.view.kdp005.a {
 										self.btnChangeCompany(self.listCompany.length > 0);
 										characteristics.restore("loginKDP005").done(function (loginInfo: ILoginInfo) {
 											if (loginInfo) {
-												self.loginInfo = loginInfo;
+                                                self.getWorkLocationInfo(loginInfo).done(() => {
+                                                    self.loginInfo = loginInfo;
+                                                    if (ko.unwrap(self.modeBasyo)) {
+                                                        self.loginInfo.selectedWP = self.workplace;
+                                                        nts.uk.characteristics.save(KDP005_SAVE_DATA, self.loginInfo);
+                                                    }
 
-												if (ko.unwrap(self.modeBasyo)) {
-													self.loginInfo.selectedWP = self.workplace;
-													nts.uk.characteristics.save(KDP005_SAVE_DATA, self.loginInfo);
-												}
-
-												if (__viewContext.user.companyId != loginInfo.companyId || __viewContext.user.employeeCode != loginInfo.employeeCode) {
-													self.login(self.loginInfo).done(() => {
-														self.reloadView()
-													}).fail(() => {
-														dfd.resolve();
-													});
-												} else {
-													self.login(self.loginInfo).done(() => {
-														$.when(self.doFirstLoad(), self.loadNotice(self.loginInfo)).done(() => {
-															dfd.resolve();
-														});
-													}).fail(() => {
-														dfd.resolve();
-													});
-												}
+                                                    if (__viewContext.user.companyId != loginInfo.companyId || __viewContext.user.employeeCode != loginInfo.employeeCode) {
+                                                        self.login(self.loginInfo).done(() => {
+                                                            self.reloadView()
+                                                        }).fail(() => {
+                                                            dfd.resolve();
+                                                        });
+                                                    } else {
+                                                        self.login(self.loginInfo).done(() => {
+                                                            $.when(self.doFirstLoad(), self.loadNotice(self.loginInfo)).done(() => {
+                                                                dfd.resolve();
+                                                            });
+                                                        }).fail(() => {
+                                                            dfd.resolve();
+                                                        });
+                                                    }
+                                                });
 											} else {
 												self.setLoginInfo().done((loginResult) => {
 													if (!loginResult) {
