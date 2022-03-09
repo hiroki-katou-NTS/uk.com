@@ -1183,12 +1183,16 @@ export class KdwS03BComponent extends Vue {
                     _.remove(self.listAutoCalc, key);
                     let oldRow = self.oldData[key];
                     let notChangeCellValue = (JSON.stringify(oldRow).localeCompare(JSON.stringify(self.screenData[0][key])) == 0) ? true : false;
-                    let param = {
+                    let paramCal = {
                         dailyEdits: [],
                         itemEdits: itemValues,
                         changeSpr31: false,
                         changeSpr34: false,
                         notChangeCell: notChangeCellValue
+                    };
+                    let param = {
+                        calcTimeParam: paramCal,
+                        dataSessionDto: self.params.dataSessionDto
                     };
                     self.$mask('show');
                     self.$http.post('at', API.linkItemCalc, param)
