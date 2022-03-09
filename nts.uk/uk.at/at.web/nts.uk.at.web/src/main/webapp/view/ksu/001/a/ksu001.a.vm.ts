@@ -1070,10 +1070,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             shiftName = null;
                         
                         //check data nhân viên đến support
-                        if (cell.supportStatus == SupportStatus.DO_NOT_COME) {
+                        if (emp.supportType == SupportType.COME_TO_SUPPORT && cell.supportStatus == SupportStatus.DO_NOT_COME) {
                             shiftName = null;
-                            cell.conditionAa1 = false;
-                            cell.conditionAa2 = false;
                         }
                         
                             
@@ -1223,11 +1221,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                         
                         //check data nhân viên đến support
-                        if (cell.supportStatus == SupportStatus.DO_NOT_COME) {
+                        if (emp.supportType == SupportType.COME_TO_SUPPORT && cell.supportStatus == SupportStatus.DO_NOT_COME) {
                             workTypeName = null;
                             workTimeName = null;
-                            cell.conditionAbc1 = false;
-                            cell.conditionAbc2 = false;
                         }
                         
                         objDetailContentDs['_' + ymd] = new ExCell(cell.workTypeCode, workTypeName, cell.workTimeCode, workTimeName, null, null, null, null,cell.confirmed , cell.achievements, cell.workHolidayCls, cell.needToWork, cell.supportCategory, cell.condTargetdate);
@@ -1376,13 +1372,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                         
                          //check data nhân viên đến support
-                        if (cell.supportStatus == SupportStatus.DO_NOT_COME) {
+                        if (emp.supportType == SupportType.COME_TO_SUPPORT && cell.supportStatus == SupportStatus.DO_NOT_COME) {
                             workTypeName = null;
                             workTimeName = null;
                             startTime    = null;
                             endTime      = null;
-                            cell.conditionAbc1 = false;
-                            cell.conditionAbc2 = false;
                         }
                         
                         objDetailContentDs['_' + ymd] = new ExCell(workTypeCode, workTypeName, workTimeCode, workTimeName, startTime, endTime, null, null, cell.confirmed , cell.achievements, cell.workHolidayCls, cell.needToWork, cell.supportCategory, cell.condTargetdate);
