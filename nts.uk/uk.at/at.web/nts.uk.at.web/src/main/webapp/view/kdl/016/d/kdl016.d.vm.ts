@@ -8,9 +8,6 @@ module nts.uk.at.view.kdl016.d {
     export class ViewModel extends ko.ViewModel {
         detail: KnockoutObservable<ISupportInformation> = ko.observable(null);
         data: ISupportInformation;
-
-        startDateStr: KnockoutObservable<string> = ko.observable("");
-        endDateStr: KnockoutObservable<string> = ko.observable("");
         dateValue: KnockoutObservable<any>
 
         constructor(params: any) {
@@ -57,32 +54,38 @@ module nts.uk.at.view.kdl016.d {
             const vm = this;
             vm.$blockui("invisible");
 
-            let command: any = {
-                employeeId: vm.detail().employeeId,
-                supportType: vm.detail().supportType,
-                periodStart: moment.utc(vm.dateValue().startDate).format("YYYY/MM/DD"),
-                periodEnd: moment.utc(vm.dateValue().endDate).format("YYYY/MM/DD"),
-                supportTimeSpan: {
-                    start: null,
-                    end: null
+            vm.$validate(".nts-input:not(:disabled)").then((valid: boolean) => {
+                if (!valid) {
+                    return;
                 }
-            };
 
-            if (moment.utc(vm.dateValue().startDate).isBefore(moment.utc().format('YYYY/MM/DD'))) {
-                vm.$dialog.confirm({messageId: 'Msg_3280'}).then((result: 'no' | 'yes') => {
+                let command: any = {
+                    employeeId: vm.detail().employeeId,
+                    supportType: vm.detail().supportType,
+                    periodStart: moment.utc(vm.dateValue().startDate).format("YYYY/MM/DD"),
+                    periodEnd: moment.utc(vm.dateValue().endDate).format("YYYY/MM/DD"),
+                    supportTimeSpan: {
+                        start: null,
+                        end: null
+                    }
+                };
+
+                if (moment.utc(vm.dateValue().startDate).isBefore(moment.utc().format('YYYY/MM/DD'))) {
+                    vm.$dialog.confirm({messageId: 'Msg_3280'}).then((result: 'no' | 'yes') => {
+                        vm.$blockui("invisible");
+                        if (result === 'yes') {
+                            vm.executeUpdate(command);
+                        }
+
+                        if (result === 'no') {
+                            vm.$blockui("hide");
+                        }
+                    });
+                } else {
                     vm.$blockui("invisible");
-                    if (result === 'yes') {
-                        vm.executeUpdate(command);
-                    }
-
-                    if (result === 'no') {
-                        vm.$blockui("hide");
-                    }
-                });
-            } else {
-                vm.$blockui("invisible");
-                vm.executeUpdate(command);
-            }
+                    vm.executeUpdate(command);
+                }
+            });
         }
 
         executeUpdate(command: any) {

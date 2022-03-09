@@ -188,8 +188,8 @@ public class UpdateSupportInforCommandHandler extends CommandHandlerWithResult<U
             List<EmployeeErrorResult> employeeErrorResults = errorResults.stream().map(m -> new EmployeeErrorResult(
                     empErrorInfoMap.get(m.getSupportableEmployee().getEmployeeId().v()).getEmployeeCode(),
                     empErrorInfoMap.get(m.getSupportableEmployee().getEmployeeId().v()).getBusinessName(),
-                    period.start().toString("yyyy/MM/dd"),
-                    period.end().toString("yyyy/MM/dd"),
+                    period.start() == null ? "" : period.start().toString("yyyy/MM/dd"),
+                    period.end() == null ? "" : period.end().toString("yyyy/MM/dd"),
                     m.getErrorInfo()
             )).collect(Collectors.toList());
 

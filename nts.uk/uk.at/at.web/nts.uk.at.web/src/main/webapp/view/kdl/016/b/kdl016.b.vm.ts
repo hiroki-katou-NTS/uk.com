@@ -113,28 +113,27 @@ module nts.uk.at.view.kdl016.b {
 
         register() {
             const vm = this;
-
-            let orgSelected = _.find(vm.organizationInfoList, (i: any) => {
-                return i.orgCode == vm.selectedOrgCode()
-            });
-            let empIdSelected: string[] = vm.employeeList().filter((i) => {
-                return _.includes(vm.selectedEmployees(), i.code)
-            }).map(i => i.id);
-            let command: any = {
-                employeeIds: empIdSelected,
-                supportDestinationId: orgSelected.orgId,
-                orgUnit: orgSelected.orgUnit,
-                supportType: vm.selectedSupportType(),
-                supportPeriodStart: moment.utc(vm.startDate()).format("YYYY/MM/DD"),
-                supportPeriodEnd: moment.utc(vm.endDate()).format("YYYY/MM/DD"),
-                supportTimeSpan: {
-                    start: vm.selectedSupportType() === 0 ? null : vm.timespanMin(),
-                    end: vm.selectedSupportType() === 0 ? null : vm.timespanMax()
-                }
-            };
-
             vm.$validate(".nts-input:not(:disabled)").then((valid: boolean) => {
                 if (valid) {
+                    let orgSelected = _.find(vm.organizationInfoList, (i: any) => {
+                        return i.orgCode == vm.selectedOrgCode()
+                    });
+                    let empIdSelected: string[] = vm.employeeList().filter((i) => {
+                        return _.includes(vm.selectedEmployees(), i.code)
+                    }).map(i => i.id);
+                    let command: any = {
+                        employeeIds: empIdSelected,
+                        supportDestinationId: orgSelected.orgId,
+                        orgUnit: orgSelected.orgUnit,
+                        supportType: vm.selectedSupportType(),
+                        supportPeriodStart: moment.utc(vm.startDate()).format("YYYY/MM/DD"),
+                        supportPeriodEnd: moment.utc(vm.endDate()).format("YYYY/MM/DD"),
+                        supportTimeSpan: {
+                            start: vm.selectedSupportType() === 0 ? null : vm.timespanMin(),
+                            end: vm.selectedSupportType() === 0 ? null : vm.timespanMax()
+                        }
+                    };
+
                     if (moment.utc(vm.startDate()).isBefore(moment.utc().format('YYYY/MM/DD'))) {
                         vm.$dialog.confirm({messageId: 'Msg_3280'}).then((result: 'no' | 'yes') => {
                             vm.$blockui("invisible");

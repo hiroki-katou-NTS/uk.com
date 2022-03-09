@@ -8,6 +8,8 @@ module nts.uk.at.view.kdl016.e {
     export class ViewModel extends ko.ViewModel {
         detail: KnockoutObservable<ISupportInformation> = ko.observable(null);
         data: ISupportInformation;
+        timespanMin: KnockoutObservable<number> = ko.observable(undefined);
+        timespanMax: KnockoutObservable<number> = ko.observable(undefined);
 
         constructor(params: any) {
             super();
@@ -36,6 +38,8 @@ module nts.uk.at.view.kdl016.e {
                     timeSpanDisplay: dataFromA.timeSpanDisplay
                 };
                 vm.detail(transfer);
+                vm.timespanMin = ko.observable(dataFromA.timeSpan.start);
+                vm.timespanMax = ko.observable(dataFromA.timeSpan.end);
             }
         }
 
@@ -47,47 +51,51 @@ module nts.uk.at.view.kdl016.e {
         update() {
             const vm = this;
             vm.$blockui("invisible");
-
-            let command: any = {
-                employeeId: vm.detail().employeeId,
-                supportType: vm.detail().supportType,
-                // periodStart: moment.utc(vm.dateValue().startDate).format("YYYY/MM/DD"),
-                // periodEnd: moment.utc(vm.dateValue().endDate).format("YYYY/MM/DD"),
-                supportTimeSpan: {
-                    start: vm.detail().supportType === 0 ? null : vm.detail().timeSpan.start,
-                    end: vm.detail().supportType === 0 ? null : vm.detail().timeSpan.end
+            vm.$validate(".nts-input:not(:disabled)").then((valid: boolean) => {
+                if (!valid) {
+                    return;
                 }
-            };
-
-            vm.$ajax(API.update, command).then((data: any) => {
-                if (!data.error) {
-                    vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
-                        vm.closeDialog();
-                    });
-                } else {
-                    let errorResults = data.errorResults;
-                    let dataError: any = [];
-                    for (let i = 0; i < errorResults.length; i++) {
-                        dataError.push(
-                            {
-                                id: i + 1,
-                                periodDisplay: errorResults[i].periodDisplay,
-                                employeeDisplay: errorResults[i].employeeDisplay,
-                                errorMessage: errorResults[i].errorMessage,
-                            }
-                        );
+                let command: any = {
+                    employeeId: vm.detail().employeeId,
+                    supportType: vm.detail().supportType,
+                    // periodStart: moment.utc(vm.dateValue().startDate).format("YYYY/MM/DD"),
+                    // periodEnd: moment.utc(vm.dateValue().endDate).format("YYYY/MM/DD"),
+                    supportTimeSpan: {
+                        start: vm.detail().supportType === 0 ? null : vm.timespanMin(),
+                        end: vm.detail().supportType === 0 ? null : vm.timespanMax()
                     }
+                };
 
-                    vm.$window.modal("/view/kdl/016/f/index.xhtml", dataError).then((result: any) => {
+                vm.$ajax(API.update, command).then((data: any) => {
+                    if (!data.error) {
+                        vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
+                            vm.closeDialog();
+                        });
+                    } else {
+                        let errorResults = data.errorResults;
+                        let dataError: any = [];
+                        for (let i = 0; i < errorResults.length; i++) {
+                            dataError.push(
+                                {
+                                    id: i + 1,
+                                    periodDisplay: errorResults[i].periodDisplay,
+                                    employeeDisplay: errorResults[i].employeeDisplay,
+                                    errorMessage: errorResults[i].errorMessage,
+                                }
+                            );
+                        }
+
+                        vm.$window.modal("/view/kdl/016/f/index.xhtml", dataError).then((result: any) => {
+                            vm.closeDialog();
+                        });
+                    }
+                }).fail(error => {
+                    vm.$dialog.error(error).then(() => {
                         vm.closeDialog();
                     });
-                }
-            }).fail(error => {
-                vm.$dialog.error(error).then(() => {
-                    vm.closeDialog();
+                }).always(() => {
+                    vm.$blockui("clear");
                 });
-            }).always(() => {
-                vm.$blockui("clear");
             });
         }
 

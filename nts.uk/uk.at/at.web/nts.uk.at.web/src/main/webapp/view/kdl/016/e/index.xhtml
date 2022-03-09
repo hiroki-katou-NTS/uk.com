@@ -47,7 +47,7 @@
                 <div style="display: inline-block">
                     <input id ="timespanMin" data-bind="ntsTimeWithDayEditor: {
 												name: '#[KDL016_25]',
-												value: detail().timeSpan.start,
+												value: timespanMin,
 												constraint: 'TimeWithDayAttr',
 										 		option: {
 								                    width: '50px',
@@ -61,7 +61,7 @@
                     <span class="label">～</span>
                     <input data-bind="ntsTimeWithDayEditor: {
 												name: '#[KDL016_26]',
-												value: detail().timeSpan.end,
+												value: timespanMax,
 												constraint: 'TimeWithDayAttr',
 										 		option: {
 								                    width: '50px',

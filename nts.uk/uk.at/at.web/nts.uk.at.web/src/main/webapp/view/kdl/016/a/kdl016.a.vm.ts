@@ -93,9 +93,10 @@ module nts.uk.at.view.kdl016.a {
                 vm.initGrid(vm.igGridDataSource);
                 dfd.resolve();
             }).fail(error => {
-                vm.$dialog.error(error);
+                vm.$dialog.error(error).then(() => {
+                    vm.$window.close();
+                });
                 dfd.reject();
-                vm.$window.close();
             }).always(() => {
                 vm.$blockui("hide");
             });
@@ -122,9 +123,10 @@ module nts.uk.at.view.kdl016.a {
                 vm.initGrid(vm.igGridDataSource);
                 dfd.resolve();
             }).fail(error => {
-                vm.$dialog.error(error);
+                vm.$dialog.error(error).then(() => {
+                    vm.$window.close();
+                });
                 dfd.reject();
-                vm.$window.close();
             }).always(() => {
                 vm.$blockui("hide");
             });
@@ -329,13 +331,14 @@ module nts.uk.at.view.kdl016.a {
                 };
                 vm.$blockui("invisible");
                 vm.$window.modal("/view/kdl/016/b/index.xhtml", param).then((result: any) => {
-                    if (result && !_.isEmpty(result)) {
-                        if (result.closeable) {
-                            vm.closeDialog();
-                        } else {
-                            vm.loadSupportInfo(DISPLAY_MODE.GO_TO_SUPPORT);
-                        }
-                    }
+                    // if (result && !_.isEmpty(result)) {
+                    //     if (result.closeable) {
+                    //         vm.closeDialog();
+                    //     } else {
+                    //         vm.loadSupportInfo(DISPLAY_MODE.GO_TO_SUPPORT);
+                    //     }
+                    // }
+                    vm.loadSupportInfo(DISPLAY_MODE.GO_TO_SUPPORT);
                 });
             } else {
                 param = {
@@ -347,13 +350,14 @@ module nts.uk.at.view.kdl016.a {
                     endDate: vm.periodEnd()
                 };
                 vm.$window.modal("/view/kdl/016/c/index.xhtml", param).then((result: any) => {
-                    if (result && !_.isEmpty(result)) {
-                        if (result.closeable) {
-                            vm.closeDialog();
-                        } else {
-                            vm.loadSupportInfo(DISPLAY_MODE.COME_TO_SUPPORT);
-                        }
-                    }
+                    // if (result && !_.isEmpty(result)) {
+                    //     if (result.closeable) {
+                    //         vm.closeDialog();
+                    //     } else {
+                    //         vm.loadSupportInfo(DISPLAY_MODE.COME_TO_SUPPORT);
+                    //     }
+                    // }
+                    vm.loadSupportInfo(DISPLAY_MODE.COME_TO_SUPPORT);
                 });
             }
         }
