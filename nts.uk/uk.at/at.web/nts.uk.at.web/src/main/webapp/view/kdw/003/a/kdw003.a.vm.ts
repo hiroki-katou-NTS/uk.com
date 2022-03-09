@@ -2710,18 +2710,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 let data = [dataTemp];
 								self.formatCodes(data);
                                 let dateRangeTemp = {
-                                    startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                                    endDate: moment(self.dateRanger().endDate).utc().toISOString()
+                                    startDate: self.dateRanger().startDate,
+                                    endDate:self.dateRanger().endDate
                                 };
                                 let param = {
-<<<<<<< HEAD
-                                    dateRange: dateRangeParam ? {
-                                        startDate: dateRangeParam.startDate,
-                                        endDate: dateRangeParam.endDate
-                                    } : null,
-=======
                                     dateRange: dateRangeTemp,
->>>>>>> pj/at/release_ver4
                                     displayFormat: _.isEmpty(self.shareObject()) ? (_.isEmpty(self.characteristics) ? 0 : self.characteristics.formatExtract) : self.shareObject().displayFormat,
                                     initScreen: _.isEmpty(self.characteristics) ? 0 : 1,
                                     mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
@@ -2760,11 +2753,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                         nts.uk.ui.dialog.alert({ messageId: messageId }).then(function() {
                                             //self.hasEmployee = false;
                                             nts.uk.ui.block.clear();
-<<<<<<< HEAD
-                                            dfd.resolve({ bindDataMap: true, data: data.dailyPerformanceCorrectionDto });
-=======
                                             //dfd.resolve({ bindDataMap: true, data: data });
->>>>>>> pj/at/release_ver4
                                         });
                                     } else if (!_.isEmpty(data.dailyPerformanceCorrectionDto.errors)) {
                                         let errors = [];
@@ -2777,31 +2766,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                         });
                                         nts.uk.ui.dialog.bundledErrors({ errors: errors });
                                         self.hasErrorBuss = true;
-<<<<<<< HEAD
-                                        dfd.resolve({ bindDataMap: true, data: data.dailyPerformanceCorrectionDto });
-                                    }
-                                    else {
-                                        let paramMonth: any = { loadAfterCalc: false, paramCommonAsync : self.paramCommonAsync , dpStateParam : self.dpStateParam };
-
-                                        param.screenDto = self.screenDto;
-                                       
-                                        $.when(service.loadMonth(paramMonth), service.startScreen(param)).done((dataMonth, dataDaily) => {
-                                            self.dataSessionDto = dataDaily.dataSessionDto;
-											self.screenDto.dataSessionDto = self.dataSessionDto;
-                                            dataDaily.monthResult = dataMonth.monthResult;
-                                            dataDaily.indentityMonthResult = dataMonth.indentityMonthResult;
-                                            dataDaily.showTighProcess = dataMonth.showTighProcess;
-                                            self.lstCellDisByLock = dataDaily.lstCellDisByLock;
-                                            dfd.resolve({ bindDataMap: true, data: dataDaily });
-                                        })
-                                    }
-=======
                                         //dfd.resolve({ bindDataMap: true, data: data });
                                     }
                                     else {
                                         
-                                        let paramMonth: any = {loadAfterCalc: false}
+                                        let paramMonth: any = { loadAfterCalc: false, paramCommonAsync : self.paramCommonAsync , dpStateParam : self.dpStateParam };
+
+                                        param.screenDto = self.screenDto;
                                         $.when(service.loadMonth(paramMonth), service.startScreen(param)).done((dataMonth, data) => {
+											self.dataSessionDto = data.dataSessionDto;
+											self.screenDto.dataSessionDto = self.dataSessionDto;
                                             //update mobile
                                             if((hasChangeFormat && self.displayFormat() === 0) || self.initFromScreenOther){
                                                 self.yearMonth(data.periodInfo.yearMonth);
@@ -2905,7 +2879,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                             nts.uk.ui.block.clear();
                                         });
                                     }/////
->>>>>>> pj/at/release_ver4
                                 })
                             }
                         });
