@@ -5858,7 +5858,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             // btn A1_8 職9  -  ※2 (ver6)
             if (funcNo9_WorkPlace == false || data.dataBasicDto.useSupportSchedule == false )
-                //document.getElementById("A1_8").remove();
+                document.getElementById("A1_8").remove();
 
             // btn A1_9 職6
             if (funcNo6_WorkPlace == false)
