@@ -285,12 +285,36 @@ module nts.uk.at.kdp003.a {
 					}
 					vm.$ajax('at', API.GetWorkLocationRagionalTime, param).then((data: GetWorkPlaceRegionalTime) => {
 						if (data) {
-							vm.regionalTime(data.regional);
 							if (data.workLocationCD != null && data.workPlaceId != null) {
+								vm.regionalTime(data.regional);
 								vm.worklocationCode = locationCd;
 								vm.workPlace = [];
 								vm.workPlace.push(data.workPlaceId);
 								vm.modeBasyo(true);
+							} else {
+								vm.$window
+									.storage('loginKDP003')
+									.then((data: any) => {
+										if (data.WKPID.length > 0) {
+											const param = {
+												contractCode: vm.$user.contractCode,
+												cid: vm.$user.companyId,
+												sid: vm.$user.employeeId,
+												workPlaceId: data.WKPID[0]
+											}
+											vm.$ajax('at', API.GetWorkPlaceRegionalTime, param).then((data: GetWorkPlaceRegionalTime) => {
+												if (data) {
+													vm.regionalTime(data.regional);
+												}
+											})
+										}
+									}).then(() => {
+										vm.$ajax('at', API.NOW)
+											.then((c) => {
+												const date = moment(moment(c, 'YYYY-MM-DDTHH:mm:ss').add(ko.unwrap(vm.regionalTime), 'm').toDate()).toDate();
+												vm.employeeData.baseDate(date);
+											});
+									});
 							} if (data.workPlaceId == null) {
 								vm.modeBasyo(false);
 							}
