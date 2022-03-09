@@ -137,7 +137,7 @@ module nts.uk.at.ksu008.a {
                 data.forEach(i => {
                     i.type = i.systemFixed ? "" : vm.$i18n('KSU008_170');
                 });
-                vm.comboItemList(data);
+                vm.comboItemList(_.sortBy(data, ["code"]));
                 if (code) vm.selectedCode(code);
                 dfd.resolve();
             }).fail(error => {
