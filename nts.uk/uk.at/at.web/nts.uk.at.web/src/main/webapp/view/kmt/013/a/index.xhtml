@@ -18,7 +18,7 @@
 
     <ui:define name="content">
         <div id="functions-area">
-            <button id="A1_1" tabindex="1" class="proceed" data-bind="text: $vm.$i18n('KMT013_2'), click: registerSupport"/>
+            <button id="A1_1" tabindex="1" class="proceed" data-bind="text: $vm.$i18n('KMT013_2'), click: registerSupport,enable: isA2NotEmpty()"/>
             <button id="A1_2" tabindex="2" class="danger"
                     data-bind="text: $vm.$i18n('KMT013_3'), click: deleteSupport, enable: updateMode()"/>
             <button id="A1_3" tabindex="3" data-bind="text: $vm.$i18n('KMT013_4'), click: openDialogCDL023, visible: !isWorkplaceGroupMode(), enable: updateMode()"/>
@@ -58,7 +58,7 @@
                 </div>
                 <div>
                     <table id="multi-list" data-bind="ntsGridList: {
-                        height: 376,
+                        height: 310,
                         options: supportableList,
                         optionsValue: 'id',
                         columns: ko.observableArray([

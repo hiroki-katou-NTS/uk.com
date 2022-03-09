@@ -143,20 +143,19 @@ module nts.uk.at.view.kdl016.a {
             // if (vm.$grid.data("igGrid")) {
             //     vm.$grid.ntsGrid("destroy");
             // }
-            const $grid = $("#grid");
-            let primaryKeyName: string = "id";
-            $grid.igGrid({
+
+            $("#grid").igGrid({
                 // width: "929px",
                 height: "352px",
                 dataSource: dataSource,
                 dataSourceType: "json",
-                primaryKey: primaryKeyName,
-                autoGenerateColumns: false,
-                responseDataKey: "results",
+                primaryKey: 'id',
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                // autoGenerateColumns: false,
+                // responseDataKey: "results",
                 // tabIndex: 1,
                 // rowVirtualization: true,
-                // virtualization: true,
-                // virtualizationMode: 'continuous',
                 // hidePrimaryKey: true,
                 columns: [
                     {headerText: '', key: 'id', dataType: 'number', width: '0px', hidden: true},
@@ -173,7 +172,7 @@ module nts.uk.at.view.kdl016.a {
                         width: '200px',
                         template: '<div style="float:left">${periodDisplay} </div>'
                     },
-                    {headerText: vm.$i18n('KDL016_15'), key: "supportOrgName", width: '100px', dataType: "string"},
+                    {headerText: vm.$i18n('KDL016_15'), key: "supportOrgName", width: '115px', dataType: "string"},
                     {
                         headerText: vm.$i18n('KDL016_16'),
                         key: "employeeDisplay",
@@ -199,7 +198,7 @@ module nts.uk.at.view.kdl016.a {
                         // filterDialogHeight: "390px",
                         // filterDialogWidth: "515px",
                         columnSettings: [
-                            {columnKey: primaryKeyName, allowFiltering: false},
+                            {columnKey: 'id', allowFiltering: false},
                             {columnKey: 'edit', allowFiltering: false},
                             {
                                 columnKey: 'periodDisplay',
@@ -224,9 +223,9 @@ module nts.uk.at.view.kdl016.a {
                                         filterFunc: vm.beforeAndEqual
                                     }
                                 },
-                                defaultExpressions: [
-                                    {cond: "equal"}
-                                ]
+                                // defaultExpressions: [
+                                //     {cond: "equal"}
+                                // ]
                             },
                             {
                                 columnKey: 'supportOrgName',
@@ -275,7 +274,6 @@ module nts.uk.at.view.kdl016.a {
                                     textKey: "Name",
                                     valueKey: "id",
                                     selectionChanged: function (e: any, args: any) {
-                                        //Handle khi thay đổi data của combobox
                                     }
                                 }
                             },
@@ -306,10 +304,10 @@ module nts.uk.at.view.kdl016.a {
                         // rowSelectionChanging: function() {},
                         // rowSelectionChanged: function(event: any, ui: any) {}
                     },
-                    {
-                        name: "Sorting",
-                        type: "local"
-                    },
+                    // {
+                    //     name: "Sorting",
+                    //     type: "local"
+                    // },
                     {
                         name: "Resizing",
                         deferredResizing: false,
@@ -322,12 +320,9 @@ module nts.uk.at.view.kdl016.a {
             });
 
             // $('#igGridSupportInfo').igGridSelection('selectRow', vm.selectedRow());
-            // vm.$blockui('hide');
+            // var checkboxes = $('#grid').igGridRowSelectors("option", "enableCheckBoxes");
             $('#grid_scroll').focus();
             $('#grid').focus();
-            // $('input:first').attr('placeholder', vm.$i18n('KSU001_4057'));
-            // $("table thead tr td:nth-child(3)").css('padding', "0px !important");
-            // $("td").eq(2).css('padding', "0px !important");
         }
 
         register() {
@@ -343,7 +338,13 @@ module nts.uk.at.view.kdl016.a {
                 };
                 vm.$blockui("invisible");
                 vm.$window.modal("/view/kdl/016/b/index.xhtml", param).then((result: any) => {
-                    vm.loadSupportInfo(DISPLAY_MODE.GO_TO_SUPPORT);
+                    if (result && !_.isEmpty(result)) {
+                        if (result.closeable) {
+                            vm.closeDialog();
+                        } else {
+                            vm.loadSupportInfo(DISPLAY_MODE.GO_TO_SUPPORT);
+                        }
+                    }
                 });
             } else {
                 param = {
@@ -355,10 +356,12 @@ module nts.uk.at.view.kdl016.a {
                     endDate: vm.periodEnd()
                 };
                 vm.$window.modal("/view/kdl/016/c/index.xhtml", param).then((result: any) => {
-                    if (result.closeable) {
-                        vm.closeDialog();
-                    } else {
-                        vm.loadSupportInfo(DISPLAY_MODE.COME_TO_SUPPORT);
+                    if (result && !_.isEmpty(result)) {
+                        if (result.closeable) {
+                            vm.closeDialog();
+                        } else {
+                            vm.loadSupportInfo(DISPLAY_MODE.COME_TO_SUPPORT);
+                        }
                     }
                 });
             }
@@ -368,57 +371,65 @@ module nts.uk.at.view.kdl016.a {
             const vm = this;
             vm.$blockui("invisible");
 
-            let listEmpIdSelected: any = [];
-            _.forEach(vm.igGridDataSource, function (value: any) {
-                if (_.includes(vm.selectedCode(), value.id.toString())) {
-                    listEmpIdSelected.push(value.employeeId);
-                }
-            });
+            let selectedRows = $("#grid").igGridSelection('selectedRows');
+            if (typeof (selectedRows) != 'undefined' && selectedRows != null) {
+                let listEmpIdSelected: any = [];
+                let selectedRowIds = _.map(selectedRows, (row: any) => {
+                    return row.id;
+                });
 
-            let command = {
-                employeeIds: listEmpIdSelected
-            };
+                _.forEach(vm.igGridDataSource, function (value: any) {
+                    if (_.includes(selectedRowIds, value.id)) {
+                        listEmpIdSelected.push(value.employeeId);
+                    }
+                });
 
-            vm.$dialog.confirm({messageId: 'Msg_18'}).then((result: 'no' | 'yes') => {
-                vm.$blockui("invisible");
-                if (result === 'yes') {
-                    vm.$ajax(API.delete, command).then((data: any) => {
-                        if (!data.error) {
-                            vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
-                                vm.loadSupportInfo(vm.selectedMode());
-                            });
-                        } else {
-                            let errorResults = data.errorResults;
-                            let dataError: any = [];
-                            for (let i = 0; i < errorResults.length; i++) {
-                                let err = errorResults[i];
-                                dataError.push(
-                                    {
-                                        id: i + 1,
-                                        periodDisplay: err.periodDisplay,
-                                        employeeDisplay: err.employeeDisplay,
-                                        errorMessage: err.errorMessage,
-                                    }
-                                );
+                let command = {
+                    employeeIds: listEmpIdSelected
+                };
+
+                vm.$dialog.confirm({messageId: 'Msg_18'}).then((result: 'no' | 'yes') => {
+                    vm.$blockui("invisible");
+                    if (result === 'yes') {
+                        vm.$ajax(API.delete, command).then((data: any) => {
+                            if (!data.error) {
+                                vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
+                                    vm.loadSupportInfo(vm.selectedMode());
+                                    vm.canDelete(false);
+                                    $("#grid").igGridSelection("clearSelection");
+                                    vm.selectedCode([]);
+                                });
+                            } else {
+                                let errorResults = data.errorResults;
+                                let dataError: any = [];
+                                for (let i = 0; i < errorResults.length; i++) {
+                                    let err = errorResults[i];
+                                    dataError.push(
+                                        {
+                                            id: i + 1,
+                                            periodDisplay: err.periodDisplay,
+                                            employeeDisplay: err.employeeDisplay,
+                                            errorMessage: err.errorMessage,
+                                        }
+                                    );
+                                }
+
+                                vm.$window.modal("/view/kdl/016/f/index.xhtml", dataError).then((result: any) => {
+                                    vm.closeDialog();
+                                });
                             }
+                        }).fail(error => {
+                            vm.$dialog.error(error);
+                        }).always(() => {
+                            vm.$blockui("clear");
+                        });
+                    }
 
-                            vm.$window.modal("/view/kdl/016/f/index.xhtml", dataError).then((result: any) => {
-                                vm.closeDialog();
-                            });
-                        }
-                    }).fail(error => {
-                        vm.$dialog.error(error);
-                    }).always(() => {
-                        vm.$blockui("clear");
-                    });
-                }
-
-                if (result === 'no') {
-                    vm.$blockui("hide");
-                }
-            });
-
-
+                    if (result === 'no') {
+                        vm.$blockui("hide");
+                    }
+                });
+            }
         }
 
         closeDialog(): void {
@@ -433,9 +444,6 @@ module nts.uk.at.view.kdl016.a {
             });
         }
 
-        dropDownClosing(e: any, arg: any) {
-            $('input:first').attr('placeholder', $('input:first').attr('placeholder').split('<=').join('').split('>=').join('').split('＝').join(''));
-        }
 
         equal(value: any, expression: any, dataType: any, ignoreCase: any, preciseDateFormat: any) {
             if (isNaN(parseInt(expression))) {
@@ -489,10 +497,6 @@ module nts.uk.at.view.kdl016.a {
         notContain(value: any, expression: any, dataType: any, ignoreCase: any, preciseDateFormat: any) {
             return value.indexOf(expression) == -1;
         }
-
-        clearFilter() {
-            $("#grid").igGridFiltering("filter", [], true);
-        }
     }
 
     export function openEditModal(id: number, mode: number) {
@@ -501,8 +505,6 @@ module nts.uk.at.view.kdl016.a {
         let dataShare = _.find(dataSource, (value: any) => {
             return value.id == id;
         });
-
-        // var checkboxes = $('#igGridSupportInfo').igGridRowSelectors("option", "enableCheckBoxes");
 
         nts.uk.ui.windows.setShared("shareFromKdl016a", dataShare);
         if (mode == DISPLAY_MODE.GO_TO_SUPPORT) {

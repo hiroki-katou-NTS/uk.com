@@ -20,7 +20,7 @@
         <div id="contents-area" class="fixed-flex-layout">
             <div class="fixed-flex-layout-left">
                 <div class="control-group valign-center">
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL016_21')}</div>
+                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL016_21')}</div>
                 </div>
                 <div class="control-group valign-center">
                     <div style="padding-left: 112px;">
@@ -32,7 +32,7 @@
             <div class="fixed-flex-layout-right">
                 <div class="control-group valign-center" style="padding-top: 23px;">
                     <!--B3-->
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL016_22')}</div>
+                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL016_22')}</div>
                     <div tabindex="2" id="combo-box" style="display: inline-block" data-bind="ntsComboBox:
                                         {options: orgList,
 										optionsValue: 'code',
@@ -47,7 +47,7 @@
                 </div>
                 <div class="control-group valign-center">
                     <!--B4_1-->
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL016_23')}</div>
+                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL016_23')}</div>
                     <!--B4_2-->
                     <div style="display: inline-block">
                         <div tabindex="3" class="vertical-radio" data-bind="ntsRadioBoxGroup: {
@@ -90,17 +90,14 @@
                     </div>
                 </div>
                 <div class="control-group valign-center">
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL016_27')}</div>
-                    <div style="display: inline-block" data-bind="ntsDateRangePicker: {
-                      name: '#[KDL016_27]',
-                      enable: true,
-                      type: 'fullDate',
-                      startName: '#[KDL016_28]',
-                      endName: '#[KDL016_29]',
-                      maxRange: 'oneYear',
-                      value: dateValue,
-                    }" tabindex="5">
-                    </div>
+                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL016_27')}</div>
+                    <div data-bind="ntsDatePicker: {name: '#[KDL016_28]', value: startDate, dateFormat: 'date', valueFormat: 'YYYY/MM/DD', required: true, enable: true}"
+                         tabindex="5"/>
+                    <com:ko-if bind="enableEndDate">
+                        <span class="label">～</span>
+                        <div data-bind="ntsDatePicker: {name: '#[KDL016_29]', value: endDate, dateFormat: 'date', valueFormat: 'YYYY/MM/DD', required: true, enable: enableEndDate}"
+                             tabindex="5"/>
+                    </com:ko-if>
                 </div>
             </div>
         </div>

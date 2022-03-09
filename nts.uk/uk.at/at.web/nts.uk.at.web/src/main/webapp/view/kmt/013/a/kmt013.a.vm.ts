@@ -51,7 +51,7 @@ module nts.uk.at.view.kmt013.a {
             vm.multiple = ko.observable(false);
             vm.onDialog = ko.observable(false);
             vm.selectType = ko.observable(3);
-            vm.rows = ko.observable(14);
+            vm.rows = ko.observable(11);
             vm.baseDate = ko.observable(new Date);
             vm.alreadySettingWorkplaces = ko.observableArray([]);
             vm.alreadySettingWorkplaceGroups = ko.observableArray([]);
@@ -85,16 +85,22 @@ module nts.uk.at.view.kmt013.a {
                 if (vm.isWorkplaceGroupMode()) {
                     vm.a3_1Txt(vm.$i18n('Com_WorkplaceGroup') + ': ');
                     vm.a4_1Txt('応援可能' + vm.$i18n('Com_WorkplaceGroup') + 'リスト');
-                    vm.rows(12);
+                    vm.rows(10);
+                    vm.selectedWkpGroupId.valueHasMutated();
                 } else {
                     vm.a3_1Txt(vm.$i18n('Com_Workplace') + ': ');
                     vm.a4_1Txt('応援可能' + vm.$i18n('Com_Workplace') + 'リスト');
-                    vm.rows(14);
+                    vm.rows(11);
+                    vm.selectedWkpId.valueHasMutated();
                 }
             });
             vm.selectedWkpId.subscribe((newValue) => {
-                if (_.isNil(newValue)){
-                    vm.isA2NotEmpty(false);
+                if (!vm.isWorkplaceGroupMode()){
+                    if (_.isEmpty(newValue)){
+                        vm.isA2NotEmpty(false);
+                    } else {
+                        vm.isA2NotEmpty(true);
+                    }
                 }
                 let param: TargetOrgParams = new TargetOrgParams(moment.utc(),vm.unit(),vm.unit() == OrgUnit.WORKPLACE ? vm.selectedWkpId(): vm.selectedWkpGroupId());
                 vm.$ajax(PATH.getById,param).done((data: TargetOrgInfo) => {
@@ -116,8 +122,12 @@ module nts.uk.at.view.kmt013.a {
             });
 
             vm.selectedWkpGroupId.subscribe((newValue) => {
-                if (_.isNil(newValue)){
-                    vm.isA2NotEmpty(false);
+                if (vm.isWorkplaceGroupMode()){
+                    if (_.isEmpty(newValue)){
+                        vm.isA2NotEmpty(false);
+                    } else {
+                        vm.isA2NotEmpty(true);
+                    }
                 }
                 let param: TargetOrgParams = new TargetOrgParams(moment.utc(),vm.unit(),vm.unit() == OrgUnit.WORKPLACE ? vm.selectedWkpId(): vm.selectedWkpGroupId());
                 vm.$ajax(PATH.getById,param).done((data: TargetOrgInfo) => {

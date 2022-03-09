@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = {width: 930, height: 450};</script>
+        <script>var dialogSize = {width: 930, height: 500};</script>
         <com:ValidatorScript>
             nts.uk.shr.com.time.TimeWithDayAttr
         </com:ValidatorScript>
@@ -21,7 +21,7 @@
             <div class="fixed-flex-layout-left">
                 <div class="control-group valign-center">
                     <!--C1_1-->
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL016_32')}</div>
+                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL016_32')}</div>
                     <!--C1_2-->
                     <div tabindex="1" id="combo-box" data-bind="ntsComboBox:
                                         {options: orgList,
@@ -41,7 +41,7 @@
                 </div>
                 <div class="control-group valign-center">
                     <!--C3-->
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL016_21')}</div>
+                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL016_21')}</div>
                     <div style="padding-left: 112px;">
                         <!--C4-->
                         <div tabindex="2" id="employee-list"/>
@@ -51,7 +51,7 @@
             <div class="fixed-flex-layout-right">
                 <div class="control-group valign-center" style="padding-top: 23px;">
                     <!--C5_1-->
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL016_23')}</div>
+                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL016_23')}</div>
                     <!--C5_2-->
                     <div style="display: inline-block">
                         <div tabindex="3" class="vertical-radio" data-bind="ntsRadioBoxGroup: {
@@ -91,22 +91,17 @@
 								                },
 												required: true,
 												enable: enableEditTimespan,
-												readonly: false}"/>
+												readonly: false}" tabindex="4"/>
                     </div>
                 </div>
                 <div class="control-group valign-center">
                     <!--C6_1-->
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL016_27')}</div>
-                    <div style="display: inline-block" data-bind="ntsDateRangePicker: {
-                      name: '#[KDL016_27]',
-                      enable: false,
-                      type: 'fullDate',
-                      startName: '#[KDL016_28]',
-                      endName: '#[KDL016_29]',
-                      maxRange: 'oneYear',
-                      value: dateValue,
-                    }" tabindex="5">
-                    </div>
+                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL016_27')}</div>
+                    <div data-bind="ntsDatePicker: {name: '#[KDL016_28]', value: startDate, dateFormat: 'date', valueFormat: 'YYYY/MM/DD', required: true, enable: true}"
+                         tabindex="5"/>
+                    <span class="label">～</span>
+                    <div data-bind="ntsDatePicker: {name: '#[KDL016_29]', value: endDate, dateFormat: 'date', valueFormat: 'YYYY/MM/DD', required: true, enable: enableEndDate}"
+                         tabindex="5"/>
                 </div>
             </div>
         </div>

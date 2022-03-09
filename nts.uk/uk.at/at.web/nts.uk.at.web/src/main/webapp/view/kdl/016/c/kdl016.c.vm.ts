@@ -13,9 +13,9 @@ module nts.uk.at.view.kdl016.c {
 
         // kcp005
         listComponentOption: any;
-        date: KnockoutObservable<string> = ko.observable(new Date().toISOString());
-        startDate: KnockoutObservable<string> = ko.observable(null);
-        endDate: KnockoutObservable<string> = ko.observable(null);
+        startDate: KnockoutObservable<string> = ko.observable(new Date().toISOString());
+        endDate: KnockoutObservable<string> = ko.observable(new Date().toISOString());
+        enableEndDate: KnockoutObservable<boolean> = ko.observable(true);
         employeeList: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedEmployees: KnockoutObservableArray<string> = ko.observableArray([]);
 
@@ -31,13 +31,6 @@ module nts.uk.at.view.kdl016.c {
         timespanMin: KnockoutObservable<number> = ko.observable(undefined);
         timespanMax: KnockoutObservable<number> = ko.observable(undefined);
 
-        startDateStr: KnockoutObservable<string> = ko.observable("");
-        endDateStr: KnockoutObservable<string> = ko.observable("");
-        dateValue: KnockoutObservable<any> = ko.observable({
-            startDate: new Date(),
-            endDate: new Date(),
-        });
-
         constructor(params: any) {
             super();
             const vm = this;
@@ -48,21 +41,14 @@ module nts.uk.at.view.kdl016.c {
             ]);
             vm.selectedSupportType = ko.observable(0);
 
-            vm.startDateStr.subscribe(function (value) {
-                vm.dateValue().startDate = value;
-                vm.dateValue.valueHasMutated();
-            });
-            vm.endDateStr.subscribe(function (value) {
-                vm.dateValue().endDate = value;
-                vm.dateValue.valueHasMutated();
-            });
-
             vm.selectedSupportType.subscribe(value => {
                 if (value == 1) {
                     vm.enableEditTimespan(true);
+                    vm.enableEndDate(false);
                 }
                 else {
                     vm.enableEditTimespan(false);
+                    vm.enableEndDate(true);
                     vm.$errors("clear");
                 }
             });
@@ -173,15 +159,15 @@ module nts.uk.at.view.kdl016.c {
                 supportDestinationId: vm.requiredParams.targetOrg.orgId,
                 orgUnit: vm.requiredParams.targetOrg.orgUnit,
                 supportType: vm.selectedSupportType(),
-                supportPeriodStart: moment.utc(vm.dateValue().startDate).format("YYYY/MM/DD"),
-                supportPeriodEnd: moment.utc(vm.dateValue().endDate).format("YYYY/MM/DD"),
+                supportPeriodStart: moment.utc(vm.startDate()).format("YYYY/MM/DD"),
+                supportPeriodEnd: moment.utc(vm.endDate()).format("YYYY/MM/DD"),
                 supportTimeSpan: {
                     start: vm.selectedSupportType() === 0 ? null : vm.timespanMin(),
                     end: vm.selectedSupportType() === 0 ? null : vm.timespanMax()
                 }
             };
 
-            if (moment.utc(vm.dateValue().startDate).isBefore(moment.utc().format('YYYY/MM/DD'))) {
+            if (moment.utc(vm.startDate()).isBefore(moment.utc().format('YYYY/MM/DD'))) {
                 vm.$dialog.confirm({messageId: 'Msg_3280'}).then((result: 'no' | 'yes') => {
                     vm.$blockui("invisible");
                     if (result === 'yes') {
@@ -203,7 +189,7 @@ module nts.uk.at.view.kdl016.c {
             vm.$ajax(API.register, command).then((data: any) => {
                 if (!data.error) {
                     vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
-                        vm.closeDialog();
+                        vm.$window.close({closeable: false});
                     });
                 } else {
                     let errorResults = data.errorResults;
@@ -220,12 +206,12 @@ module nts.uk.at.view.kdl016.c {
                     }
 
                     vm.$window.modal("/view/kdl/016/f/index.xhtml", dataError).then((result: any) => {
-                        vm.closeDialog();
+                        vm.$window.close({closeable: true});
                     });
                 }
             }).fail(error => {
                 vm.$dialog.error(error).then(() => {
-                    vm.closeDialog();
+                    vm.$window.close({closeable: true});
                 });
             }).always(() => {
                 vm.$blockui("clear");
