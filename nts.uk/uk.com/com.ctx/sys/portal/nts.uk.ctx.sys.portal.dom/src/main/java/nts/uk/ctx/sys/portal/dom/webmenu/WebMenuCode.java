@@ -24,4 +24,19 @@ public class WebMenuCode extends StringPrimitiveValue<WebMenuCode> {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * システム管理者メニューか
+	 * @return
+	 */
+	public boolean isSystemAdmin() {
+		return v().equals("000");
+	}
+
+	/**
+	 * 会社管理者メニューか
+	 * @return
+	 */
+	public boolean isCompanyAdmin() {
+		return v().equals("001");
+	}
 }
