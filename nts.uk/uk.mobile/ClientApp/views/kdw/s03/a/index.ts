@@ -331,7 +331,8 @@ export class Kdws03AComponent extends Vue {
                     timePeriodAllInfo: _.assign({}, self.timePeriodAllInfo, { closureId: ClosureId[self.timePeriodAllInfo.closureId] }),
                     autBussCode: self.autBussCode,
                     paramData: self.paramData,
-                    dPCorrectionMenuDto: self.dPCorrectionMenuDto
+                    dPCorrectionMenuDto: self.dPCorrectionMenuDto,
+                    domainOlds: self.dataSessionDto.domainOlds
                 });
                 
                 //パラメータ「日別実績の修正の状態．表示形式」をチェックする
