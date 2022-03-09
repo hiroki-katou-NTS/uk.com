@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class ApprovalRootStateParam {
-	private String employeeId;
+	private String employeeCd;
 	private Date startDate;
 	private Date endDate;
 	private Integer yearMonth;

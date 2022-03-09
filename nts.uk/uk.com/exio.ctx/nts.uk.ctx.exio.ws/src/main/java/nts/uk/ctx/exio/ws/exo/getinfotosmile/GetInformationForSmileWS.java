@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.ws.exo.getinfotosmile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -21,6 +22,8 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosuresInfoDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.SmileClosureTime;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.SmileEmpClosure;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.exio.app.find.exo.smilelink.TargetEmployeeFinder;
 import nts.uk.ctx.sys.gateway.app.find.tenantlogin.TenanLoginFinder;
 import nts.uk.shr.com.context.AppContexts;
@@ -49,6 +52,9 @@ public class GetInformationForSmileWS extends WebService{
 	
 	@Inject
 	private TargetEmployeeFinder employeeFinder;
+	
+	@Inject
+	private EmployeeInfoPub employeePub;
 	
 	// 締め情報を取得する
 	@POST
@@ -94,8 +100,13 @@ public class GetInformationForSmileWS extends WebService{
 	@POST
 	@Path("getmonth-state")
 	public ApprovalRootStateDto getEmploymentClosure(ApprovalRootStateParam param) {
+		String cid = AppContexts.user().companyId();
+		Optional<EmployeeInfoDtoExport> emInforExport = employeePub.getEmployeeInfo(cid, param.getEmployeeCd());
 		
-		ApprovalRootStateImport_New approState = this.approvalFinder.getAppRootInstanceMonthByEmpPeriod(param.getEmployeeId(), new DatePeriod(GeneralDate.legacyDate(param.getStartDate()), GeneralDate.legacyDate(param.getEndDate())), 
+		if(!emInforExport.isPresent())
+			return null;
+		
+		ApprovalRootStateImport_New approState = this.approvalFinder.getAppRootInstanceMonthByEmpPeriod(emInforExport.get().getEmployeeId(), new DatePeriod(GeneralDate.legacyDate(param.getStartDate()), GeneralDate.legacyDate(param.getEndDate())), 
 				new YearMonth(param.getYearMonth()), param.getClosureID(), new ClosureDate(param.getClosureDay(), param.getLastDayOfMonth()), GeneralDate.legacyDate(param.getBaseDate()));
 		if(approState == null)
 			return null;
