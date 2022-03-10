@@ -113,6 +113,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpComHisAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
+import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveManagementSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -871,6 +872,12 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	@Override
 	public Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId) {
 		return closureStatusManagementRepo.getLatestByEmpId(employeeId);
+	}
+
+	@Override
+	public Optional<TimeSpecialLeaveManagementSetting> findByCompany(String companyId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

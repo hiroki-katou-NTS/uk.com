@@ -6,14 +6,22 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.attendanceitem.monthlyattditem.NarrowDownListMonthlyAttdItem.Require;
 import nts.uk.ctx.at.record.dom.workrecord.goout.OutManage;
 import nts.uk.ctx.at.record.dom.workrecord.goout.OutManageRepository;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeRecordImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingRepository;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRepository;
@@ -28,6 +36,8 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
@@ -44,6 +54,7 @@ import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.ctx.at.shared.dom.workrule.deformed.AggDeformedLaborSetting;
 import nts.uk.ctx.at.shared.dom.workrule.deformed.AggDeformedLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
 import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveManagementSetting;
 import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveMngSetRepository;
 import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkMntSetRepository;
@@ -239,6 +250,62 @@ public class NarrowDownListMonthlyAttdItemImpl implements NarrowDownListMonthlyA
 		@Override
 		public Optional<TemporaryWorkUseManage> findTemporaryWorkUseManage(String companyId) {
 			return temporaryWorkUseManageRepository.findByCid(companyId);
+		}
+
+		@Override
+		public Optional<ElapseYear> elapseYear(String companyId, int specialHolidayCode) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<EmpEnrollPeriodImport> getLatestEnrollmentPeriod(String lstEmpId, DatePeriod datePeriod) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public EmployeeRecordImport employeeFullInfo(CacheCarrier cacheCarrier, String empId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
+				String employeeId, GeneralDate baseDate) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<SClsHistImport> employeeClassificationHistoires(CacheCarrier cacheCarrier, String companyId,
+				List<String> employeeIds, DatePeriod datePeriod) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode, String grantDateCode) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 		
 	}
