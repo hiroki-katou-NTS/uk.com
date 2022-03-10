@@ -225,7 +225,7 @@ public class NarrowDownListMonthlyAttdItem {
 	private static List<Integer> getUnusableAnnualLeaveItems(Require require, String companyId) {
 		AnnualPaidLeaveSetting annualPaidLeaveSetting = require.findByCompanyId(companyId);
 		if (annualPaidLeaveSetting != null) {
-			return annualPaidLeaveSetting.getMonthlyAttendanceItemsNotAvailable();
+			return annualPaidLeaveSetting.getMonthlyAttendanceItemsNotAvailable(require);
 		}
 		return new ArrayList<>();
 	}
@@ -252,7 +252,7 @@ public class NarrowDownListMonthlyAttdItem {
 	private static List<Integer> getUnavailableSubstituteHolidayItem(Require require, String companyId) {
 		CompensatoryLeaveComSetting compensatoryLeaveComSetting = require.findCompensatoryLeaveComSetting(companyId);
 		if (compensatoryLeaveComSetting != null) {
-			return compensatoryLeaveComSetting.getMonthlyAttendanceItems();
+			return compensatoryLeaveComSetting.getMonthlyAttendanceItems(require);
 		}
 		return new ArrayList<>();
 	}
@@ -385,7 +385,7 @@ public class NarrowDownListMonthlyAttdItem {
 	}
 
 	public static interface Require extends WorkManagementMultiple.Require, TemporaryWorkUseManage.Require,
-			RetentionYearlySetting.Require, SpecialHoliday.Require {
+			RetentionYearlySetting.Require, SpecialHoliday.Require, CompensatoryLeaveComSetting.RequireM7 {
 		/**
 		 * [R-1] 残業枠を取得する OvertimeWorkFrameRepository
 		 */

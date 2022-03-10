@@ -9,6 +9,8 @@ import nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto.ObjectD
 @AllArgsConstructor
 @NoArgsConstructor
 public class PersonalScheduleByIndividualQuery {
+	
+	private String sid;
 
     /**
      * 社員コード

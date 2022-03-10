@@ -10,12 +10,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdDays;
@@ -154,13 +155,13 @@ public class AnnualPaidLeaveSetting extends AggregateRoot implements Serializabl
 	/**
 	 * [3] 利用できない日次の勤怠項目を取得する
 	 */
-	public List<Integer> getDailyAttendanceItemsNotAvailable() {
+	public List<Integer> getDailyAttendanceItemsNotAvailable(TimeVacationDigestUnit.Require require) {
 		List<Integer> lstId = new ArrayList<>();
 		if (this.yearManageType == ManageDistinct.NO)
 			// 年休に対応する日次の勤怠項目
 			lstId.addAll(Arrays.asList(539, 540));
 		
-		lstId.addAll(timeSetting.getDailyAttendItemsNotAvailable(yearManageType));
+		lstId.addAll(timeSetting.getDailyAttendItemsNotAvailable(require, yearManageType));
 		
 		return lstId;
 	}
@@ -168,7 +169,7 @@ public class AnnualPaidLeaveSetting extends AggregateRoot implements Serializabl
 	/**
 	 * [4] 利用できない月次の勤怠項目を取得する
 	 */
-	public List<Integer> getMonthlyAttendanceItemsNotAvailable() {
+	public List<Integer> getMonthlyAttendanceItemsNotAvailable(TimeVacationDigestUnit.Require require) {
 		List<Integer> lstId = new ArrayList<>();
 		if (this.yearManageType == ManageDistinct.NO)
 			// 年休に対応する月次の勤怠項目
@@ -179,7 +180,7 @@ public class AnnualPaidLeaveSetting extends AggregateRoot implements Serializabl
 		lstId.addAll(manageAnnualSetting.getMonthlyAttendanceItems(yearManageType));
 		
 		// $時間年休
-		lstId.addAll(timeSetting.getMonthlyAttendItemsNotAvailable(yearManageType));
+		lstId.addAll(timeSetting.getMonthlyAttendItemsNotAvailable(require, yearManageType));
 				
 		return lstId;
 	}
@@ -243,5 +244,22 @@ public class AnnualPaidLeaveSetting extends AggregateRoot implements Serializabl
 		return Optional.of(new LimitedTimeHdTime(limitedTimeHdDays.get().v() * laborContractTimeOpt.get().v()));
 
 	}
+	
+	/**
+	 * [9] 時間年休を管理するか
+	 * @return
+	 */
+	public boolean isManageTimeAnnualLeave(TimeVacationDigestUnit.Require require) {
+		return this.timeSetting.isManageTimeAnnualLeave(require, this.yearManageType);
+	}
 
+	/**
+	 * [10] 利用する休暇時間の消化単位をチェックする
+	 * @param time 休暇使用時間
+	 * @return
+	 */
+	public boolean checkVacationTimeUnitUsed(TimeVacationDigestUnit.Require require, AttendanceTime time) {
+		return this.timeSetting.checkDigestUnits(require, time, this.yearManageType);
+	}
+	
 }

@@ -242,7 +242,7 @@ public class NarrowDownListDailyAttdItem {
 	private static List<Integer> getUnusableAnnualLeaveItems(Require require, String companyId) {
 		AnnualPaidLeaveSetting annualPaidLeaveSetting = require.findByCompanyId(companyId);
 		if (annualPaidLeaveSetting != null) {
-			return annualPaidLeaveSetting.getDailyAttendanceItemsNotAvailable();
+			return annualPaidLeaveSetting.getDailyAttendanceItemsNotAvailable(require);
 		}
 		return new ArrayList<>();
 	}
@@ -257,7 +257,7 @@ public class NarrowDownListDailyAttdItem {
 	private static List<Integer> getUnavailableSubstituteHolidayItem(Require require, String companyId) {
 		CompensatoryLeaveComSetting compensatoryLeaveComSetting = require.findCompensatoryLeaveComSetting(companyId);
 		if (compensatoryLeaveComSetting != null) {
-			return compensatoryLeaveComSetting.getDailyAttendanceItems();
+			return compensatoryLeaveComSetting.getDailyAttendanceItems(require);
 		}
 		return new ArrayList<>();
 	}
@@ -288,7 +288,7 @@ public class NarrowDownListDailyAttdItem {
 		Optional<TimeSpecialLeaveManagementSetting> timeSpecialLeaveManagementSetting = require
 				.findTimeSpecialLeaveManagementSetting(companyId);
 		if (timeSpecialLeaveManagementSetting.isPresent()) {
-			return timeSpecialLeaveManagementSetting.get().getDailyAttdItemsNotAvailable();
+			return timeSpecialLeaveManagementSetting.get().getDailyAttdItemsNotAvailable(require);
 		}
 		return new ArrayList<>();
 	}
@@ -340,7 +340,7 @@ public class NarrowDownListDailyAttdItem {
 	}
 
 	public static interface Require extends SupportOperationSetting.Require, TaskOperationSetting.Require,
-			WorkManagementMultiple.Require, TemporaryWorkUseManage.Require {
+			WorkManagementMultiple.Require, TemporaryWorkUseManage.Require, CompensatoryLeaveComSetting.RequireM7 {
 
 		/**
 		 * require.乖離理由の入力方法を取得する(会社ID)

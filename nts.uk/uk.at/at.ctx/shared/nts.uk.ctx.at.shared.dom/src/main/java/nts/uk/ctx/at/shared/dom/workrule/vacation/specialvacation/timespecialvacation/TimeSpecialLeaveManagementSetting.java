@@ -8,8 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 
 /**
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.shared.就業規則.休暇.特別休暇.時間特別休暇
@@ -23,20 +23,15 @@ public class TimeSpecialLeaveManagementSetting extends AggregateRoot {
     private String companyId;
 
     // 時間休暇消化単位
-    private TimeDigestiveUnit timeDigestiveUnit;
-
-    // 管理区分
-    private ManageDistinct manageType;
+    private TimeVacationDigestUnit timeVacationDigestUnit;
     
     /**
-     * C-0 Nhờ nws sửa lại khi update theo tài liệu mới
+     * [C-0] 時間特別休暇の管理設定 (会社ID,時間休暇消化単位)
      */
-    public TimeSpecialLeaveManagementSetting(String companyId, TimeDigestiveUnit timeDigestiveUnit,
-			ManageDistinct manageType) {
+    public TimeSpecialLeaveManagementSetting(String companyId, TimeVacationDigestUnit timeVacationDigestUnit) {
 		super();
 		this.companyId = companyId;
-		this.timeDigestiveUnit = timeDigestiveUnit;
-		this.manageType = manageType;
+		this.timeVacationDigestUnit = timeVacationDigestUnit;
 	}
     
     /**
@@ -49,10 +44,28 @@ public class TimeSpecialLeaveManagementSetting extends AggregateRoot {
     /**
      * [2] 利用できない日次の勤怠項目を取得する
      */
-    public List<Integer> getDailyAttdItemsNotAvailable(){
-    	if (manageType == ManageDistinct.NO) { // Nhờ NWS sửa theo tài liệu mới
-    		return Arrays.asList(504,516,1123,1124,1127,1128,1131,1132,1135,1136,1145,1146);
+    public List<Integer> getDailyAttdItemsNotAvailable(TimeVacationDigestUnit.Require require){
+    	List<Integer> attendanceItemIds = new ArrayList<>();
+    	if (!this.isManageTimeVacation(require)) {
+    		attendanceItemIds = Arrays.asList(504,516,1123,1124,1127,1128,1131,1132,1135,1136,1145,1146);
     	}
-		return new ArrayList<>();
+		return attendanceItemIds;
+    }
+
+    /**
+     * [3]時間休暇が管理するか
+     * @param require
+     */
+    public boolean isManageTimeVacation(TimeVacationDigestUnit.Require require) {
+    	return this.timeVacationDigestUnit.isVacationTimeManage(require);
+    }
+    
+    /**
+     * [4]利用する休暇時間の消化単位をチェックする
+     * @param require
+     * @param time 休暇使用時間
+     */
+    public boolean checkVacationTimeUnitUsed(TimeVacationDigestUnit.Require require, AttendanceTime time) {
+      return this.timeVacationDigestUnit.checkDigestUnit(require, time);
     }
 }

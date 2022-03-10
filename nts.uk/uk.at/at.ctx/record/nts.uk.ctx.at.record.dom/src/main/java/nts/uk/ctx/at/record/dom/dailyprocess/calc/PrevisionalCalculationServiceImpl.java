@@ -55,6 +55,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworkti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
@@ -152,6 +153,10 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		}
 		TimeLeavingOfDailyPerformance timeAttendance = new TimeLeavingOfDailyPerformance(employeeId,
 				new WorkTimes(timeSheets.size()), timeLeavingWorks, ymd);
+		workInformation.getWorkInformation().setScheduleTimeSheets(timeLeavingWorks.stream()
+				.filter(x -> x.getAttendanceTime().isPresent() && x.getLeaveTime().isPresent())
+				.map(x -> new ScheduleTimeSheet(x.getWorkNo(), x.getAttendanceTime().get(), x.getLeaveTime().get()))
+				.collect(Collectors.toList()));
 
 		// 日別実績の計算区分作成
 		val calAttrOfDailyPerformance = new CalAttrOfDailyPerformance(employeeId, ymd,

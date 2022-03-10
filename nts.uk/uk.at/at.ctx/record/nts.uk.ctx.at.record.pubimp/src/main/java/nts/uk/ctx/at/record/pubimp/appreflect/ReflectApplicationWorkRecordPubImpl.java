@@ -47,7 +47,6 @@ import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHPriorityTimeReflec
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
@@ -100,7 +99,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryL
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -115,6 +113,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 @Stateless
 public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWorkRecordPub {
@@ -401,9 +400,9 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		}
 
 		@Override
-		public List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,
-				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet, ExecutionType reCalcAtr) {
-			return calculateDailyRecordServiceCenter.calculatePassCompanySetting(calcOption, integrationOfDaily, companySet, reCalcAtr);
+		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
+				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet) {
+			return calculateDailyRecordServiceCenter.calculateForRecord(calcOption, integrationOfDaily, companySet);
 		}
 
 		@Override
@@ -498,10 +497,9 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		}
 
 		@Override
-		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
-				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
-				ExecutionType reCalcAtr) {
-			return calculateForSchedule(calcOption, integrationOfDaily, companySet, reCalcAtr);
+		public List<IntegrationOfDaily> calculateForRecordSchedule(CalculateOption calcOption,
+				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet) {
+			return calculateForRecord(calcOption, integrationOfDaily, companySet);
 		}
 
 		@Override
@@ -563,6 +561,11 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				return Optional.of((AppStampShare) applicationShare);
 			}
 			return Optional.empty();
+		}
+		
+		@Override
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
 		}
 	}
 }

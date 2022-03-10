@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 import java.util.List;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 
 /**
  * The Interface CompensatoryLeaveComSetMemento.
@@ -39,7 +40,7 @@ public interface CompensatoryLeaveComSetMemento {
       *
       * @param compensatoryDigestiveTimeUnit the new compensatory digestive time unit
       */
-     void setCompensatoryDigestiveTimeUnit(CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit);
+     void setTimeVacationDigestUnit(TimeVacationDigestUnit timeVacationDigestUnit);
 
 	/**
 	 * Sets the compensatory occurrence setting.

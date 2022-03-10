@@ -93,3 +93,7 @@
 .mgrid table th, .mgrid table td {
     border-color: #9c9fa2;
 }
+
+.color-text-current-month {
+    color: #595959 !important;
+}

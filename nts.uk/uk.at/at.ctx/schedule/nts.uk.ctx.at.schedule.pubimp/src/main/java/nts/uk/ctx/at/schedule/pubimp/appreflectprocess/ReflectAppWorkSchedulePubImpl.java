@@ -81,7 +81,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -96,6 +95,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 @Stateless
 public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSchedulePub {
@@ -341,10 +341,9 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		}
 
 		@Override
-		public List<IntegrationOfDaily> calculateForSchedule(ExecutionType type, CalculateOption calcOption,
+		public List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,
 				List<IntegrationOfDaily> integrationOfDaily) {
-			return calculateDailyRecordServiceCenterNew.calculatePassCompanySetting(calcOption, integrationOfDaily,
-					type);
+			return calculateDailyRecordServiceCenterNew.calculateForSchedule(calcOption, integrationOfDaily);
 		}
 
 		@Override
@@ -455,10 +454,9 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		}
 
 		@Override
-		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
-				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
-				ExecutionType reCalcAtr) {
-			return calculateForSchedule(reCalcAtr, calcOption, integrationOfDaily);
+		public List<IntegrationOfDaily> calculateForRecordSchedule(CalculateOption calcOption,
+				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet) {
+			return calculateForSchedule(calcOption, integrationOfDaily);
 		}
 
 		@Override
@@ -472,6 +470,10 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 				return Optional.of((AppStampShare) applicationShare);
 			}
 			return Optional.empty();
+		}
+
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
 		}
 	}
 }

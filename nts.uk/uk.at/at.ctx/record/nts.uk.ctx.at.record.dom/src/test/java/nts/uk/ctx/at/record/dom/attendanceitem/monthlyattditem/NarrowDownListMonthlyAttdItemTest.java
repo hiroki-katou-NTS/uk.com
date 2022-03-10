@@ -17,63 +17,45 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcare.NursingLeaveSettingHelper;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySetting;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingHelper;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
-import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameHelper;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.TimeItemTypeAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.TimeItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRootHelper;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeUseSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.ExtraTimeItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PremiumItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PremiumName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.UseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingHelper;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItemHelper;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeHelper;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemHelper;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemUsageAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
-import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesHelper;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
-import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayHelper;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingHelper;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSettingHelper;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingHelper;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationHelper;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
-import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameHelper;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.UseATR;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
-import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleHelper;
 import nts.uk.ctx.at.shared.dom.workrule.deformed.AggDeformedLaborSetting;
 import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkSet;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
-import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageHelper;
 import nts.uk.ctx.at.shared.dom.worktype.absenceframe.AbsenceFrame;
-import nts.uk.ctx.at.shared.dom.worktype.absenceframe.AbsenceFrameHelper;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrame;
-import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrameHelper;
 
 @RunWith(JMockit.class)
 public class NarrowDownListMonthlyAttdItemTest {
@@ -477,7 +459,7 @@ public class NarrowDownListMonthlyAttdItemTest {
 	@Test
 	public void testGetUnavailableSubstituteHolidayItem_2() {
 		String companyId = "companyId";
-		CompensatoryDigestiveTimeUnit timeUnit = CompensatoryLeaveComSettingHelper
+		TimeVacationDigestUnit timeUnit = CompensatoryLeaveComSettingHelper
 				.createCompensatoryDigestiveTimeUnit(ManageDistinct.NO);
 		CompensatoryLeaveComSetting domain = CompensatoryLeaveComSettingHelper
 				.createCompensatoryLeaveComSetting(ManageDistinct.NO, timeUnit);
