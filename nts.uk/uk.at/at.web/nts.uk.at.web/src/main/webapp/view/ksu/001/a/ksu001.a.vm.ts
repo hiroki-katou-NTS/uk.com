@@ -996,6 +996,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let scheduleModifyStartDate = self.scheduleModifyStartDate;
             self.listEmpData = [];
             self.listSid([]);
+            self.listSidByOrg = [];
             self.listLockCells = [];
             
             self.detailContentDeco = [];
