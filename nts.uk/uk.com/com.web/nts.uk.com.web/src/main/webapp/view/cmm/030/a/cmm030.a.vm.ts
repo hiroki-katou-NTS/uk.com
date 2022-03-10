@@ -77,7 +77,6 @@ module nts.uk.com.view.cmm030.a {
       vm.$blockui("grayout");
       vm.initScreen().always(() => {
         setTimeout(() => {
-          $(".approver-input").on("click", e => vm.openDialogB($(e.target)));
           $("#ccg001-btn-search-drawer").attr("tabindex", -1);
           $(".approver-input").attr("tabindex", 7);
           vm.focusA7_1();
@@ -86,14 +85,14 @@ module nts.uk.com.view.cmm030.a {
       });
     }
 
-    public openDialogB(elem: JQuery) {
+    public openDialogB(elem: any) {
       const vm = this;
       if (nts.uk.text.isNullOrEmpty(vm.startDate())) {
         vm.$dialog.error({ messageId: "Msg_3299" });
         return;
       }
-      const rowId = elem.data("row-id");
-      const colId = elem.data("col-id");
+      const rowId = $(elem).data("row-id");
+      const colId = $(elem).data("col-id");
       const approverInfo = _.find(vm.approverInputList(), { id: rowId }).approvers()[colId];
       const param = {
         baseDate: vm.startDate(),
