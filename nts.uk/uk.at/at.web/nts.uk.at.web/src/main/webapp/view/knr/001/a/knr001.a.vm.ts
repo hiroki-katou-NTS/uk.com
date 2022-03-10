@@ -30,6 +30,8 @@ module nts.uk.at.view.knr001.a {
 
             goOutReason: KnockoutObservable<number> = ko.observable(0);
             entranceExit: KnockoutObservable<boolean> = ko.observable(false);
+            //	　応援の運用設定.利用するか
+            isUsedSupportOperationSetting: KnockoutObservable<boolean> = ko.observable(false);
 
             constructor(){
                 var self = this;
@@ -128,11 +130,12 @@ module nts.uk.at.view.knr001.a {
                 var dfd = $.Deferred<void>();
                 blockUI.invisible();
                 service.getAll().done((data)=>{
-                    if(data.length <= 0){
+               		self.isUsedSupportOperationSetting(data.usedSupportOperationSetting);
+                    if(data.empInfoTerminalListDto.length <= 0){
                         self.createNewMode();
                     } else {
                         self.isUpdateMode(true);
-                        self.empInfoTerminalList(data);
+                        self.empInfoTerminalList(data.empInfoTerminalListDto);
                         self.selectedCode(self.empInfoTerminalList()[0].empInfoTerCode);
                         self.loadEmpInfoTerminal(self.selectedCode());
                     }
@@ -152,7 +155,7 @@ module nts.uk.at.view.knr001.a {
                         self.isUpdateMode(true);
                         self.enableBtnDelete(true);
                         self.selectedCode(empInfoTer.empInfoTerCode);
-                        self.empInfoTerminalModel().updateData(empInfoTer);
+                        self.empInfoTerminalModel().updateData(empInfoTer, self.isUsedSupportOperationSetting());
                         if (_.isNull(self.empInfoTerminalModel().nRConvertInfo())) {
                             self.empInfoTerminalModel().lstMSConversion()
                                 .forEach((item: MSConversionDto) => {
@@ -304,7 +307,7 @@ module nts.uk.at.view.knr001.a {
                             //Reload EmpList
                             service.getAll().done((data)=>{
                                     self.isUpdateMode(true);
-                                    self.empInfoTerminalList(data);
+                                    self.empInfoTerminalList(data.empInfoTerminalListDto);
                                     self.selectedCode(self.empInfoTerminalModel().empInfoTerCode());
                                     self.loadEmpInfoTerminal(self.selectedCode());
                                     self.empInfoTerminalModel().isEnableCode(false);
@@ -330,7 +333,7 @@ module nts.uk.at.view.knr001.a {
                             //Reload EmpList
                             service.getAll().done((data) => {
                                     self.isUpdateMode(true);
-                                    self.empInfoTerminalList(data);
+                                    self.empInfoTerminalList(data.empInfoTerminalListDto);
                                     self.selectedCode(self.empInfoTerminalModel().empInfoTerCode());
                                     self.loadEmpInfoTerminal(self.selectedCode());
                                     self.empInfoTerminalModel().isEnableCode(false);
@@ -387,15 +390,15 @@ module nts.uk.at.view.knr001.a {
             private reloadData(index: number) {
                 let self = this;
                 service.getAll().done((data)=>{
-                    if(data.length <= 0){
+                    if(data.empInfoTerminalListDto.length <= 0){
                         self.empInfoTerminalList([]);
                         self.clearErrors();
                         self.createNewMode();
                     } else {
                         self.isUpdateMode(true);
                         self.enableBtnDelete(true);
-                        self.empInfoTerminalList(data);
-                        let length = data.length;
+                        self.empInfoTerminalList(data.empInfoTerminalListDto);
+                        let length = data.empInfoTerminalListDto.length;
                         if(index === 0){
                             self.selectedCode(self.empInfoTerminalList()[0].empInfoTerCode);
                         } else if (index === length){
@@ -607,8 +610,13 @@ module nts.uk.at.view.knr001.a {
                 this.memo =  ko.observable('');  
                
                 this.isEnableCode =  ko.observable(true);     
-                
+                let today = new Date();
+                let year = today.getFullYear();
+                let month = this.fillZero(`${today.getMonth() + 1}`);
+                let date = this.fillZero(today.getDate().toString());
+                this.date = ko.observable(`${year}/${month}/${date}`);
             }
+
             /**
              * reset Data
              */
@@ -637,7 +645,7 @@ module nts.uk.at.view.knr001.a {
             /**
              * update Data
              */
-            updateData(dto: any){
+            updateData(dto: any, useAtr: any){
                 this.empInfoTerCode(dto.empInfoTerCode);
                 this.empInfoTerName(dto.empInfoTerName);
                 this.modelEmpInfoTer(dto.modelEmpInfoTer);
@@ -655,7 +663,7 @@ module nts.uk.at.view.knr001.a {
                 this.lstMSConversion(dto.lstMSConversion);
                 this.nRConvertInfo(dto.nrconvertInfo);
                 
-                if (this.useAtr) {
+                if (useAtr) {
                     this.workplaceId(dto.workplaceId);
                     this.workplaceName(dto.workplaceName);
                 }
@@ -725,6 +733,12 @@ module nts.uk.at.view.knr001.a {
                 })
                 .fail(() => {})
                 .done(() => blockUI.clear());
+            }
+        /**
+         * fill '0' character to datetime
+         */
+            private fillZero(str: string): string{
+                return str.length == 2 ? str : `0${str}`;
             }
         }
 
