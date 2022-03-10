@@ -12,8 +12,8 @@ module nts.uk.at.view.kdl016.b {
 
         // kcp005
         listComponentOption: any;
-        startDate: KnockoutObservable<string> = ko.observable(new Date().toISOString());
-        endDate: KnockoutObservable<string> = ko.observable(new Date().toISOString());
+        startDate: KnockoutObservable<string> = ko.observable(undefined);
+        endDate: KnockoutObservable<string> = ko.observable(undefined);
         enableEndDate: KnockoutObservable<boolean> = ko.observable(true);
         employeeList: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedEmployees: KnockoutObservableArray<string> = ko.observableArray([]);
