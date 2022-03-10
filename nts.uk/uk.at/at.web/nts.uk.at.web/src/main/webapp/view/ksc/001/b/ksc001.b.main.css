@@ -341,3 +341,7 @@ button.nts-switch-button {
 #contents-area #ccg001-btn-search-drawer {
 	left: 245px;
 }
+
+#component-ccg001 .tabs-content {
+  height: calc(100% - 165px) !important;
+}
