@@ -1605,7 +1605,7 @@ public class DailyPerformanceCorrectionProcessor {
 			/// 対応するドメインモデル「勤務種別日別実績の修正のフォーマット」を取得する
 			String authorityDailyID =  AppContexts.user().roles().forAttendance(); 
 			//EA 4248
-			//会社の月次項目を取得する
+			//会社の日次項目を取得する
 			List<AttItemName> listAttItemName = companyDailyItemService.getDailyItems(companyId, Optional.empty(), lstAtdItemUnique, new ArrayList<>());
 			lstAtdItemUnique = listAttItemName.stream().map(c->c.getAttendanceItemId()).collect(Collectors.toList());
 			
