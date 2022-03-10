@@ -45,22 +45,24 @@ public class RegisterSamlAuthSettingCommandHandler extends CommandHandler<Regist
 			tasks.add(AtomTask.of(() -> this.operationRepo.insert(operation)));
 		}
 		
-		if (command.getClientId().isEmpty() && command.getIdpEntityId().isEmpty()
-				&& command.getIdpCertificate().isEmpty()) {
+		if (command.isUseSingleSignOn()) {
+			if (command.getClientId().isEmpty() && command.getIdpEntityId().isEmpty()
+					&& command.getIdpCertificate().isEmpty()) {
+				
+				tasks.add(AtomTask.of(() -> this.responseValidRepo.remove(tenantCode)));
+			}
 			
-			tasks.add(AtomTask.of(() -> this.responseValidRepo.remove(tenantCode)));
-		}
-		
-		if (!command.getClientId().isEmpty() && !command.getIdpEntityId().isEmpty()
-				&& !command.getIdpCertificate().isEmpty()) {
-			SamlResponseValidation validation = command.getSamlResponseValidation();
-			
-			Optional<SamlResponseValidation> validationOpt = this.responseValidRepo.find(tenantCode);
-			
-			if (validationOpt.isPresent()) {
-				tasks.add(AtomTask.of(() -> this.responseValidRepo.update(validation)));
-			} else {
-				tasks.add(AtomTask.of(() -> this.responseValidRepo.insert(validation)));
+			if (!command.getClientId().isEmpty() && !command.getIdpEntityId().isEmpty()
+					&& !command.getIdpCertificate().isEmpty()) {
+				SamlResponseValidation validation = command.getSamlResponseValidation();
+				
+				Optional<SamlResponseValidation> validationOpt = this.responseValidRepo.find(tenantCode);
+				
+				if (validationOpt.isPresent()) {
+					tasks.add(AtomTask.of(() -> this.responseValidRepo.update(validation)));
+				} else {
+					tasks.add(AtomTask.of(() -> this.responseValidRepo.insert(validation)));
+				}
 			}
 		}
 		

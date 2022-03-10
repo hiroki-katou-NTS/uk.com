@@ -16,30 +16,41 @@ module nts.uk.com.view.cmm004.a.screenModel {
     clientId: KnockoutObservable<string> = ko.observable('');
     idpEntityId: KnockoutObservable<string> = ko.observable('');
     idpCertificate: KnockoutObservable<string> = ko.observable('');
+    operation: SamlOperation = new SamlOperation();
+    validation: SamlResponseValidation = new SamlResponseValidation();
 
     created() {
       const vm = this;
-      vm.initScreen();
+      vm
+        .$blockui('grayout')
+        .then(() => vm.initScreen())
+        .always(() => vm.$blockui('clear'));
     }
 
-    initScreen() {
+    initScreen(): JQueryPromise<any> {
       const vm = this;
-      vm.$blockui('grayout');
+      const dfd = $.Deferred();
       $
         .when(vm.$ajax('com', API.operation), vm.$ajax('com', API.validation))
         .then((operation: SamlOperation, validation: SamlResponseValidation) => {
+          
           if (!!operation) {
+            vm.operation = operation;
             vm.useSingleSignOn(operation.useSingleSignOn);
             vm.idpRedirectUrl(operation.idpRedirectUrl);
           }
 
-          if (validation) {
+          if (!!validation) {
+            vm.validation = validation;
             vm.clientId(validation.clientId);
             vm.idpEntityId(validation.idpEntityId);
             vm.idpCertificate(validation.idpCertificate);
           }
+          dfd.resolve();
         })
-        .always(() => vm.$blockui('clear'));
+        .fail(() => dfd.reject());
+      
+      return dfd.promise();
     }
 
     mounted() {
@@ -47,12 +58,10 @@ module nts.uk.com.view.cmm004.a.screenModel {
       $('#useSingleSignOn').focus();
       vm.useSingleSignOn.subscribe(value => {
         if (!value) {
-          vm.idpRedirectUrl('');
-          vm.clientId('');
-          vm.idpEntityId('');
-          vm.idpCertificate('');
           vm.$errors('clear');
+          return;
         }
+        vm.$validate();
       })
     }
 
@@ -61,34 +70,41 @@ module nts.uk.com.view.cmm004.a.screenModel {
       const handler = () => {
         const command = {
           useSingleSignOn: vm.useSingleSignOn(),
-          idpRedirectUrl: vm.idpRedirectUrl(),
-          clientId: vm.clientId(),
-          idpEntityId: vm.idpEntityId(),
-          idpCertificate: vm.idpCertificate(),
+          idpRedirectUrl: vm.useSingleSignOn() ? vm.idpRedirectUrl() : vm.operation.idpRedirectUrl,
+          clientId: vm.useSingleSignOn() ? vm.clientId() : vm.validation.clientId,
+          idpEntityId: vm.useSingleSignOn() ? vm.idpEntityId() : vm.validation.idpEntityId,
+          idpCertificate: vm.useSingleSignOn() ? vm.idpCertificate() : vm.validation.idpCertificate,
         };
   
         vm
           .$blockui('grayout')
           .then(() => vm.$ajax('com', API.save, command))
           .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+          .then(() => vm.initScreen())
           .always(() => vm.$blockui('clear'));
       }
       
+      if (!vm.useSingleSignOn()) {
+        handler();
+        return;
+      }
+
       vm.$validate().then((valid) => {
         if (!valid) return;
         handler();
       });
+      
     }
   }
 
-  interface SamlOperation {
-    useSingleSignOn: boolean;
-    idpRedirectUrl: string;
+  class SamlOperation {
+    useSingleSignOn: boolean = false;
+    idpRedirectUrl: string = '';
   }
 
-  interface SamlResponseValidation {
-    clientId: string;
-    idpEntityId: string;
-    idpCertificate: string;
+  class SamlResponseValidation {
+    clientId: string = '';
+    idpEntityId: string = '';
+    idpCertificate: string ='';
   }
 }
