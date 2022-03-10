@@ -163,10 +163,9 @@ public class SupportInfoOfEmployeeTest {
 			
 		}
 		
-
 		
 		{
-			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup( "group_workplace_id_" );
+			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup( "workplaceGroupId_1" );
 			
 			//act
 			val result = target.isAffiliatePerson( baseOrg );
@@ -184,7 +183,7 @@ public class SupportInfoOfEmployeeTest {
 	@Test
 	public void testIsAffiliatePerson_case_workplaceGroup( @Injectable TargetOrgIdenInfor recipient ) {
 		//所属組織
-		val affiliationOrg = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup( "workplace_group_id_1" );
+		val affiliationOrg = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup( "workplaceGroupId_1" );
 		
 		val target = SupportInfoOfEmployee.createWithAllDaySupport(	new EmployeeId("sid")
 				,	GeneralDate.ymd(2022, 2, 22)
@@ -193,7 +192,7 @@ public class SupportInfoOfEmployeeTest {
 		
 		//同じ
 		{
-			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup( "workplace_group_id_1" );
+			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup( "workplaceGroupId_1" );
 			
 			//act
 			val result = target.isAffiliatePerson( baseOrg );
@@ -205,7 +204,7 @@ public class SupportInfoOfEmployeeTest {
 		//違う
 		{
 			
-			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup( "workplaceId" );
+			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup( "workplaceGroupId_2" );
 			//act
 			val result = target.isAffiliatePerson( baseOrg );
 			
@@ -214,7 +213,7 @@ public class SupportInfoOfEmployeeTest {
 		}
 		
 		{
-			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup( "group_workplace_id_2" );
+			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" );
 			
 			//act
 			val result = target.isAffiliatePerson( baseOrg );
@@ -232,7 +231,7 @@ public class SupportInfoOfEmployeeTest {
 	@Test
 	public void testDoTheyGoToSupport_case_dont_go( @Injectable TargetOrgIdenInfor recipient ) {
 		//所属組織
-		val affiliationOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id" );
+		val affiliationOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" );
 		
 		//所属者じゃない
 		{
@@ -251,9 +250,9 @@ public class SupportInfoOfEmployeeTest {
 			
 		}
 		
-		//所属者じゃない
+		//応援しない
 		{
-			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_2" );
+			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" );
 			
 			// 応援しない社員
 			val target = SupportInfoOfEmployee.createWithoutSupport(	new EmployeeId( "sid" )//dummy
@@ -269,11 +268,11 @@ public class SupportInfoOfEmployeeTest {
 		
 		//終日応援する場合は 応援に行かない
 		{
-			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id" );
+			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" );
 			val target = SupportInfoOfEmployee.createWithAllDaySupport(	new EmployeeId("sid")
 																	,	GeneralDate.ymd(2022, 2, 22)
 																	,	affiliationOrg
-																	,	TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id" )
+																	,	TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" )
 																		);
 			//act
 			val result = target.doTheyGoToSupport(baseOrg);
@@ -285,12 +284,13 @@ public class SupportInfoOfEmployeeTest {
 		
 		//時間帯で応援する場合は 応援に行かない
 		{
-			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id" );
+			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" );
 			val target = SupportInfoOfEmployee.createWithTimezoneSupport(	new EmployeeId("sid")
 																		,	GeneralDate.ymd(2022, 2, 22)
 																		,	affiliationOrg
 																		,	Arrays.asList( 
-																				TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id" )
+																				TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" )
+																		//	,	TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_3" )
 																			));
 			//act
 			val result = target.doTheyGoToSupport(baseOrg);
@@ -309,11 +309,11 @@ public class SupportInfoOfEmployeeTest {
 	@Test
 	public void testDoTheyGoToSupport_case_go( @Injectable TargetOrgIdenInfor recipient ) {
 		//所属組織
-		val affiliationOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id" );
+		val affiliationOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" );
 		
 		//終日応援する場合は 応援に行く
 		{
-			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id" );
+			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" );
 			val target = SupportInfoOfEmployee.createWithAllDaySupport(	new EmployeeId( "sid" )
 																	,	GeneralDate.ymd( 2022, 2, 22 )
 																	,	affiliationOrg
@@ -329,12 +329,12 @@ public class SupportInfoOfEmployeeTest {
 		
 		//時間帯で応援する場合は 応援に行く
 		{
-			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id" );
+			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" );
 			val target = SupportInfoOfEmployee.createWithTimezoneSupport(	new EmployeeId( "sid" )
 																		,	GeneralDate.ymd(2022, 2, 22)
 																		,	affiliationOrg
 																		,	Arrays.asList( 
-																				TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id" )
+																				TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" )
 																			,	TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_other" )
 																			));
 			//act
@@ -353,11 +353,11 @@ public class SupportInfoOfEmployeeTest {
 	@Test
 	public void testDoTheyCometoSupport_case_no_come( @Injectable TargetOrgIdenInfor recipient ) {
 		//所属組織
-		val affiliationOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id" );
+		val affiliationOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" );
 		
 		//所属者
 		{
-			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id" );
+			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" );
 			
 			val target = SupportInfoOfEmployee.createWithAllDaySupport(	new EmployeeId( "sid" )//dummy
 																	,	GeneralDate.ymd(2022, 2, 22)//dummy
@@ -371,9 +371,9 @@ public class SupportInfoOfEmployeeTest {
 			assertThat( result ).isFalse();
 		}
 		
-		//所属者
+		//応援しない
 		{
-			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id" );
+			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_2" );
 			
 			// 応援しない社員
 			val target = SupportInfoOfEmployee.createWithoutSupport(	new EmployeeId( "sid" )//dummy
@@ -389,11 +389,11 @@ public class SupportInfoOfEmployeeTest {
 		
 		//終日応援する場合は 応援に来ない
 		{
-			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id_1" );
+			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_2" );
 			val target = SupportInfoOfEmployee.createWithAllDaySupport(	new EmployeeId( "sid" )
 																	,	GeneralDate.ymd( 2022, 2, 22 )
 																	,	affiliationOrg
-																	,	TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_other_1" )
+																	,	TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_3" )
 																		);
 			//act
 			val result = target.doTheyCometoSupport( baseOrg );
@@ -405,7 +405,7 @@ public class SupportInfoOfEmployeeTest {
 		
 		//時間帯で応援する場合は 応援に来ない
 		{
-			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id_1" );
+			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_2" );
 			val target = SupportInfoOfEmployee.createWithTimezoneSupport(	new EmployeeId( "sid" )
 																		,	GeneralDate.ymd(2022, 2, 22)
 																		,	affiliationOrg
@@ -429,15 +429,15 @@ public class SupportInfoOfEmployeeTest {
 	@Test
 	public void testDoTheyCometoSupport_case_come( @Injectable TargetOrgIdenInfor recipient ) {
 		//所属組織
-		val affiliationOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id" );
+		val affiliationOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId" );
 		
 		//終日応援する場合は 応援に来る
 		{
-			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id_1" );
+			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" );
 			val target = SupportInfoOfEmployee.createWithAllDaySupport(	new EmployeeId( "sid" )
 																	,	GeneralDate.ymd( 2022, 2, 22 )
 																	,	affiliationOrg
-																	,	TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id_1" )
+																	,	TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" )
 																		);
 			//act
 			val result = target.doTheyCometoSupport( baseOrg );
@@ -449,12 +449,12 @@ public class SupportInfoOfEmployeeTest {
 		
 		//時間帯で応援する場合は 応援に来る
 		{
-			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id_1" );
+			val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" );
 			val target = SupportInfoOfEmployee.createWithTimezoneSupport(	new EmployeeId( "sid" )
 																		,	GeneralDate.ymd(2022, 2, 22)
 																		,	affiliationOrg
 																		,	Arrays.asList( 
-																				TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id_1" )
+																				TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" )
 																			,	TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_other" )
 																			));
 			//act
@@ -473,9 +473,9 @@ public class SupportInfoOfEmployeeTest {
 	@Test
 	public void testGetSupportStatus_case_go(@Injectable TargetOrgIdenInfor recipient ) {
 		
-		val affiliationOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id" );//所属組織
+		val affiliationOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId" );//所属組織
 		
-		val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id" );//基準となる組織
+		val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId" );//基準となる組織
 		
 		Map<SupportInfoOfEmployee, SupportStatus> expectedValues = new HashMap< SupportInfoOfEmployee, SupportStatus >() {
 			
@@ -495,7 +495,7 @@ public class SupportInfoOfEmployeeTest {
 																					,	GeneralDate.ymd(2022, 2, 22)
 																					,	affiliationOrg
 																					,	Arrays.asList( 
-																							TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id" )
+																							TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId" )
 																						,	TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_other" )
 																						));
 				put( goTimeZone_emp, SupportStatus.GO_TIMEZONE );
@@ -527,9 +527,9 @@ public class SupportInfoOfEmployeeTest {
 	@Test
 	public void testGetSupportStatus_case_come(@Injectable TargetOrgIdenInfor recipient ) {
 		
-		val affiliationOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id" );//所属組織
+		val affiliationOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId" );//所属組織
 		
-		val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id_1" );//基準となる組織
+		val baseOrg = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" );//基準となる組織
 		
 		Map<SupportInfoOfEmployee, SupportStatus> expectedValues = new HashMap< SupportInfoOfEmployee, SupportStatus >() {
 			
@@ -540,7 +540,7 @@ public class SupportInfoOfEmployeeTest {
 				val comeAllDay_emp = SupportInfoOfEmployee.createWithAllDaySupport(	new EmployeeId( "sid" )
 																				,	GeneralDate.ymd( 2022, 2, 22 )
 																				,	affiliationOrg
-																				,	TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id_1" )
+																				,	TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" )
 																					);
 				put( comeAllDay_emp, SupportStatus.COME_ALLDAY);
 				
@@ -549,8 +549,8 @@ public class SupportInfoOfEmployeeTest {
 																					,	GeneralDate.ymd(2022, 2, 22)
 																					,	affiliationOrg
 																					,	Arrays.asList( 
-																							TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id_1" )
-																						,	TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id_2" )
+																							TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" )
+																						,	TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_2" )
 																						));
 				put( comeTimeZone_emp, SupportStatus.COME_TIMEZONE );
 				
@@ -558,7 +558,7 @@ public class SupportInfoOfEmployeeTest {
 				val donnotcome_emp = SupportInfoOfEmployee.createWithAllDaySupport(	new EmployeeId( "sid" )
 																				,	GeneralDate.ymd( 2022, 2, 22 )
 																				,	affiliationOrg
-																				,	TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_id_2" )
+																				,	TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_2" )
 																					);
 				put( donnotcome_emp, SupportStatus.DO_NOT_COME);
 				
