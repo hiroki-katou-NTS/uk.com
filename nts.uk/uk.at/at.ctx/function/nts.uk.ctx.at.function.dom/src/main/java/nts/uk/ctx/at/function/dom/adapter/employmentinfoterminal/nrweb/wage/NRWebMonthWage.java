@@ -64,7 +64,7 @@ public class NRWebMonthWage {
 	}
 
 	// [4] HTMLを作る
-	public String createHtml(NRWebQueryMenuName menuName, YearMonth ym,
+	public String createHtml(NRWebQueryMenuName menuName, YearMonth ym, Optional<Integer> year,
 			List<EstimateAmountDetailImport> dataAmountSetting) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("<HTML>");
@@ -72,7 +72,10 @@ public class NRWebMonthWage {
 		builder.append(menuName.value);
 		builder.append("</TITLE></HEAD>");
 		builder.append("<BODY><DL>");
-		builder.append(String.format("<DT>%s</DT>", String.format("%d年%02d月度", ym.year(), ym.month())));
+		String yearMonthOrYear = menuName == NRWebQueryMenuName.MONTH_WAGE
+				? String.format("%d年%02d月度", ym.year(), ym.month())
+				: year.map(x -> String.format("%d年度", x)).orElse("年度");
+		builder.append(String.format("<DT>%s</DT>", yearMonthOrYear));
 		builder.append(this.getMeasure().createOneDataHtml("目安時間", "目安金額"));
 		builder.append(this.getCurrentWork().createOneDataHtml("現在勤務時間", "現在勤務金額"));
 		builder.append(this.getCurrentOvertime().createOneDataHtml("現在勤務残業時間", "現在勤務残業金額"));
@@ -86,11 +89,14 @@ public class NRWebMonthWage {
 	}
 
 	// [5] XMLを作る
-	public String createXml(YearMonth ym, List<EstimateAmountDetailImport> dataAmountSetting) {
+	public String createXml(NRWebQueryMenuName menuName, YearMonth ym, Optional<Integer> year, List<EstimateAmountDetailImport> dataAmountSetting) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("<kindata type='5'><item type='head'  repbtn='no'>");
+		String yearMonthOrYear = menuName == NRWebQueryMenuName.MONTH_WAGE
+				? String.format("%d年%02d月度", ym.year(), ym.month())
+				: year.map(x -> String.format("%d年度", x)).orElse("年度");
 		builder.append(String.format("<subitem index='1' value = %s type='date' align='2'/>",
-				String.format("%d年%02d月度", ym.year(), ym.month())));
+				yearMonthOrYear));
 		builder.append("<subitem index='2' value='時間' align='2'/><subitem index='3' value='金額' align='2'/></item>");
 		builder.append(this.getMeasure().createOneDataXml("目安", Optional.empty()));
 		builder.append(this.getCurrentWork().createOneDataXml("現在勤務", Optional.empty()));
