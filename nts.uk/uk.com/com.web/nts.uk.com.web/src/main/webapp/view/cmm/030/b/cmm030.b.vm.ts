@@ -60,7 +60,7 @@ module nts.uk.com.view.cmm030.b {
       }
       const result = {
         sid: vm.selectedEmployeeId(),
-        name: _.find(vm.employeeList(), { id: vm.selectedEmployeeId() })?.name || "選択無し"
+        name: _.find(vm.employeeList(), { id: vm.selectedEmployeeId() })?.name || vm.$i18n("CMM030_25")
       };
       vm.$window.close(result);
     }
