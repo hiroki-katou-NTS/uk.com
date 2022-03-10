@@ -57,8 +57,7 @@ public class GetNotificationMessageQuery extends NRLRequest<Frame> {
 			builder.append("00");
 			builder.append(Codryptofy.paddingWithByte("", 1200, "0"));
 		}
-		byte[] payloadBytes = Codryptofy.decode(builder.toString());
-		int length = payloadBytes.length + 46;
+		int length = 36060 + 44;//payload+soh+hdr+....
 		List<MapItem> items = NRContentList.createFieldForPadding2(Command.MESSAGE,
 				Optional.ofNullable(Integer.toHexString(length)), context.getTerminal());
 		context.collect(items, builder.toString());

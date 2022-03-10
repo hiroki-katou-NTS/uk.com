@@ -31,7 +31,7 @@ public class GetNotificationMessage {
 			return new ArrayList<>();
 
 		return require.getMessage(cid.get(), sid.get(), new DatePeriod(GeneralDate.today(), GeneralDate.today()))
-				.stream().limit(99).collect(Collectors.toList());
+				.stream().limit(30).collect(Collectors.toList());
 
 	}
 
