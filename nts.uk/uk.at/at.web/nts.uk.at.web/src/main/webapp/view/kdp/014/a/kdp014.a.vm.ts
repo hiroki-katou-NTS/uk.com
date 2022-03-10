@@ -19,11 +19,12 @@ module nts.uk.at.view.kdp014.a {
     isShowWorkPlaceName: KnockoutObservable<boolean> = ko.observable(false);
     employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
     selectedEmployee: KnockoutObservableArray<EmployeeSearchDto> = ko.observableArray([]);
+    selectedEmployeeId: KnockoutObservable<string> = ko.observable(null);
     selectedEmployeeCode: KnockoutObservable<string> = ko.observable(null);
     selectedEmployeeName: KnockoutObservable<string> = ko.observable(null);
     listEmplId: KnockoutObservableArray<string> = ko.observableArray([]);
     listEmployee: EmployeeSearchDto[];
-    // Radio 
+    // Radio
     itemList: KnockoutObservableArray<any>;
     listId: KnockoutObservableArray<any>;
     selectedId: KnockoutObservable<number>;
@@ -140,7 +141,7 @@ module nts.uk.at.view.kdp014.a {
     register() {
       const vm = this;
       const data = {
-        employeeId: vm.selectedEmployeeCode(),
+        employeeId: vm.selectedEmployeeId(),
         locationInformation: vm.selectedId(),
         isLimitArea: vm.selectedId2()
       };
@@ -162,25 +163,28 @@ module nts.uk.at.view.kdp014.a {
       let employeeModel: UnitModel = _.find(vm.employeeList(), item => {
         return item.code === employmentCategoryCode;
       });
-      const selectedEmpl = employeeModel.code;
-      vm.$ajax(`${API.GET_ONE_BY_EMPID}/${selectedEmpl}`).done((res: any) => {
-        if (res) {
-          vm.selectedId(res.isLimitArea);
-          vm.selectedId2(res.locationInformation);
-          vm.enabledelete(true);
-        } else {
-          vm.selectedId(0);
-          vm.selectedId2(0);
-          vm.enabledelete(false);
-        }
-        vm.isStart = false;
-        vm.selectedEmployeeCode(employeeModel.code);
-        vm.selectedEmployeeName(employeeModel.name);
-        vm.mode(UPDATE_MODE);
-      }).always(() => {
-        $("#A6_2").focus();
-        vm.$blockui("clear");
-      });
+      if(employeeModel) {
+        const selectedEmpl = employeeModel.id;
+        vm.$ajax(`${API.GET_ONE_BY_EMPID}/${selectedEmpl}`).done((res: any) => {
+          if (res) {
+            vm.selectedId(res.isLimitArea);
+            vm.selectedId2(res.locationInformation);
+            vm.enabledelete(true);
+          } else {
+            vm.selectedId(0);
+            vm.selectedId2(0);
+            vm.enabledelete(false);
+          }
+          vm.isStart = false;
+          vm.selectedEmployeeId(employeeModel.id);
+          vm.selectedEmployeeCode(employeeModel.code);
+          vm.selectedEmployeeName(employeeModel.name);
+          vm.mode(UPDATE_MODE);
+        }).always(() => {
+          $("#A6_2").focus();
+          vm.$blockui("clear");
+        });
+      }
     }
 
     applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
@@ -191,10 +195,11 @@ module nts.uk.at.view.kdp014.a {
       let employeeSearchs: Array<UnitModel> = [];
       for (let employeeSearch of dataList) {
         let employee: UnitModel = {
+          id  : employeeSearch.employeeId,
           code: employeeSearch.employeeCode,
           name: employeeSearch.employeeName
         };
-        vm.listEmplId.push(employeeSearch.employeeCode);
+        vm.listEmplId.push(employeeSearch.employeeId);
         employeeSearchs.push(employee);
       }
       const dataEmpl = {
@@ -203,10 +208,16 @@ module nts.uk.at.view.kdp014.a {
 
       vm.$ajax(API.GET_STATUS_STAMPING_EMP, dataEmpl).then((res: []) => {
         vm.alreadySettingList.removeAll();
+        const convertAlreadySettingList: any = [];
         res.forEach(item => {
           vm.alreadySettingList.push({
-            code: item,
+            id: item,
+            code: vm.convertIdToCode(employeeSearchs, item),
             isAlreadySetting: true
+          })
+          convertAlreadySettingList.push({
+            code: vm.convertIdToCode(employeeSearchs, item),
+            isAlreadySetting: true,
           })
         });
         vm.employeeList(employeeSearchs);
@@ -217,7 +228,7 @@ module nts.uk.at.view.kdp014.a {
           selectType: SelectType.SELECT_BY_SELECTED_CODE,
           selectedCode: vm.selectedEmployeeCode,
           isDialog: false,
-          alreadySettingList: vm.alreadySettingList
+          alreadySettingList: ko.observableArray(convertAlreadySettingList)
         };
         $('#kcp005component').ntsListComponent(vm.listComponentOption);
       });
@@ -234,6 +245,7 @@ module nts.uk.at.view.kdp014.a {
             vm.selectedId2(0);
           }
           vm.isStart = false;
+          vm.selectedEmployeeId(dataList[0].employeeId);
           vm.selectedEmployeeCode(dataList[0].employeeCode);
           vm.selectedEmployeeName(dataList[0].employeeName);
           vm.mode(UPDATE_MODE);
@@ -244,6 +256,13 @@ module nts.uk.at.view.kdp014.a {
       }
     }
 
+    convertIdToCode(empList: any, id: any){
+      let employeeModel: UnitModel = _.find(empList, item => {
+        return item.id === id;
+      });
+      return employeeModel ? employeeModel.code : "";
+    }
+
     getAll() {
       const vm = this;
       const dataEmpl = {
@@ -252,10 +271,16 @@ module nts.uk.at.view.kdp014.a {
       vm.$blockui("grayout");
       vm.$ajax(API.GET_STATUS_STAMPING_EMP, dataEmpl).then((res: []) => {
         vm.alreadySettingList.removeAll();
+        const convertAlreadySettingList: any = [];
         res.forEach(item => {
           vm.alreadySettingList.push({
-            code: item,
+            id: item,
+            code: vm.convertIdToCode(vm.employeeList(), item),
             isAlreadySetting: true
+          })
+          convertAlreadySettingList.push({
+            code: vm.convertIdToCode(vm.employeeList(), item),
+            isAlreadySetting: true,
           })
         });
         vm.listComponentOption = {
@@ -265,7 +290,7 @@ module nts.uk.at.view.kdp014.a {
           selectType: SelectType.SELECT_BY_SELECTED_CODE,
           selectedCode: vm.selectedEmployeeCode,
           isDialog: false,
-          alreadySettingList: vm.alreadySettingList
+          alreadySettingList: ko.observableArray(convertAlreadySettingList)
         };
         $('#kcp005component').ntsListComponent(vm.listComponentOption);
       }).always(() => vm.$blockui("clear"));
@@ -274,7 +299,7 @@ module nts.uk.at.view.kdp014.a {
     public remove() {
       const vm = this;
       const data = {
-        employeeId: vm.selectedEmployeeCode()
+        employeeId: vm.selectedEmployeeId()
       };
       vm.$dialog.confirm({ messageId: "Msg_18" })
         .then((result: 'no' | 'yes' | 'cancel') => {
@@ -385,6 +410,7 @@ module nts.uk.at.view.kdp014.a {
   }
 
   export interface UnitAlreadySettingModel {
+    id: string;
     code: string;
     isAlreadySetting: boolean;
   }

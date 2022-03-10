@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonest
 import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestriction;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @Table(name = "KRCMT_STAMP_EREA_LIMIT_SYA")
@@ -27,7 +28,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author NWS_vandv
  *
  */
-public class KrcmtStampEreaLimitSya implements Serializable {
+public class KrcmtStampEreaLimitSya extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -72,6 +73,11 @@ public class KrcmtStampEreaLimitSya implements Serializable {
 		krcmtStampEreaLimitSya.setAreaLimitAtr(restrictionSetting.getStampingAreaRestriction().getStampingAreaLimit().value);
 		krcmtStampEreaLimitSya.setLocationInforUse(restrictionSetting.getStampingAreaRestriction().getUseLocationInformation().value);
 		return krcmtStampEreaLimitSya;
+	}
+	
+	@Override
+	protected Object getKey() {
+		return this.PK;
 	}
 	
 }
