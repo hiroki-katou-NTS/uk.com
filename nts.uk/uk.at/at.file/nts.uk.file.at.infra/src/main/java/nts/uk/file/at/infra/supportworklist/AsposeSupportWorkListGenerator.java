@@ -157,8 +157,10 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
 
         Cells cells = worksheet.getCells();
         int startRow = 3;
-        val supportWorkDataList = dataSource.getSupportWorkOutputData().getSupportWorkDataList().stream()
-                .sorted(Comparator.comparing(WorkplaceSupportWorkData::getWorkplace)).collect(Collectors.toList());
+        val workplaceSortedList = dataSource.getWorkplaceInfoList().stream().sorted(Comparator.comparing(WorkPlaceInforExport::getWorkplaceCode))
+                .map(WorkPlaceInforExport::getWorkplaceId).collect(Collectors.toList());
+        val supportWorkDataList = dataSource.getSupportWorkOutputData().getSupportWorkDataList();
+        supportWorkDataList.sort(Comparator.comparing(v -> workplaceSortedList.indexOf(v.getWorkplace())));
         for (int i = 0; i < supportWorkDataList.size(); i++) {   // loop for each workplace
             WorkplaceSupportWorkData workDataByWkp = supportWorkDataList.get(i);
             // C5_1
