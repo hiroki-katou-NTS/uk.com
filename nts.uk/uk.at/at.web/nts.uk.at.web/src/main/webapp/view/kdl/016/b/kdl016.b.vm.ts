@@ -46,6 +46,13 @@ module nts.uk.at.view.kdl016.b {
                     vm.$errors("clear");
                 }
             });
+
+            // vm.timespanMin.subscribe((value) => {
+            //     vm.validateTimeRange(value, true);
+            // });
+            // vm.timespanMin.subscribe((value) => {
+            //     vm.validateTimeRange(value, true);
+            // });
         }
 
         created(params: IParameter) {
@@ -76,6 +83,27 @@ module nts.uk.at.view.kdl016.b {
             const vm = this;
             $('#employee-list').ntsListComponent(vm.listComponentOption);
             $('#employee-list').focus();
+        }
+
+        public validateTimeRange(value: any, isStart: boolean) {
+            const vm = this;
+            let startTime = isStart ? value : !_.isNil(vm.timespanMin()) ? vm.timespanMin() : 0;
+            let endTime = !isStart ? value : !_.isNil(vm.timespanMax()) ? vm.timespanMax() : 0;
+
+            if (startTime >= endTime) {
+                $('#timespanMin').ntsError('set', {messageId: "Msg_770"});
+                return false;
+            } else {
+                return true
+            }
+        }
+
+        public convertTimeInput(time: any): number {
+            var timeArray = time.split(":");
+            var hours = parseInt(timeArray[0]) >= 0 ? parseInt(timeArray[0])
+                : -(24 + parseInt(timeArray[0]));
+
+            return hours * 60 + parseInt(timeArray[1]);
         }
 
         loadData() {

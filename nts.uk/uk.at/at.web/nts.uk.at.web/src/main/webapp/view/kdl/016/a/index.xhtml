@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 960, height: 650 };</script>
+        <script>var dialogSize = { width: 960, height: 575 };</script>
         <com:scriptfile set="IGNITE"/>
         <com:stylefile path="kdl016.a.style.css"/>
         <com:scriptfile path="kdl016.a.vm.js"/>
@@ -15,7 +15,7 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--A1_1-->
-            <button id="A1_1" tabindex="1" class="proceed" data-bind="click: register, enable: true; $root.errors.isEmpty()">#{i18n.getText('KDL016_7')}</button>
+            <button id="A1_1" tabindex="1" data-bind="click: register, enable: true; $root.errors.isEmpty()">#{i18n.getText('KDL016_7')}</button>
             <!--A1_2-->
             <button tabindex="2" class="danger" data-bind="click: remove, enable: canDelete">#{i18n.getText('KDL016_8')}</button>
             <!--A1_3-->

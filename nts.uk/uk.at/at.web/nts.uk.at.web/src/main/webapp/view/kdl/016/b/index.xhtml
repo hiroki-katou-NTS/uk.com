@@ -45,11 +45,11 @@
 										]}">
                     </div>
                 </div>
-                <div class="control-group valign-center">
+                <div class="control-group valign-top">
                     <!--B4_1-->
-                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL016_23')}</div>
+                    <div style="margin-top: 0px" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL016_23')}</div>
                     <!--B4_2-->
-                    <div style="display: inline-block">
+                    <div class="radio-group-right" style="display: inline-block;">
                         <div tabindex="3" class="vertical-radio" data-bind="ntsRadioBoxGroup: {
                                     options: supportTypes,
                                     optionsValue: 'id',
@@ -58,7 +58,7 @@
                                     enable: true}"/>
                     </div>
                     <!--B4_2_3-->
-                    <div style="display: inline-block">
+                    <div class="time-range-right" style="display: inline-block;">
                         <input id="timespanMin"
                                data-bind="ntsTimeWithDayEditor: {
 												name: '#[KDL016_25]',
@@ -102,7 +102,7 @@
         <div id="functions-area-bottom">
             <button id="register"
                     data-bind="click: $vm.register, enable: selectedEmployees().length > 0"
-                    class="proceed" tabindex="6">#{i18n.getText('KDL016_30')}</button>
+                    class="proceed x-large" tabindex="6">#{i18n.getText('KDL016_30')}</button>
             <button data-bind="click: $vm.closeDialog"
                     class="normal" tabindex="7">#{i18n.getText('KDL016_31')}</button>
         </div>

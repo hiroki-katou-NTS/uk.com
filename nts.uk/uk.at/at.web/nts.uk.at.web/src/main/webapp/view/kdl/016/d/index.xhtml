@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = {width: 390, height: 430};</script>
+        <script>var dialogSize = {width: 380, height: 430};</script>
         <com:scriptfile set="IGNITE"/>
         <com:stylefile path="kdl016.d.style.css"/>
         <com:scriptfile path="kdl016.d.vm.js"/>
@@ -16,27 +16,26 @@
         <div id="contents-area" style="padding-left: 20px;">
             <div class="control-group valign-center" style="padding-top: 10px">
                 <!--D1_1-->
-                <div style="width: 23%" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU008_7')}</div>
+                <div style="width: 25%" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU008_7')}</div>
                 <!--D1_2-->
                 <span data-bind="text: detail().supportOrgName"/>
             </div>
             <div class="control-group valign-center">
                 <!--D2_1-->
-                <div style="width: 23%" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL016_16')}</div>
+                <div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL016_16')}</div>
                 <!--D2_2-->
-                <div class="emp-width" style="display: inline-block">
-                    <span class="limited-label" data-bind="text: detail().employeeDisplay"/>
-                </div>
+                <span style="display: inline-block; max-width: 240px; margin-left: 47px" class="limited-label"
+                      data-bind="text: detail().employeeDisplay"/>
             </div>
             <div class="control-group valign-center">
                 <!--D3_1-->
-                <div style="width: 23%" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL016_17')}</div>
+                <div style="width: 25%" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL016_17')}</div>
                 <!--D3_2-->
                 <span data-bind="text: detail().supportTypeName"/>
             </div>
             <div class="control-group valign-center">
                 <!--D4_1-->
-                <div style="width: 23%" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL016_27')}</div>
+                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL016_27')}</div>
                 <!--D4_2-->
                 <div id="daterangepicker" style="display: inline-block" data-bind="ntsDateRangePicker: {
                       name: '#[KDL016_27]',
@@ -54,7 +53,7 @@
         <div id="functions-area-bottom">
             <button id="update"
                     data-bind="click: $vm.update, enable : $root.errors.isEmpty"
-                    class="proceed" tabindex="2">#{i18n.getText('KDL016_30')}</button>
+                    class="proceed x-large" tabindex="2">#{i18n.getText('KDL016_30')}</button>
             <button data-bind="click: $vm.closeDialog"
                     class="normal" tabindex="3">#{i18n.getText('KDL016_31')}</button>
         </div>

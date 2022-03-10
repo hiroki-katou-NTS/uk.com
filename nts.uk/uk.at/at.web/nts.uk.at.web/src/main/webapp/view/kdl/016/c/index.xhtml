@@ -49,11 +49,11 @@
                 </div>
             </div>
             <div class="fixed-flex-layout-right">
-                <div class="control-group valign-center" style="padding-top: 23px;">
+                <div class="control-group valign-top" style="margin-top: 90px;">
                     <!--C5_1-->
                     <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL016_23')}</div>
                     <!--C5_2-->
-                    <div style="display: inline-block">
+                    <div class="radio-group-right" style="display: inline-block">
                         <div tabindex="3" class="vertical-radio" data-bind="ntsRadioBoxGroup: {
                                     options: supportTypes,
                                     optionsValue: 'id',
@@ -62,7 +62,7 @@
                                     enable: true}"/>
                     </div>
                     <!--C5_2_3-->
-                    <div style="display: inline-block">
+                    <div class="time-range-right" style="display: inline-block">
                         <input id="timespanMin"
                                data-bind="ntsTimeWithDayEditor: {
 												name: '#[KDL016_25]',

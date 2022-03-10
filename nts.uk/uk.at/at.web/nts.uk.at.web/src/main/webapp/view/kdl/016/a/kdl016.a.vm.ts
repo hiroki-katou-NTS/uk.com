@@ -169,7 +169,7 @@ module nts.uk.at.view.kdl016.a {
                         headerText: vm.$i18n('KDL016_14'),
                         key: "periodDisplay",
                         dataType: "string",
-                        width: '200px',
+                        width: '175px',
                         template: '<div style="float:left">${periodDisplay} </div>'
                     },
                     {headerText: vm.$i18n('KDL016_15'), key: "supportOrgName", width: '115px', dataType: "string"},
@@ -294,7 +294,7 @@ module nts.uk.at.view.kdl016.a {
                     },
                     {
                         name: 'Selection',
-                        mode: 'row',
+                        mode: 'cell',
                         multipleSelection: true,
                         // rowSelectionChanging: function() {},
                         // rowSelectionChanged: function(event: any, ui: any) {}

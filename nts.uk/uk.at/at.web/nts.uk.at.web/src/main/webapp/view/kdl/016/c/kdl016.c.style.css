@@ -36,11 +36,23 @@
 }
 
 .caret-bottom {
-    font-size: 28px;
-    margin-left: 253px;
+    font-size: 35px;
+    margin-left: 219px;
     color: #E0F59E;
     vertical-align: top;
-    line-height: 28px;
+    line-height: 20px;
+}
+
+.caret-bottom:after {
+    border-width: 0.8em 2em;
+}
+
+.radio-group-right {
+    margin-top: 5px;
+}
+
+.time-range-right {
+    margin-top: 30px;
 }
 
 
