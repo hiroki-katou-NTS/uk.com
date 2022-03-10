@@ -323,7 +323,7 @@ public class SpecialHoliday extends AggregateRoot {
 				EnumAdaptor.valueOf(autoGrant, NotUseAtr.class),
 				continuousAcquisition, new Memo(memo));
 	}
-	
+	/**
 	 * 次回特別休暇付与を計算
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
