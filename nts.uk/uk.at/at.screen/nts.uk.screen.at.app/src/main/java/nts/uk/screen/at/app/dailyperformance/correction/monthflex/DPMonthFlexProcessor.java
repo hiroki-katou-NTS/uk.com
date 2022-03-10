@@ -113,6 +113,7 @@ public class DPMonthFlexProcessor {
 		List<Integer> itemIdsOld = getItemIds(companyId, formatDaily);
 		
 		//EA 4248
+		//会社の日次項目を取得する
 		List<AttItemName> listAttItemName = companyMonthlyItemService.getMonthlyItems(companyId, Optional.empty(), itemIdsOld, new ArrayList<>());
 		List<Integer> itemIds = listAttItemName.stream().map(c->c.getAttendanceItemId()).collect(Collectors.toList());
 		
