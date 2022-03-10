@@ -23,19 +23,19 @@ module nts.uk.at.kdp003.p {
 		itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 		msgNotice: MessageNotice[] = [];
 		role: KnockoutObservable<Role> = ko.observable(new Role());
+		regionalTime = 0;
 
 		created(param: Params) {
 			const vm = this;
-			let regionalTime = 0;
 			
 			if (param) {
-				regionalTime = param.regionalTime;
+				vm.regionalTime = param.regionalTime;
 			}
 
-			this.dateValue(new DatePeriod({
-				startDate: moment(vm.$date.now()).utc().add(regionalTime, 'm').format('YYYY/MM/DD'),
-				endDate: moment(vm.$date.now()).utc().add(regionalTime, 'm').format('YYYY/MM/DD')
-			}))
+			vm.dateValue(new DatePeriod({
+				startDate: moment(vm.$date.now()).utc().add(vm.regionalTime, 'm').format('YYYY/MM/DD'),
+				endDate: moment(vm.$date.now()).utc().add(vm.regionalTime, 'm').format('YYYY/MM/DD')
+			}));
 
 			const input: DatePeriod = new DatePeriod({
 				startDate: moment.utc(vm.dateValue().startDate).toISOString(),
@@ -43,7 +43,7 @@ module nts.uk.at.kdp003.p {
 			});
 			vm.searchMessage(input);
 			vm.$blockui('show');
-			vm.$ajax('com', API.GET_EMP_NOTICE, { regionalTime: regionalTime })
+			vm.$ajax('com', API.GET_EMP_NOTICE, { regionalTime: vm.regionalTime })
 				.then((response: EmployeeNotification) => {
 					if (response.role) {
 						vm.role(response.role);
@@ -104,7 +104,8 @@ module nts.uk.at.kdp003.p {
 			vm.$window.modal('at', '/view/kdp/003/q/index.xhtml', {
 				isNewMode: true,
 				role: vm.role(),
-				messageNotice: null
+				messageNotice: null,
+				regionalTime: vm.regionalTime
 			})
 				.then(result => {
 					if (result && !result.isClose) {
