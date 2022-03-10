@@ -15,7 +15,6 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectStatusResult;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectedState;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectedStateShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.StampRequestModeShare;
@@ -32,7 +31,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.al
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
 /**
  * @author thanh_nx
@@ -85,7 +83,7 @@ public class ReflectApplicationWorkRecord {
 		}
 
 		// 日別実績の補正処理 --- create default ???? sau xu ly phan anh check lai
-		IntegrationOfDaily domainCorrect = CorrectionAttendanceRule.process(require,
+		IntegrationOfDaily domainCorrect = CorrectionAttendanceRule.process(require, cid,
 				dailyRecordApp, changeAtt);
 
 		// 振休振出として扱う日数を補正する

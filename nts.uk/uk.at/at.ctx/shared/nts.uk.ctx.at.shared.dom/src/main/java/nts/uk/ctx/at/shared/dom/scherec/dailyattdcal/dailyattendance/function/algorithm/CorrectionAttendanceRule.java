@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.al
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author ThanhNX
@@ -26,9 +25,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class CorrectionAttendanceRule {
 
 	// 勤怠ルールの補正処理
-	public static IntegrationOfDaily process(Require require, IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt) {
-
-		String companyId = AppContexts.user().companyId();
+	public static IntegrationOfDaily process(Require require, String companyId, IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt) {
 
 		DailyRecordToAttendanceItemConverter converter = require.createDailyConverter(companyId)
 																					.setData(domainDaily).completed();
@@ -70,7 +67,7 @@ public class CorrectionAttendanceRule {
 		}
 		
 		/** 休憩時間帯の補正 */
-		BreakTimeSheetCorrector.correct(require, afterDomain, changeAtt.correctValCopyFromSche);
+		BreakTimeSheetCorrector.correct(require, companyId, afterDomain, changeAtt.correctValCopyFromSche);
 
 		// 手修正を基に戻す
 		DailyRecordToAttendanceItemConverter afterConverter = require.createDailyConverter(companyId).setData(afterDomain)

@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class CorrectionAttendanceRuleProcess implements ICorrectionAttendanceRule{
@@ -83,7 +84,7 @@ public class CorrectionAttendanceRuleProcess implements ICorrectionAttendanceRul
 				personDailySetFactory, fixWorkSetRepo, predetemineTimeSetRepo, createOneDayRangeCalc, workTypeRepo,
 				workTimeSettingRepo, flowWorkSettingRepo, flexWorkSettingRepo, iCorrectSupportDataWork,
 				workingConditionItemRepo, workingConditionRepo, correctShortWorkingHour);
-		return CorrectionAttendanceRule.process(impl, domainDaily, changeAtt);
+		return CorrectionAttendanceRule.process(impl, AppContexts.user().companyId(), domainDaily, changeAtt);
 	}
 
 }

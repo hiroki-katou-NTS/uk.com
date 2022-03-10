@@ -35,7 +35,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.al
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
 /**
  * @author thanh_nx
@@ -91,7 +90,7 @@ public class ReflectApplicationWorkSchedule {
 
 		// 日別実績の補正処理
 		ChangeDailyAttendance changeAtt = ChangeDailyAttendance.createChangeDailyAtt(affterReflect.getLstItemId(), ScheduleRecordClassifi.SCHEDULE);
-		IntegrationOfDaily domainCorrect = CorrectionAttendanceRule.process(require,
+		IntegrationOfDaily domainCorrect = CorrectionAttendanceRule.process(require, companyId,
 				dailyRecordApp, changeAtt);
 		if (domainCorrect instanceof DailyRecordOfApplication) {
 			dailyRecordApp.setAttendanceBeforeReflect(
