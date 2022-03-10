@@ -1,17 +1,14 @@
 .left-panel, .right-panel {
     padding-top: 5px;
+    padding-right: 0 !important;
 }
 
 .left-panel #single-list td {
     height: 24px;
 }
 
-.right-panel .form-label:not(.has-help) {
-    width: 166px;
-}
-
-.right-panel .form-label.has-help {
-    width: initial;
+.right-panel .form-label {
+    width: 215px;
 }
 
 .right-panel .nts-fixed-table {
@@ -20,6 +17,8 @@
 
 .right-panel .ui-widget-header  {
     background-color: #CFF1A5;
+    color: #333333;
+    font-weight: 400;
 }
 
 #B6_1-table .fixed-table-first-row {
@@ -57,6 +56,14 @@
 
 #single-list tr td:last-child {
     text-align: center;
+}
+
+.nts-fixed-table table.fixed-table {
+    border-collapse: collapse;
+}
+
+.nts-fixed-table table.fixed-table tr td {
+    border: solid 1px #CCC !important;
 }
 
 #B6_1-table td span.label {

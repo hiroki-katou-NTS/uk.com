@@ -1,5 +1,5 @@
 .right-panel .form-label {
-    width: 100px;
+    width: 140px;
 }
 
 .right-panel .panel.panel-frame:not(:first-child) {
@@ -59,5 +59,14 @@
 }
 
 .right-panel .panel.panel-frame:nth-child(2) .nts-combo-column-1 {
-    width: 250px!important;
+    width: 300px!important;
+}
+
+.nts-combo-item .nts-combo-column-1 {
+    width: 300px!important;
+}
+
+.switchbox-wrappers .radio-wrapper {
+    width: 75px;
+    flex-direction: column;
 }
