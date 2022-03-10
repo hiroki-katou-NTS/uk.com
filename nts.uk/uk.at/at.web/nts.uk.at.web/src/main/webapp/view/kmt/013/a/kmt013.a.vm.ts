@@ -299,7 +299,7 @@ module nts.uk.at.view.kmt013.a {
                 selectedSystemType: 2,
                 isrestrictionOfReferenceRange: true,
                 showNoSelection: false,
-                isShowBaseDate: false
+                isShowBaseDate: true
             });
             modal('com',"/view/cdl/008/a/index.xhtml").onClosed(function(){
                 let data = getShared('outputCDL008');
