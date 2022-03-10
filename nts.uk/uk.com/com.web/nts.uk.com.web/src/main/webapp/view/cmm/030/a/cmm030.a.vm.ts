@@ -471,7 +471,7 @@ module nts.uk.com.view.cmm030.a {
           return false;
         }
         const isErr3294 = !!_.find(vm.approverInputList(), data => {
-          const approvers = _.chain(data.approvers()).filter(approver => approver.sid != null).map(approver => approver.colId()).value();
+          const approvers = _.chain(data.approvers()).filter(approver => !_.isEmpty(approver.sid)).map(approver => approver.colId()).value();
           const isConsecutive = _.reduce(approvers, (prev: number, curr) => prev + 1 === curr ? curr : false, -1) !== false;
           return approvers.length === 0 || approvers[0] !== 0 || !isConsecutive;
         });
