@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class GetEmpInfoTerminalListDto {
+public class EmpInfoTerminalListDto {
 	//	コード
 	private String empInfoTerCode;
 	//	名称

@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.query.knr.knr001.a.GetEmpInfoTerminalList;
-import nts.uk.screen.at.app.query.knr.knr001.a.GetEmpInfoTerminalListDto;
+import nts.uk.screen.at.app.query.knr.knr001.a.GetEmpInfoTerminalListOutputDto;
 import nts.uk.screen.at.app.query.knr.knr001.a.GetSelectedTerminalInfo;
 import nts.uk.screen.at.app.query.knr.knr001.a.GetSelectedTerminalInfoDto;
 import nts.uk.screen.at.app.query.knr.knr001.a.GetWorkLocationNameDto;
@@ -38,7 +38,7 @@ public class EmpInfoTerScreenWS extends WebService {
 
 	@POST
 	@Path("getall")
-	public List<GetEmpInfoTerminalListDto> getAll() {
+	public GetEmpInfoTerminalListOutputDto getAll() {
 		return this.getEmpInfoTerminalList.getAll();
 	}
 

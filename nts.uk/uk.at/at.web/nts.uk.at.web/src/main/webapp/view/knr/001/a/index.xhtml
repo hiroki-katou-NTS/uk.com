@@ -113,7 +113,7 @@
 					<div class="div_line">
 						<div class="ilb w_label" style=""
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KNR001_24')}</div>
-						<div class="ml-15 ilb va_t h_cbx" style="width: 115px; margin-top: 4px;" id="A3_6"
+						<div class="ml-15 ilb va_t" style="width: 115px; margin-top: 4px;" id="A3_6"
 							data-bind="ntsComboBox: {
 														options: empInfoTerminalModelList,
 														name: '{#KNR001_25}',
@@ -200,7 +200,7 @@
 					</div>
 					
 					<!-- A7_1 A7_2 A7_3 -->
-					<div class="div_line" data-bind="visible: useAtr">
+					<div class="div_line" data-bind="visible: $parent.isUsedSupportOperationSetting()">
 						<div class="w_label" id="A7_1"
 							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KNR001_150')}</div>
 						<button class="ml-15" style="height: 26px;" id="A7_2" data-bind="click: callCDL008">#{i18n.getText('KNR001_151')}</button>
@@ -208,7 +208,7 @@
 					</div>
 
 					<!-- A7_4 A7_5 A7_6 -->
-					<div class="div_line" style="margin-bottom: 11px;" data-bind="visible: useAtr">
+					<div class="div_line" style="margin-bottom: 11px;" data-bind="visible: $parent.isUsedSupportOperationSetting()">
 						<div id="A7_4">#{i18n.getText('KNR001_181')}</div>
 						<div id="A7_5" data-bind="ntsDatePicker: { value: date, dateFormat: 'YYYY/MM/DD'}"></div>
 						<button id="A7_6" data-bind="click: displayButtonHandle">#{i18n.getText('KNR001_182')}</button>
@@ -316,7 +316,7 @@
 						<!-- row10: A6_3 + A6_4 -->
 						<div class="div_line" style="margin-left: 8px">
 							<div class="ilb" style="margin-right: 38px" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KNR001_47')}</div>
-							<div class="ml-15 ilb va_t h_cbx" style="width: 130px; margin-top: 4px;" id="A6_4"
+							<div class="ml-15 ilb va_t" style="width: 130px; margin-top: 4px;" id="A6_4"
 								data-bind="ntsComboBox: {
 															options: empInfoTerminalModel().outingClassList,
 															name: '{#KNR001_48}',
