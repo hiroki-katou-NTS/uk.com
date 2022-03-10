@@ -10,7 +10,7 @@ module nts.uk.at.view.ksp001.e.viewmodel {
         columns: KnockoutObservableArray<NtsGridListColumn>;
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
         mode: number = 0;
-        heightGrid: number = 73;
+        heightGrid: number = 85;
 
         constructor() {
             let self = this;
