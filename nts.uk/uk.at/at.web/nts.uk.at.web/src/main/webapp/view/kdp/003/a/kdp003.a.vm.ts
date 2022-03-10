@@ -280,7 +280,7 @@ module nts.uk.at.kdp003.a {
 			let dfd = $.Deferred<void>();
 
 			if (locationCd) {
-				vm.$ajax('at',API.GetIPAddress, {contactCode: vm.$user.contractCode}).then((address: any) => {
+				vm.$ajax('at', API.GetIPAddress, { contactCode: vm.$user.contractCode }).then((address: any) => {
 					ipv4Address = address.ipaddress;
 				}).done(() => {
 					const param = {
@@ -663,7 +663,7 @@ module nts.uk.at.kdp003.a {
 						vm.$window.modal('at', DIALOG.F, { mode, companyId })
 							.then((output: string) => {
 								if (output === 'loginSuccess') {
-									vm.$window.modal('at', DIALOG.P)
+									vm.$window.modal('at', DIALOG.P, { regionalTime: ko.unwrap(vm.regionalTime) })
 										.then(() => {
 											window.location.reload(false);
 										});

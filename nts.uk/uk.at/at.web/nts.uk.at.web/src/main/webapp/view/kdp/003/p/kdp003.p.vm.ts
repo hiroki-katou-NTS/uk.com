@@ -2,6 +2,10 @@
 
 module nts.uk.at.kdp003.p {
 
+	interface Params {
+		regionalTime: number;
+	}
+
 	const API = {
 		GET_NOTICE: '/at/record/stamp/notice/getNoticeByStamping',
 
@@ -20,11 +24,26 @@ module nts.uk.at.kdp003.p {
 		msgNotice: MessageNotice[] = [];
 		role: KnockoutObservable<Role> = ko.observable(new Role());
 
-		created() {
+		created(param: Params) {
 			const vm = this;
-			vm.searchMessage(null);
+			let regionalTime = 0;
+			
+			if (param) {
+				regionalTime = param.regionalTime;
+			}
+
+			this.dateValue(new DatePeriod({
+				startDate: moment(vm.$date.now()).utc().add(regionalTime, 'm').format('YYYY/MM/DD'),
+				endDate: moment(vm.$date.now()).utc().add(regionalTime, 'm').format('YYYY/MM/DD')
+			}))
+
+			const input: DatePeriod = new DatePeriod({
+				startDate: moment.utc(vm.dateValue().startDate).toISOString(),
+				endDate: moment.utc(vm.dateValue().endDate).toISOString()
+			});
+			vm.searchMessage(input);
 			vm.$blockui('show');
-			vm.$ajax('com', API.GET_EMP_NOTICE, { regionalTime: 0 })
+			vm.$ajax('com', API.GET_EMP_NOTICE, { regionalTime: regionalTime })
 				.then((response: EmployeeNotification) => {
 					if (response.role) {
 						vm.role(response.role);
