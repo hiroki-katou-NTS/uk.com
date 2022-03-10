@@ -41,7 +41,7 @@ public class GetWorkLocationAndRegionalTimeDifference {
 		}
 
 		// Step2
-		if (param.getContractCode() == null && param.getIpv4Address() != null) {
+		if (param.getWorkLocationCode() == null && param.getIpv4Address() != null) {
 			workLocation = this.workLocationRepository.identifyWorkLocationByAddress(param.getContractCode(),
 					Ipv4Address.parse(param.getIpv4Address()));
 		}
