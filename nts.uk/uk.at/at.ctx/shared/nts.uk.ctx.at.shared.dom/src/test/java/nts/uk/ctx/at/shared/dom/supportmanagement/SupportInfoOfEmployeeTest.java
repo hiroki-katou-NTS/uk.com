@@ -290,7 +290,6 @@ public class SupportInfoOfEmployeeTest {
 																		,	affiliationOrg
 																		,	Arrays.asList( 
 																				TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_1" )
-																		//	,	TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId_3" )
 																			));
 			//act
 			val result = target.doTheyGoToSupport(baseOrg);
