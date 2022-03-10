@@ -19,7 +19,6 @@ module nts.uk.at.view.kfp001.d {
             presenceOfError: KnockoutObservable<string> = ko.observable('');
             executionStatus: KnockoutObservable<string> = ko.observable('');
             addErrorInforCommand: KnockoutObservable<any> = ko.observable({});
-            reintegration: KnockoutObservable<boolean> = ko.observable(false);
 
             constructor() {
                 var self = this;
@@ -29,10 +28,6 @@ module nts.uk.at.view.kfp001.d {
                 self.endDate = ko.observable('');
                 self.listEmp = ko.observableArray([]);
                 self.executionId = ko.observable('');
-                let reintegration =   nts.uk.ui.windows.getShared("B_CHECKED");
-                if(!isNullOrUndefined(reintegration)){
-                    self.reintegration(reintegration);
-                }
             }
             start() {
                 let self = this;
@@ -57,7 +52,7 @@ module nts.uk.at.view.kfp001.d {
 
                 let self = this;
                 nts.uk.ui.block.invisible();
-
+                let reintegration =   nts.uk.ui.windows.getShared("B_CHECKED");
                 let listEmployeeId = _.map(_.filter(self.listEmp(), (v) => _.includes(self.listSelect(), v.employeeCode)), (item) => {
                     return item.employeeId;
                 });
@@ -100,7 +95,7 @@ module nts.uk.at.view.kfp001.d {
 //                })
 
                 let addAggrPeriodCommand = {
-                    reintegration:self.reintegration(),//EA4209
+                    reintegration:reintegration,//EA4209
                     mode: self.mode(),
                     aggrPeriodCommand: aggrPeriodDto,
                     targetCommand: targetDto,
@@ -149,7 +144,6 @@ module nts.uk.at.view.kfp001.d {
             }
 
             addListError(errorsRequest: Array<string>) {
-                var self = this;
                 var errors = [];
                 _.forEach(errorsRequest, function(err) {
                     errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });

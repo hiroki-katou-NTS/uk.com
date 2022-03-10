@@ -105,9 +105,9 @@ public class JpaAnyPeriodEditingStatusRepository extends JpaRepository implement
         return entities;
     }
 
-    private List<KsrdtAnpEditState> getEntitiesByCidAndCode(String employeeId, String frameCode) {
+    private List<KsrdtAnpEditState> getEntitiesByCidAndCode(String cid, String frameCode) {
         List<KsrdtAnpEditState> entities = this.queryProxy().query(SELECT_BY_CID_AND_CODE, KsrdtAnpEditState.class)
-                .setParameter("cid", employeeId)
+                .setParameter("cid", cid)
                 .setParameter("frameCode", frameCode)
                 .getList();
         return entities;

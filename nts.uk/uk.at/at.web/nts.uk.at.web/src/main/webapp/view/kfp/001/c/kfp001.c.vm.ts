@@ -78,10 +78,6 @@ module nts.uk.at.view.kfp001.c {
                 self.selectedEmployee = ko.observableArray([]);
                 self.showinfoSelectedEmployee = ko.observable(false);
                 self.baseDate = ko.observable(new Date());
-                let reintegration =   nts.uk.ui.windows.getShared("B_CHECKED");
-                if(!isNullOrUndefined(reintegration)){
-                    self.reintegration(reintegration);
-                }
                 self.reloadCcg001();
                 self.dScreenmodel = new nts.uk.at.view.kfp001.d.viewmodel.ScreenModel();
 
@@ -167,6 +163,10 @@ module nts.uk.at.view.kfp001.c {
 
             start() {
                 var self = this;
+                let reintegration =   nts.uk.ui.windows.getShared("B_CHECKED");
+                if(!isNullOrUndefined(reintegration)){
+                    self.reintegration(reintegration);
+                }
                 self.reloadCcg001();
                 $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 $('#component-items-list').ntsListComponent(self.listComponentOption);
