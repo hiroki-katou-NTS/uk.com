@@ -7,7 +7,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 /**
  * @author sakuratani
  *
- *         月間年間賃金予定Imported
+ *         月間年間賃金実績Imported
  */
 @Getter
 @AllArgsConstructor
