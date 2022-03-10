@@ -553,9 +553,11 @@ module nts.uk.at.view.kdp005.a {
 					let ICCard = getShared('ICCard');
 					if (ICCard && ICCard != '') {
 						block.grayout();
-						self.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
-							vm.$window.modal('at', '/view/kdp/003/s/index.xhtml', { employeeId: employeeId ,regionalTime: ko.unwrap(self.regionalTime)   });
-						}).fail(() => {
+                        self.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
+                            vm.$window.storage("workLocationInfo").then((workLocInfo) => {
+                                vm.$window.modal('at', '/view/kdp/003/s/index.xhtml', { employeeId: employeeId, regionalTime: workLocInfo.regional });
+                            });
+                        }).fail(() => {
 							self.openIDialog();
 						}).always(() => {
 							block.clear();
@@ -863,12 +865,17 @@ module nts.uk.at.view.kdp005.a {
 					workPlaceId: self.workPlaceId,
                     regionalTime: _.get(self.workLocationInfo(),'regional')
 				});
+            
 				setShared("screenB", {
 					screen: "KDP005"
 				});
-				vm.$window.modal('/view/kdp/002/b/index.xhtml', { stampTime: stampTime }).then(() => {
-					self.openKDP002T(button, layout);
-				});
+            
+                vm.$window.storage("workLocationInfo").then((workLocInfo) => {
+                    vm.$window.modal('/view/kdp/002/b/index.xhtml', { stampTime: stampTime, regionalTime: workLocInfo.regional }).then(() => {
+                        self.openKDP002T(button, layout);
+                    });
+                });
+				
 			}
 
 			public openScreenC(button, layout, employeeIdRegister) {
