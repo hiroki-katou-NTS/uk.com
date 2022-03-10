@@ -23,6 +23,8 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthFinder;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -76,6 +78,9 @@ public class DPMonthFlexProcessor {
     @Inject
     private RecordDomRequireService requireService;
     
+    @Inject
+    private CompanyMonthlyItemService companyMonthlyItemService;
+    
 
 	private static final List<Integer> DAFAULT_ITEM = Arrays.asList(18, 19, 21, 189, 190, 191, 202, 204);
 	
@@ -105,7 +110,11 @@ public class DPMonthFlexProcessor {
 		List<FormatDailyDto> formatDaily = getFormatCode(param, companyId);
 		
 		// フォーマット．月次の勤怠項目一覧が存在するかチェックする
-		List<Integer> itemIds = getItemIds(companyId, formatDaily);
+		List<Integer> itemIdsOld = getItemIds(companyId, formatDaily);
+		
+		//EA 4248
+		List<AttItemName> listAttItemName = companyMonthlyItemService.getMonthlyItems(companyId, Optional.empty(), itemIdsOld, new ArrayList<>());
+		List<Integer> itemIds = listAttItemName.stream().map(c->c.getAttendanceItemId()).collect(Collectors.toList());
 		
 		// ドメインモデル「月の本人確認」を取得する
 //		Optional<ConfirmationMonth> confirmMonth = confirmationMonthRepository.findByKey(companyId,

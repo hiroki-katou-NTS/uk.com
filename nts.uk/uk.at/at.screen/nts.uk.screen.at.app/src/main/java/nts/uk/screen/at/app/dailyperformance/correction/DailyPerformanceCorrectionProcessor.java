@@ -86,7 +86,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeUseSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -255,6 +257,9 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	@Inject
 	private TaskSupInfoChoiceDetailsQuery taskSupInfoChoiceDetailsQuery;
+	
+	@Inject
+	private CompanyDailyItemService companyDailyItemService;
 	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
@@ -1599,6 +1604,10 @@ public class DailyPerformanceCorrectionProcessor {
 			}
 			/// 対応するドメインモデル「勤務種別日別実績の修正のフォーマット」を取得する
 			String authorityDailyID =  AppContexts.user().roles().forAttendance(); 
+			//EA 4248
+			List<AttItemName> listAttItemName = companyDailyItemService.getDailyItems(companyId, Optional.empty(), lstAtdItemUnique, new ArrayList<>());
+			lstAtdItemUnique = listAttItemName.stream().map(c->c.getAttendanceItemId()).collect(Collectors.toList());
+			
 			if (lstFormat.size() > 0) {
 				lstDPBusinessTypeControl = this.repo.getListBusinessTypeControl(companyId, authorityDailyID,
 						lstAtdItemUnique, true);
