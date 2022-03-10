@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -151,9 +152,11 @@ public class AsposeApproversReportGenerator extends AsposeCellsReportGenerator i
 				.collect(Collectors.toMap(Function.identity(), emp -> approvalSettingInformations.stream()
 						.filter(data -> data.getPersonApprovalRoot().getEmployeeId().equals(emp.getEmployeeId()))
 						.sorted(Comparator.comparing(ApprovalSettingInformationExport::getEmploymentRootAtr)
-								.thenComparing(ApprovalSettingInformationExport::getApplicationType)
-								.thenComparing(ApprovalSettingInformationExport::getConfirmationRootType))
-						.collect(Collectors.toList())));
+								.thenComparing(ApprovalSettingInformationExport::getApplicationType,
+										Comparator.nullsFirst(Comparator.naturalOrder()))
+								.thenComparing(ApprovalSettingInformationExport::getConfirmationRootType,
+										Comparator.nullsFirst(Comparator.naturalOrder())))
+						.collect(Collectors.toList()), (e1, e2) -> e1, TreeMap::new));
 		// Print employees (A3_2~A3_12)
 		dataMap.entrySet().forEach(entry -> this.printEmployee(cells, reportContext, currentRow, dataSource,
 				entry.getKey(), entry.getValue()));
