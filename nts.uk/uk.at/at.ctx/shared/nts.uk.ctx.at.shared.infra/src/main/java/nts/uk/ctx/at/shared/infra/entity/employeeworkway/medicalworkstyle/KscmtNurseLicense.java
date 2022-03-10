@@ -50,7 +50,7 @@ public class KscmtNurseLicense extends ContractUkJpaEntity implements Serializab
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "IS_OFFICE_WORK")
-	private int officeWork;
+	private boolean officeWork;
 	
 	/**
 	 * 看護管理者か
@@ -58,7 +58,7 @@ public class KscmtNurseLicense extends ContractUkJpaEntity implements Serializab
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "IS_NURSE_ADMINISTRATOR")
-	private int nursingManager;
+	private boolean nursingManager;
 
 	@Override
 	protected Object getKey() {

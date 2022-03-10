@@ -54,8 +54,8 @@ public class JpaNurseClassificationRepository extends JpaRepository implements N
 		try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(sqlQuery))) {
 			ps.setString(1, nurseClassification.getNurseClassifiName().v());
 			ps.setInt(2, nurseClassification.getLicense().value);
-			ps.setInt(3, nurseClassification.isOfficeWorker() ? 1 : 0);
-			ps.setInt(4, nurseClassification.isNursingManager() ? 1 : 0);
+			ps.setBoolean(3, nurseClassification.isOfficeWorker());
+			ps.setBoolean(4, nurseClassification.isNursingManager());
 
 			ps.setString(5, nurseClassification.getCompanyId().v());
 			ps.setString(6, nurseClassification.getNurseClassifiCode().v());
@@ -78,8 +78,8 @@ public class JpaNurseClassificationRepository extends JpaRepository implements N
 				new NurseClassifiCode(ent.getKscmtNurseLicensePK().getCode()), 
 				new NurseClassifiName(ent.getName()),
 				LicenseClassification.valueOf(ent.getLicenseAtr()), 
-				ent.getOfficeWork() == 1,
-				ent.getNursingManager() == 1);
+				ent.isOfficeWork(),
+				ent.isNursingManager());
 	}
 	
 
@@ -88,8 +88,8 @@ public class JpaNurseClassificationRepository extends JpaRepository implements N
 				new KscmtNurseLicensePK(domain.getCompanyId().v(), domain.getNurseClassifiCode().v()),
 				domain.getNurseClassifiName().v(), 
 				domain.getLicense().value, 
-				domain.isOfficeWorker() ? 1 : 0,  
-				domain.isNursingManager() ? 1 : 0);
+				domain.isOfficeWorker(),  
+				domain.isNursingManager());
 	}
 
 }
