@@ -893,7 +893,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 $('#component-ccg001').outerHeight(componentHeight);
 
                 // set tab panel height.
-                const tabpanelHeight = componentHeight - $('#ccg001-header').outerHeight(true) - 10;
+                const tabpanelHeight = componentHeight - Math.max($('#ccg001-header').outerHeight(true), 52) - 10;
                 const tabpanelNavHeight = 85;
                 const tabpanelContentHeight = tabpanelHeight - tabpanelNavHeight;
                 $('.ccg-tabpanel.pull-left').outerHeight(tabpanelHeight);
