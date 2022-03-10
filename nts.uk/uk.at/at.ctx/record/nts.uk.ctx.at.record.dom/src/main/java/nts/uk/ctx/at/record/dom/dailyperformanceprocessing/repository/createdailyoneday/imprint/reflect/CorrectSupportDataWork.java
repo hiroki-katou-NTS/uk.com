@@ -2,16 +2,14 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdai
 
 import java.util.Optional;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.SupportDataWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.EndStatus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeReflectFromWorkinfo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -20,21 +18,14 @@ import nts.uk.shr.com.context.AppContexts;
  * @author phongtq
  *
  */
-@Stateless
 public class CorrectSupportDataWork {
 	
-	@Inject
-	private TimeReflectFromWorkinfo fromWorkinfo;
-	
-	@Inject
-	private SupportWorkReflection workReflection;
-	
-	public SupportDataWork correctSupportDataWork(IntegrationOfDaily integrationOfDaily) {
+	public static SupportDataWork correctSupportDataWork(Require require, IntegrationOfDaily integrationOfDaily) {
 		String companyId = AppContexts.user().companyId();
 		
 		// 勤務情報から打刻反映時間帯を取得する
 		// output : 終了状態, 打刻反映範囲
-		OutputTimeReflectForWorkinfo workinfo = fromWorkinfo.get(companyId, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(), integrationOfDaily.getWorkInformation());
+		OutputTimeReflectForWorkinfo workinfo = require.getTimeReflectFromWorkinfo(companyId, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(), integrationOfDaily.getWorkInformation());
 		
 		// Check list lỗi (Không có trong EA nhưng đã comfirm vs Tín)
 		if(!workinfo.getError().isEmpty())
@@ -68,13 +59,14 @@ public class CorrectSupportDataWork {
 			leavingWork = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo().v() == 1).findFirst();
 			
 			// 取得できる
-			if(leavingWork.isPresent()) {
-				ReflectionAtr reflectionAtr = this.supportCorrectWork(companyId, leavingWork, workinfo.getStampReflectRangeOutput(), integrationOfDaily);
-				// 反映状態を確認する - 反映済みの場合
-				if(reflectionAtr == ReflectionAtr.REFLECTED) {
-					return new SupportDataWork(Optional.of(integrationOfDaily), Optional.empty());
-				}
+			//if(leavingWork.isPresent()) {
+			ReflectionAtr reflectionAtr = supportCorrectWork(require, companyId, leavingWork,
+					workinfo.getStampReflectRangeOutput(), integrationOfDaily);
+			// 反映状態を確認する - 反映済みの場合
+			if (reflectionAtr == ReflectionAtr.REFLECTED) {
+				return new SupportDataWork(Optional.of(integrationOfDaily), Optional.empty());
 			}
+			//}
 			
 			// 取得できない
 			// 反映状態を確認する - 未反映の場合
@@ -84,47 +76,51 @@ public class CorrectSupportDataWork {
 			if(integrationOfDaily.getAttendanceLeave().isPresent())
 			leavingWork2 = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo().v() == 2).findFirst();
 			
-			if(leavingWork2.isPresent()) {
-				this.supportCorrectWork(companyId, leavingWork2, workinfo.getStampReflectRangeOutput(), integrationOfDaily);
-			}
+			//if(leavingWork2.isPresent()) {
+			supportCorrectWork(require, companyId, leavingWork2, workinfo.getStampReflectRangeOutput(), integrationOfDaily);
+			//}
 			
 		}
 		return new SupportDataWork(Optional.of(integrationOfDaily), Optional.empty());
 	}
 	
 	// 出退勤で応援補正する
-	public ReflectionAtr supportCorrectWork(String cid, Optional<TimeLeavingWork> leavingWork,
+	public static ReflectionAtr supportCorrectWork(Require require, String cid, Optional<TimeLeavingWork> leavingWork,
 			StampReflectRangeOutput stampReflectRangeOutput, IntegrationOfDaily integrationOfDaily) {
 		// 出退勤の出勤を確認する
 		// Nullじゃない場合
-		if (leavingWork.get().getAttendanceStamp().isPresent()) {
+		//if (leavingWork.get().getAttendanceStamp().isPresent()) {
 			// 応援作業反映
 			SupportParam param = new SupportParam(true,
 					StartAtr.START_OF_SUPPORT,
-					leavingWork.get().getAttendanceStamp().get().getStamp().isPresent() ?
-							leavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay() : null, 
+					leavingWork.flatMap(x -> x.getStampOfAttendance().map(y -> y.getTimeDay())),
 					Optional.empty(), Optional.empty(), Optional.empty());
-			workReflection.supportWorkReflect(cid, param, integrationOfDaily, stampReflectRangeOutput);
+			SupportWorkReflection.supportWorkReflect(require, cid, param, integrationOfDaily, stampReflectRangeOutput);
 			// 「反映状態＝反映済み」を返す
-			return ReflectionAtr.REFLECTED;
+			//return ReflectionAtr.REFLECTED;
 			// Nullの場合
-		} else {
+		//} else {
 			// 出退勤の退勤を確認する
 			// Nullじゃない場合
-			if (leavingWork.get().getLeaveStamp().isPresent()) {
+			//if (leavingWork.get().getLeaveStamp().isPresent()) {
 				// 応援作業反映
-				SupportParam param = new SupportParam(true,
+				param = new SupportParam(true,
 						StartAtr.END_OF_SUPPORT, 
-						leavingWork.get().getLeaveStamp().get().getStamp().isPresent() ? 
-								leavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay() : null,
+						leavingWork.flatMap(x -> x.getStampOfLeave().map(y -> y.getTimeDay())),
 						Optional.empty(), Optional.empty(), Optional.empty()); // TODO
-				workReflection.supportWorkReflect(cid, param, integrationOfDaily, stampReflectRangeOutput);
+				SupportWorkReflection.supportWorkReflect(require, cid, param, integrationOfDaily, stampReflectRangeOutput);
 				// 「反映状態＝反映済み」を返す
 				return ReflectionAtr.REFLECTED;
 				// Nullの場合
-			} else {
-				return ReflectionAtr.NOTREFLECTED;
-			}
+//			} else {
+//				return ReflectionAtr.NOTREFLECTED;
+//			}
 		}
+	
+	public static interface Require extends SupportWorkReflection.Require{
+		
+		//TimeReflectFromWorkinfo.get
+		public OutputTimeReflectForWorkinfo getTimeReflectFromWorkinfo(String companyId, String employeeId, GeneralDate ymd,
+				WorkInfoOfDailyAttendance workInformation);
 	}
 }

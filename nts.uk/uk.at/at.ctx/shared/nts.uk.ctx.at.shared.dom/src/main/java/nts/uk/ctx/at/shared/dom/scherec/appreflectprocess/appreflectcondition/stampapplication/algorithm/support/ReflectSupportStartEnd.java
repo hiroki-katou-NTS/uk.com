@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.s
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -37,7 +38,7 @@ public class ReflectSupportStartEnd {
 		listTimeStampApp.stream().forEach(data -> {
 
 			Optional<OuenWorkTimeSheetOfDailyAttendance> ouenOpt = dailyApp.getOuenTimeSheet().stream().filter(
-					x -> x.getWorkNo().v() == data.getDestinationTimeApp().getSupportWork().orElse(Integer.MAX_VALUE))
+					x -> x.getWorkNo().v() == data.getDestinationTimeApp().getStampNo().intValue())
 					.findFirst();
 
 			if (ouenOpt.isPresent()) {
@@ -56,8 +57,8 @@ public class ReflectSupportStartEnd {
 		});
 
 		// 申請反映状態にする
-		UpdateEditSttCreateBeforeAppReflect.update(dailyApp, lstItemId);
-		return lstItemId;
+		UpdateEditSttCreateBeforeAppReflect.update(dailyApp, lstItemId.stream().distinct().collect(Collectors.toList()));
+		return lstItemId.stream().distinct().collect(Collectors.toList());
 	}
 
 	private static Pair<OuenWorkTimeSheetOfDailyAttendance, List<Integer>> create(Require require,
@@ -67,28 +68,29 @@ public class ReflectSupportStartEnd {
 		TimeSheetOfAttendanceEachOuenSheet sheet = null;
 		if (data.getDestinationTimeApp().getStartEndClassification() == StartEndClassificationShare.START) {
 			sheet = TimeSheetOfAttendanceEachOuenSheet.create(
-					new WorkNo(data.getDestinationTimeApp().getSupportWork().orElse(null)),
+					new WorkNo(data.getDestinationTimeApp().getWorkNo().orElse(null)),
 					Optional.of(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, Optional.empty()),
 							data.getTimeOfDay())),
 					Optional.empty());
-			lstItemId.add(CancelAppStamp.createItemId(929, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
+			lstItemId.add(CancelAppStamp.createItemId(929, data.getDestinationTimeApp().getStampNo().intValue(), 10));
 		} else {
 			sheet = TimeSheetOfAttendanceEachOuenSheet.create(
-					new WorkNo(data.getDestinationTimeApp().getSupportWork().orElse(null)), Optional.empty(),
-					Optional.of(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),
+					new WorkNo(data.getDestinationTimeApp().getWorkNo().orElse(null)), Optional.empty(),
+					Optional.of(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, Optional.empty()),
 							data.getTimeOfDay())));
-			lstItemId.add(CancelAppStamp.createItemId(930, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
+			lstItemId.add(CancelAppStamp.createItemId(930, data.getDestinationTimeApp().getStampNo().intValue(), 10));
 		}
 
 		WorkplaceOfWorkEachOuen workplace = WorkplaceOfWorkEachOuen.create(
 				new WorkplaceId(data.getWorkPlaceId().map(x -> x.v()).orElse(dailyApp.getAffiliationInfor().getWplID())),
 				data.getWorkLocationCd().orElse(null));
-		lstItemId.add(CancelAppStamp.createItemId(921, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
+		lstItemId.add(CancelAppStamp.createItemId(921, data.getDestinationTimeApp().getStampNo().intValue(), 10));
+		lstItemId.add(CancelAppStamp.createItemId(922, data.getDestinationTimeApp().getStampNo().intValue(), 10));
 
 		WorkContent workContent = WorkContent.create(workplace, Optional.empty(), Optional.empty());
 		return Pair.of(
 				OuenWorkTimeSheetOfDailyAttendance.create(
-						SupportFrameNo.of(data.getDestinationTimeApp().getSupportWork().orElse(Integer.MAX_VALUE)), workContent, sheet, Optional.empty()),
+						SupportFrameNo.of(data.getDestinationTimeApp().getStampNo().intValue()), workContent, sheet, Optional.empty()),
 				lstItemId);
 
 	}
@@ -105,25 +107,22 @@ public class ReflectSupportStartEnd {
 									.flatMap(x -> x.getReasonTimeChange().getEngravingMethod())),
 							data.getTimeOfDay())),
 					old.getTimeSheet().getEnd());
-			lstItemId.add(CancelAppStamp.createItemId(929, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
+			lstItemId.add(CancelAppStamp.createItemId(929, data.getDestinationTimeApp().getStampNo().intValue(), 10));
 		} else {
 			sheet = TimeSheetOfAttendanceEachOuenSheet.create(
-					new WorkNo(data.getDestinationTimeApp().getEngraveFrameNo()), old.getTimeSheet().getStart(),
+					new WorkNo(data.getDestinationTimeApp().getWorkNo().orElse(null)), old.getTimeSheet().getStart(),
 					Optional.of(new WorkTimeInformation(
 							new ReasonTimeChange(TimeChangeMeans.APPLICATION, old.getTimeSheet().getEnd()
-									.map(x -> x.getReasonTimeChange().getEngravingMethod()).orElse(null)),
+									.flatMap(x -> x.getReasonTimeChange().getEngravingMethod())),
 							data.getTimeOfDay())));
-			lstItemId.add(CancelAppStamp.createItemId(930, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
+			lstItemId.add(CancelAppStamp.createItemId(930, data.getDestinationTimeApp().getStampNo().intValue(), 10));
 		}
 
 		WorkplaceOfWorkEachOuen workplace = null;
-		if (data.getWorkLocationCd().isPresent()) {
-			workplace = WorkplaceOfWorkEachOuen.create(old.getWorkContent().getWorkplace().getWorkplaceId(),
-					data.getWorkLocationCd().get());
-			lstItemId.add(CancelAppStamp.createItemId(921, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
-		} else {
-			workplace = old.getWorkContent().getWorkplace();
-		}
+		workplace = WorkplaceOfWorkEachOuen.create(data.getWorkPlaceId().map(x -> new WorkplaceId(x.v()))
+				.orElse(old.getWorkContent().getWorkplace().getWorkplaceId()), data.getWorkLocationCd().orElse(null));
+		lstItemId.add(CancelAppStamp.createItemId(922, data.getDestinationTimeApp().getStampNo().intValue(), 10));
+		lstItemId.add(CancelAppStamp.createItemId(921, data.getDestinationTimeApp().getStampNo().intValue(), 10));
 
 		WorkContent workContent = WorkContent.create(workplace, old.getWorkContent().getWork(), Optional.empty());
 		return Pair.of(OuenWorkTimeSheetOfDailyAttendance.create(old.getWorkNo(), workContent, sheet, Optional.empty()), lstItemId);

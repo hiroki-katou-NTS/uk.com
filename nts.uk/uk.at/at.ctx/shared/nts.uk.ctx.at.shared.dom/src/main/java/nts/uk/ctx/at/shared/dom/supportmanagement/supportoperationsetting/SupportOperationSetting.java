@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;

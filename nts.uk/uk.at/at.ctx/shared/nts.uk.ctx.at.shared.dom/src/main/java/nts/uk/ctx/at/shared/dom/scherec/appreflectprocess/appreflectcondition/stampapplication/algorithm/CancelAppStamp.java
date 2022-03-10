@@ -35,7 +35,7 @@ public class CancelAppStamp {
 				// 該当の打刻枠NOがキーとなる[出退勤]の時刻をクリアする
 				dailyApp.getAttendanceLeave().ifPresent(attLeav -> {
 					attLeav.getTimeLeavingWorks().stream()
-							.filter(x -> x.getWorkNo().v() == data.getEngraveFrameNo().intValue()).forEach(item -> {
+							.filter(x -> x.getWorkNo().v() == data.getStampNo().intValue()).forEach(item -> {
 								if (data.getStartEndClassification() == StartEndClassificationShare.START) {
 //									　 [出勤時刻1～2]、
 //									　 [出勤場所コード1～2]
@@ -61,7 +61,7 @@ public class CancelAppStamp {
 				// 該当の打刻枠NOがキーとなる[臨時出退勤]の時刻をクリアする
 				dailyApp.getTempTime().ifPresent(temp -> {
 					temp.getTimeLeavingWorks().stream()
-							.filter(x -> x.getWorkNo().v() == data.getEngraveFrameNo().intValue()).forEach(item -> {
+							.filter(x -> x.getWorkNo().v() == data.getStampNo().intValue()).forEach(item -> {
 								if (data.getStartEndClassification() == StartEndClassificationShare.START) {
 //									[臨時出勤時刻1～3]、
 //									[臨時出勤場所コード1～3]
@@ -86,7 +86,7 @@ public class CancelAppStamp {
 				// 該当の打刻枠NOがキーとなる[外出時間帯]の時刻をクリアする
 				dailyApp.getOutingTime().ifPresent(temp -> {
 					temp.getOutingTimeSheets().stream()
-							.filter(x -> x.getOutingFrameNo().v() == data.getEngraveFrameNo().intValue())
+							.filter(x -> x.getOutingFrameNo().v() == data.getStampNo().intValue())
 							.forEach(item -> {
 								if (data.getStartEndClassification() == StartEndClassificationShare.START) {
 //									　　　[外出時刻1～10]、
