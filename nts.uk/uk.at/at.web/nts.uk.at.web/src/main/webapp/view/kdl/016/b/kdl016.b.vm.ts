@@ -34,12 +34,7 @@ module nts.uk.at.view.kdl016.b {
             super();
             const vm = this;
 
-            vm.supportTypes = ko.observableArray([
-                new BoxModel(0, '終日応援'),
-                new BoxModel(1, '時間帯応援')
-            ]);
             vm.selectedSupportType = ko.observable(0);
-
             vm.selectedSupportType.subscribe(value => {
                 if (value == 1) {
                     vm.enableEditTimespan(true);
@@ -57,6 +52,10 @@ module nts.uk.at.view.kdl016.b {
             const vm = this;
             if (!_.isNil(params)) {
                 vm.requiredParam = params;
+                vm.supportTypes = ko.observableArray([
+                    new BoxModel(0, vm.$i18n('KDL016_37'), true),
+                    new BoxModel(1, vm.$i18n('KDL016_38'), params.enableSupportTimezone)
+                ]);
             }
 
             vm.loadData();
@@ -219,6 +218,7 @@ module nts.uk.at.view.kdl016.b {
     interface IParameter {
         employeeIds: string[]
         targetOrg: ITargetOrganization;
+        enableSupportTimezone: boolean
     }
 
     interface ITargetOrganization {
@@ -239,11 +239,13 @@ module nts.uk.at.view.kdl016.b {
     class BoxModel {
         id: number;
         name: string;
+        enable: boolean;
 
-        constructor(id: number, name: string) {
+        constructor(id: number, name: string, enable: boolean) {
             var self = this;
             self.id = id;
             self.name = name;
+            self.enable = enable;
         }
     }
 

@@ -90,7 +90,7 @@ public class SupportInformationFinder {
      * @param period
      * @return List<応援情報DTO
                     */
-    public List<SupportInfoDto> getDataInitScreenA(List<String> employeeIds, DatePeriod period) {
+    public InitialDataScreenA getDataInitScreenA(List<String> employeeIds, DatePeriod period) {
         String cid = AppContexts.user().companyId();
         // 応援の運用設定
         SupportOperationSetting supportOperationSetting = supportOperationSettingRepo.get(cid);
@@ -113,7 +113,7 @@ public class SupportInformationFinder {
             supportInfos = this.getInfoGoToSupport(employeeIds, period);
         }
 
-        return supportInfos;
+        return new InitialDataScreenA(supportInfos, supportFuncCtrl != null && supportFuncCtrl.isUseSupportInTimezone());
     }
 
     /**
@@ -172,8 +172,7 @@ public class SupportInformationFinder {
                             : supportableEmployee.getRecipient().getWorkplaceGroupId().orElse(null),
                     supportableEmployee.getRecipient().getUnit().value,
                     supportableEmployee.getSupportType().getValue(),
-                    supportableEmployee.getTimespan().isPresent() ? new TimeSpanForCalcDto(supportableEmployee.getTimespan().get().start(), supportableEmployee.getTimespan().get().end()) : new TimeSpanForCalcDto(null, null),
-                    DisplayMode.GO_TO_SUPPORT.value
+                    supportableEmployee.getTimespan().isPresent() ? new TimeSpanForCalcDto(supportableEmployee.getTimespan().get().start(), supportableEmployee.getTimespan().get().end()) : new TimeSpanForCalcDto(null, null)
             ));
         }
 
@@ -234,8 +233,7 @@ public class SupportInformationFinder {
                             : supportableEmployee.getRecipient().getWorkplaceGroupId().orElse(null),
                     supportableEmployee.getRecipient().getUnit().value,
                     supportableEmployee.getSupportType().getValue(),
-                    supportableEmployee.getTimespan().isPresent() ? new TimeSpanForCalcDto(supportableEmployee.getTimespan().get().start(), supportableEmployee.getTimespan().get().end()) : new TimeSpanForCalcDto(null, null),
-                    DisplayMode.COME_TO_SUPPORT.value
+                    supportableEmployee.getTimespan().isPresent() ? new TimeSpanForCalcDto(supportableEmployee.getTimespan().get().start(), supportableEmployee.getTimespan().get().end()) : new TimeSpanForCalcDto(null, null)
             ));
 
         }

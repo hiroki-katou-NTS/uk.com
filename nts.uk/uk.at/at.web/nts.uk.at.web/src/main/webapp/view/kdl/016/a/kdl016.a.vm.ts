@@ -19,6 +19,7 @@ module nts.uk.at.view.kdl016.a {
         selectedMode: any;
         selectedCode: KnockoutObservableArray<number> = ko.observableArray([]);
         igGridDataSource: ISupportInformation[] = [];
+        enableSupportTimezone: KnockoutObservable<boolean> = ko.observable(false);
 
         canDelete: KnockoutObservable<boolean> = ko.observable(false);
 
@@ -89,7 +90,8 @@ module nts.uk.at.view.kdl016.a {
             };
 
             vm.$ajax(API.init, request).done(data => {
-                vm.igGridDataSource = data || [];
+                vm.igGridDataSource = data.supportInfoList || [];
+                vm.enableSupportTimezone(data.enableSupportInTimezone);
                 vm.initGrid(vm.igGridDataSource);
                 dfd.resolve();
             }).fail(error => {
@@ -121,6 +123,7 @@ module nts.uk.at.view.kdl016.a {
             vm.$ajax(API.get, request).done(data => {
                 vm.igGridDataSource = data || [];
                 vm.initGrid(vm.igGridDataSource);
+                vm.selectedCode([]);
                 dfd.resolve();
             }).fail(error => {
                 vm.$dialog.error(error).then(() => {
@@ -157,11 +160,10 @@ module nts.uk.at.view.kdl016.a {
                 // hidePrimaryKey: true,
                 columns: [
                     {headerText: '', key: 'id', dataType: 'number', width: '0px', hidden: true},
-                    {headerText: 'DisplayMode', key: 'displayMode', dataType: 'number', width: '0px', hidden: true},
                     // {headerText: '', key: "edit", dataType: "string", width: "30px", unbound: true, ntsControl: 'EditButton'},
                     {
                         key: "edit", width: "60px", headerText: '', dataType: "string", unbound: true,
-                        template: "<input type= \"button\"  onclick = \"nts.uk.at.view.kdl016.a.openEditModal(${id}, ${displayMode}) \" value= \" " + vm.$i18n('KDL016_19') + " \" />"
+                        template: "<input type= \"button\"  onclick = \"nts.uk.at.view.kdl016.a.openEditModal(${id}) \" value= \" " + vm.$i18n('KDL016_19') + " \" />"
                     },
                     {
                         headerText: vm.$i18n('KDL016_14'),
@@ -297,10 +299,6 @@ module nts.uk.at.view.kdl016.a {
                         // rowSelectionChanging: function() {},
                         // rowSelectionChanged: function(event: any, ui: any) {}
                     },
-                    // {
-                    //     name: "Sorting",
-                    //     type: "local"
-                    // },
                     {
                         name: "Resizing",
                         deferredResizing: false,
@@ -327,7 +325,8 @@ module nts.uk.at.view.kdl016.a {
                     targetOrg: {
                         orgId: vm.targetOrg().id,
                         orgUnit: vm.targetOrg().unit
-                    }
+                    },
+                    enableSupportTimezone: vm.enableSupportTimezone()
                 };
                 vm.$blockui("invisible");
                 vm.$window.modal("/view/kdl/016/b/index.xhtml", param).then((result: any) => {
@@ -347,7 +346,8 @@ module nts.uk.at.view.kdl016.a {
                         orgUnit: vm.targetOrg().unit
                     },
                     startDate: vm.periodStart(),
-                    endDate: vm.periodEnd()
+                    endDate: vm.periodEnd(),
+                    enableSupportTimezone: vm.enableSupportTimezone()
                 };
                 vm.$window.modal("/view/kdl/016/c/index.xhtml", param).then((result: any) => {
                     // if (result && !_.isEmpty(result)) {
@@ -494,7 +494,7 @@ module nts.uk.at.view.kdl016.a {
         }
     }
 
-    export function openEditModal(id: number, mode: number) {
+    export function openEditModal(id: number) {
         let vm = nts.uk.ui._viewModel.content;
         let dataSource = $("#grid").igGrid("option", "dataSource");
         let dataShare = _.find(dataSource, (value: any) => {

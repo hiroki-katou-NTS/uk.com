@@ -3,10 +3,7 @@ package nts.uk.screen.at.ws.kdl.kdl016;
 import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.command.kdl.kdl016.*;
 import nts.uk.screen.at.app.query.kdl.kdl016.SupportInformationFinder;
-import nts.uk.screen.at.app.query.kdl.kdl016.dto.EmployeeInformationDto;
-import nts.uk.screen.at.app.query.kdl.kdl016.dto.Kdl016ScreenBOutput;
-import nts.uk.screen.at.app.query.kdl.kdl016.dto.SupportInfoDto;
-import nts.uk.screen.at.app.query.kdl.kdl016.dto.SupportInfoInput;
+import nts.uk.screen.at.app.query.kdl.kdl016.dto.*;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -31,7 +28,7 @@ public class Kdl016WebService extends WebService {
 
     @POST
     @Path("a/init")
-    public List<SupportInfoDto> initialScreenAInfo(InitialScreenAParam param) {
+    public InitialDataScreenA initialScreenAInfo(InitialScreenAParam param) {
         return this.supportInfoFinder.getDataInitScreenA(param.getEmployeeIds(), param.getPeriod());
     }
 

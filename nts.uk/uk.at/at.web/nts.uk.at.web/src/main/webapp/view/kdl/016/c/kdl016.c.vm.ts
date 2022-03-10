@@ -35,10 +35,6 @@ module nts.uk.at.view.kdl016.c {
             super();
             const vm = this;
 
-            vm.supportTypes = ko.observableArray([
-                new BoxModel(0, '終日応援'),
-                new BoxModel(1, '時間帯応援')
-            ]);
             vm.selectedSupportType = ko.observable(0);
 
             vm.selectedSupportType.subscribe(value => {
@@ -64,6 +60,10 @@ module nts.uk.at.view.kdl016.c {
             const vm = this;
             if (!_.isNil(params)) {
                 vm.requiredParams = params;
+                vm.supportTypes = ko.observableArray([
+                    new BoxModel(0, vm.$i18n('KDL016_37'), true),
+                    new BoxModel(1, vm.$i18n('KDL016_38'), params.enableSupportTimezone)
+                ]);
             }
 
             vm.initialData();
@@ -252,8 +252,9 @@ module nts.uk.at.view.kdl016.c {
 
     interface IParameter {
         targetOrg: ITargetOrganization;
-        startDate: string,
-        endDate: string
+        startDate: string;
+        endDate: string;
+        enableSupportTimezone: boolean;
     }
 
     interface ITargetOrganization {
@@ -274,11 +275,13 @@ module nts.uk.at.view.kdl016.c {
     class BoxModel {
         id: number;
         name: string;
+        enable: boolean;
 
-        constructor(id: number, name: string) {
+        constructor(id: number, name: string, enable: boolean) {
             var self = this;
             self.id = id;
             self.name = name;
+            self.enable = enable;
         }
     }
 

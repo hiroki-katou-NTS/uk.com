@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.query.kdl.kdl016.dto;
 import lombok.Data;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.TimeSpanForCalcDto;
 import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
+import nts.uk.shr.com.i18n.TextResource;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -29,8 +30,7 @@ public class SupportInfoDto {
     private int displayMode;
 
     public SupportInfoDto(int id, String employeeId, String periodStart, String periodEnd, String employeeCode, String employeeName,
-                          String supportOrgName, String supportOrgId, int supportOrgUnit, int supportType, TimeSpanForCalcDto timeSpan,
-                          int displayMode) {
+                          String supportOrgName, String supportOrgId, int supportOrgUnit, int supportType, TimeSpanForCalcDto timeSpan) {
         this.id = id;
         this.employeeId = employeeId;
         this.periodStart = periodStart;
@@ -42,11 +42,10 @@ public class SupportInfoDto {
         this.supportOrgUnit = supportOrgUnit;
         this.supportType = supportType;
         this.timeSpan = timeSpan;
-        this.supportTypeName = supportType == SupportType.ALLDAY.getValue() ? "終日" : "時間帯";
+        this.supportTypeName = supportType == SupportType.ALLDAY.getValue() ? TextResource.localize("KDL016_37") : TextResource.localize("KDL016_38");
         this.periodDisplay = supportType == SupportType.TIMEZONE.getValue() ? periodStart : StringUtils.isNotEmpty(periodEnd) ? periodStart + "～" + periodEnd : periodStart;
         this.employeeDisplay = employeeCode + "　" + employeeName;
         this.timeSpanDisplay = timeSpan.getStart() == null && timeSpan.getEnd() == null ? null : this.convertNumberToTime(timeSpan.getStart()) + "～" + this.convertNumberToTime(timeSpan.getEnd());
-        this.displayMode = displayMode;
     }
 
     private String convertNumberToTime(Integer totalMinute) {
