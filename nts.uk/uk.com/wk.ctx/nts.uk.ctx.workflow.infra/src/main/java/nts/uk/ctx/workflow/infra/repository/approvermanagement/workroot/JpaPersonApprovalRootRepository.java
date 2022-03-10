@@ -922,7 +922,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			List<ApplicationType> appTypes, List<ConfirmationRootType> confirmationRootTypes) {
 		
 		List<Integer> intAppTypes = appTypes.stream().map(x -> x.value).collect(Collectors.toList());
-		List<Integer> intConfirmationRootTypes = appTypes.stream().map(x -> x.value).collect(Collectors.toList());
+		List<Integer> intConfirmationRootTypes = confirmationRootTypes.stream().map(x -> x.value).collect(Collectors.toList());
 		String queryString = "SELECT m FROM WwfmtApprovalRoutePs m"
 				+ " WHERE m.wwfmtPsApprovalRootPK.companyId = :cid"
 				+ " AND m.wwfmtPsApprovalRootPK.employeeId = :sid"

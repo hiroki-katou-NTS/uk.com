@@ -32,7 +32,14 @@ module nts.uk.com.view.cmm030.b {
         vm.$blockui("grayout");
         vm.getApprovalAuthorityHolders(value).always(() => vm.$blockui("clear"));
       });
-      vm.selectedEmployeeCode.subscribe(value => vm.selectedEmployeeId(_.find(vm.employeeList(), { code: value }).id));
+      vm.selectedEmployeeCode.subscribe(value => {
+        const emp = _.find(vm.employeeList(), { code: value });
+        if (!_.isNil(emp)) {
+          vm.selectedEmployeeId(emp.id);
+        } else {
+          vm.selectedEmployeeId("");
+        }
+      });
       $.when(vm.initKcp004(), vm.initKcp005());
     }
 
@@ -47,7 +54,7 @@ module nts.uk.com.view.cmm030.b {
 
     public processSave() {
       const vm = this;
-      if (_.isNil(vm.selectedEmployeeId())) {
+      if (_.isNil(vm.selectedWorkplaceId())) {
         vm.$dialog.error({ messageId: "Msg_3295" });
         return;
       }
@@ -144,7 +151,10 @@ module nts.uk.com.view.cmm030.b {
       })))
       .then(() => {
         if (!_.isNil(vm.selectedEmployeeId())) {
-          vm.selectedEmployeeCode(_.find(vm.employeeList(), { id: vm.selectedEmployeeId() }).code)
+          vm.selectedEmployeeCode(_.find(vm.employeeList(), { id: vm.selectedEmployeeId() }).code);
+        } else {
+          vm.selectedEmployeeCode("");
+          vm.selectedEmployeeCode.valueHasMutated();
         }
       });
     }

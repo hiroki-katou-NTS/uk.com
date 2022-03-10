@@ -20,7 +20,7 @@ public class ApprovalRootDto {
 	/** 申請種類 */
 	private Integer applicationType;
 	/** 確認ルート種類 */
-	private Integer confirmationRootType;
+	private Integer confirmRootType;
 	/** 届出ID */
 	private Integer noticeId;
 	/** 各業務エベントID */

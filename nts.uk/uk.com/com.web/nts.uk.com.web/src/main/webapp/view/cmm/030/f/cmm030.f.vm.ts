@@ -151,7 +151,7 @@ module nts.uk.com.view.cmm030.f {
           return new ApproverModel({
             id: nts.uk.util.randomId(),
             periodId: period.id,
-            applicationType: vm.getApplicationType(data.apprRoot.employmentRootAtr, data.apprRoot.applicationType, data.apprRoot.confirmationRootType),
+            applicationType: vm.getApplicationType(data.apprRoot.employmentRootAtr, data.apprRoot.applicationType, data.apprRoot.confirmRootType),
             approvalId: data.approvalId,
             approverName1: approverNames[0],
             approverName2: approverNames[1],
@@ -193,19 +193,19 @@ module nts.uk.com.view.cmm030.f {
       .fail(err => vm.$dialog.error({ messageId: err.messageId }));
     }
 
-    private getApplicationType(employmentRootAtr: number, applicationType: number, confirmationRootType: number): string {
+    private getApplicationType(employmentRootAtr: number, applicationType: number, confirmRootType: number): string {
       const vm = this;
       let enums: any[];
       let typeAtr: number;
       switch (employmentRootAtr) {
-        case EmploymentRootAtr.COMMON: return vm.$i18n("CMM030_11");
+        case EmploymentRootAtr.COMMON: return vm.$i18n("CMM030_111");
         case EmploymentRootAtr.APPLICATION: 
           enums = __viewContext.enums["ApplicationType"];
           typeAtr = applicationType;
           break;
         case EmploymentRootAtr.CONFIRMATION:
           enums = __viewContext.enums["ConfirmationRootType"];
-          typeAtr = confirmationRootType;
+          typeAtr = confirmRootType;
           break;
       }
       return _.find(enums, { value: typeAtr }).name;

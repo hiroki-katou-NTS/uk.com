@@ -76,8 +76,6 @@ module nts.uk.com.view.cmm030.a {
       const vm = this;
       vm.$blockui("grayout");
       vm.initScreen().always(() => {
-        $("#A2_1").attr("readonly", "readonly");
-        $("#A4_1").attr("readonly", "readonly");
         setTimeout(() => {
           $(".approver-input").on("click", e => vm.openDialogB($(e.target)));
           $("#ccg001-btn-search-drawer").attr("tabindex", -1);
@@ -505,7 +503,9 @@ module nts.uk.com.view.cmm030.a {
     }
 
     private getSettingId(data: SettingTypeUsed) {
-      return `${data.employmentRootAtr}-${data.applicationType ?? "null"}-${data.confirmRootType ?? "null"}`;
+      const applicationType = data.employmentRootAtr === EmploymentRootAtr.APPLICATION ? data.applicationType : "null";
+      const confirmRootType = data.employmentRootAtr === EmploymentRootAtr.CONFIRMATION ? data.confirmRootType : "null";
+      return `${data.employmentRootAtr}-${applicationType}-${confirmRootType}`;
     }
   }
 

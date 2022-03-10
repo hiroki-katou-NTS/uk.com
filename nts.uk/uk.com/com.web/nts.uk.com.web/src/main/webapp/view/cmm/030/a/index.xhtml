@@ -41,6 +41,7 @@
           name: '#[CMM030_16]',
           value: inputProcedure,
           constraint: 'ApproverInputExplanation',
+          readonly: true,
           require: false
         }"></textarea>
         <div id="A3_2" tabindex="6"></div>
@@ -48,6 +49,7 @@
           <input id="A4_1" data-bind="ntsTextEditor: {
             name: '#[CMM030_17]',
             value: startDate,
+            readonly: true,
             option: { width: '80px' }
           }" />
           <label id="A4_2" class="ml-5">#{i18n.getText('CMM030_18')}</label>

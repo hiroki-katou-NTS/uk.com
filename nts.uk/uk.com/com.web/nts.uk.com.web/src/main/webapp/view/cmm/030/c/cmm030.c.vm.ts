@@ -56,7 +56,7 @@ module nts.uk.com.view.cmm030.c {
       return vm.$ajax(nts.uk.text.format(API.getApprovalRootLastStartDate, vm.sid))
       .then(result => {
         if (!_.isNil(result)) {
-          return moment.utc(vm.startDate()).isAfter(result);
+          return moment.utc(vm.startDate()).isAfter(moment.utc(result, "YYYY/MM/DD"));
         }
         return true;
       });
