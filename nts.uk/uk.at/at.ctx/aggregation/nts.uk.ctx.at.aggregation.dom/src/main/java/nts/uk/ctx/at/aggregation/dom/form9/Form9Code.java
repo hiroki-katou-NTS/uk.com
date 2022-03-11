@@ -4,6 +4,7 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
+import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
 /**
  * 様式９のコード
@@ -13,6 +14,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  */
 @StringMaxLength(10)
 @StringCharType(CharType.ALPHA_NUMERIC)
+@ZeroPaddedCode
 public class Form9Code extends StringPrimitiveValue<Form9Code> {
 
 	/** serialVersionUID **/
