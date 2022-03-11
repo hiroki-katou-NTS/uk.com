@@ -256,7 +256,6 @@ module nts.uk.com.view.cmf001.f.viewmodel {
   class Layout {
 
     domainId: DomainId;
-
     items: KnockoutObservableArray<LayoutItem>;
 
     constructor(domainId: DomainId, items: LayoutItem[]) {
@@ -268,6 +267,12 @@ module nts.uk.com.view.cmf001.f.viewmodel {
       return new Layout(dto.domainId, dto.items.map(i => LayoutItem.fromDto(dto.domainId, i)));
     }
 
+    /**
+     * 新規追加した初期状態のレイアウトを作る
+     * @param domainId
+     * @param items 
+     * @returns 
+     */
     static createDefault(domainId: DomainId, items: any[]) {
       return new Layout(
         domainId,
@@ -300,7 +305,6 @@ module nts.uk.com.view.cmf001.f.viewmodel {
     canDelete: boolean;
     sourceType: KnockoutObservable<SourceType>;
     csvColumnNo: KnockoutObservable<CsvColumnNo>;
-
     csvSampleData: KnockoutComputed<string>;
 
     constructor(itemNo: ItemNo, name: string, isOptional: boolean, sourceType: SourceType, csvColumnNo: CsvColumnNo) {
@@ -315,12 +319,40 @@ module nts.uk.com.view.cmf001.f.viewmodel {
       this.sourceType.subscribe(() => this.autoSelectCsvItem());
     }
 
+    static fromDto(domainId: DomainId, dto: dto.LayoutItemDto): LayoutItem {
+      let sourceType = dto.fixedValue ? SourceType.Fixed : SourceType.Csv;
+      return LayoutItem.create(domainId, dto.itemNo, sourceType, dto.csvColumnNo);
+    }
+
+    /**
+     * 新規追加した初期状態の項目を作る
+     * @param domainId 
+     * @param itemNo 
+     * @returns 
+     */
+    static createDefault(domainId: DomainId, itemNo: ItemNo) {
+      return LayoutItem.create(domainId, itemNo, SourceType.Fixed, undefined);
+    }
+
+    static create(domainId: DomainId, itemNo: ItemNo, sourceType: SourceType, csvColumnNo: CsvColumnNo) {
+      let item = vm().importableItems[domainId].filter(i => i.itemNo === itemNo)[0];
+      return new LayoutItem(itemNo, item.itemName, item.optional, sourceType, csvColumnNo);
+    }
+
+    /**
+     * CSVファイルから指定カラムのサンプルデータを読み取る
+     * @returns 
+     */
     loadCsvSampleData() {
       let columnNo = this.csvColumnNo();
       let csvItem = vm().sampleCsvItems().filter(c => c.columnNo == columnNo)[0];
       return (csvItem === undefined) ? "" : csvItem.sampleData;
     }
 
+    /**
+     * 受入可能項目と同じ名前のCSV項目があればそれを自動選択する
+     * @returns 
+     */
     autoSelectCsvItem() {
       if (this.sourceType() === SourceType.Fixed) return;
 
@@ -343,20 +375,6 @@ module nts.uk.com.view.cmf001.f.viewmodel {
         fixedValue: this.sourceType() === SourceType.Fixed,
         csvColumnNo: this.csvColumnNo(),
       };
-    }
-
-    static fromDto(domainId: DomainId, dto: dto.LayoutItemDto): LayoutItem {
-      let sourceType = dto.fixedValue ? SourceType.Fixed : SourceType.Csv;
-      return LayoutItem.create(domainId, dto.itemNo, sourceType, dto.csvColumnNo);
-    }
-
-    static createDefault(domainId: DomainId, itemNo: ItemNo) {
-      return LayoutItem.create(domainId, itemNo, SourceType.Fixed, undefined);
-    }
-
-    static create(domainId: DomainId, itemNo: ItemNo, sourceType: SourceType, csvColumnNo: CsvColumnNo) {
-      let item = vm().importableItems[domainId].filter(i => i.itemNo === itemNo)[0];
-      return new LayoutItem(itemNo, item.itemName, item.optional, sourceType, csvColumnNo);
     }
   }
 
