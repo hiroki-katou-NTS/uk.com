@@ -64,7 +64,9 @@ module nts.uk.com.view.cmf001.f.viewmodel {
       this.defaultDomainId = params.domainId;
 
       this.targetDomains = ko.computed(() => {
-        return this.layouts().map(l => new ImportableDomain(l.domainId));
+        let domains = this.layouts().map(l => new ImportableDomain(l.domainId));
+        domains.sort((a, b) => a.domainId - b.domainId);
+        return domains;
       });
 
       this.isSelectedTargetDomain = ko.computed(() => {
@@ -144,6 +146,8 @@ module nts.uk.com.view.cmf001.f.viewmodel {
         let newLayout = Layout.createDefault(targetDomainId, items);
         this.layouts.push(newLayout);
 
+        this.selectedIdInTargetDomains("" + targetDomainId);
+
         dfd.resolve();
       });
 
@@ -154,7 +158,15 @@ module nts.uk.com.view.cmf001.f.viewmodel {
      * 受入対象ドメインを除外する
      */
     removeTargetDomain() {
-      //deleteImportDomain
+      if (!this.isSelectedTargetDomain()) {
+        return;
+      }
+
+      let domainId = this.selectedLayout().domainId;
+      this.selectedIdInTargetDomains(undefined);
+      
+      let newLayouts = this.layouts().filter(l => l.domainId !== domainId);
+      this.layouts(newLayouts);
     }
 
     /**
