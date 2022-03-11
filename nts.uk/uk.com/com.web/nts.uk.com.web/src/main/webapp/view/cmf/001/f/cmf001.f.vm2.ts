@@ -91,6 +91,11 @@ module nts.uk.com.view.cmf001.f.viewmodel {
       this.loadSetting().done(() => {
         this.selectedIdInTargetDomains("" + this.defaultDomainId);
       });
+
+      $("#mapping-table").ntsFixedTable({
+        width: $("#mapping-table").width(),
+        height: $(window).height() - $("#mapping-table").offset().top - 120,
+      });
     }
 
     loadSetting(): JQueryPromise<any> {
