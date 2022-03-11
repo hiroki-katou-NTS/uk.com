@@ -28,8 +28,10 @@ module nts.uk.at.kdp003.s {
 			if (!params) {
 				vm.params = { employeeId: '', regionalTime: 0 };
 			}
-
-			vm.filter.day = ko.observable(parseInt(moment(vm.$date.now()).add(params.regionalTime, 'm').format('YYYYMM')));
+            vm.$window.storage("serverTime").done((time) => {
+                vm.filter.day = ko.observable(parseInt(moment(time).add(params.regionalTime, 'm').format('YYYYMM')));
+            });
+			
 		}
 
 		created() {

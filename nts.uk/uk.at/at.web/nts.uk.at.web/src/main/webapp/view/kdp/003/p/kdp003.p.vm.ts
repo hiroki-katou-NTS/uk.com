@@ -31,11 +31,13 @@ module nts.uk.at.kdp003.p {
 			if (param) {
 				vm.regionalTime = param.regionalTime;
 			}
-
-			vm.dateValue(new DatePeriod({
-				startDate: moment(vm.$date.now()).utc().add(vm.regionalTime, 'm').format('YYYY/MM/DD'),
-				endDate: moment(vm.$date.now()).utc().add(vm.regionalTime, 'm').format('YYYY/MM/DD')
-			}));
+            vm.$window.storage("serverTime").done((time) => {
+                vm.dateValue(new DatePeriod({
+                    startDate: moment(time).utc().add(vm.regionalTime, 'm').format('YYYY/MM/DD'),
+                    endDate: moment(time).utc().add(vm.regionalTime, 'm').format('YYYY/MM/DD')
+                }));
+            });
+			
 
 			const input: DatePeriod = new DatePeriod({
 				startDate: moment.utc(vm.dateValue().startDate).toISOString(),

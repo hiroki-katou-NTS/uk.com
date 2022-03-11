@@ -56,10 +56,14 @@ module nts.uk.at.kdp003.q {
 		created(parentParam: ParentParam) {
 			const vm = this;
 			vm.regionalTime = parentParam.regionalTime;
-			vm.dateValue(new DatePeriod({
-				startDate: moment(vm.$date.now()).utc().add(vm.regionalTime, 'm').format('YYYY/MM/DD'),
-				endDate: moment(vm.$date.now()).utc().add(vm.regionalTime, 'm').format('YYYY/MM/DD')
-			}));
+            
+            vm.$window.storage("serverTime").done((time) => {
+                vm.dateValue(new DatePeriod({
+                    startDate: moment(time).utc().add(vm.regionalTime, 'm').format('YYYY/MM/DD'),
+                    endDate: moment(time).utc().add(vm.regionalTime, 'm').format('YYYY/MM/DD')
+                }));
+            });
+			
 			vm.parentParam = parentParam;
 			vm.isNewMode(vm.parentParam.isNewMode);
 			vm.isStartUpdateMode = !vm.parentParam.isNewMode;

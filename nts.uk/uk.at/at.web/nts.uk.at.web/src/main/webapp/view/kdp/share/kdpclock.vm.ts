@@ -249,14 +249,9 @@ module nts.uk.at.view.kdp.share {
 				});
 			}
 
-			vm.$ajax('at', '/server/time/now')
-				.then((c) => {
-					const date = moment(moment(c).add(ko.unwrap(vm.regionalTime), 'm').toDate(), 'YYYY-MM-DDTHH:mm:ss').toDate();
+            vm.getServerTime();
 
-					vm.time(date);
-				});
-
-			setInterval(() => vm.time(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate()), 300);
+            setInterval(() => { vm.getServerTime(); }, 300);
 		}
 
 		mounted() {
@@ -264,6 +259,15 @@ module nts.uk.at.view.kdp.share {
 
 			$(vm.$el).attr('id', 'stamp-header');
 		}
+        getServerTime() {
+            vm.$ajax('at', '/server/time/now')
+                .then((c) => {
+                    const date = moment(moment(c).add(ko.unwrap(vm.regionalTime), 'm').toDate(), 'YYYY-MM-DDTHH:mm:ss').toDate();
+
+                    vm.time(date);
+                    vm.$window.storage("serverTime", date);
+                });
+        }
 	}
 
 	export interface StampClocParam {
