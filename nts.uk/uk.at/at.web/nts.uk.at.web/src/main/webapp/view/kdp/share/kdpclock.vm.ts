@@ -260,6 +260,7 @@ module nts.uk.at.view.kdp.share {
 			$(vm.$el).attr('id', 'stamp-header');
 		}
         getServerTime() {
+            let vm = this;
             vm.$ajax('at', '/server/time/now')
                 .then((c) => {
                     const date = moment(moment(c).add(ko.unwrap(vm.regionalTime), 'm').toDate(), 'YYYY-MM-DDTHH:mm:ss').toDate();
