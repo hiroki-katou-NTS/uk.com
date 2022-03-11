@@ -98,6 +98,10 @@ module nts.uk.com.view.cmf001.f.viewmodel {
       });
     }
 
+    /**
+     * 起動時の設定読み込み
+     * @returns 
+     */
     loadSetting(): JQueryPromise<any> {
 
       let dfd = $.Deferred();
@@ -214,6 +218,9 @@ module nts.uk.com.view.cmf001.f.viewmodel {
       });
     }
 
+    /**
+     * 詳細設定画面へ
+     */
     gotoDetailSetting() {
       request.jump("../c/index.xhtml", {
 				settingCode: this.settingCode,
@@ -223,6 +230,10 @@ module nts.uk.com.view.cmf001.f.viewmodel {
     }
   }
 
+  /**
+   * ViewModelの外からViewModelにアクセスしたいから・・・
+   * @returns 
+   */
   function vm(): ViewModel {
     return <ViewModel>(ui._viewModel.content);
   }
