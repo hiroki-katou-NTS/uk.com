@@ -93,9 +93,9 @@ module nts.uk.at.kdp003.s {
 			vm.filter.day
 				.subscribe((value: number) => {
 					const fm = 'YYYY/MM/DD';
-                    
-                        const endDate = moment(moment(vm.$date.now()).add(vm.params.regionalTime, 'm').endOf('month')).format(fm);
-                        const startDate = moment(moment(vm.$date.now()).add(vm.params.regionalTime, 'm').startOf('month')).format(fm);
+                        const baseDate = moment(`${value}`, 'YYYYMM');
+                        const endDate = baseDate.endOf('month').format(fm);
+                        const startDate = baseDate.startOf('month').format(fm);
 
                         vm.$ajax(API.GET_STAMP_MANAGEMENT, { employeeId: vm.params.employeeId, endDate, startDate })
                             .then((data: StampData[]) => {

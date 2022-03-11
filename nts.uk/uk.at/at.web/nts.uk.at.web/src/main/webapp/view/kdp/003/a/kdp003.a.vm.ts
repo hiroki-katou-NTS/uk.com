@@ -279,7 +279,7 @@ module nts.uk.at.kdp003.a {
 			let dfd = $.Deferred<void>();
 
 			if (locationCd) {
-				vm.$ajax(API.GET_IP_URL, { contractCode: vm.contractCode }) .done((response) => {
+				vm.$ajax(API.GetIPAddress, { contractCode: vm.contractCode }) .done((response) => {
 					const param = {
 						contractCode: vm.contractCode,
 						workLocationCode: locationCd,
