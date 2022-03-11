@@ -491,10 +491,9 @@ module nts.uk.at.view.kdp005.a {
 				const vm = this;
 				const mVm = new ko.ViewModel();
 				vm.getWorkPlacesInfo();
-                mVm.$window.storage("serverTime").then((time) => {
                     mVm.$window.storage("workLocationInfo").then((workLocInfo) => {
-                        let stampTime = moment(time).add(workLocInfo.regional, 'minutes').format("HH:mm");
-                        let stampDateTime = moment(time).add(workLocInfo.regional, 'minutes').format();
+                        let stampTime = moment(mVm.$date.now()).add(workLocInfo.regional, 'minutes').format("HH:mm");
+                        let stampDateTime = moment(mVm.$date.now()).add(workLocInfo.regional, 'minutes').format();
                         modal('/view/kdp/005/h/index.xhtml').onClosed(function(): any {
                             let ICCard = getShared('ICCard');
                             if (ICCard && ICCard != '') {
@@ -509,8 +508,6 @@ module nts.uk.at.view.kdp005.a {
                             }
                         });
                     });
-
-                });
                 
 			}
 

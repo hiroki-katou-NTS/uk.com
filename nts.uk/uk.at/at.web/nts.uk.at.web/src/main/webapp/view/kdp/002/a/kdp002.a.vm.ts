@@ -185,11 +185,8 @@ module nts.uk.at.view.kdp002.a {
                 let stampTime = moment(moment(view.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate()).format("HH:mm");
 
                 nts.uk.ui.block.invisible();
-                nts.uk.request
-                    .syncAjax("com", "server/time/now/")
-                    .done((res) => {
                         let data = {
-                            datetime: moment.utc(moment(res).add(ko.unwrap(vm.regionalTime), 'm').toDate()).format('YYYY/MM/DD HH:mm:ss'),
+                            datetime: moment(moment(view.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate()).format('YYYY/MM/DD HH:mm:ss'),
                             authcMethod: 0,
                             stampMeans: 3,
                             reservationArt: btn.btnReservationArt,
@@ -240,7 +237,6 @@ module nts.uk.at.view.kdp002.a {
                             });
                         })
                         data.workGroup = null;
-                    });
             }
 
             public openScreenB(button, layout, stampTime) {

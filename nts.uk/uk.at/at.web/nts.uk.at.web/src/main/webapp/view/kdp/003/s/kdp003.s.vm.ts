@@ -28,9 +28,7 @@ module nts.uk.at.kdp003.s {
 			if (!params) {
 				vm.params = { employeeId: '', regionalTime: 0 };
 			}
-            vm.$window.storage("serverTime").done((time) => {
-                vm.filter.day = ko.observable(parseInt(moment(time).add(params.regionalTime, 'm').format('YYYYMM')));
-            });
+             vm.filter.day = ko.observable(parseInt(moment(vm.$date.now()).add(params.regionalTime, 'm').format('YYYYMM')));
 			
 		}
 
@@ -95,9 +93,9 @@ module nts.uk.at.kdp003.s {
 			vm.filter.day
 				.subscribe((value: number) => {
 					const fm = 'YYYY/MM/DD';
-                    vm.$window.storage("serverTime").done((time) => {
-                        const endDate = moment(moment(time).add(vm.params.regionalTime, 'm').endOf('month')).format(fm);
-                        const startDate = moment(moment(time).add(vm.params.regionalTime, 'm').startOf('month')).format(fm);
+                    
+                        const endDate = moment(moment(vm.$date.now()).add(vm.params.regionalTime, 'm').endOf('month')).format(fm);
+                        const startDate = moment(moment(vm.$date.now()).add(vm.params.regionalTime, 'm').startOf('month')).format(fm);
 
                         vm.$ajax(API.GET_STAMP_MANAGEMENT, { employeeId: vm.params.employeeId, endDate, startDate })
                             .then((data: StampData[]) => {
@@ -105,7 +103,6 @@ module nts.uk.at.kdp003.s {
                                     vm.dataSources.all(data);
                                 }
                             });
-                    });
 					
 				});
 

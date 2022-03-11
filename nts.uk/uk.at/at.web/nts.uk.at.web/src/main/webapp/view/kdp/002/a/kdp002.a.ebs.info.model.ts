@@ -20,8 +20,8 @@ module nts.uk.at.view.kdp002.a {
 
 				self.displayMethod = ko.observable(setting.historyDisplayMethod);
 				self.dateValue = ko.observable({
-					startDate: moment(moment()).add(ko.unwrap(regionalTime), 'm').add(-3, 'days').format('YYYY/MM/DD'),
-					endDate: moment(moment()).add(ko.unwrap(regionalTime), 'm').format('YYYY/MM/DD')
+					startDate: moment(vm.$date.now()).add(ko.unwrap(regionalTime), 'm').add(-3, 'days').format('YYYY/MM/DD'),
+					endDate: moment(vm.$date.now()).add(ko.unwrap(regionalTime), 'm').format('YYYY/MM/DD')
 				});
 
 				vm.$ajax('at', '/server/time/now')

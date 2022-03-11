@@ -31,17 +31,15 @@ module nts.uk.at.kdp003.p {
 			if (param) {
 				vm.regionalTime = param.regionalTime;
 			}
-            vm.$window.storage("serverTime").done((time) => {
                 vm.dateValue(new DatePeriod({
-                    startDate: moment(time).utc().add(vm.regionalTime, 'm').format('YYYY/MM/DD'),
-                    endDate: moment(time).utc().add(vm.regionalTime, 'm').format('YYYY/MM/DD')
+                    startDate: moment(vm.$date.now()).add(vm.regionalTime, 'm').format('YYYY/MM/DD'),
+                    endDate: moment(vm.$date.now()).add(vm.regionalTime, 'm').format('YYYY/MM/DD')
                 }));
-            });
 			
 
 			const input: DatePeriod = new DatePeriod({
-				startDate: moment.utc(vm.dateValue().startDate).toISOString(),
-				endDate: moment.utc(vm.dateValue().endDate).toISOString()
+				startDate: moment(vm.dateValue().startDate).toISOString(),
+				endDate: moment(vm.dateValue().endDate).toISOString()
 			});
 			vm.searchMessage(input);
 			vm.$blockui('show');
