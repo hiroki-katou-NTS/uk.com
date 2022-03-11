@@ -95,15 +95,18 @@ module nts.uk.at.kdp003.s {
 			vm.filter.day
 				.subscribe((value: number) => {
 					const fm = 'YYYY/MM/DD';
-					const endDate = moment(moment(vm.$date.now()).add(vm.params.regionalTime, 'm').endOf('month')).format(fm);
-					const startDate = moment(moment(vm.$date.now()).add(vm.params.regionalTime, 'm').startOf('month')).format(fm);
+                    vm.$window.storage("serverTime").done((time) => {
+                        const endDate = moment(moment(time).add(vm.params.regionalTime, 'm').endOf('month')).format(fm);
+                        const startDate = moment(moment(time).add(vm.params.regionalTime, 'm').startOf('month')).format(fm);
 
-					vm.$ajax(API.GET_STAMP_MANAGEMENT, { employeeId: vm.params.employeeId, endDate, startDate })
-						.then((data: StampData[]) => {
-							if (ko.toJS(vm.filter.day) === value) {
-								vm.dataSources.all(data);
-							}
-						});
+                        vm.$ajax(API.GET_STAMP_MANAGEMENT, { employeeId: vm.params.employeeId, endDate, startDate })
+                            .then((data: StampData[]) => {
+                                if (ko.toJS(vm.filter.day) === value) {
+                                    vm.dataSources.all(data);
+                                }
+                            });
+                    });
+					
 				});
 
 			vm.filter.day.valueHasMutated();
