@@ -182,7 +182,7 @@ public class UpdateSupportInforCommandHandler extends CommandHandlerWithResult<U
 
         // 7.
         if (!errorResults.isEmpty()) {
-            Map<String, EmployeeCodeAndDisplayNameImport> empErrorInfoMap = employeeAdapter.getEmployeeCodeAndDisplayNameImportByEmployeeIds(errorResults.stream().map(x -> x.getSupportableEmployee().getId()).collect(Collectors.toList()))
+            Map<String, EmployeeCodeAndDisplayNameImport> empErrorInfoMap = employeeAdapter.getEmployeeCodeAndDisplayNameImportByEmployeeIds(errorResults.stream().map(x -> x.getSupportableEmployee().getEmployeeId().v()).collect(Collectors.toList()))
                     .stream().collect(Collectors.toMap(EmployeeCodeAndDisplayNameImport::getEmployeeId, e -> e));
             DatePeriod period = supportableEmployee.getPeriod();
             List<EmployeeErrorResult> employeeErrorResults = errorResults.stream().map(m -> new EmployeeErrorResult(
@@ -191,7 +191,9 @@ public class UpdateSupportInforCommandHandler extends CommandHandlerWithResult<U
                     period.start() == null ? "" : period.start().toString("yyyy/MM/dd"),
                     period.end() == null ? "" : period.end().toString("yyyy/MM/dd"),
                     m.getErrorInfo()
-            )).collect(Collectors.toList());
+            )).sorted(Comparator.comparing(EmployeeErrorResult::getStartDate)
+                    .thenComparing(Comparator.comparing(EmployeeErrorResult::getEmployeeCode)))
+                    .collect(Collectors.toList());
 
             return new UpdateSupportInforResult(employeeErrorResults);
         }

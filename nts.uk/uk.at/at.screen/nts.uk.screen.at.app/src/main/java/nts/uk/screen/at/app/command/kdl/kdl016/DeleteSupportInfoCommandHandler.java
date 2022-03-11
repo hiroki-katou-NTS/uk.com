@@ -183,7 +183,8 @@ public class DeleteSupportInfoCommandHandler extends CommandHandlerWithResult<De
             ));
         }
 
-        return new DeleteSupportInfoResult(employeeErrorResults);
+        return new DeleteSupportInfoResult(employeeErrorResults.stream().sorted(Comparator.comparing(EmployeeErrorResult::getStartDate)
+                .thenComparing(Comparator.comparing(EmployeeErrorResult::getEmployeeCode))).collect(Collectors.toList()));
     }
 
     @AllArgsConstructor

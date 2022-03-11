@@ -19,6 +19,7 @@ public class SupportInfoDto {
     private String employeeName;
     private String supportOrgName;
     private String supportOrgId;
+    private String supportOrgCode;
     private int supportOrgUnit;
     private int supportType;
     private TimeSpanForCalcDto timeSpan;
@@ -30,7 +31,7 @@ public class SupportInfoDto {
     private int displayMode;
 
     public SupportInfoDto(int id, String employeeId, String periodStart, String periodEnd, String employeeCode, String employeeName,
-                          String supportOrgName, String supportOrgId, int supportOrgUnit, int supportType, TimeSpanForCalcDto timeSpan) {
+                          String supportOrgName, String supportOrgId, String supportOrgCode, int supportOrgUnit, int supportType, TimeSpanForCalcDto timeSpan) {
         this.id = id;
         this.employeeId = employeeId;
         this.periodStart = periodStart;
@@ -39,6 +40,7 @@ public class SupportInfoDto {
         this.employeeName = employeeName;
         this.supportOrgName = supportOrgName;
         this.supportOrgId = supportOrgId;
+        this.supportOrgCode = supportOrgCode;
         this.supportOrgUnit = supportOrgUnit;
         this.supportType = supportType;
         this.timeSpan = timeSpan;

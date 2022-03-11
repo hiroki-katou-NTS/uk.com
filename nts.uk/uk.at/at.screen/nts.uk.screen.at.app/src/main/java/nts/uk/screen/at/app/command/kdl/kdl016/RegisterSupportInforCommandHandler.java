@@ -220,7 +220,9 @@ public class RegisterSupportInforCommandHandler extends CommandHandlerWithResult
                 m.getValue().getSupportableEmployee().getPeriod().start().toString("yyyy/MM/dd"),
                 m.getValue().getSupportableEmployee().getPeriod().end().toString("yyyy/MM/dd"),
                 m.getValue().getErrorInfo()
-        )).collect(Collectors.toList());
+        )).sorted(Comparator.comparing(EmployeeErrorResult::getStartDate)
+                .thenComparing(Comparator.comparing(EmployeeErrorResult::getEmployeeCode)))
+                .collect(Collectors.toList());
 
         return new RegisterSupportInforResult(employeeErrorResults);
     }

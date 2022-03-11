@@ -67,7 +67,7 @@ module nts.uk.at.view.kdl016.e {
                 $('#timespanMin').ntsError('set', {messageId: 'Msg_770', messageParams: [vm.$i18n('KDL016_24')]});
             }
 
-            if($('#timespanMax').ntsError("hasError")) {
+            if ($('#timespanMax').ntsError("hasError")) {
                 vm.validateTimeSpanMax(vm.timespanMax());
             }
         }
@@ -81,7 +81,7 @@ module nts.uk.at.view.kdl016.e {
                 $('#timespanMax').ntsError('set', {messageId: 'Msg_770', messageParams: [vm.$i18n('KDL016_24')]});
             }
 
-            if($('#timespanMin').ntsError("hasError")) {
+            if ($('#timespanMin').ntsError("hasError")) {
                 vm.validateTimeSpanMin(vm.timespanMin());
             }
         }
@@ -89,6 +89,7 @@ module nts.uk.at.view.kdl016.e {
         update() {
             const vm = this;
             vm.$blockui("invisible");
+
             vm.$validate(".nts-input:not(:disabled)").then((valid: boolean) => {
                 if (!valid) {
                     return;
@@ -96,48 +97,65 @@ module nts.uk.at.view.kdl016.e {
                 let command: any = {
                     employeeId: vm.detail().employeeId,
                     supportType: vm.detail().supportType,
-                    // periodStart: moment.utc(vm.dateValue().startDate).format("YYYY/MM/DD"),
-                    // periodEnd: moment.utc(vm.dateValue().endDate).format("YYYY/MM/DD"),
                     supportTimeSpan: {
                         start: vm.detail().supportType === 0 ? null : vm.timespanMin(),
                         end: vm.detail().supportType === 0 ? null : vm.timespanMax()
                     }
                 };
 
-                vm.$ajax(API.update, command).then((data: any) => {
-                    if (!data.error) {
-                        vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
-                            vm.closeDialog();
-                        });
-                    } else {
-                        let errorResults = data.errorResults;
-                        let dataError: any = [];
-                        for (let i = 0; i < errorResults.length; i++) {
-                            dataError.push(
-                                {
-                                    id: i + 1,
-                                    periodDisplay: errorResults[i].periodDisplay,
-                                    employeeDisplay: errorResults[i].employeeDisplay,
-                                    errorMessage: errorResults[i].errorMessage,
-                                }
-                            );
+                if (moment.utc(vm.detail().periodStart).isBefore(moment.utc().format('YYYY/MM/DD'))) {
+                    vm.$dialog.confirm({messageId: 'Msg_3280'}).then((result: 'no' | 'yes') => {
+                        vm.$blockui("invisible");
+                        if (result === 'yes') {
+                            vm.executeUpdate(command);
                         }
-                        let resultObj = {
-                            action: 1,
-                            gridItems: dataError
-                        };
 
-                        vm.$window.modal("/view/kdl/016/f/index.xhtml", resultObj).then((result: any) => {
-                            vm.closeDialog();
-                        });
-                    }
-                }).fail(error => {
-                    vm.$dialog.error(error).then(() => {
+                        if (result === 'no') {
+                            vm.$blockui("hide");
+                        }
+                    });
+                } else {
+                    vm.$blockui("invisible");
+                    vm.executeUpdate(command);
+                }
+            });
+        }
+
+        executeUpdate(command: any) {
+            const vm = this;
+            vm.$ajax(API.update, command).then((data: any) => {
+                if (!data.error) {
+                    vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
                         vm.closeDialog();
                     });
-                }).always(() => {
-                    vm.$blockui("clear");
+                } else {
+                    let errorResults = data.errorResults;
+                    let dataError: any = [];
+                    for (let i = 0; i < errorResults.length; i++) {
+                        dataError.push(
+                            {
+                                id: i + 1,
+                                periodDisplay: errorResults[i].periodDisplay,
+                                employeeDisplay: errorResults[i].employeeDisplay,
+                                errorMessage: errorResults[i].errorMessage,
+                            }
+                        );
+                    }
+                    let resultObj = {
+                        action: 1,
+                        gridItems: dataError
+                    };
+
+                    vm.$window.modal("/view/kdl/016/f/index.xhtml", resultObj).then((result: any) => {
+                        vm.closeDialog();
+                    });
+                }
+            }).fail(error => {
+                vm.$dialog.error(error).then(() => {
+                    vm.closeDialog();
                 });
+            }).always(() => {
+                vm.$blockui("clear");
             });
         }
 

@@ -170,13 +170,19 @@ public class SupportInformationFinder {
                     supportableEmployee.getRecipient().getUnit() == TargetOrganizationUnit.WORKPLACE
                             ? supportableEmployee.getRecipient().getWorkplaceId().orElse(null)
                             : supportableEmployee.getRecipient().getWorkplaceGroupId().orElse(null),
+                    orgInfo.getCode(),
                     supportableEmployee.getRecipient().getUnit().value,
                     supportableEmployee.getSupportType().getValue(),
                     supportableEmployee.getTimespan().isPresent() ? new TimeSpanForCalcDto(supportableEmployee.getTimespan().get().start(), supportableEmployee.getTimespan().get().end()) : new TimeSpanForCalcDto(null, null)
             ));
         }
 
-        return supportInfoResults.stream().sorted(Comparator.comparing(SupportInfoDto::getId)).collect(Collectors.toList());
+        return supportInfoResults.stream().sorted(Comparator.comparing(SupportInfoDto::getPeriodStart)
+                .thenComparing(Comparator.comparing(SupportInfoDto::getSupportOrgCode))
+                .thenComparing(Comparator.comparing(SupportInfoDto::getEmployeeCode))
+                .thenComparing(Comparator.comparing(SupportInfoDto::getSupportType))
+                .thenComparing(Comparator.comparing(x -> x.getTimeSpan().getStart())))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -231,6 +237,7 @@ public class SupportInformationFinder {
                     supportableEmployee.getRecipient().getUnit() == TargetOrganizationUnit.WORKPLACE
                             ? supportableEmployee.getRecipient().getWorkplaceId().orElse(null)
                             : supportableEmployee.getRecipient().getWorkplaceGroupId().orElse(null),
+                    orgInfo.getCode(),
                     supportableEmployee.getRecipient().getUnit().value,
                     supportableEmployee.getSupportType().getValue(),
                     supportableEmployee.getTimespan().isPresent() ? new TimeSpanForCalcDto(supportableEmployee.getTimespan().get().start(), supportableEmployee.getTimespan().get().end()) : new TimeSpanForCalcDto(null, null)
@@ -238,7 +245,12 @@ public class SupportInformationFinder {
 
         }
 
-        return supportInfoResults.stream().sorted(Comparator.comparing(SupportInfoDto::getId)).collect(Collectors.toList());
+        return supportInfoResults.stream().sorted(Comparator.comparing(SupportInfoDto::getPeriodStart)
+                .thenComparing(Comparator.comparing(SupportInfoDto::getSupportOrgCode))
+                .thenComparing(Comparator.comparing(SupportInfoDto::getEmployeeCode))
+                .thenComparing(Comparator.comparing(SupportInfoDto::getSupportType))
+                .thenComparing(Comparator.comparing(x -> x.getTimeSpan().getStart())))
+                .collect(Collectors.toList());
     }
 
     /**

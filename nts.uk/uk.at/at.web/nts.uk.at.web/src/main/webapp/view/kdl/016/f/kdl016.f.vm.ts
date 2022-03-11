@@ -14,7 +14,7 @@ module nts.uk.at.view.kdl016.f {
 
             $("#grid2").ntsGrid({
                 // width: '970px',
-                height: "352px",
+                height: "285px",
                 dataSource: vm.dataSource,
                 primaryKey: 'id',
                 virtualization: true,
@@ -42,6 +42,11 @@ module nts.uk.at.view.kdl016.f {
                         template: '<div class="limited-label">${errorMessage} </div>'
                     }
                 ],
+                features: [
+                    {
+                        name: "Resizing"
+                    }
+                ]
             });
         };
 
