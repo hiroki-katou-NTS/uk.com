@@ -122,13 +122,31 @@ module nts.uk.com.view.cmf001.f.viewmodel {
     }
 
     
-		canSave = ko.computed(() => !nts.uk.ui.errors.hasError());
+		canSave = ko.computed(() => !ui.errors.hasError());
 
     /**
      * 登録する
      */
     save() {
-      //clickSave
+
+      if (ui.errors.hasError()) return;
+
+      (<any>nts.uk.ui).block.grayout();
+
+      let command: dto.SaveCommandDto = {
+        settingCode: this.settingCode,
+        layouts: this.layouts().map(l => l.toSavedDto()),
+      };
+
+      request.ajax("screen/com/cmf/cmf001/f/save", command)
+        .done(() => {
+          (<any>nts.uk.ui).block.clear();
+          ui.dialog.info({ messageId: "Msg_15" });
+        })
+        .fail(res => {
+          (<any>nts.uk.ui).block.clear();
+          ui.dialog.alert(res);
+        });
     }
 
     /**
@@ -255,6 +273,13 @@ module nts.uk.com.view.cmf001.f.viewmodel {
     removeItem(item: LayoutItem) {
       this.items.remove(item);
     }
+
+    toSavedDto(): dto.LayoutDto {
+      return {
+        domainId: this.domainId,
+        items: this.items().map(i => i.toSaveDto()),
+      };
+    }
   }
 
   class LayoutItem {
@@ -301,6 +326,14 @@ module nts.uk.com.view.cmf001.f.viewmodel {
       vm().selectedLayout().removeItem(this);
     }
 
+    toSaveDto(): dto.SaveLayoutItemDto {
+      return {
+        itemNo: this.itemNo,
+        fixedValue: this.sourceType() === SourceType.Fixed,
+        csvColumnNo: this.csvColumnNo(),
+      };
+    }
+
     static fromDto(domainId: DomainId, dto: dto.LayoutItemDto): LayoutItem {
       let sourceType = dto.fixedValue ? SourceType.Fixed : SourceType.Csv;
       return LayoutItem.create(domainId, dto.itemNo, sourceType, dto.csvColumnNo);
@@ -345,6 +378,22 @@ module nts.uk.com.view.cmf001.f.viewmodel {
       itemNo: ItemNo;
       itemName: string;
       optional: boolean;
+    }
+
+    export interface SaveCommandDto {
+      settingCode: string;
+      layouts: SaveLayoutDto[];
+    }
+
+    export interface SaveLayoutDto {
+      domainId: DomainId;
+      items: SaveLayoutItemDto[];
+    }
+
+    export interface SaveLayoutItemDto {
+      itemNo: ItemNo;
+      fixedValue: boolean;
+      csvColumnNo: CsvColumnNo;
     }
   }
 }

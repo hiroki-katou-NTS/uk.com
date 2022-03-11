@@ -29,16 +29,16 @@ public class Cmf001fWebService {
 	}
 	
 	@Inject
-	private Cmf001fSaveCommandHandler handler;
-	
-	@Inject
-	private Cmf001fDeleteCommandHandler delHandler;
+	private Cmf001fSaveCommandHandler saveHandler;
 	
 	@POST
 	@Path("save")
 	public void save(Cmf001fSaveCommand command) {
-		handler.handle(command);
+		saveHandler.handle(command);
 	}
+	
+	@Inject
+	private Cmf001fDeleteCommandHandler delHandler;
 
 	@POST
 	@Path("delete")
