@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfService;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -23,7 +24,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class LengthOfServiceTblFinder {
 	@Inject
 	private LengthServiceRepository lengthServiceRepository;
-	
+
 	/**
 	 * Find by ids.
 	 *
@@ -32,18 +33,17 @@ public class LengthOfServiceTblFinder {
 	public List<LengthOfServiceTblDto> findByCode(String yearHolidayCode) {
 		// user contexts
 		String companyId = AppContexts.user().companyId();
-		List<LengthOfService> lengthOfService = this.lengthServiceRepository.findByCode(companyId, yearHolidayCode).get().getLengthOfServices();
-		return lengthOfService.stream().map(c->LengthOfServiceTblDto.fromDomain(companyId, yearHolidayCode, c)).collect(Collectors.toList());
+		Optional<LengthServiceTbl> table = this.lengthServiceRepository.findByCode(companyId, yearHolidayCode);
+		if (!table.isPresent())
+			return new ArrayList<>();
 
-
-
-
-
+		return table.get().getLengthOfServices().stream()
+				.map(c -> LengthOfServiceTblDto.fromDomain(companyId, yearHolidayCode, c)).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * Calculate grant date
-	 * 
+	 *
 	 * @return
 	 */
 	public List<GrantHolidayTblDto> calculateGrantDate(CalculateGrantHdTblParam param) {
@@ -53,15 +53,15 @@ public class LengthOfServiceTblFinder {
 														x.getGrantNum(), x.getGrantDays(), 
 														x.getLimitTimeHd(), x.getLimitDayYear()))
 				.collect(Collectors.toList());
-		
+
 		List<GrantHolidayTblDto> result = new ArrayList<>();
-		
+
 		// calculate date
 		for (GrantHdTbl item : grantHolidayList) {
 			//item.calculateGrantDate(param.getReferDate(), param.getSimultaneousGrantDate(), EnumAdaptor.valueOf(param.getUseSimultaneousGrant(), UseSimultaneousGrant.class));
 			result.add(GrantHolidayTblDto.fromDomain(item));
 		}
-		
+
 		return result;
 	}
 }

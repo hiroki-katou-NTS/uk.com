@@ -20,54 +20,52 @@ import nts.uk.shr.com.context.AppContexts;
 public class LengthServiceTblServiceImpl implements LengthServiceTblService {
 	@Inject
 	private LengthServiceRepository lengthServiceRepository;
-	
+
 	@Override
-	public List<NextAnnualLeaveGrant> calAnnualHdAwardDate(GeneralDate entryDate, GeneralDate standardDate, Period period, String yearHolidayCode, 
+	public List<NextAnnualLeaveGrant> calAnnualHdAwardDate(GeneralDate entryDate, GeneralDate standardDate, Period period, String yearHolidayCode,
 			Optional<GeneralDate> simultaneousGrandMD, Optional<Boolean> singleDayFlag) {
-		
+
 		String companyId = AppContexts.user().companyId();
 		List<NextAnnualLeaveGrant> dataResult = new ArrayList<>();
-		
+
 		// 勤続年数を取得
-		if(lengthServiceRepository.findByCode(companyId, yearHolidayCode).isPresent()) {
-			LengthServiceTbl lengthServiceTbl = lengthServiceRepository.findByCode(companyId, yearHolidayCode).get();
+		Optional<LengthServiceTbl>table = lengthServiceRepository.findByCode(companyId, yearHolidayCode);
+		if(!table.isPresent() || table.get().getLengthOfServices().isEmpty()) {
+			return Collections.emptyList();
+		}
+		LengthServiceTbl lengthServiceTbl = table.get();
 
+		// 勤続年数でループ
+		for(int i = 0; i < lengthServiceTbl.getLengthOfServicesSize(); i++){
+			// 勤続年数から付与日を計算
+			NextAnnualLeaveGrant nextAnnualLeaveGrant = grantDateCalYearsService(lengthServiceTbl.getALengthOfService(i), entryDate, standardDate, simultaneousGrandMD, null);
 
-			if(lengthServiceTbl.getLengthOfServicesSize() > 0) {
-				// 勤続年数でループ
-				for(int i = 0; i < lengthServiceTbl.getLengthOfServicesSize(); i++){
-					// 勤続年数から付与日を計算
-					NextAnnualLeaveGrant nextAnnualLeaveGrant = grantDateCalYearsService(lengthServiceTbl.getALengthOfService(i), entryDate, standardDate, simultaneousGrandMD, null);
+			// 前回付与日←次回年休付与．付与年月日
+			GeneralDate lastGrantDate = nextAnnualLeaveGrant.grantDate;
 
-					// 前回付与日←次回年休付与．付与年月日
-					GeneralDate lastGrantDate = nextAnnualLeaveGrant.grantDate;
+			// 期間中の年休付与かチェック
+			StatusResult status = checkOnAnnualHolidaysDuringThePeriod(period, lastGrantDate);
 
-					// 期間中の年休付与かチェック
-					StatusResult status = checkOnAnnualHolidaysDuringThePeriod(period, lastGrantDate);
+			// 期間より前
+			if(status == StatusResult.BEFORE_PERIOD) {
+				continue;
+			}
 
-					// 期間より前
-					if(status == StatusResult.BEFORE_PERIOD) {
-						continue;
-					}
-
-					// 期間内
-					if(status == StatusResult.WITHIN_PERIOD) {
-						// パラメータ「単一日フラグ」をチェック
-						if(singleDayFlag != null && singleDayFlag.isPresent() || singleDayFlag.get()) {
-							// 「次回年休付与」を「次回年休付与List」に追加
-							dataResult.add(nextAnnualLeaveGrant);
-						}
-					}
-
-					// 期間より後
-					if(status == StatusResult.AFTER_PERIOD) {
-						dataResult.add(nextAnnualLeaveGrant);
-					}
+			// 期間内
+			if(status == StatusResult.WITHIN_PERIOD) {
+				// パラメータ「単一日フラグ」をチェック
+				if(singleDayFlag != null && singleDayFlag.isPresent() || singleDayFlag.get()) {
+					// 「次回年休付与」を「次回年休付与List」に追加
+					dataResult.add(nextAnnualLeaveGrant);
 				}
-				return dataResult;
+			}
+
+			// 期間より後
+			if(status == StatusResult.AFTER_PERIOD) {
+				dataResult.add(nextAnnualLeaveGrant);
 			}
 		}
-		return Collections.emptyList();
+		return dataResult;
 	}
 
 	/**
@@ -85,7 +83,7 @@ public class LengthServiceTblServiceImpl implements LengthServiceTblService {
 		GeneralDate refDate = GeneralDate.today();
 		GeneralDate lastDate = GeneralDate.today();
 		NextAnnualLeaveGrant result = new NextAnnualLeaveGrant();
-		
+
 		// 「付与基準日」をチェック
 		if(data.getStandGrantDay() == GrantReferenceDate.HIRE_DATE) {
 			// 基準日←パラメータ「入社年月日」
@@ -94,7 +92,7 @@ public class LengthServiceTblServiceImpl implements LengthServiceTblService {
 			// 基準日←パラメータ「年休付与基準日」
 			refDate = standardDate;
 		}
-		
+
 		// 「一斉付与する」をチェック
 		if(data.getAllowStatus() == GrantSimultaneity.USE) {
 			// パラメータ「一斉付与日」が存在するかチェック
@@ -127,7 +125,7 @@ public class LengthServiceTblServiceImpl implements LengthServiceTblService {
 			// 付与基準年月日＋年数・月数
 			refDate.addYears(data.getYear().v()).addMonths(data.getMonth().v());
 		}
-		
+
 		result.grantDate = refDate;
 		// 回数をセット
 		result.time = data.getGrantNum().v();
@@ -135,13 +133,13 @@ public class LengthServiceTblServiceImpl implements LengthServiceTblService {
 		result.halfDayAnnualLeaveMaxTimes = null;
 		result.timeAnnualLeaveMaxDays = null;
 		result.timeAnnualLeaveMaxTime = null;
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * 期間中の年休付与かチェック
-	 * 
+	 *
 	 * @param period
 	 * @param grantDate
 	 * @return
@@ -151,7 +149,7 @@ public class LengthServiceTblServiceImpl implements LengthServiceTblService {
 		// 付与年月日<期間．開始日
 		if(grantDate.before(period.getStartDate())) {
 			return StatusResult.BEFORE_PERIOD;
-		} 
+		}
 
 		// 期間．開始日<=付与年月日<=期間．終了日
 		if(period.getStartDate().before(grantDate) && grantDate.before(period.getEndDate())) {
@@ -162,7 +160,7 @@ public class LengthServiceTblServiceImpl implements LengthServiceTblService {
 		if(period.getEndDate().before(grantDate)) {
 			return StatusResult.AFTER_PERIOD;
 		}
-		
+
 		return null;
 	}
 }
