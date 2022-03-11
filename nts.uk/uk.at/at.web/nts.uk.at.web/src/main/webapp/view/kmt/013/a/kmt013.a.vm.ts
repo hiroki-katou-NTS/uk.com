@@ -51,7 +51,7 @@ module nts.uk.at.view.kmt013.a {
             vm.multiple = ko.observable(false);
             vm.onDialog = ko.observable(false);
             vm.selectType = ko.observable(3);
-            vm.rows = ko.observable(11);
+            vm.rows = ko.observable(12);
             vm.baseDate = ko.observable(new Date);
             vm.alreadySettingWorkplaces = ko.observableArray([]);
             vm.alreadySettingWorkplaceGroups = ko.observableArray([]);
@@ -90,7 +90,7 @@ module nts.uk.at.view.kmt013.a {
                 } else {
                     vm.a3_1Txt(vm.$i18n('Com_Workplace') + ': ');
                     vm.a4_1Txt('応援可能' + vm.$i18n('Com_Workplace') + 'リスト');
-                    vm.rows(11);
+                    vm.rows(12);
                     vm.selectedWkpId.valueHasMutated();
                 }
             });
