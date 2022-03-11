@@ -54,6 +54,21 @@ module nts.uk.at.view.kdl016.c {
                     vm.reloadEmployeeInfo(newValue);
                 }
             });
+
+            vm.timespanMax.subscribe((value) => {
+                vm.validateTimeSpanMax(value);
+            });
+            vm.timespanMin.subscribe((value) => {
+                vm.validateTimeSpanMin(value);
+            });
+
+            vm.endDate.subscribe((value: any) => {
+                vm.validateEndDate(value);
+            });
+
+            vm.startDate.subscribe((value: any) => {
+                vm.validateStartDate(value);
+            });
         }
 
         created(params: IParameter) {
@@ -148,6 +163,82 @@ module nts.uk.at.view.kdl016.c {
             return dfd.promise();
         }
 
+        validateEndDate(value: any) {
+            const vm = this;
+            $('#endDate').ntsError('clear');
+            let start = moment.utc(vm.startDate(), "YYYY/MM/DD");
+            let end = moment.utc(value, "YYYY/MM/DD");
+            if (end.isBefore(start)) {
+                $('#endDate').ntsError('set', {messageId: 'MsgB_21', messageParams: [vm.$i18n('KDL016_27')]});
+            }
+
+            // Validate maxRange oneYear
+            let maxDate = _.cloneDeep(start);
+            let currentDate = start.date();
+            let isEndMonth = currentDate === start.endOf("months").date();
+            let isStartMonth = currentDate === 1;
+            maxDate = maxDate.date(1).add(1, 'year');
+            if (isStartMonth) {
+                maxDate = maxDate.month(maxDate.month() - 1).endOf("months");
+            }
+            else if (isEndMonth) {
+                maxDate = maxDate.endOf("months").add(-1, "days");
+            }
+            else {
+                maxDate = maxDate.date(currentDate - 1);
+            }
+
+            if (end.isAfter(maxDate)) {
+                $('#endDate').ntsError('set', {messageId: 'MsgB_23', messageParams: [vm.$i18n('KDL016_27')]});
+            }
+
+            if($('#startDate').ntsError("hasError")) {
+                vm.validateStartDate(vm.startDate());
+            }
+        }
+
+        validateStartDate(value: any) {
+            const vm = this;
+            $('#startDate').ntsError('clear');
+            let start = moment.utc(value, "YYYY/MM/DD");
+            let end = moment.utc(vm.endDate(), "YYYY/MM/DD");
+            if (end.isBefore(start)) {
+                $('#startDate').ntsError('set', {messageId: 'MsgB_21', messageParams: [vm.$i18n('KDL016_27')]});
+            }
+
+            if($('#endDate').ntsError("hasError")) {
+                vm.validateEndDate(vm.startDate());
+            }
+        }
+
+        validateTimeSpanMin(value: any) {
+            const vm = this;
+            $('#timespanMin').ntsError('clear');
+            let start = value;
+            let end = vm.timespanMax();
+            if (start >= end) {
+                $('#timespanMin').ntsError('set', {messageId: 'Msg_770', messageParams: [vm.$i18n('KDL016_24')]});
+            }
+
+            if($('#timespanMax').ntsError("hasError")) {
+                vm.validateTimeSpanMax(vm.timespanMax());
+            }
+        }
+
+        validateTimeSpanMax(value: any) {
+            const vm = this;
+            $('#timespanMax').ntsError('clear');
+            let start = vm.timespanMin();
+            let end = value;
+            if (start >= end) {
+                $('#timespanMax').ntsError('set', {messageId: 'Msg_770', messageParams: [vm.$i18n('KDL016_24')]});
+            }
+
+            if($('#timespanMin').ntsError("hasError")) {
+                vm.validateTimeSpanMin(vm.timespanMin());
+            }
+        }
+
         register() {
             const vm = this;
             vm.$validate(".nts-input:not(:disabled)").then((valid: boolean) => {
@@ -209,7 +300,7 @@ module nts.uk.at.view.kdl016.c {
                     }
 
                     vm.$window.modal("/view/kdl/016/f/index.xhtml", dataError).then((result: any) => {
-                        vm.$window.close({closeable: true});
+                        // vm.$window.close({closeable: true});
                     });
                 }
             }).fail(error => {

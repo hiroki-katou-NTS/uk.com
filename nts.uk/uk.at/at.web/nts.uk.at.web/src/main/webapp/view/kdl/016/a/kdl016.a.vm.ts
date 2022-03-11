@@ -75,8 +75,6 @@ module nts.uk.at.view.kdl016.a {
 
         mounted() {
             const vm = this;
-            $('#grid').focus();
-            $('#grid_scroll').focus();
             $('#A1_1').focus();
         }
 
@@ -153,11 +151,6 @@ module nts.uk.at.view.kdl016.a {
                 primaryKey: 'id',
                 virtualization: true,
                 virtualizationMode: 'continuous',
-                // autoGenerateColumns: false,
-                // responseDataKey: "results",
-                // tabIndex: 1,
-                // rowVirtualization: true,
-                // hidePrimaryKey: true,
                 columns: [
                     {headerText: '', key: 'id', dataType: 'number', width: '0px', hidden: true},
                     // {headerText: '', key: "edit", dataType: "string", width: "30px", unbound: true, ntsControl: 'EditButton'},
@@ -188,15 +181,6 @@ module nts.uk.at.view.kdl016.a {
                         name: "Filtering",
                         type: "local",
                         caseSensitive: false,
-                        // mode: "simple",
-                        // filterDialogContainment: "window",
-                        // filterSummaryAlwaysVisible: false,
-                        // dropDownClosing: vm.dropDownClosing,
-
-                        // filterDropDownItemIcons: false,
-                        // filterDropDownWidth: 200,
-                        // filterDialogHeight: "390px",
-                        // filterDialogWidth: "515px",
                         columnSettings: [
                             {columnKey: 'id', allowFiltering: false},
                             {columnKey: 'edit', allowFiltering: false},
@@ -312,8 +296,7 @@ module nts.uk.at.view.kdl016.a {
 
             // $('#igGridSupportInfo').igGridSelection('selectRow', vm.selectedRow());
             // var checkboxes = $('#grid').igGridRowSelectors("option", "enableCheckBoxes");
-            $('#grid_scroll').focus();
-            $('#grid').focus();
+            $('#A1_1').focus();
         }
 
         register() {
@@ -388,7 +371,7 @@ module nts.uk.at.view.kdl016.a {
                     if (result === 'yes') {
                         vm.$ajax(API.delete, command).then((data: any) => {
                             if (!data.error) {
-                                vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
+                                vm.$dialog.info({messageId: 'Msg_16'}).then(function () {
                                     vm.loadSupportInfo(vm.selectedMode());
                                     vm.canDelete(false);
                                     $("#grid").igGridSelection("clearSelection");
@@ -450,8 +433,8 @@ module nts.uk.at.view.kdl016.a {
                 return parseInt(dateVale[0].split('/').join('')) == parseInt(expression.split('/').join(''));
             }
             if (dateVale.length == 2) {
-                return parseInt(dateVale[0].split('/').join('')) >= parseInt(expression.split('/').join('')) ||
-                    parseInt(dateVale[1].split('/').join('')) <= parseInt(expression.split('/').join(''));
+                return parseInt(dateVale[0].split('/').join('')) <= parseInt(expression.split('/').join('')) ||
+                    parseInt(dateVale[1].split('/').join('')) >= parseInt(expression.split('/').join(''));
             }
         }
 

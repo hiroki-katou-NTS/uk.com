@@ -14,6 +14,13 @@ module nts.uk.at.view.kdl016.e {
         constructor(params: any) {
             super();
             const vm = this;
+
+            vm.timespanMax.subscribe((value) => {
+                vm.validateTimeSpanMax(value);
+            });
+            vm.timespanMin.subscribe((value) => {
+                vm.validateTimeSpanMin(value);
+            });
         }
 
         created(params: any) {
@@ -46,6 +53,34 @@ module nts.uk.at.view.kdl016.e {
         mounted() {
             const vm = this;
             $('#timespanMin').focus();
+        }
+
+        validateTimeSpanMin(value: any) {
+            const vm = this;
+            $('#timespanMin').ntsError('clear');
+            let start = value;
+            let end = vm.timespanMax();
+            if (start >= end) {
+                $('#timespanMin').ntsError('set', {messageId: 'Msg_770', messageParams: [vm.$i18n('KDL016_24')]});
+            }
+
+            if($('#timespanMax').ntsError("hasError")) {
+                vm.validateTimeSpanMax(vm.timespanMax());
+            }
+        }
+
+        validateTimeSpanMax(value: any) {
+            const vm = this;
+            $('#timespanMax').ntsError('clear');
+            let start = vm.timespanMin();
+            let end = value;
+            if (start >= end) {
+                $('#timespanMax').ntsError('set', {messageId: 'Msg_770', messageParams: [vm.$i18n('KDL016_24')]});
+            }
+
+            if($('#timespanMin').ntsError("hasError")) {
+                vm.validateTimeSpanMin(vm.timespanMin());
+            }
         }
 
         update() {
