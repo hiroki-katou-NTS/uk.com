@@ -4,9 +4,12 @@ import static java.util.stream.Collectors.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Value;
 import lombok.val;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
+import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.setting.BaseCsvInfoDto;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 
@@ -19,6 +22,7 @@ public class CsvBasedImportSettingDto {
 	String settingCode;
 	List<SampleCsvItemDto> sampleCsvItems;
 	List<CsvBasedLayoutDto> layouts;
+	Map<Integer, List<ImportableItem>> importableItems;
 	
 	public static CsvBasedImportSettingDto create(
 			RequireCreate require,
@@ -28,7 +32,8 @@ public class CsvBasedImportSettingDto {
 		return new CsvBasedImportSettingDto(
 				setting.getCode().v(),
 				csvItems(sampleCsvItems),
-				layouts(require, setting));
+				layouts(require, setting),
+				importableItems(require, setting));
 	}
 	
 	private static List<SampleCsvItemDto> csvItems(List<BaseCsvInfoDto> sampleCsvItems) {
@@ -47,11 +52,20 @@ public class CsvBasedImportSettingDto {
 	private static List<CsvBasedLayoutDto> layouts(RequireCreate require, ExternalImportSetting setting) {
 		
 		return setting.getDomainSettings().stream()
-				.map(ds -> CsvBasedLayoutDto.create(require, ds))
+				.map(ds -> CsvBasedLayoutDto.create(ds))
 				.collect(toList());
 	}
 	
-	public interface RequireCreate extends CsvBasedLayoutDto.RequireCreate {
+	private static Map<Integer, List<ImportableItem>> importableItems(RequireCreate require, ExternalImportSetting setting) {
 		
+		return setting.getDomainSettings().stream()
+				.map(ds -> ds.getDomainId())
+				.map(id -> require.getImportableItems(id))
+				.collect(toMap(l -> l.get(0).getDomainId().value, l -> l));
+	}
+	
+	public interface RequireCreate {
+		
+		List<ImportableItem> getImportableItems(ImportingDomainId domainId);
 	}
 }

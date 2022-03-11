@@ -51,6 +51,9 @@ module nts.uk.com.view.cmf001.f.viewmodel {
     /** 選択中の受入レイアウト */
     selectedLayout: KnockoutComputed<Layout>;
 
+    /** 受入可能項目のキャッシュ */
+    importableItems: { [key: DomainId]: dto.ImportableItemDto[] } = {};
+
     
     constructor() {
       super();
@@ -94,6 +97,10 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 
       request.ajax("screen/com/cmf/cmf001/f/setting/" + this.settingCode).done(res => {
 
+        Object.keys(res.importableItems).forEach(key => {
+          this.importableItems[key] = res.importableItems[key];
+        });
+
         let csvItems = res.sampleCsvItems
           .map(item => new SampleCsvItem(item.columnNo, item.name, item.sampleData));
         this.sampleCsvItems(csvItems);
@@ -132,6 +139,8 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 
       request.ajax("exio/input/importableitem/domain/" + targetDomainId).done(items => {
 
+        this.importableItems[targetDomainId] = items;
+
         let newLayout = Layout.createDefault(targetDomainId, items);
         this.layouts.push(newLayout);
 
@@ -148,18 +157,24 @@ module nts.uk.com.view.cmf001.f.viewmodel {
       //deleteImportDomain
     }
 
+    /**
+     * レイアウトに受入項目を追加する
+     */
     addItem() {
+      
+      let domainId = this.selectedTargetDomain().domainId;
+
       ui.windows.setShared('CMF001DParams', {
-        domainId: this.selectedTargetDomain().domainId,
+        domainId: domainId,
         selectedItems: this.selectedLayout().items().map(i => i.itemNo),
       }, true);
 
       ui.windows.sub.modal("/view/cmf/001/d/index.xhtml").onClosed(() => {
-        // ダイアログを閉じたときの処理
         if(!ui.windows.getShared('CMF001DCancel')){
-          let itemNoList: string[] = ui.windows.getShared('CMF001DOutput')
-          ko.utils.arrayPushAll(self.layoutItemNoList, ItemNoList.map(n => Number(n)));
-          self.setLayout(self.layoutItemNoList());
+          let addingItems: LayoutItem[] = (<string[]>(ui.windows.getShared('CMF001DOutput')))
+            .map(n => Number(n))
+            .map(itemNo => LayoutItem.createDefault(domainId, itemNo));
+          this.selectedLayout().addItems(addingItems);
         }
       });
     }
@@ -200,13 +215,20 @@ module nts.uk.com.view.cmf001.f.viewmodel {
     }
 
     static fromDto(dto: dto.LayoutDto): Layout {
-      return new Layout(dto.domainId, dto.items.map(i => LayoutItem.fromDto(i)));
+      return new Layout(dto.domainId, dto.items.map(i => LayoutItem.fromDto(dto.domainId, i)));
     }
 
     static createDefault(domainId: DomainId, items: any[]) {
       return new Layout(
         domainId,
-        items.map(i => LayoutItem.createDefault(i.itemNo, i.name, i.isOptional)));
+        items.map(i => LayoutItem.createDefault(domainId, i.itemNo)));
+    }
+
+    addItems(items: LayoutItem[]) {
+      let newItems = this.items();
+      items.forEach(i => newItems.push(i));
+      newItems.sort((a, b) => a.itemNo - b.itemNo);
+      this.items(newItems);
     }
 
     removeItem(item: LayoutItem) {
@@ -258,13 +280,18 @@ module nts.uk.com.view.cmf001.f.viewmodel {
       vm().selectedLayout().removeItem(this);
     }
 
-    static fromDto(dto: dto.LayoutItemDto): LayoutItem {
+    static fromDto(domainId: DomainId, dto: dto.LayoutItemDto): LayoutItem {
       let sourceType = dto.fixedValue ? SourceType.Fixed : SourceType.Csv;
-      return new LayoutItem(dto.itemNo, dto.name, dto.optional, sourceType, dto.csvColumnNo);
+      return LayoutItem.create(domainId, dto.itemNo, sourceType, dto.csvColumnNo);
     }
 
-    static createDefault(itemNo: ItemNo, name: string, canDelete: boolean) {
-      return new LayoutItem(itemNo, name, canDelete, SourceType.Fixed, undefined);
+    static createDefault(domainId: DomainId, itemNo: ItemNo) {
+      return LayoutItem.create(domainId, itemNo, SourceType.Fixed, undefined);
+    }
+
+    static create(domainId: DomainId, itemNo: ItemNo, sourceType: SourceType, csvColumnNo: CsvColumnNo) {
+      let item = vm().importableItems[domainId].filter(i => i.itemNo === itemNo)[0];
+      return new LayoutItem(itemNo, item.itemName, item.optional, sourceType, csvColumnNo);
     }
   }
 
@@ -289,10 +316,14 @@ module nts.uk.com.view.cmf001.f.viewmodel {
       
     export interface LayoutItemDto {
       itemNo: ItemNo;
-      name: string;
-      optional: boolean;
       fixedValue: boolean;
       csvColumnNo: CsvColumnNo;
+    }
+
+    export interface ImportableItemDto {
+      itemNo: ItemNo;
+      itemName: string;
+      optional: boolean;
     }
   }
 }

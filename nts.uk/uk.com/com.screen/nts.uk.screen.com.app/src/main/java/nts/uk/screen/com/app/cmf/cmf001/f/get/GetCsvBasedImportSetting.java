@@ -10,7 +10,6 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
-import nts.arc.layer.app.cache.NestedMapCache;
 import nts.arc.layer.app.file.storage.FileStorage;
 import nts.uk.ctx.exio.app.input.setting.FromCsvBaseSettingToDomainRequireImpl;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
@@ -76,15 +75,10 @@ public class GetCsvBasedImportSetting {
 		public List<BaseCsvInfoDto> getSampleCsvItems() {
 			return csvRequire.createBaseCsvInfo(setting.getCsvFileInfo()).get();
 		}
-		
-		private final NestedMapCache<ImportingDomainId, Integer, ImportableItem> importableItemCache = NestedMapCache.incremental(
-				domainId -> importableItemRepo.get(domainId).stream(),
-				item -> item.getItemNo());
 
 		@Override
-		public ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo) {
-			return importableItemCache.get(domainId, itemNo).get();
+		public List<ImportableItem> getImportableItems(ImportingDomainId domainId) {
+			return importableItemRepo.get(domainId);
 		}
-		
 	}
 }
