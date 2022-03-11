@@ -167,6 +167,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.month.ErrorMonthProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
+import nts.uk.screen.at.app.kdw013.query.GetEmployeesCameToSupport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -255,6 +256,9 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	@Inject
 	private TaskSupInfoChoiceDetailsQuery taskSupInfoChoiceDetailsQuery;
+	
+	@Inject
+	private GetEmployeesCameToSupport employeeSupport; 
 	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
@@ -1795,23 +1799,30 @@ public class DailyPerformanceCorrectionProcessor {
 ////		dailyPerformanceCorrectionDto.setCom60HVacationDto(this.repo.getCom60HVacationDto());
 	}
 	
-	public List<String> changeListEmployeeId(List<String> employeeIds, DateRange range, int mode, boolean isTranfer, Integer closureId, DailyPerformanceCorrectionDto screenDto) {
+	public InitialDisplayEmployeeDto changeListEmployeeId(List<String> employeeIds, DateRange range, int mode, boolean isTranfer, Integer closureId, DailyPerformanceCorrectionDto screenDto) {
 		//初期表示社員を取得する
 		String companyId = AppContexts.user().companyId();
 		String employeeIdLogin = AppContexts.user().employeeId();
 		List<String> lstEmployeeId = new ArrayList<>();
+		List<String> lstWplId = new ArrayList<>();
+		List<ResultRequest597Export> lstInfoEmp = new ArrayList<>();
+		DatePeriod period = new DatePeriod(range.getStartDate(), range.getEndDate());
+		InitialDisplayEmployeeDto result = new InitialDisplayEmployeeDto();
+		// 「自分のみ」以外の場合
 		if (mode == ScreenMode.NORMAL.value) {
 			
-			if(!employeeIds.isEmpty()) return employeeIds;
+			if(!employeeIds.isEmpty()) return new InitialDisplayEmployeeDto(employeeIds, null);
 			//社員参照範囲を取得する
 			Optional<Role> role = roleRepository.findByRoleId(AppContexts.user().roles().forAttendance());
 			if (!role.isPresent() || role.get().getEmployeeReferenceRange() == null || role.get()
 					.getEmployeeReferenceRange() == nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange.ONLY_MYSELF) {
-				return Arrays.asList(employeeIdLogin);
+				return new InitialDisplayEmployeeDto(Arrays.asList(employeeIdLogin), null);
 			}
-			DatePeriod period = new DatePeriod(range.getStartDate(), range.getEndDate());
-			List<String> lstWplId = workplacePub.getLstWorkplaceIdBySidAndPeriod(employeeIdLogin, period);
-			List<ResultRequest597Export> lstInfoEmp =  workplacePub.getLstEmpByWorkplaceIdsAndPeriod(lstWplId, period);
+			
+			// [No.598]社員が所属している職場を取得する
+			lstWplId = workplacePub.getLstWorkplaceIdBySidAndPeriod(employeeIdLogin, period);
+			// [No.597]職場の所属社員を取得する
+			lstInfoEmp =  workplacePub.getLstEmpByWorkplaceIdsAndPeriod(lstWplId, period);
 			
 			
 //			List<RegulationInfoEmployeeQueryR> regulationRs = regulationInfoEmployeePub.search(
@@ -1830,7 +1841,7 @@ public class DailyPerformanceCorrectionProcessor {
 //				
 //				lstEmployeeId = narrowEmployeeAdapter.findByEmpId(listEmp, 3);
 			if (lstInfoEmp.isEmpty())
-				return Arrays.asList(employeeIdLogin);
+				return new InitialDisplayEmployeeDto(Arrays.asList(employeeIdLogin), null);
 			lstEmployeeId = lstInfoEmp.stream().map(x -> x.getSid()).distinct().collect(Collectors.toList());
 			lstEmployeeId.add(employeeIdLogin);
 			lstEmployeeId = lstEmployeeId.stream().distinct().collect(Collectors.toList());
@@ -1850,7 +1861,6 @@ public class DailyPerformanceCorrectionProcessor {
 			if(lstEmployeeId.isEmpty()){
 				//throw new BusinessException("Msg_1342");
 			}
-			return lstEmployeeId;
 		} else if (mode == ScreenMode.APPROVAL.value) {
 			if(employeeIds.isEmpty()){
 				// catch exception in case has not lst emp
@@ -1864,9 +1874,22 @@ public class DailyPerformanceCorrectionProcessor {
 				//throw new BusinessException("Msg_916");
 				screenDto.setErrorInfomation(DCErrorInfomation.APPROVAL_NOT_EMP.value);
 			}
-			return lstEmployeeId;
 		}
-		return Collections.emptyList();
+		// Code
+		if(mode == ScreenMode.APPROVAL.value || mode == ScreenMode.NORMAL.value) {
+			// 応援勤務に来た社員を取得する
+			List<String> lstEmpSupport = employeeSupport.getEmployeesCameToSupport(period, lstWplId);
+			List<String> lstEmp597 = lstInfoEmp.stream().map(x -> x.getSid()).collect(Collectors.toList());
+ 			List<String> lstEmpCanSupport = lstEmpSupport.stream().filter(x -> !lstEmp597.contains(x)).collect(Collectors.toList());
+ 			List<String> lstEmpsNew = new ArrayList<>();
+ 			lstEmpsNew.addAll(lstEmp597);
+ 			lstEmpsNew.addAll(lstEmpCanSupport);
+			DPCorrectionStateParam stateParam = new DPCorrectionStateParam(period, lstEmpsNew , null, new ArrayList<>(), 
+					null, null, null, lstWplId, lstEmpCanSupport);
+			
+			return new InitialDisplayEmployeeDto(lstEmployeeId, stateParam);
+		}
+		return new InitialDisplayEmployeeDto(Collections.emptyList(), null);
 	}
 	
 	public void insertStampSourceInfo(String employeeId, GeneralDate date, Boolean stampSourceAt,
