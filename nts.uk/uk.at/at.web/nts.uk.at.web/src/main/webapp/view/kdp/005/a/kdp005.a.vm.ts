@@ -954,85 +954,89 @@ module nts.uk.at.view.kdp005.a {
 				let vm = new ko.ViewModel();
 				const self = this;
 				let dfd = $.Deferred<any>();
-				let startDate = vm.$date.now();
 				// startDate.setDate(startDate.getDate() - 3);
 				var wkpIds: string[];
+                vm.$window.storage("workLocationInfo").then((workLocInfo) => {
+                    let startDate = moment(moment(vm.$date.now()).add(ko.unwrap(workLocInfo.regional), 'm').toDate());
+                    if (loginInfo) {
+                        wkpIds = loginInfo.selectedWP;
+                    } else {
+                        vm.$window
+                            .storage('loginKDP005')
+                            .then((data: any) => {
+                                if (data.selectedWP.length > 0) {
+                                    wkpIds = data.selectedWP;
+                                }
+                            })
+                            .then(() => {
+                                if (wkpIds && wkpIds.length > 0) {
+                                    const param = {
+                                        periodDto: {
+                                            startDate: startDate,
+                                            endDate: moment(moment(vm.$date.now()).add(ko.unwrap(workLocInfo.regional), 'm').toDate())
+                                        },
+                                        wkpIds: wkpIds
+                                    }
 
-				if (loginInfo) {
-					wkpIds = loginInfo.selectedWP;
-				} else {
-					vm.$window
-						.storage('loginKDP005')
-						.then((data: any) => {
-							if (data.selectedWP.length > 0) {
-								wkpIds = data.selectedWP;
-							}
-						})
-						.then(() => {
-							if (wkpIds && wkpIds.length > 0) {
-								const param = {
-									periodDto: {
-										startDate: startDate,
-										endDate: vm.$date.now()
-									},
-									wkpIds: wkpIds
-								}
+                                    vm.$ajax(API.NOTICE, param)
+                                        .done((data: IMessage) => {
+                                            self.messageNoti(data);
 
-								vm.$ajax(API.NOTICE, param)
-									.done((data: IMessage) => {
-										self.messageNoti(data);
+                                            if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
+                                                if (self.totalOpenViewR === 0) {
 
-										if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
-											if (self.totalOpenViewR === 0) {
+                                                    setTimeout(() => {
+                                                        self.totalOpenViewR++;
+                                                        const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP005' };
 
-												setTimeout(() => {
-													self.totalOpenViewR++;
-													const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP005' };
-
-													vm.$window.modal(DIALOG.R, param);
-												}, 1000);
-											}
-										}
-									});
-							}
-						});
-				}
+                                                        vm.$window.modal(DIALOG.R, param);
+                                                    }, 1000);
+                                                }
+                                            }
+                                        });
+                                }
+                            });
+                    }
 
 
 
-				if (wkpIds && wkpIds.length > 0) {
-					const param = {
-						periodDto: {
-							startDate: startDate,
-							endDate: vm.$date.now()
-						},
-						wkpIds: loginInfo.selectedWP
-					}
+                    if (wkpIds && wkpIds.length > 0) {
+                        const param = {
+                            periodDto: {
+                                startDate: startDate,
+                                endDate: moment(moment(vm.$date.now()).add(ko.unwrap(workLocInfo.regional), 'm').toDate())
+                            },
+                            wkpIds: loginInfo.selectedWP
+                        }
 
-					vm.$blockui('invisible')
-						.then(() => {
-							vm.$ajax(API.NOTICE, param)
-								.done((data: IMessage) => {
-									self.messageNoti(data);
+                        vm.$blockui('invisible')
+                            .then(() => {
+                                vm.$ajax(API.NOTICE, param)
+                                    .done((data: IMessage) => {
+                                        self.messageNoti(data);
 
-									if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
-										if (self.totalOpenViewR === 0) {
+                                        if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
+                                            if (self.totalOpenViewR === 0) {
 
-											setTimeout(() => {
-												self.totalOpenViewR++;
-												const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP005' };
+                                                setTimeout(() => {
+                                                    self.totalOpenViewR++;
+                                                    const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP005' };
 
-												vm.$window.modal(DIALOG.R, param);
-											}, 1000);
-										}
-									}
-								});
-						})
-						.always(() => {
-							dfd.resolve();
-							vm.$blockui('clear');
-						});
-				}
+                                                    vm.$window.modal(DIALOG.R, param);
+                                                }, 1000);
+                                            }
+                                        }
+                                    });
+                            })
+                            .always(() => {
+                                dfd.resolve();
+                                vm.$blockui('clear');
+                            });
+                    }
+
+
+                });
+				
 				return dfd.promise();
 			}
 

@@ -28,7 +28,7 @@ module nts.uk.at.kdp003.s {
 			if (!params) {
 				vm.params = { employeeId: '', regionalTime: 0 };
 			}
-             vm.filter.day = ko.observable(parseInt(moment(vm.$date.now()).add(params.regionalTime, 'm').format('YYYYMM')));
+             vm.filter.day(parseInt(moment(vm.$date.now()).add(params.regionalTime, 'm').format('YYYYMM')));
 			
 		}
 
