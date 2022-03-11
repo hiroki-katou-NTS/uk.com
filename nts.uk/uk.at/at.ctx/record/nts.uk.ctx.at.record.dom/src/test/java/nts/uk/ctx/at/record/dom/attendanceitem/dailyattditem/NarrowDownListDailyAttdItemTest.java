@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.attendanceitem.dailyattditem;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,6 +61,7 @@ import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveManagementSetting;
 import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkSet;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(JMockit.class)
 public class NarrowDownListDailyAttdItemTest {
@@ -74,8 +73,8 @@ public class NarrowDownListDailyAttdItemTest {
 	 * test [prv-1] 利用できない応援作業項目を取得する
 	 * require.応援の運用設定を取得する(会社ID) is not empty
 	 */
-	@Test
-	public void testGetSupportWorkItemNotAvailable() {
+@Test
+public void testGetSupportWorkItemNotAvailable() {
 		String companyId = "companyId";
 		SupportOperationSetting domain = new SupportOperationSetting(true, true, new MaximumNumberOfSupport(15));
 		new Expectations() {{
@@ -87,7 +86,7 @@ public class NarrowDownListDailyAttdItemTest {
 							, require,companyId
 						);
 		assertThat(result.containsAll(Arrays.asList(1071, 1080,1081, 1090,1091, 1100,1101, 1110,1111, 1120))).isTrue();
-	}
+}
 	
 	/**
 	 * test [prv-1] 利用できない応援作業項目を取得する

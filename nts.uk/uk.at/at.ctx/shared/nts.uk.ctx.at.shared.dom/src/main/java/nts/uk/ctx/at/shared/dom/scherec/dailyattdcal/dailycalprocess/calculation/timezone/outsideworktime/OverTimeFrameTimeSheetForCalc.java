@@ -846,4 +846,26 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 		
 		return Optional.of(recreated);
 	}
+	
+	/**
+	 * 逆丸めにして取得する
+	 * @return 残業枠時間帯
+	 */
+	public OverTimeFrameTimeSheetForCalc getReverseRounding() {
+		return new OverTimeFrameTimeSheetForCalc(
+				this.timeSheet.clone(),
+				this.rounding.getReverseRounding(),
+				this.recordedTimeSheet.stream().map(r -> r.clone()).collect(Collectors.toList()),
+				this.deductionTimeSheet.stream().map(d -> d.clone()).collect(Collectors.toList()),
+				this.bonusPayTimeSheet.stream().map(b -> b.clone()).collect(Collectors.toList()),
+				this.specBonusPayTimesheet.stream().map(s -> s.clone()).collect(Collectors.toList()),
+				this.midNightTimeSheet.clone(),
+				this.frameTime.clone(),
+				StatutoryAtr.valueOf(this.withinStatutryAtr.toString()),
+				this.goEarly,
+				new EmTimezoneNo(this.overTimeWorkSheetNo.v().intValue()),
+				this.asTreatBindTime,
+				this.payOrder.map(p -> new SettlementOrder(p.v())),
+				this.adjustTime.map(a -> new AttendanceTime(a.valueAsMinutes())));
+	}
 }

@@ -1329,4 +1329,27 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		
 		return Optional.of(recreated);
 	}
+	
+	/**
+	 * 逆丸めにして取得する
+	 * @return 就業時間内時間枠
+	 */
+	public WithinWorkTimeFrame getReverseRounding() {
+		WithinWorkTimeFrame recreated = new WithinWorkTimeFrame(
+				new EmTimeFrameNo(this.workingHoursTimeNo.v().intValue()),
+				new WorkNo(this.workNo.v()),
+				this.timeSheet.clone(),
+				this.beforeLateEarlyTimeSheet.clone(),
+				this.rounding.getReverseRounding(),
+				this.recordedTimeSheet.stream().map(r -> r.clone()).collect(Collectors.toList()),
+				this.deductionTimeSheet.stream().map(d -> d.clone()).collect(Collectors.toList()),
+				this.bonusPayTimeSheet.stream().map(b -> b.clone()).collect(Collectors.toList()),
+				this.midNightTimeSheet.clone(),
+				this.specBonusPayTimesheet.stream().map(s -> s.clone()).collect(Collectors.toList()),
+				this.lateTimeSheet.map(l -> l.clone()),
+				this.leaveEarlyTimeSheet.map(l -> l.clone()));
+		
+		recreated.premiumTimeSheetInPredetermined = recreated.premiumTimeSheetInPredetermined.map(p -> p.clone());
+		return recreated;
+	}
 }
