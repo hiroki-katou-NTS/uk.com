@@ -276,17 +276,14 @@ module nts.uk.at.kdp003.a {
 		getTimeZone(): JQueryPromise<void> {
 			const vm = this,
 				locationCd = $.urlParam('basyo');
-			let ipv4Address = '';
 			let dfd = $.Deferred<void>();
 
 			if (locationCd) {
-				vm.$ajax('at', API.GetIPAddress, { contactCode: vm.$user.contractCode }).then((address: any) => {
-					ipv4Address = address.ipaddress;
-				}).done(() => {
+				vm.$ajax(API.GET_IP_URL, { contractCode: vm.contractCode }) .done((response) => {
 					const param = {
 						contractCode: vm.contractCode,
 						workLocationCode: locationCd,
-						ipv4Address: ipv4Address
+						ipv4Address: response.ipaddress
 					}
 					vm.$ajax('at', API.GetWorkLocationRagionalTime, param).then((data: GetWorkPlaceRegionalTime) => {
 						if (data) {
