@@ -33,6 +33,8 @@ module nts.uk.at.view.knr001.a {
             //	　応援の運用設定.利用するか
             isUsedSupportOperationSetting: KnockoutObservable<boolean> = ko.observable(false);
 
+            todayStr:string = "";
+
             constructor(){
                 var self = this;
                 self.enableBtnNew = ko.observable(true);
@@ -77,6 +79,8 @@ module nts.uk.at.view.knr001.a {
                     setTimeout(() => {
                         self.clearErrors();
                     }, 7);
+                    let today = new Date()
+                    self.empInfoTerminalModel().date(`${today.getFullYear()}/${self.fillZero(today.getMonth() + 1)}/${self.fillZero(today.getDate())}`);
                     if(empInfoTerminalCode){
                         self.enableBtnDelete(true);
                         self.loadEmpInfoTerminal(empInfoTerminalCode);
@@ -129,6 +133,8 @@ module nts.uk.at.view.knr001.a {
                 var self = this;										
                 var dfd = $.Deferred<void>();
                 blockUI.invisible();
+                let today = new Date();
+                self.empInfoTerminalModel().date(`${today.getFullYear()}/${self.fillZero(today.getMonth() + 1)}/${self.fillZero(today.getDate())}`);
                 service.getAll().done((data)=>{
                		self.isUsedSupportOperationSetting(data.usedSupportOperationSetting);
                     if(data.empInfoTerminalListDto.length <= 0){
@@ -144,12 +150,20 @@ module nts.uk.at.view.knr001.a {
                 dfd.resolve();											
                 return dfd.promise();											
             }
+        /**
+         * fill '0' character to datetime
+         */
+            private fillZero(str: any): string{
+                return str.toString().length == 2 ? str : `0${str}`;
+            }
             /**
              * load Employment information terminal
              * 起動する／選択端末を変更する／削除ボタン押下後の表示処理
              */
             private loadEmpInfoTerminal(empInfoTerCode: string): void{
-                let self = this;          
+                let self = this;
+                let today = new Date();
+                self.empInfoTerminalModel().date(`${today.getFullYear()}/${self.fillZero(today.getMonth() + 1)}/${self.fillZero(today.getDate())}`);          
                 service.getDetails(empInfoTerCode).done(function(empInfoTer: any){
                     if(empInfoTer){
                         self.isUpdateMode(true);
@@ -609,12 +623,15 @@ module nts.uk.at.view.knr001.a {
                                             ]); 
                 this.memo =  ko.observable('');  
                
-                this.isEnableCode =  ko.observable(true);     
+                this.isEnableCode =  ko.observable(true);    
                 let today = new Date();
-                let year = today.getFullYear();
-                let month = this.fillZero(`${today.getMonth() + 1}`);
-                let date = this.fillZero(today.getDate().toString());
-                this.date = ko.observable(`${year}/${month}/${date}`);
+                this.date = ko.observable(`${today.getFullYear()}/${this.fillZero(today.getMonth() + 1)}/${this.fillZero(today.getDate())}`);
+            }
+            /**
+             * fill '0' character to datetime
+             */
+            private fillZero(str: any): string{
+                return str.toString().length == 2 ? str : `0${str}`;
             }
 
             /**
@@ -641,6 +658,8 @@ module nts.uk.at.view.knr001.a {
                 this.workplaceId('');
                 this.workplaceName('');
                 this.nRConvertInfo(null);
+                let today = new Date()
+                this.date(`${today.getFullYear()}/${this.fillZero(today.getMonth() + 1)}/${this.fillZero(today.getDate())}`);
             }
             /**
              * update Data
@@ -733,12 +752,6 @@ module nts.uk.at.view.knr001.a {
                 })
                 .fail(() => {})
                 .done(() => blockUI.clear());
-            }
-        /**
-         * fill '0' character to datetime
-         */
-            private fillZero(str: string): string{
-                return str.length == 2 ? str : `0${str}`;
             }
         }
 
