@@ -433,7 +433,7 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                         startDate: selectedFrame.startDate,
                         endDate: selectedFrame.endDate
                     },
-                    displayFormat: 1
+                    displayFormat: 0
                 };
             nts.uk.ui.windows.setShared("CDL027Params", param);
             self.$window.modal('com',"/view/cdl/027/a/index.xhtml");
