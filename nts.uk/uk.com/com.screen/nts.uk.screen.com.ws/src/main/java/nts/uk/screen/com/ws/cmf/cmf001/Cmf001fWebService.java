@@ -8,8 +8,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
-import nts.uk.screen.com.app.cmf.cmf001.f.delete.Cmf001fDeleteCommand;
-import nts.uk.screen.com.app.cmf.cmf001.f.delete.Cmf001fDeleteCommandHandler;
 import nts.uk.screen.com.app.cmf.cmf001.f.get.CsvBasedImportSettingDto;
 import nts.uk.screen.com.app.cmf.cmf001.f.get.GetCsvBasedImportSetting;
 import nts.uk.screen.com.app.cmf.cmf001.f.save.Cmf001fSaveCommand;
@@ -35,14 +33,5 @@ public class Cmf001fWebService {
 	@Path("save")
 	public void save(Cmf001fSaveCommand command) {
 		saveHandler.handle(command);
-	}
-	
-	@Inject
-	private Cmf001fDeleteCommandHandler delHandler;
-
-	@POST
-	@Path("delete")
-	public void save(Cmf001fDeleteCommand command) {
-		delHandler.handle(command);
 	}
 }
