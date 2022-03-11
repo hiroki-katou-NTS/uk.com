@@ -5,7 +5,7 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 
 /**
- * IF_指定職場の指定在籍状態の社員を取得Adapter
+ * IF_ロールIDから参照可能な職場リストを取得するAdapter
  */
 public interface GetReferenceWorkplaceListAdapter {
 

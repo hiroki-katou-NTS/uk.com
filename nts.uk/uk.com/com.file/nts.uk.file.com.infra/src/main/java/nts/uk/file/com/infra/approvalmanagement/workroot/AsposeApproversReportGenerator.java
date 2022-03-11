@@ -112,8 +112,7 @@ public class AsposeApproversReportGenerator extends AsposeCellsReportGenerator i
 		Cells cells = sheet.getCells();
 		AtomicInteger currentRow = new AtomicInteger(DATA_ROW_START);
 
-		List<String> sids = dataSource.getSettingInfos().stream()
-				.map(data -> data.getPersonApprovalRoot().getEmployeeId()).collect(Collectors.toList());
+		List<String> sids = dataSource.getSubordinateEmployeeIds();
 		List<EmployeeInformationExport> employeeInfos = dataSource.getEmployeeInfos().stream()
 				.filter(data -> sids.contains(data.getEmployeeId())).collect(Collectors.toList());
 		List<String> workplaceIds = employeeInfos.stream().map(data -> data.getWorkplace().getWorkplaceId())
@@ -183,13 +182,17 @@ public class AsposeApproversReportGenerator extends AsposeCellsReportGenerator i
 		this.printCell(cells.get(currentRow.get(), COL_JOB_TITLE), employeeInfo.getPosition().getPositionName());
 		this.printCell(cells.get(currentRow.get(), COL_EMPLOYMENT), employeeInfo.getEmployment().getEmploymentName());
 
+		// In case no setting for this employee
+		if (approvalSettingInformations.isEmpty()) {
+			this.printApprovalInfo(cells, currentRow, dataSource, null, false);
+			this.setBottomBorder(cells, reportContext, currentRow.getAndIncrement(), false);
+		}
+		
 		// Print approval info (A3_6~A3_12)
 		Iterator<ApprovalSettingInformationExport> iterator = approvalSettingInformations.iterator();
 		while (iterator.hasNext()) {
 			ApprovalSettingInformationExport settingInfo = iterator.next();
-			boolean isValid = dataSource.getSubordinateEmployeeIds()
-					.contains(settingInfo.getPersonApprovalRoot().getEmployeeId());
-			this.printApprovalInfo(cells, currentRow, dataSource, settingInfo, isValid);
+			this.printApprovalInfo(cells, currentRow, dataSource, settingInfo, true);
 			if (!iterator.hasNext()) {
 				this.setBottomBorder(cells, reportContext, currentRow.get(), false);
 			}
@@ -204,16 +207,21 @@ public class AsposeApproversReportGenerator extends AsposeCellsReportGenerator i
 	 * @param currentRow
 	 * @param dataSource
 	 * @param settingInfo
-	 * @param isValid     「配下社員IDリスト.社員ID」に合致する「承認ルート．社員ID」
+	 * @param isRegistered     「配下社員IDリスト.社員ID」に合致する「承認ルート．社員ID」
 	 */
 	private void printApprovalInfo(Cells cells, AtomicInteger currentRow, ApproversExportDataSource dataSource,
-			ApprovalSettingInformationExport settingInfo, boolean isValid) {
+			ApprovalSettingInformationExport settingInfo, boolean isRegistered) {
 		// Set style
 		Range templateRange = cells.createRange(DATA_ROW_START, 0, 1, TOTAL_COL);
 		Style style = templateRange.get(0, 0).getStyle();
 		Range range = cells.createRange(currentRow.get(), 0, 1, TOTAL_COL);
 		style.setBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getBlack());
 		range.setStyle(style);
+		// Set ＜未登録＞
+		if (!isRegistered) {
+			this.printCell(cells.get(currentRow.get(), COL_APPROVER_START), TextResource.localize("CMM030_162"));
+			return;
+		}
 		// Get data to print
 		EmploymentRootAtr employmentRootAtr = EnumAdaptor.valueOf(settingInfo.getEmploymentRootAtr(),
 				EmploymentRootAtr.class);
@@ -242,30 +250,26 @@ public class AsposeApproversReportGenerator extends AsposeCellsReportGenerator i
 		AtomicInteger col = new AtomicInteger(COL_APPROVER_START);
 
 		// Print approval info
-		if (isValid) {
-			this.printCell(cells.get(currentRow.get(), COL_APP_TYPE), appType);
-			if (optHistItem.isPresent()) {
-				this.printCell(cells.get(currentRow.get(), COL_PERIOD),
-						TextResource.localize("CMM030_160",
-								optHistItem.get().getDatePeriod().start().toString(DATE_FORMAT),
-								optHistItem.get().getDatePeriod().end().toString(DATE_FORMAT)));
-			}
-			approvalPhases.forEach(phase -> {
-				Cell cell = cells.get(currentRow.get(), col.getAndIncrement());
-				if (isFirstApprover.getAndSet(false) && !isValidOpeMode) {
-					this.printCell(cell, TextResource.localize("CMM030_161"));
-				} else if (isValidOpeMode) {
-					Optional<String> optApproverId = phase.getApprover().stream().map(ApproverExport::getEmployeeId)
-							.filter(Objects::nonNull).findFirst();
-					String empName = dataSource.getEmployees().stream()
-							.filter(data -> optApproverId.map(x -> x.equals(data.getSid())).orElse(false)).findFirst()
-							.map(ResultRequest600Export::getEmployeeName).orElse("");
-					this.printCell(cell, empName);
-				}
-			});
-		} else {
-			this.printCell(cells.get(currentRow.get(), col.get()), TextResource.localize("CMM030_162"));
+		this.printCell(cells.get(currentRow.get(), COL_APP_TYPE), appType);
+		if (optHistItem.isPresent()) {
+			this.printCell(cells.get(currentRow.get(), COL_PERIOD),
+					TextResource.localize("CMM030_160",
+							optHistItem.get().getDatePeriod().start().toString(DATE_FORMAT),
+							optHistItem.get().getDatePeriod().end().toString(DATE_FORMAT)));
 		}
+		approvalPhases.forEach(phase -> {
+			Cell cell = cells.get(currentRow.get(), col.getAndIncrement());
+			if (isFirstApprover.getAndSet(false) && !isValidOpeMode) {
+				this.printCell(cell, TextResource.localize("CMM030_161"));
+			} else if (isValidOpeMode) {
+				Optional<String> optApproverId = phase.getApprover().stream().map(ApproverExport::getEmployeeId)
+						.filter(Objects::nonNull).findFirst();
+				String empName = dataSource.getEmployees().stream()
+						.filter(data -> optApproverId.map(x -> x.equals(data.getSid())).orElse(false)).findFirst()
+						.map(ResultRequest600Export::getEmployeeName).orElse("");
+				this.printCell(cell, empName);
+			}
+		});
 	}
 
 	private void printCell(Cell cell, String value) {
