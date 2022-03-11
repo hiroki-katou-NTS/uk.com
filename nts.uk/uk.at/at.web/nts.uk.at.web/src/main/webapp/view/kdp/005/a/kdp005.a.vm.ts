@@ -414,7 +414,7 @@ module nts.uk.at.view.kdp005.a {
 
                             } else {
 
-                                let workregionParam = { contractCode: info.contractCode, cid: loginInfo.companyId, sid: loginInfo.employeeId, workPlaceId: loginInfo.selectedWP[0] };
+                                let workregionParam = { contractCode: info.contractCode, cid: loginInfo.companyId, sid: null, workPlaceId: loginInfo.selectedWP[0] };
 
                                 vm.$ajax(API.GET_REGION_TIME, workregionParam).done((workLoc: IWorkPlaceRegionalTimeDto) => {
 

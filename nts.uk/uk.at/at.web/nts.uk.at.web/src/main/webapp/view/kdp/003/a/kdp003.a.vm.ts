@@ -304,7 +304,7 @@ module nts.uk.at.kdp003.a {
 											const param = {
 												contractCode: vm.$user.contractCode,
 												cid: vm.$user.companyId,
-												sid: vm.$user.employeeId,
+												sid: null,
 												workPlaceId: data.WKPID[0]
 											}
 											vm.$ajax('at', API.GetWorkPlaceRegionalTime, param).then((data: GetWorkPlaceRegionalTime) => {
@@ -340,7 +340,7 @@ module nts.uk.at.kdp003.a {
 							const param = {
 								contractCode: vm.$user.contractCode,
 								cid: vm.$user.companyId,
-								sid: vm.$user.employeeId,
+								sid: null,
 								workPlaceId: data.WKPID[0]
 							}
 							vm.$ajax('at', API.GetWorkPlaceRegionalTime, param).then((data: GetWorkPlaceRegionalTime) => {
