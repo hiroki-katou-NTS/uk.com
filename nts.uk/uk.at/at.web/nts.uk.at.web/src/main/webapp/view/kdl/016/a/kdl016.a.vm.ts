@@ -138,9 +138,9 @@ module nts.uk.at.view.kdl016.a {
         private initGrid(dataSource: ISupportInformation[]) {
             const vm = this,
                 supportType = [
-                    {id: '', Name: '空白'},
-                    {id: '終日', Name: '終日'},
-                    {id: '時間帯', Name: '時間帯'},
+                    {id: '', Name: vm.$i18n('KDL016_48')},
+                    {id: '終日', Name: vm.$i18n('KDL016_37')},
+                    {id: '時間帯', Name: vm.$i18n('KDL016_38')},
                 ];
 
             $("#grid").igGrid({
@@ -391,8 +391,12 @@ module nts.uk.at.view.kdl016.a {
                                         }
                                     );
                                 }
+                                let resultObj = {
+                                    action: 3,
+                                    gridItems: dataError
+                                };
 
-                                vm.$window.modal("/view/kdl/016/f/index.xhtml", dataError).then((result: any) => {
+                                vm.$window.modal("/view/kdl/016/f/index.xhtml", resultObj).then((result: any) => {
                                     vm.closeDialog();
                                 });
                             }

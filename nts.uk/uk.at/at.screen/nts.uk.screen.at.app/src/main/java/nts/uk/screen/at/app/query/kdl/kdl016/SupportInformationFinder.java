@@ -221,7 +221,7 @@ public class SupportInformationFinder {
 
             val employeeInfoOpt = supportEmployeeInfos.stream().filter(x -> x.getEmployeeId().equals(supportableEmployee.getEmployeeId().v())).findFirst();
             supportInfoResults.add(new SupportInfoDto(
-                    i++,
+                    i + 1,
                     supportableEmployee.getId(),
                     supportableEmployee.getPeriod().start().toString("yyyy/MM/dd"),
                     supportableEmployee.getPeriod().end().toString("yyyy/MM/dd"),

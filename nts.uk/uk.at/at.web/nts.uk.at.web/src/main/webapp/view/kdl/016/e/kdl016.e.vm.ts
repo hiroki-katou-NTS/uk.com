@@ -122,8 +122,12 @@ module nts.uk.at.view.kdl016.e {
                                 }
                             );
                         }
+                        let resultObj = {
+                            action: 1,
+                            gridItems: dataError
+                        };
 
-                        vm.$window.modal("/view/kdl/016/f/index.xhtml", dataError).then((result: any) => {
+                        vm.$window.modal("/view/kdl/016/f/index.xhtml", resultObj).then((result: any) => {
                             vm.closeDialog();
                         });
                     }

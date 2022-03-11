@@ -3,12 +3,14 @@ module nts.uk.at.view.kdl016.f {
     @bean()
     export class ViewModel extends ko.ViewModel {
         dataSource: GridItem[];
+        f1Text : KnockoutObservable<string> = ko.observable("");
 
-        constructor(params: GridItem[]) {
+        constructor(params: ResultExcecute) {
             super();
             const vm = this;
 
-            vm.dataSource = params;
+            vm.dataSource = params.gridItems;
+            vm.f1Text = ko.observable(params.action == Action.REGISTER ? vm.$i18n('KDL016_34') : vm.$i18n('KDL016_47'));
 
             $("#grid2").ntsGrid({
                 // width: '970px',
@@ -59,6 +61,11 @@ module nts.uk.at.view.kdl016.f {
         }
     }
 
+    interface ResultExcecute {
+        action: number;
+        gridItems: GridItem[]
+    }
+
     class GridItem {
         id: number;
         periodDisplay: string;
@@ -71,5 +78,11 @@ module nts.uk.at.view.kdl016.f {
             this.employeeDisplay = employeeDisplay;
             this.errorMessage = errorMessage;
         }
+    }
+
+    enum Action {
+        REGISTER = 1,
+        UPDATE = 2,
+        DELETE = 3
     }
 }
