@@ -4,12 +4,12 @@
 $basic_font_size: 10px;
 $bfs: $basic_font_size; // arias
 $normal_font_size: $bfs * 1.4;
-$font_family: '游ゴシック';
-$font_family_monospace: 'DroidSansMono', '游ゴシック';
+$font_family: 'Noto Sans JP';
+$font_family_monospace: 'DroidSansMono', 'Noto Sans JP';
 
-$font_color: #595959;
+$font_color: #000;
 $button_font_color: #595959;
-$hyperlink_color: #0066CC;
+$hyperlink_color: #8d7565;
 $green_background_color: #E0F59E;
 $green_formlabel_color: #97D155;
 $green_button_color: #A4EEB0;
@@ -20,6 +20,45 @@ $yellow_formlabel_color: #FAC002;
 $red_warning_color: #C12017;
 
 $focused_color: #0096f2;
+
+
+@font-face {
+    font-family: 'Noto Sans JP';
+    font-style: normal;
+    font-weight: 200;
+    src: url(./font/NotoSansCJKjp-Light.woff) format('woff');
+}
+@font-face {
+    font-family: 'Noto Sans JP';
+    font-style: normal;
+    font-weight: 300;
+    src: url(./font/NotoSansCJKjp-DemiLight.woff) format('woff');
+}
+@font-face {
+    font-family: 'Noto Sans JP';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./font/NotoSansCJKjp-Regular.woff) format('woff');
+}
+@font-face {
+    font-family: 'Noto Sans JP';
+    font-style: normal;
+    font-weight: 500;
+    src: url(./font/NotoSansCJKjp-Medium.woff) format('woff');
+}
+@font-face {
+    font-family: 'Noto Sans JP';
+    font-style: normal;
+    font-weight: 700;
+    src: url(./font/NotoSansCJKjp-Bold.woff) format('woff');
+}
+
+@font-face {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-weight: 700;
+    src: url(./font/Quicksand-Bold.ttf) format('truetype');
+}
 
 /* IE */
 @font-face {
@@ -32,6 +71,26 @@ $focused_color: #0096f2;
     font-family: 'DroidSansMono';
     src: url('./font/DroidSansMono.ttf') format('truetype');
 }
+/*
+@font-face {
+    font-family: 'Roboto Condensed';
+    font-style: normal;
+    font-weight: 300;
+    src: url(./font/RobotoCondensed-Light.ttf) format('truetype');
+}
+@font-face {
+    font-family: 'Roboto Condensed';
+    font-style: normal;
+    font-weight: 500;
+    src: url(./font/RobotoCondensed-Regular.ttf) format('truetype');
+}
+@font-face {
+    font-family: 'Roboto Condensed';
+    font-style: normal;
+    font-weight: 700;
+    src: url(./font/RobotoCondensed-Bold.ttf) format('truetype');
+}
+*/
 
 /************************
   Frame

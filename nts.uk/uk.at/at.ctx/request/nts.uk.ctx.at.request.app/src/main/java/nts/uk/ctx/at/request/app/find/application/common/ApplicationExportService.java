@@ -58,50 +58,49 @@ public class ApplicationExportService extends ExportService<AppPrintQuery> {
 		String applicationName = Strings.EMPTY;
 		List<ListOfAppTypesCmd> appNameList = appPrintQuery.appNameList;
 		switch (application.getAppType()) {
-		case STAMP_APPLICATION:
-			List<ListOfAppTypesCmd> stampAppLst = appNameList.stream()
-					.filter(x -> x.getAppType()==ApplicationType.STAMP_APPLICATION.value).collect(Collectors.toList());
-			applicationName = stampAppLst.stream()
-				.filter(x -> {
-					boolean condition1 = x.getAppType()==ApplicationType.STAMP_APPLICATION.value;
-					ApplicationTypeDisplay applicationTypeDisplay = null;
-					if(application.getOpStampRequestMode().get() == StampRequestMode.STAMP_ADDITIONAL) {
-						applicationTypeDisplay = ApplicationTypeDisplay.STAMP_ADDITIONAL;
-					} else {
-						applicationTypeDisplay = ApplicationTypeDisplay.STAMP_ONLINE_RECORD;
-					}
-					boolean condition2 = x.getOpApplicationTypeDisplay()==applicationTypeDisplay.value;
-					return condition1 && condition2;
-				}).findAny().map(x -> x.getAppName()).orElse(null);
-			break;
-		case OVER_TIME_APPLICATION:
-			List<ListOfAppTypesCmd> overtimeAppLst = appNameList.stream()
-					.filter(x -> x.getAppType()==ApplicationType.OVER_TIME_APPLICATION.value).collect(Collectors.toList());
-			applicationName = overtimeAppLst.stream()
-					.filter(x -> {
-						boolean condition1 = x.getAppType()==ApplicationType.OVER_TIME_APPLICATION.value;
-						boolean condition2 = false;
-						if(printContentOfApp.getOpDetailOutput().isPresent()) {
+			case STAMP_APPLICATION:
+				List<ListOfAppTypesCmd> stampAppLst = appNameList.stream()
+						.filter(x -> x.getAppType() == ApplicationType.STAMP_APPLICATION.value).collect(Collectors.toList());
+				applicationName = stampAppLst.stream()
+						.filter(x -> {
+							boolean condition1 = x.getAppType() == ApplicationType.STAMP_APPLICATION.value;
 							ApplicationTypeDisplay applicationTypeDisplay = null;
-							OvertimeAppAtr overtimeAppAtr = printContentOfApp.getOpDetailOutput().get().getAppOverTime().getOverTimeClf();
-							if(overtimeAppAtr==OvertimeAppAtr.EARLY_OVERTIME) {
-								applicationTypeDisplay = ApplicationTypeDisplay.EARLY_OVERTIME;
-							} else if(overtimeAppAtr==OvertimeAppAtr.NORMAL_OVERTIME) {
-								applicationTypeDisplay = ApplicationTypeDisplay.NORMAL_OVERTIME;
-							}else if(overtimeAppAtr == OvertimeAppAtr.MULTIPLE_OVERTIME ){
-								applicationTypeDisplay = ApplicationTypeDisplay.OVERTIME_MULTIPLE_TIME;
+							if (application.getOpStampRequestMode().get() == StampRequestMode.STAMP_ADDITIONAL) {
+								applicationTypeDisplay = ApplicationTypeDisplay.STAMP_ADDITIONAL;
+							} else {
+								applicationTypeDisplay = ApplicationTypeDisplay.STAMP_ONLINE_RECORD;
 							}
-							else {
-								applicationTypeDisplay = ApplicationTypeDisplay.EARLY_NORMAL_OVERTIME;
+							boolean condition2 = x.getOpApplicationTypeDisplay() == applicationTypeDisplay.value;
+							return condition1 && condition2;
+						}).findAny().map(x -> x.getAppName()).orElse(null);
+				break;
+			case OVER_TIME_APPLICATION:
+				List<ListOfAppTypesCmd> overtimeAppLst = appNameList.stream()
+						.filter(x -> x.getAppType() == ApplicationType.OVER_TIME_APPLICATION.value).collect(Collectors.toList());
+				applicationName = overtimeAppLst.stream()
+						.filter(x -> {
+							boolean condition1 = x.getAppType() == ApplicationType.OVER_TIME_APPLICATION.value;
+							boolean condition2 = false;
+							if (printContentOfApp.getOpDetailOutput().isPresent()) {
+								ApplicationTypeDisplay applicationTypeDisplay = null;
+								OvertimeAppAtr overtimeAppAtr = printContentOfApp.getOpDetailOutput().get().getAppOverTime().getOverTimeClf();
+								if (overtimeAppAtr == OvertimeAppAtr.EARLY_OVERTIME) {
+									applicationTypeDisplay = ApplicationTypeDisplay.EARLY_OVERTIME;
+								} else if (overtimeAppAtr == OvertimeAppAtr.NORMAL_OVERTIME) {
+									applicationTypeDisplay = ApplicationTypeDisplay.NORMAL_OVERTIME;
+								} else if (overtimeAppAtr == OvertimeAppAtr.MULTIPLE_OVERTIME) {
+									applicationTypeDisplay = ApplicationTypeDisplay.OVERTIME_MULTIPLE_TIME;
+								} else {
+									applicationTypeDisplay = ApplicationTypeDisplay.EARLY_NORMAL_OVERTIME;
+								}
+								condition2 = x.getOpApplicationTypeDisplay() == applicationTypeDisplay.value;
 							}
-							condition2 = x.getOpApplicationTypeDisplay()==applicationTypeDisplay.value;
-						}
-						return condition1 && condition2;
-					}).findAny().map(x -> x.getAppName()).orElse(null);
-			break;
-		default:
-			applicationName = appNameList.stream().filter(x -> x.getAppType()==application.getAppType().value).findAny().map(x -> x.getAppName()).orElse(null);
-			break;
+							return condition1 && condition2;
+						}).findAny().map(x -> x.getAppName()).orElse(null);
+				break;
+			default:
+				applicationName = appNameList.stream().filter(x -> x.getAppType() == application.getAppType().value).findAny().map(x -> x.getAppName()).orElse(null);
+				break;
 		}
 		printContentOfApp.setApplicationName(applicationName);
 

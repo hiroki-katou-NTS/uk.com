@@ -37,7 +37,7 @@ public class ReflectOutingTimeZone {
 
 				// 日別勤怠(work）の[外出時間帯]をチェック
 				Optional<OutingTimeSheet> outOpt = dailyApp.getOutingTime().get().getOutingTimeSheets().stream().filter(
-						x -> x.getOutingFrameNo().v() == data.getDestinationTimeApp().getEngraveFrameNo().intValue())
+						x -> x.getOutingFrameNo().v() == data.getDestinationTimeApp().getStampNo().intValue())
 						.findFirst();
 
 				if (outOpt.isPresent()) {
@@ -67,10 +67,10 @@ public class ReflectOutingTimeZone {
 		List<Integer> lstItemId = new ArrayList<>();
 		if (data.getDestinationTimeApp().getStartEndClassification() == StartEndClassificationShare.START) {
 			lstItemId.addAll(
-					Arrays.asList(CancelAppStamp.createItemId(88, data.getDestinationTimeApp().getEngraveFrameNo(), 7),
-							CancelAppStamp.createItemId(87, data.getDestinationTimeApp().getEngraveFrameNo(), 7)));
+					Arrays.asList(CancelAppStamp.createItemId(88, data.getDestinationTimeApp().getStampNo(), 7),
+							CancelAppStamp.createItemId(87, data.getDestinationTimeApp().getStampNo(), 7)));
 			return Pair.of(
-					new OutingTimeSheet(new OutingFrameNo(data.getDestinationTimeApp().getEngraveFrameNo().intValue()),
+					new OutingTimeSheet(new OutingFrameNo(data.getDestinationTimeApp().getStampNo().intValue()),
 							Optional.of(new WorkStamp(
 									new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, Optional.empty()),
 											data.getTimeOfDay()),
@@ -80,10 +80,10 @@ public class ReflectOutingTimeZone {
 					lstItemId);
 		} else {
 			lstItemId.addAll(
-					Arrays.asList(CancelAppStamp.createItemId(91, data.getDestinationTimeApp().getEngraveFrameNo(), 7),
-							CancelAppStamp.createItemId(90, data.getDestinationTimeApp().getEngraveFrameNo(), 7)));
+					Arrays.asList(CancelAppStamp.createItemId(91, data.getDestinationTimeApp().getStampNo(), 7),
+							CancelAppStamp.createItemId(90, data.getDestinationTimeApp().getStampNo(), 7)));
 			return Pair.of(new OutingTimeSheet(
-					new OutingFrameNo(data.getDestinationTimeApp().getEngraveFrameNo().intValue()), Optional.empty(),
+					new OutingFrameNo(data.getDestinationTimeApp().getStampNo().intValue()), Optional.empty(),
 					data.getAppStampGoOutAtr().map(x -> GoingOutReason.valueOf(x.value)).orElse(null),
 					Optional.of(new WorkStamp(
 									new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),
@@ -103,14 +103,14 @@ public class ReflectOutingTimeZone {
 			sheet.getGoOut().ifPresent(y -> {
 				data.getWorkLocationCd().ifPresent(code -> {
 					y.setLocationCode(Optional.of(code));
-					lstItemId.add(CancelAppStamp.createItemId(87, data.getDestinationTimeApp().getEngraveFrameNo(), 7));
+					lstItemId.add(CancelAppStamp.createItemId(87, data.getDestinationTimeApp().getStampNo(), 7));
 				});
 				y.getTimeDay().setTimeWithDay(Optional.of(data.getTimeOfDay()));
 				y.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
 			});
-			lstItemId.add(CancelAppStamp.createItemId(88, data.getDestinationTimeApp().getEngraveFrameNo(), 7));
+			lstItemId.add(CancelAppStamp.createItemId(88, data.getDestinationTimeApp().getStampNo(), 7));
 		} else {
-			lstItemId.add(CancelAppStamp.createItemId(91, data.getDestinationTimeApp().getEngraveFrameNo(), 7));
+			lstItemId.add(CancelAppStamp.createItemId(91, data.getDestinationTimeApp().getStampNo(), 7));
 
 			sheet.setReasonForGoOut(data.getAppStampGoOutAtr().map(x -> GoingOutReason.valueOf(x.value)).orElse(null));
 			if(!sheet.getComeBack().isPresent()) {
@@ -119,7 +119,7 @@ public class ReflectOutingTimeZone {
 			sheet.getComeBack().ifPresent(y -> {
 				data.getWorkLocationCd().ifPresent(code -> {
 					y.setLocationCode(Optional.of(code));
-					lstItemId.add(CancelAppStamp.createItemId(90, data.getDestinationTimeApp().getEngraveFrameNo(), 7));
+					lstItemId.add(CancelAppStamp.createItemId(90, data.getDestinationTimeApp().getStampNo(), 7));
 				});
 				y.getTimeDay().setTimeWithDay(Optional.of(data.getTimeOfDay()));
 				y.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);

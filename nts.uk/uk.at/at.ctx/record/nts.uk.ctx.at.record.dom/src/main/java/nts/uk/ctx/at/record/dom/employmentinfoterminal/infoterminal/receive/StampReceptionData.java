@@ -136,27 +136,7 @@ public class StampReceptionData implements ReceptionData {
 
 	// 計算区分変更対象
 	public ChangeCalArt convertChangeCalArt() {
-		switch (LeaveCategory.valueStringOf(leavingCategory.trim())) {
-
-		case WORK_FLEX:
-		case LEAVE_FLEX:
-		case WORK_FLEX_ENTRANCE:
-			return ChangeCalArt.FIX;
-
-		case LEAVE_OVERTIME:
-			return ChangeCalArt.OVER_TIME;
-
-		case EARLY:
-		case EARLY_ENTRANCE:
-			return ChangeCalArt.EARLY_APPEARANCE;
-
-		case VACATION:
-		case VACATION_ENTRANCE:
-			return ChangeCalArt.BRARK;
-
-		default:
-			return ChangeCalArt.NONE;
-		}
+		return LeaveCategory.valueStringOf(leavingCategory.trim()).toChangeCalArt();
 	}
 
 	// 出退区分
@@ -226,20 +206,17 @@ public class StampReceptionData implements ReceptionData {
 	}
 
 	public StampType createStampType(EmpInfoTerminal empInfo) {
-		String category = leavingCategory.trim();
+		LeaveCategory category = LeaveCategory.valueStringOf(leavingCategory.trim());
+
 		// 勤務種類を半休に変更する
-		boolean changeHalfDay = false;
-		if (category.equals(LeaveCategory.WORK_HALF.value) || category.equals(LeaveCategory.LEAVE_HALF.value)
-				|| category.equals(LeaveCategory.WORK_HALF_ENTRANCE.value)) {
-			changeHalfDay = true;
-		}
+		boolean changeHalfDay = category.isHalfDay();
 
 		// 外出理由
 		GoingOutReason goOutArt = null;
 		if (empInfo.getCreateStampInfo().getWorkLocationCd().isPresent()
 				&& empInfo.getCreateStampInfo().getStampInfoConver().getOutReasonWhenReplace().isPresent()) {
 			goOutArt = empInfo.getCreateStampInfo().getStampInfoConver().getOutReasonWhenReplace().get();
-		} else if (category.equals(LeaveCategory.GO_OUT.value) && !getShift().isEmpty()) {
+		} else if (category == LeaveCategory.GO_OUT && !getShift().isEmpty()) {
 			goOutArt = GoingOutReason.valueOf(Integer.parseInt(getShift().substring(0, 1)));
 		}
 

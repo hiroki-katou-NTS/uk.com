@@ -82,9 +82,11 @@
               <div class="menu-creation-item-container" data-bind="attr: { id: itemType }">
                 <div class="menu-creation-item" data-bind="attr: { 'id': itemType }">
                   <div class="widget-setting bg-green">
-                    <i data-bind="ntsIcon: { no: 177, width: 15, height: 15 }, click: function() { $vm.removeItem(itemType); }"></i>
+                    <img class="hover-pointer" src="../resource/バツ赤ボタン.svg" width="15" height="15"
+                      data-bind="click: function() { $vm.removeItem(itemType) }"/>
                     <com:ko tag="if" bind="isShowSetting">
-                      <i data-bind="ntsIcon: { no: 172, width: 15, height: 15 }, click: function() { $vm.onClickSetting(itemType); }"></i>
+                      <i data-bind="ntsIcon: { no: 5, width: 15, height: 15 }, click: function() { $vm.onClickSetting(itemType); }"
+                        style="margin-left: 5px;"></i>
                     </com:ko>
                   </div>
                   <div class="iframe-wrap">

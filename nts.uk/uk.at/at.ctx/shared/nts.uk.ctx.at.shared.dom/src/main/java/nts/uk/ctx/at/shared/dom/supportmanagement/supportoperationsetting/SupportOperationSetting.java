@@ -9,6 +9,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.shr.com.license.option.OptionLicense;
 
+
 /**
  * 応援の運用設定
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.応援管理.応援の運用設定.応援の運用設定

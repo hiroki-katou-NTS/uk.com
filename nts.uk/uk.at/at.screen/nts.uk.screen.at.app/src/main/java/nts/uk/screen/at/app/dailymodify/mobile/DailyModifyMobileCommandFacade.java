@@ -43,6 +43,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
@@ -109,6 +110,9 @@ public class DailyModifyMobileCommandFacade {
 	
 	@Inject
 	private RegisterPastMonthTotalResult registerPastMonthTotalResult;
+	
+	@Inject
+	private ICorrectionAttendanceRule iCorrectionAttendanceRule;
 
 	public DataResultAfterIU insertItemDomain(DPMobileAdUpParam dataParent) {
 		// Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
@@ -200,8 +204,7 @@ public class DailyModifyMobileCommandFacade {
 				val changeSetting = ChangeDailyAttendance.createChangeDailyAtt(dataParent.getItemValues().stream()
 						.filter(y -> y.getEmployeeId().equals(x.getEmployeeId()) && y.getDate().equals(x.getDate()))
 						.map(y -> y.getItemId()).collect(Collectors.toList()), ScheduleRecordClassifi.RECORD);
-				val domDaily = CorrectDailyAttendanceService.processAttendanceRule(
-						correctDaiAttRequireImpl.createRequire(), x.toDomain(x.getEmployeeId(), x.getDate()),
+				val domDaily = iCorrectionAttendanceRule.process(x.toDomain(x.getEmployeeId(), x.getDate()),
 						changeSetting);
 				//振休振出として扱う日数を補正する
 				val dailyOldSameDate = dtoOldTemp.stream().filter(

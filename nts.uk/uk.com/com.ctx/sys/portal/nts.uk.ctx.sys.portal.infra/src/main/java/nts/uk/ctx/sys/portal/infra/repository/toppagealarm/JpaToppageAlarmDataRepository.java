@@ -211,6 +211,10 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 
 	@Override
 	public void updateAll(List<ToppageAlarmData> domains) {
+		if (domains.isEmpty()) {
+			return;
+		}
+		
 		// Convert data to entity
 		List<SptdtToppageAlarm> entities = domains.stream().map(mapper -> this.toEntityWithIndexNo(mapper)).collect(Collectors.toList());
 		

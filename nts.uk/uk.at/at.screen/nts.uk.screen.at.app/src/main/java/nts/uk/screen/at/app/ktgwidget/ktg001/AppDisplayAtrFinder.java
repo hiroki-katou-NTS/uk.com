@@ -45,7 +45,7 @@ public class AppDisplayAtrFinder {
 
 		// 「申請」．申請種類＝Input．申請種類 & 「申請」．実績反映状態<>差し戻し に該当する申請が存在するかチェックする
 		List<Application> listApplicationFilter = listApplication.stream()
-				.filter(c -> c.getAppReflectedState() != ReflectedState.REMAND).collect(Collectors.toList());
+				.filter(c -> c.getAppReflectedState() != ReflectedState.REMAND && c.getAppReflectedState() != ReflectedState.CANCELED).collect(Collectors.toList());
 
 		return !listApplicationFilter.isEmpty();
 	}

@@ -52,8 +52,8 @@ body {
 }
 
 #next-button-B {
-	left: 684px;
-	top: 192px;
+	left: 644px;
+	top: 45px;
 }
 
 #end-date-B6-4 {
@@ -67,6 +67,7 @@ body {
 
 div.label {
 	width: 19%;
+	padding: 7px;
 }
 
 #button-reference-B7_3 {
@@ -93,7 +94,6 @@ div.label {
 
 .nts-wizard {
 	width: 1200px;
-	height: inherit;
 }
 
 .nts-wizard>.content>.body {
@@ -102,4 +102,9 @@ div.label {
 
 #left-content {
 	margin-left: 10px;
+}
+
+.text-comment{
+	text-align: center;
+	padding: 100px;
 }

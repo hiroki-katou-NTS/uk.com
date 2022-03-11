@@ -32,7 +32,7 @@ module cps002.f.vm {
 
             self.columnPerInfoItemDef = ko.observableArray([
                 { headerText: "", key: 'id', width: 45, hidden: true },
-                { headerText: nts.uk.resource.getText("CPS002_75"), key: 'itemName', width: 250 }
+                { headerText: nts.uk.resource.getText("CPS002_75"), key: 'itemName', width: 288 }
             ]);
 
 
@@ -44,7 +44,9 @@ module cps002.f.vm {
                     let datalist = _.filter(data, (item: any) => { return item.itemParentCd == null });
                     self.lstPerInfoItemDef(datalist);
                     setTimeout(() => {
-                        $("#multiList_headers th:first-child").append(nts.uk.resource.getText("CPS002_74"));
+                        if ($("#multiList_headers th:first-child").text() == '') {
+                            $("#multiList_headers th:first-child").append(nts.uk.resource.getText("CPS002_74"));
+                        }
                     }, 100);
                     //contant all checked id
                     let perItemCopy = _.filter(data, function(item: IPerInfoItemDef) { return item.alreadyItemDefCopy == true; }).map(function(item) { return item.id; });

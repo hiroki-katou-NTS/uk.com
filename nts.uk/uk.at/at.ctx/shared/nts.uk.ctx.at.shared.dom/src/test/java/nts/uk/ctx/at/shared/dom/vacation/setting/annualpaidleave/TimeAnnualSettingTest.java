@@ -6,21 +6,32 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdDays;
+import nts.uk.shr.com.license.option.OptionLicense;
 
+@RunWith(JMockit.class)
 public class TimeAnnualSettingTest {
+	@Injectable
+	private TimeVacationDigestUnit.Require require;
 	
 	@Test
 	public void getters() {
 		TimeAnnualMaxDay annualMaxDay = TimeAnnualMaxDayHelper.createTimeAnnualMaxDay();
 		
-		TimeAnnualSetting annualSetting = new TimeAnnualSetting(ManageDistinct.YES, TimeDigestiveUnit.OneHour, 
-				annualMaxDay, TimeAnnualRoundProcesCla.RoundUpToTheDay, new TimeAnnualLeaveTimeDay());
+		TimeAnnualSetting annualSetting = new TimeAnnualSetting(
+				annualMaxDay, TimeAnnualRoundProcesCla.RoundUpToTheDay, new TimeAnnualLeaveTimeDay(),
+				new TimeVacationDigestUnit(ManageDistinct.YES, TimeDigestiveUnit.OneHour));
 		NtsAssert.invokeGetters(annualSetting);
 	}
 	
@@ -54,24 +65,30 @@ public class TimeAnnualSettingTest {
     public void testDailyAttendItemsNotAvailable_ManageDistinct_Yes(){
 		// 時間年休管理設定.時間年休管理区分 = 管理する && 時間年休管理区分 = 管理する
     	TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.YES);
-    	List<Integer> annualLeaveItems = setting.getDailyAttendItemsNotAvailable(ManageDistinct.YES);
+    	new Expectations() {
+    		{
+    			require.getOptionLicense();
+    			result = new OptionLicense() {};
+    		}
+		};
+    	List<Integer> annualLeaveItems = setting.getDailyAttendItemsNotAvailable(require, ManageDistinct.YES);
     	assertThat( annualLeaveItems.isEmpty() );
     	
     	// 時間年休管理設定.時間年休管理区分 = 管理しない && 時間年休管理区分 = 管理する
     	setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.NO);
-    	annualLeaveItems = setting.getDailyAttendItemsNotAvailable(ManageDistinct.YES);
+    	annualLeaveItems = setting.getDailyAttendItemsNotAvailable(require, ManageDistinct.YES);
     	assertThat( annualLeaveItems ).extracting( d -> d)
 		  .containsExactly(502,514,595,601,607,613);
     	
     	// 時間年休管理設定.時間年休管理区分 = 管理する && 時間年休管理区分 = 管理しない
     	setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.NO);
-    	annualLeaveItems = setting.getDailyAttendItemsNotAvailable(ManageDistinct.NO);
+    	annualLeaveItems = setting.getDailyAttendItemsNotAvailable(require, ManageDistinct.NO);
     	assertThat( annualLeaveItems ).extracting( d -> d)
 		  .containsExactly(502,514,595,601,607,613);
     	
     	// 時間年休管理設定.時間年休管理区分 = 管理する && 時間年休管理区分 = 管理しない
     	setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.YES);
-    	annualLeaveItems = setting.getDailyAttendItemsNotAvailable(ManageDistinct.NO);
+    	annualLeaveItems = setting.getDailyAttendItemsNotAvailable(require, ManageDistinct.NO);
     	assertThat( annualLeaveItems ).extracting( d -> d)
 		  .containsExactly(502,514,595,601,607,613);
     }
@@ -84,20 +101,26 @@ public class TimeAnnualSettingTest {
 		// $時間年休項目 is empty, $上限項目 is empty
 		TimeAnnualMaxDay annualMaxDay = TimeAnnualMaxDayHelper.createTimeAnnualMaxDay_ManageDistinct_YES(ManageDistinct.YES);
     	TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting_UpperLimitItem(ManageDistinct.YES, annualMaxDay);
-    	List<Integer> annualLeaveItems = setting.getMonthlyAttendItemsNotAvailable(ManageDistinct.YES);
+    	new Expectations() {
+    		{
+    			require.getOptionLicense();
+    			result = new OptionLicense() {};
+    		}
+		};
+    	List<Integer> annualLeaveItems = setting.getMonthlyAttendItemsNotAvailable(require, ManageDistinct.YES);
     	assertThat( annualLeaveItems.isEmpty() );
     	
     	// $時間年休項目 is not empty, $上限項目 is not empty
     	annualMaxDay = TimeAnnualMaxDayHelper.createTimeAnnualMaxDay_ManageDistinct_YES(ManageDistinct.YES);
     	setting = TimeAnnualSettingHelper.createTimeAnnualSetting_UpperLimitItem(ManageDistinct.YES, annualMaxDay);
-    	annualLeaveItems = setting.getMonthlyAttendItemsNotAvailable(ManageDistinct.NO);
+    	annualLeaveItems = setting.getMonthlyAttendItemsNotAvailable(require, ManageDistinct.NO);
     	assertThat( annualLeaveItems ).extracting( d -> d)
 		  .containsExactly(1424, 1425, 1426, 1429, 1430, 1431, 1861, 1862, 1442, 1443, 1444, 1445);
     	
     	// $時間年休項目 is empty, $上限項目 is not empty
     	annualMaxDay = TimeAnnualMaxDayHelper.createTimeAnnualMaxDay_ManageDistinct_NO(ManageDistinct.NO);
     	setting = TimeAnnualSettingHelper.createTimeAnnualSetting_UpperLimitItem(ManageDistinct.YES, annualMaxDay);
-    	annualLeaveItems = setting.getMonthlyAttendItemsNotAvailable(ManageDistinct.YES);
+    	annualLeaveItems = setting.getMonthlyAttendItemsNotAvailable(require, ManageDistinct.YES);
     	assertThat( annualLeaveItems ).extracting( d -> d)
 		  .containsExactly(1442, 1443, 1444, 1445);
     }
@@ -109,22 +132,69 @@ public class TimeAnnualSettingTest {
     public void testNotIsManageTimeAnnualLeave_fail() {
 		// 管理区分 = 管理しない  && 時間年休管理区分 = 管理しない 
     	TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_NO(ManageDistinct.NO);
-    	boolean checkManageTime = setting.isManageTimeAnnualLeave(ManageDistinct.NO);
+    	new Expectations() {
+    		{
+    			require.getOptionLicense();
+    			result = new OptionLicense() {};
+    		}
+		};
+    	boolean checkManageTime = setting.isManageTimeAnnualLeave(require, ManageDistinct.NO);
     	assertThat(checkManageTime).isFalse();
     	
     	// 管理区分 = 管理しない  && 時間年休管理区分 = 管理する
     	setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_NO(ManageDistinct.NO);
-    	checkManageTime = setting.isManageTimeAnnualLeave(ManageDistinct.YES);
+    	checkManageTime = setting.isManageTimeAnnualLeave(require, ManageDistinct.YES);
     	assertThat(checkManageTime).isFalse();
     	
     	// 管理区分 = 管理する  && 時間年休管理区分 = 管理しない 
     	setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.YES);
-    	checkManageTime = setting.isManageTimeAnnualLeave(ManageDistinct.NO);
+    	checkManageTime = setting.isManageTimeAnnualLeave(require, ManageDistinct.NO);
     	assertThat(checkManageTime).isFalse();
     	
     	// 管理区分 = 管理する  && 時間年休管理区分 = 管理する
     	setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.YES);
-    	checkManageTime = setting.isManageTimeAnnualLeave(ManageDistinct.YES);
+    	checkManageTime = setting.isManageTimeAnnualLeave(require, ManageDistinct.YES);
+    }
+	
+	@Test
+    public void testNotIsManageTimeAnnualLeave_fail_1() {
+    	TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_NO(ManageDistinct.NO);
+    	new Expectations() {
+    		{
+    			require.getOptionLicense();
+    			result = new OptionLicense() {};
+    		}
+		};
+    	boolean checkManageTime = setting.isManageTimeAnnualLeave(require, ManageDistinct.YES);
+    	assertThat(checkManageTime).isFalse();
+    }
+	
+	@Test
+    public void testNotIsManageTimeAnnualLeave_fail_2() {
+    	TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.YES);
+    	new Expectations() {
+    		{
+    			require.getOptionLicense();
+    			result = new OptionLicense() {};
+    		}
+		};
+    	boolean checkManageTime = setting.isManageTimeAnnualLeave(require, ManageDistinct.NO);
+    	assertThat(checkManageTime).isFalse();
+    }
+    
+    /**
+     * Test [5] 時間年休を管理するか ManageDistinct Yes
+     */
+	@Test
+    public void testIsManageTimeAnnualLeave() {
+    	TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.YES);
+    	new Expectations() {
+    		{
+    			require.getOptionLicense();
+    			result = new OptionLicense() {};
+    		}
+		};
+    	boolean checkManageTime = setting.isManageTimeAnnualLeave(require, ManageDistinct.YES);
     	assertThat(checkManageTime).isTrue();
     }
 	
@@ -139,4 +209,37 @@ public class TimeAnnualSettingTest {
     	assertThat(limitedTimeHdDays.get().equals(fromGrantTableDays.get()));
     }
 	
+	/**
+	 * Test [7] 消化単位をチェックする
+	 * Case 1: $Option.就業.時間休暇 = true && 「休暇使用時間」 % 「@消化単位」 = 0
+	 */
+	@Test
+	public void testCheckDigestUnits1() {
+		TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting();
+		new Expectations() {
+    		{
+    			require.getOptionLicense();
+    			result = TimeAnnualSettingHelper.getOptionLicense(true);
+    		}
+		};
+    	boolean checkDigestUnits = setting.checkDigestUnits(require, new AttendanceTime(600), ManageDistinct.YES);
+    	assertThat(checkDigestUnits).isTrue();
+	}
+	
+	/**
+	 * Test [7] 消化単位をチェックする
+	 * Case 2: $Option.就業.時間休暇 = true && 「休暇使用時間」 % 「@消化単位」 != 0
+	 */
+	@Test
+	public void testCheckDigestUnits2() {
+		TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting();
+		new Expectations() {
+    		{
+    			require.getOptionLicense();
+    			result = TimeAnnualSettingHelper.getOptionLicense(true);
+    		}
+		};
+    	boolean checkDigestUnits = setting.checkDigestUnits(require, new AttendanceTime(11), ManageDistinct.YES);
+    	assertThat(checkDigestUnits).isFalse();
+	}
 }

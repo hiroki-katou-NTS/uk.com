@@ -23,12 +23,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
  */
 public class CorrectDailyAttendanceService {
 
-	// 補正する
-	public static IntegrationOfDaily processAttendanceRule(Require require, IntegrationOfDaily domainDaily,
-			ChangeDailyAttendance changeAtt) {
-		return require.process(domainDaily, changeAtt);
-	}
-
 	// 振休振出として扱う日数を補正する
 	public static WorkInfoOfDailyAttendance correctFurikyu(Require require,
 			WorkInfoOfDailyAttendance workInformationBefore, WorkInfoOfDailyAttendance workInformationAfter) {

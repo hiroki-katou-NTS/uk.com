@@ -541,7 +541,7 @@ public class OtherHolidayInfoService {
 			return result;
 		}
 		DateHistoryItem histItem = workingCond.get().getDateHistoryItem()
-				.get(workingCond.get().getDateHistoryItem().size() - 1);
+				.get(0);
 		Optional<WorkingConditionItem> workingCondItem = workingConditionItemRepository.getBySidAndHistId(sid,
 				histItem.identifier());
 		if (!workingCondItem.isPresent()) {
@@ -561,7 +561,7 @@ public class OtherHolidayInfoService {
 
 		// Flexible time
 		if (workTimeSet.get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
-			getFlexTime(cid, workTimeCD.get().v());
+			return getFlexTime(cid, workTimeCD.get().v());
 		} else {
 			switch (workTimeSet.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
 			case FIXED_WORK:
@@ -604,7 +604,7 @@ public class OtherHolidayInfoService {
 			}
 			
 			DateHistoryItem histItem = workingCondOpt.get().getDateHistoryItem()
-					.get(workingCondOpt.get().getDateHistoryItem().size() - 1);
+					.get(0);
 			histIds.add(histItem.identifier());
 		});
 		
@@ -665,8 +665,9 @@ public class OtherHolidayInfoService {
 			Map<String, DesignatedTime> flexDesignatedTime = getFlexTime(cid, flexFilterTimes);
 			workTimes.entrySet().stream().forEach(c ->{
 				DesignatedTime flexTime = flexDesignatedTime.get(c.getValue());
-				result.put(c.getKey(), flexTime);
-				
+				if (flexTime != null) {
+					result.put(c.getKey(), flexTime);
+				}
 			});
 		}
 		
@@ -675,8 +676,9 @@ public class OtherHolidayInfoService {
 			Map<String, DesignatedTime> fixedFilterWork = getFixedWork(cid, fixedFilterWorks);
 			workTimes.entrySet().stream().forEach(c ->{
 				DesignatedTime fixedWork = fixedFilterWork.get(c.getValue());
-				result.put(c.getKey(), fixedWork);
-				
+				if (fixedWork != null) {
+					result.put(c.getKey(), fixedWork);
+				}
 			});
 		}
 		
@@ -685,8 +687,9 @@ public class OtherHolidayInfoService {
 			Map<String, DesignatedTime> flowFilterWork = getFlowWork(cid, flowFilterWorks);
 			workTimes.entrySet().stream().forEach(c ->{
 				DesignatedTime flowWork = flowFilterWork.get(c.getValue());
-				result.put(c.getKey(), flowWork);
-				
+				if (flowWork != null) {
+					result.put(c.getKey(), flowWork);
+				}
 			});
 		}
 		
@@ -694,8 +697,10 @@ public class OtherHolidayInfoService {
 			List<String> diffTimeFilterWorks = diffTimeWorks.stream().distinct().collect(Collectors.toList());
 			Map<String, DesignatedTime> diffTimeWorksMap = getDiffTimeWork(cid, diffTimeFilterWorks);
 			workTimes.entrySet().stream().forEach(c ->{
-				DesignatedTime flowWork = diffTimeWorksMap.get(c.getValue());
-				result.put(c.getKey(), flowWork);
+				DesignatedTime diffTimeWork = diffTimeWorksMap.get(c.getValue());
+				if (diffTimeWork != null) {
+					result.put(c.getKey(), diffTimeWork);
+				}
 			});
 		}
 		

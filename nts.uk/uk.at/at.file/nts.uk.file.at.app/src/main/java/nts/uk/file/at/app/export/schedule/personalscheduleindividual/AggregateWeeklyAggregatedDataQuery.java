@@ -38,8 +38,8 @@ public class AggregateWeeklyAggregatedDataQuery {
     public List<WeeklyAgreegateResult> get(
             List<DatePeriod> periodItems,
             List<IntegrationOfDaily> scheduleList,
-            List<IntegrationOfDaily> recordList) {
-        String loginEmployeeId = AppContexts.user().employeeId();
+            List<IntegrationOfDaily> recordList,
+            String sid) {
         String companyId = AppContexts.user().companyId();
         List<WeeklyAgreegateResult> list = new ArrayList<>();
         int week = 0;
@@ -47,14 +47,14 @@ public class AggregateWeeklyAggregatedDataQuery {
         for (DatePeriod periodItem : periodItems) {
             //1.1List<日別勤怠(Work)>
             List<IntegrationOfDaily> dailyAtList = DailyAttendanceMergingService.mergeToFlatList(
-                    Arrays.asList(new EmployeeId(loginEmployeeId)),
+                    Arrays.asList(new EmployeeId(sid)),
                     periodItem,
                     scheduleList,
                     recordList
             );
             //1.2 Map<社員ID, Map<集計対象の勤怠時間, BigDecimal>>
             val workTimeCounterMap = WorkingTimeCounterService.get(dailyAtList);
-            BigDecimal workingHours = workTimeCounterMap.isEmpty() ? BigDecimal.ZERO : workTimeCounterMap.get(new EmployeeId(loginEmployeeId)).get(AttendanceTimesForAggregation.WORKING_WITHIN);
+            BigDecimal workingHours = workTimeCounterMap.isEmpty() ? BigDecimal.ZERO : workTimeCounterMap.get(new EmployeeId(sid)).get(AttendanceTimesForAggregation.WORKING_WITHIN);
             //1.3集計する(Require, List<日別勤怠(Work)>)
             Map<EmployeeId, Map<WorkClassificationAsAggregationTarget, BigDecimal>> holidayService = WorkdayHolidayCounterService.count(new WorkdayHolidayCounterService.Require() {
                 @Override
@@ -63,7 +63,7 @@ public class AggregateWeeklyAggregatedDataQuery {
                 }
             }, dailyAtList);
             //1.3.1$労働時間 = result.get(社員ID).get( 就業時間 )
-            val holidays = holidayService.isEmpty() ? BigDecimal.ZERO : holidayService.get(new EmployeeId(loginEmployeeId)).get(WorkClassificationAsAggregationTarget.HOLIDAY);
+            val holidays = holidayService.isEmpty() ? BigDecimal.ZERO : holidayService.get(new EmployeeId(sid)).get(WorkClassificationAsAggregationTarget.HOLIDAY);
             week++;
             list.add(new WeeklyAgreegateResult(week, workingHours, holidays));
         }

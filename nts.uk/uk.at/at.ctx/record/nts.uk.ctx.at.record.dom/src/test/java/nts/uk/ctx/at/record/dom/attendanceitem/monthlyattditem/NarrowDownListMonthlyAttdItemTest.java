@@ -48,8 +48,8 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
@@ -467,7 +467,7 @@ public void testGetOvertimeItemNotAvailable() {
 	@Test
 	public void testGetUnavailableSubstituteHolidayItem_2() {
 		String companyId = "companyId";
-		CompensatoryDigestiveTimeUnit timeUnit = CompensatoryLeaveComSettingHelper
+		TimeVacationDigestUnit timeUnit = CompensatoryLeaveComSettingHelper
 				.createCompensatoryDigestiveTimeUnit(ManageDistinct.NO);
 		CompensatoryLeaveComSetting domain = CompensatoryLeaveComSettingHelper
 				.createCompensatoryLeaveComSetting(ManageDistinct.NO, timeUnit);

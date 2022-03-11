@@ -12,6 +12,16 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.record.dom.attendanceitem.monthlyattditem.AnnualPaidLeaveSettingHelper;
+import nts.uk.ctx.at.record.dom.attendanceitem.monthlyattditem.ComSubstVacationHelper;
+import nts.uk.ctx.at.record.dom.attendanceitem.monthlyattditem.CompensatoryLeaveComSettingHelper;
+import nts.uk.ctx.at.record.dom.attendanceitem.monthlyattditem.DivergenceTimeRootHelper;
+import nts.uk.ctx.at.record.dom.attendanceitem.monthlyattditem.OptionalItemHelper;
+import nts.uk.ctx.at.record.dom.attendanceitem.monthlyattditem.OvertimeWorkFrameHelper;
+import nts.uk.ctx.at.record.dom.attendanceitem.monthlyattditem.TemporaryWorkUseManageHelper;
+import nts.uk.ctx.at.record.dom.attendanceitem.monthlyattditem.TimeSpecialLeaveManagementHelper;
+import nts.uk.ctx.at.record.dom.attendanceitem.monthlyattditem.WorkManagementMultipleHelper;
+import nts.uk.ctx.at.record.dom.attendanceitem.monthlyattditem.WorkdayoffFrameHelper;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodHelper;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcare.NursingLeaveSettingHelper;
@@ -37,8 +47,8 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsettings.TaskOpe
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.MaximumNumberOfSupport;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
@@ -455,7 +465,7 @@ public void testGetSupportWorkItemNotAvailable() {
 	@Test
 	public void testGetUnavailableSubstituteHolidayItem_2() {
 		String companyId = "companyId";
-		CompensatoryDigestiveTimeUnit timeUnit = CompensatoryLeaveComSettingHelper
+		TimeVacationDigestUnit timeUnit = CompensatoryLeaveComSettingHelper
 				.createCompensatoryDigestiveTimeUnit(ManageDistinct.NO);
 		CompensatoryLeaveComSetting domain = CompensatoryLeaveComSettingHelper
 				.createCompensatoryLeaveComSetting(ManageDistinct.NO, timeUnit);

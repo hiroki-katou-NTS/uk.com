@@ -82,7 +82,7 @@ public class EmpInfoTerminalUpdateCommandHandler extends CommandHandler<EmpInfoT
 		CreateStampInfo temFix = new CreateStampInfo(
 				stampInfoConversion,
 				Optional.ofNullable(command.getWorkLocationCode() == null || command.getWorkLocationCode().trim().length() == 0 ? null : new WorkLocationCD(command.getWorkLocationCode())),
-				command.getWorkplaceId().equals("") ? Optional.empty() : Optional.of(new WorkplaceId(command.getWorkplaceId())));
+				(command.getWorkplaceId() == null || command.getWorkplaceId().equals("")) ? Optional.empty() : Optional.of(new WorkplaceId(command.getWorkplaceId())));
 		
 		// 5: set()
 		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminal.EmpInfoTerminalBuilder(
