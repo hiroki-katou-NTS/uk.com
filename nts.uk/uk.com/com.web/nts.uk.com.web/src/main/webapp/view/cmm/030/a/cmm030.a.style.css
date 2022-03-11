@@ -1,0 +1,65 @@
+#contents-area > * {
+  margin-left: 50px;
+}
+
+.ml-5 {
+  margin-left: 5px;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.approver-input {
+  width: 118px;
+}
+
+#A2_1 {
+  width: 800px;
+  height: 90px;
+}
+
+#A3_2:focus {
+  outline: -webkit-focus-ring-color auto 1px;
+  outline-color: -webkit-focus-ring-color;
+  outline-style: auto;
+  outline-width: 1px;
+}
+
+#A5 table {
+  display: block;
+  width: fit-content;
+}
+
+#A5 thead th {
+  height: 40px;
+  text-align: center;
+}
+
+#A5 tbody tr {
+  height: 40px;
+}
+
+#A5 tbody tr:first-child td {
+  padding-bottom: 10px !important;
+}
+
+#A5 tbody tr td:first-child {
+  width: 300px !important;
+}
+
+#A5 tbody td > i {
+  margin-top: 5px;
+}
+
+#A5 tbody {
+  display: block;
+  max-height: 210px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+#A9_1 {
+  margin-left: 300px;
+  min-height: 50px;
+}

@@ -14,42 +14,106 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- X1 -->
-				<button id='btnM' data-bind="click: openDialogM">#{i18n.getText('CMM018_13')}</button>
+				<button id='btnM' tabindex="1" data-bind="click: openDialogM">#{i18n.getText('CMM018_13')}</button>
 			</div>
 			<div id="contents-area">
-						<!-- X2 -->
-						<div data-bind="css: ko.toJS(systemAtr) == 0 ? 'panelFirst' : 'panelFirstJinji'" class="panel">
+				
+				<!-- X6 -->
+				<div class="panel-top">
+					<!-- X6_1 -->
+					<div class="panel frame-only" id="x6_1">
+						<!-- X6_2 -->
+						<div class="panel" id="x6_2">#{i18n.getText('CMM018_170')}</div>
+						<!-- X6_3 -->
+						<div class="flex" id="x6_3">
+							<div class="cf" data-bind="ntsSwitchButton: {
+								options: [
+									{code: 0, name: '#{i18n.getText('CMM018_171')}'},
+									{code: 1, name: '#{i18n.getText('CMM018_173')}'}
+								],
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: mode,
+								required: true,
+								enable: true }">
+							</div>
+						</div>
+						<!-- X6_6 -->
+						<div class="label">#{i18n.getText('CMM018_175')}</div>
+						<!-- X6_7 -->
+						<i class="arrow-left-down" data-bind="ntsIcon: { no: 239, width: 80, height: 80, extension: 'png' }"></i>
+						<i class="arrow-right-down" data-bind="ntsIcon: { no: 240, width: 80, height: 80, extension: 'png' }"></i>
+					</div>
+				</div>
+				<div class="panel-bottom">
+					<!-- X2 -->
+					<div class="panel frame-only panelFirst">
+						<div class="panel-row">
 							<!-- X2_1 -->
 							<div class="panel panel-gray-bg textTitlePanel">
 								#{i18n.getText('CMM018_115')}
 							</div>
-							<!-- X2_2 -->
-							<button data-bind="click: openDialogQ" class="large btnInPanel">#{i18n.getText('CMM018_116')}</button>
-							<!-- X2_3 -->
-							<div data-bind="visible: ko.toJS(systemAtr) == 0" class="label textFormat">#{i18n.getText('CMM018_117', [i18n.getText('Com_Workplace')])}</div>
-							<div data-bind="visible: ko.toJS(systemAtr) == 1" class="label textFormat">#{i18n.getText('CMM018_117', [i18n.getText('Com_Department')])}</div>
+
+							<div class="flex-area">
+								<!-- X2_2 -->
+								<button tabindex="1" data-bind="click: openDialogQ, enable: isPersonInCharge" class="large btnInPanel item-1">#{i18n.getText('CMM018_116')}</button>
+								<!-- X2_3 -->
+								<div data-bind="visible: ko.toJS(systemAtr) == 0" class="label textFormat item-2">#{i18n.getText('CMM018_117', [i18n.getText('Com_Workplace')])}</div>
+								<div data-bind="visible: ko.toJS(systemAtr) == 1" class="label textFormat item-2">#{i18n.getText('CMM018_117', [i18n.getText('Com_Department')])}</div>	
+							</div>
 							
-							
-							<div data-bind="visible: ko.toJS(systemAtr) == 0">
+							<div class="flex-area">
 								<!-- X2_4 -->
-								<button data-bind="click: jumpToCmm013H" class="large btnInPanel">#{i18n.getText('CMM018_118')}</button>
+								<button tabindex="2" data-bind="click: jumpToCmm013H, enable: isPersonInCharge" class="large btnInPanel item-1">#{i18n.getText('CMM018_118')}</button>
 								<!-- X2_5 -->
-								<div class="label textFormat">#{i18n.getText('CMM018_119')}</div>
-							</div>	
+								<div class="label textFormat item-2">#{i18n.getText('CMM018_119')}</div>
+							</div>
 						</div>
-					   <!-- X3 -->
-					   <div class="panel panelSecond">
+						<div class="panel-row">
 							<!-- X3_1 -->
 							<div class="panel panel-gray-bg textTitlePanel">
 								#{i18n.getText('CMM018_122')}
 							</div>
-							<!-- X3_2 -->
-							<button data-bind="click: jumpToA"  class="large caret-right btnInPanel">#{i18n.getText('CMM018_121')}</button>
-							<!-- X3_3 -->
-							<div data-bind="visible: ko.toJS(systemAtr) == 0" class="label textFormat2">#{i18n.getText('CMM018_120', [i18n.getText('Com_Workplace')])}</div>
-							<div data-bind="visible: ko.toJS(systemAtr) == 1" class="label textFormat2">#{i18n.getText('CMM018_120', [i18n.getText('Com_Department')])}</div>
+							<div class="flex-area">
+								<!-- X3_2 -->
+								<button tabindex="3" data-bind="click: jumpToA, enable: isPersonInCharge"  class="large caret-right btnInPanel item-1">#{i18n.getText('CMM018_121')}</button>
+								<!-- X3_3 -->
+								<div data-bind="visible: ko.toJS(systemAtr) == 0" class="label textFormat item-2">#{i18n.getText('CMM018_120', [i18n.getText('Com_Workplace')])}</div>
+								<div data-bind="visible: ko.toJS(systemAtr) == 1" class="label textFormat item-2">#{i18n.getText('CMM018_120', [i18n.getText('Com_Department')])}</div>	
+							</div>
 						</div>
-				
+						
+					</div>
+					<!-- X8_1 -->
+					<div class="panel panelSecond frame-only">
+						<div class="panel-row item-1">
+							<!-- X8_2 -->
+							<div class="panel panel-gray-bg textTitlePanel">
+								#{i18n.getText('CMM018_176')}
+							</div>
+							<div class="flex-area">
+								<!-- X8_3 -->
+								<button tabindex="4" data-bind="click: jumpToCMM018R, enable: !isPersonInCharge()"  class="large caret-right btnInPanel item-1">#{i18n.getText('CMM018_177')}</button>
+								<!-- X8_4 X8_5 -->
+								<div class="label item-2 textFormat">#{i18n.getText('CMM018_178')}</div>
+							</div>
+						</div>
+						<div class="panel-row item-1">
+							<!-- X8_6 -->
+							<div class="panel panel-gray-bg textTitlePanel">#{i18n.getText('CMM018_122')}</div>
+							<div class="flex-area">
+								<!-- X8_7 X8_8-->
+								<div class="label textFormat frame-only" style="margin-left: 12px;">#{i18n.getText('CMM018_180')}</div>
+							</div>
+							<div class="flex-area">
+								<!-- X8_9 -->
+								<button tabindex="5" data-bind="click: jumpToCMM030A, enable: !isPersonInCharge()"  class="large caret-right btnInPanel item-1">#{i18n.getText('CMM018_181')}</button>
+								<!-- X8_10 -->
+								<div class="label item-2 textFormat">#{i18n.getText('CMM018_182')}</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>	
 		</ui:define>
 	</ui:composition>

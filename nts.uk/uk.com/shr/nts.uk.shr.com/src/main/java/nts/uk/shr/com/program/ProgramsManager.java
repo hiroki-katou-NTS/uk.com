@@ -333,7 +333,16 @@ public class ProgramsManager {
     public static final Program CPS008C = new Program(WebAppId.COM, ProgramIdConsts.CPS008C, "CPS008_38",
             "/view/cps/008/c/index.xhtml");
     
-    
+    public static final Program CMM030A = new Program(WebAppId.COM, ProgramIdConsts.CMM030A, "CMM030_1",
+            "/view/cmm/030/a/index.xhtml");
+    public static final Program CMM030B = new Program(WebAppId.COM, ProgramIdConsts.CMM030B, "CMM030_2",
+            "/view/cmm/030/b/index.xhtml");
+    public static final Program CMM030C = new Program(WebAppId.COM, ProgramIdConsts.CMM030C, "CMM030_3",
+            "/view/cmm/030/c/index.xhtml");
+    public static final Program CMM030F = new Program(WebAppId.COM, ProgramIdConsts.CMM030F, "CMM030_6",
+            "/view/cmm/030/f/index.xhtml");
+    public static final Program CMM030G = new Program(WebAppId.COM, ProgramIdConsts.CMM030G, "CMM030_7",
+            "/view/cmm/030/g/index.xhtml");
     
     public static final Program CMM040A = new Program(WebAppId.COM, ProgramIdConsts.CMM040A, "CMM040_1",
             "/view/cmm/040/a/index.xhtml");
@@ -2066,6 +2075,9 @@ public class ProgramsManager {
 
     public static final Program CMM018N = new Program(WebAppId.COM, ProgramIdConsts.CMM018N, "CMM018_14",
             "/view/cmm/018/n/index.xhtml");
+    
+    public static final Program CMM018R = new Program(WebAppId.COM, ProgramIdConsts.CMM018R, "CMM018_150",
+            "/view/cmm/018/r/index.xhtml");
 
     public static final Program KDL032 = new Program(WebAppId.AT, ProgramIdConsts.KDL032A, "KDL032_1",
             "/view/kdl/032/a/index.xhtml");
