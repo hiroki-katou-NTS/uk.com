@@ -65,11 +65,14 @@ module nts.uk.com.view.cas012.b {
             vm.loginCid(cidLogin);
             vm.companyId.subscribe((cid) => {
                  if (cid){
-                vm.getListEmployee(cid);
+	                vm.getListEmployee(cid)
+					  .done(() => {
+						vm.KCP005_load();
+					  });
                  }
             });
             vm.getListCompany();
-            vm.KCP005_load()
+            // vm.KCP005_load()
         }
         created() {
         }
@@ -107,6 +110,7 @@ module nts.uk.com.view.cas012.b {
                 vm.optionalColumnDatasource(job);
                 vm.employInfors(emps);
                 vm.listEmployee(data);
+				dfd.resolve( vm );
             }).always(()=>{
                 block.clear()
             }).fail(()=>{
