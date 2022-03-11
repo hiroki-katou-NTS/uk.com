@@ -483,6 +483,7 @@ module nts.uk.at.view.kdl016.a {
         let dataShare = _.find(dataSource, (value: any) => {
             return value.id == id;
         });
+        dataShare.displayMode = vm.selectedMode();
 
         nts.uk.ui.windows.setShared("shareFromKdl016a", dataShare);
         if (dataShare.supportType === SUPPORT_TYPE.ALLDAY) {

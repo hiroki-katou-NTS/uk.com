@@ -8,7 +8,8 @@ module nts.uk.at.view.kdl016.d {
     export class ViewModel extends ko.ViewModel {
         detail: KnockoutObservable<ISupportInformation> = ko.observable(null);
         data: ISupportInformation;
-        dateValue: KnockoutObservable<any>
+        dateValue: KnockoutObservable<any>;
+        d11Text: KnockoutObservable<string> = ko.observable("");
 
         constructor(params: any) {
             super();
@@ -34,7 +35,8 @@ module nts.uk.at.view.kdl016.d {
                     supportTypeName: dataFromA.supportTypeName,
                     periodDisplay: dataFromA.periodDisplay,
                     employeeDisplay: dataFromA.employeeDisplay,
-                    timeSpanDisplay: dataFromA.timeSpanDisplay
+                    timeSpanDisplay: dataFromA.timeSpanDisplay,
+                    displayMode: dataFromA.displayMode
                 };
                 vm.detail(transfer);
 
@@ -42,6 +44,7 @@ module nts.uk.at.view.kdl016.d {
                     startDate: vm.detail().periodStart,
                     endDate: vm.detail().periodEnd,
                 });
+                vm.d11Text = ko.observable(vm.detail().displayMode === 1 ? vm.$i18n('KDL016_15') : vm.$i18n('KDL016_20'));
             }
         }
 
@@ -144,6 +147,7 @@ module nts.uk.at.view.kdl016.d {
         periodDisplay: string;
         employeeDisplay: string;
         timeSpanDisplay: string;
+        displayMode: number;
     }
 
     interface ITimeSpan {

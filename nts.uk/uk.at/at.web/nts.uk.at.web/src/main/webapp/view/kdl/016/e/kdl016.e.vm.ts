@@ -10,17 +10,11 @@ module nts.uk.at.view.kdl016.e {
         data: ISupportInformation;
         timespanMin: KnockoutObservable<number> = ko.observable(undefined);
         timespanMax: KnockoutObservable<number> = ko.observable(undefined);
+        e11Text: KnockoutObservable<string> = ko.observable("");
 
         constructor(params: any) {
             super();
             const vm = this;
-
-            vm.timespanMax.subscribe((value) => {
-                vm.validateTimeSpanMax(value);
-            });
-            vm.timespanMin.subscribe((value) => {
-                vm.validateTimeSpanMin(value);
-            });
         }
 
         created(params: any) {
@@ -42,11 +36,20 @@ module nts.uk.at.view.kdl016.e {
                     supportTypeName: dataFromA.supportTypeName,
                     periodDisplay: dataFromA.periodDisplay,
                     employeeDisplay: dataFromA.employeeDisplay,
-                    timeSpanDisplay: dataFromA.timeSpanDisplay
+                    timeSpanDisplay: dataFromA.timeSpanDisplay,
+                    displayMode: dataFromA.displayMode
                 };
                 vm.detail(transfer);
                 vm.timespanMin = ko.observable(dataFromA.timeSpan.start);
                 vm.timespanMax = ko.observable(dataFromA.timeSpan.end);
+                vm.e11Text = ko.observable(vm.detail().displayMode === 1 ? vm.$i18n('KDL016_15') : vm.$i18n('KDL016_20'));
+
+                vm.timespanMax.subscribe((value) => {
+                    vm.validateTimeSpanMax(value);
+                });
+                vm.timespanMin.subscribe((value) => {
+                    vm.validateTimeSpanMin(value);
+                });
             }
         }
 
@@ -156,6 +159,7 @@ module nts.uk.at.view.kdl016.e {
         periodDisplay: string;
         employeeDisplay: string;
         timeSpanDisplay: string;
+        displayMode: number;
     }
 
     interface ITimeSpan {
