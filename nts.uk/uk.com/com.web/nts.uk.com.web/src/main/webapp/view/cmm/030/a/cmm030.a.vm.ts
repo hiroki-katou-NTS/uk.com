@@ -76,10 +76,7 @@ module nts.uk.com.view.cmm030.a {
       const vm = this;
       vm.$blockui("grayout");
       vm.initScreen().always(() => {
-        $("#A2_1").attr("readonly", "readonly");
-        $("#A4_1").attr("readonly", "readonly");
         setTimeout(() => {
-          $(".approver-input").on("click", e => vm.openDialogB($(e.target)));
           $("#ccg001-btn-search-drawer").attr("tabindex", -1);
           $(".approver-input").attr("tabindex", 7);
           vm.focusA7_1();
@@ -88,14 +85,14 @@ module nts.uk.com.view.cmm030.a {
       });
     }
 
-    public openDialogB(elem: JQuery) {
+    public openDialogB(elem: any) {
       const vm = this;
       if (nts.uk.text.isNullOrEmpty(vm.startDate())) {
         vm.$dialog.error({ messageId: "Msg_3299" });
         return;
       }
-      const rowId = elem.data("row-id");
-      const colId = elem.data("col-id");
+      const rowId = $(elem).data("row-id");
+      const colId = $(elem).data("col-id");
       const approverInfo = _.find(vm.approverInputList(), { id: rowId }).approvers()[colId];
       const param = {
         baseDate: vm.startDate(),
@@ -474,7 +471,7 @@ module nts.uk.com.view.cmm030.a {
           return false;
         }
         const isErr3294 = !!_.find(vm.approverInputList(), data => {
-          const approvers = _.chain(data.approvers()).filter(approver => approver.sid != null).map(approver => approver.colId()).value();
+          const approvers = _.chain(data.approvers()).filter(approver => !_.isEmpty(approver.sid)).map(approver => approver.colId()).value();
           const isConsecutive = _.reduce(approvers, (prev: number, curr) => prev + 1 === curr ? curr : false, -1) !== false;
           return approvers.length === 0 || approvers[0] !== 0 || !isConsecutive;
         });
@@ -505,7 +502,9 @@ module nts.uk.com.view.cmm030.a {
     }
 
     private getSettingId(data: SettingTypeUsed) {
-      return `${data.employmentRootAtr}-${data.applicationType ?? "null"}-${data.confirmRootType ?? "null"}`;
+      const applicationType = data.employmentRootAtr === EmploymentRootAtr.APPLICATION ? data.applicationType : "null";
+      const confirmRootType = data.employmentRootAtr === EmploymentRootAtr.CONFIRMATION ? data.confirmRootType : "null";
+      return `${data.employmentRootAtr}-${applicationType}-${confirmRootType}`;
     }
   }
 

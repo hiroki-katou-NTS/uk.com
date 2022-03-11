@@ -32,11 +32,11 @@ public class ChangePersonalApprovalRootDomainService {
 		List<AtomTask> atomTasks = new ArrayList<>();
 		// DBに古いデータを削除する
 		List<PersonApprovalRoot> personApprovalRoots = require.getPersonApprovalRoots(cid, sid, period);
-		List<String> approverIds = personApprovalRoots.stream()
+		List<String> approvalIds = personApprovalRoots.stream()
 				.map(PersonApprovalRoot::getApprovalId)
 				.filter(Objects::nonNull).distinct().collect(Collectors.toList());
-		if (!approverIds.isEmpty()) {
-			atomTasks.add(AtomTask.of(() -> require.deletePersonApprovalRoots(approverIds)));
+		if (!approvalIds.isEmpty()) {
+			atomTasks.add(AtomTask.of(() -> require.deletePersonApprovalRoots(approvalIds)));
 		}
 		// 新しいデータを登録する
 		params.forEach(param -> {
