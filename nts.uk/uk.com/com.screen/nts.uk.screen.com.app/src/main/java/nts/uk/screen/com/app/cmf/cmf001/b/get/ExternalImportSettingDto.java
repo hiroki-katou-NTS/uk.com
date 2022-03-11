@@ -81,7 +81,7 @@ public class ExternalImportSettingDto {
 				domainSettings);
 	}
 
-	private ExternalImportCsvFileInfo toCsvFileInfo() {
+	public ExternalImportCsvFileInfo toCsvFileInfo() {
 		return new ExternalImportCsvFileInfo(
 				new ExternalImportRowNumber(itemNameRow),
 				new ExternalImportRowNumber(importStartRow),

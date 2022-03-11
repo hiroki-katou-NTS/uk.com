@@ -1,12 +1,15 @@
 package nts.uk.screen.com.app.cmf.cmf001.e.save;
 
+import java.util.Optional;
+
 import org.apache.logging.log4j.util.Strings;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
+import nts.uk.ctx.exio.dom.input.setting.ExternalImportName;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ImportSettingBaseType;
 import nts.uk.screen.com.app.cmf.cmf001.b.get.ExternalImportSettingDto;
@@ -28,12 +31,22 @@ public class Cmf001eSaveCommand {
 		return this.createMode;
 	}
 
-	public ExternalImportSetting toDomain() {
+	public ExternalImportSetting toDomain(Optional<ExternalImportSetting> oldOpt) {
 		
 		if (Strings.isBlank(setting.getCsvFileId())) {
 			throw new BusinessException(new RawErrorMessage("サンプルCSVファイルを指定してください。"));
 		}
 		
-		return this.getSetting().toDomain(ImportSettingBaseType.CSV_BASE);
+		if (!oldOpt.isPresent()) {
+			return this.getSetting().toDomain(ImportSettingBaseType.CSV_BASE);
+		}
+		
+		
+		val old = oldOpt.get();
+		
+		old.setName(new ExternalImportName(setting.getName()));
+		old.setCsvFileInfo(setting.toCsvFileInfo());
+		
+		return old;
 	}
 }
