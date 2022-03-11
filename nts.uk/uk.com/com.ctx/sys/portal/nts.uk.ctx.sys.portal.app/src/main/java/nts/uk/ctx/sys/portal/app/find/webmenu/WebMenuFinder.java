@@ -118,8 +118,6 @@ public class WebMenuFinder {
 	public List<WebMenuDetailDto> find(List<MenuCodeDto> codes) {
 		List<WebMenuDetailDto> results = new ArrayList<>();
 		Map<String, List<MenuCodeDto>> companyMap = codes.stream()
-				// #123172の改修で必要になった変換処理。会社管理者メニューはゼロ会社のレコードを見に行かないといけない
-				.map(c -> c.isCompanyAdminMenu() ? new MenuCodeDto(DefaultSettingKeys.COMPANY_ID, c.getMenuCode()) : c)
 				.collect(Collectors.groupingBy(c -> c.getCompanyId()));
 
 		companyMap.forEach((companyId, codeDtos) -> {
@@ -210,7 +208,7 @@ public class WebMenuFinder {
 		roleIds.stream()
 				.map(r -> roleTiesRepository.getByRoleIdAndCompanyId(r, companyId))
 				.flatMap(OptionalUtil::stream)
-				.map(t -> new MenuCodeDto(t.getCompanyId(), t.getWebMenuCd().v()))
+				.map(t -> new MenuCodeDto(t.getMenuCompanyId(), t.getWebMenuCd().v()))
 				.forEach(m -> menuCodes.add(m));
 		
 		// Get role set
