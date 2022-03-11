@@ -266,7 +266,7 @@ module nts.uk.at.view.kdp.share {
                     const date = moment(moment(c).add(ko.unwrap(vm.regionalTime), 'm').toDate(), 'YYYY-MM-DDTHH:mm:ss').toDate();
 
                     vm.time(date);
-                    vm.$window.storage("serverTime", date);
+                    vm.$window.storage("serverTime", c);
                 });
         }
 	}

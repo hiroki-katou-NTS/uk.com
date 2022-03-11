@@ -82,10 +82,14 @@ class KDP002BViewModel extends ko.ViewModel {
         const vm = this;
         vm.stampTime(params.stampTime);
         vm.regionalTime = params.regionalTime;
-        vm.time.now = ko.observable(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate())
-        vm.currentDate(moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm')).add(-3, 'days').format("YYYY/MM/DD")
-            + " ～ "
-            + moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm')).format("YYYY/MM/DD"));
+        vm.$window.storage("serverTime").done((time) => {
+            vm.time.now = ko.observable(moment(time).add(ko.unwrap(vm.regionalTime), 'm').toDate());
+            vm.currentDate(moment(moment(time).add(ko.unwrap(vm.regionalTime), 'm')).add(-3, 'days').format("YYYY/MM/DD")
+                + " ～ "
+                + moment(moment(time).add(ko.unwrap(vm.regionalTime), 'm')).format("YYYY/MM/DD"));
+        });
+        
+       
 
         vm.$window.shared("resultDisplayTime").done(displayTime => {
             vm.resultDisplayTime(displayTime);

@@ -109,11 +109,11 @@ module nts.uk.at.view.kdp002.c {
 					.then((data: any) => {
 						self.noticeSetting(data.noticeSetDto);
 					});
-
-				vm.$ajax("at", "server/time/now").then((output: any) => {
-					let data: Date = moment(moment(output).add(ko.unwrap(self.regionalTime), 'm')).utc();
-					self.timeView(data)
-				})
+                vm.$window.storage("serverTime").done((time) => {
+                    let data: Date = moment(moment(time).add(ko.unwrap(self.regionalTime), 'm')).utc();
+                    self.timeView(data)
+                
+                });
 			}
 
 			setSizeDialog() {
