@@ -127,7 +127,7 @@ public class WorkScheduleWorkInforDto {
 		super();
 		// step 1 : 勤務予定が必要か()
 		boolean needCreateWorkSchedule = empWorkingStatus.getWorkingStatus().needCreateWorkSchedule();
-		if (!needCreateWorkSchedule || !workScheduleInput.isPresent()) {
+		if (!needCreateWorkSchedule) {
 			// step 2 : 勤務予定が必要か() == false
 			this.employeeId = empWorkingStatus.getEmployeeID();
 			this.date = empWorkingStatus.getDate();
@@ -182,7 +182,11 @@ public class WorkScheduleWorkInforDto {
 				this.conditionAbc2 = false;
 			}
 			
-		} else {
+		} else if (needCreateWorkSchedule && workScheduleInput.isPresent()) {
+			
+			this.employeeId = empWorkingStatus.getEmployeeID();
+			this.date = empWorkingStatus.getDate();
+			
 			WorkSchedule workSchedule = workScheduleInput.get();
 			WorkInformation workInformation = workSchedule.getWorkInfo().getRecordInfo();
 
@@ -255,13 +259,11 @@ public class WorkScheduleWorkInforDto {
 
 			// step3.3 call DomainService 社員の応援情報を取得する
 			// 予定の情報を取得する(Require, 社員ID, 年月日)
-			SupportInfoOfEmployee supportInfoOfEmp = GetSupportInfoOfEmployee.getScheduleInfo(requireGetSupportInfo, new EmployeeId(employeeId), date);
+			SupportInfoOfEmployee supportInfoOfEmp = GetSupportInfoOfEmployee.getScheduleInfo(requireGetSupportInfo, new EmployeeId(this.employeeId), this.date);
 			
 			// step3.3.1 応援状況を取得する(対象組織識別情報)
 			this.supportStatus = supportInfoOfEmp.getSupportStatus(targetOrg).getValue();
 			
-			this.employeeId = empWorkingStatus.getEmployeeID();
-			this.date = empWorkingStatus.getDate();
 			this.haveData = true;
 			this.achievements = false;
 			this.confirmed = workSchedule.getConfirmedATR().value == ConfirmedATR.CONFIRMED.value;
@@ -283,6 +285,71 @@ public class WorkScheduleWorkInforDto {
 			this.workTypeNameKsu002 = workTypeInfor.map(m -> m.getAbbreviationName()).orElse(workTypeCode == null ? null : workTypeCode + "{#KSU002_31}");
 			this.workTimeNameKsu002 = workTimeSetting.map(m -> m.getWorkTimeDisplayName().getWorkTimeAbName().v()).orElse(workTimeCode == null ? null : workTimeCode + "{#KSU002_31}");
 			this.workTimeForm = workTimeSetting.map(m -> m.getWorkTimeDivision().getWorkTimeForm().value).orElse(null);
+			this.conditionAbc1 = true;
+			this.conditionAbc2 = true;
+
+			/*※Abc1
+			勤務予定（勤務情報）dto．実績か == true	Achievement						        ×	
+			勤務予定（勤務情報）dto．確定済みか == true Confirmed					        ×	
+			勤務予定（勤務情報）dto．勤務予定が必要か == false need a work				        ×	
+			勤務予定（勤務情報）dto．応援状況 == 応援に来ない　or　応援に来る(時間帯) supportStatus	× 
+			対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				        ×	=> check ở dưới UI
+			上記以外															        ○	
+			*/
+			if (this.achievements == true 
+					|| this.confirmed == true 
+					|| this.needToWork == false
+					|| this.supportStatus == SupportStatus.DO_NOT_COME.getValue()
+					|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()) {
+				this.conditionAbc1 = false;
+			}
+
+			/* ※Abc2
+			 勤務予定（勤務情報）dto．実績か == true	Achievement						           ×	
+			勤務予定（勤務情報）dto．勤務予定が必要か == false	need a work				           ×	
+			勤務予定（勤務情報）dto．応援状況 == 応援に来る(時間帯)　or　応援に行く(終日)	 supportStatus ×	
+			対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				           × => check ở dưới UI
+			上記以外																           ○	
+			 */
+			if (this.achievements == true 
+					|| this.needToWork == false
+					|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()
+					|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()) {
+				this.conditionAbc2 = false;
+			}
+		} else if (needCreateWorkSchedule && !workScheduleInput.isPresent()) {
+			
+			this.employeeId = empWorkingStatus.getEmployeeID();
+			this.date = empWorkingStatus.getDate();
+			
+			// step3.3 call DomainService 社員の応援情報を取得する
+			// 予定の情報を取得する(Require, 社員ID, 年月日)
+			SupportInfoOfEmployee supportInfoOfEmp = GetSupportInfoOfEmployee.getScheduleInfo(requireGetSupportInfo, new EmployeeId(this.employeeId), this.date);
+			
+			// step3.3.1 応援状況を取得する(対象組織識別情報)
+			this.supportStatus = supportInfoOfEmp.getSupportStatus(targetOrg).getValue();
+			
+			this.haveData = false;
+			this.achievements = false;
+			this.confirmed = false;
+			this.needToWork = true;
+			this.supportCategory = SupportCategory.NotCheering.value;
+			this.workTypeCode = null;
+			this.workTypeName = null;
+			this.workTypeEditStatus = null;
+			this.workTimeCode = null;
+			this.workTimeName = null;
+			this.workTimeEditStatus = null;
+			this.startTime = null;
+			this.startTimeEditState = null;
+			this.endTime = null;
+			this.endTimeEditState = null;
+			this.workHolidayCls = null;
+			this.workTypeIsNotExit = false;
+			this.workTimeIsNotExit = false;
+			this.workTypeNameKsu002 = null;
+			this.workTimeNameKsu002 = null;
+			this.workTimeForm = null;
 			this.conditionAbc1 = true;
 			this.conditionAbc2 = true;
 
@@ -342,6 +409,10 @@ public class WorkScheduleWorkInforDto {
 			
 			IntegrationOfDaily daily = workRecord.get();
 			if (daily.getWorkInformation() != null) {
+				
+				this.employeeId = empWorkingStatus.getEmployeeID();
+				this.date = empWorkingStatus.getDate();
+				
 				WorkInformation workInformation = daily.getWorkInformation().getRecordInfo();
 
 				String workTypeCode = workInformation.getWorkTypeCode() == null ? null : workInformation.getWorkTypeCode().toString();
@@ -400,13 +471,11 @@ public class WorkScheduleWorkInforDto {
 				
 				// step2 call DomainService 社員の応援情報を取得する
 				// 実績の情報を取得する(Require, 社員ID, 年月日)
-				SupportInfoOfEmployee supportInfoOfEmp = GetSupportInfoOfEmployee.getRecordInfo(requireGetSupportInfo, new EmployeeId(employeeId), date);
+				SupportInfoOfEmployee supportInfoOfEmp = GetSupportInfoOfEmployee.getRecordInfo(requireGetSupportInfo, new EmployeeId(this.employeeId), this.date);
 				
 				// step2.1 応援状況を取得する(対象組織識別情報)
 				this.supportStatus = supportInfoOfEmp.getSupportStatus(targetOrg).getValue();
 				
-				this.employeeId = empWorkingStatus.getEmployeeID();
-				this.date = empWorkingStatus.getDate();
 				this.haveData = true;
 				this.achievements = true;
 				this.confirmed = true;
