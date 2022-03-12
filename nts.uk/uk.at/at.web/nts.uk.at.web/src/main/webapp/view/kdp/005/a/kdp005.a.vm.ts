@@ -248,9 +248,12 @@ module nts.uk.at.view.kdp005.a {
 														self.isUsed(false);
 														dfd.resolve();
 													} else {
-														$.when(self.doFirstLoad(), self.loadNotice(self.loginInfo)).done(() => {
-															dfd.resolve();
-														});
+                                                        self.getWorkLocationInfo(loginResult).done(() => {
+                                                            $.when(self.doFirstLoad(), self.loadNotice(self.loginInfo)).done(() => {
+                                                                dfd.resolve();
+                                                            });
+                                                        });
+														
 													}
 												});
 											}
@@ -1003,11 +1006,12 @@ module nts.uk.at.view.kdp005.a {
 			loadNotice(loginInfo?: any): JQueryPromise<any> {
 				let vm = new ko.ViewModel();
 				const self = this;
-				let dfd = $.Deferred<any>();
-				// startDate.setDate(startDate.getDate() - 3);
-				var wkpIds: string[];
-                vm.$window.storage("workLocationInfo").then((workLocInfo) => {
-                    let startDate = moment(moment(vm.$date.now()).add(ko.unwrap(workLocInfo.regional), 'm').toDate());
+				let dfd = $.Deferred<any>();                
+                vm.$ajax("at", "server/time/now").then((time: any) => {
+                    let diff = moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment());
+                    let startDate = moment().add(diff, 'ms').toDate();
+                    // startDate.setDate(startDate.getDate() - 3);
+                    var wkpIds: string[];
                     if (loginInfo) {
                         wkpIds = loginInfo.selectedWP;
                     } else {
@@ -1023,11 +1027,10 @@ module nts.uk.at.view.kdp005.a {
                                     const param = {
                                         periodDto: {
                                             startDate: startDate,
-                                            endDate: moment(moment(vm.$date.now()).add(ko.unwrap(workLocInfo.regional), 'm').toDate())
+                                            endDate: startDate
                                         },
                                         wkpIds: wkpIds
                                     }
-
                                     vm.$ajax(API.NOTICE, param)
                                         .done((data: IMessage) => {
                                             self.messageNoti(data);
@@ -1047,14 +1050,11 @@ module nts.uk.at.view.kdp005.a {
                                 }
                             });
                     }
-
-
-
                     if (wkpIds && wkpIds.length > 0) {
                         const param = {
                             periodDto: {
                                 startDate: startDate,
-                                endDate: moment(moment(vm.$date.now()).add(ko.unwrap(workLocInfo.regional), 'm').toDate())
+                                endDate:startDate
                             },
                             wkpIds: loginInfo.selectedWP
                         }
@@ -1083,8 +1083,6 @@ module nts.uk.at.view.kdp005.a {
                                 vm.$blockui('clear');
                             });
                     }
-
-
                 });
 				
 				return dfd.promise();
