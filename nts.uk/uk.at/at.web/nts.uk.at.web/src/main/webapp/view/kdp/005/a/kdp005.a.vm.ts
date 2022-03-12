@@ -1003,34 +1003,66 @@ module nts.uk.at.view.kdp005.a {
 					});
 			}
 
-			loadNotice(loginInfo?: any): JQueryPromise<any> {
-				let vm = new ko.ViewModel();
-				const self = this;
-				let dfd = $.Deferred<any>();                
-                vm.$ajax("at", "server/time/now").done((time: any) => {
-                    let diff = moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment());
-                    let startDate = moment().add(diff, 'ms').add(ko.unwrap(workLocInfo.regional), 'm').toDate();
-                    // startDate.setDate(startDate.getDate() - 3);
-                    var wkpIds: string[];
-                    if (loginInfo) {
-                        wkpIds = loginInfo.selectedWP;
-                    } else {
-                        vm.$window
-                            .storage('loginKDP005')
-                            .then((data: any) => {
-                                if (data.selectedWP.length > 0) {
-                                    wkpIds = data.selectedWP;
-                                }
-                            })
-                            .then(() => {
-                                if (wkpIds && wkpIds.length > 0) {
-                                    const param = {
-                                        periodDto: {
-                                            startDate: startDate,
-                                            endDate: startDate
-                                        },
-                                        wkpIds: wkpIds
+            loadNotice(loginInfo ?: any): JQueryPromise < any > {
+                let vm = new ko.ViewModel();
+                const self = this;
+                let dfd = $.Deferred<any>();
+                vm.$window.storage("workLocationInfo").then((workLocInfo) => {
+
+                    vm.$ajax("at", "server/time/now").done((time: any) => {
+                        let diff = moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment());
+                        let startDate = moment().add(diff, 'ms').add(ko.unwrap(workLocInfo.regional), 'm').toDate();
+                        // startDate.setDate(startDate.getDate() - 3);
+                        var wkpIds: string[];
+                        if (loginInfo) {
+                            wkpIds = loginInfo.selectedWP;
+                        } else {
+                            vm.$window
+                                .storage('loginKDP005')
+                                .then((data: any) => {
+                                    if (data.selectedWP.length > 0) {
+                                        wkpIds = data.selectedWP;
                                     }
+                                })
+                                .then(() => {
+                                    if (wkpIds && wkpIds.length > 0) {
+                                        const param = {
+                                            periodDto: {
+                                                startDate: startDate,
+                                                endDate: startDate
+                                            },
+                                            wkpIds: wkpIds
+                                        }
+                                        vm.$ajax(API.NOTICE, param)
+                                            .done((data: IMessage) => {
+                                                self.messageNoti(data);
+
+                                                if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
+                                                    if (self.totalOpenViewR === 0) {
+
+                                                        setTimeout(() => {
+                                                            self.totalOpenViewR++;
+                                                            const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP005' };
+
+                                                            vm.$window.modal(DIALOG.R, param);
+                                                        }, 1000);
+                                                    }
+                                                }
+                                            });
+                                    }
+                                });
+                        }
+                        if (wkpIds && wkpIds.length > 0) {
+                            const param = {
+                                periodDto: {
+                                    startDate: startDate,
+                                    endDate: startDate
+                                },
+                                wkpIds: loginInfo.selectedWP
+                            }
+
+                            vm.$blockui('invisible')
+                                .then(() => {
                                     vm.$ajax(API.NOTICE, param)
                                         .done((data: IMessage) => {
                                             self.messageNoti(data);
@@ -1047,46 +1079,16 @@ module nts.uk.at.view.kdp005.a {
                                                 }
                                             }
                                         });
-                                }
-                            });
-                    }
-                    if (wkpIds && wkpIds.length > 0) {
-                        const param = {
-                            periodDto: {
-                                startDate: startDate,
-                                endDate:startDate
-                            },
-                            wkpIds: loginInfo.selectedWP
+                                })
+                                .always(() => {
+                                    dfd.resolve();
+                                    vm.$blockui('clear');
+                                });
                         }
-
-                        vm.$blockui('invisible')
-                            .then(() => {
-                                vm.$ajax(API.NOTICE, param)
-                                    .done((data: IMessage) => {
-                                        self.messageNoti(data);
-
-                                        if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
-                                            if (self.totalOpenViewR === 0) {
-
-                                                setTimeout(() => {
-                                                    self.totalOpenViewR++;
-                                                    const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP005' };
-
-                                                    vm.$window.modal(DIALOG.R, param);
-                                                }, 1000);
-                                            }
-                                        }
-                                    });
-                            })
-                            .always(() => {
-                                dfd.resolve();
-                                vm.$blockui('clear');
-                            });
-                    }
-                });
-				
-				return dfd.promise();
-			}
+                    });
+                });  
+                return dfd.promise();
+            }
 
 			getWorkPlacesInfo() {
 				let vm = new ko.ViewModel();
