@@ -130,7 +130,7 @@ public class EnterStampFromSmartPhoneServiceTest {
 
 				require.findAll(contractCode.v());
 				result = Arrays.asList(new WorkLocation(null, new WorkLocationCD("TEST"), null,
-						new StampMobilePossibleRange(RadiusAtr.M_1000, geoCoordinate), null, null));
+						new StampMobilePossibleRange(RadiusAtr.M_1000, geoCoordinate), null, null,null));
 			}
 		};
 

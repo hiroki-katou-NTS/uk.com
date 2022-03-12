@@ -90,4 +90,6 @@ public interface WorkLocationRepository {
 	 * @return
 	 */
 	Optional<WorkLocation> identifyWorkLocationByAddress(String contractCode, Ipv4Address ipv4Address);
+
+	Optional<WorkplacePossible> findPossibleByCid(String contractCode, String workLocationCD, String cId);
 }

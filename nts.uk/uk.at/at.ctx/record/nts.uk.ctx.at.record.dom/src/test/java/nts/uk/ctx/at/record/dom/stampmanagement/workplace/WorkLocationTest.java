@@ -75,7 +75,7 @@ public class WorkLocationTest {
 
 		new Expectations() {
 			{
-				require.get("ContractCode", 10);
+				require.get("ContractCode", 12);
 			}
 		};
 

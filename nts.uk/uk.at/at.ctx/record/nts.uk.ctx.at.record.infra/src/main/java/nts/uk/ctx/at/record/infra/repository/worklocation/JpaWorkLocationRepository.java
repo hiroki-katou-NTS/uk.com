@@ -32,6 +32,11 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 
 	private static final String SELECT = "SELECT c FROM KrcmtWorkLocation c";
 	private static final String SELECT_SINGLE = "SELECT c FROM KrcmtWorkLocation c WHERE c.kwlmtWorkLocationPK.contractCode = :contractCode AND c.kwlmtWorkLocationPK.workLocationCD = :workLocationCD";
+	private static final String SELECT_POSSIBLE_BY_CID = 
+			"SELECT p FROM krcmtWorkplacePossible p"
+			+ " WHERE p.krcmtWorkplacePossiblePK.contractCode = :contractCode"
+			+ " AND p.krcmtWorkplacePossiblePK.workLocationCD = :workLocationCD"
+			+ " AND p.krcmtWorkplacePossiblePK.cid = :cid";
 	private static final String SELECT_ALL_BY_COMPANY = SELECT
 			+ " WHERE c.kwlmtWorkLocationPK.contractCode = :contractCode order by c.kwlmtWorkLocationPK.workLocationCD asc";
 	private static final String SELECT_CODE_AND_NAME = "SELECT c.kwlmtWorkLocationPK.workLocationCD, c.workLocationName FROM KrcmtWorkLocation c"
@@ -85,6 +90,18 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 		Optional<WorkLocation> test = this.queryProxy().query(SELECT_SINGLE, KrcmtWorkLocation.class)
 				.setParameter("contractCode", contractCode).setParameter("workLocationCD", workPlaceCD)
 				.getSingle(c -> c.toDomain());
+		return test;
+	}
+	
+	@Override
+	public Optional<WorkplacePossible> findPossibleByCid(String contractCode, String workLocationCD, String cId) {
+		
+		Optional<WorkplacePossible> test = this.queryProxy().query(SELECT_POSSIBLE_BY_CID, KrcmtWorkplacePossible.class)
+				.setParameter("contractCode", contractCode)
+				.setParameter("workLocationCD", workLocationCD)
+				.setParameter("cId", cId)
+				.getSingle(c -> c.toDomain());
+		
 		return test;
 	}
 

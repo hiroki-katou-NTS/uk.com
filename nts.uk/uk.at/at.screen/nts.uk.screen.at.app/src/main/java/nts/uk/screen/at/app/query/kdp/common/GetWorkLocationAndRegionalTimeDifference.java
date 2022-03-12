@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionalTimeDifference;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionalTimeDifferenceRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.net.Ipv4Address;
 
 /**
@@ -52,7 +53,11 @@ public class GetWorkLocationAndRegionalTimeDifference {
 			
 			result.setRegional(workLocation.get().findTimeDifference(require, param.getContractCode()));
 			// Step4
-			result.setWorkPlaceId(workLocation.get().getWorkplace().map(m -> m.getWorkpalceId()).orElse(""));
+			this.workLocationRepository.findPossibleByCid(param.getContractCode(), param.getWorkLocationCode(), AppContexts.user().companyId()).ifPresent(p->{
+				result.setWorkPlaceId(p.getWorkpalceId());
+			});
+			
+			
 			result.setWorkLocationName(workLocation.get().getWorkLocationName().v());
 			result.setWorkLocationCD(workLocation.get().getWorkLocationCD().v());
 		}

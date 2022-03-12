@@ -75,7 +75,7 @@ public class StampingAreaRestrictionTestHelp {
 		Optional<WorkplacePossible> workplace = Optional.of(new WorkplacePossible("dummy","dummy"));
 		List<Ipv4Address> listIPAddress = new ArrayList<>();
 		List<WorkLocation>listWork = new ArrayList<>();	
-		WorkLocation location = new WorkLocation(contracttCd, workLocationCD,workLocationName,stampRange, listIPAddress, workplace);
+		WorkLocation location = new WorkLocation(contracttCd, workLocationCD,workLocationName,stampRange, listIPAddress, workplace,Optional.empty());
 		listWork.add(location);
 		return listWork;
 	}
