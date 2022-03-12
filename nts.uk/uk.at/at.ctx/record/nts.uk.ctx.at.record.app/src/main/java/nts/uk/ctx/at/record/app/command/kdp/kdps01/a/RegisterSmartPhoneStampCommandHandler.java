@@ -13,10 +13,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-
 import nts.uk.ctx.at.auth.dom.adapter.login.IGetInfoForLogin;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
@@ -42,6 +40,9 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.EmployeeStampingAreaRestrictionSetting;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRepository;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.adapter.AcquireWorkLocationEmplAdapter;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
@@ -120,9 +121,6 @@ public class RegisterSmartPhoneStampCommandHandler
 	private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
 
 	@Inject
-	private WorkLocationRepository workLocationRepository;
-
-	@Inject
 	private EmpInfoTerminalRepository empInfoTerminalRepository;
 
 	@Inject
@@ -177,6 +175,15 @@ public class RegisterSmartPhoneStampCommandHandler
 	private CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo;
     @Inject
     private EmpEmployeeAdapter empEmployeeAdapter;
+	
+	@Inject
+	private StampingAreaRepository stampingAreaRepository;
+	
+	@Inject
+	private WorkLocationRepository repository;
+	
+	@Inject
+	private AcquireWorkLocationEmplAdapter adapter;
 	@Override
 	protected GeneralDate handle(CommandHandlerContext<RegisterSmartPhoneStampCommand> context) {
 		RegisterSmartPhoneStampCommand cmd = context.getCommand();
@@ -185,16 +192,16 @@ public class RegisterSmartPhoneStampCommandHandler
 
 		EnterStampFromSmartPhoneServiceImpl require = new EnterStampFromSmartPhoneServiceImpl(stampCardRepo,
 				stampCardEditRepo, companyAdapter, sysEmpPub, stampDakokuRepo, getSettingRepo,
-				createDailyResults, temporarilyReflectStampDailyAttd, workLocationRepository, empInfoTerminalRepository,
+				createDailyResults, temporarilyReflectStampDailyAttd, empInfoTerminalRepository,
 				stampCardRepo, employeeManageRCAdapter, dailyRecordAdUpService, getMngInfoFromEmpIDListAdapter,
 				iGetInfoForLogin, loginUserContextManager, calcService, closureRepo, closureEmploymentRepo,
 				shareEmploymentAdapter, attendanceItemConvertFactory, iCorrectionAttendanceRule,
 				interimRemainDataMngRegisterDateChange, dailyRecordShareFinder, timeReflectFromWorkinfo,
-				closureStatusManagementRepo, actualLockRepo, employmentAdapter, creatingDailyResultsConditionRepo, empEmployeeAdapter);
-
-		TimeStampInputResult stampRes = EnterStampFromSmartPhoneService.create(require, AppContexts.user().companyId(),
-				new ContractCode(AppContexts.user().contractCode()), AppContexts.user().employeeId(),
-				cmd.getStampDatetime(), cmd.getStampButton().toDomainValue(),
+				closureStatusManagementRepo, actualLockRepo, employmentAdapter, creatingDailyResultsConditionRepo, empEmployeeAdapter
+				,stampingAreaRepository,repository,adapter);
+		EnterStampFromSmartPhoneService enterStampFromSmartPhoneService = new EnterStampFromSmartPhoneService();
+		TimeStampInputResult stampRes = enterStampFromSmartPhoneService.create(require, AppContexts.user().companyId(), new ContractCode(AppContexts.user().contractCode()),
+				AppContexts.user().employeeId(), cmd.getStampDatetime(), cmd.getStampButton().toDomainValue(),
 				Optional.ofNullable(cmd.getGeoCoordinate().toDomainValue()), cmd.getRefActualResult().toDomainValue());
 		// 2.1:not 打刻入力結果 empty
 
@@ -245,8 +252,6 @@ public class RegisterSmartPhoneStampCommandHandler
 
 		private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
 
-		private WorkLocationRepository workLocationRepository;
-
 		private EmpInfoTerminalRepository empInfoTerminalRepository;
 
 		private StampCardRepository stampCardRepository;
@@ -284,6 +289,8 @@ public class RegisterSmartPhoneStampCommandHandler
 		protected EmploymentAdapter employmentAdapter;
 		private CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo;
 		protected EmpEmployeeAdapter empEmployeeAdapter;
+		
+		private StampingAreaRepository stampingAreaRepository;
 
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
@@ -323,16 +330,6 @@ public class RegisterSmartPhoneStampCommandHandler
 		@Override
 		public Optional<SettingsSmartphoneStamp> getSmartphoneStampSetting() {
 			return this.getSettingRepo.get(AppContexts.user().companyId());
-		}
-
-		@Override
-		public Optional<SettingsSmartphoneStamp> getSettingsSmartphoneStamp() {
-			return getSettingRepo.get(AppContexts.user().companyId());
-		}
-
-		@Override
-		public List<WorkLocation> findAll() {
-			return workLocationRepository.findAll(AppContexts.user().contractCode());
 		}
 
 		@Override
@@ -512,6 +509,34 @@ public class RegisterSmartPhoneStampCommandHandler
 		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
 				ChangeClockAtr changeClockArt) {
 			return stampDakokuRepo.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
+		}
+
+		@Override
+		public Optional<EmployeeStampingAreaRestrictionSetting> findByEmployeeId(String employId) {
+			return this.stampingAreaRepository.findByEmployeeId(employId);
+		}
+		
+
+		
+		
+		private WorkLocationRepository repository;
+
+		private AcquireWorkLocationEmplAdapter adapter;
+
+		@Override
+		public Optional<String> getWorkPlaceOfEmpl(String employeeID, GeneralDate date) {
+			String workplaceId = this.adapter.getAffWkpHistItemByEmpDate(employeeID, date);
+			return Optional.ofNullable(workplaceId);
+		}
+
+		@Override
+		public List<WorkLocation> findByWorkPlace(String contractCode, String cid, String workPlaceId) {
+			return this.repository.findByWorkPlace(contractCode, cid, workPlaceId);
+		}
+
+		@Override
+		public List<WorkLocation> findAll(String contractCode) {
+			return this.repository.findAll(contractCode);
 		}
 	}
 

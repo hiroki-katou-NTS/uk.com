@@ -140,7 +140,7 @@ module nts.uk.at.view.kdp005.a {
 										contractCode: data.code,
 										contractPassword: ''
 									})
-									.done(() => self.startScreen().then(() => dfd.resolve()));
+										.done(() => self.startScreen().then(() => dfd.resolve()));
 								});
 						} else {
 							// Step3: テナント認証する
@@ -217,7 +217,7 @@ module nts.uk.at.view.kdp005.a {
 
 									} else {
 										self.btnChangeCompany(self.listCompany.length > 0);
-										characteristics.restore("loginKDP005").done(function (loginInfo: ILoginInfo) {
+										characteristics.restore("loginKDP005").done(function(loginInfo: ILoginInfo) {
 											if (loginInfo) {
                                                 self.getWorkLocationInfo(loginInfo).done(() => {
                                                     self.loginInfo = loginInfo;
@@ -491,22 +491,48 @@ module nts.uk.at.view.kdp005.a {
 				const vm = this;
 				const mVm = new ko.ViewModel();
 				vm.getWorkPlacesInfo();
+
                     mVm.$window.storage("workLocationInfo").then((workLocInfo) => {
                         let stampTime = moment(mVm.$date.now()).add(workLocInfo.regional, 'minutes').format("HH:mm");
                         let stampDateTime = moment(mVm.$date.now()).add(workLocInfo.regional, 'minutes').format();
-                        modal('/view/kdp/005/h/index.xhtml').onClosed(function(): any {
-                            let ICCard = getShared('ICCard');
-                            if (ICCard && ICCard != '') {
-                                block.grayout();
-                                vm.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
-                                    vm.registerData(btn, layout, ICCard, employeeId, stampTime, stampDateTime);
-                                }).fail(() => {
-                                    vm.openIDialog();
-                                }).always(() => {
-                                    block.clear();
-                                });
-                            }
-                        });
+						
+						// ※ICカードチェック
+						const authcMethod = ko.unwrap(vm.fingerStampSetting).stampSetting.authcMethod;
+						
+						// QRコード　の場合
+						if (authcMethod == 1) {
+							modal('at', '/view/kdp/005/q/index.xhtml').onClosed(function(): any {
+								let ICCard = getShared('ICCardFromQRCode');
+								if (ICCard && ICCard != '') {
+									block.grayout();
+									vm.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
+										vm.registerData(btn, layout, ICCard, employeeId, stampTime, stampDateTime);
+									}).fail(() => {
+										vm.openIDialog();
+									}).always(() => {
+										block.clear();
+									});
+								}
+							});
+						}
+
+						// ICカード　の場合
+						if (authcMethod == 0) {
+							modal('/view/kdp/005/h/index.xhtml').onClosed(function(): any {
+								let ICCard = getShared('ICCard');
+								if (ICCard && ICCard != '') {
+									block.grayout();
+									vm.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
+										vm.registerData(btn, layout, ICCard, employeeId, stampTime, stampDateTime);
+									}).fail(() => {
+										vm.openIDialog();
+									}).always(() => {
+										block.clear();
+									});
+								}
+							});
+						}
+                        
                     });
                 
 			}
@@ -551,7 +577,30 @@ module nts.uk.at.view.kdp005.a {
 
 			checkHis(self: ScreenModel) {
 				let vm = new ko.ViewModel();
-				modal('/view/kdp/005/h/index.xhtml').onClosed(function (): any {
+				
+				// ※ICカードチェック
+				const authcMethod = ko.unwrap(self.fingerStampSetting).stampSetting.authcMethod;
+
+				// QRコード　の場合
+				if (authcMethod == 1) {
+					modal('at', '/view/kdp/005/q/index.xhtml').onClosed(function(): any {
+						let ICCard = getShared('ICCardFromQRCode');
+						if (ICCard && ICCard != '') {
+							block.grayout();
+							self.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
+								vm.$window.modal('at', '/view/kdp/003/s/index.xhtml', { employeeId: employeeId });
+							}).fail(() => {
+								self.openIDialog();
+							}).always(() => {
+								block.clear();
+							});
+						}
+					});
+				}
+					
+				// ICカード　の場合
+				if (authcMethod == 0) {
+					modal('/view/kdp/005/h/index.xhtml').onClosed(function(): any {
 					let ICCard = getShared('ICCard');
 					if (ICCard && ICCard != '') {
 						block.grayout();
@@ -565,7 +614,8 @@ module nts.uk.at.view.kdp005.a {
 							block.clear();
 						});
 					}
-				});
+					});
+				}
 			}
 
 			settingUser(self: ScreenModel) {
@@ -893,7 +943,7 @@ module nts.uk.at.view.kdp005.a {
 				setShared("screenC", {
 					screen: "KDP005"
 				});
-				modal('/view/kdp/002/c/index.xhtml', { screen: "KDP005" }).onClosed(function (): any {
+				modal('/view/kdp/002/c/index.xhtml', { screen: "KDP005" }).onClosed(function(): any {
 					self.openKDP002T(button, layout);
 				});
 			}
@@ -906,7 +956,7 @@ module nts.uk.at.view.kdp005.a {
 				service.getError(data).done((res) => {
 					if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
 						setShared('KDP010_2T', res, true);
-						modal('/view/kdp/002/t/index.xhtml').onClosed(function (): any {
+						modal('/view/kdp/002/t/index.xhtml').onClosed(function(): any {
 							let returnData = getShared('KDP010_T');
 							if (!returnData.isClose && returnData.errorDate) {
 								let transfer = returnData.btn.transfer;
@@ -1055,7 +1105,7 @@ module nts.uk.at.view.kdp005.a {
 			basyo(): JQueryPromise<any> {
 				let dfd = $.Deferred<any>();
 
-				$.urlParam = function (name) {
+				$.urlParam = function(name) {
 					var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
 					if (results == null) {
 						return null;

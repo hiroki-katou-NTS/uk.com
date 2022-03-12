@@ -6,9 +6,20 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.gul.location.GeoCoordinate;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.EmployeeStampingAreaRestrictionSettingHelper;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaLimit;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestriction;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
 
 /**
@@ -16,8 +27,17 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
  * @author chungnt
  *
  */
-
+@RunWith(JMockit.class)
 public class SettingsSmartphoneStampTest {
+	
+	@Injectable
+	private SettingsSmartphoneStamp.Require settingsSmartphoneStampRequire;
+	@Injectable
+	private WorkLocationRepository repository;
+	
+	private static final String EMPLOYEE_ID = "employeeId";
+	private static final String CONTRACT_CD = "contractCd";
+	private static final String COMPANY_ID = "companyId";
 
 	@Test
 	public void getters() {
@@ -29,12 +49,15 @@ public class SettingsSmartphoneStampTest {
 	public void setters() {
 		SettingsSmartphoneStamp settingsSmartphoneStamp = SettingsSmartphoneStampHelper.getSettingsSmartphoneStampDefault();
 		settingsSmartphoneStamp.setPageLayoutSettings(new ArrayList<StampPageLayout>());
+		settingsSmartphoneStamp.setStampingAreaRestriction(new StampingAreaRestriction(nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr.NOT_USE, StampingAreaLimit.NO_AREA_RESTRICTION));
 		assertThat(settingsSmartphoneStamp.getPageLayoutSettings()).isEmpty();
+		assertThat(settingsSmartphoneStamp.getStampingAreaRestriction().getUseLocationInformation()).isEqualTo(nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr.NOT_USE);
+		assertThat(settingsSmartphoneStamp.getStampingAreaRestriction().getStampingAreaLimit()).isEqualTo(StampingAreaLimit.NO_AREA_RESTRICTION);
 	}
 	
 	@Test
 	public void testLayoutSettingsNull() {
-		SettingsSmartphoneStamp settingsSmartphoneStamp = SettingsSmartphoneStampHelper.getSettingsSmartphoneStampDefault();
+			SettingsSmartphoneStamp settingsSmartphoneStamp = SettingsSmartphoneStampHelper.getSettingsSmartphoneStampDefault();
 		
 		 Optional<ButtonSettings> optButtonSetting = settingsSmartphoneStamp.getDetailButtonSettings(new StampButton(new PageNo(1), new ButtonPositionNo(1)));
 		 
@@ -52,8 +75,40 @@ public class SettingsSmartphoneStampTest {
 		assertThat(optButtonSetting.get().getButtonDisSet().getBackGroundColor().v()).isEqualTo(optButtonSetting1.get().getButtonDisSet().getBackGroundColor().v());
 		assertThat(optButtonSetting.get().getButtonDisSet().getButtonNameSet()).isNotEqualTo(optButtonSetting1.get().getButtonDisSet().getButtonNameSet());
 		assertThat(optButtonSetting.get().getButtonPositionNo()).isEqualTo(optButtonSetting1.get().getButtonPositionNo());
-//		assertThat(optButtonSetting.get().getButtonType().getReservationArt().value).isEqualTo(optButtonSetting1.get().getButtonType().getReservationArt().value);
-//		assertThat(optButtonSetting.get().getButtonType().getStampTypeDisplay()).isEqualTo(optButtonSetting1.get().getButtonType().getStampTypeDisplay());
+	}
+	
+	@Test
+	public void testCheckCanStampAreasNotSetting() {
+		
+		SettingsSmartphoneStamp settingsSmartphoneStamp = SettingsSmartphoneStampHelper.getSettingsSmartphoneStampDefault();
+		
+		new Expectations() {
+			{
+				settingsSmartphoneStampRequire.findByEmployeeId(EMPLOYEE_ID);
+				result = Optional.empty();
+			}
+		};
+		
+		Optional<WorkLocation> rs = settingsSmartphoneStamp.checkCanStampAreas(settingsSmartphoneStampRequire, new ContractCode(CONTRACT_CD),COMPANY_ID, EMPLOYEE_ID, new GeoCoordinate(0, 0));
+		
+		assertThat(rs).isNotPresent();
+	}
+	
+	@Test
+	public void testCheckCanStampAreasHasSetting() {
+		
+		SettingsSmartphoneStamp settingsSmartphoneStamp = SettingsSmartphoneStampHelper.getSettingsSmartphoneStampDefault();
+		
+		new Expectations() {
+			{
+				settingsSmartphoneStampRequire.findByEmployeeId(EMPLOYEE_ID);
+				result = Optional.of(EmployeeStampingAreaRestrictionSettingHelper.getStampDefault());
+			}
+		};
+		
+		Optional<WorkLocation> rs = settingsSmartphoneStamp.checkCanStampAreas(settingsSmartphoneStampRequire, new ContractCode(CONTRACT_CD), COMPANY_ID, EMPLOYEE_ID,new GeoCoordinate(0, 0));
+		
+		assertThat(rs).isNotPresent();
 	}
 	
 	

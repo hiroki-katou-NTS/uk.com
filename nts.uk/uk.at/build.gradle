@@ -193,6 +193,10 @@ subprojects {
 		// SAMLに使用
 		compile group: 'commons-codec', name: 'commons-codec', version: '1.15'
         compile group: 'xmlsec', name: 'xmlsec', version: '2.1.4'
+        
+        //Zxing
+		compile group: 'com.google.zxing', name: 'core', version: '3.4.1'
+		compile group: 'com.google.zxing', name: 'javase', version: '3.4.1'
 	}
 }
 

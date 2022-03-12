@@ -971,7 +971,7 @@ module nts.uk.ui.kdp001.a {
     interface ButtonSetting {
         buttonPositionNo: 1 | 2 | 3 | 4;
         buttonDisSet: SettingButtonDisplay;
-        buttonType: ButtonType;
+        stampType: StampType;
         usrArt: number;
         audioType: number;
         buttonValueType: number;
@@ -987,17 +987,13 @@ module nts.uk.ui.kdp001.a {
         buttonName: string;
     }
 
-    interface ButtonType {
-        reservationArt: number;
-        stampType: StampType;
-    }
-
+	//打刻種類
     interface StampType {
-        changeHalfDay: boolean;
-        goOutArt: number;
-        setPreClockArt: number;
-        changeClockArt: number;
-        changeCalArt: number;
+        changeHalfDay: boolean; // 勤務種類を半休に変更する
+        goOutArt: number; // 外出区分
+        setPreClockArt: number; // 所定時刻セット区分
+        changeClockArt: number; // 時刻変更区分
+        changeCalArt: number; // 計算区分変更対象
     }
 
     interface ConfirmSetting {

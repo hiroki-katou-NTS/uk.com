@@ -69,7 +69,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateDailyRecordSe
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -317,10 +316,9 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		}
 
 		@Override
-		public List<IntegrationOfDaily> calculateForSchedule(ExecutionType type, CalculateOption calcOption,
+		public List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,
 				List<IntegrationOfDaily> integrationOfDaily) {
-			return calculateDailyRecordServiceCenterNew.calculatePassCompanySetting(calcOption, integrationOfDaily,
-					type);
+			return calculateDailyRecordServiceCenterNew.calculateForSchedule(calcOption, integrationOfDaily);
 		}
 
 		@Override
@@ -431,10 +429,9 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		}
 
 		@Override
-		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
-				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
-				ExecutionType reCalcAtr) {
-			return calculateForSchedule(reCalcAtr, calcOption, integrationOfDaily);
+		public List<IntegrationOfDaily> calculateForRecordSchedule(CalculateOption calcOption,
+				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet) {
+			return calculateForSchedule(calcOption, integrationOfDaily);
 		}
 
 		@Override
