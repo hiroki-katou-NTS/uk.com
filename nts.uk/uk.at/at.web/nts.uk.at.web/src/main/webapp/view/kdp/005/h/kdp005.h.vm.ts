@@ -16,10 +16,7 @@ module nts.uk.at.view.kdp005.h {
                 $(document).ready(function() {
                     $('#iCCard').focus();
                 });
-                self.value.subscribe(() => {
-                    self.decision();
-                });
-                //self.connectICCard();
+                self.connectICCard();
             }
             
             public connectICCard(){
@@ -69,7 +66,7 @@ module nts.uk.at.view.kdp005.h {
             
             public closeDialog(): void {
 				let self = this;
-				//self.command.close();
+				self.command.close();
 				nts.uk.ui.windows.close();
 			}
         }
