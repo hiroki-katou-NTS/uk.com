@@ -408,7 +408,7 @@ module nts.uk.at.view.kdp005.a {
 
                             let {regional, workLocationCD, workLocationName, workPlaceId } = workLoc;
 
-                            if (workLoc && workLocationCD != null && workLocationName != null && workPlaceId != null) {
+                            if (workLoc && workLocationCD != null && workLocationName != null) {
 
                                 self.workLocationInfo(workLoc);
                                 vm.$window.storage("workLocationInfo", workLoc);
@@ -1131,13 +1131,20 @@ module nts.uk.at.view.kdp005.a {
 
                                         let {regional, workLocationCD, workLocationName, workPlaceId } = workLoc;
 
-                                        if (workLoc && workLocationCD != null && workLocationName != null && workPlaceId != null) {
+                                        if (workLoc && workLocationCD != null && workLocationName != null) {
 
                                             self.worklocationCode = locationCd;
                                             self.modeBasyo(true);
-                                            self.workplace = [workPlaceId];
-                                            dfd.resolve();
-
+                                            
+                                            if (workPlaceId) {
+                                                self.workplace = [workPlaceId];
+                                                dfd.resolve();
+                                            } else {
+                                                characteristics.restore("loginKDP005").done(function(loginInfo: ILoginInfo) {
+                                                    self.workplace = loginInfo.selectedWP;
+                                                    dfd.resolve();
+                                                });
+                                            }
                                         } else {
 
                                             self.modeBasyo(false);
