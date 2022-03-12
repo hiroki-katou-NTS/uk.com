@@ -99,7 +99,7 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 		Optional<WorkplacePossible> test = this.queryProxy().query(SELECT_POSSIBLE_BY_CID, KrcmtWorkplacePossible.class)
 				.setParameter("contractCode", contractCode)
 				.setParameter("workLocationCD", workLocationCD)
-				.setParameter("cId", cId)
+				.setParameter("cid", cId)
 				.getSingle(c -> c.toDomain());
 		
 		return test;
