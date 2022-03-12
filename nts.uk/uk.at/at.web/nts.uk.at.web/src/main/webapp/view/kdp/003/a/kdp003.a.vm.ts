@@ -130,13 +130,13 @@ module nts.uk.at.kdp003.a {
 									contractCode: data.code,
 									contractPassword: ""
 //<<<<<<< HEAD
-								})
-									.done(() => {
-										vm.contractCode = data.code;
-									})
-									.done(() => {
-										vm.getDataStartScreen();
-									});
+//								})
+//									.done(() => {
+//										vm.contractCode = data.code;
+//									})
+//									.done(() => {
+//										vm.getDataStartScreen();
+//									});
 //=======
 								}).done(() => vm.getDataStartScreen());
 //>>>>>>> feature/dakoku8/test
@@ -331,25 +331,25 @@ module nts.uk.at.kdp003.a {
 								vm.modeBasyo(false);
 							}
 //<<<<<<< HEAD
-						}
-					}).then(() => {
-						vm.$ajax('at', API.NOW)
-							.then((c) => {
-								const date = moment(moment(c, 'YYYY-MM-DDTHH:mm:ss').add(ko.unwrap(vm.regionalTime), 'm').toDate()).toDate();
-								vm.employeeData.baseDate(date);
-							});
-					});
-				});
-			} else {
-				vm.$window
-					.storage('loginKDP003')
-					.then((data: any) => {
-						if (data.WKPID.length > 0) {
-							const param = {
-								contractCode: vm.$user.contractCode,
-								cid: vm.$user.companyId,
-								sid: null,
-								workPlaceId: data.WKPID[0]
+//						}
+//					}).then(() => {
+//						vm.$ajax('at', API.NOW)
+//							.then((c) => {
+//								const date = moment(moment(c, 'YYYY-MM-DDTHH:mm:ss').add(ko.unwrap(vm.regionalTime), 'm').toDate()).toDate();
+//								vm.employeeData.baseDate(date);
+//							});
+			// 		});
+			// 	});
+			// } else {
+			// 	vm.$window
+			// 		.storage('loginKDP003')
+			// 		.then((data: any) => {
+			// 			if (data.WKPID.length > 0) {
+			// 				const param = {
+			// 					contractCode: vm.$user.contractCode,
+			// 					cid: vm.$user.companyId,
+			// 					sid: null,
+			// 					workPlaceId: data.WKPID[0]
 //=======
 
 							if (data.workpalceId) {
@@ -469,7 +469,7 @@ module nts.uk.at.kdp003.a {
 					}
 
 //<<<<<<< HEAD
-					vm.getTimeZone().then(() => data);
+					// vm.getTimeZone().then(() => data);
 //=======
 					const locationCd = $.urlParam('basyo');
 
@@ -625,28 +625,28 @@ module nts.uk.at.kdp003.a {
 							};
 
 //<<<<<<< HEAD
-						if (em) {
-							const storeData = {
-								CCD: em.companyCode,
-								CID: em.companyId,
-								PWD: em.password,
-								SCD: em.employeeCode,
-								SID: em.employeeId,
-								WKLOC_CD: '',
-								WKPID: vm.workPlace
-							};
-							return storage(KDP003_SAVE_DATA, storeData);
-						} else {
-							const storeData = {
-								CCD: storageData.CCD,
-								CID: storageData.CID,
-								PWD: storageData.PWD,
-								SCD: storageData.SCD,
-								SID: storageData.SID,
-								WKLOC_CD: '',
-								WKPID: vm.workPlace
-							};
-							return storage(KDP003_SAVE_DATA, storeData);
+						// if (em) {
+						// 	const storeData = {
+						// 		CCD: em.companyCode,
+						// 		CID: em.companyId,
+						// 		PWD: em.password,
+						// 		SCD: em.employeeCode,
+						// 		SID: em.employeeId,
+						// 		WKLOC_CD: '',
+						// 		WKPID: vm.workPlace
+						// 	};
+						// 	return storage(KDP003_SAVE_DATA, storeData);
+						// } else {
+						// 	const storeData = {
+						// 		CCD: storageData.CCD,
+						// 		CID: storageData.CID,
+						// 		PWD: storageData.PWD,
+						// 		SCD: storageData.SCD,
+						// 		SID: storageData.SID,
+						// 		WKLOC_CD: '',
+						// 		WKPID: vm.workPlace
+						// 	};
+						// 	return storage(KDP003_SAVE_DATA, storeData);
 //=======
 							return storage(KDP003_SAVE_DATA, storeData);
 						} else {
@@ -946,7 +946,7 @@ module nts.uk.at.kdp003.a {
 					}
 
 //<<<<<<< HEAD
-					vm.getTimeZone().then(() => loginData);
+					// vm.getTimeZone().then(() => loginData);
 //=======
 					const locationCd = $.urlParam('basyo');
 
