@@ -33,7 +33,7 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 	private static final String SELECT = "SELECT c FROM KrcmtWorkLocation c";
 	private static final String SELECT_SINGLE = "SELECT c FROM KrcmtWorkLocation c WHERE c.kwlmtWorkLocationPK.contractCode = :contractCode AND c.kwlmtWorkLocationPK.workLocationCD = :workLocationCD";
 	private static final String SELECT_POSSIBLE_BY_CID = 
-			"SELECT p FROM krcmtWorkplacePossible p"
+			"SELECT p FROM KrcmtWorkplacePossible p"
 			+ " WHERE p.krcmtWorkplacePossiblePK.contractCode = :contractCode"
 			+ " AND p.krcmtWorkplacePossiblePK.workLocationCD = :workLocationCD"
 			+ " AND p.krcmtWorkplacePossiblePK.cid = :cid";
