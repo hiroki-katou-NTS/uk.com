@@ -1007,9 +1007,9 @@ module nts.uk.at.view.kdp005.a {
 				let vm = new ko.ViewModel();
 				const self = this;
 				let dfd = $.Deferred<any>();                
-                vm.$ajax("at", "server/time/now").then((time: any) => {
+                vm.$ajax("at", "server/time/now").done((time: any) => {
                     let diff = moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment());
-                    let startDate = moment().add(diff, 'ms').toDate();
+                    let startDate = moment().add(diff, 'ms').add(ko.unwrap(workLocInfo.regional), 'm').toDate();
                     // startDate.setDate(startDate.getDate() - 3);
                     var wkpIds: string[];
                     if (loginInfo) {
