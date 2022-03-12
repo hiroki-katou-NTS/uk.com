@@ -77,11 +77,25 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 			+ " AND p.krcmtIP4AddressPK.net2 = :net2"
 			+ " AND p.krcmtIP4AddressPK.host1 = :host1"
 			+ " AND p.krcmtIP4AddressPK.host2 = :host2";
-
+	
 	@Override
 	public List<WorkLocation> findAll(String contractCode) {
 		List<WorkLocation> test = this.queryProxy().query(SELECT_ALL_BY_COMPANY, KrcmtWorkLocation.class)
 				.setParameter("contractCode", contractCode).getList(c -> c.toDomain());
+		return test;
+	}
+
+	@Override
+	public List<WorkLocation> findAll(String contractCode, String cId) {
+		List<WorkLocation> test = this.queryProxy().query(SELECT_ALL_BY_COMPANY, KrcmtWorkLocation.class)
+				.setParameter("contractCode", contractCode).getList(c -> c.toDomain());
+		
+		test.forEach(wl -> {
+			this.findPossibleByCid(contractCode, wl.getWorkLocationCD().v(), cId).ifPresent(wp -> {
+				wl.setWorkplace(Optional.of(wp));
+			});
+		});
+		
 		return test;
 	}
 

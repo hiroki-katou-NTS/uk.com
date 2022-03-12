@@ -533,10 +533,9 @@ public class RegisterSmartPhoneStampCommandHandler
 		public List<WorkLocation> findByWorkPlace(String contractCode, String cid, String workPlaceId) {
 			return this.repository.findByWorkPlace(contractCode, cid, workPlaceId);
 		}
-
 		@Override
 		public List<WorkLocation> findAll(String contractCode) {
-			return this.repository.findAll(contractCode);
+			return this.repository.findAll(contractCode, AppContexts.user().companyId());
 		}
 	}
 

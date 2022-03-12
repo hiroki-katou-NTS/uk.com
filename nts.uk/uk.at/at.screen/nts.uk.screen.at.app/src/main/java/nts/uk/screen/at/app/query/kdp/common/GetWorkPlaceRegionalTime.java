@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagem
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionalTimeDifferenceRepository;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.MessageNoticeAdapter;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.WorkplaceInfoImport;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * SQ: 打刻入力で職場の勤務場所と地域時差を取得する
@@ -44,7 +45,8 @@ public class GetWorkPlaceRegionalTime {
 				GeneralDate.today());
 
 		// 2.
-		List<WorkLocation> workLocations = this.workLocationRepository.findAll(param.getContractCode());
+		List<WorkLocation> workLocations = this.workLocationRepository.findAll(param.getContractCode(),
+				AppContexts.user().companyId());
 
 		// 3.
 		Optional<WorkLocation> workLocation = Optional.empty();

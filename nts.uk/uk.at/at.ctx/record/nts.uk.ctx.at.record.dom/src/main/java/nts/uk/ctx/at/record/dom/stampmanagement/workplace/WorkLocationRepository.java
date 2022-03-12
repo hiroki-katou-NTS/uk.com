@@ -30,7 +30,7 @@ public interface WorkLocationRepository {
 	/**
 	 * [4] 契約コード条件として勤務場所を取得する
 	 */
-	List<WorkLocation> findAll (String contractCode);
+	List<WorkLocation> findAll(String contractCode);
 	
 	/**
 	 * [5] 契約コードと勤務場所コードで勤務場所を取得する
@@ -92,4 +92,9 @@ public interface WorkLocationRepository {
 	Optional<WorkLocation> identifyWorkLocationByAddress(String contractCode, Ipv4Address ipv4Address);
 
 	Optional<WorkplacePossible> findPossibleByCid(String contractCode, String workLocationCD, String cId);
+
+
+	
+	//hàm find all này lấy ra WorkplacePossible chuẩn theo company
+	List<WorkLocation> findAll(String contractCode, String cId);
 }
