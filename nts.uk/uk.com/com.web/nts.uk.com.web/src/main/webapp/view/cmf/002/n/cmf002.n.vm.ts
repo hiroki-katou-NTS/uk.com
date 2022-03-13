@@ -28,9 +28,20 @@ module nts.uk.com.view.cmf002.n.viewmodel {
         ]);
         modeScreen: KnockoutObservable<number> = ko.observable(0);
         isEnable: KnockoutObservable<boolean> = ko.observable(false);
-
+        enableCloseOutput: KnockoutObservable<boolean> = ko.observable(false);
+        retirementOutput:KnockoutObservable<boolean> = ko.observable(false);
+        enableAbsenceOutput:KnockoutObservable<boolean> = ko.observable(false);
+        enableAtWorkOutput: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             var self = this;
+            self.atWorkDataOutputItem().fixedValue.subscribe((value)=>{
+                self.enableCloseOutput(value == model.NOT_USE_ATR.NOT_USE);
+                self.retirementOutput(value == model.NOT_USE_ATR.NOT_USE);
+                self.enableAbsenceOutput(value == model.NOT_USE_ATR.NOT_USE);
+                self.enableAtWorkOutput(value == model.NOT_USE_ATR.NOT_USE);
+            })
+
+
         }
 
         start(): JQueryPromise<any> {
@@ -40,12 +51,14 @@ module nts.uk.com.view.cmf002.n.viewmodel {
             self.modeScreen(params.screenMode);
             if (self.modeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL && params.formatSetting) {
                 // get data shared
-                self.atWorkDataOutputItem(new model.AtWorkDataOutputItem(params.formatSetting));
+                self.atWorkDataOutputItem().update(params.formatSetting);
+                self.atWorkDataOutputItem().fixedValue.valueHasMutated();
                 dfd.resolve();
             } else {
                 service.getAWDataFormatSetting().done(result => {
                     if (result != null) {
-                        self.atWorkDataOutputItem(new model.AtWorkDataOutputItem(result));
+                        self.atWorkDataOutputItem().update(result);
+                        self.atWorkDataOutputItem().fixedValue.valueHasMutated();
                     }
                     dfd.resolve();
                 }).fail((err) => {
@@ -65,27 +78,13 @@ module nts.uk.com.view.cmf002.n.viewmodel {
         //        self.fixedValue().subscribe(data => {
         //               if(data == 1) $('#N3_1').focus();    
         //               });
-        enableCloseOutput() {
-            var self = this;
-            return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE)
-        }
+
 
         enableRegister() {
             return error.hasError();
         }
 
-        retirementOutput() {
-            var self = this;
-            return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE)
-        }
-        enableAbsenceOutput() {
-            var self = this;
-            return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE)
-        }
-        enableAtWorkOutput() {
-            var self = this;
-            return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE)
-        }
+
 
         saveSetting() {
             let self = this;

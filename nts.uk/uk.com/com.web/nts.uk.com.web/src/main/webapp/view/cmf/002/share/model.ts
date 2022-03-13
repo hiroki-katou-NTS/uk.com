@@ -528,6 +528,14 @@ module nts.uk.com.view.cmf002.share.model {
             this.atWorkOutput(params.atWorkOutput);
             this.retirementOutput(params.retirementOutput);
         }
+        update(params: IAtWorkDataOutputItem) {
+            this.closedOutput(params.closedOutput);
+            this.absenceOutput(params.absenceOutput);
+            this.fixedValue(params.fixedValue);
+            this.valueOfFixedValue(params.valueOfFixedValue);
+            this.atWorkOutput(params.atWorkOutput);
+            this.retirementOutput(params.retirementOutput);
+        }
     }
 
     export class ExternalOutputCategoryItemData {
