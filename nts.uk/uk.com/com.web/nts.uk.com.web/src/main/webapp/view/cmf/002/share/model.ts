@@ -182,6 +182,23 @@ module nts.uk.com.view.cmf002.share.model {
             this.fixedValue(params ? params.fixedValue : null);
             this.valueOfFixedValue(params ? params.valueOfFixedValue : null);
         }
+        update(params: INumberDataFormatSetting) {
+            this.formatSelection(params ? params.formatSelection : null);
+            this.decimalDigit(params ? params.decimalDigit : null);
+            this.decimalPointClassification(params ? params.decimalPointClassification : null);
+            this.decimalFraction(params ? params.decimalFraction : null);
+            this.outputMinusAsZero(params ? params.outputMinusAsZero : null);
+            this.fixedValueOperation(params ? params.fixedValueOperation : null);
+            this.fixedValueOperationSymbol(params ? params.fixedValueOperationSymbol : null);
+            this.fixedCalculationValue(params ? params.fixedCalculationValue : null);
+            this.fixedLengthOutput(params ? params.fixedLengthOutput : null);
+            this.fixedLengthIntegerDigit(params ? params.fixedLengthIntegerDigit : null);
+            this.fixedLengthEditingMethod(params ? params.fixedLengthEditingMethod : null);
+            this.nullValueReplace(params ? params.nullValueReplace : null);
+            this.valueOfNullValueReplace(params ? params.valueOfNullValueReplace : null);
+            this.fixedValue(params ? params.fixedValue : null);
+            this.valueOfFixedValue(params ? params.valueOfFixedValue : null);
+        }
     }
 
     export interface ICharacterDataFormatSetting {
