@@ -298,6 +298,24 @@ module nts.uk.com.view.cmf002.share.model {
             this.valueOfNullValueSubs(params ? params.valueOfNullValueSubs : null);
             this.minuteFractionDigitProcessCls(params ? params.minuteFractionDigitProcessCls : null);
         }
+        update(params: ITimeDataFormatSetting) {
+            this.nullValueSubs(params ? params.nullValueSubs : null);
+            this.outputMinusAsZero(params ? params.outputMinusAsZero : null);
+            this.fixedValue(params ? params.fixedValue : null);
+            this.valueOfFixedValue(params ? params.valueOfFixedValue : null);
+            this.fixedLengthOutput(params ? params.fixedLengthOutput : null);
+            this.fixedLongIntegerDigit(params ? params.fixedLongIntegerDigit : null);
+            this.fixedLengthEditingMethod(params ? params.fixedLengthEditingMethod : null);
+            this.delimiterSetting(params ? params.delimiterSetting : null);
+            this.selectHourMinute(params ? params.selectHourMinute : null);
+            this.minuteFractionDigit(params ? params.minuteFractionDigit : null);
+            this.decimalSelection(params ? params.decimalSelection : null);
+            this.fixedValueOperationSymbol(params ? params.fixedValueOperationSymbol : null);
+            this.fixedValueOperation(params ? params.fixedValueOperation : null);
+            this.fixedCalculationValue(params ? params.fixedCalculationValue : null);
+            this.valueOfNullValueSubs(params ? params.valueOfNullValueSubs : null);
+            this.minuteFractionDigitProcessCls(params ? params.minuteFractionDigitProcessCls : null);
+        }
     }
 
     export class InTimeDataFormatSetting {
