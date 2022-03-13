@@ -246,6 +246,21 @@ module nts.uk.com.view.cmf002.share.model {
             this.fixedValue(params.fixedValue);
             this.valueOfFixedValue(params.valueOfFixedValue);
         }
+        update(params: ICharacterDataFormatSetting) {
+            this.effectDigitLength(params.effectDigitLength);
+            this.startDigit(params.startDigit);
+            this.endDigit(params.endDigit);
+            this.cdEditting(params.cdEditting);
+            this.cdEditDigit(params.cdEditDigit);
+            this.cdEdittingMethod(params.cdEdittingMethod);
+            this.spaceEditting(params.spaceEditting);
+            this.cdConvertCd(params.cdConvertCd);
+            this.cdConvertName(params.cdConvertName);
+            this.nullValueReplace(params.nullValueReplace);
+            this.valueOfNullValueReplace(params.valueOfNullValueReplace);
+            this.fixedValue(params.fixedValue);
+            this.valueOfFixedValue(params.valueOfFixedValue);
+        }
     }
 
     export class TimeDataFormatSetting {
