@@ -1,10 +1,30 @@
 package nts.uk.screen.at.app.ksu001.processcommon;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.GetSupportInfoOfEmployee;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkTypeWorkTimeUseDailyAttendanceRecord;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportInfoOfEmployee;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportStatus;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.EditStateOfDailyAttdDto;
+import nts.uk.screen.at.app.ksu001.start.SupportCategory;
 
 /**
  * @author laitv
@@ -13,6 +33,7 @@ import nts.uk.screen.at.app.ksu001.displayinworkinformation.EditStateOfDailyAttd
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class WorkScheduleWorkInforDto {
 	
 	// 社員ID
@@ -75,4 +96,341 @@ public class WorkScheduleWorkInforDto {
 	
 	//就業時間帯の勤務形態 
 	public Integer workTimeForm;
+	/**
+	DO_NOT_GO( 0 ), 応援に行かない 
+	DO_NOT_COME( 1 ), 応援に来ない 
+	GO_ALLDAY( 2 ), 応援に行く(終日) 
+	GO_TIMEZONE( 3 ), 応援に行く(時間帯)
+	COME_ALLDAY( 4 ), 応援に来る(終日)
+	COME_TIMEZONE( 5 ), 応援に来る(時間帯)
+	 */
+	public Integer supportStatus;
+
+	// Create work schedule
+	// <<constructor>> 勤務予定で作成する (
+	// 社員の就業状態: 社員の就業状態 : EmployeeWorkingStatus
+	// 勤務予定: 勤務予定 : WorkSchedule 
+	// 勤務種類: 勤務種類:  List<WorkTypeInfor> lstWorkTypeInfor
+	// 就業時間帯の設定: 就業時間帯の設定: List<WorkTimeSetting> lstWorkTimeSetting
+	// 対象組織: 対象組織識別情報:  TargetOrgIdenInfor targetOrg
+	// 日別勤怠の実績で利用する勤務種類と就業時間帯: 日別勤怠の実績で利用する勤務種類と就業時間帯: WorkTypeWorkTimeUseDailyAttendanceRecord
+	// ): 勤務予定（勤務情報）dto
+	public WorkScheduleWorkInforDto(
+			EmployeeWorkingStatus empWorkingStatus,
+			Optional<WorkSchedule> workScheduleInput,
+			Optional<WorkTypeInfor> workTypeInfor,
+			Optional<WorkTimeSetting> workTimeSetting,
+			TargetOrgIdenInfor targetOrg,
+			WorkTypeWorkTimeUseDailyAttendanceRecord wTypeWTimeUseDailyAttendRecord,
+			WorkInformation.Require require,
+			GetSupportInfoOfEmployee.Require requireGetSupportInfo) {
+		super();
+		// step 1 : 勤務予定が必要か()
+		boolean needCreateWorkSchedule = empWorkingStatus.getWorkingStatus().needCreateWorkSchedule();
+		if (!needCreateWorkSchedule || !workScheduleInput.isPresent()) {
+			// step 2 : 勤務予定が必要か() == false
+			this.employeeId = empWorkingStatus.getEmployeeID();
+			this.date = empWorkingStatus.getDate();
+			this.haveData = false;
+			this.achievements = false;
+			this.confirmed = false;
+			this.needToWork = false;
+			this.supportCategory = SupportCategory.NotCheering.value;
+			this.workTypeCode = null;
+			this.workTypeName = null;
+			this.workTypeEditStatus = null;
+			this.workTimeCode = null;
+			this.workTimeName = null;
+			this.workTimeEditStatus = null;
+			this.startTime = null;
+			this.startTimeEditState = null;
+			this.endTime = null;
+			this.endTimeEditState = null;
+			this.workHolidayCls = null;
+			this.workTimeForm = null;
+			this.conditionAbc1 = true;
+			this.conditionAbc2 = true;
+			this.supportStatus = SupportStatus.DO_NOT_COME.getValue();
+
+			/*※Abc1
+			勤務予定（勤務情報）dto．実績か == true	Achievement						         ×	
+			勤務予定（勤務情報）dto．確定済みか == true Confirmed						     × 	
+			勤務予定（勤務情報）dto．勤務予定が必要か == false need a work				         ×	
+			勤務予定（勤務情報）dto．応援状況 == 応援に来ない　or　応援に来る(時間帯) supportStatus   ×
+			対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date   			         × => check ở dưới UI	
+			上記以外																     ○	
+			*/
+			if (this.achievements == true 
+					|| this.confirmed == true 
+					|| this.needToWork == false
+					|| this.supportStatus == SupportStatus.DO_NOT_COME.getValue()
+					|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()) {
+				this.conditionAbc1 = false;
+			}
+
+			/* ※Abc2
+			 勤務予定（勤務情報）dto．実績か == true	Achievement						           ×	
+			勤務予定（勤務情報）dto．勤務予定が必要か == false	need a work				           ×	
+			勤務予定（勤務情報）dto．応援状況 == 応援に来る(時間帯)　or　応援に行く(終日)	 supportStatus ×	
+			対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				           × => check ở dưới UI
+			上記以外																       ○	
+			 */
+			if (this.achievements == true 
+					|| this.needToWork == false
+					|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()
+					|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()) {
+				this.conditionAbc2 = false;
+			}
+			
+		} else {
+			WorkSchedule workSchedule = workScheduleInput.get();
+			WorkInformation workInformation = workSchedule.getWorkInfo().getRecordInfo();
+
+			// step 3.1: 出勤・休日系の判定(@Require)
+			Optional<WorkStyle> workStyle = Optional.empty();
+			if (workInformation.getWorkTypeCode() != null) {
+				workStyle = workInformation.getWorkStyle(require); // workHolidayCls
+			}
+
+			String workTypeCode = workInformation.getWorkTypeCode() == null ? null : workInformation.getWorkTypeCode().toString();
+			String workTypeName = null;
+			boolean workTypeIsNotExit  = false;
+
+			if (workTypeInfor.isPresent()) {
+				workTypeName = workTypeInfor.get().getAbbreviationName();
+			} else if (!workTypeInfor.isPresent() && workTypeCode != null){
+				workTypeIsNotExit = true;
+			}
+
+			String workTimeCode = workInformation.getWorkTimeCode() == null  ? null : workInformation.getWorkTimeCode().toString();
+			String workTimeName = null;
+			boolean workTimeIsNotExit  = false;
+			if (workTimeSetting.isPresent()) {
+				if (workTimeSetting.get().getWorkTimeDisplayName() != null && workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeAbName() != null ) {
+					workTimeName = workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeAbName().toString();
+				}
+			} else  if (!workTimeSetting.isPresent() && workTimeCode != null){
+				workTimeIsNotExit = true;
+			}
+
+			Integer startTime = null;
+			Integer endtTime = null;
+
+			if (workTimeCode != null) {
+				if (workSchedule.getOptTimeLeaving().isPresent()) {
+					Optional<TimeLeavingWork> timeLeavingWork = workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
+					if (timeLeavingWork.isPresent()) {
+						if(timeLeavingWork.get().getAttendanceStamp().isPresent()){
+							if(timeLeavingWork.get().getAttendanceStamp().get().getStamp().isPresent()){
+								if(timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay() != null){
+									if(timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()){
+										startTime = timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+									}
+								}
+							}
+						}
+					}
+				}
+
+				if (workSchedule.getOptTimeLeaving().isPresent()) {
+					Optional<TimeLeavingWork> timeLeavingWork = workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
+					if (timeLeavingWork.isPresent()) {
+						if(timeLeavingWork.get().getLeaveStamp().isPresent()){
+							if(timeLeavingWork.get().getLeaveStamp().get().getStamp().isPresent()){
+								if(timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay() != null){
+									if(timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()){
+										endtTime = timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			Optional<EditStateOfDailyAttd> workTypeEditStatus = workSchedule.getLstEditState().stream().filter(i -> i.getAttendanceItemId() == 28).findFirst();
+			Optional<EditStateOfDailyAttd> workTimeEditStatus = workSchedule.getLstEditState().stream().filter(i -> i.getAttendanceItemId() == 29).findFirst();
+			Optional<EditStateOfDailyAttd> startTimeEditStatus = workSchedule.getLstEditState().stream().filter(i -> i.getAttendanceItemId() == 31).findFirst();
+			Optional<EditStateOfDailyAttd> endTimeEditStatus = workSchedule.getLstEditState().stream().filter(i -> i.getAttendanceItemId() == 34).findFirst();
+
+			// step3.3 call DomainService 社員の応援情報を取得する
+			// 予定の情報を取得する(Require, 社員ID, 年月日)
+			SupportInfoOfEmployee supportInfoOfEmp = GetSupportInfoOfEmployee.getScheduleInfo(requireGetSupportInfo, new EmployeeId(employeeId), date);
+			
+			// step3.3.1 応援状況を取得する(対象組織識別情報)
+			this.supportStatus = supportInfoOfEmp.getSupportStatus(targetOrg).getValue();
+			
+			this.employeeId = empWorkingStatus.getEmployeeID();
+			this.date = empWorkingStatus.getDate();
+			this.haveData = true;
+			this.achievements = false;
+			this.confirmed = workSchedule.getConfirmedATR().value == ConfirmedATR.CONFIRMED.value;
+			this.needToWork = true;
+			this.supportCategory = SupportCategory.NotCheering.value;
+			this.workTypeCode = workTypeCode;
+			this.workTypeName = workTypeName;
+			this.workTypeEditStatus = workTypeEditStatus.isPresent()? new EditStateOfDailyAttdDto(workTypeEditStatus.get().getAttendanceItemId(),workTypeEditStatus.get().getEditStateSetting().value): null;
+			this.workTimeCode = workTimeCode;
+			this.workTimeName = workTimeName;
+			this.workTimeEditStatus = workTimeEditStatus.isPresent()? new EditStateOfDailyAttdDto(workTimeEditStatus.get().getAttendanceItemId(),workTimeEditStatus.get().getEditStateSetting().value): null;
+			this.startTime = startTime;
+			this.startTimeEditState = startTimeEditStatus.isPresent()? new EditStateOfDailyAttdDto(startTimeEditStatus.get().getAttendanceItemId(),startTimeEditStatus.get().getEditStateSetting().value): null;
+			this.endTime = endtTime;
+			this.endTimeEditState = endTimeEditStatus.isPresent()? new EditStateOfDailyAttdDto(endTimeEditStatus.get().getAttendanceItemId(),endTimeEditStatus.get().getEditStateSetting().value): null;
+			this.workHolidayCls = workStyle.isPresent() ? workStyle.get().value : null;
+			this.workTypeIsNotExit = workTypeIsNotExit;
+			this.workTimeIsNotExit = workTimeIsNotExit;
+			this.workTypeNameKsu002 = workTypeInfor.map(m -> m.getAbbreviationName()).orElse(workTypeCode == null ? null : workTypeCode + "{#KSU002_31}");
+			this.workTimeNameKsu002 = workTimeSetting.map(m -> m.getWorkTimeDisplayName().getWorkTimeAbName().v()).orElse(workTimeCode == null ? null : workTimeCode + "{#KSU002_31}");
+			this.workTimeForm = workTimeSetting.map(m -> m.getWorkTimeDivision().getWorkTimeForm().value).orElse(null);
+			this.conditionAbc1 = true;
+			this.conditionAbc2 = true;
+
+			/*※Abc1
+			勤務予定（勤務情報）dto．実績か == true	Achievement						        ×	
+			勤務予定（勤務情報）dto．確定済みか == true Confirmed					        ×	
+			勤務予定（勤務情報）dto．勤務予定が必要か == false need a work				        ×	
+			勤務予定（勤務情報）dto．応援状況 == 応援に来ない　or　応援に来る(時間帯) supportStatus	× 
+			対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				        ×	=> check ở dưới UI
+			上記以外															        ○	
+			*/
+			if (this.achievements == true 
+					|| this.confirmed == true 
+					|| this.needToWork == false
+					|| this.supportStatus == SupportStatus.DO_NOT_COME.getValue()
+					|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()) {
+				this.conditionAbc1 = false;
+			}
+
+			/* ※Abc2
+			 勤務予定（勤務情報）dto．実績か == true	Achievement						           ×	
+			勤務予定（勤務情報）dto．勤務予定が必要か == false	need a work				           ×	
+			勤務予定（勤務情報）dto．応援状況 == 応援に来る(時間帯)　or　応援に行く(終日)	 supportStatus ×	
+			対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				           × => check ở dưới UI
+			上記以外																           ○	
+			 */
+			if (this.achievements == true 
+					|| this.needToWork == false
+					|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()
+					|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()) {
+				this.conditionAbc2 = false;
+			}
+		}
+	}
+	
+	// create WorkRecord
+	//  <<constructor>> 勤務実績で作成する (
+	// 社員の就業状態: 社員の就業状態, 
+	// 日別実績: 日別勤怠, 
+	// 勤務種類: 勤務種類, 
+	// 就業時間帯の設定: 就業時間帯の設定, 
+	// 対象組織: 対象組織識別情報, 
+	// 日別勤怠の実績で利用する勤務種類と就業時間帯: 日別勤怠の実績で利用する勤務種類と就業時間帯
+	//): 勤務予定（勤務情報）dto
+	public WorkScheduleWorkInforDto(
+			Optional<IntegrationOfDaily> workRecord,
+			EmployeeWorkingStatus empWorkingStatus,
+			Optional<WorkTypeInfor> workTypeInfor,
+			Optional<WorkTimeSetting> workTimeSetting,
+			TargetOrgIdenInfor targetOrg,
+			WorkTypeWorkTimeUseDailyAttendanceRecord wTypeWTimeUseDailyAttendRecord,
+			GetSupportInfoOfEmployee.Require requireGetSupportInfo) {
+		super();
+		// step 1 check 社員の就業状態.就業状態
+		boolean needCreateWorkSchedule = empWorkingStatus.getWorkingStatus().needCreateWorkSchedule();
+		if (needCreateWorkSchedule && workRecord.isPresent()) {
+			
+			IntegrationOfDaily daily = workRecord.get();
+			if (daily.getWorkInformation() != null) {
+				WorkInformation workInformation = daily.getWorkInformation().getRecordInfo();
+
+				String workTypeCode = workInformation.getWorkTypeCode() == null ? null : workInformation.getWorkTypeCode().toString();
+				String workTypeName = null;
+				boolean workTypeIsNotExit  = false;
+
+				if (workTypeInfor.isPresent()) {
+					workTypeName = workTypeInfor.get().getAbbreviationName();
+				} else if (!workTypeInfor.isPresent() && workTypeCode != null){
+					workTypeIsNotExit = true;
+				}
+
+				String workTimeCode = workInformation.getWorkTimeCode() == null ? null: workInformation.getWorkTimeCode().toString();
+				String workTimeName = null;
+				boolean workTimeIsNotExit  = false;
+
+				if (workTimeSetting.isPresent()) {
+					if (workTimeSetting.get().getWorkTimeDisplayName() != null && workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeAbName() != null) {
+						workTimeName = workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeAbName().toString();
+					}
+				} else if (!workTimeSetting.isPresent() && workTimeCode != null){
+					workTimeIsNotExit = true;
+				}
+
+				Integer startTime = null;
+				if (daily.getAttendanceLeave().isPresent()) {
+					Optional<TimeLeavingWork> timeLeavingWork = daily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
+					if (timeLeavingWork.isPresent()) {
+						if (timeLeavingWork.get().getAttendanceStamp().isPresent()) {
+							if (timeLeavingWork.get().getAttendanceStamp().get().getStamp().isPresent()) {
+								if (timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay() != null) {
+									if (timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+										startTime = timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+									}
+								}
+							}
+						}
+					}
+				}
+
+				Integer endtTime = null;
+				if (daily.getAttendanceLeave().isPresent()) {
+					Optional<TimeLeavingWork> timeLeavingWork = daily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
+					if (timeLeavingWork.isPresent()) {
+						if (timeLeavingWork.get().getLeaveStamp().isPresent()) {
+							if (timeLeavingWork.get().getLeaveStamp().get().getStamp().isPresent()) {
+								if (timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay() != null) {
+									if (timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+										endtTime = timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+									}
+								}
+							}
+						}
+					}
+				}
+				
+				// step2 call DomainService 社員の応援情報を取得する
+				// 実績の情報を取得する(Require, 社員ID, 年月日)
+				SupportInfoOfEmployee supportInfoOfEmp = GetSupportInfoOfEmployee.getRecordInfo(requireGetSupportInfo, new EmployeeId(employeeId), date);
+				
+				// step2.1 応援状況を取得する(対象組織識別情報)
+				this.supportStatus = supportInfoOfEmp.getSupportStatus(targetOrg).getValue();
+				
+				this.employeeId = empWorkingStatus.getEmployeeID();
+				this.date = empWorkingStatus.getDate();
+				this.haveData = true;
+				this.achievements = true;
+				this.confirmed = true;
+				this.needToWork = needCreateWorkSchedule;
+				this.supportCategory = SupportCategory.NotCheering.value;
+				this.workTypeCode = workTypeCode;
+				this.workTypeName = workTypeName;
+				this.workTypeEditStatus = null;
+				this.workTimeCode = workTimeCode;
+				this.workTimeName = workTimeName;
+				this.workTimeEditStatus = null;
+				this.startTime = startTime;
+				this.startTimeEditState = null;
+				this.endTime = endtTime;
+				this.endTimeEditState = null;
+				this.workHolidayCls = null;
+				this.workTypeIsNotExit = workTypeIsNotExit;
+				this.workTimeIsNotExit = workTimeIsNotExit;
+				this.workTypeNameKsu002 = workTypeInfor.map(m -> m.getAbbreviationName()).orElse(workTypeCode == null ? null : workTypeCode + "{#KSU002_31}");
+				this.workTimeNameKsu002 = workTimeSetting.map(m -> m.getWorkTimeDisplayName().getWorkTimeAbName().v()).orElse(workTimeCode == null ? null : workTimeCode + "{#KSU002_31}");
+				this.workTimeForm = !workTimeSetting.isPresent() ? null : workTimeSetting.get().getWorkTimeDivision().getWorkTimeForm().value;
+				this.conditionAbc1 = false;
+				this.conditionAbc2 = false;
+			}
+		}
+	}
 }

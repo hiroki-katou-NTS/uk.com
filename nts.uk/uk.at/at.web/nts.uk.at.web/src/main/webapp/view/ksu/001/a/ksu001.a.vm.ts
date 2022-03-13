@@ -82,6 +82,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         arrDay: Time[] = [];
         listSid: KnockoutObservableArray<string> = ko.observableArray([]);
         listEmpData = [];
+        listSidByOrg = [];
         
         listCheckNeededOfWorkTime: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -110,6 +111,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         listPersonalConditions     = [];
         displayControlPersonalCond = {};
         listDateInfo     = [];
+        detailLeftMostDeco = []; // ver6 _ Deco A8
         
         // shift mode
         detailContentDecoNormal = [];  // deco ở mode edit + background normal
@@ -983,6 +985,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let detailContentDecoModeConfirm = [];
             let horizontalDetailColumns: any = [];
             let htmlToolTip       = [];
+            let detailLeftMostDeco = [];
             
             // Deco ở mode shift
             let detailContentDecoNormal = [];  // deco ở mode edit + background normal
@@ -1001,6 +1004,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.detailContentDecoShift = [];   // deco ở mode edit + background shift
             self.detailContentDecoModeConfirmNormal = []; // deco ở mode confirm + background normal
             self.detailContentDecoModeConfirmShift = [];  // deco ở mode confirm + background normal
+            self.detailLeftMostDeco = []; // deco A8 ( set background cho nhân viên support)
             
             self.tooltipShare = data.listDateInfo;
             self.listWorkTypeInfo = data.listWorkTypeInfo;
@@ -1016,7 +1020,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 leftmostDs.push({ sid: i.toString() ,employeeId: emp.employeeId, codeNameOfEmp: emp.employeeCode + ' ' + businessName });
                 
                 self.listSid.push(emp.employeeId);
-                self.listEmpData.push({ id: emp.employeeId, code: emp.employeeCode, name : businessName });
+                self.listEmpData.push({ id: emp.employeeId, code: emp.employeeCode, name : businessName, supportType : emp.supportType });
+                if(emp.supportType != SupportType.COME_TO_SUPPORT)
+                    self.listSidByOrg.push(emp.employeeId);
+                 
                 let listWorkScheduleInforByEmp: Array<IWorkScheduleWorkInforDto> = _.filter(data.listWorkScheduleWorkInfor, function(workSchedul: IWorkScheduleWorkInforDto) { return workSchedul.employeeId === emp.employeeId });
                 let listWorkScheduleShiftByEmp: Array<IWorkScheduleShiftInforDto> = _.filter(data.listWorkScheduleShift, function(workSchedul: IWorkScheduleShiftInforDto) { return workSchedul.employeeId === emp.employeeId });
                 // set data middle
@@ -1029,6 +1036,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     rank: _.isNil(personalCond[0].rankName) ? '' : personalCond[0].rankName, 
                     qualification: _.isNil(personalCond[0].licenseClassification) ? '' : personalCond[0].licenseClassification });
                 }
+                
+                // set Deco phần leftMost ver6
+                if(emp.supportType == SupportType.GO_TO_SUPPORT || emp.supportType == SupportType.COME_TO_SUPPORT)
+                    detailLeftMostDeco.push(new CellColor('codeNameOfEmp', rowId, "bg-schedule-support", 0));
+                
                 
                 // set data to detailContent : datasource va deco
                 if (viewMode == ViewMode.SHIFT) {
@@ -1056,13 +1068,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         shiftName = (cell.haveData == true && (cell.shiftName == null || cell.shiftName == '')) ? getText("KSU001_94") : cell.shiftName;
                         if (cell.needToWork == false)
                             shiftName = null;
+                        
+                        //check data nhân viên đến support
+                        if (cell.supportStatus == SupportStatus.DO_NOT_COME) {
+                            shiftName = null;
+                            cell.conditionAa1 = false;
+                            cell.conditionAa2 = false;
+                        }
+                        
+                            
                         objDetailContentDs['_' + ymd] = new ExCell(null, null, null, null, null, null, shiftName, cell.shiftCode, cell.confirmed , cell.achievements, cell.workHolidayCls, cell.needToWork, cell.supportCategory, cell.condTargetdate);
 
                         // set Deco background
                         // điều kiện ※Aa1 editMode - background Normal                                              
                         if (cell.conditionAa1 == false) {
                             detailContentDecoNormal.push(new CellColor('_' + ymd, rowId, "xseal", 0));
-                        } else if (cell.supportCategory != SupportCategory.NotCheering) {
+                        } else if (cell.supportStatus == SupportStatus.GO_ALLDAY || cell.supportStatus == SupportStatus.GO_TIMEZONE ||  cell.supportStatus == SupportStatus.COME_ALLDAY) {
+                            // 勤務予定（シフト）dto．応援状況 <>（応援に来ない/応援に来る(時間帯)/応援に行かない）
+                            // supportStatus != (SupportStatus.DO_NOT_COME, SupportStatus.DO_NOT_GO,  SupportStatus.COME_TIMEZONE)
                             detailContentDecoNormal.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 0));
                         } else {
                             if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
@@ -1099,10 +1122,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
 
                         // điều kiện ※Aa2 confirmMode - background Normal                                              
-                        if (cell.conditionAa2 == false) {
+                        if (cell.conditionAa2 == false || cell.supportStatus == SupportStatus.COME_TIMEZONE || cell.supportStatus == SupportStatus.GO_ALLDAY) {
                             detailContentDecoModeConfirmNormal.push(new CellColor('_' + ymd, rowId, "xseal", 0));
-                        } else if (cell.supportCategory != SupportCategory.NotCheering) {
-                            detailContentDecoModeConfirmNormal.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 0));
                         } else if (cell.confirmed == true) {
                             self.listLockCells.push({ rowIndex: rowId, columnKey: '_' + ymd, confirm: true });
                         } else {
@@ -1200,6 +1221,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             workTypeName = null;
                             workTimeName = null;
                         }
+                        
+                        //check data nhân viên đến support
+                        if (cell.supportStatus == SupportStatus.DO_NOT_COME) {
+                            workTypeName = null;
+                            workTimeName = null;
+                            cell.conditionAbc1 = false;
+                            cell.conditionAbc2 = false;
+                        }
+                        
                         objDetailContentDs['_' + ymd] = new ExCell(cell.workTypeCode, workTypeName, cell.workTimeCode, workTimeName, null, null, null, null,cell.confirmed , cell.achievements, cell.workHolidayCls, cell.needToWork, cell.supportCategory, cell.condTargetdate);
 
                         // set Deco background
@@ -1208,6 +1238,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         if (cell.conditionAbc1 == false) {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 1));
+                        } else if (cell.supportStatus == SupportStatus.GO_ALLDAY || cell.supportStatus == SupportStatus.GO_TIMEZONE || cell.supportStatus == SupportStatus.COME_ALLDAY) {
+                            // 勤務予定（シフト）dto．応援状況 <>（応援に来ない/応援に来る(時間帯)/応援に行かない）
+                            // supportStatus != (SupportStatus.DO_NOT_COME, SupportStatus.DO_NOT_GO,  SupportStatus.COME_TIMEZONE)
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 0));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 1));
                         } else {
                             if (cell.workTypeEditStatus != null) {
                                 if (cell.workTypeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
@@ -1271,7 +1306,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                         
                         // điều kiện ※Abc2 confirmMode
-                        if (cell.conditionAbc2 == false) {
+                        if (cell.conditionAbc2 == false || cell.supportStatus == SupportStatus.COME_TIMEZONE || cell.supportStatus == SupportStatus.GO_ALLDAY) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                         } else if (cell.confirmed == true) {
@@ -1340,6 +1375,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             endTime      = null;
                         }
                         
+                         //check data nhân viên đến support
+                        if (cell.supportStatus == SupportStatus.DO_NOT_COME) {
+                            workTypeName = null;
+                            workTimeName = null;
+                            startTime    = null;
+                            endTime      = null;
+                            cell.conditionAbc1 = false;
+                            cell.conditionAbc2 = false;
+                        }
+                        
                         objDetailContentDs['_' + ymd] = new ExCell(workTypeCode, workTypeName, workTimeCode, workTimeName, startTime, endTime, null, null, cell.confirmed , cell.achievements, cell.workHolidayCls, cell.needToWork, cell.supportCategory, cell.condTargetdate);
                         // set Deco background
                         // A10_color⑤ 勤務略名表示の背景色 (Màu nền hiển thị "chuyên cần, tên viết tắt")
@@ -1349,6 +1394,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 2));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 3));
+                            
+                        }  else if (cell.supportStatus == SupportStatus.GO_ALLDAY || cell.supportStatus == SupportStatus.GO_TIMEZONE || cell.supportStatus == SupportStatus.COME_ALLDAY) {
+                            // 勤務予定（シフト）dto．応援状況 <>（応援に来ない/応援に来る(時間帯)/応援に行かない）
+                            // supportStatus != (SupportStatus.DO_NOT_COME, SupportStatus.DO_NOT_GO,  SupportStatus.COME_TIMEZONE)
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 0));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 1));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 2));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 3));
+                            
                         } else {
                             if (cell.workTypeEditStatus != null) {
                                 if (cell.workTypeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
@@ -1442,7 +1496,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                         
                         // điều kiện ※Abc2 confirmMode
-                        if (cell.conditionAbc2 == false) {
+                        if (cell.conditionAbc2 == false || cell.supportStatus == SupportStatus.COME_TIMEZONE || cell.supportStatus == SupportStatus.GO_ALLDAY) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 2));
@@ -1785,7 +1839,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 detailContentDecoNormal: detailContentDecoNormal,  // deco ở mode edit + background normal
                 detailContentDecoShift: detailContentDecoShift,   // deco ở mode edit + background shift
                 detailContentDecoModeConfirmNormal: detailContentDecoModeConfirmNormal, // deco ở mode confirm + background normal
-                detailContentDecoModeConfirmShift: detailContentDecoModeConfirmShift  // deco ở mode confirm + background normal
+                detailContentDecoModeConfirmShift: detailContentDecoModeConfirmShift,  // deco ở mode confirm + background normal
+                detailLeftMostDeco: detailLeftMostDeco
             };
             
             self.detailContentDs = detailContentDs;
@@ -1798,6 +1853,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.detailContentDecoShift = detailContentDecoShift;   // deco ở mode edit + background shift
             self.detailContentDecoModeConfirmNormal = detailContentDecoModeConfirmNormal; // deco ở mode confirm + background normal
             self.detailContentDecoModeConfirmShift = detailContentDecoModeConfirmShift;  // deco ở mode confirm + background normal
+            self.detailLeftMostDeco = detailLeftMostDeco;
 			
 			if(data.aggreratePersonal) {
 				self.dataAggreratePersonal = data.aggreratePersonal;	
@@ -2344,6 +2400,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let leftmostHeader = {};
             let leftmostContent = {};
             let leftmostDs = dataBindGrid.leftmostDs;
+            let detailLeftMostDeco = dataBindGrid.detailLeftMostDeco;
 
             leftmostColumns = [{
                 key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8 +"px",
@@ -2360,7 +2417,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             leftmostContent = {
                 columns: leftmostColumns,
                 dataSource: leftmostDs,
-                primaryKey: "sid"
+                primaryKey: "sid",
+                features: [{
+                    name: "BodyCellStyle",
+                    decorator: detailLeftMostDeco
+                }]
             };
 
             // Phần middle
@@ -4367,7 +4428,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 unit:             self.userInfor.unit,
                 getActualData   : !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false, 
                 listShiftMasterNotNeedGetNew: self.userInfor.shiftMasterWithWorkStyleLst, 
-                sids: self.listSid(),
+                sids: [],
                 modePeriod : self. selectedDisplayPeriod(),
                 day: self.closeDate.day, 
                 isLastDay: self.closeDate.lastDay,
@@ -4431,7 +4492,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 unit: self.userInfor.unit,
                 getActualData: !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false,
                 listShiftMasterNotNeedGetNew: self.userInfor.shiftMasterWithWorkStyleLst,
-                sids: self.listSid(),
+                sids: [],
                 modePeriod: self.selectedDisplayPeriod(),
                 day: self.closeDate.day,
                 isLastDay: self.closeDate.lastDay,
@@ -5398,27 +5459,27 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             setShared('dataShareDialogG', {
                 startDate   : moment(self.dtPrev()).format('YYYY/MM/DD'),
                 endDate     : moment(self.dtAft()).format('YYYY/MM/DD'),
-                employeeIDs : self.listSid(),
+                employeeIDs : self.listSidByOrg,
             });
             $('#A1_7_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modeless("/view/ksu/001/g/index.xhtml").onClosed(() => {});
         }
-
-        openKDL055() {
-            let self = this;
-        }
-
-        openDialogKDL055() {
-            let self = this;
-            let param = {
-                listSid: self.listSid(),
-                startDate: self.dateTimePrev(),
-                endDate: self.dateTimeAfter(),
-            };
-            setShared('dataShareDialogKDL055', param);
-            nts.uk.ui.windows.sub.modal('/view/kdl/055/a/index.xhtml').onClosed(function(): any { });
-        }
         
+        openKDL016(): void {
+            let self = this;
+            let userInfor: IUserInfor = self.userInfor;
+            setShared('dataShareKDL016', {
+                unit: userInfor.unit, // 対象組織識別情報.単位
+                id: userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId, // 対象組織識別情報.組織ID
+                code: userInfor.code , // 対象組織識別情報.組織コード
+                name: userInfor.workPlaceName, // 対象組織識別情報.組織名称
+                startDate: moment(self.dtPrev()).format('YYYY/MM/DD'), // 基準期間.開始日
+                endDate: moment(self.dtAft()).format('YYYY/MM/DD'),  // 基準期間.終了日
+                employeeIDs: self.listSidByOrg, // List<社員ID>
+            });
+            nts.uk.ui.windows.sub.modeless("/view/kdl/016/a/index.xhtml").onClosed(() => { });
+        }
+
         // A2_1
         openKDL046() {
             let self = this;
@@ -5561,7 +5622,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             setShared('KSU001S', {
                 date: self.dtAft(),
-                listEmpId: self.listEmpData
+                listEmpId: _.filter(self.listEmpData, function(o) { return o.supportType != SupportType.COME_TO_SUPPORT; })
             });
 
             $('#A1_12_1').ntsPopup('hide');
@@ -5582,7 +5643,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
             setShared("KSU001La", {
                 date: self.dateTimeAfter(),
-                listEmpData: self.listEmpData
+                listEmpData: _.filter(self.listEmpData, function(o) { return o.supportType != SupportType.COME_TO_SUPPORT; })
             });
             $('#A1_12_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/la/index.xhtml").onClosed(() => {
@@ -5599,7 +5660,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // A1_12_20
         openMDialog(): void {
             let self = this;
-            setShared("KSU001M", self.listEmpData);
+            setShared( "KSU001M", _.filter(self.listEmpData, function(o) { return o.supportType != SupportType.COME_TO_SUPPORT; }) );
             $('#A1_12_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/m/index.xhtml").onClosed(() => {
                 let dataShare = getShared("ksu001m-result");
@@ -5656,6 +5717,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
             return dfd.promise();
         }
+        
         openDialogK() {
             let self = this;
             characteristics.restore(self.KEY).done((userInfor: IUserInfor) => {
@@ -5664,12 +5726,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     orgId: userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId,
                     startDate: moment(self.dtPrev()).toISOString(),
                     endDate: moment(self.dtAft()).toISOString(),
-                    employeeIds : self.sids(),
+                    employeeIds : self.listSidByOrg,
                     closeDate: self.closeDate
                 });
                 nts.uk.ui.windows.sub.modal("/view/ksu/001/ka/index.xhtml");
             });
         }
+        
         btnOpenKDL055(): void {
             let self = this;
             let arrCellUpdated = $("#extable").exTable("updatedCells");
@@ -5693,7 +5756,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         openKDL055(): void {
             let self = this, dfd = $.Deferred();
             let userInfor = self.userInfor;
-            let param: any = { sIDs: self.sids(), startDate: moment(self.dateTimePrev()).format('YYYY/MM/DD'), endDate: moment(self.dateTimeAfter()).format('YYYY/MM/DD') };
+            let param: any = { sIDs: self.listSidByOrg, startDate: moment(self.dateTimePrev()).format('YYYY/MM/DD'), endDate: moment(self.dateTimeAfter()).format('YYYY/MM/DD') };
             setShared('dataShareDialogKDL055A', param);
             nts.uk.ui.windows.sub.modal("/view/kdl/055/a/index.xhtml").onClosed(() => {
                 let paramB = getShared('paramB');
@@ -5702,7 +5765,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     setShared('dataShareDialogKDL055B', paramB);
                     nts.uk.ui.windows.sub.modal("/view/kdl/055/b/index.xhtml").onClosed(() => {
                         let resultB = getShared('statusKDL055');
-                        console.log(resultB);
                         let openAKDL055 = getShared('openA');
                         if (resultB == 'UPDATE') {
                             nts.uk.ui.block.grayout();
@@ -5798,8 +5860,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (funcNo7_WorkPlace == false || data.dataBasicDto.useWorkAvailabilityAtr == false)
                 document.getElementById("A1_7").remove();
 
-            // btn A1_8 職9  -  ※2 (tạm thời chưa đối ứng thằng ※2 này)
-            if (funcNo9_WorkPlace == false)
+            // btn A1_8 職9  -  ※2 (ver6)
+            if (funcNo9_WorkPlace == false || data.dataBasicDto.useSupportSchedule == false )
                 document.getElementById("A1_8").remove();
 
             // btn A1_9 職6
@@ -6020,7 +6082,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 workplaceId: self.userInfor.workplaceId,
                 workplaceGroupId: self.userInfor.workplaceGroupId,
                 workplaceName: self.userInfor.workPlaceName,
-                listEmp: self.listEmpData,
+                listEmp: _.filter(self.listEmpData, function(o) { return o.supportType != SupportType.COME_TO_SUPPORT; }),
                 daySelect: moment(ui.columnKey.slice(1)).format('YYYY/MM/DD'),
                 startDate: self.dateTimePrev(),
                 endDate: self.dateTimeAfter(),
@@ -6051,7 +6113,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if(_.isNil(blockScreen))
                 nts.uk.ui.block.grayout();
             let param = {
-                listSid: self.listSid(),
+                listSid: self.listSidByOrg,
                 startDate: self.dateTimePrev(),
                 endDate: self.dateTimeAfter(),
                 day: self.closeDate.day,
@@ -6496,7 +6558,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
     interface IEmpInfo {
         employeeId: string,
         employeeCode: string,
-        businessName: string
+        businessName: string,
+        supportType: number
     }
 
     interface IPersonalConditions {
@@ -6593,7 +6656,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         conditionAbc1: boolean;
         conditionAbc2: boolean;
         workTimeForm: any;
-        condTargetdate: boolean
+        condTargetdate: boolean;
+        supportStatus: number;
     }
 
     interface IWorkScheduleShiftInforDto {
@@ -6611,7 +6675,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         workHolidayCls: number; // 出勤休日区分
         conditionAa1: boolean;
         conditionAa2: boolean;
-        condTargetdate: boolean
+        condTargetdate: boolean,
+        supportStatus: number;
     }
 
     interface AggreratePersonalDto {
@@ -6651,6 +6716,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         SupportTo = 5, // 終日応援先
     }
 
+    enum SupportStatus {
+        DO_NOT_GO = 0,    // 応援に行かない
+        DO_NOT_COME = 1,  // 応援に来ない
+        GO_ALLDAY = 2,    // 応援に行く(終日)
+        GO_TIMEZONE = 3,  // 応援に行く(時間帯)
+        COME_ALLDAY = 4,  // 応援に来る(終日)
+        COME_TIMEZONE = 5 // 応援に来る(時間帯)
+    }
+    
+    enum SupportType {
+        DO_NOT_GOTOSUPPORT = 0,  
+        GO_TO_SUPPORT = 1,
+        COME_TO_SUPPORT = 2  
+    }
+    
     interface IUserInfor {
         disPlayFormat: string;
         backgroundColor: number; // 背景色

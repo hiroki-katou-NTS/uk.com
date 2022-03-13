@@ -28,7 +28,7 @@ import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
 @AllArgsConstructor
 @Getter
 @Setter
-public class StartKSU001Dto {
+public class StartKSU001Result {
 	
 	// data tra ve cua step1
 	public DataBasicDto dataBasicDto;

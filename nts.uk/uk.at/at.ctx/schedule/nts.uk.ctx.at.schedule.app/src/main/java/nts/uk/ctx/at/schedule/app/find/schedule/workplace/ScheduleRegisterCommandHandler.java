@@ -52,6 +52,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRe
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
@@ -141,6 +142,9 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
 
     @Inject
     private ManagedParallelWithContext parallel;
+    
+    @Inject
+	private SupportOperationSettingRepository supportOperationSettingRepo;
     
     @Inject
 	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
@@ -534,8 +538,7 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
 
 		@Override
 		public SupportOperationSetting getSupportOperationSetting() {
-			// TODO developers are going to update
-			return null;
+			return supportOperationSettingRepo.get(AppContexts.user().companyId());
 		}
 
 		@Override

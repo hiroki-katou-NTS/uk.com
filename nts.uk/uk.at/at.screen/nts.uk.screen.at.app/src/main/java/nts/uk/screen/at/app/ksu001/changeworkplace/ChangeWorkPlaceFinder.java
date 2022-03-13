@@ -42,7 +42,7 @@ import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
 import nts.uk.screen.at.app.ksu001.start.AggregatePersonalMapDto;
 import nts.uk.screen.at.app.ksu001.start.AggregateWorkplaceMapDto;
 import nts.uk.screen.at.app.ksu001.start.ShiftPaletteWantGet;
-import nts.uk.screen.at.app.ksu001.start.StartKSU001Dto;
+import nts.uk.screen.at.app.ksu001.start.StartKSU001Result;
 
 /**
  * @author laitv 初期起動 
@@ -63,7 +63,7 @@ public class ChangeWorkPlaceFinder {
 	
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
-	public StartKSU001Dto getData(ChangeWorkPlaceParam param) {
+	public StartKSU001Result getData(ChangeWorkPlaceParam param) {
 		
 		// call <<ScreenQuery>> 対象社員を抽出する
 		TargetOrgIdenInfor targetOrgIdenInfor = null;
@@ -127,20 +127,20 @@ public class ChangeWorkPlaceFinder {
 			resultStep51 = displayInShift.getData(param51);
 		}
 		
-		StartKSU001Dto result = convertData(param.viewMode, resultStep2, resultStep3, resultStep4, resultStep51);
+		StartKSU001Result result = convertData(param.viewMode, resultStep2, resultStep3, resultStep4, resultStep51);
 		return result;
 	}
 	
-	private StartKSU001Dto convertData(String viewMode,
+	private StartKSU001Result convertData(String viewMode,
 			List<EmployeeInformationImport> resultStep2, 
 			DataSpecDateAndHolidayDto resultStep3, 
 			DisplayInWorkInfoResult  resultStep4,
 			DisplayInShiftResult resultStep51) {
-		StartKSU001Dto result = new StartKSU001Dto();
+		StartKSU001Result result = new StartKSU001Result();
 		
 		//  data tra ve cua step2
 		List<EmployeeInformationDto> listEmpInfo = resultStep2.stream().map(item -> {
-			return new EmployeeInformationDto(item.getEmployeeId(), item.getEmployeeCode(), item.getBusinessName().toString());
+			return new EmployeeInformationDto(item.getEmployeeId(), item.getEmployeeCode(), item.getBusinessName().toString(), item.getSupportType());
 		}).collect(Collectors.toList());
 		result.setListEmpInfo(listEmpInfo);
 		

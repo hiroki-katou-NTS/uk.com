@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -22,9 +23,11 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportScheduleDetail;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.support.supportschedule.KscdtSchSupport;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
@@ -66,8 +69,11 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.Ac
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.StayingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -137,7 +143,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 	public Integer nursingLicenseClass;
 	// 看護管理者か
 	@Column(name = "IS_NURSE_ADMINISTRATOR")
-	public Integer nursingManager;
+	public Boolean nursingManager;
 	// 加給コード
 	@Column(name = "BONUS_PAY_CD")
 	public String bonusPaySettingCode;
@@ -164,6 +170,10 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 	@OneToMany(targetEntity = KscdtSchGoingOutTs.class, mappedBy = "kscdtSchBasicInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "KSCDT_SCH_GOING_OUT_TS")
 	public List<KscdtSchGoingOutTs> kscdtSchGoingOutTs;
+	
+	@OneToMany(targetEntity = KscdtSchSupport.class, mappedBy = "kscdtSchBasicInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "KSCDT_SCH_SUPPORT")
+	public List<KscdtSchSupport> kscdtSchSupport;
 
 	public static KscdtSchBasicInfo toEntity(WorkSchedule workSchedule, String cID) {
 
@@ -232,7 +242,12 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				.stream().map(c-> KscdtSchGoingOutTs.toEntity(sID, yMD, cID, c)).collect(Collectors.toList());
 			listKscdtSchGoingOutTs.addAll(listKscdtSchComeLate);
 		}
-
+		
+		// QA122923
+		AtomicInteger index = new AtomicInteger(1);
+		List<KscdtSchSupport> lstKscdtSchSupport = workSchedule.getSupportSchedule().getDetails().stream()
+				.map(c -> KscdtSchSupport.toEntity(cID, sID, yMD, index.getAndIncrement(), c))
+				.collect(Collectors.toList());
 
 		// null - QA 110800
 		KscdtSchBasicInfo basicInfo = new KscdtSchBasicInfo(basicInfoPK,
@@ -245,10 +260,11 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				days,
 				workInfo.getWorkplaceGroupId().isPresent() ? workInfo.getWorkplaceGroupId().get() : null,
 				workInfo.getNursingLicenseClass().isPresent()? workInfo.getNursingLicenseClass().get().value : null,
-				workInfo.getIsNursingManager().isPresent()? workInfo.getIsNursingManager().get()?1:0 : null,
+				workInfo.getIsNursingManager().isPresent()? workInfo.getIsNursingManager().get() : null,
                 workInfo.getBonusPaySettingCode().isPresent() ? workInfo.getBonusPaySettingCode().get().toString() : null,
 				kscdtSchTimes, kscdtEditStates, kscdtSchAtdLvwTimes,
-				kscdtSchShortTimeTs, kscdtSchBreakTs,listKscdtSchGoingOutTs);
+				kscdtSchShortTimeTs, kscdtSchBreakTs,listKscdtSchGoingOutTs,
+				lstKscdtSchSupport);
 		return basicInfo;
 	}
 
@@ -276,7 +292,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				Optional.ofNullable(new BonusPaySettingCode(bonusPaySettingCode)), //  bonusPaySettingCode
 				Optional.ofNullable(workplaceGroupId), //  workplaceGroupId
 				EnumAdaptor.optionalOf(nursingLicenseClass, LicenseClassification.class), //  nursingLicenseClass
-				Optional.ofNullable(nursingManager ==null?null:nursingManager ==1?true:false)); //  isnursingLicenseManager
+				Optional.ofNullable(nursingManager)); //  isnursingLicenseManager
 
 		// create List<BreakTimeOfDailyAttd>
 		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
@@ -354,6 +370,23 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			outingTime = new OutingTimeOfDailyAttd(outingTimeSheets);
 		}
 		
+		// ver6 #122997
+		// SupportTime - ver6
+		SupportSchedule supportSchedule = SupportSchedule.createWithEmptyList();
+		List<SupportScheduleDetail> supports = kscdtSchSupport.stream()
+				.map(support -> {
+					TargetOrgIdenInfor supportDestination = new TargetOrgIdenInfor(
+							EnumAdaptor.valueOf(support.recipientTargerUnit, TargetOrganizationUnit.class), 
+							Optional.ofNullable(support.recipientTargerUnit == TargetOrganizationUnit.WORKPLACE.value ? support.recipientTargerId : null) ,
+							Optional.ofNullable(support.recipientTargerUnit == TargetOrganizationUnit.WORKPLACE_GROUP.value ? support.recipientTargerId : null));
+					SupportType supportType = EnumAdaptor.valueOf(support.supportType, SupportType.class);
+					TimeWithDayAttr start = support.start == null ? null : new TimeWithDayAttr(support.start);
+					TimeWithDayAttr end = support.end == null ? null : new TimeWithDayAttr(support.end);
+					Optional<TimeSpanForCalc> timeSpan = Optional.of(new TimeSpanForCalc(start, end));
+					return new SupportScheduleDetail(supportDestination, supportType, timeSpan);
+				}).collect(Collectors.toList());
+		supportSchedule = new SupportSchedule(supports);
+		
 		return new WorkSchedule(
 				sID, 
 				yMD, 
@@ -363,7 +396,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				breakTime, 
 				lstEditState, 
 				taskSchedule, 
-				SupportSchedule.createWithEmptyList(), //TODO developers are going to update
+				supportSchedule, 
 				Optional.ofNullable(optTimeLeaving), 
 				Optional.ofNullable(attendance), 
 				Optional.ofNullable(optSortTimeWork), 

@@ -83,7 +83,7 @@ public class GetWorkActualOfWorkInfo002 {
 		// step 2
 		// call 勤務実績で勤務予定（勤務情報）dtoを作成する
 		List<nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = createWorkScheduleWorkInforBase
-				.getDataScheduleOfWorkInfo(map);
+				.getDataScheduleOfWorkInfo(map, param.targetOrg.convertFromDomain());
 
 		result = listWorkScheduleWorkInfor
 				.stream()

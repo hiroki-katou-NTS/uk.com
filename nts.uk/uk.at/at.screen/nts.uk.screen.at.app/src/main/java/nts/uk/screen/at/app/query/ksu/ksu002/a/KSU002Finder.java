@@ -40,6 +40,7 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimesForAggregation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagementRepo;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -99,7 +100,8 @@ public class KSU002Finder {
 		PlanAndActual planAndActual = screenQueryPlanAndActual.getPlanAndActual(param.listSid, periodListPeriod.datePeriod, param.actualData);
 		
 		//3:取得する()
-		List<WorkScheduleWorkInforDto> workScheduleWorkInfor = screenQueryCreateWorkSchedule.get(planAndActual.getSchedule(), planAndActual.getDailySchedule(), param.actualData);
+		TargetOrgIdenInfor idenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, Optional.of(param.targetOrg.getWorkplaceId()), Optional.empty());
+		List<WorkScheduleWorkInforDto> workScheduleWorkInfor = screenQueryCreateWorkSchedule.get(planAndActual.getSchedule(), planAndActual.getDailySchedule(), param.actualData, idenInfor);
 		
 		//4:集計する(社員ID, 期間, List<期間>, int, int)
 		PersonalSchedulesDataDto personalSchedulesData = this.getPersonalSchedules(new EmployeeId(param.listSid.get(0)), param.getPeriod(), periodListPeriod.datePeriodList, planAndActual.getSchedule(), planAndActual.getDailySchedule());

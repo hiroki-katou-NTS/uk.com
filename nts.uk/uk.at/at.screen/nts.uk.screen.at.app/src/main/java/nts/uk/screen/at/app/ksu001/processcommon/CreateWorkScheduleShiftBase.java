@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,7 +15,12 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.GetSupportInfoOfEmployee;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -24,6 +28,11 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.GetWorkInforUsedDailyAttenRecordService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployee;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployeeRepository;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ColorCodeChar6;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.GetCombinationrAndWorkHolidayAtrService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
@@ -43,12 +52,10 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
-import nts.uk.screen.at.app.ksu001.start.SupportCategory;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -67,8 +74,6 @@ public class CreateWorkScheduleShiftBase {
 	@Inject
 	private BasicScheduleService basicScheduleService;
 	@Inject
-	private WorkTimeSettingService workTimeSettingService;
-	@Inject
 	private ShiftMasterRepository shiftMasterRepo;
 	@Inject
 	private FixedWorkSettingRepository fixedWorkSet;
@@ -78,10 +83,15 @@ public class CreateWorkScheduleShiftBase {
 	private FlexWorkSettingRepository flexWorkSet;
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSet;
+	@Inject 
+	private SupportableEmployeeRepository supportableEmpRepo;
+	@Inject
+	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 
 	public WorkScheduleShiftBaseResult getWorkScheduleShiftBase(
 			Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> mapDataDaily,
-			List<ShiftMasterMapWithWorkStyle> listShiftMasterNotNeedGetNew) {
+			List<ShiftMasterMapWithWorkStyle> listShiftMasterNotNeedGetNew,
+			TargetOrgIdenInfor targetOrg) {
 
 		List<WorkInfoOfDailyAttendance> workInfoOfDailyAttendances = new ArrayList<WorkInfoOfDailyAttendance>();
 		mapDataDaily.forEach((k, v) -> {
@@ -99,7 +109,7 @@ public class CreateWorkScheduleShiftBase {
 		List<WorkInformation> lstWorkInfo = GetWorkInforUsedDailyAttenRecordService.getListWorkInfo(workInfoOfDailyAttendances);
 
 		// call シフトマスタと出勤休日区分の組み合わせを取得する
-		GetCombinationrAndWorkHolidayAtrService.Require requireImpl2 = new RequireCombiAndWorkHolidayImpl(shiftMasterRepo, basicScheduleService, workTypeRepo,workTimeSettingRepo,workTimeSettingService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
+		GetCombinationrAndWorkHolidayAtrService.Require requireImpl2 = new RequireCombiAndWorkHolidayImpl();
 		Map<ShiftMaster,Optional<WorkStyle>> mapShiftMasterWithWorkStyle = GetCombinationrAndWorkHolidayAtrService.getbyWorkInfo(requireImpl2,AppContexts.user().companyId(), lstWorkInfo);
 
 		List<ShiftMasterMapWithWorkStyle> listShiftMaster = listShiftMasterNotNeedGetNew;
@@ -118,51 +128,18 @@ public class CreateWorkScheduleShiftBase {
 
 		// loop：日別実績 in 管理状態と勤務実績Map.values()
 		List<ScheduleOfShiftDto> listWorkScheduleShift = new ArrayList<>();
-		mapDataDaily.forEach((k, v) -> {
-			EmployeeWorkingStatus key = k;
-			Optional<IntegrationOfDaily> value = v;
-
-			// step 4.1
-			boolean needToWork = key.getWorkingStatus().needCreateWorkSchedule();
-			// 4.2
-			if (value.isPresent()) {
-				IntegrationOfDaily daily = value.get();
-				if(daily.getWorkInformation() != null){
-					WorkInformation workInformation = daily.getWorkInformation().getRecordInfo();
-
-					String workTypeCode = workInformation.getWorkTypeCode() == null ? null : workInformation.getWorkTypeCode().toString().toString();
-					String workTimeCode = workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().toString().toString();
-
-					Optional<ShiftMasterMapWithWorkStyle> shiftMaster = listShiftMaster.stream().filter(x -> {
-						boolean s = Objects.equals(x.workTypeCode, workTypeCode);
-						boolean y = Objects.equals(x.workTimeCode, workTimeCode);
-						return s&&y;
-					}).findFirst();
-
-					if(!shiftMaster.isPresent()){
-						System.out.println("Daily : workType - workTime chua dc dang ky: " + workTypeCode + " - " + workTimeCode);
-					}
-
-					ScheduleOfShiftDto dto = ScheduleOfShiftDto.builder()
-							.employeeId(key.getEmployeeID())
-							.date(key.getDate())
-							.haveData(true)
-							.achievements(true)
-							.confirmed(true)
-							.needToWork(needToWork)
-							.supportCategory(SupportCategory.NotCheering.value)
-							.shiftCode(shiftMaster.isPresent() ? shiftMaster.get().shiftMasterCode : null)
-							.shiftName(shiftMaster.isPresent() ? shiftMaster.get().shiftMasterName : null)
-							.shiftEditState(null)
-							.workHolidayCls(null)
-							.isEdit(false)
-							.isActive(false)
-							.conditionAa1(false)
-							.conditionAa2(false)
-							.build();
-					listWorkScheduleShift.add(dto);
-				}
+		mapDataDaily.forEach((employeeWorkingStatus, integrationOfDaily) -> {
+			
+			if(integrationOfDaily.isPresent()){
+				
+				GetSupportInfoOfEmployee.Require requireGetSupportInfo = new RequireGetSupportInfoImpl(Optional.empty(), integrationOfDaily);
+				
+				ScheduleOfShiftDto dto = new ScheduleOfShiftDto(integrationOfDaily, employeeWorkingStatus, listShiftMaster, targetOrg, requireGetSupportInfo);
+				
+				listWorkScheduleShift.add(dto);
+				
 			}
+			
 		});
 
 		// convert list to Map
@@ -178,44 +155,23 @@ public class CreateWorkScheduleShiftBase {
 	}
 
 	@AllArgsConstructor
-	private static class RequireCombiAndWorkHolidayImpl implements GetCombinationrAndWorkHolidayAtrService.Require {
+	private class RequireCombiAndWorkHolidayImpl implements GetCombinationrAndWorkHolidayAtrService.Require {
 
 		private final String companyId = AppContexts.user().companyId();
 
-		@Inject
-		private ShiftMasterRepository shiftMasterRepo;
-		@Inject
-		private BasicScheduleService service;
-		@Inject
-		private WorkTypeRepository workTypeRepo;
-		@Inject
-		private WorkTimeSettingRepository workTimeSettingRepository;
-		@Inject
-		private WorkTimeSettingService workTimeSettingService;
-		@Inject
-		private FixedWorkSettingRepository fixedWorkSet;
-		@Inject
-		private FlowWorkSettingRepository flowWorkSet;
-		@Inject
-		private FlexWorkSettingRepository flexWorkSet;
-		@Inject
-		private PredetemineTimeSettingRepository predetemineTimeSet;
-
 		@Override
 		public List<ShiftMaster> getByListEmp(String companyID, List<String> lstShiftMasterCd) {
-			List<ShiftMaster> data = shiftMasterRepo.getByListShiftMaterCd2(companyId, lstShiftMasterCd);
-			return data;
+			return shiftMasterRepo.getByListShiftMaterCd2(companyId, lstShiftMasterCd);
 		}
 
 		@Override
 		public List<ShiftMaster> getByListWorkInfo(String companyId, List<WorkInformation> lstWorkInformation) {
-			List<ShiftMaster> data = shiftMasterRepo.get(companyId, lstWorkInformation);
-			return data;
+			return shiftMasterRepo.get(companyId, lstWorkInformation);
 		}
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
-			 return service.checkNeededOfWorkTimeSetting(workTypeCode);
+			 return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
 		}
 
 		@Override
@@ -225,13 +181,8 @@ public class CreateWorkScheduleShiftBase {
 
 		@Override
 		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+			return workTimeSettingRepo.findByCode(companyId, workTimeCode);
 		}
-
-//		@Override
-//		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
-//			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
-//		}
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
@@ -253,7 +204,36 @@ public class CreateWorkScheduleShiftBase {
 			Optional<PredetemineTimeSetting> workSetting = predetemineTimeSet.findByWorkTimeCode(companyId, wktmCd.v());
 			return workSetting.isPresent() ? workSetting.get() : null;
 		}
-
 	}
 
+	private class RequireGetSupportInfoImpl implements GetSupportInfoOfEmployee.Require {
+
+		private Optional<WorkSchedule> workSchedule;
+		private Optional<IntegrationOfDaily> integrationOfDaily;
+
+		public RequireGetSupportInfoImpl(Optional<WorkSchedule> workSchedule, Optional<IntegrationOfDaily> integrationOfDaily) {
+			this.workSchedule = workSchedule;
+			this.integrationOfDaily = integrationOfDaily;
+		}
+
+		@Override
+		public List<SupportableEmployee> getSupportableEmployee(EmployeeId employeeId, GeneralDate date) {
+			return supportableEmpRepo.findByEmployeeIdWithPeriod(employeeId, DatePeriod.oneDay(date));
+		}
+
+		@Override
+		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
+			return empAffiliationInforAdapter.getEmpOrganization(baseDate, lstEmpId);
+		}
+
+		@Override
+		public Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date) {
+			return workSchedule;
+		}
+
+		@Override
+		public Optional<IntegrationOfDaily> getRecord(String employeeId, GeneralDate date) {
+			return integrationOfDaily;
+		}
+	}
 }

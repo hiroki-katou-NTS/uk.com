@@ -33,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
@@ -108,6 +109,8 @@ public class TaskScheduleTimeZoneSaveCommandHandler extends CommandHandler<TaskS
 	private BusinessTypeEmpService businessTypeEmpService;
 	
 	@Inject
+	private SupportOperationSettingRepository supportOperationSettingRepo;
+	@Inject
 	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 	
 	@Inject
@@ -126,7 +129,9 @@ public class TaskScheduleTimeZoneSaveCommandHandler extends CommandHandler<TaskS
 				basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository,
 				predetemineTimeSettingRepository, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
 				sharedAffWorkPlaceHisAdapter, syClassificationAdapter, workingConditionRepo, businessTypeEmpService,
+				supportOperationSettingRepo,
 				empAffiliationInforAdapter, empMedicalWorkStyleHistoryRepo, nurseClassificationRepo);
+		
 		/**loop:社員ID in 社員IDリスト */
 		command.getEmployeeIds().stream().forEach(empId -> {
 			/** 1.1: get(社員ID、年月日):勤務予定*/
@@ -177,6 +182,9 @@ public class TaskScheduleTimeZoneSaveCommandHandler extends CommandHandler<TaskS
 		private WorkingConditionRepository workingConditionRepo;
 
 		private BusinessTypeEmpService businessTypeEmpService;
+		
+		@Inject
+		private SupportOperationSettingRepository supportOperationSettingRepo;
 		
 		private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 		
@@ -274,8 +282,7 @@ public class TaskScheduleTimeZoneSaveCommandHandler extends CommandHandler<TaskS
 		
 		@Override
 		public SupportOperationSetting getSupportOperationSetting() {
-			// TODO developers are going to update
-			return null;
+			return supportOperationSettingRepo.get(AppContexts.user().companyId());
 		}	
 		
 		@Override

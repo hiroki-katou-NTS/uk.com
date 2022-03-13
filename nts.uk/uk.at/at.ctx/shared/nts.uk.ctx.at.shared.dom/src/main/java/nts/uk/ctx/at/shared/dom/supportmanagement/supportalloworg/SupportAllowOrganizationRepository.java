@@ -58,5 +58,5 @@ public interface SupportAllowOrganizationRepository {
 	 * @return
 	 */
 	boolean exists( String cid, TargetOrgIdenInfor targetOrg );
-	
+
 }

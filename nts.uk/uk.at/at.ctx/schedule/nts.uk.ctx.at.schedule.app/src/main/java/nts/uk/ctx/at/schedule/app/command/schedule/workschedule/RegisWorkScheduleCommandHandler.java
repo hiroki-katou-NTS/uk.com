@@ -5,7 +5,6 @@ package nts.uk.ctx.at.schedule.app.command.schedule.workschedule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +43,7 @@ import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpService;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
@@ -53,7 +53,11 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.Nur
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTicket;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployee;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployeeRepository;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
@@ -131,6 +135,11 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 	@Inject
 	private EmpAffiliationInforAdapter empAffInforAdapter;
 	
+	@Inject
+	private SupportOperationSettingRepository supportOperationSettingRepo;
+	@Inject
+	private SupportableEmployeeRepository supportableEmployeeRepo;
+	
 	private final String STATUS_REGISTER = "STATUS_REGISTER";
 	private final String STATUS_ERROR = "STATUS_ERROR";
 	
@@ -149,7 +158,9 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 				fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet, workScheduleRepo, correctWorkSchedule,
 				interimRemainDataMngRegisterDateChange, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
 				sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter,
+				supportOperationSettingRepo,
 				empMedicalWorkStyleHistoryRepo, nurseClassificationRepo, empAffInforAdapter);
+		
 		List<ResultOfRegisteringWorkSchedule> lstRsOfRegisWorkSchedule = new ArrayList<ResultOfRegisteringWorkSchedule>();
 		
 		// step 1
@@ -159,14 +170,31 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 			List<WorkScheduleSaveCommand<T>> scheduleOfEmps = v;
 			// loop:年月日 in 年月日リスト
 			for (WorkScheduleSaveCommand<T> data : scheduleOfEmps) {
+				
+				// step 1.1 : 社員と期間を指定して取得する(社員ID, 期間：年月日): List<応援可能な社員>
+				List<SupportableEmployee> supportableEmpList = supportableEmployeeRepo
+						.findByEmployeeIdWithPeriod(new EmployeeId(sid), DatePeriod.oneDay(data.ymd));
+				
+				// step 1.2 :  応援チケットを作成する(年月日): Optional<応援チケット>
+				List<SupportTicket> supportTicketList = new ArrayList<>();
+				supportableEmpList.forEach(supportableEmp -> {
+					Optional<SupportTicket> supportTicketOpt = supportableEmp.createTicket(data.ymd);
+					if (supportTicketOpt.isPresent())
+						supportTicketList.add(supportTicketOpt.get());
+				});
+				
+				// step 1.3 : call DomainService 勤務予定を作る
+				
 				WorkInformation workInfo = new WorkInformation(data.workInfor.workTypeCd, data.workInfor.workTimeCd);
-				// step 1.1
+				
 				ResultOfRegisteringWorkSchedule rsOfRegisteringWorkSchedule = CreateWorkSchedule.create(
-						requireImpl, sid, data.ymd,
+						requireImpl, 
+						sid, 
+						data.ymd,
 						workInfo,
-						data.isBreakByHand, // TODO VN team update
+						data.isBreakByHand,
 						data.breakTimeList, 
-						Collections.emptyList(), // TODO VN-team is going to update
+						supportTicketList,
 						data.mapAttendIdWithTime);
 				
 				lstRsOfRegisWorkSchedule.add(rsOfRegisteringWorkSchedule);
@@ -262,7 +290,8 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 		private BusinessTypeEmpService businessTypeEmpService;
 		@Inject
 		private SyClassificationAdapter syClassificationAdapter;
-		
+		@Inject
+		private SupportOperationSettingRepository supportOperationSettingRepo;
 		@Inject
 		private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
 		@Inject
@@ -418,8 +447,7 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 
 		@Override
 		public SupportOperationSetting getSupportOperationSetting() {
-			// TODO developers are going to update
-			return null;
+			return supportOperationSettingRepo.get(companyId);
 		}
 		
 		// GetEmpLicenseClassificationService

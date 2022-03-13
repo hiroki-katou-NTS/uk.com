@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = {width: 930, height: 500};</script>
+        <com:ValidatorScript>
+            nts.uk.shr.com.time.TimeWithDayAttr
+        </com:ValidatorScript>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:stylefile path="kdl016.c.style.css"/>
+        <com:scriptfile path="kdl016.c.vm.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area" class="fixed-flex-layout">
+            <div class="fixed-flex-layout-left">
+                <div class="control-group valign-center">
+                    <!--C1_1-->
+                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL016_32')}</div>
+                    <!--C1_2-->
+                    <div tabindex="1" id="combo-box" data-bind="ntsComboBox:
+                                        {options: orgList,
+                                        name:'#{i18n.getText('KDL016_32')}',
+										optionsValue: 'code',
+										visibleItemsCount: 5,
+										value: selectedOrgCode,
+										optionsText: 'name',
+										editable: true,
+										columns: [
+										        { prop: 'code', length: 4 },
+												{ prop: 'name', length: 10 },
+										]}">
+                    </div>
+                    <div class="caret-bottom">
+                    </div>
+                </div>
+                <div class="control-group valign-center">
+                    <!--C3-->
+                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL016_21')}</div>
+                    <div style="padding-left: 112px;">
+                        <!--C4-->
+                        <div tabindex="2" id="employee-list"/>
+                    </div>
+                </div>
+            </div>
+            <div class="fixed-flex-layout-right">
+                <div class="control-group valign-top" style="margin-top: 90px;">
+                    <!--C5_1-->
+                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL016_23')}</div>
+                    <!--C5_2-->
+                    <div class="radio-group-right" style="display: inline-block">
+                        <div tabindex="3" class="vertical-radio" data-bind="ntsRadioBoxGroup: {
+                                    options: supportTypes,
+                                    optionsValue: 'id',
+                                    optionsText: 'name',
+                                    value: selectedSupportType,
+                                    enable: true}"/>
+                    </div>
+                    <!--C5_2_3-->
+                    <div class="time-range-right" style="display: inline-block">
+                        <input id="timespanMin"
+                               data-bind="ntsTimeWithDayEditor: {
+												name: '#[KDL016_25]',
+												value: timespanMin,
+												constraint: 'TimeWithDayAttr',
+										 		option: {
+								                    width: '40px',
+								                    timeWithDay: false
+								                },
+												required: true,
+												enable: enableEditTimespan,
+												readonly: false}" tabindex="4"/>
+
+                        <span class="label">～</span>
+                        <!--C5_2_4-->
+                        <input id="timespanMax"
+                               data-bind="ntsTimeWithDayEditor: {
+												name: '#[KDL016_26]',
+												value: timespanMax,
+												constraint: 'TimeWithDayAttr',
+										 		option: {
+								                    width: '40px',
+								                    timeWithDay: false
+								                },
+												required: true,
+												enable: enableEditTimespan,
+												readonly: false}" tabindex="4"/>
+                    </div>
+                </div>
+                <div class="control-group valign-center">
+                    <!--C6_1-->
+                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL016_27')}</div>
+                    <div id="startDate" data-bind="ntsDatePicker: {name: '#[KDL016_28]', value: startDate, dateFormat: 'date', valueFormat: 'YYYY/MM/DD', required: true, enable: true}"
+                         tabindex="5"/>
+                    <span class="label">～</span>
+                    <div id="endDate" data-bind="ntsDatePicker: {name: '#[KDL016_29]', value: endDate, dateFormat: 'date', valueFormat: 'YYYY/MM/DD', required: true, enable: enableEndDate}"
+                         tabindex="5"/>
+                </div>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <button id="register"
+                    data-bind="click: $vm.register, enable: selectedEmployees().length > 0"
+                    class="proceed" tabindex="6">#{i18n.getText('KDL016_30')}</button>
+            <button data-bind="click: $vm.closeDialog"
+                    class="normal" tabindex="7">#{i18n.getText('KDL016_31')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

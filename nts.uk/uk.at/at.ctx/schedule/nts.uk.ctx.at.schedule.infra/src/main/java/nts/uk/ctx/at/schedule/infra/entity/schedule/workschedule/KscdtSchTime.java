@@ -22,7 +22,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskScheduleDetail;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
@@ -299,7 +298,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 	@OneToMany(targetEntity = KscdtSchTask.class, mappedBy = "kscdtSchTime", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "KSCDT_SCH_TASK")
 	public List<KscdtSchTask> kscdtSchTask;
-
+	
 	/**
 	 * 
 	 * @param workingTime 勤務予定．勤怠時間．勤務時間
@@ -438,7 +437,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		AtomicInteger index = new AtomicInteger(1);
 		List<KscdtSchTask> lstKscdtSchTask = task.getDetails().stream()
 				.map(c -> KscdtSchTask.toEntity(sID, yMD, cID, c, index.getAndIncrement())).collect(Collectors.toList());
-
+		
 		KscdtSchTime kscdtSchTime = new KscdtSchTime(pk, cID, // cid
 				workingTime.getWorkTimes() == null ? 0 : workingTime.getWorkTimes().v(), // count
 				workingTime.getWorkTimes() == null ? 0 : workingTime.getTotalTime().v(), // totalTime
@@ -629,12 +628,12 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 				.map(task -> new TaskScheduleDetail(new TaskCode(task.taskCode), new TimeSpanForCalc(new TimeWithDayAttr(task.startClock), new TimeWithDayAttr(task.endClock))))
 				.collect(Collectors.toList());
 		TaskSchedule taskSchedule = new TaskSchedule(details);
-
+		
 		AttendanceTimeOfDailyAttendance optAttendanceTime = new AttendanceTimeOfDailyAttendance(null,
 				workingTimeOfDaily, null, null, null);
 
 		WorkSchedule workSchedule = new WorkSchedule(sID, yMD, null, null, null, null, null, taskSchedule,
-				SupportSchedule.createWithEmptyList(), // TODO developers are going to update
+				null,
 				Optional.ofNullable(null), Optional.ofNullable(optAttendanceTime), Optional.ofNullable(null),
 				Optional.ofNullable(null));
 		return workSchedule;

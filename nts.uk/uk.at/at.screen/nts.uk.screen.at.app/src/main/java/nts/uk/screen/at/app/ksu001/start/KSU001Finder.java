@@ -49,7 +49,7 @@ import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class StartKSU001Ver5 {
+public class KSU001Finder {
 
 	@Inject
 	private ScreenQueryGetInforOfInitStartup getInforOfInitStartup;
@@ -64,7 +64,7 @@ public class StartKSU001Ver5 {
 	
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
-	public StartKSU001Dto getData(StartKSU001Param param) {
+	public StartKSU001Result getData(StartKSU001Param param) {
 		
 		// step 1
 		DataScreenQueryGetInforDto resultStep1 = getInforOfInitStartup.getData();
@@ -75,25 +75,8 @@ public class StartKSU001Ver5 {
 		resultStep1.setStartDate(startDate);
 		resultStep1.setEndDate(endDate);
 		
-		int unit = 0;
-		String workplaceId = "";
-		String workplaceGroupId = "";
-		if (StringUtil.isNullOrEmpty(param.workplaceId, true) && StringUtil.isNullOrEmpty(param.workplaceGroupId, true)) {
-			unit = resultStep1.targetOrgIdenInfor.unit;
-			workplaceId = resultStep1.targetOrgIdenInfor.workplaceId;
-			workplaceGroupId = resultStep1.targetOrgIdenInfor.workplaceGroupId;
-		} else {
-			unit = param.unit;
-			workplaceId = param.workplaceId;
-			workplaceGroupId = param.workplaceGroupId ;
-		}
 		
-		TargetOrgIdenInfor targetOrgIdenInfor = null;
-		if (unit == TargetOrganizationUnit.WORKPLACE.value) {
-			targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,Optional.of(workplaceId),Optional.empty());
-		} else {
-			targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, Optional.empty(),Optional.of(workplaceGroupId));
-		}
+		TargetOrgIdenInfor targetOrgIdenInfor = getTargetOrgIdenInfor(param, resultStep1);
 
 		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(GeneralDate.today(), new DatePeriod(startDate, endDate), targetOrgIdenInfor);
 		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.getListEmp(param2);
@@ -145,8 +128,30 @@ public class StartKSU001Ver5 {
 			resultStep51 = displayInShift.getData(param51);
 		}
 		
-		StartKSU001Dto result = convertData(resultStep1, resultStep2, resultStep3, resultStep4, resultStep51, viewModeSelected);
+		StartKSU001Result result = convertData(resultStep1, resultStep2, resultStep3, resultStep4, resultStep51, viewModeSelected);
 		return result;
+	}
+	
+	private TargetOrgIdenInfor getTargetOrgIdenInfor(StartKSU001Param param, DataScreenQueryGetInforDto resultStep1) {
+		
+		int unit = 0;
+		String workplaceId = "";
+		String workplaceGroupId = "";
+		if (StringUtil.isNullOrEmpty(param.workplaceId, true) && StringUtil.isNullOrEmpty(param.workplaceGroupId, true)) {
+			unit = resultStep1.targetOrgIdenInfor.unit;
+			workplaceId = resultStep1.targetOrgIdenInfor.workplaceId;
+			workplaceGroupId = resultStep1.targetOrgIdenInfor.workplaceGroupId;
+		} else {
+			unit = param.unit;
+			workplaceId = param.workplaceId;
+			workplaceGroupId = param.workplaceGroupId ;
+		}
+		
+		if (unit == TargetOrganizationUnit.WORKPLACE.value) {
+			return new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,Optional.of(workplaceId),Optional.empty());
+		} else {
+			return new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, Optional.empty(),Optional.of(workplaceGroupId));
+		}
 	}
 	
 	private Integer calculateViewModeSelected(String viewModefromUI, List<Integer> useDisplayFormat) {
@@ -171,12 +176,12 @@ public class StartKSU001Ver5 {
 		return FuncCtrlDisplayFormatDto.WorkInfo.value;
 	}
 	
-	private StartKSU001Dto convertData(DataScreenQueryGetInforDto resultStep1,
+	private StartKSU001Result convertData(DataScreenQueryGetInforDto resultStep1,
 			List<EmployeeInformationImport> resultStep2, 
 			DataSpecDateAndHolidayDto resultStep3, 
 			DisplayInWorkInfoResult  resultStep4,
 			DisplayInShiftResult resultStep51, Integer viewModeSelected) {
-		StartKSU001Dto result = new StartKSU001Dto();
+		StartKSU001Result result = new StartKSU001Result();
 		
 		//	data tra ve cua step1	
 		DataBasicDto dataBasicDto = new DataBasicDto(resultStep1);
@@ -185,7 +190,8 @@ public class StartKSU001Ver5 {
 		
 		//  data tra ve cua step2
 		List<EmployeeInformationDto> listEmpInfo = resultStep2.stream().map(item -> {
-			return new EmployeeInformationDto(item.getEmployeeId(), item.getEmployeeCode(), item.getBusinessName().toString());
+			return new EmployeeInformationDto(item.getEmployeeId(), item.getEmployeeCode(),
+					item.getBusinessName().toString(), item.getSupportType());
 		}).collect(Collectors.toList());
 		result.setListEmpInfo(listEmpInfo);
 		

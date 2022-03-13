@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
@@ -99,6 +100,8 @@ public class RegisterWorkScheduleAllDayCommandHandler extends CommandHandler<Reg
 	@Inject
 	private SyClassificationAdapter syClassificationAdapter;
 	@Inject
+	private SupportOperationSettingRepository supportOperationSettingRepo;
+	@Inject
 	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 	@Inject
 	private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
@@ -115,7 +118,9 @@ public class RegisterWorkScheduleAllDayCommandHandler extends CommandHandler<Reg
 				flowWorkSet, flexWorkSet, predetemineTimeSet, workScheduleRepo, correctWorkSchedule,
 				interimRemainDataMngRegisterDateChange, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
 				sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter,
+				supportOperationSettingRepo,
 				empAffiliationInforAdapter, empMedicalWorkStyleHistoryRepo, nurseClassificationRepo);
+		
 		//2: not Optional<勤務予定>.isEmpty : 一日中に作業予定を作成する(Require, 作業コード)
 		if (!lstWorkSchedule.isEmpty()) {
 			for (WorkSchedule item : lstWorkSchedule) {
@@ -162,6 +167,8 @@ public class RegisterWorkScheduleAllDayCommandHandler extends CommandHandler<Reg
 		private BusinessTypeEmpService businessTypeEmpService;
 		@Inject
 		private SyClassificationAdapter syClassificationAdapter;
+		@Inject
+		private SupportOperationSettingRepository supportOperationSettingRepo;
 		
 		private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 		
@@ -289,8 +296,7 @@ public class RegisterWorkScheduleAllDayCommandHandler extends CommandHandler<Reg
 		
 		@Override
 		public SupportOperationSetting getSupportOperationSetting() {
-			// TODO developers are going to update
-			return null;
+			return supportOperationSettingRepo.get(AppContexts.user().companyId());
 		}
 
 		@Override

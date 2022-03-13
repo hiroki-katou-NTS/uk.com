@@ -82,7 +82,7 @@ public class ChangePeriodModeFinder {
 		
 		List<EmployeeInformationDto> listEmpInfo = resultShiftMode.listEmpInfo.stream().map(item -> {
 			return new EmployeeInformationDto(item.getEmployeeId(), item.getEmployeeCode(),
-					item.getBusinessName().toString());
+					item.getBusinessName().toString(), item.getSupportType());
 		}).collect(Collectors.toList());
 		result.setListEmpInfo(listEmpInfo);
 
@@ -124,7 +124,7 @@ public class ChangePeriodModeFinder {
 		
 		List<EmployeeInformationDto> listEmpInfo = resultOtherMode.listEmpInfo.stream().map(item -> {
 			return new EmployeeInformationDto(item.getEmployeeId(), item.getEmployeeCode(),
-					item.getBusinessName().toString());
+					item.getBusinessName().toString(), item.getSupportType());
 		}).collect(Collectors.toList());
 		result.setListEmpInfo(listEmpInfo);
 

@@ -19,6 +19,6 @@ public enum SupportType {
 	;
 
 
-	private final int value;
+	public final int value;
 
 }
