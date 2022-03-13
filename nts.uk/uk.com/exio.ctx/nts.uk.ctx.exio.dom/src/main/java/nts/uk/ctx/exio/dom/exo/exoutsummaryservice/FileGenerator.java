@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.ejb.Stateless;
 
+import com.aspose.pdf.facades.EncodingType;
+import nts.uk.ctx.exio.dom.exo.condset.EncodeType;
 import org.apache.commons.lang3.StringUtils;
 
 import com.aspose.cells.AutoFitterOptions;
@@ -37,7 +39,7 @@ public class FileGenerator extends AsposeCellsReportGenerator {
 	private static final int STANDARD_HEIGHT = 25;
 
 	public void generate(FileGeneratorContext generatorContext, FileData dataSource, String condSetName,
-			boolean drawHeader, Delimiter delimiter) {
+			boolean drawHeader, Delimiter delimiter, int enCodeType ) {
 		val reportContext = this.createEmptyContext(REPORT_ID);
 
 		val workbook = reportContext.getWorkbook();
@@ -81,7 +83,7 @@ public class FileGenerator extends AsposeCellsReportGenerator {
 		TxtSaveOptions opts = new TxtSaveOptions();
 		opts.setSeparatorString(delimiter.delimiter);
 		opts.setQuoteType(TxtValueQuoteType.NEVER);
-		opts.setEncoding(Encoding.getUTF8());
+		opts.setEncoding(enCodeType == EncodeType.UTF8WITHBOM.value? Encoding.getUTF8() : enCodeType == EncodeType.SHIFTJIS.value?  Encoding.getEncoding("SHIFT-JIS") : Encoding.getUTF8NoBOM());
 		
 		reportContext.saveWithOtherOption(this.createNewFile(generatorContext, dataSource.getFileName()), opts);
 	}

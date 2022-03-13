@@ -69,6 +69,10 @@ public class StdOutputCondSetCommand implements StdOutputCondSet.MementoGetter {
 
 	private int standType;
 
+	private int encodeType;
+
+	private String fileName;
+
 	private List<StdOutItemOrderCommand> listStandardOutputItem;
 
 }

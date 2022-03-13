@@ -6,12 +6,14 @@ import lombok.Builder;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.exio.dom.exo.category.CategoryCd;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+import java.util.Optional;
+
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.外部入出力.外部出力.出力条件設定.出力条件設定（定型）
- *
  * @author nws-minhnb
  */
 @Getter
@@ -64,6 +66,17 @@ public class StdOutputCondSet extends AggregateRoot {
 	 */
 	private StringFormat stringFormat;
 
+	// ＃123273①
+    /**
+     * 文字コード交換
+     */
+    private EncodeType encodeType;
+
+    /**
+     * 出力ファイル名
+     */
+    private Optional<ExternalOutputFileName> fileName;
+
 	/**
 	 * No args constructor.
 	 */
@@ -99,6 +112,8 @@ public class StdOutputCondSet extends AggregateRoot {
 		this.conditionSetName = new ExternalOutputConditionName(memento.getConditionSetName());
 		this.conditionOutputName = EnumAdaptor.valueOf(memento.getConditionOutputName(), NotUseAtr.class);
 		this.stringFormat = EnumAdaptor.valueOf(memento.getStringFormat(), StringFormat.class);
+		this.encodeType = EnumAdaptor.valueOf(memento.getEncodeType(),EncodeType.class);
+		this.fileName = Optional.ofNullable(StringUtil.isNullOrEmpty(memento.getFileName(),false)? null : new ExternalOutputFileName(memento.getFileName()));
 	}
 
 	/**
@@ -116,6 +131,8 @@ public class StdOutputCondSet extends AggregateRoot {
 		memento.setConditionSetName(this.conditionSetName.v());
 		memento.setConditionOutputName(this.conditionOutputName.value);
 		memento.setStringFormat(this.stringFormat.value);
+		memento.setEncodeType(this.encodeType.value);
+		memento.setFileName(this.fileName.map(i->i.v()).orElse(null));
 	}
 
 	/**
@@ -184,6 +201,10 @@ public class StdOutputCondSet extends AggregateRoot {
 		 * @param stringFormat the string format
 		 */
 		void setStringFormat(int stringFormat);
+
+		void setEncodeType(int encodeType);
+
+		void setFileName(String fileName);
 	}
 
 	/**
@@ -252,6 +273,10 @@ public class StdOutputCondSet extends AggregateRoot {
 		 * @return the string format
 		 */
 		int getStringFormat();
+
+		int getEncodeType();
+
+		String getFileName();
 	}
 
 }

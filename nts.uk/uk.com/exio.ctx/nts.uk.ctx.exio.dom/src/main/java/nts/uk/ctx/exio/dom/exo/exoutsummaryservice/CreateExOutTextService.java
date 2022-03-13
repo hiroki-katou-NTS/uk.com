@@ -500,7 +500,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 		
 		// fixbug 102767
 		// if(delimiter == Delimiter.COMMA) {
-		fileName = fileName + CSV;
+		if (stdOutputCondSet.getFileName().isPresent()){
+			fileName = stdOutputCondSet.getFileName().get().v() + CSV;
+		} else {
+			fileName = fileName + CSV;
+		}
+
 		// }
 		
 		for (OutputItemCustom outputItemCustom : outputItemCustomList) {
@@ -579,7 +584,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		}
 
 		FileData fileData = new FileData(fileName, header, csvData);
-		generator.generate(generatorContext, fileData, condSetName, drawHeader, delimiter);
+		generator.generate(generatorContext, fileData, condSetName, drawHeader, delimiter,stdOutputCondSet.getEncodeType().value);
 
 		// create file
 		Path pathTemp = generatorContext.getWorkingFiles().get(0).getTempFile().getPath();
@@ -908,7 +913,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				}else{
 					targetValue = fixedValue;
 				}
-				lineDataCSV.put(outputItemCustom.getStandardOutputItem().getOutputItemName().v(), targetValue);
+				lineDataCSV.put(outputItemCustom.getStandardOutputItem().getOutputItemCode().v(), targetValue);
 				index += outputItemCustom.getCtgItemDataList().size();
 				continue;
 			}
@@ -926,7 +931,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 						targetValue = stringFormat.character +stringFormat.character ;
 					}
 				}
-				lineDataCSV.put(outputItemCustom.getStandardOutputItem().getOutputItemName().v(), targetValue);
+				lineDataCSV.put(outputItemCustom.getStandardOutputItem().getOutputItemCode().v(), targetValue);
 				index += outputItemCustom.getCtgItemDataList().size();
 				continue;
 			}

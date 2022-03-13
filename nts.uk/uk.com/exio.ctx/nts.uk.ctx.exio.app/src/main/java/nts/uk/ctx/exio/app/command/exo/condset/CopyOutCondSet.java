@@ -23,6 +23,8 @@ public class CopyOutCondSet implements StdOutputCondSet.MementoGetter {
 	private String conditionSetName;
 	private int conditionOutputName;
 	private int stringFormat;
+	private int encodeType;
+	private String fileName;
 	
 	public CopyOutCondSet(boolean overWrite, String destinationName, String destinationCode, boolean result) {
 		this.overWrite = overWrite;
