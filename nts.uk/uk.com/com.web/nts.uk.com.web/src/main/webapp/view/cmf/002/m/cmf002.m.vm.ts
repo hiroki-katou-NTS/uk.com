@@ -54,9 +54,22 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         selectModeScreen: KnockoutObservable<number> = ko.observable();
 
         enableRequired: KnockoutObservable<boolean> = ko.observable(false);
-
+        enableFormatSelectionCls: KnockoutObservable<boolean> = ko.observable(false);
+        enableSelectTimeCls: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
+
+            self.inTimeDataFormatSetting().fixedValue.subscribe((value)=>{
+                //※M1　～　※M6
+                self.enableFormatSelectionCls(value == model.NOT_USE_ATR.NOT_USE );
+
+            })
+            self.inTimeDataFormatSetting().timeSeletion.subscribe((value)=> {
+                //※M5
+                self.enableSelectTimeCls (value == 0 && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+
+            })
+
         }
 
 
@@ -118,11 +131,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
                 }
             }
         }
-        //※M1　～　※M6
-        enableFormatSelectionCls() {
-            let self = this;
-            return (self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE );
-        }
+
 
         //※M2　
         enableFixedValueOperationCls() {
@@ -162,11 +171,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             }
             return enable;
         }
-        //※M5
-        enableSelectTimeCls () {
-            let self = this;
-            return (self.inTimeDataFormatSetting().timeSeletion() == model.getTimeSelected()[0].code && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
-        }
+
         //※M6
         decimalSelectionCls() {
             let self = this;
@@ -208,15 +213,19 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             self.selectModeScreen(params.screenMode);
             if (self.selectModeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL && params.formatSetting) {
                 // get data shared
-                self.inTimeDataFormatSetting(new model.InTimeDataFormatSetting(params.formatSetting));
+                self.inTimeDataFormatSetting().update(params.formatSetting);
+                self.inTimeDataFormatSetting().fixedValue.valueHasMutated();
+                self.inTimeDataFormatSetting().timeSeletion.valueHasMutated();
                 dfd.resolve();
             } else {
                 service.findPerformSettingByInTime().done(result => {
                     if (result) {
-                        self.inTimeDataFormatSetting(new model.InTimeDataFormatSetting(result));
+                        self.inTimeDataFormatSetting().update(result);
                     } else {
-                        self.inTimeDataFormatSetting(new model.InTimeDataFormatSetting(self.initInTimeDataFormatSetting));
+                        self.inTimeDataFormatSetting().update(self.initInTimeDataFormatSetting);
                     }
+                    self.inTimeDataFormatSetting().fixedValue.valueHasMutated();
+                    self.inTimeDataFormatSetting().timeSeletion.valueHasMutated();
                     dfd.resolve();
                 }).fail((err) => {
                     nts.uk.ui.dialog.alertError(error);

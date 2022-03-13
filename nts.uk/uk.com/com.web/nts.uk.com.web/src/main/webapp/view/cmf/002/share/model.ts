@@ -351,6 +351,23 @@ module nts.uk.com.view.cmf002.share.model {
             this.minuteFractionDigitProcessCls(params ? params.minuteFractionDigitProcessCls : null);
             this.valueOfNullValueSubs(params ? params.valueOfNullValueSubs : null);
         }
+        update(params: IInTimeDataFormatSetting) {
+            this.nullValueSubs(params ? params.nullValueSubs : null);
+            this.outputMinusAsZero(params ? params.outputMinusAsZero : null);
+            this.fixedValue(params ? params.fixedValue : null);
+            this.valueOfFixedValue(params ? params.valueOfFixedValue : null);
+            this.timeSeletion(params ? params.timeSeletion : null);
+            this.fixedLengthOutput(params ? params.fixedLengthOutput : null);
+            this.fixedLongIntegerDigit(params ? params.fixedLongIntegerDigit : null);
+            this.fixedLengthEditingMethod(params ? params.fixedLengthEditingMethod : null);
+            this.delimiterSetting(params ? params.delimiterSetting : null);
+            this.previousDayOutputMethod(params ? params.previousDayOutputMethod : null);
+            this.nextDayOutputMethod(params ? params.nextDayOutputMethod : null);
+            this.minuteFractionDigit(params ? params.minuteFractionDigit : null);
+            this.decimalSelection(params ? params.decimalSelection : null);
+            this.minuteFractionDigitProcessCls(params ? params.minuteFractionDigitProcessCls : null);
+            this.valueOfNullValueSubs(params ? params.valueOfNullValueSubs : null);
+        }
     }
 
     export interface ITimeDataFormatSetting {
