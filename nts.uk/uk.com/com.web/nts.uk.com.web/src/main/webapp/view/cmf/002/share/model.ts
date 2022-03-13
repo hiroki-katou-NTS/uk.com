@@ -678,6 +678,14 @@ module nts.uk.com.view.cmf002.share.model {
             this.fixedValue(params ? params.fixedValue : null);
             this.valueOfFixedValue(params ? params.valueOfFixedValue : null);
         }
+
+        update(params: IDateDataFormatSetting) {
+            this.formatSelection(params ? params.formatSelection : null);
+            this.nullValueSubstitution(params ? params.nullValueSubstitution : null);
+            this.valueOfNullValueSubs(params ? params.valueOfNullValueSubs : null);
+            this.fixedValue(params ? params.fixedValue : null);
+            this.valueOfFixedValue(params ? params.valueOfFixedValue : null);
+        }
     }
 
     export interface IDateDataFormatSetting {
