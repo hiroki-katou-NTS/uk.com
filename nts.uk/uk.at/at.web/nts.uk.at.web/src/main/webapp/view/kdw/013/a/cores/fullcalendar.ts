@@ -1163,6 +1163,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
             // calculate time on header
             let timesSet: KnockoutObservable<({ date: string | null; value: number | null; })[]> = ko.observable([]);
+            let showConfirmList:  KnockoutObservable<boolean> = ko.observable(false);
 
 
             datesSet.subscribe((ds) => { calTimSet(); });
@@ -2337,9 +2338,14 @@ module nts.uk.ui.at.kdw013.calendar {
                         if (header.length) {
                             let $days = header.find('tr:first');
                             let _events = document.createElement('tr');
+                            let __confirm = document.createElement('tr');
+                            let __confirm_list = document.createElement('tr');
                             let __times = document.createElement('tr');
+                            
 
                             header.append(_events);
+                            header.append(__confirm);
+                            header.append(__confirm_list);
                             header.append(__times);
                             $.Deferred()
                                 .resolve(true)
@@ -2427,6 +2433,10 @@ module nts.uk.ui.at.kdw013.calendar {
                                 .then(() => {
                                     // binding sum of work time within same day
                                     ko.applyBindingsToNode(__times, { component: { name: 'fc-times', params: { timesSet: timesSet, screenA: vm.params.screenA } } }, vm);
+                                    //binding confirm status 
+                                    ko.applyBindingsToNode(__confirm, { component: { name: 'fc-confirm', params: { timesSet: timesSet, screenA: vm.params.screenA , showConfirmList: showConfirmList  } } }, vm);
+                                    //binding comfirm list
+                                    ko.applyBindingsToNode(__confirm_list, { component: { name: 'fc-confirm-list', params: { timesSet: timesSet, screenA: vm.params.screenA, showConfirmList: showConfirmList } } }, vm);
                                     // binding note for same day
                                     ko.applyBindingsToNode(_events, { component: { name: 'fc-event-header', params: { screenA: vm.params.screenA,  data: attendancesSet, setting: $settings } } }, vm);
                                 })
@@ -4484,8 +4494,9 @@ module nts.uk.ui.at.kdw013.calendar {
                     let clickOnMaster = $(tg).closest('#master-content').length > 0 ;
                     let notClickOnbreakTime = !$(tg).closest('.fc-ckb-break-time').length > 0;
                     let notClickOnEventNote = !$(tg).closest('.fc-event-note').length > 0;
+                    let notClickOnEventConfirm = !$(tg).closest('.fc-confirm').length > 0;
                     
-                    if (clickOnMaster  && notClickOnbreakTime && notClickOnEventNote)
+                    if (clickOnMaster  && notClickOnbreakTime && notClickOnEventNote && notClickOnEventConfirm)
                         evt.preventDefault();
 
                     if (tg && !!ko.unwrap(position)) {
