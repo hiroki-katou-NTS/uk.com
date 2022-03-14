@@ -151,7 +151,7 @@ module nts.uk.com.view.cmm030.b {
       })))
       .then(() => {
         if (!_.isNil(vm.selectedEmployeeId())) {
-          vm.selectedEmployeeCode(_.find(vm.employeeList(), { id: vm.selectedEmployeeId() }).code);
+          vm.selectedEmployeeCode(_.find(vm.employeeList(), { id: vm.selectedEmployeeId() })?.code || "");
         } else {
           vm.selectedEmployeeCode("");
           vm.selectedEmployeeCode.valueHasMutated();
