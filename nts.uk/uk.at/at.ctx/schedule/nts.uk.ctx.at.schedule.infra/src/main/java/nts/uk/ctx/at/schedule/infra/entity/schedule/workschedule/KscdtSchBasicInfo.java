@@ -379,11 +379,10 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 							EnumAdaptor.valueOf(support.recipientTargerUnit, TargetOrganizationUnit.class), 
 							Optional.ofNullable(support.recipientTargerUnit == TargetOrganizationUnit.WORKPLACE.value ? support.recipientTargerId : null) ,
 							Optional.ofNullable(support.recipientTargerUnit == TargetOrganizationUnit.WORKPLACE_GROUP.value ? support.recipientTargerId : null));
-					SupportType supportType = EnumAdaptor.valueOf(support.supportType, SupportType.class);
 					TimeWithDayAttr start = support.start == null ? null : new TimeWithDayAttr(support.start);
 					TimeWithDayAttr end = support.end == null ? null : new TimeWithDayAttr(support.end);
 					Optional<TimeSpanForCalc> timeSpan = Optional.of(new TimeSpanForCalc(start, end));
-					return new SupportScheduleDetail(supportDestination, supportType, timeSpan);
+					return new SupportScheduleDetail(supportDestination, support.supportType == 0 ? SupportType.ALLDAY : SupportType.TIMEZONE, timeSpan);
 				}).collect(Collectors.toList());
 		supportSchedule = new SupportSchedule(supports);
 		
