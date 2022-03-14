@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.ws.exo.getinfotosmile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,6 +23,8 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosuresInfoDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.SmileClosureTime;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.SmileEmpClosure;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMerge;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMergeRepository;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.exio.app.find.exo.smilelink.TargetEmployeeFinder;
@@ -55,6 +58,9 @@ public class GetInformationForSmileWS extends WebService{
 	
 	@Inject
 	private EmployeeInfoPub employeePub;
+	
+	@Inject
+	private RemainMergeRepository remainRep;
 	
 	// 締め情報を取得する
 	@POST
@@ -148,4 +154,25 @@ public class GetInformationForSmileWS extends WebService{
 		List<String> employeeCd = employeeFinder.getTargetEmployee(param.getEmploymentCd(), GeneralDate.legacyDate(param.getStartDate()), GeneralDate.legacyDate(param.getEndDate()));
 		return employeeCd;
 	}
+
+	// 月別実績の締め情報を取得する
+	@POST
+	@Path("getmonthly-performance-closing-infor")
+	public List<MonthlyPerformanceInfoDto> getMonthPerformance(MonthPerformanceParam param){
+		String cid = AppContexts.user().companyId();
+		Optional<EmployeeInfoDtoExport> emInforExport = employeePub.getEmployeeInfo(cid, param.getEmployeeCd());
+		
+		if(!emInforExport.isPresent())
+			return new ArrayList<>();
+		
+		List<RemainMerge> remainList = remainRep.findByYearMonthOrderByStartYmd(emInforExport.get().getEmployeeId(), new YearMonth(param.getYearMonth()));
+		List<MonthlyPerformanceInfoDto> listPerformance = remainList.stream().map(x -> new MonthlyPerformanceInfoDto(x.getMonthlyDayoffRemainData().getClosureId(), 
+																														x.getMonthlyDayoffRemainData().getClosureDay(),
+																														x.getMonthlyDayoffRemainData().isLastDayis()))
+																			.collect(Collectors.toList());
+		
+		return listPerformance;
+	}
+
 }
+
