@@ -107,9 +107,10 @@ module nts.uk.com.view.cmm030.b {
         isShowSelectAllButton: false,
         disableSelection: false,
         isMultipleUse: false,
-        maxRows: 12
+        maxRows: 12,
+        tabindex: 3
       };
-      $("#B4").ntsListComponent(kcp005ComponentParams);
+      $("#B4").ntsListComponent(kcp005ComponentParams).then(() => $("#B4 > div > div[id$='_container']").attr("tabindex", 3));
     }
 
     /**
