@@ -18,11 +18,10 @@ module nts.uk.at.view.kdl016.a {
         supportModes: KnockoutObservableArray<any>;
         selectedMode: any;
         selectedCode: KnockoutObservableArray<number> = ko.observableArray([]);
-        igGridDataSource: ISupportInformation[] = [];
+        igGridDataSource: any[] = [];
         enableSupportTimezone: KnockoutObservable<boolean> = ko.observable(false);
 
         canDelete: KnockoutObservable<boolean> = ko.observable(false);
-        editBtnState: string = "";
 
         constructor(params: IScreenParameter) {
             super();
@@ -88,10 +87,10 @@ module nts.uk.at.view.kdl016.a {
                 periodEnd: vm.periodEnd()
             };
 
-            vm.$ajax(API.init, request).done(data => {
-                vm.igGridDataSource = data.supportInfoList || [];
-                vm.enableSupportTimezone(data.enableSupportInTimezone);
-                vm.editBtnState = vm.enableSupportTimezone() ? "" : "disabled";
+            vm.$ajax(API.init, request).done(response => {
+                let data = response.supportInfoList || [];
+                vm.enableSupportTimezone(response.enableSupportInTimezone);
+                vm.igGridDataSource = data.map((ds: any) => new SupportInformationModel(ds, vm.enableSupportTimezone()));
                 vm.initGrid(vm.igGridDataSource);
                 dfd.resolve();
             }).fail(error => {
@@ -120,8 +119,9 @@ module nts.uk.at.view.kdl016.a {
                 displayMode: mode
             };
 
-            vm.$ajax(API.get, request).done(data => {
-                vm.igGridDataSource = data || [];
+            vm.$ajax(API.get, request).done(response => {
+                let data = response || [];
+                vm.igGridDataSource = data.map((ds: any) => new SupportInformationModel(ds, vm.enableSupportTimezone()));
                 vm.initGrid(vm.igGridDataSource);
                 vm.selectedCode([]);
                 dfd.resolve();
@@ -155,10 +155,11 @@ module nts.uk.at.view.kdl016.a {
                 virtualizationMode: 'continuous',
                 columns: [
                     {headerText: '', key: 'id', dataType: 'number', width: '0px', hidden: true},
+                    { headerText: '', key: "editState", width: "50px", hidden: true, dataType: "string" },
                     // {headerText: '', key: "edit", dataType: "string", width: "30px", unbound: true, ntsControl: 'EditButton'},
                     {
                         key: "edit", width: "60px", headerText: '', dataType: "string", unbound: true,
-                        template: "<input type= \"button\"  onclick = \"nts.uk.at.view.kdl016.a.openEditModal(${id}) \" value= \" " + vm.$i18n('KDL016_19') + " \" ${editBtnState} />"
+                        template: "<input type= \"button\"  onclick = \"nts.uk.at.view.kdl016.a.openEditModal(${id}) \" value= \" " + vm.$i18n('KDL016_19') + " \" ${editState} />"
                     },
                     {
                         headerText: vm.$i18n('KDL016_14'),
@@ -500,6 +501,47 @@ module nts.uk.at.view.kdl016.a {
             nts.uk.ui.windows.sub.modal("/view/kdl/016/e/index.xhtml").onClosed(() => {
                 vm.loadSupportInfo(vm.selectedMode());
             });
+        }
+    }
+
+    class SupportInformationModel {
+        id: number;
+        employeeId: string;
+        periodStart: string;
+        periodEnd: string;
+        employeeCode: string;
+        employeeName: string;
+        supportOrgName: string;
+        supportOrgId: string;
+        supportOrgUnit: number;
+        supportType: number;
+        timeSpan: ITimeSpan;
+        supportTypeName: string;
+        periodDisplay: string;
+        employeeDisplay: string;
+        timeSpanDisplay: string;
+        displayMode: number;
+        editState: string;
+
+        constructor(data: ISupportInformation, enableSupportTimezone: boolean) {
+            const vm = this;
+            vm.id = data.id;
+            vm.employeeId = data.employeeId;
+            vm.periodStart = data.periodStart;
+            vm.periodEnd = data.periodEnd;
+            vm.employeeCode = data.employeeCode;
+            vm.employeeName = data.employeeName;
+            vm.supportOrgName = data.supportOrgName;
+            vm.supportOrgId = data.supportOrgId;
+            vm.supportOrgUnit = data.supportOrgUnit;
+            vm.supportType = data.supportType;
+            vm.timeSpan = data.timeSpan;
+            vm.supportTypeName = data.supportTypeName;
+            vm.periodDisplay = data.periodDisplay;
+            vm.employeeDisplay = data.employeeDisplay;
+            vm.timeSpanDisplay = data.timeSpanDisplay;
+            vm.displayMode = data.displayMode;
+            vm.editState = enableSupportTimezone === true ? '' : 'disabled';
         }
     }
 
