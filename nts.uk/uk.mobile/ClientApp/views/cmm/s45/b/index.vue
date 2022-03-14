@@ -58,15 +58,15 @@
         <!-- List App by Emp -->
         <div class="collapse">
           <div class="card-body py-0">
-            <ul class="list-group list-group-flush"  v-bind:class="{'list-group-selection': !modeAppr, 'ml-n3 mr-n3': modeAppr}" >
+            <ul class="list-group list-group-flush"  v-bind:class="{'list-group-selection': !modeAppr, 'ml-n3 mr-n3': modeAppr}">
               <li
-                class="list-group-item mb-0"
+                class="list-group-item mb-0 p-0"
                 v-for="(item, index) in emp.lstApp"
                 v-bind:key="index"
                 :value="item.id"
                 v-on:click="() => goToDetail(item)"
               >
-                <div v-if="!isLinkApp(item.opComplementLeaveApp) && (item.opAppStartDate == item.opAppEndDate)" class="row">
+                <div v-if="!isLinkApp(item.opComplementLeaveApp) && (item.opAppStartDate == item.opAppEndDate)" class="row ml-0 mr-0">
                   <!-- Check box -->
                   <div v-if="modeAppr" class="col-1 p-0 align-middle text-center pt-2">
                     <div v-if="item.appStatusNo == 5">
@@ -74,13 +74,15 @@
                     </div>
                   </div>
                   <!-- Reflect status -->
-                  <div class="col-3 pl-2 pr-0">
+                  <div class="col-3 pl-2 pr-0" v-bind:class="item.opBackgroundColor">
                     <span v-bind:class="item.reflectCssAppr" class="p-2 d-block">{{item.reflectStatus | i18n}}</span>
                   </div>
                   <!-- App content -->
 
 
-                  <div class="p-0" v-bind:class="{ 'col-9': !modeAppr, 'col-8': modeAppr }">
+                  <div class="p-0" v-bind:class="{ 'col-9': !modeAppr, 'col-8': modeAppr, 
+                                                  'bg-workinh-result-excess': item.opBackgroundColor=='bg-workinh-result-excess',
+                                                  'bg-pre-application-excess': item.opBackgroundColor=='bg-pre-application-excess' }">
                     <div
                       v-bind:class="item.appDateCss"
                       class="pl-2 pt-2 pb-2 d-inline-block pr-2"
@@ -90,7 +92,7 @@
                 </div>
 
 
-                <div v-if="isLinkApp(item.opComplementLeaveApp)" class="row">
+                <div v-if="isLinkApp(item.opComplementLeaveApp)" class="row ml-0 mr-0">
                   <!-- Check box -->
                   <div v-if="modeAppr" class="col-1 p-0 align-middle text-center pt-2">
                     <div v-if="item.appStatusNo == 5">
@@ -98,7 +100,7 @@
                     </div>
                   </div>
                   <!-- Reflect status -->
-                  <div class="col-3 pl-2 pr-0 pt-3">
+                  <div class="col-3 pl-2 pr-0">
                     <span v-bind:class="item.reflectCssAppr" class="p-2 d-block">{{item.reflectStatus | i18n}}</span>
                   </div>
                   <!-- App content -->
@@ -120,20 +122,20 @@
                     <div v-if="item.opComplementLeaveApp.complementLeaveFlg == 1" class="d-inline-block">
                       <div
                         v-bind:class="item.appDateCss"
-                        class="pl-2 pt-2 pb-2 d-block pr-2"
+                        class="pl-2 d-block pr-2"
                       >{{ item.appDate | date('MM/DD (ddd)')}}</div>
                       <div
                         v-bind:class="item.linkAppDateCss"
-                        class="pl-2 pt-2 pb-2 d-block pr-2"
+                        class="pl-2 d-block pr-2"
                       >{{ item.opComplementLeaveApp.linkAppDate | date('MM/DD (ddd)')}}</div>   
                     </div>
 
-                    <div class="pt-4 pb-2 d-inline-block">{{appContent(item.appName, item.prePostAtr)}}</div>
+                    <div class="pt-2 pb-1 d-inline-block">{{appContent(item.appName, item.prePostAtr)}}</div>
                   </div>
                 </div>
 
 
-                <div v-if="!isLinkApp(item.opComplementLeaveApp) && (item.opAppStartDate != item.opAppEndDate)" class="row">
+                <div v-if="!isLinkApp(item.opComplementLeaveApp) && (item.opAppStartDate != item.opAppEndDate)" class="row ml-0 mr-0">
                   <!-- Check box -->
                   <div v-if="modeAppr" class="col-1 p-0 align-middle text-center pt-2">
                     <div v-if="item.appStatusNo == 5">
@@ -159,7 +161,6 @@
                     >～{{ item.opAppEndDate | date('MM/DD (ddd)')}}</div>
                   </div>
                 </div>
-
 
 
 
