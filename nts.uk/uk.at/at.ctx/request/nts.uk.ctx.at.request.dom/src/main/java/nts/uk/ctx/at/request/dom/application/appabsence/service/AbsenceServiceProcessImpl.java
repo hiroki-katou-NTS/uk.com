@@ -113,6 +113,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaReposit
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
@@ -152,6 +154,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.DetermineChildCareManage;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.DetermineLongTermManage;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
@@ -374,6 +378,15 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 	
 	@Inject
 	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
+	
+	@Inject
+    private DetermineChildCareManage determineChildCareManage;
+	
+	@Inject
+    private DetermineLongTermManage determineLongTermManage;
+	
+	@Inject
+	private SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepository;
 
 	private final String FORMAT_DATE = "yyyy/MM/dd";
 
@@ -603,7 +616,21 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 					childNursingLeaveSetting.getTimeVacationDigestUnit().getManage(),
 					nursingLeaveSetting.getManageType());
 	    }catch (Exception ignored){}
-
+	    
+	    // 子の看護管理するかどうか判断する
+	    boolean checkChildCare = determineChildCareManage.algorithm(companyID, sID);
+	    if (nursingCareLeaveManagement.getChildNursingManagement().equals(ManageDistinct.YES)) {
+	        nursingCareLeaveManagement.setChildNursingManagement(checkChildCare ? ManageDistinct.YES : ManageDistinct.NO);
+	    }
+	    
+	    // 介護管理するかどうか判断する
+	    boolean checkLongTerm = determineLongTermManage.algorithm(companyID, sID);
+	    if (nursingCareLeaveManagement.getLongTermCareManagement().equals(ManageDistinct.YES)) {
+	        nursingCareLeaveManagement.setLongTermCareManagement(checkLongTerm ? ManageDistinct.YES : ManageDistinct.NO);
+	    }
+	    
+	    // ドメイン「特別休暇基本情報」を取得する
+	    List<SpecialLeaveBasicInfo> specialLeaveBasicInfos = specialLeaveBasicInfoRepository.listSPLeav(sID);
 
 	    // OUTPUTを作成して返す
 
@@ -613,7 +640,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		        substituteLeaveManagement,
 		        holidayManagement,
 		        overtime60hManagement,
-		        nursingCareLeaveManagement);
+		        nursingCareLeaveManagement, 
+		        specialLeaveBasicInfos.stream()
+		        .map(x -> new SpeHolidayRemainInfo(x.getUsed().value == 1, x.getSpecialLeaveCode().v()))
+		        .collect(Collectors.toList()));
 	}
 
 	private ComSubstVacation getComSubstVacation(String companyID) {

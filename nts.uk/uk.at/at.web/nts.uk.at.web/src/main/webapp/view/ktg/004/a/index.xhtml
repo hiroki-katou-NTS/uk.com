@@ -138,7 +138,7 @@
 						</table>
 						<table class="widget-table">
 							<tbody data-bind="foreach: specialHolidaysRemainings()">
-								<com:ko-if bind="_.find($parent.itemsSetting(), { 'item': code}).displayType">
+								<com:ko-if bind="_.find($parent.itemsSetting(), { 'item': code}).displayType && _.find($parent.vacationSetting.speHolidayRemainInfos, { 'specialHolidayCode': code }).manage">
 									<tr>
 										<td>
 											<span data-bind="text: name" class="row-name"></span>
