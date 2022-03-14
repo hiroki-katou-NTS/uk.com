@@ -225,5 +225,7 @@ module nts.uk.at.view.kdp002.a {
 }
 
 var setScroll = function (currentCode: number) {
-	$("#time-card-list_scrollContainer").scrollTop(24 * (currentCode - 3));
+	setTimeout(() => {
+		$("#time-card-list_scrollContainer").scrollTop(30 * (currentCode - 3));
+	}, 300);
 }
