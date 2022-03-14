@@ -592,7 +592,16 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                     howToPrintDate,
                     details
             );
-            this.setValue(cells, row, col - 1, value);
+            // 2022.03.14 - 3S - chinh.hm - issues #123326 - 変更 START
+            //this.setValue(cells, row, col - 1, value);
+            this.setValue(cells, row, col - 1, value.trim());
+            // 2022.03.14 - 3S - chinh.hm - issues #123326 - 変更 END
+
+            // 2022.03.14 - 3S - chinh.hm  - issues #123326    - 追加   START
+            this.setCenter(cells.get(row, col-1));
+            this.setCenter(cells.get(row, col));
+            // 2022.03.14 - 3S - chinh.hm  - issues #123326    - 追加   END
+
         } else {
             String value = this.formatDate(mngUnit,
                     OccurrenceDigClass.OCCURRENCE,
@@ -614,7 +623,15 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                     howToPrintDate,
                     details
             );
-            this.setValue(cells, row + 1, col - 1, value);
+            // 2022.03.14 - 3S - chinh.hm - issues #123326 - 変更 START
+            //this.setValue(cells, row + 1, col - 1, value);
+            this.setValue(cells, row + 1, col - 1, value.trim());
+            // 2022.03.14 - 3S - chinh.hm - issues #123326 - 変更 END
+
+            // 2022.03.14 - 3S - chinh.hm  - issues #123326    - 追加   START
+            this.setCenter(cells.get(row + 1, col -1));
+            this.setCenter(cells.get(row + 1, col));
+            // 2022.03.14 - 3S - chinh.hm  - issues #123326    - 追加   END
         } else {
             String value = this.formatDate(mngUnit,
                     OccurrenceDigClass.DIGESTION,
@@ -657,4 +674,12 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
         style.getFont().setColor(Color.getRed());
         cell.setStyle(style);
     }
+    // 2022.03.14 - 3S - chinh.hm  - issues #123326    - 追加   START
+    private void setCenter(Cell cell) {
+        Style style = cell.getStyle();
+        style.setVerticalAlignment(TextAlignmentType.CENTER);
+        style.setHorizontalAlignment(TextAlignmentType.CENTER_ACROSS);
+        cell.setStyle(style);
+    }
+    // 2022.03.14 - 3S - chinh.hm  - issues #123326    - 追加   END
 }
