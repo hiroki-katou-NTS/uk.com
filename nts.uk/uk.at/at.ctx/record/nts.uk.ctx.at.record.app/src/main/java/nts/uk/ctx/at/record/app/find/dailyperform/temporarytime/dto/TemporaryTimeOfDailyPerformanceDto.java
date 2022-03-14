@@ -37,8 +37,6 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 	
 	private String employeeId;
 
-	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = TIME_ZONE, 
-			listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<WorkLeaveTimeDto> workLeaveTime;
 
 	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
@@ -144,7 +142,7 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	@Override
 	public int size(String path) {
-		return 3;
+		return 10;
 	}
 
 	@Override
