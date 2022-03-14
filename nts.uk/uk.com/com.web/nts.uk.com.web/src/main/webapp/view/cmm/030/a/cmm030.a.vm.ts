@@ -151,7 +151,11 @@ module nts.uk.com.view.cmm030.a {
         employeeName: emp.businessName
       };
       vm.$window.modal("/view/cmm/030/f/index.xhtml", param)
-      .then(() => vm.focusA7_1());
+      .then(() => {
+        vm.focusA7_1();
+        vm.$blockui("grayout");
+        vm.displayEmployeeApprovers(vm.selectedEmployee()).always(() => vm.$blockui("clear"));
+      });
     }
 
     public openDialogG() {
