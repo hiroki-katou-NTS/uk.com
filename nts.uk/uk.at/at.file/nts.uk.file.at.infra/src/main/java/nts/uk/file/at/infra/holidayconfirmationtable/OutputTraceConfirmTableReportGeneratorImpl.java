@@ -162,7 +162,10 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                 if (dataSource.isLinking()) {
                     // print linked content
                     if (isPresent) {
-                        content.getObservationOfExitLeave().get().getListTyingInformation().sort(Comparator.comparing(LinkingInformation::getOccurrenceDate));
+                        // 2022.03.14 - 3S - chinh.hm - issues #123424  - 変更 START
+                        //content.getObservationOfExitLeave().get().getListTyingInformation().sort(Comparator.comparing(LinkingInformation::getOccurrenceDate));
+                        content.getObservationOfExitLeave().get().getListTyingInformation().sort(Comparator.comparing(LinkingInformation::getOccurrenceDate).thenComparing(LinkingInformation::getYmd));
+                        // 2022.03.14 - 3S - chinh.hm - issues #123424  - 変更 START
                     }
                     int col = 9;
                     int size = isPresent ? content.getObservationOfExitLeave().get().getListTyingInformation().size() : 1;
