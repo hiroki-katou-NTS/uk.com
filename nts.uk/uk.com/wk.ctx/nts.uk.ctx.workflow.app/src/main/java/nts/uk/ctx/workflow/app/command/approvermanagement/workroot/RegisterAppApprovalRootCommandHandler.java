@@ -122,8 +122,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				}
 				listCom.add(com);
 				//Add approval
-				this.addApproval(commonRoot, approvalId
-						);
+				this.addApproval(commonRoot, approvalId);
 			}
 			//find history by type and EmployRootAtr
 			if(data.getCheckMode() == 1){
@@ -523,14 +522,11 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	 * @param endDate
 	 * @param approvalId
 	 */
-	private void addApproval(CompanyAppRootADto commonRoot, String approvalId
-			//, String branchId
-			){
+	private void addApproval(CompanyAppRootADto commonRoot, String approvalId){
 		if(commonRoot == null){
 			return;
 		}
 		List<ApprovalPhase> listAppPhase = new ArrayList<>();
-		this.deleteAppPh(approvalId);
 		ApprovalPhase appPhaseN1 = this.checkAppPh(commonRoot.getAppPhase1(), approvalId);
 		ApprovalPhase appPhaseN2 = this.checkAppPh(commonRoot.getAppPhase2(), approvalId);
 		ApprovalPhase appPhaseN3 = this.checkAppPh(commonRoot.getAppPhase3(), approvalId);
@@ -566,8 +562,6 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			if(StringUtil.isNullOrEmpty(commonRoot.getHistoryId(), true)){
 				continue;
 			}
-			//xoa app Phase
-			this.deleteAppPh(approvalId);
 			ApprovalPhase appPhaseN1 = this.checkAppPh(commonRoot.getAppPhase1(), approvalId);
 			ApprovalPhase appPhaseN2 = this.checkAppPh(commonRoot.getAppPhase2(), approvalId);
 			ApprovalPhase appPhaseN3 = this.checkAppPh(commonRoot.getAppPhase3(), approvalId);
@@ -575,37 +569,23 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			ApprovalPhase appPhaseN5 = this.checkAppPh(commonRoot.getAppPhase5(), approvalId);
 			//Xu ly them,sua,xoa appPh and approver
 			if(appPhaseN1 != null){
-				this.addAppPhase(appPhaseN1, approvalId);
+				repoAppPhase.updateApprovalPhase(appPhaseN1);
 			}
 			if(appPhaseN2 != null && appPhaseN2.getApprovalForm().value != 0){
-				this.addAppPhase(appPhaseN2, approvalId);
-				this.addAppPhase(appPhaseN2, approvalId);
+				repoAppPhase.updateApprovalPhase(appPhaseN2);
 			}
 			if(appPhaseN3 != null && appPhaseN3.getApprovalForm().value != 0){
-				this.addAppPhase(appPhaseN3, approvalId);
+				repoAppPhase.updateApprovalPhase(appPhaseN3);
 			}
 			if(appPhaseN4 != null && appPhaseN4.getApprovalForm().value != 0){
-				this.addAppPhase(appPhaseN4, approvalId);
+				repoAppPhase.updateApprovalPhase(appPhaseN4);
 			}
 			if(appPhaseN5 != null && appPhaseN5.getApprovalForm().value != 0){
-				this.addAppPhase(appPhaseN5, approvalId);
+				repoAppPhase.updateApprovalPhase(appPhaseN5);
 			}
 		}
 	}
-	/**
-	 * add appPhase
-	 * @param appPhaseN1
-	 * @param approvalId
-	 */
-	private void addAppPhase(ApprovalPhase appPhaseN1, String approvalId){
-		if(appPhaseN1 == null){
-			return;
-		}
-		Optional<ApprovalPhase> appPh1 = repoAppPhase.getApprovalPhase(approvalId, appPhaseN1.getPhaseOrder());
-		if(!appPh1.isPresent()){//add new appPh and Approver
-			repoAppPhase.addApprovalPhase(appPhaseN1);
-		}
-	}
+
 	/**
 	 * check AppPhase(add or not add)
 	 * @param appPhase
@@ -652,10 +632,6 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	private void deleteAppPh(String approvalId){
 		List<ApprovalPhase> lstAppPhase = repoAppPhase.getAllApprovalPhasebyCode(approvalId);
 		if(!lstAppPhase.isEmpty()){
-			for (ApprovalPhase phase : lstAppPhase) {
-				//delete All Approver By Approval Phase Id
-				repoApprover.deleteAllApproverByAppPhId(approvalId, phase.getPhaseOrder());
-			}
 			//delete All Approval Phase By approvalId
 			repoAppPhase.deleteAllAppPhaseByApprovalId(approvalId);
 		}
