@@ -96,7 +96,7 @@ module nts.uk.at.view.kdp002.a {
                     var param = { contractCode: vm.$user.contractCode, ipv4Address: response.ipaddress };
                     vm.$ajax('at', 'at/record/kdp/common/get-work-location-regional-time', param)
                         .then((data: GetWorkPlaceRegionalTime) => {
-                            if (data && data.regional != 0 && data.workLocationName !== null && data.workLocationName !== '') {
+                            if (data.workLocationName !== null && data.workLocationName !== '') {
                                 self.regionalTime(data.regional);
                             } else {
                                 let inputWorkPlace = {
