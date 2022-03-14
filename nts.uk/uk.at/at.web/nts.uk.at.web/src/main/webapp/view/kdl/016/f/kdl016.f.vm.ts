@@ -14,7 +14,7 @@ module nts.uk.at.view.kdl016.f {
 
             $("#grid2").ntsGrid({
                 // width: '970px',
-                height: "285px",
+                height: "288px",
                 dataSource: vm.dataSource,
                 primaryKey: 'id',
                 virtualization: true,

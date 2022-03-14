@@ -163,6 +163,20 @@ public class UpdateSupportInforCommandHandler extends CommandHandlerWithResult<U
         List<SupportableEmpCannotRegisterDto> errorResults = new ArrayList<>();
         if (supportableCheckResult != SupportableEmployeeCheckService.CheckResult.REGISTABLE) {
             errorResults.add(SupportableEmpCannotRegisterDto.createWithError(supportableEmpChanged, this.getErrorMsg(supportableCheckResult)));
+            Map<String, EmployeeCodeAndDisplayNameImport> empErrorInfoMap = employeeAdapter.getEmployeeCodeAndDisplayNameImportByEmployeeIds(errorResults.stream().map(x -> x.getSupportableEmployee().getEmployeeId().v()).collect(Collectors.toList()))
+                    .stream().collect(Collectors.toMap(EmployeeCodeAndDisplayNameImport::getEmployeeId, e -> e));
+            DatePeriod period = supportableEmployee.getPeriod();
+            List<EmployeeErrorResult> employeeErrorResults = errorResults.stream().map(m -> new EmployeeErrorResult(
+                    empErrorInfoMap.get(m.getSupportableEmployee().getEmployeeId().v()).getEmployeeCode(),
+                    empErrorInfoMap.get(m.getSupportableEmployee().getEmployeeId().v()).getBusinessName(),
+                    period.start() == null ? "" : period.start().toString("yyyy/MM/dd"),
+                    period.end() == null ? "" : period.end().toString("yyyy/MM/dd"),
+                    m.getErrorInfo()
+            )).sorted(Comparator.comparing(EmployeeErrorResult::getStartDate)
+                    .thenComparing(Comparator.comparing(EmployeeErrorResult::getEmployeeCode)))
+                    .collect(Collectors.toList());
+
+            return new UpdateSupportInforResult(employeeErrorResults);
         }
 
         RequireImpl require = new RequireImpl(companyId, supportableEmployeeRepo, workScheduleRepo, supportOperationSettingRepo,
