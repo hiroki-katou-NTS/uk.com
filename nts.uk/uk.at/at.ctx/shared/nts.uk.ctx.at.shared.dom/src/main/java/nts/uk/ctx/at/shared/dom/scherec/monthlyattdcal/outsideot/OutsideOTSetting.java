@@ -383,6 +383,13 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 	private void getBreakDownTimes(RequireM1 require, MonthlyCalculation monthlyCalculation,
 			AgreementTimeBreakdown breakdown, Optional<RoundingSetOfMonthly> roundSet, List<Integer> breakdownItems) {
 		
+		/**　対象項目ID一覧　*/
+		val targetItems = new ArrayList<>(breakdownItems);
+		if (targetItems.contains(AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value)) {
+			/**　フレックス法定外時間を含む場合、時間外のフレックス週平均超過時間も取得する　*/
+			targetItems.add(AttendanceItemOfMonthly.CUR_MONTH_EXC_WA_TIME_OT.value);
+		}
+		
 		/** 取得した件数分ループ */
 		val converter = require.createMonthlyConverter();
 		val attendanceTime = new AttendanceTimeOfMonthly(monthlyCalculation.getEmployeeId(), 
@@ -392,7 +399,7 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 														monthlyCalculation.getProcPeriod());
 		attendanceTime.setMonthlyCalculation(monthlyCalculation);
 		converter.withAttendanceTime(attendanceTime);
-		val attendanceItemValues = converter.convert(breakdownItems);
+		val attendanceItemValues = converter.convert(targetItems);
 		
 		/** ⁂複数月対応で、複数の場合（フレックスと変形）以下の項目を値を補正する */
 		if (isMultiMonthMode(monthlyCalculation)) {
@@ -402,9 +409,23 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 		/** ○丸め処理 */
 		attendanceItemValues.stream().forEach(v -> {
 			val value = new AttendanceTimeMonth(v.valueOrDefault());
-			val rounded = roundSet.map(r -> r.itemRound(v.getItemId(), value)).orElse(value);
+			val roundItemId = getRoundItemId(v.getItemId());
+			val rounded = roundSet.map(r -> r.itemRound(roundItemId, value)).orElse(value);
 			breakdown.addTimeByAttendanceItemId(v.getItemId(), rounded);
 		});
+	}
+	
+	private int getRoundItemId(int itemId) {
+		
+		/** ⁂項目IDがフレックス法定内時間、フレックス法定外時間、時間外の週平均超過時間の場合、フレックスの丸め設定を見る */
+		if (itemId == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value
+				|| itemId == AttendanceItemOfMonthly.FLEX_LEGAL_TIME.value
+				|| itemId == AttendanceItemOfMonthly.CUR_MONTH_EXC_WA_TIME_OT.value) {
+			
+			return AttendanceItemOfMonthly.FLEX_TIME.value;
+		}
+		
+		return itemId;
 	}
 	
 	private void correctItems(List<ItemValue> attendanceItemValues, MonthlyRecordToAttendanceItemConverter converter) {
