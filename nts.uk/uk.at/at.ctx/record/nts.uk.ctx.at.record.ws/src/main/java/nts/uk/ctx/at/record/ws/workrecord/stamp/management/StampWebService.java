@@ -30,17 +30,20 @@ public class StampWebService extends WebService {
 	@Path("getAllStampingResult")
 	public List<DisplayScreenStampingResultDto> getDisplay(GetStampInfoInput input){
 		
-		DatePeriod datePerriod = new DatePeriod(GeneralDate.today().addDays(-3), GeneralDate.today());
+		int date = input.getRegionalTimeDifference() / 1440;
+		
+		DatePeriod datePerriod = new DatePeriod(GeneralDate.today().addDays(-3).addDays(date), GeneralDate.today().addDays(date));
 		GeneralDateTime changeTime = GeneralDateTime.now().addMinutes(input.getRegionalTimeDifference());
 		
 		if (changeTime.day() != GeneralDateTime.now().day()) {
 			if (GeneralDateTime.now().before(changeTime)) {
-				datePerriod = new DatePeriod(GeneralDate.today().addDays(-2), GeneralDate.today().addDays(1));
+				datePerriod = new DatePeriod(GeneralDate.today().addDays(-3).addDays(date + 1), GeneralDate.today().addDays(date + 1));
 			}
 			if (GeneralDateTime.now().after(changeTime)) {
-				datePerriod = new DatePeriod(GeneralDate.today().addDays(-4), GeneralDate.today().addDays(-1));
+				datePerriod = new DatePeriod(GeneralDate.today().addDays(-3).addDays(date - 1), GeneralDate.today().addDays(date - 1));
 			}
 		}
+		
 		
 		List<DisplayScreenStampingResultDto> data = displayScreenStampingResultFinder.getDisplay(datePerriod, input.getEmployeeId());
 		return data;
