@@ -208,7 +208,7 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 					.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
 					.then(() => {
 						vm.levelBackup = _.cloneDeep(vm.level());
-						vm.selectionDataBackup = _.cloneDeep(vm.selectionData());
+						vm.selectionDataBackup = _.cloneDeep(vm.selectionData);
 						vm.firstItemNameBackup = _.cloneDeep(vm.firstItemName());
 						vm.secondItemNameBackup = _.cloneDeep(vm.secondItemName());
 						vm.thirdItemNameBackup = _.cloneDeep(vm.thirdItemName());
@@ -217,6 +217,7 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 						vm.processMemoBackup = _.cloneDeep(vm.processMemo());
 						vm.attentionMemoBackup = _.cloneDeep(vm.attentionMemo());
 
+						vm.equalSelectionData(true);
 						vm.level.valueHasMutated();
 					})
 					.always(() => vm.$blockui('clear'));
