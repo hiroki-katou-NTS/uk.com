@@ -54,7 +54,7 @@
 
 #A5 tbody {
   display: block;
-  max-height: 210px;
+  max-height: calc(100vh - 440px);
   overflow-y: auto;
   padding-right: 10px;
 }
@@ -62,4 +62,5 @@
 #A9_1 {
   margin-left: 300px;
   min-height: 50px;
+  white-space: pre-wrap;
 }

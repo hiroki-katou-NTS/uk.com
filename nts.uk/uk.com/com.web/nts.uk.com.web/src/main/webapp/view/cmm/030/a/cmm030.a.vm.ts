@@ -151,7 +151,11 @@ module nts.uk.com.view.cmm030.a {
         employeeName: emp.businessName
       };
       vm.$window.modal("/view/cmm/030/f/index.xhtml", param)
-      .then(() => vm.focusA7_1());
+      .then(() => {
+        vm.focusA7_1();
+        vm.$blockui("grayout");
+        vm.displayEmployeeApprovers(vm.selectedEmployee()).always(() => vm.$blockui("clear"));
+      });
     }
 
     public openDialogG() {
@@ -425,7 +429,7 @@ module nts.uk.com.view.cmm030.a {
           approvalRootInfo: approvalRootInfo,
           approvalPhases: approvalPhases
         };
-      }).value();
+      }).filter(data => !_.isEmpty(data.approvalPhases)).value();
     }
 
     private updateApproverData(approverDisplayData: any) {
@@ -466,14 +470,14 @@ module nts.uk.com.view.cmm030.a {
     private validateInput(): JQueryPromise<boolean> {
       const vm = this;
       return vm.$validate().then(isValid => {
-        if (vm.approverInputList()[0].approvers()[0].sid === null) {
+        if (_.isEmpty(vm.approverInputList()[0].approvers()[0].sid)) {
           vm.$dialog.error({ messageId: "Msg_3293" });
           return false;
         }
         const isErr3294 = !!_.find(vm.approverInputList(), data => {
           const approvers = _.chain(data.approvers()).filter(approver => !_.isEmpty(approver.sid)).map(approver => approver.colId()).value();
           const isConsecutive = _.reduce(approvers, (prev: number, curr) => prev + 1 === curr ? curr : false, -1) !== false;
-          return approvers.length === 0 || approvers[0] !== 0 || !isConsecutive;
+          return (approvers.length > 0 && approvers[0] !== 0) || !isConsecutive;
         });
         if (isErr3294) {
           vm.$dialog.error({ messageId: "Msg_3294" });
