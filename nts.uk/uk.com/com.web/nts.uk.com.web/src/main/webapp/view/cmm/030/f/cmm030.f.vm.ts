@@ -59,7 +59,10 @@ module nts.uk.com.view.cmm030.f {
         }
         if (!_.isNil(period)) {
           vm.$blockui("grayout");
-          vm.getSelfApproverSetting(period).always(() => vm.$blockui("clear"));
+          vm.getSelfApproverSetting(period).always(() => {
+            vm.$nextTick(() => $("#F4_container").removeAttr("tabindex"));
+            vm.$blockui("clear");
+          });
         }
       });
     }
@@ -69,7 +72,10 @@ module nts.uk.com.view.cmm030.f {
       vm.$blockui("grayout");
       vm.getApproverHistory().always(() => {
         $("#F2_1").focus();
-        vm.$nextTick(() => $("th#F4_approverName1").attr("colspan", 5));
+        vm.$nextTick(() => {
+          $("th#F4_approverName1").attr("colspan", 5);
+          vm.$nextTick(() => $("#F4_container").removeAttr("tabindex"));
+        });
         vm.$blockui("clear");
       });
     }
