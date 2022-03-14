@@ -35,6 +35,9 @@ public class UpdateWorkLocationCmdHandler extends CommandHandler<InsertUpdateWor
 			// 2.2:
 			throw new BusinessException("Msg_1969");
 		}
+		WorkLocation updateDomain = command.toDomain();
+		// vì ở màn B thêm trực tiếp IP rồi nên ở đây không cần update lại nữa. set lại những IP đang có trong database để tránh trường hợp bị đè vào dữ liệu không đúng
+		updateDomain.setListIPAddress(optWorkLocation.get().getListIPAddress());
 		repo.updateWorkLocation(command.toDomain());
 	}
 

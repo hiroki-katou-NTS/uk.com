@@ -106,7 +106,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 // if (value == null) return;
                 self.items = [];
                 self.selectWorkLocation(value);
-                self.listIpCancel();
+                self.listIpCancel([]);
 
             });
             self.valueA5_2.subscribe(function (value) {
@@ -526,7 +526,8 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                     radius: self.radius(),
                     latitude: self.latitude(),
                     longitude: self.longitude(),
-                    listIPAddress: self.listIpCancel(),
+                    //update không cần set lại list IP vì màn B thêm trực tiếp rồi
+                    listIPAddress: self.isCreate() ? self.listIpCancel() : [],
                     workplace: self.listWorkPlaceIDs[0],
                     regionCode: self.selectAreaCode()
                 }

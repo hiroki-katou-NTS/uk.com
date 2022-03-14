@@ -36,6 +36,7 @@ public class WorkLocation extends AggregateRoot {
 	private StampMobilePossibleRange stampRange;
 
 	/** IPアドレス一覧 */
+	@Setter
 	private List<Ipv4Address> listIPAddress;
 
 	/** 職場 */
