@@ -957,7 +957,7 @@ module nts.uk.at.view.kdp005.a {
 				// startDate.setDate(startDate.getDate() - 3);
 				var wkpIds: string[];
                 vm.$window.storage("workLocationInfo").then((workLocInfo) => {
-                    let startDate = moment(vm.$date.now()).add(workLocInfo.regional, 'minutes').format();
+                    let startDate = moment(moment(vm.$date.now()).add(ko.unwrap(workLocInfo.regional), 'm').toDate());
                     if (loginInfo) {
                         wkpIds = loginInfo.selectedWP;
                     } else {
@@ -973,7 +973,7 @@ module nts.uk.at.view.kdp005.a {
                                     const param = {
                                         periodDto: {
                                             startDate: startDate,
-                                            endDate: moment(vm.$date.now()).add(workLocInfo.regional, 'minutes').format()
+                                            endDate: moment(moment(vm.$date.now()).add(ko.unwrap(workLocInfo.regional), 'm').toDate())
                                         },
                                         wkpIds: wkpIds
                                     }
@@ -1004,7 +1004,7 @@ module nts.uk.at.view.kdp005.a {
                         const param = {
                             periodDto: {
                                 startDate: startDate,
-                                endDate: moment(vm.$date.now()).add(workLocInfo.regional, 'minutes').format()
+                                endDate: moment(moment(vm.$date.now()).add(ko.unwrap(workLocInfo.regional), 'm').toDate())
                             },
                             wkpIds: loginInfo.selectedWP
                         }

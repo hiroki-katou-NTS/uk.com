@@ -205,10 +205,10 @@ module nts.uk.at.view.kdp.share {
                 vm.initStart(params);
 
             }
-            let time  = moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate();
+            let time = moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate();
             vm.time(time);
 
-            setInterval(() => vm.time(time), 300);
+            setInterval(() => vm.time(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate()), 300);
         }
         initStart(params) {
             let vm = this;
