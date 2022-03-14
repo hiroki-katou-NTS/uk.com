@@ -808,12 +808,10 @@ module nts.uk.ui.kdp001.a {
             const vm = this,
                 locationCd = $.urlParam('basyo'),
                 mode = $.urlParam('mode');
-
-            if (locationCd) {
-                vm.modeBasyo(true)
-                vm.$ajax('at', REST_API.GetIPAddress, { contactCode: vm.$user.contractCode }).then((address: any) => {
-                    vm.ipAddress = address.ipaddress;
-                }).then(() => {
+            vm.$ajax('at', REST_API.GetIPAddress, { contactCode: vm.$user.contractCode }).done((address: any) => {
+                vm.ipAddress = address.ipaddress;
+            }).then(() => {
+                if (locationCd) {
                     const param = {
                         contractCode: vm.$user.contractCode,
                         workLocationCode: locationCd,
@@ -825,53 +823,61 @@ module nts.uk.ui.kdp001.a {
                             vm.$ajax('at', REST_API.GetWorkLocationRagionalTime, param)
                                 .done((data: GetWorkPlaceRegionalTime) => {
                                     if (data) {
-                                        if (data.workPlaceId != null) {
+                                        if (data.workLocationName != null && data.workLocationName !== '') {
                                             vm.workplaceId(data.workPlaceId)
                                             vm.workLocationName(data.workLocationName);
                                             vm.regionalTime(data.regional);
+                                            vm.modeBasyo(true)
                                         } else {
-                                            let inputWorkPlace = {
-                                                contractCode: vm.$user.contractCode,
-                                                cid: vm.$user.companyId,
-                                                sid: vm.$user.employeeId,
-                                                workPlaceId: ""
-                                            }
-                                            vm.$ajax('at', REST_API.GetWorkPlaceRegionalTime, inputWorkPlace).then((data: GetWorkPlaceRegionalTime) => {
-                                                if (data) {
-                                                    vm.workplaceId(data.workPlaceId)
-                                                    vm.workLocationName(data.workLocationName);
-                                                    vm.regionalTime(data.regional);
-                                                }
-                                            })
+                                            vm.getTimeZone();
                                         }
                                     }
                                 })
                         })
-                })
-                    .always(() => {
-                        vm.$blockui('clear');
-                    });
-            } else {
-                let inputWorkPlace = {
-                    contractCode: vm.$user.contractCode,
-                    cid: vm.$user.companyId,
-                    sid: vm.$user.employeeId,
-                    workPlaceId: ""
+                        .always(() => {
+                            vm.$blockui('clear');
+                        });
+                } else {
+                    vm.getTimeZone();
                 }
-                vm.$ajax('at', REST_API.GetWorkPlaceRegionalTime, inputWorkPlace).then((data: GetWorkPlaceRegionalTime) => {
-                    if (data) {
-                        vm.workplaceId(data.workPlaceId)
-                        vm.workLocationName(data.workLocationName);
-                        vm.regionalTime(data.regional);
-                    }
-                })
-            }
+            });
 
             if (mode) {
                 if (mode === 'a') {
                     vm.modeA(true);
                 }
             }
+        }
+
+        getTimeZone() {
+            const vm = this;
+            let param = {
+                contractCode: vm.$user.contractCode,
+                // workLocationCode: locationCd,
+                ipv4Address: vm.ipAddress
+            }
+            vm.$ajax('at', REST_API.GetWorkLocationRagionalTime, param)
+                .done((data: GetWorkPlaceRegionalTime) => {
+                    if (data.workLocationName != null && data.workLocationName !== '') {
+                        vm.workplaceId(data.workPlaceId)
+                        vm.workLocationName(data.workLocationName);
+                        vm.regionalTime(data.regional);
+                    } else {
+                        let inputWorkPlace = {
+                            contractCode: vm.$user.contractCode,
+                            cid: vm.$user.companyId,
+                            sid: vm.$user.employeeId,
+                            workPlaceId: ""
+                        }
+                        vm.$ajax('at', REST_API.GetWorkPlaceRegionalTime, inputWorkPlace).then((data: GetWorkPlaceRegionalTime) => {
+                            if (data) {
+                                vm.workplaceId(data.workPlaceId)
+                                vm.workLocationName(data.workLocationName);
+                                vm.regionalTime(data.regional);
+                            }
+                        })
+                    }
+                })
         }
 
         stampData(employees?: Employee[]) {
@@ -987,7 +993,7 @@ module nts.uk.ui.kdp001.a {
         buttonName: string;
     }
 
-	//打刻種類
+    //打刻種類
     interface StampType {
         changeHalfDay: boolean; // 勤務種類を半休に変更する
         goOutArt: number; // 外出区分
