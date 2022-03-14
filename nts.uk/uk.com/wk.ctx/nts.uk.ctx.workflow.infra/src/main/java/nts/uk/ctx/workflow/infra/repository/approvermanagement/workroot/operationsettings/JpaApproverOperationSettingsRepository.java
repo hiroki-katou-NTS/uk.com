@@ -128,6 +128,14 @@ public class JpaApproverOperationSettingsRepository extends JpaRepository implem
 	@Override
 	public void insert(ApproverOperationSettings domain) {
 		WwfmtApproverOperation entity = this.toEntityOperation(domain);
+		List<WwfmtApproverAppUse> wwfmtApproverAppUses = this.queryProxy()
+			.query("SELECT m FROM WwfmtApproverAppUse m WHERE m.pk.cid = :cid", WwfmtApproverAppUse.class)
+			.setParameter("cid", AppContexts.user().companyId())
+			.getList();
+		if (!wwfmtApproverAppUses.isEmpty()) {
+			this.commandProxy().removeAll(wwfmtApproverAppUses);
+			this.getEntityManager().flush();
+		}
 		this.commandProxy().insert(entity);
 	}
 
