@@ -41,7 +41,8 @@
 <!-- 					<div class="valign-center control-group cf"> -->
 <!-- 						<button tabindex="1" class="pull-right" data-bind="click: exportCsv">#{i18n.getText('KFP001_37')}</button> -->
 <!-- 					</div> -->
-					<table id="single-list" tabindex="2" data-bind="ntsGridList: {								
+					<div>
+						<table id="single-list" tabindex="2" data-bind="ntsGridList: {
 						rows: 10,
 						dataSource: items,
 						name: '#[KFP001_38]',
@@ -52,10 +53,12 @@
 			                { headerText: '#{i18n.getText('KFP001_41')}', key: 'employeeName', width: 160, formatter: _.escape },
 			                { headerText: '#{i18n.getText('KFP001_42')}', key: 'processDate', width: 120, formatter: _.escape },
 			                { headerText: '#{i18n.getText('KFP001_43')}', key: 'errorMessage', width: 300, formatter: _.escape }
-			            ], 
+			            ],
 						multiple: false,
 						value: currentCode
 					}"></table>
+					</div>
+
 				</div>
 			</div>
 			<div id="functions-area-bottom">
