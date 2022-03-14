@@ -449,7 +449,6 @@ module nts.uk.ui.jqueryExtentions {
             let ROW_HEIGHT = 30;
             let DIFF_NUMBER = 2;
             
-            $grid.addClass("nts-gridlist");
             let gridId = $grid.attr('id');
             if (nts.uk.util.isNullOrUndefined(gridId)) {
                 throw new Error('the element NtsGridList must have id attribute.');
