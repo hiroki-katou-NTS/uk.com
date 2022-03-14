@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.app.command.modifyanyperiod;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.dom.anyperiodcorrection.formatsetting.AnyPeriodCorrectionDefaultFormat;
@@ -32,6 +33,9 @@ public class DuplicateModifyAnyPeriodCommandHandler extends CommandHandler<Dupli
         String name = command.getName();
         String codeCurrent = command.getCodeCurrent();
         //アルゴリズム「重複チェック」を実行する   (thực hiện thuật toán check duplicate)
+        if (formatSettingRepository.get(cid, code).isPresent()) {
+            throw new BusinessException("Msg_3");
+        }
         Optional<AnyPeriodCorrectionFormatSetting> oldDomainOpt = formatSettingRepository.get(cid, codeCurrent);
         boolean exit = oldDomainOpt.isPresent();
         if (exit) {
