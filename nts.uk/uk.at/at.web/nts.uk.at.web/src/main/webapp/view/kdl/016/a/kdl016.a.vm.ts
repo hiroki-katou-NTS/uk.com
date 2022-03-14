@@ -22,6 +22,7 @@ module nts.uk.at.view.kdl016.a {
         enableSupportTimezone: KnockoutObservable<boolean> = ko.observable(false);
 
         canDelete: KnockoutObservable<boolean> = ko.observable(false);
+        editBtnState: string = "";
 
         constructor(params: IScreenParameter) {
             super();
@@ -90,6 +91,7 @@ module nts.uk.at.view.kdl016.a {
             vm.$ajax(API.init, request).done(data => {
                 vm.igGridDataSource = data.supportInfoList || [];
                 vm.enableSupportTimezone(data.enableSupportInTimezone);
+                vm.editBtnState = vm.enableSupportTimezone() ? "" : "disabled";
                 vm.initGrid(vm.igGridDataSource);
                 dfd.resolve();
             }).fail(error => {
@@ -156,7 +158,7 @@ module nts.uk.at.view.kdl016.a {
                     // {headerText: '', key: "edit", dataType: "string", width: "30px", unbound: true, ntsControl: 'EditButton'},
                     {
                         key: "edit", width: "60px", headerText: '', dataType: "string", unbound: true,
-                        template: "<input type= \"button\"  onclick = \"nts.uk.at.view.kdl016.a.openEditModal(${id}) \" value= \" " + vm.$i18n('KDL016_19') + " \" />"
+                        template: "<input type= \"button\"  onclick = \"nts.uk.at.view.kdl016.a.openEditModal(${id}) \" value= \" " + vm.$i18n('KDL016_19') + " \" ${editBtnState} />"
                     },
                     {
                         headerText: vm.$i18n('KDL016_14'),
