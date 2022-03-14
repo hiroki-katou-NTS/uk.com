@@ -34,7 +34,7 @@ public class SupportFuncGetOrganizationScreenQuery {
         val supportOperationSetting = supportOperationSettingRepository.get(AppContexts.user().companyId());
 
         // 2. 応援の運用設定.利用するか==FALSE
-        if (!supportOperationSetting.isSupportDestinationCanSpecifySupporter()){
+        if (!supportOperationSetting.isUsed()){
             throw new BusinessException("Msg_3240");
         }
 
