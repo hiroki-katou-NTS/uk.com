@@ -1,6 +1,11 @@
 package nts.uk.shr.com.company;
 
+import lombok.Value;
+
+@Value
 public class CompanyId {
+
+	String value;
 	
 	public static String create(String tenantCode, String companyCode) {
 		return tenantCode + "-" + companyCode;
@@ -26,5 +31,13 @@ public class CompanyId {
 	
 	public static String getContractCodeOf(String companyId) {
 		return companyId.split("-")[0];
+	}
+
+	public String getContractCode() {
+		return getContractCodeOf(value);
+	}
+
+	public String getCompanyCode() {
+		return getCompanyCode(value);
 	}
 }

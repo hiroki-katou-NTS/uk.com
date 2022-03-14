@@ -94,9 +94,9 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 if (!vacationControl || vacationControl.nursingCareSetting == false) {
                     $('#rowNursingCareHoliday').addClass("hidden");
                 }
-                // if (!vacationControl || vacationControl.publicHolidaySetting == false) {
-                //     $('#publicHolidaySetting').addClass("hidden");
-                // }
+                 if (!vacationControl || vacationControl.publicHolidaySetting == false) {
+                     $('#publicHolidaySetting').addClass("hidden");
+                 }
                 if (!vacationControl || vacationControl.com60HourVacationSetting == false) {
                     $('#rowHD60HItemCheck').addClass("hidden");
                 }
@@ -203,11 +203,11 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             if (!vacationControl || vacationControl.nursingCareSetting == false) {
                 self.currentHoliday().nursingLeave(false);
             }
-            // if (!vacationControl || vacationControl.publicHolidaySetting == false) {
-            //     self.currentHoliday().outputItemsHolidays(false);
-            //     self.currentHoliday().outputHolidayForward(false);
-            //     self.currentHoliday().monthlyPublic(false);
-            // }
+             if (!vacationControl || vacationControl.publicHolidaySetting == false) {
+                 self.currentHoliday().outputItemsHolidays(false);
+                 self.currentHoliday().outputHolidayForward(false);
+                 self.currentHoliday().monthlyPublic(false);
+             }
             if (!vacationControl || vacationControl.listSpecialHoliday.length == 0) {
                 self.currentHoliday().listSpecialHoliday([]);
             }
@@ -369,11 +369,11 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 }
 
 
-                // if (!vacationControl || vacationControl.publicHolidaySetting == false) {
-                //     self.currentHoliday().outputItemsHolidays(false);
-                //     self.currentHoliday().outputHolidayForward(false);
-                //     self.currentHoliday().monthlyPublic(false);
-                // }
+                 if (!vacationControl || vacationControl.publicHolidaySetting == false) {
+                     self.currentHoliday().outputItemsHolidays(false);
+                     self.currentHoliday().outputHolidayForward(false);
+                     self.currentHoliday().monthlyPublic(false);
+                 }
                 if (self.isNewMode()) {
 
                     // create new holiday
@@ -605,12 +605,12 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.remainingChargeSubstitute = ko.observable(param ? param.remainingChargeSubstitute || false : false);
             self.representSubstitute = ko.observable(param ? param.representSubstitute || false : false);
             self.outputItemSubstitute = ko.observable(param ? param.outputItemSubstitute || false : false);
-            //self.outputHolidayForward = ko.observable(param ? param.outputHolidayForward || false : false);
-            self.outputHolidayForward = ko.observable(false);
-            //self.monthlyPublic = ko.observable(param ? param.monthlyPublic || false : false);
-            self.monthlyPublic = ko.observable(false);
-            //self.outputItemsHolidays = ko.observable(param ? param.outputItemsHolidays || false : false);
-            self.outputItemsHolidays = ko.observable(false);
+            self.outputHolidayForward = ko.observable(param ? param.outputHolidayForward || false : false);
+            //self.outputHolidayForward = ko.observable(false);
+            self.monthlyPublic = ko.observable(param ? param.monthlyPublic || false : false);
+            //self.monthlyPublic = ko.observable(false);
+            self.outputItemsHolidays = ko.observable(param ? param.outputItemsHolidays || false : false);
+            //self.outputItemsHolidays = ko.observable(false);
             self.childNursingLeave = ko.observable(param ? param.childNursingLeave || false : false);
             self.yearlyHoliday = ko.observable(param ? param.yearlyHoliday || false : false);
             //self.insideHours = ko.observable(param ? param.insideHours || false : false);
