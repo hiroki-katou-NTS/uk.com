@@ -110,8 +110,6 @@ public class GetRsvLeaRemNumWithinPeriod {
 			return Optional.empty();
 		param.setAggrPeriod(aggrPeriod.get());
 
-		AggrResultOfReserveLeave aggrResult = new AggrResultOfReserveLeave();
-
 		// 積立年休付与残数データ 取得
 		List<ReserveLeaveGrantRemainingData> rsvGrantRemainingDatas = new ArrayList<>();
 		rsvGrantRemainingDatas = require.reserveLeaveGrantRemainingData(employeeId);
@@ -133,12 +131,9 @@ public class GetRsvLeaRemNumWithinPeriod {
 		// 上限設定の期間を計算
 		UpperLimitSetting limit = calcMaxSettingPeriod(require, cacheCarrier, param.getCompanyId(), retentionYearlySet);
 		
-		for (val aggrPeriodWork : periodWorkList.getPeriodWorkList()) {
-			//残数処理
-			aggrResult = reserveLeaveInfo.remainNumberProcess(require, cacheCarrier, companyId, employeeId,
-					periodWorkList, aggrPeriodWork, tmpReserveLeaveMngs, aggrResult, annualLeaveSet, limit);
-			
-		}
+		//残数処理
+		AggrResultOfReserveLeave aggrResult = periodWorkList.remainNumberProcess(require, cacheCarrier, companyId,
+				employeeId, tmpReserveLeaveMngs, annualLeaveSet, limit, reserveLeaveInfo);
 
 		// 【渡すパラメータ】 積休情報 ← 積休の集計結果．積休情報（期間終了日時点）
 		ReserveLeaveInfo reserveLeaveInfoEnd = aggrResult.getAsOfPeriodEnd();

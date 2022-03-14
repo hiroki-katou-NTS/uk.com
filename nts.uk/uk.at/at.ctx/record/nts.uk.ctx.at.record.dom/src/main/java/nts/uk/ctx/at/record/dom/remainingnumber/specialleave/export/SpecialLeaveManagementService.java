@@ -54,16 +54,14 @@ public class SpecialLeaveManagementService {
 			CacheCarrier cacheCarrier,
 			ComplileInPeriodOfSpecialLeaveParam param) {
 			
-		// 特別休暇の集計結果情報
-		InPeriodOfSpecialLeaveResultInfor outputData = new InPeriodOfSpecialLeaveResultInfor();
 
 		// 社員情報を取得
 		EmployeeImport employee = require.employee(cacheCarrier,param.getSid());
-		if (employee == null) return outputData;
+		if (employee == null) return new InPeriodOfSpecialLeaveResultInfor();
 
 		// 「休暇の集計期間から入社前、退職後を除く」を実行する
 		Optional<DatePeriod> aggrPeriod = ConfirmLeavePeriod.sumPeriod(param.getComplileDate(), employee);
-		if (!aggrPeriod.isPresent()) return outputData;
+		if (!aggrPeriod.isPresent()) return new InPeriodOfSpecialLeaveResultInfor();
 
 		// パラメータ月次モード・その他モード
 		InterimRemainMngMode interimRemainMngMode = InterimRemainMngMode.of(param.isMode());
@@ -113,14 +111,10 @@ public class SpecialLeaveManagementService {
 		SpecialHolidayInterimMngData specialHolidayInterimMngData
 			= specialHolidayData(require, param);
 
-		// 特別休暇集計期間でループ
-		for (val aggregatePeriodWork : periodWorkList.getPeriodWorkList()){
-
-			//残数処理
-			outputData = specialLeaveInfo.remainNumberProcess(require, param.getCid(), param.getSid(), periodWorkList,
-					aggregatePeriodWork, specialHolidayInterimMngData, outputData, param.getSpecialLeaveCode(),
-					employee.getEntryDate(), param.getBaseDate());			
-		}
+		//残数処理
+		InPeriodOfSpecialLeaveResultInfor outputData = periodWorkList.remainNumberProcess(require, param.getCid(), param.getSid(),
+				specialHolidayInterimMngData, param.getSpecialLeaveCode(), employee.getEntryDate(), param.getBaseDate(),
+				specialLeaveInfo);
 
 		// 【渡すパラメータ】 特別休暇情報　←　特別休暇の集計結果．特別休暇情報（期間終了日時点）
 		SpecialLeaveInfo specialLeaveInfoEnd = outputData.getAsOfPeriodEnd();

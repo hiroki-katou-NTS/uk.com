@@ -206,7 +206,6 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		if (annualLeaveSet != null) isManageAnnualLeave = annualLeaveSet.isManaged();
 		if (!isManageAnnualLeave) return Optional.empty();
 
-		AggrResultOfAnnualLeave aggrResult = new AggrResultOfAnnualLeave();
 
 		// 社員、年休社員基本情報　取得
 		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoOpt = Optional.empty();
@@ -330,8 +329,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				isOverWriteOpt, forOverWriteListOpt,isOverWritePeriod);
 		
 		//残数処理
-		aggrResult = periodWorkList.remainNumberProcess(require, companyId, employeeId, tempAnnualLeaveMngs, annualLeaveSet,
-				annualLeaveInfo);		
+		AggrResultOfAnnualLeave aggrResult = periodWorkList.remainNumberProcess(require, companyId, employeeId,
+				tempAnnualLeaveMngs, annualLeaveSet, annualLeaveInfo);		
 		
 		// 【渡すパラメータ】 年休情報　←　年休の集計結果．年休情報（期間終了日時点）
 		AnnualLeaveInfo annualLeaveInfoEnd = aggrResult.getAsOfPeriodEnd();

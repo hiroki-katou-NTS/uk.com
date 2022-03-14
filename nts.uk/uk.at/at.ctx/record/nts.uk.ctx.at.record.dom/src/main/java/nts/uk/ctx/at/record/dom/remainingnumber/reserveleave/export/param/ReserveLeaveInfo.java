@@ -152,7 +152,7 @@ public class ReserveLeaveInfo implements Cloneable {
 	 * @return
 	 */
 	public AggrResultOfReserveLeave remainNumberProcess(RequireM1 require, CacheCarrier cacheCarrier, String companyId,
-			String employeeId, RsvLeaAggrPeriodWorkList periodWorkList, RsvLeaAggrPeriodWork aggrPeriodWork,
+			String employeeId, RsvLeaAggrPeriodWork aggrPeriodWork, GrantBeforeAfterAtr grantBeforeAfterAtr,
 			List<TmpResereLeaveMng> tmpReserveLeaveMngs, AggrResultOfReserveLeave aggrResult,
 			AnnualPaidLeaveSetting annualPaidLeaveSet, UpperLimitSetting limit) {
 		
@@ -161,8 +161,7 @@ public class ReserveLeaveInfo implements Cloneable {
 				aggrPeriodWork, tmpReserveLeaveMngs, aggrResult, annualPaidLeaveSet, limit);
 		
 		//消滅処理
-		aggrResult = lapsedProcess(aggrPeriodWork, aggrResult,
-				periodWorkList.isNextGrantPeriodAtr(aggrPeriodWork));
+		aggrResult = lapsedProcess(aggrPeriodWork, aggrResult, grantBeforeAfterAtr);
 		
 		return aggrResult;
 	}

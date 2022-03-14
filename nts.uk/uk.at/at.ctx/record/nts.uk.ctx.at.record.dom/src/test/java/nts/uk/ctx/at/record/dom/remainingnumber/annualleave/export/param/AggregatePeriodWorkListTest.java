@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 
@@ -9,7 +9,6 @@ import org.junit.Test;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class AggregatePeriodWorkListTest {
 

@@ -122,20 +122,18 @@ public class SpecialLeaveInfo implements Cloneable {
 	 */
 	public InPeriodOfSpecialLeaveResultInfor remainNumberProcess(SpecialLeaveManagementService.RequireM5 require,
 			String companyId, String employeeId,
-			SpecialLeaveAggregatePeriodWorkList periodWorkList,
 			SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork,
 			SpecialHolidayInterimMngData specialHolidayInterimMngData,
 			InPeriodOfSpecialLeaveResultInfor aggrResult,
 			int specialLeaveCode, GeneralDate entryDate,
-			GeneralDate baseDate){
+			GeneralDate baseDate, GrantBeforeAfterAtr grantBeforeAfterAtr){
 		
 		// 特休の付与・消化
 		aggrResult = lapsedGrantDigest(require, companyId, employeeId, specialLeaveAggregatePeriodWork,
 				specialHolidayInterimMngData, specialLeaveCode, entryDate, aggrResult, baseDate);
 		
 		//消滅処理
-		aggrResult = lapsedProcess(specialLeaveAggregatePeriodWork, aggrResult, 
-				periodWorkList.isNextGrantPeriodAtr(specialLeaveAggregatePeriodWork, entryDate));
+		aggrResult = lapsedProcess(specialLeaveAggregatePeriodWork, aggrResult, grantBeforeAfterAtr);
 		
 		
 		
