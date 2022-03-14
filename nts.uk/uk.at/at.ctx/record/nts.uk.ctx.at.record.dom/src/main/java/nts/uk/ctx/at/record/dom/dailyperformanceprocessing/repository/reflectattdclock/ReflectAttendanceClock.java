@@ -96,23 +96,25 @@ public class ReflectAttendanceClock {
 			if(!reflectDirectBounce(stamp, integrationOfDaily)) {
 				// 打刻を反映する
 				reflectStampOuput =  reflectStamping(actualStampAtr, stamp, integrationOfDaily, attendanceAtr, workNo);
+				changeDailyAtt.setAttendance(true);
 			} else {
 				
 				/** 日別勤怠の何が変更されたかを更新する */
 				changeDailyAtt.setDirectBounceClassifi(true);
 			}
 		}
-		TimeLeavingWork timeLeavingWork = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream()
-				.filter(c -> c.getWorkNo().v().intValue() == workNo).findFirst().get();
+		Optional<TimeLeavingWork> timeLeavingWork = integrationOfDaily.getAttendanceLeave().flatMap(x ->x.getTimeLeavingWorks().stream()
+				.filter(c -> c.getWorkNo().v().intValue() == workNo).findFirst());
 		Optional<TimeActualStamp> timeActualStamp = Optional.empty();
+		
 		if(attendanceAtr == AttendanceAtr.GOING_TO_WORK) {
-			timeActualStamp = timeLeavingWork.getAttendanceStamp();
+			timeActualStamp = timeLeavingWork.flatMap(x -> x.getAttendanceStamp());
 		}else {
-			timeActualStamp = timeLeavingWork.getLeaveStamp();
+			timeActualStamp = timeLeavingWork.flatMap(x -> x.getLeaveStamp());
 		}
 		//打刻反映回数を更新　（Update số lần phản ánh 打刻 ） 	
 		if(timeActualStamp.isPresent())
-		this.updateNumberStampReflect(actualStampAtr, timeActualStamp.get());
+		this.updateNumberStampReflect(actualStampAtr, timeActualStamp);
 		
 		return reflectStampOuput;
 		
@@ -571,13 +573,16 @@ public class ReflectAttendanceClock {
 	/**
 	 * 打刻反映回数を更新 (new_2020)
 	 */
-	public void updateNumberStampReflect(ActualStampAtr actualStampAtr,TimeActualStamp timeActualStamp) {
+	public void updateNumberStampReflect(ActualStampAtr actualStampAtr, Optional<TimeActualStamp> timeActualStamp) {
+		if(!timeActualStamp.isPresent()) {
+			return;
+		}
 		//パラメータ「実打刻区分」を確認する (Xác nhận param 「実打刻区分」)
 		if (actualStampAtr == ActualStampAtr.STAMP_REAL) {
 			//打刻反映回数を1増やす (Số lần 打刻反映回数(Số lần phản ánh check tay) tăng lên 1)
-			timeActualStamp.setPropertyTimeActualStamp(timeActualStamp.getActualStamp(), timeActualStamp.getStamp(),
-					timeActualStamp.getNumberOfReflectionStamp() == null ? 1
-							: timeActualStamp.getNumberOfReflectionStamp() + 1);
+			timeActualStamp.get().setPropertyTimeActualStamp(timeActualStamp.get().getActualStamp(), timeActualStamp.get().getStamp(),
+					timeActualStamp.get().getNumberOfReflectionStamp() == null ? 1
+							: timeActualStamp.get().getNumberOfReflectionStamp() + 1);
 		}
 	}
 	
