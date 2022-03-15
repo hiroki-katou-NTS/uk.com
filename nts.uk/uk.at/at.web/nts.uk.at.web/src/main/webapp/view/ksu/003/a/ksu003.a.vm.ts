@@ -2515,6 +2515,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						taskScheduleDetail : taskScheduleDetail
 					}
 				})
+				
 				service.addTaskWorkSchedule(self.taskPasteData).done((rs: any) => {
                     if (type != 1) {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -6234,6 +6235,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		deleteTask(index: any, id: any) {
 			let self = this;
+			index = Number(index);
 			let filDel = _.filter(self.lstChartTask, (x: any) => {
 				return x.id === id && x.line == index; // tim task bi xoa
 			});
@@ -6241,102 +6243,55 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (filDel.length == 0) {
 				return;
 			}
-			let indTaskData = _.findIndex(self.taskData, (ind: any) => {
-				return ind.empID === self.lstEmpId[index].empId;
+			let indTaskData = _.findIndex(self.taskPasteData.lstTaskScheduleDetailEmp, (ind: any) => {
+				return ind.empId === self.lstEmpId[index].empId;
 			})
-			let filTask = _.isNil(self.taskData[indTaskData]) ? [] : self.taskData[indTaskData].taskScheduleDetail, lstTaskScheduleDetailEmp: any = [];
-
-			lstTaskScheduleDetailEmp.push({
-				empId: self.dataScreen003A().employeeInfo[index].empId,
-				taskScheduleDetail: []
-			});
-
-			if (_.isEmpty(self.taskPasteData)) {
-				self.taskPasteData = ({
-					lstTaskScheduleDetailEmp: lstTaskScheduleDetailEmp,
-					ymd: self.targetDate()
-				});
-			}
-			if (filTask.length > 0) {
-				let taskFil = _.filter(filTask, (x: any) => {
-					return x.timeSpanForCalcDto.start != filDel[0].start && x.timeSpanForCalcDto.end != filDel[0].end;
-				});
-
-				let taskScheduleDetail: any = [];
-				_.forEach(taskFil, (x: any) => {
-					taskScheduleDetail.push({
-						taskCode: x.taskCode,
-						timeSpanForCalcDto: {
-							start: x.timeSpanForCalcDto.start,
-							end: x.timeSpanForCalcDto.end
-						}
-					})
-				})
-				let ind = _.findIndex(self.taskPasteData.lstTaskScheduleDetailEmp, (ind: any) => {
-					return ind.empId === self.dataScreen003A().employeeInfo[index].empId;
-				})
-				if (ind != -1) {
-
-					self.taskPasteData.lstTaskScheduleDetailEmp[ind].taskScheduleDetail = taskScheduleDetail;
-				} else {
-					self.taskPasteData.lstTaskScheduleDetailEmp.push({
-						empId: self.dataScreen003A().employeeInfo[index].empId,
-						taskScheduleDetail: taskScheduleDetail
-					});
-				}
-			}
-
-			_.forEach(filDel, (x: any) => {
-				_.remove(self.lstChartTask, (y: any) => {
-					return y.start == x.start && y.end == x.end && id == x.id;
-				});
-			})
-
-			let ind = _.findIndex(self.taskPasteData.lstTaskScheduleDetailEmp, (x: any) => {
-				return x.empId === self.dataScreen003A().employeeInfo[index].empId;
-			})
-
-			_.forEach(filDel, (x: any) => {
-				if (!_.isEmpty(self.taskPasteData) && ind != -1)
-					_.remove(self.taskPasteData.lstTaskScheduleDetailEmp[ind].taskScheduleDetail, (y: any) => {
-						return y.taskCode == x.code && y.timeSpanForCalcDto.start == x.start && y.timeSpanForCalcDto.end == x.end;
-					})
-
-				if (filTask.length > 0 && !_.isNil(self.taskData[indTaskData])) {
-					_.remove(self.taskData[indTaskData].taskScheduleDetail, (y: any) => {
-						return y.timeSpanForCalcDto.start == x.start && y.timeSpanForCalcDto.end == x.end;
-					});
-				}
-			})
-
-			if (_.isEmpty(self.taskPasteData)) {
-				self.taskPasteData = ({
-					lstTaskScheduleDetailEmp: lstTaskScheduleDetailEmp,
-					ymd: self.targetDate()
-				});
-			}
-
-			if (!_.isNil(self.taskData[indTaskData]) && _.isEmpty(self.taskData[indTaskData].taskScheduleDetail) && filTask.length > 0) {
-				if (ind != -1)
-					self.taskPasteData.lstTaskScheduleDetailEmp[ind].taskScheduleDetail.length = 0;
-			}
-			// thuc hien xoa khi da co data task tu truoc
-			if (!_.isNil(self.taskData[indTaskData]) && self.taskData[indTaskData].taskScheduleDetail.length > 0 && filTask.length > 0 && ind != -1) {
-				if (self.taskPasteData.lstTaskScheduleDetailEmp[ind].taskScheduleDetail.length > 0 &&
-					(self.taskPasteData.lstTaskScheduleDetailEmp[ind].taskScheduleDetail.length != self.taskData[indTaskData].taskScheduleDetail.length)) {
-					self.taskPasteData.lstTaskScheduleDetailEmp[ind].taskScheduleDetail.length = 0;
-					_.forEach(self.taskData[indTaskData].taskScheduleDetail, (x: any) => {
-						self.taskPasteData.lstTaskScheduleDetailEmp[ind].taskScheduleDetail.push({
-							taskCode: x.taskCode,
-							timeSpanForCalcDto: {
-								start: x.timeSpanForCalcDto.start,
-								end: x.timeSpanForCalcDto.end
+			let lstTaskSche : any = [];
+			_.forEach(ruler.gcChart, (z : any) => {
+				Object.keys(z).forEach(function (key) {
+				    if(_.includes(key, "_") || _.includes(key, "pgc")) {
+						if (_.includes(z[key].definedType, "TASK")) {
+							if (z[key].lineNo == index) {
+								lstTaskSche.push({
+									taskCode: z[key].definedType.replace("TASK", ""),
+									timeSpanForCalcDto: {
+										start: z[key].start * 5,
+										end: z[key].end * 5
+									}
+								})
 							}
-						})
-					});
+						}
+					}
+				});
+			})
+			let lstRemove : any = [];
+			if(indTaskData != -1) {
+				_.forEach(self.taskPasteData.lstTaskScheduleDetailEmp[indTaskData].taskScheduleDetail, (x : any, index : any) => {
+				let filDelete = _.filter(lstTaskSche, (y : any) => {
+					return y.timeSpanForCalcDto.start <= x.timeSpanForCalcDto.start && y.timeSpanForCalcDto.end >= x.timeSpanForCalcDto.end;
+				})
+					if (filDelete.length == 0) {
+						lstRemove.push(index);
+					}
+				})
+				
+				_.forEach(lstRemove, (z : any) => {
+					self.taskPasteData.lstTaskScheduleDetailEmp[indTaskData].taskScheduleDetail.splice(z, 1)
+				})
+			} else {
+				let lstTaskScheduleDetailEmp : any = [];
+				lstTaskScheduleDetailEmp.push({
+					empId: self.dataScreen003A().employeeInfo[index].empId,
+	 				taskScheduleDetail: lstTaskSche
+	 			});
+
+	 			if (_.isEmpty(self.taskPasteData)) {
+	 				self.taskPasteData = ({
+	 					lstTaskScheduleDetailEmp: lstTaskScheduleDetailEmp,
+	 					ymd: self.targetDate()
+					})
 				}
 			}
-
 			self.enableSave(true);
 		}
 
@@ -6543,6 +6498,20 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			} else {
 				self.taskPasteData.lstTaskScheduleDetailEmp[indx].taskScheduleDetail = _.uniqWith(self.taskPasteData.lstTaskScheduleDetailEmp[indx].taskScheduleDetail, function(arrVal: any, othVal: any) {
 					return (arrVal.timeSpanForCalcDto.start == othVal.timeSpanForCalcDto.start && arrVal.timeSpanForCalcDto.end == othVal.timeSpanForCalcDto.end);
+				});
+			}
+			
+			if (self.taskPasteData.lstTaskScheduleDetailEmp[indx].taskScheduleDetail.length > 0){
+				self.lstChartTask = [];
+				_.forEach(self.taskPasteData.lstTaskScheduleDetailEmp[indx].taskScheduleDetail, (x: any, index : any) => {
+						self.lstChartTask.push({
+						start: x.timeSpanForCalcDto.start,
+						end: x.timeSpanForCalcDto.end,
+						id: index == 0 ? id : `pgc${x.timeSpanForCalcDto.start + x.timeSpanForCalcDto.end + x.taskCode}`,
+						line: index,
+						code: x.taskCode,
+						idR : index == 0 ? id : `pgc${x.timeSpanForCalcDto.start + x.timeSpanForCalcDto.end + x.taskCode}` 
+					});
 				});
 			}
 
