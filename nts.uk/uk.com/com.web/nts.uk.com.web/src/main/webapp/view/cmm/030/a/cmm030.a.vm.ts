@@ -51,13 +51,15 @@ module nts.uk.com.view.cmm030.a {
         if (_.isNil(vm.role())) {
           return false;
         }
-        return vm.role().approvalAuthority && vm.role().employeeReferenceRange !== ONLY_MYSELF;
+        const isAttendance = __viewContext.user.role.isInCharge.attendance;
+        return (vm.role().approvalAuthority && vm.role().employeeReferenceRange !== ONLY_MYSELF) || isAttendance;
       });
       vm.isEnableFuncButton = ko.computed(() => {
         if (_.isNil(vm.role()) || vm.isNewMode()) {
           return false;
         }
-        return vm.role().approvalAuthority && vm.role().employeeReferenceRange !== ONLY_MYSELF && !vm.isUpdating();
+        const isAttendance = __viewContext.user.role.isInCharge.attendance;
+        return ((vm.role().approvalAuthority && vm.role().employeeReferenceRange !== ONLY_MYSELF) || isAttendance) && !vm.isUpdating();
       });
       vm.isVisibleA4_3 = ko.computed(() => {
         return !vm.isNewMode() && moment.utc(vm.startDate(), "YYYY/MM/DD").isAfter(moment.utc());
