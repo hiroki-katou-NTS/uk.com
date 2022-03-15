@@ -51,13 +51,15 @@ module nts.uk.com.view.cmm030.a {
         if (_.isNil(vm.role())) {
           return false;
         }
-        return vm.role().approvalAuthority && vm.role().employeeReferenceRange !== ONLY_MYSELF;
+        const isAttendance = __viewContext.user.role.isInCharge.attendance;
+        return (vm.role().approvalAuthority && vm.role().employeeReferenceRange !== ONLY_MYSELF) || isAttendance;
       });
       vm.isEnableFuncButton = ko.computed(() => {
         if (_.isNil(vm.role()) || vm.isNewMode()) {
           return false;
         }
-        return vm.role().approvalAuthority && vm.role().employeeReferenceRange !== ONLY_MYSELF && !vm.isUpdating();
+        const isAttendance = __viewContext.user.role.isInCharge.attendance;
+        return ((vm.role().approvalAuthority && vm.role().employeeReferenceRange !== ONLY_MYSELF) || isAttendance) && !vm.isUpdating();
       });
       vm.isVisibleA4_3 = ko.computed(() => {
         return !vm.isNewMode() && moment.utc(vm.startDate(), "YYYY/MM/DD").isAfter(moment.utc());
@@ -201,12 +203,13 @@ module nts.uk.com.view.cmm030.a {
         systemType: 1,
         showEmployeeSelection: true,
         showQuickSearchTab: true,
-        showAdvancedSearchTab: true,
+        showAdvancedSearchTab: false,
         showBaseDate: true,
-        showClosure: true,
-        showAllClosure: true,
-        showPeriod: true,
+        showClosure: false,
+        showAllClosure: false,
+        showPeriod: false,
         periodFormatYM: false,
+        maxPeriodRange: "1",
 
         /** Required parameter */
         baseDate: moment.utc(),
@@ -220,18 +223,16 @@ module nts.uk.com.view.cmm030.a {
         /** Quick search tab options */
         showAllReferableEmployee: true,
         showOnlyMe: true,
-        showSameDepartment: true,
-        showSameDepartmentAndChild: true,
         showSameWorkplace: true,
         showSameWorkplaceAndChild: true,
 
         /** Advanced search properties */
         showEmployment: true,
-        showDepartment: true,
+        showDepartment: false,
         showWorkplace: true,
-        showClassification: true,
+        showClassification: false,
         showJobTitle: true,
-        showWorktype: true,
+        showWorktype: false,
         isMutipleCheck: true,
 
         /**
@@ -438,8 +439,8 @@ module nts.uk.com.view.cmm030.a {
       vm.isUpdating(false);
       if (_.isEmpty(approverDisplayData.approvalSettingInformations)) {
         vm.startDate("");
-        _.forEach(vm.approverInputList(), approverInput => approverInput.wipeData(vm.$i18n("CMM030_25")));
       }
+      _.forEach(vm.approverInputList(), approverInput => approverInput.wipeData(vm.$i18n("CMM030_25")));
       _.forEach(vm.approverInputList(), approverInput => {
         const settingInfo = _.find(approverDisplayData.approvalSettingInformations, 
           (data: any) => vm.getSettingId(data.personApprovalRoot.apprRoot) === approverInput.id);
