@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepo
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudCriteriaSameStampOfSupportRepo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudgmentCriteriaSameStampOfSupport;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectSupportDataWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.IGetAppForCorrectionRuleRequire;
@@ -56,7 +57,10 @@ public class SupportWorkReflectionProcess implements ICorrectSupportDataWork {
 	
 	@Override
 	public SupportDataWork correctSupportDataWork(IGetAppForCorrectionRuleRequire require,
-			IntegrationOfDaily integrationOfDaily) {
+			IntegrationOfDaily integrationOfDaily, ScheduleRecordClassifi classification) {
+		if(classification == ScheduleRecordClassifi.SCHEDULE) {
+			return new SupportDataWork(Optional.of(integrationOfDaily), Optional.empty());
+		}
 		RequireImpl impl = new RequireImpl(require);
 		return CorrectSupportDataWork.correctSupportDataWork(impl, integrationOfDaily);
 	}

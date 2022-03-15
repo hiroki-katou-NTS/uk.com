@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
@@ -178,8 +179,8 @@ public class CorrectionAttendanceRuleRequireImpl implements CorrectionAttendance
 
 	@Override
 	public SupportDataWork correctSupportDataWork(IGetAppForCorrectionRuleRequire require,
-			IntegrationOfDaily integrationOfDaily) {
-		return iCorrectSupportDataWork.correctSupportDataWork(require, integrationOfDaily);
+			IntegrationOfDaily integrationOfDaily, ScheduleRecordClassifi classification) {
+		return iCorrectSupportDataWork.correctSupportDataWork(require, integrationOfDaily, classification);
 	}
 
 }

@@ -9,6 +9,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -55,7 +56,7 @@ public class CorrectionAttendanceRule {
 		//出退勤変更後の補正
 		if(changeAtt.attendance) {
 
-			SupportDataWork workImport = require.correctSupportDataWork(require, afterDomain);
+			SupportDataWork workImport = require.correctSupportDataWork(require, afterDomain, changeAtt.getClassification());
 			
 			if(workImport != null)
 				afterDomain = workImport.getIntegrationOfDaily().orElse(afterDomain);
@@ -112,7 +113,7 @@ public class CorrectionAttendanceRule {
 		//CorrectionShortWorkingHour.correct
 		public IntegrationOfDaily correctShortWorkingHour(String companyId, IntegrationOfDaily domainDaily);
 		
-		public SupportDataWork correctSupportDataWork(IGetAppForCorrectionRuleRequire require, IntegrationOfDaily integrationOfDaily);
+		public SupportDataWork correctSupportDataWork(IGetAppForCorrectionRuleRequire require, IntegrationOfDaily integrationOfDaily, ScheduleRecordClassifi classification);
 		
 	}
 }
