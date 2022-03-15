@@ -7,7 +7,7 @@ import java.util.Optional;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.tran.AtomTask;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
@@ -38,11 +38,11 @@ public class AnnualLeaveProcess {
 		/** 年休残数更新 */
 		return AtomTask.of(RemainAnnualLeaveUpdating.updateRemainAnnualLeave(require, cid, output.getAnnualLeave(), period, empId))
 						/** 年休暫定データ削除 */
-						.then(deleteTempAnnualLeave(require, cid, period.getPeriod()))
+						.then(deleteTempAnnualLeave(require, empId, period.getPeriod().end()))
 						/** 積立年休残数更新 */
 						.then(RemainReserveAnnualLeaveUpdating.updateReservedAnnualLeaveRemainNumber(require, output.getReserveLeave(), period, empId))
 						/** 積立年休暫定データ削除 */
-						.then(deleteTempResereLeave(require, cid, period.getPeriod()));
+						.then(deleteTempResereLeave(require, empId, period.getPeriod().end()));
 	}
 
 	/**
@@ -92,8 +92,8 @@ public class AnnualLeaveProcess {
 	 * @param period
 	 * @return
 	 */
-	public static AtomTask deleteTempAnnualLeave(Require require, String employeeId, DatePeriod period){
-		return AtomTask.of(() -> require.deleteTempAnnualSidPeriod(employeeId, period));
+	public static AtomTask deleteTempAnnualLeave(Require require, String employeeId, GeneralDate ymd){
+		return AtomTask.of(() -> require.deleteTempAnnualBySidBeforeTheYmd(employeeId, ymd));
 	}
 	
 	/**
@@ -103,8 +103,8 @@ public class AnnualLeaveProcess {
 	 * @param period
 	 * @return
 	 */
-	public static AtomTask deleteTempResereLeave(Require require, String employeeId, DatePeriod period){
-		return AtomTask.of(() -> require.deleteTempResereSidPeriod(employeeId, period));
+	public static AtomTask deleteTempResereLeave(Require require, String employeeId, GeneralDate ymd){
+		return AtomTask.of(() -> require.deleteTempResereBySidBeforeTheYmd(employeeId, ymd));
 	}
 
 	public static interface RequireM1 extends GetAnnAndRsvRemNumWithinPeriod.RequireM2 {
@@ -114,7 +114,7 @@ public class AnnualLeaveProcess {
 	public static interface Require extends RequireM1,
 		RemainAnnualLeaveUpdating.RequireM5, RemainReserveAnnualLeaveUpdating.RequireM5{
 		
-		void deleteTempAnnualSidPeriod(String sid, DatePeriod period);
-		void deleteTempResereSidPeriod(String sid, DatePeriod period);	
+		void deleteTempAnnualBySidBeforeTheYmd(String sid, GeneralDate ymd);
+		void deleteTempResereBySidBeforeTheYmd(String sid, GeneralDate ymd);	
 	}
 }

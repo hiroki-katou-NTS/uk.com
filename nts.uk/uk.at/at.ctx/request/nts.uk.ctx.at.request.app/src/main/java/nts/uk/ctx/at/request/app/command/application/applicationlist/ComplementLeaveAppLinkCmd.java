@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.AppHdsubRecDto;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.ComplementLeaveAppLink;
 
 /**
@@ -20,6 +21,11 @@ public class ComplementLeaveAppLinkCmd {
 	 * 振休振出フラグ
 	 */
 	private Integer complementLeaveFlg;
+	
+	/**
+	 * 振休振出同時申請管理
+	 */
+	private AppHdsubRecDto appHdsubRec;
 	
 	/**
 	 * 申請
@@ -39,6 +45,7 @@ public class ComplementLeaveAppLinkCmd {
 	public ComplementLeaveAppLink toDomain() {
 		ComplementLeaveAppLink complementLeaveAppLink = new ComplementLeaveAppLink();
 		complementLeaveAppLink.setComplementLeaveFlg(complementLeaveFlg==null ? null : complementLeaveFlg);
+		complementLeaveAppLink.setAppHdsubRec(appHdsubRec==null ? null : appHdsubRec.toDomain());
 		complementLeaveAppLink.setApplication(application==null ? null : application.toDomain());
 		complementLeaveAppLink.setLinkAppID(Strings.isBlank(linkAppID) ? null : linkAppID);
 		complementLeaveAppLink.setLinkAppDate(Strings.isBlank(linkAppDate) ? null : GeneralDate.fromString(linkAppDate, "yyyy/MM/dd"));

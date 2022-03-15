@@ -85,7 +85,7 @@ public class TotalCondition {
 
 		/** ○上限チェック */
 		if (this.upperLimitSettingAtr == UseAtr.Use) {
-			if (this.thresoldUpperLimit.get().v() < time) {
+			if (this.thresoldUpperLimit.get().v() <= time) {
 				return false;
 			}
 		}
