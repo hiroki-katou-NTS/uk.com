@@ -21256,7 +21256,7 @@ var nts;
                         var HEADER_HEIGHT = 30;
                         var ROW_HEIGHT = 30;
                         var DIFF_NUMBER = 2;
-                        var $grid = $(element).addClass("nts-gridlist");
+                        var $grid = $(element);
                         var gridId = $grid.attr('id');
                         if (nts.uk.util.isNullOrUndefined(gridId)) {
                             throw new Error('the element NtsGridList must have id attribute.');
@@ -21431,6 +21431,7 @@ var nts;
                                 }
                             }
                         });
+                        $grid.closest('.ui-iggrid').addClass('nts-gridlist');
                         if (data.itemDraggable) {
                             new SwapHandler().setModel(new GridSwapList($grid, optionsValue)).enableDragDrop(data.dataSource);
                         }
@@ -21705,7 +21706,7 @@ var nts;
                             }
                         });
                         $grid.data("ui-changed", false);
-                        $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
+                        $grid.closest('.ui-iggrid').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
                     };
                     return NtsGridListBindingHandler;
                 }());

@@ -12,6 +12,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
@@ -24,6 +25,11 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.reserveleave.KshdtInter
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaTmpResereLeaveMngRepository extends JpaRepository implements TmpResereLeaveMngRepository{
+	
+	private static final String DELETE_BY_SID_CD_BEFORETHEYMD = "DELETE FROM KshdtInterimHDSTK a"
+			+ " WHERE a.pk.sid = :sid "
+			+ " AND a.pk.ymd <= :ymd";
+	
 	
 	@Override
 	public Optional<TmpResereLeaveMng> getById(String resereMngId) {
@@ -110,6 +116,17 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 		.setParameter("end", period.end())
 		.executeUpdate();
 
+	}
+
+
+	
+	@Override
+	public void deleteBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+		this.getEntityManager().createQuery(DELETE_BY_SID_CD_BEFORETHEYMD)
+		.setParameter("sid", sid)
+		.setParameter("ymd", ymd)
+		.executeUpdate();
+		
 	}
 
 }

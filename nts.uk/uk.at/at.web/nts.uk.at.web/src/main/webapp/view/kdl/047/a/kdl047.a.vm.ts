@@ -130,11 +130,11 @@ module nts.uk.at.view.kdl047.a.screenModel {
     // Event on click A8_1 item
     onClickDecision(): void {
       const vm = this;
-      if (vm.objectDisplay.itemNameLine.displayInputCategory === 1) {
+      if (vm.objectDisplay.itemNameLine.displayInputCategory === 2) {
         $('#A3_2').trigger('validate');
       }
       _.defer(() => {
-        if (!$('#A3_2').ntsError('hasError')) {
+        if (!$('#A3_2').ntsError('hasError') || vm.attendanceRecordName() === "") {
           let attendanceRecord: AttendanceRecordExport = new AttendanceRecordExport();
 
           // 項目名行の表示フラグ == True：表示すると表示入力区分 == ２：入力可能

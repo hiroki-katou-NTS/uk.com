@@ -53,8 +53,17 @@ public class EmpInfoTerminalRegisterCommandHandler extends CommandHandler<EmpInf
 
 		EmpInfoTerminalResgiterAndUpdateCommand command = context.getCommand();
 		
-		StampInfoConversion stampInfoConversion;
+		StampInfoConversion stampInfoConversion;		
+		
+		// 1: get(ログイン契約コード、端末No): 就業情報端末
+		Optional<EmpInfoTerminal> empInfoTerminalWithCode = repository.getEmpInfoTerminal(
+				new EmpInfoTerminalCode(command.getEmpInfoTerCode()), new ContractCode(contractCode));
 
+		// 2: 　[就業情報端末　not empty]:()
+		if (empInfoTerminalWithCode.isPresent()) {
+			throw new BusinessException("Msg_1895");
+		}
+		//	　3:　set()
 		if (command.getModelEmpInfoTer() == 9) {
 			stampInfoConversion = new MSConversionInfo(
 						command.getLstMSConversion().stream()
@@ -84,7 +93,6 @@ public class EmpInfoTerminalRegisterCommandHandler extends CommandHandler<EmpInf
 				Optional.ofNullable(command.getWorkLocationCode() == null || command.getWorkLocationCode().trim().length() == 0 ? null : new WorkLocationCD(command.getWorkLocationCode())),
 				command.getWorkplaceId().equals("") ? Optional.empty() : Optional.of(new WorkplaceId(command.getWorkplaceId())));
 		
-		// 5: set()
 		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminal.EmpInfoTerminalBuilder(
 				Optional.ofNullable(command.getIpAddress1() == null ? null 
 						: Ipv4Address.parse(command.getIpAddress())),
@@ -95,29 +103,9 @@ public class EmpInfoTerminalRegisterCommandHandler extends CommandHandler<EmpInf
 						.modelEmpInfoTer(ModelEmpInfoTer.valueOf(command.getModelEmpInfoTer()))
 						.intervalTime(new MonitorIntervalTime(command.getIntervalTime()))
 						.empInfoTerMemo(Optional.ofNullable(command.getMemo()).map(e -> new EmpInfoTerMemo(e)))
-						.build();
-
-		// 1: get(MACアドレス): 就業情報端末
-		Optional<EmpInfoTerminal> empInfoTerminalWithMac = repository
-				.getEmpInfoTerWithMac(new MacAddress(command.getMacAddress()), new ContractCode(contractCode));
-		
-		// 2: [就業情報端末 not empty]:()
-		if (empInfoTerminalWithMac.isPresent()) {
-			throw new BusinessException("Msg_1931");
-		}
-
-		// 3: get(ログイン契約コード、端末No): 就業情報端末
-		Optional<EmpInfoTerminal> empInfoTerminalWithCode = repository.getEmpInfoTerminal(
-				new EmpInfoTerminalCode(command.getEmpInfoTerCode()), new ContractCode(contractCode));
-
-		// 4: [就業情報端末　not empty]:()
-		if (empInfoTerminalWithCode.isPresent()) {
-			throw new BusinessException("Msg_1895");
-		}
-		
-		// 6: persist()
+						.build();		
+		// 4: persist()
 		this.repository.insert(empInfoTerminal);
-
 	}
 
 }

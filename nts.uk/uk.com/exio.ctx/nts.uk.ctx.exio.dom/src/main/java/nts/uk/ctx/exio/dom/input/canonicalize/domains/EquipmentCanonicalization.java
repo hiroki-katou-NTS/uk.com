@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.val;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
@@ -44,7 +43,7 @@ public class EquipmentCanonicalization extends IndependentCanonicalization{
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
 		return Arrays.asList(DomainDataColumn.CID,
-								new DomainDataColumn("CODE", DataType.STRING));
+								new DomainDataColumn(Items.設備コード, "CODE", DataType.STRING));
 	}
 
 	@Override
