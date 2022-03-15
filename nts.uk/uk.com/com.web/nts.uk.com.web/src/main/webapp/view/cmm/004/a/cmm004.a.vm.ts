@@ -60,7 +60,7 @@ module nts.uk.com.view.cmm004.a.screenModel {
           vm.$errors('clear');
           return;
         }
-        vm.$validate();
+
       })
     }
 
