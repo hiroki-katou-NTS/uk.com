@@ -203,12 +203,13 @@ module nts.uk.com.view.cmm030.a {
         systemType: 1,
         showEmployeeSelection: true,
         showQuickSearchTab: true,
-        showAdvancedSearchTab: true,
+        showAdvancedSearchTab: false,
         showBaseDate: true,
-        showClosure: true,
-        showAllClosure: true,
-        showPeriod: true,
+        showClosure: false,
+        showAllClosure: false,
+        showPeriod: false,
         periodFormatYM: false,
+        maxPeriodRange: "1",
 
         /** Required parameter */
         baseDate: moment.utc(),
@@ -222,18 +223,16 @@ module nts.uk.com.view.cmm030.a {
         /** Quick search tab options */
         showAllReferableEmployee: true,
         showOnlyMe: true,
-        showSameDepartment: true,
-        showSameDepartmentAndChild: true,
         showSameWorkplace: true,
         showSameWorkplaceAndChild: true,
 
         /** Advanced search properties */
         showEmployment: true,
-        showDepartment: true,
+        showDepartment: false,
         showWorkplace: true,
-        showClassification: true,
+        showClassification: false,
         showJobTitle: true,
-        showWorktype: true,
+        showWorktype: false,
         isMutipleCheck: true,
 
         /**
