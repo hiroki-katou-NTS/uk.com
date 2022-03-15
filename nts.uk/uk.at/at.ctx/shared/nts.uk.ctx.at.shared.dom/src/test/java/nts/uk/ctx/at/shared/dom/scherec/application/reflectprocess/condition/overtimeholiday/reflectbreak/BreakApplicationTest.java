@@ -102,7 +102,8 @@ public class BreakApplicationTest {
 	@Test
 	public void test4() {
 		List<TimeZoneWithWorkNo> breakTimeOp = new ArrayList<>();
-		breakTimeOp.add(new TimeZoneWithWorkNo(2, 482, 1082));// NO1
+		breakTimeOp.add(new TimeZoneWithWorkNo(1, 480, 1020));// NO1
+		breakTimeOp.add(new TimeZoneWithWorkNo(2, 1050, 1200));// NO1
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
 				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 休憩時間帯(480, 1020)
 
@@ -110,7 +111,7 @@ public class BreakApplicationTest {
 
 		assertThat(dailyApp.getBreakTime().getBreakTimeSheets())
 				.extracting(x -> x.getBreakFrameNo().v(), x -> x.getStartTime().v(), x -> x.getEndTime().v())
-				.contains(Tuple.tuple(1, 480, 1020), Tuple.tuple(2, 482, 1082));
+				.contains(Tuple.tuple(1, 480, 1020), Tuple.tuple(2, 1050, 1200));
 
 	}
 }

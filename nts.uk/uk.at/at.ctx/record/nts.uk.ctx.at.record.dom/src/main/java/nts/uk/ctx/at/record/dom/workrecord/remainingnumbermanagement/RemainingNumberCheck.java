@@ -19,5 +19,5 @@ public interface RemainingNumberCheck {
      * @param timeDigest
      * @return
      */
-    RemainNumberClassification determineCheckRemain(String cId, List<String> workTypeCodes, Optional<TimeDigestionParam> timeDigest);
+    RemainNumberClassification determineCheckRemain(String cId, List<String> workTypeCodes, Optional<TimeDigestionParam> timeDigest, String sId);
 }

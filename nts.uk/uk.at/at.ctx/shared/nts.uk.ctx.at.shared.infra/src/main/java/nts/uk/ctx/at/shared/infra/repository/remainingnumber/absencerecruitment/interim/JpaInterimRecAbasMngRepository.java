@@ -553,4 +553,29 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 		return this.queryProxy().query(GET_ABS_DATE, KrcdtInterimHdSubMng.class).setParameter("sid", sid)
 				.setParameter("ymd", lstDate).getList().stream().map(x -> toDomainAbsMng(x)).collect(Collectors.toList());
 	}
+
+	private static final String DELETE_FURIKYU_BY_SID_BEFORETHEYMD = "DELETE FROM KrcdtInterimHdSubMng c "
+			+ " WHERE c.pk.sid = :sid AND c.pk.ymd <= :ymd";
+	
+	@Override
+	public void deleteAbsMngBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+		this.getEntityManager().createQuery(DELETE_FURIKYU_BY_SID_BEFORETHEYMD)
+		.setParameter("sid", sid)
+		.setParameter("ymd", ymd)
+		.executeUpdate();
+		
+	}
+	
+
+	private static final String DELETE_FURISYUTSU_BY_SID_BEFORETHEYMD = "DELETE FROM KrcdtInterimRecMng c "
+			+ " WHERE c.pk.sid = :sid AND c.pk.ymd <= :ymd";
+
+	@Override
+	public void deleteRecMngBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+		this.getEntityManager().createQuery(DELETE_FURISYUTSU_BY_SID_BEFORETHEYMD)
+		.setParameter("sid", sid)
+		.setParameter("ymd", ymd)
+		.executeUpdate();
+		
+	}
 }

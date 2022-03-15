@@ -279,7 +279,7 @@ public class DisplayRemainingHolidayNumber {
             // OUTPUT「子の看護残数」をセットする
             childCareVacation = new NursingVacationDto(
                     childCareSettings.isManaged(), 
-                    childCareSettings.getTimeCareNursingSetting().getManageDistinct().equals(ManageDistinct.YES), 
+                    childCareSettings.getTimeVacationDigestUnit().getManage().equals(ManageDistinct.YES), 
                     childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays(), 
                     childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().isPresent() ? 
                             childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().get() : 0);
@@ -305,7 +305,7 @@ public class DisplayRemainingHolidayNumber {
             // OUTPUT「介護残数」をセットする
             longTermCareVacation = new NursingVacationDto(
                     nursingLeaveSetting.isManaged(), 
-                    nursingLeaveSetting.getTimeCareNursingSetting().getManageDistinct().equals(ManageDistinct.YES), 
+                    nursingLeaveSetting.getTimeVacationDigestUnit().getManage().equals(ManageDistinct.YES), 
                     longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays(), 
                     longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().isPresent() ? 
                             longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().get() : 0);

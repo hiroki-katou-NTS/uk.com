@@ -21205,10 +21205,10 @@ var nts;
                     function NtsGridListBindingHandler() {
                     }
                     NtsGridListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var HEADER_HEIGHT = 27;
-                        var ROW_HEIGHT = 24;
+                        var HEADER_HEIGHT = 30;
+                        var ROW_HEIGHT = 30;
                         var DIFF_NUMBER = 2;
-                        var $grid = $(element).addClass("nts-gridlist");
+                        var $grid = $(element);
                         var gridId = $grid.attr('id');
                         if (nts.uk.util.isNullOrUndefined(gridId)) {
                             throw new Error('the element NtsGridList must have id attribute.');
@@ -21230,7 +21230,7 @@ var nts;
                         $grid.data("selectionDisables", selectionDisables);
                         $grid.data("initValue", value);
                         if (data.multiple) {
-                            ROW_HEIGHT = 24;
+                            ROW_HEIGHT = 30;
                             // Internet Explorer 6-11
                             var _document = document;
                             var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
@@ -21248,7 +21248,7 @@ var nts;
                                 name: 'RowSelectors',
                                 enableCheckBoxes: data.multiple,
                                 enableRowNumbering: false,
-                                rowSelectorColumnWidth: 25
+                                rowSelectorColumnWidth: 40
                             });
                         }
                         if (columnResize) {
@@ -21383,6 +21383,7 @@ var nts;
                                 }
                             }
                         });
+                        $grid.closest('.ui-iggrid').addClass('nts-gridlist');
                         if (data.itemDraggable) {
                             new SwapHandler().setModel(new GridSwapList($grid, optionsValue)).enableDragDrop(data.dataSource);
                         }
@@ -21657,7 +21658,7 @@ var nts;
                             }
                         });
                         $grid.data("ui-changed", false);
-                        $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
+                        $grid.closest('.ui-iggrid').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
                     };
                     return NtsGridListBindingHandler;
                 }());
@@ -22642,7 +22643,7 @@ var nts;
                         var tabIndex = _.isEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
                         $container.addClass("nts-searchbbox-wrapper").removeAttr("tabindex");
                         $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor fit-to-right ntsSearchBox_Component' type='text' /></span></div>");
-                        $container.find('.input-wrapper').append("<i id='search-icon' class='img-icon'></i>");
+                        // $container.find('.input-wrapper').append("<i id='search-icon' class='img-icon'></i>");
                         $container.append("<div class='input-wrapper'><button class='search-btn fit-to-left fit-to-editor ntsSearchBox_Component'>" + searchText + "</button></div>");
                         if (!_.isEmpty(label)) {
                             var $formLabel = $("<div>", { text: label });
@@ -22676,7 +22677,8 @@ var nts;
                         }
                         $input.attr("placeholder", placeHolder);
                         $input.attr("data-name", nts.uk.ui.toBeResource.searchBox);
-                        $input.outerWidth($container.outerWidth(true) - minusWidth);
+                        $input.outerWidth($container.outerWidth(true) - minusWidth - 6);
+                        $input.css('margin-right', '6px');
                         var primaryKey = ko.unwrap(data.targetKey);
                         var searchObject = new SearchPub(primaryKey, searchMode, dataSource, fields, childField);
                         $container.data("searchObject", searchObject);
@@ -22860,11 +22862,11 @@ var nts;
                      */
                     NtsSwapListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var HEADER_HEIGHT = 27;
-                        var CHECKBOX_WIDTH = 25;
+                        var CHECKBOX_WIDTH = 40;
                         var SEARCH_AREA_HEIGHT = 45;
                         var BUTTON_SEARCH_WIDTH = 85; //width 80 + margin 5
                         var INPUT_SEARCH_PADDING = 22;
-                        var SCROLL_WIDTH = 17;
+                        var SCROLL_WIDTH = 10;
                         var BUTTON_CLEAR_WIDTH = 36; //width 31 + margin 5
                         var $swap = $(element);
                         var elementId = $swap.attr('id');
@@ -22956,7 +22958,7 @@ var nts;
                             }
                             if (showSearchBox.showRight) {
                                 var $searchRightContainer = $swap.find(".ntsSwapSearchRight");
-                                $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH + SCROLL_WIDTH).css({ position: "absolute", right: 0 });
+                                $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH + SCROLL_WIDTH - 7).css({ position: "absolute", right: 0 });
                                 initSearchArea($searchRightContainer, "highlight", data.rightSearchBoxText || defaultSearchText);
                                 $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH + SCROLL_WIDTH - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING);
                             }
@@ -22973,7 +22975,7 @@ var nts;
                         var $grid2 = $swap.find(grid2Id);
                         var features = [{ name: 'Selection', multipleSelection: true },
                             //                            { name: 'Sorting', type: 'local' },
-                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering, rowSelectorColumnWidth: 25 }];
+                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering, rowSelectorColumnWidth: 40 }];
                         $swap.find("#" + elementId + "-gridArea1").width(leftGridWidth + CHECKBOX_WIDTH);
                         $swap.find("#" + elementId + "-gridArea2").width(rightGridWidth + CHECKBOX_WIDTH);
                         var leftCriterion = _.map(leftColumns(), function (c) { return c.key === undefined ? c.prop : c.key; });
@@ -23007,7 +23009,7 @@ var nts;
                             .build());
                         this.swapper = new SwapHandler().setModel(new GridSwapList($swap, swapParts));
                         $grid1.igGrid({
-                            //width: leftGridWidth + CHECKBOX_WIDTH, 
+                            // width: leftGridWidth + SCROLL_WIDTH + CHECKBOX_WIDTH, 
                             height: (gridHeight) + "px",
                             primaryKey: primaryKey,
                             columns: leftIggridColumns,
@@ -23022,7 +23024,7 @@ var nts;
                             .attr("tabindex", tabIndex);
                         $grid1.ntsGridList('setupSelecting');
                         $grid2.igGrid({
-                            //width: rightGridWidth + CHECKBOX_WIDTH,
+                            // width: rightGridWidth + SCROLL_WIDTH + CHECKBOX_WIDTH,
                             height: (gridHeight) + "px",
                             primaryKey: primaryKey,
                             columns: rightIggridColumns,
@@ -40603,8 +40605,8 @@ var nts;
                         if (typeof options === "string") {
                             return delegateMethod($grid, options, arguments[1]);
                         }
-                        var HEADER_HEIGHT = 27;
-                        var ROW_HEIGHT = 23;
+                        var HEADER_HEIGHT = 30;
+                        var ROW_HEIGHT = 30;
                         var DIFF_NUMBER = 2;
                         $grid.addClass("nts-gridlist");
                         var gridId = $grid.attr('id');
@@ -40625,7 +40627,7 @@ var nts;
                         $grid.data("selectionDisables", selectionDisables);
                         $grid.data("initValue", value);
                         if (options.multiple) {
-                            ROW_HEIGHT = 24;
+                            ROW_HEIGHT = 30;
                             // Internet Explorer 6-11
                             var _document = document;
                             var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
@@ -40643,7 +40645,7 @@ var nts;
                                 name: 'RowSelectors',
                                 enableCheckBoxes: options.multiple,
                                 enableRowNumbering: false,
-                                rowSelectorColumnWidth: 25
+                                rowSelectorColumnWidth: 40
                             });
                         }
                         if (columnResize) {
@@ -47714,7 +47716,8 @@ var nts;
                         }
                         $input.attr("placeholder", placeHolder);
                         $input.attr("data-name", nts.uk.ui.toBeResource.searchBox);
-                        $input.outerWidth($container.outerWidth(true) - minusWidth);
+                        $input.outerWidth($container.outerWidth(true) - minusWidth - 6);
+                        $input.css('margin-right', '6px');
                         var primaryKey = options.targetKey;
                         var searchObject = new ui_22.koExtentions.SearchPub(primaryKey, searchMode, dataSource, fields, childField);
                         $container.data("searchObject", searchObject);

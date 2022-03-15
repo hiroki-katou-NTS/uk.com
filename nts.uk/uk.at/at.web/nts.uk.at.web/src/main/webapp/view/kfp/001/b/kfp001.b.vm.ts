@@ -80,6 +80,8 @@ module nts.uk.at.view.kfp001.b {
                         $('#hor-scroll-button-hide').hide();
                         _.defer(() => {
                             $('#hor-scroll-button-hide').show();
+                            // call api load table
+                            self.backStartKFP001B();
                         });
                         $('#NEW_BTN_B1_2').show();
                         $('#DELETE_BTN_B1_3').show();
@@ -109,7 +111,12 @@ module nts.uk.at.view.kfp001.b {
                     if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
                         self.enableNEW(true);
                         self.enableDEL(true);
-                        self.currentItem(self.findOptional(codeChanged));
+                        if (!_.isNil(self.findOptional(codeChanged))) {
+                          self.currentItem(self.findOptional(codeChanged));
+                        } else {
+                          self.currentItem().startDate(self.dateValue().startDate);
+                          self.currentItem().endDate(self.dateValue().endDate);
+                        }
                         self.currentItemExe(self.findExc(codeChanged))
                         self.getPeriod();
                         self.dateValue({
@@ -196,6 +203,72 @@ module nts.uk.at.view.kfp001.b {
 
 
                         self.dScreenmodel.listSelect((self.cScreenmodel.multiSelectedCode()));
+                        if (!_.isNil(self.currentItem())) {
+                          self.dScreenmodel.aggrFrameCode(self.currentItem().aggrFrameCode());
+                          self.dScreenmodel.optionalAggrName(self.currentItem().optionalAggrName());
+                        }
+                        self.dScreenmodel.startDate(self.dateValue().startDate);
+                        self.dScreenmodel.endDate(self.dateValue().endDate);
+                        self.dScreenmodel.mode(self.mode());
+                        self.dScreenmodel.executionId(self.aggrId);
+                        self.dScreenmodel.listAggr(self.optionalList());
+                        self.dScreenmodel.presenceOfError(self.status());
+                        self.dScreenmodel.executionStatus(self.preOfError());
+                        if (self.mode() == 1){
+                            self.cScreenmodel.periodStartDate(self.currentItem().startDate());
+                            self.cScreenmodel.periodEndDate(self.currentItem().endDate());
+                        } else {
+                            self.cScreenmodel.periodStartDate(self.dateValue().startDate);
+                            self.cScreenmodel.periodEndDate(self.dateValue().endDate);
+                        }
+
+                    });
+
+                    dfd.resolve();
+                }).fail(function() {
+                    dfd.reject();
+                });
+                return dfd.promise();
+            }
+
+            //Display data in update module when back to screen
+            backStartKFP001B(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred();
+
+                $.when(self.getAllOptionalAggrPeriod()).done(function() {
+                    const isItemExist = _.find(self.items(), data => data.aggrFrameCode() === self.currentItem().aggrFrameCode());
+                    if (self.items().length > 0) {
+                        self.currentCode(self.currentItem().aggrFrameCode());
+                        self.mode(!!isItemExist ? 1 : 0);
+                        self.enableNEW(!!isItemExist);
+                        self.enableDEL(!!isItemExist);
+                        self.enableText(!!isItemExist);
+                        self.getPeriod();
+                        $('#update-mode').show();
+                        $('#update-mode').focus();
+                        let period = {
+                            periodStartDate: self.currentItem().startDate(),
+                            periodEndDate: self.currentItem().endDate()
+                        }
+                        nts.uk.ui.windows.setShared("KFP001_DATAB", period);
+                    } else {
+                        self.initDataB();
+                    }
+
+                    ko.computed(() => {
+                        self.dScreenmodel.listEmp(self.cScreenmodel.selectedEmployee());
+                        self.dScreenmodel.peopleNo(null);
+                        if (_.size(self.cScreenmodel.multiSelectedCode()) >= 418) {
+                            self.dScreenmodel.peopleNo(_.size(self.cScreenmodel.selectedEmployee()));
+                            self.dScreenmodel.peopleCount(nts.uk.resource.getText("KFP001_23", [_.size(self.cScreenmodel.selectedEmployee())]));
+                        } else {
+                            self.dScreenmodel.peopleNo(_.size(self.cScreenmodel.multiSelectedCode()));
+                            self.dScreenmodel.peopleCount(nts.uk.resource.getText("KFP001_23", [_.size(self.cScreenmodel.multiSelectedCode())]));
+                        }
+
+
+                        self.dScreenmodel.listSelect((self.cScreenmodel.multiSelectedCode()));
                         self.dScreenmodel.aggrFrameCode(self.currentItem().aggrFrameCode());
                         self.dScreenmodel.optionalAggrName(self.currentItem().optionalAggrName());
                         self.dScreenmodel.startDate(self.dateValue().startDate);
@@ -228,13 +301,15 @@ module nts.uk.at.view.kfp001.b {
                 var dfd = $.Deferred();
 
                 $.when(service.findAggrCode(self.currentCode())).done(function(data) {
+                  if (!_.isEmpty(data)) {
                     service.findTargetPeriod(data[0].aggrId).done(function(dataTarget) {
-                        self.aggrId = data[0].aggrId;
-                        self.peopleNo(dataTarget.length);
-                        self.status(data[0].executionStatus);
-                        self.preOfError(data[0].presenceOfError);
-                        self.peopleCount(nts.uk.resource.getText("KFP001_23", [dataTarget.length]));
+                      self.aggrId = data[0].aggrId;
+                      self.peopleNo(dataTarget.length);
+                      self.status(data[0].executionStatus);
+                      self.preOfError(data[0].presenceOfError);
+                      self.peopleCount(nts.uk.resource.getText("KFP001_23", [dataTarget.length]));
                     })
+                  }
                 }).fail(function() {
                     dfd.reject();
                 });;

@@ -3,7 +3,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
 <div
 	id="kaf002TabPanel"
-	data-bind="ntsTabPanel: { dataSource:  $component.tabs, active: selectedTab }" style="width: 450px">
+	data-bind="ntsTabPanel: { dataSource:  $component.tabs, active: selectedTab }" style="min-width: 620px">
 	<div data-bind="if: comment1().content != ''" >
 		<div
 			data-bind="text: comment1().content,
@@ -263,7 +263,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             // change tabs by root component
             self.tabsTemp(self.tabs());
             self.loadAll();
-			self.selectedTab(_.find(self.tabs(), item => item.visible())[0].id)
+			self.selectedTab(_.find(self.tabs(), item => item.visible()).id)
 
         }
         loadAll() {
@@ -560,7 +560,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             // add row to display expand row
             if (items.length >= 10 && self.isLinkList[items[0].index]) {
                 if ($('#' + id).length) {
-                    $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div id="moreRow' + String(items[0].index) + '" style="display: block" align="center"><a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource[' + items[0].index + ']) , text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
+                    $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #6A6A6A"><div></div></td><td colspan="4"><div id="moreRow' + String(items[0].index) + '" style="display: block" align="center"><a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource[' + items[0].index + ']) , text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
                 }
 
             } else {
