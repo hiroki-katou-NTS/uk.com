@@ -102,6 +102,13 @@ public class GetRsvLeaRemNumWithinPeriod {
 			isManageAnnualLeave = annualLeaveSet.isManaged();
 		if (!isManageAnnualLeave)
 			return Optional.empty();
+		
+		// 上限設定を取得する
+		Optional<UpperLimitSetting> limit = calcMaxSettingPeriod(require, cacheCarrier, param.getCompanyId(),retentionYearlySet);
+		if(!limit.isPresent()){
+			return Optional.empty();
+		}
+		
 
 		// 「休暇の集計期間から入社前、退職後を除く」を実行する
 		EmployeeImport employee = require.employee(cacheCarrier, employeeId);
@@ -111,6 +118,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 		if (!aggrPeriod.isPresent())
 			return Optional.empty();
 		param.setAggrPeriod(aggrPeriod.get());
+		
 
 		AggrResultOfReserveLeave aggrResult = new AggrResultOfReserveLeave();
 
@@ -123,7 +131,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 				monthlyCalcDailys, rsvGrantRemainingDatas);
 
 		// 積立年休付与を計算
-		List<GrantWork> calcGrant = calcGrant(require, param.getCompanyId(), param.getEmployeeId(),
+		List<GrantWork> calcGrant = calcGrant(require, cacheCarrier, param.getCompanyId(), param.getEmployeeId(),
 				param.getCriteriaDate(), param.getLapsedAnnualLeaveInfos(), annualLeaveSet, param.getAggrPeriod());
 
 		// 積立年休集計期間の作成
@@ -133,15 +141,14 @@ public class GetRsvLeaRemNumWithinPeriod {
 		// 暫定積立年休管理データを取得する
 		List<TmpResereLeaveMng> tmpReserveLeaveMngs = getTmpReserveLeaveMngs(require, param);
 
-		// 上限設定の期間を計算
-		UpperLimitSetting limit = calcMaxSettingPeriod(require, cacheCarrier, param.getCompanyId(), retentionYearlySet);
+		
 		
 		for (val aggrPeriodWork : aggrPeriodWorks) {
 
 			// 積立年休の消滅・付与・消化
 			aggrResult = reserveLeaveInfo.lapsedGrantDigest(require, cacheCarrier, companyId, employeeId,
 					aggrPeriodWork, tmpReserveLeaveMngs, aggrResult, annualLeaveSet, retentionYearlySet,
-					emptYearlyRetentionSetMap, limit);
+					emptYearlyRetentionSetMap, limit.get());
 		}
 
 		// 【渡すパラメータ】 積休情報 ← 積休の集計結果．積休情報（期間終了日時点）
@@ -339,7 +346,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 	 *            雇用積立年休設定マップ
 	 * @return 積立年休上限設定期間WORKリスト
 	 */
-	private static UpperLimitSetting calcMaxSettingPeriod(RequireM2 require, CacheCarrier cacheCarrier,
+	private static Optional<UpperLimitSetting> calcMaxSettingPeriod(RequireM2 require, CacheCarrier cacheCarrier,
 			String companyId, Optional<RetentionYearlySetting> retentionYearlySet) {
 
 		// 積立年休の上限設定を取得
@@ -358,8 +365,8 @@ public class GetRsvLeaRemNumWithinPeriod {
 	 *            積立年休上限設定期間WORKリスト
 	 * @return 積立年休付与WORKリスト
 	 */
-	private static List<GrantWork> calcGrant(RequireM4 require, String companyID,
-			String employeeId,
+	private static List<GrantWork> calcGrant(RequireM4 require, CacheCarrier cacheCarrier,
+			String companyID,String employeeId,
 			GeneralDate baseDate, List<AnnualLeaveInfo> lapsedAnnualLeaveInfos,
 			AnnualPaidLeaveSetting annualLeaveSet, DatePeriod period) {
 
@@ -367,7 +374,14 @@ public class GetRsvLeaRemNumWithinPeriod {
 			return new ArrayList<>();
 
 		AnnualLeaveInfo annualLeaveInfo = lapsedAnnualLeaveInfos.get(lapsedAnnualLeaveInfos.size() - 1);
-
+		
+		//社員の保持年数を取得
+		Optional<UpperLimitSetting> upperLimitSetting = GetUpperLimitSetting.algorithm(require, cacheCarrier, companyID);
+		
+		if(!upperLimitSetting.isPresent()){
+			return new ArrayList<>();
+		}
+		
 		// 付与残数データを取得
 		Function<List<AnnualLeaveGrantRemainingData>, LeaveRemainingNumber> sumData = new Function<List<AnnualLeaveGrantRemainingData>, LeaveRemainingNumber>() {
 			@Override
@@ -386,14 +400,15 @@ public class GetRsvLeaRemNumWithinPeriod {
 				.collect(Collectors.groupingBy(x -> x.getDeadline(),
 						Collectors.collectingAndThen(Collectors.toList(), list -> sumData.apply(list))));
 		
-
+		
 		List<GrantWork> results = new ArrayList<>();
 		AtomicInteger grantNumber = new AtomicInteger(0);
 		grantTotal.entrySet().stream().forEach(x -> {
 			// 積立年休付与WORKを作成 → 端数処理
-			GrantWork grantWork = GrantWork.of(x.getKey().addDays(1),
+			GrantWork grantWork = new GrantWork(x.getKey().addDays(1),
 					roundAccuAnnualLeave(require, companyID, employeeId, baseDate, annualLeaveSet, x.getValue()),
-					grantNumber.incrementAndGet());
+					grantNumber.incrementAndGet(),
+					upperLimitSetting.get().calcDeadlineByGrantDate(x.getKey().addDays(1)));
 
 			// 積立年休付与WORKに追加
 			results.add(grantWork);
@@ -482,7 +497,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 			dividedDayMap.putIfAbsent(grantDate, new RsvLeaDividedDay(grantDate));
 			dividedDayMap.get(grantDate).getGrantWork().setGrantAtr(true);
 			dividedDayMap.get(grantDate).getGrantWork().setReserveLeaveGrant(Optional.of(NextReserveLeaveGrant
-					.of(nextReserveLeaveGrant.getGrantYmd(), nextReserveLeaveGrant.getGrantDays(), GeneralDate.max())));
+					.of(nextReserveLeaveGrant.getGrantYmd(), nextReserveLeaveGrant.getGrantDays(), nextReserveLeaveGrant.getDeadLine())));
 		}
 
 		// 期間終了日の「処理単位分割日」を取得・追加 → フラグ設定
