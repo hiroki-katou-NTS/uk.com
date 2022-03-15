@@ -4,23 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.SixtyHourExtra;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
+
 /**
  * The Interface ComSubstVacationSetMemento.
  */
 public interface Com60HourVacationSetMemento {
 
-	/**
-	 * Sets the company id.
-	 *
-	 * @param companyId the new company id
-	 */
 	void setCompanyId(String companyId);
 
-	/**
-	 * Sets the setting.
-	 *
-	 * @param setting the new setting
-	 */
-	void setSetting(SixtyHourVacationSetting setting);
+	void setTimeVacationDigestUnit(TimeVacationDigestUnit digestiveUnit);
+	
+	void setSixtyHourExtra(SixtyHourExtra sixtyHourExtra);
 
 }

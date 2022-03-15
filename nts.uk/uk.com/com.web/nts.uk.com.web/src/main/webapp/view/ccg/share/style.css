@@ -24,43 +24,17 @@
 	padding: 0 !important;
 }
 
-.accordion {
-	width: 450px;
-}
-
-.accordion label {
-	cursor: pointer;
-}
-
-#ccg001-part-g {
-	width: 440px;
-	margin-right: 5px;
-	padding-right: 5px;
-	overflow: auto;
-}
-
-#ccg001-part-g .form-label{
-	width: 120px;
-}
-
 .ccg001-inp {
 	width: 216px;
 }
 
 .ccg001-btn {
-	background-color: #2ECC71;
+	background-color: #6C6C6C;
 	color: white;
 	cursor: pointer;
 }
 .ccg001-btn:hover {
-	background-color: #2BBF6A;
-}
-.ccg-btn-quick-search {
-	width: 370px;
-	padding-left: 8px;
-	border-radius: 5px;
-	display: inline-block;
-	margin-bottom: 8px;
+	background-color: #8C8C8C;
 }
 
 .btn_big {
@@ -97,37 +71,6 @@
 	background: url(icon/49_WorkplaceChild.png);
 }
 
-.labelBigButton {
-	cursor: pointer;
-	font-size: 14pt;
-	vertical-align: super;
-  color: white !important;
-}
-
-.labelSmallButton {
-	cursor: pointer;
-	font-size: 10pt;
-	vertical-align: super;
-	margin-left: 10px;
-  color: white !important;
-}
-
-.ccg001-content {
-	background-color: #F2F2F2;
-	overflow: hidden;
-	height: calc(100% - 15px);
-	border-top-right-radius: 5px;
-	border-bottom-right-radius: 5px;
-	padding-top: 15px;
-}
-
-.ccg001-control-group {
-	margin-left: 5px;
-}
-.ccg001-date-range {
-	margin-left: 5px;
-	margin-right: 5px;
-}
 .ccg001-label {
 	width: 85px;
 }
@@ -137,10 +80,6 @@
 
 .ccg-tabpanel #tab-3{
 	width: 520px;
-}
-
-.ccg-tabpanel > div {
-	background-color: white !important;
 }
 
 #component-ccg001 {
@@ -175,18 +114,6 @@
 	background-size: 30px 30px;
 }
 
-.ccg-lbl-vertical {
-	width: 40px;
-	cursor: pointer;
-	font-size: 18pt;
-	writing-mode: vertical-lr;
-	-ms-writing-mode: tb-lr;
-  color: white !important;
-  line-height: 30px;
-}
-.ccg-lbl-search-drawer {
-	height: 96px;
-}
 .ccg-lbl-extract-emp {
 	height: 50px;
 }
@@ -207,11 +134,6 @@
 #hor-scroll-button-hide > .ccg001-caret-vertical:after {
 	margin-left: 55px;
 }
-#ccg001-btn-apply-search-condition {
-	margin-bottom: 14px;
-	margin-left: 10px;
-	margin-right: 10px;
-}
 .margin-left-10 {
 	margin-left: 10px;
 }
@@ -220,10 +142,6 @@
 	top: 50%;
 	transform: translate(0, -50%);
 	z-index: 997;
-}
-.ccg-tabpanel {
-	background-color: #F2F2F2;
-	border-radius: 5px;
 }
 .height-maximum {
 	height: 100%;
@@ -242,17 +160,35 @@
 }
 
 #ccg001-btn-search-drawer {
-	height: 250px;
-	transition: height 100ms ease-in-out;
+    position: fixed;
+    top: 29%;
+    left: 0;
+    padding-left: 8px;
+    height: 40px;
+    width: 25px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+#ccg001-btn-search-drawer > span {
+	position: relative;
+	font-size: 17px;
+	top: 6px;
+}
+
+#ccg001-btn-search-drawer > span:nth-child(1) {
+	left: 0;
+}
+
+#ccg001-btn-search-drawer > span:nth-child(2) {
+	position: relative;
+	left: -8px;
 }
 
 #sidebar .sidebar-content #ccg001-btn-search-drawer {
-	border-left: 8px solid #2ECC71;	
+	left: 121px;
 }
 
-#sidebar .sidebar-content #ccg001-btn-search-drawer:hover {
-	border-left-color: #2BBF6A;
-}
 .has-state.disabled .ccg001-btn {
 	background-color: #b0d3b5;
 	color: #888888;
@@ -267,12 +203,7 @@
 #ccgcomponent > div:first-child {
     min-width: 475px;
 }
-.tabs-content {
-  height: 83%;
-}
-#tab-panel {
-  height: 93% !important;
-}
+
 .icon-ml {
   margin-left: 3px;
 }
@@ -282,4 +213,112 @@
   .ccg-lbl-vertical {
     line-height: 23px;
   }
+}
+
+
+#component-ccg001 .ccg001-content {
+	background-color: #fff;
+	overflow: hidden;
+	height: calc(100% - 15px);
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	padding-top: 15px;
+}
+
+#component-ccg001 button.fit-to-editor {
+	min-width: 70px;
+}
+
+#component-ccg001 #ccg001-header {
+	padding: 20px 20px 0 20px;
+}
+
+#component-ccg001 #ccg001-header > div {
+	display: inline-block;
+}
+
+#component-ccg001 .tabs-content {
+	padding: 0;
+	border: none;
+	height: calc(100% - 102px); /* tabs height30 + padding15x2 + padding20x2 */
+}
+
+#component-ccg001 .tab-content-1,
+#component-ccg001 #ccg001-tab-content-2,
+#component-ccg001 #ccg001-tab-content-3 {
+	width: 500px;
+}
+
+#component-ccg001 .tab-content-1 {
+}
+
+#component-ccg001 .tab-content-1 .btn-quick-search {
+	margin: 20px;
+}
+
+#component-ccg001 .tab-content-1 .btn-quick-search .ccg-btn-quick-search {
+	width: 250px;
+	text-align: center;
+}
+
+#component-ccg001 .ccg001-tab-content-filters {
+	padding: 20px;
+	height: calc(100% - 65px); /* 65px: same as setComponentHeight in ccg.vm.ts */
+}
+
+#component-ccg001 #ccg001-tab-content-2 {
+}
+
+#component-ccg001 #ccg001-tab-content-2 .conditions-filter,
+#component-ccg001 #ccg001-tab-content-2 .employees-filter {
+	height: 100%;
+}
+
+#component-ccg001 #ccg001-tab-content-2.withEmployeeFilter {
+	width: 900px;
+	display: flex;
+}
+
+#component-ccg001 #ccg001-tab-content-2.withEmployeeFilter .conditions-filter {
+	width: 600px;
+}
+#component-ccg001 #ccg001-tab-content-2.withEmployeeFilter .employees-filter {
+}
+
+#component-ccg001 #ccg001-tab-content-2 .ccg001-tab-content-filters .switchbox-wrappers > label span {
+	width: 65px;
+}
+
+#component-ccg001 #ccg001-tab-content-3 {
+}
+
+#ccg001-tab-content-3 .ccg001-tab-content-filters {
+	overflow: hidden;
+}
+
+#ccg001-tab-content-3 .ccg001-tab-content-filters .ccg001-control-group {
+	margin-bottom: 18px;
+}
+
+#ccg001-tab-content-3 .ccg001-tab-content-filters .ccg001-control-group .form-label{
+	width: 130px;
+}
+
+
+.footer-button {
+	position: relative;
+	width: 100%;
+	height: 60px;
+	background-color: #E4E4E4;
+}
+
+.footer-button button {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto 26px auto auto;
+	width: 120px;
+	height: 36px;
 }

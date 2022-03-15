@@ -632,7 +632,7 @@ module nts.custombinding {
                     
                     .layout-control .ntsHelpButton {
                         margin-left: -50px;
-                        margin-right: 15px;
+                        margin-right: 19px;
                     }
 
                     .layout-control .ntsHelpButton button {

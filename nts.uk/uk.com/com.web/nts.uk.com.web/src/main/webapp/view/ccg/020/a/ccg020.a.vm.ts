@@ -20,7 +20,7 @@ module nts.uk.com.view.ccg020.a {
     template: `<div id="ccg020"><div id="search-bar" class="cf">
     <ccg003-component></ccg003-component>
     <div id="ccg002-panel" class="panel ccg002-panel">
-      <i id="search-icon" data-bind="ntsIcon: { no: 1, width: 28, height: 25 }" class="img-icon"></i>
+      <i id="search-icon" data-bind="ntsIcon: { no: 1 }" class="img-icon"></i>
       <!-- <i id="ccg002-arrow-icon" data-bind="ntsIcon: { no: 135, width: 10, height: 23 }"></i> -->
     </div>
     <!-- This input is CCG002 -->
@@ -30,7 +30,7 @@ module nts.uk.com.view.ccg020.a {
       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
         textmode: 'text',
         width: '162px',
-        placeholder: searchPlaceholder
+        placeholder: 'メニュー'
       }))
     },
     click: eventClickSearch" />

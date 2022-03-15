@@ -34,9 +34,9 @@
     <ui:define name="content">
       <div id="contents-area">
         <div class="widget-home cf" data-bind="css: $vm.classLayoutName">
-          <div class="widget-left" data-bind="widget-group: $vm.widgetLeft"></div>
-          <div class="widget-center" data-bind="widget-frame: $vm.widgetCenter"></div>
-          <div class="widget-right" data-bind="widget-group: $vm.widgetRight"></div>
+          <div class="widget-left" data-bind="widget-group: $vm.widgetLeft, type: $vm.isWidgetLeft"></div>
+          <div class="widget-center" data-bind="widget-group: $vm.widgetCenter, type: $vm.isWidgetCenter"></div>
+          <div class="widget-right" data-bind="widget-group: $vm.widgetRight, type: $vm.isWidgetRight"></div>
         </div>
       </div>
     </ui:define>

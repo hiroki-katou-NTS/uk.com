@@ -101,7 +101,7 @@ module nts.uk.at.view.kdp010.e {
         }
         
         class ButtonDisSet{
-            backGroundColor: KnockoutObservable<string> = ko.observable("#127D09");
+            backGroundColor: KnockoutObservable<string> = ko.observable("#01956A");
             buttonNameSet: ButtonNameSet;
             constructor(buttonPositionNo: number){
                 let self = this;

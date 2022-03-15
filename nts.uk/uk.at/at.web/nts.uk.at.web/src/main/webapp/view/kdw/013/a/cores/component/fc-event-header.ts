@@ -25,7 +25,7 @@ module nts.uk.ui.at.kdw013.eventheadear {
                     </div>
                     <!-- ko if: $component.showHIcon(day.date) -->
                     <div style="min-height: 20px; height:20px;">     
-                        <i class='openHIcon' data-bind="ntsIcon: { no: 232, width: 20, height: 20 },click: function(day) { $component.openHDialog(day) } " > </i>
+                        <i class='openHIcon' data-bind="ntsIcon: { no: 232, width: 20, height: 20, extension: 'png' },click: function(day) { $component.openHDialog(day) } " > </i>
                     </div>
                     <!-- /ko -->
                 </td>
@@ -65,6 +65,10 @@ module nts.uk.ui.at.kdw013.eventheadear {
                         font-size: 12px;
                         line-height: 17px;
                     }
+					.checkbox-wrapper input[type="checkbox"]:checked+span::after{
+						top: 4px;
+						left: 1px;
+					}
                 </style>
                 `
     })

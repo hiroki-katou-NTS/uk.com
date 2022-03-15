@@ -89,6 +89,7 @@ module nts.uk.com.view.cmf001.e.viewmodel {
 			self.selectedCode("");
 			self.setInfo(SettingInfo.new());
 			self.isNewMode(true);
+			self.csvFileName(null);
 		}
 	
 		updateMode(){
@@ -141,15 +142,19 @@ module nts.uk.com.view.cmf001.e.viewmodel {
 						self.importStartRow(),
 						self.csvFileId())
 				};
-				ajax("screen/com/cmf/cmf001/e/save", saveContents).done(() => {
-					info(nts.uk.resource.getMessage("Msg_15", [])).then(() => {
-				        ui.dialog.confirm("続けて受入レイアウトを登録しますか？").ifYes(() => {
-				        	self.gotoDetailSetting();
-				        });
+				ajax("screen/com/cmf/cmf001/e/save", saveContents)
+					.done(() => {
+						info(nts.uk.resource.getMessage("Msg_15", [])).then(() => {
+									ui.dialog.confirm("続けて受入レイアウトを登録しますか？").ifYes(() => {
+										self.gotoDetailSetting();
+									});
+						});
+						self.reloadPage();
+						self.selectedCode(self.settingCode());
+					})
+					.fail(res => {
+						ui.dialog.alert(res);
 					});
-					self.reloadPage();
-					self.selectedCode(self.settingCode());
-	            });
 			}
 		}
 

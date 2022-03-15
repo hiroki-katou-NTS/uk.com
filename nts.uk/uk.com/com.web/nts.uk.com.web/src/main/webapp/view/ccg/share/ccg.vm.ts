@@ -686,7 +686,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     && self.showSameDepartmentAndChild;
 
                 self.showSameWorkplace = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
-                    self.showSameWorkplace;
+                    self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF && self.showSameWorkplace;
                 self.showSameWorkplaceAndChild = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
                     (self.referenceRange == EmployeeReferenceRange.ALL_REFERENCE_RANGE
                         || self.referenceRange == EmployeeReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES)
@@ -714,7 +714,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 let dfd = $.Deferred<void>();
                 let self = this,
                     isCheckForAdvancedSearch = self.showAdvancedSearchTab && self.systemType === ConfigEnumSystemType.EMPLOYMENT && self.referenceRange === EmployeeReferenceRange.ONLY_MYSELF,
-                    isCheckForAllReferable = self.showAllReferableEmployee && self.systemType === ConfigEnumSystemType.EMPLOYMENT && self.referenceRange === EmployeeReferenceRange.ONLY_MYSELF;
+                    isCheckForAllReferable = self.showAllReferableEmployee && self.referenceRange === EmployeeReferenceRange.ONLY_MYSELF;
                   
                 if (isCheckForAdvancedSearch || isCheckForAllReferable) {
                     service.getCanManageWpkForLoginUser().done(manageWkp => {
@@ -740,8 +740,6 @@ module nts.uk.com.view.ccg.share.ccg {
                         if (self.referenceRange === EmployeeReferenceRange.ONLY_MYSELF && _.isEmpty(manageWkp)) {
                             self.showAdvancedSearchTab = false;
                         }
-                    } else {
-                        self.showAdvancedSearchTab = false;    
                     }
                 }
             }
@@ -758,6 +756,13 @@ module nts.uk.com.view.ccg.share.ccg {
                             self.showAdvancedSearchTab = false;
 							self.showAllReferableEmployee = false;
 							self.showSameDepartment = false;
+							self.showSameWorkplace = false;
+                        }
+						if (self.systemType !== ConfigEnumSystemType.EMPLOYMENT 
+                            && self.referenceRange === EmployeeReferenceRange.ONLY_MYSELF 
+                            && !_.isEmpty(manageWkp)) {
+                            self.showAdvancedSearchTab = false;
+							self.showAllReferableEmployee = false;
 							self.showSameWorkplace = false;
                         }
                     }    
@@ -868,7 +873,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 const headerHeight = $('#header').outerHeight();
                 const sidebarHeaderHeight = $('.sidebar-content-header').outerHeight(); // for screen with sidebar
                 const functionAreaHeight = $('#functions-area').length > 0 ? $('#functions-area').outerHeight() : 0;
-                const buffer = 25;
+                const buffer = 65;
                 let componentHeight = 0;
 
                 // calculate component height
@@ -886,7 +891,6 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // set component height
                 $('#component-ccg001').outerHeight(componentHeight);
-                $('#ccg001-btn-search-drawer').outerHeight(componentHeight / 2);
 
                 // set tab panel height.
                 const tabpanelHeight = componentHeight - $('#ccg001-header').outerHeight(true) - 10;
@@ -1170,8 +1174,8 @@ module nts.uk.com.view.ccg.share.ccg {
              * Calculate KCP005 rows
              */
             private calculateKcp005Rows(marginHeight: number): number {
-                const tabContentHeight = parseInt(document.querySelector('.ccg-tabpanel #ccg001-tab-content-3').style.height);
-                const heightPerRow = 24;
+                const tabContentHeight = $("#component-ccg001 .tabs-content").height();
+                const heightPerRow = 30;
                 return (tabContentHeight - marginHeight) / heightPerRow;
             }
 
@@ -1179,7 +1183,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 if (self.showAdvancedSearchTab && self.showEmployeeSelection) {
-                    const Kcp005MarginHeight = 70;
+                    const Kcp005MarginHeight = 95;
 
                     // set KCP005 options
                     self.employeeinfo = {
@@ -1217,7 +1221,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 self.tab3kcp005option = {
                     isShowAlreadySet: false,
-                    maxWidth: 420,
+                    maxWidth: 447,
                     isMultiSelect: self.isMultiple,
                     isMultipleUse: true,
                     listType: ListType.EMPLOYEE,
@@ -1231,7 +1235,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     tabindex: self.ccg001Tabindex,
                     maxRows: maxRows,
                     isSelectAllAfterReload: true,
-                }
+                }//
 
                 // Show KCP005
                 $('#tab3kcp005').ntsListComponent(self.tab3kcp005option).done(() => dfd.resolve());
@@ -1244,10 +1248,6 @@ module nts.uk.com.view.ccg.share.ccg {
             private fixComponentWidth(): void {
                 let self = this;
                 _.defer(() => {
-                    // update tab 2 width
-                    let totalWidth = 5;
-                    $('#ccg001-tab-content-2').children('div.pull-left.height-maximum').each((i, e) => totalWidth += $(e).outerWidth(true));
-                    $('#ccg001-tab-content-2').outerWidth(totalWidth);
 
                     // Fix component width if screen width is smaller than component
                     const componentWidth = window.innerWidth - $('#ccg001-btn-search-drawer').offset().left;
@@ -1965,7 +1965,7 @@ module nts.uk.com.view.ccg.share.ccg {
             /**
              * search Employee by Reference range
              */
-            public searchEmployeeByReferenceRange(referenceRange: SearchReferenceRange): void {
+            public searchEmployeeByReferenceRange(referenceRange: number): void {
                 var self = this;
                 self.queryParam.referenceRange = referenceRange;
                 self.quickSearchEmployee();
@@ -2357,132 +2357,103 @@ module nts.uk.com.view.ccg.share.ccg {
 
 var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="visibility: hidden;">
         <div class="pull-left ccg001-content">
-            <div id="ccg001-header" class="ccg001-table">
-                <div class="ccg001-cell">
-                    <!-- ko if: showBaseDate -->
-                        <div class="control-group ccg001-control-group">
-                            <div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">`+CCG001TextResource.CCG001_27+`</div>
-                            <div id="inp_baseDate"
-                                data-bind="attr: {tabindex: ccg001Tabindex}, ntsDatePicker: {
-                                name: '#[CCG001_27]',
-                                dateFormat: 'YYYY/MM/DD',
-                                value: inputBaseDate,
-                                required: true }"></div>
-                        </div>
-                    <!-- /ko -->
-                    <!-- ko if: showClosure -->
-                        <div class="control-group ccg001-control-group">
-                            <div class="ccg001-cell">
-                                <div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">`+CCG001TextResource.CCG001_28+`</div>
-                            </div>
-                            <div class="ccg001-cell mid">
-                                <div id="cbb-closure" style="margin-left: 4px;"
-                                    data-bind="attr: {tabindex: ccg001Tabindex}, ntsComboBox: {
-                                        name: '#[CCG001_28]',
-                                        options: closureList,
-                                        optionsValue: 'closureId',
-                                        value: selectedClosure,
-                                        optionsText: 'closureName',
-                                        editable: false,
-                                        enable: true,
-                                        columns: [
-                                            { prop: 'closureId', length: 1 },
-                                            { prop: 'closureName', length: 5 },
-                                        ]}"></div>
-                            </div>
-                        </div>
-                    <!-- /ko -->
-                    <!-- ko if: showPeriod -->
-                        <div class="control-group ccg001-control-group">
-                            <div class="ccg001-cell">
-                                <div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">`+CCG001TextResource.CCG001_29+`</div>
-                            </div>
-                            <div class="ccg001-cell mid">
-                                <div id="ccg001-search-period" data-bind="attr: {tabindex: ccg001Tabindex}, ntsDateRangePicker: {
-                                    type: showPeriodYM ? 'yearmonth' : 'fullDate',
-                                    maxRange: maxPeriodRange,
-                                    required: true,
-                                    enable: true,
-                                    showNextPrevious: true,
-                                    value: inputPeriod}"/>
-                            </div>
-                        </div>
-                    <!-- /ko -->
-                </div>
-                <div class="ccg001-cell bot">
-                    <button id="ccg001-btn-apply-search-condition"
-                        class="proceed caret-bottom" data-bind="attr: {tabindex: ccg001Tabindex},
-                            enable: isValidInput, click: applyDataSearch">`+CCG001TextResource.CCG001_2+`</button>
-                </div>
+            <div id="ccg001-header">
+                <!-- ko if: showBaseDate -->
+                    <div class="ccg001-label" data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_27+`</div>
+                    <div id="inp_baseDate" class="fit-to-right"
+                        data-bind="attr: {tabindex: ccg001Tabindex}, ntsDatePicker: {
+                        name: '#[CCG001_27]',
+                        dateFormat: 'YYYY/MM/DD',
+                        value: inputBaseDate,
+                        required: true }"></div>
+                <!-- /ko -->
+                <!-- ko if: showClosure -->
+                    <div class="ccg001-label" data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_28+`</div>
+                    <div id="cbb-closure" style="margin-left: 4px;"
+                        data-bind="attr: {tabindex: ccg001Tabindex}, ntsComboBox: {
+                            name: '#[CCG001_28]',
+                            options: closureList,
+                            optionsValue: 'closureId',
+                            value: selectedClosure,
+                            optionsText: 'closureName',
+                            editable: false,
+                            enable: true,
+                            columns: [
+                                { prop: 'closureId', length: 1 },
+                                { prop: 'closureName', length: 5 },
+                            ]}"></div>
+                <!-- /ko -->
+                <!-- ko if: showPeriod -->
+                    <div class="ccg001-label" data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_29+`</div>
+                    <div id="ccg001-search-period" data-bind="attr: {tabindex: ccg001Tabindex}, ntsDateRangePicker: {
+                        type: showPeriodYM ? 'yearmonth' : 'fullDate',
+                        maxRange: maxPeriodRange,
+                        required: true,
+                        enable: true,
+                        showNextPrevious: true,
+                        value: inputPeriod}"/>
+                <!-- /ko -->
+                <button id="ccg001-btn-apply-search-condition"
+                    class="proceed fit-to-left fit-to-editor" data-bind="attr: {tabindex: ccg001Tabindex},
+                        enable: isValidInput, click: applyDataSearch">`+CCG001TextResource.CCG001_2+`</button>
             </div>
         <div id="tab-panel" class="cf ccg-tabpanel pull-left"
             data-bind="attr: {tabindex: ccg001Tabindex}, ntsTabPanel: { dataSource: tabs, active: selectedTab}">
                 <div tabindex="-1" class="tab-content-1" data-bind="visible: showQuickSearchTab">
                     <!-- ko if: showAllReferableEmployee -->
                         <div id="ccg001-btn-search-all" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-                            <div class="flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
+                            <button class="green valign-center ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.ALL_REFERENCE_RANGE+`)}">
-                                <i class="icon ccg001-icon-btn-big icon-28-allemployee"></i>
-                                <label class="labelBigButton">`+CCG001TextResource.CCG001_34+`</label> 
-                            </div>
-                            <span class="ccg001-caret ccg001-caret-quick-big caret-right"></span>
+                                すべての社員
+                            </button>
                         </div>
                     <!-- /ko -->
                     <!-- ko if: showOnlyMe -->
                         <div id="ccg001-btn-only-me" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-                            <div class="flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
+                            <button class="green valign-center ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: searchCurrentLoginEmployee">
-                                <i class="icon ccg001-icon-btn-big icon-26-onlyemployee"></i>
-                                <label class="labelBigButton">`+CCG001TextResource.CCG001_35+`</label> 
-                            </div>
-                            <span class="ccg001-caret ccg001-caret-quick-big caret-right"></span>
+                                自分のみ
+                            </button>
                         </div>
                     <!-- /ko -->
                     <!-- ko if: showSameDepartment -->
                         <div id="ccg001-btn-same-workplace" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-                            <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+                            <button class="green valign-center ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_ONLY+`)}">
-                                <i class="icon ccg001-icon-btn-small icon-48-ofworkplace"></i>
-                                <label class="labelSmallButton">`+CCG001TextResource.CCG001_36+`</label> 
-                            </div>
-                            <span class="ccg001-caret ccg001-caret-quick-small caret-right"></span>
+                                ${CCG001TextResource.CCG001_36}
+                            </button>
                         </div>
                     <!-- /ko -->
                     <!-- ko if: showSameDepartmentAndChild -->
                         <div id="ccg001-btn-same-workplace-and-child" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-                            <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+                            <button class="green valign-center ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES+`)}">
-                                <i class="icon ccg001-icon-btn-small icon-49-workplacechild"></i>
-                                <label class="labelSmallButton">`+CCG001TextResource.CCG001_37+`</label> 
-                            </div>
-                            <span class="ccg001-caret ccg001-caret-quick-small caret-right"></span>
+                                ${CCG001TextResource.CCG001_37}
+                            </button>
                         </div>
                     <!-- /ko -->
                     <!-- ko if: showSameWorkplace -->
                         <div id="ccg001-btn-same-workplace" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-                            <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+                            <button class="green valign-center ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_ONLY+`)}">
-                                <i class="icon ccg001-icon-btn-small icon-48-ofworkplace"></i>
-                                <label class="labelSmallButton">`+CCG001TextResource.CCG001_38+`</label> 
-                            </div>
-                            <span class="ccg001-caret ccg001-caret-quick-small caret-right"></span>
+                                同じ職場
+                            </button>
                         </div>
                     <!-- /ko -->
                     <!-- ko if: showSameWorkplaceAndChild -->
                         <div id="ccg001-btn-same-workplace-and-child" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-                            <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+                            <button class="green valign-center ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES+`)}">
-                                <i class="icon ccg001-icon-btn-small icon-49-workplacechild"></i>
-                                <label class="labelSmallButton">`+CCG001TextResource.CCG001_39+`</label> 
-                            </div>
-                            <span class="ccg001-caret ccg001-caret-quick-small caret-right"></span>
+                                同じ職場とその配下
+                            </button>
                         </div>
                     <!-- /ko -->
                 </div>
 
                 <div tabindex="-1" class="tab-content-2 height-maximum" data-bind="visible: showAdvancedSearchTab">
-                        <div id="ccg001-tab-content-2" class="height-maximum">
-                            <div class="pull-left height-maximum" style="padding-right: 20px; overflow-y: scroll;">
+                    <div id="ccg001-tab-content-2" class="height-maximum" data-bind="css: { withEmployeeFilter: showEmployeeSelection }">
+                        <div class="conditions-filter">
+                            <div class="ccg001-tab-content-filters" style="overflow-y: scroll;">
                                 <div>
                                     <label>`+CCG001TextResource.CCG001_24+`</label>
                                 </div>
@@ -2635,122 +2606,93 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                     </div>
                                 <!-- /ko -->
                             </div>
-                            <div class="pull-left height-maximum margin-left-10 ccg001-table has-state">
-                                <div class="ccg001-cell mid">
-                                    <div id="ccg001-btn-advanced-search" class="ccg001-btn ccg-btn-vertical height-maximum"
-                                        data-bind="attr: {tabindex: ccg001Tabindex}, click: advancedSearchEmployee">
-                                        <div class="ccg001-cell mid">
-                                            <div class="ccg-lbl-vertical ccg-lbl-extract-emp">`+CCG001TextResource.CCG001_25+`</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="ccg001-cell mid">
-                                    <span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
-                                </div>
+                            <div class="footer-button">
+                                <button id="ccg001-btn-advanced-search" class="green" data-bind="attr: {tabindex: ccg001Tabindex}, click: advancedSearchEmployee">
+                                    ${CCG001TextResource.CCG001_25}
+                                </button>
                             </div>
-                            
-                            <!-- ko if: showEmployeeSelection -->
-                                <div class="pull-left height-maximum margin-left-10">
+                        </div>
+
+                        <!-- ko if: showEmployeeSelection -->
+                            <div class="employees-filter">
+                                <div class="ccg001-tab-content-filters">
                                     <div id="employeeinfo"></div>
                                 </div>
-                                <div class="pull-left height-maximum margin-left-10 ccg001-table has-state">
-                                    <div class="ccg001-cell mid">
-                                        <div id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
-                                            data-bind="attr: {tabindex: ccg001Tabindex}, click: extractSelectedEmployees">
-                                            <div class="ccg001-cell mid">
-                                                <i class="icon icon-47-white-check-mark icon-ml"></i>
-                                                <div class="ccg-lbl-vertical ccg-lbl-extract-emp">`+CCG001TextResource.CCG001_26+`</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="ccg001-cell mid">
-                                        <span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
-                                    </div>
+                                <div class="footer-button">
+                                    <button id="ccg001-btn-KCP005-apply" class="green" data-bind="attr: {tabindex: ccg001Tabindex}, click: extractSelectedEmployees">
+                                        ${CCG001TextResource.CCG001_26}
+                                    </button>
                                 </div>
-                            <!-- /ko -->
-                            <div class="cf"></div>
-                        </div>
-                        <div class="cf"></div>
-                    </div>
-            <div id="ccg001-tab-content-3" class="height-maximum">
-                <div id="ccg001-part-g" class="pull-left height-maximum">
-                    <div class="control-group ccg001-control-group">
-                        <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_104+`</div>
-                        <input class="ccg001-inp" id="ccg001-input-code"
-                                    data-bind="attr: {tabindex: ccg001Tabindex}, ntsTextEditor: {
-                                    name: '#[CCG001_106]',
-                                    value: inputCodeTab3,
-                                    valueUpdate: 'keypress',
-                                    required: false
-                                    }" />
-                        <button class="proceed caret-bottom pull-right" id="ccg001-tab3-search-by-code"
-                            data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByCode, enable: isValidInput">`+CCG001TextResource.CCG001_108+`</button>
-                    </div>
-                    <div class="control-group ccg001-control-group">
-                        <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_105+`</div>
-                        <input class="ccg001-inp" id="ccg001-inp-name"
-                                    data-bind="attr: {tabindex: ccg001Tabindex}, ntsTextEditor: {
-                                    name: '#[CCG001_107]',
-                                    value: inputNameTab3,
-                                    valueUpdate: 'keypress',
-                                    required: false
-                                    }" />
-                        <button class="proceed caret-bottom pull-right" id="ccg001-tab3-search-by-name"
-                            data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByName, enable: isValidInput">`+CCG001TextResource.CCG001_108+`</button>
-                    </div>
-                    <div class="cf control-group ccg001-control-group">
-                        <div class="pull-left" data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_98+`</div>
-                        <div id="ccg001-date-entry" class="ccg001-date-range pull-left"
-                            data-bind="attr: {tabindex: ccg001Tabindex}, ntsDateRangePicker: {
-                                name: '#[CCG001_100]',
-                                required: false,
-                                enable: true,
-                                showNextPrevious: false,
-                                value: entryDateTab3
-                                }"/>
-                        <button class="proceed caret-bottom pull-right" id="search-by-entry-date"
-                            data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByEntryDate, enable: isValidEntryDateSearch">`+CCG001TextResource.CCG001_108+`</button>
-                    </div>
-                    <div class="cf control-group ccg001-control-group">
-                        <div class="pull-left" data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_99+`</div>
-                        <div id="ccg001-date-retirement" class="ccg001-date-range pull-left"
-                            data-bind="attr: {tabindex: ccg001Tabindex}, ntsDateRangePicker: {
-                                name: '#[CCG001_100]',
-                                required: false,
-                                enable: true,
-                                showNextPrevious: false,
-                                value: retirementDateTab3 }"/>
-                        <button class="proceed caret-bottom pull-right" id="search-by-retirement-date"
-                            data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByRetirementDate, enable: isValidRetirementDateSearch">`+CCG001TextResource.CCG001_108+`</button>
-                    </div>
-                    <div id="tab3kcp005"></div>
-                </div>
-                <div class="pull-right height-maximum ccg001-table has-state">
-                    <div class="ccg001-cell mid">
-                        <div id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
-                            data-bind="attr: {tabindex: ccg001Tabindex}, click: extractSelectedEmployeesInTab3">
-                            <div class="ccg001-cell mid">
-                                <i class="icon icon-47-white-check-mark icon-ml"></i>
-                                <div class="ccg-lbl-vertical ccg-lbl-extract-emp">`+CCG001TextResource.CCG001_26+`</div>
                             </div>
-                        </div>
+                        <!-- /ko -->
+
                     </div>
-                    <div class="ccg001-cell mid">
-                        <span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
+                </div>
+
+                <div id="ccg001-tab-content-3" class="height-maximum">
+                    <div id="ccg001-part-g" class="ccg001-tab-content-filters">
+                        <div class="ccg001-control-group">
+                            <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_104+`</div>
+                            <input class="ccg001-inp fit-to-right" id="ccg001-input-code"
+                                        data-bind="attr: {tabindex: ccg001Tabindex}, ntsTextEditor: {
+                                        name: '#[CCG001_106]',
+                                        value: inputCodeTab3,
+                                        valueUpdate: 'keypress',
+                                        required: false
+                                        }" />
+                            <button class="proceed fit-to-left fit-to-editor" id="ccg001-tab3-search-by-code"
+                                data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByCode, enable: isValidInput">`+CCG001TextResource.CCG001_108+`</button>
+                        </div>
+                        <div class="ccg001-control-group">
+                            <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_105+`</div>
+                            <input class="ccg001-inp fit-to-right" id="ccg001-inp-name"
+                                        data-bind="attr: {tabindex: ccg001Tabindex}, ntsTextEditor: {
+                                        name: '#[CCG001_107]',
+                                        value: inputNameTab3,
+                                        valueUpdate: 'keypress',
+                                        required: false
+                                        }" />
+                            <button class="proceed fit-to-left fit-to-editor" id="ccg001-tab3-search-by-name"
+                                data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByName, enable: isValidInput">`+CCG001TextResource.CCG001_108+`</button>
+                        </div>
+                        <div class="ccg001-control-group">
+                            <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_98+`</div>
+                            <div id="ccg001-date-entry" class="ccg001-date-range fit-to-right"
+                                data-bind="attr: {tabindex: ccg001Tabindex}, ntsDateRangePicker: {
+                                    name: '#[CCG001_100]',
+                                    required: false,
+                                    enable: true,
+                                    showNextPrevious: false,
+                                    value: entryDateTab3
+                                    }"/>
+                            <button class="proceed fit-to-left fit-to-editor" id="search-by-entry-date"
+                                data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByEntryDate, enable: isValidEntryDateSearch">`+CCG001TextResource.CCG001_108+`</button>
+                        </div>
+                        <div class="ccg001-control-group">
+                            <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_99+`</div>
+                            <div id="ccg001-date-retirement" class="ccg001-date-range fit-to-right"
+                                data-bind="attr: {tabindex: ccg001Tabindex}, ntsDateRangePicker: {
+                                    name: '#[CCG001_100]',
+                                    required: false,
+                                    enable: true,
+                                    showNextPrevious: false,
+                                    value: retirementDateTab3 }"/>
+                            <button class="proceed fit-to-left fit-to-editor" id="search-by-retirement-date"
+                                data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByRetirementDate, enable: isValidRetirementDateSearch">`+CCG001TextResource.CCG001_108+`</button>
+                        </div>
+                        <div id="tab3kcp005"></div>
+                    </div>
+                    <div class="footer-button">
+                        <button id="ccg001-btn-KCP005-apply" class="green" data-bind="attr: {tabindex: ccg001Tabindex}, click: extractSelectedEmployeesInTab3">
+                            ${CCG001TextResource.CCG001_26}
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
     </div>
     <div id="hor-scroll-button-hide">
-        <span class="position-mid ccg001-caret ccg001-caret-vertical caret-right"></span>
-        <div id="ccg001-btn-search-drawer" class="position-mid ccg001-btn ccg-btn-vertical" data-bind="click: showComponent">
-            <div class="ccg001-cell mid">
-            <i class="icon icon-01-searchmode icon-ml"></i>
-            <div class="ccg-lbl-vertical ccg-lbl-search-drawer">`+CCG001TextResource.CCG001_21+`</div>
-            </div>
-        </div>
+        <div id="ccg001-btn-search-drawer" class="ccg001-btn" data-bind="click: showComponent"><span>〉</span><span>〉</span></div>
     </div>`;
     }
 }

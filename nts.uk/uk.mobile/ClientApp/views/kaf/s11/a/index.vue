@@ -14,7 +14,7 @@
                 <div class="card-body">
                     <table class="table table-sm mb-0">
                         <thead class="thead-light">
-                            <tr class="table-light">
+                            <tr class="">
                                 <td>{{'KAFS11_2' | i18n}}</td>
                             </tr>
                         </thead>
@@ -159,7 +159,7 @@
         <div class="card-body">
             <table class="table table-sm mb-0" v-if="isSelectMngLst(recHolidayMngLst)">
                 <thead class="thead-light">
-                    <tr class="table-light">
+                    <tr class="">
                         <td>{{'KAFS11_20' | i18n}}</td>
                         <td>{{'KAFS11_21' | i18n}}</td>
                     </tr>
@@ -264,7 +264,7 @@
         <div class="card-body">
             <table class="table table-sm mb-0" v-if="isSelectMngLst(absHolidayMngLst)">
                 <thead class="thead-light">
-                    <tr class="table-light">
+                    <tr class="">
                         <td>{{'KAFS11_20' | i18n}}</td>
                         <td>{{'KAFS11_21' | i18n}}</td>
                     </tr>
@@ -294,7 +294,7 @@
         <div class="card-body">
             <table class="table table-sm mb-0" v-if="isSelectMngLst(absWorkMngLst)">
                 <thead class="thead-light">
-                    <tr class="table-light">
+                    <tr class="">
                         <td>{{'KAFS11_24' | i18n}}</td>
                         <td>{{'KAFS11_21' | i18n}}</td>
                     </tr>

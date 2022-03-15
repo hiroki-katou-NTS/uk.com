@@ -286,11 +286,9 @@ public class DPLoadRowProcessor {
 				result.setCellSate(data.getId(), DPText.LOCK_APPLICATION, DPText.STATE_DISABLE);
 			}
 			// map name submitted into cell
+			String appNameLst = "";
 			if (appMapDateSid.containsKey(data.getEmployeeId() + "|" + data.getDate())) {
-				data.addCellData(new DPCellDataDto(DPText.COLUMN_SUBMITTED,
-						appMapDateSid.get(data.getEmployeeId() + "|" + data.getDate()), "", ""));
-			} else {
-				data.addCellData(new DPCellDataDto(DPText.COLUMN_SUBMITTED, "", "", ""));
+				appNameLst = appMapDateSid.get(data.getEmployeeId() + "|" + data.getDate());
 			}
 			data.addCellData(new DPCellDataDto(DPText.COLUMN_SUBMITTED, "", "", ""));
 			data.addCellData(new DPCellDataDto(DPText.LOCK_APPLICATION, "", "", ""));
@@ -333,7 +331,7 @@ public class DPLoadRowProcessor {
 				Optional<TaskItem> opTaskItem = process.getTaskItemByEmpDate(taskInitialSelHistLst, data.getEmployeeId(), data.getDate());
 				Optional<DailyRecordDto> opDailyRecordDto = result.getDomainOld().stream().filter(x -> x.getEmployeeId().equals(data.getEmployeeId()) && x.getDate().equals(data.getDate())).findAny();
 				process.processCellData(NAME_EMPTY, NAME_NOT_FOUND, result, dPControlDisplayItem, mapGetName, codeNameReasonMap, codeNameTaskMap,
-						itemValueMap,  data, lockDaykWpl, dailyRecEditSetsMap, null, opTaskItem, opDailyRecordDto);
+						itemValueMap,  data, lockDaykWpl, dailyRecEditSetsMap, null, opTaskItem, opDailyRecordDto, appNameLst);
 				lstData.add(data);
 				Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()
 						.filter(w -> w.getEmployeeId().equals(data.getEmployeeId())

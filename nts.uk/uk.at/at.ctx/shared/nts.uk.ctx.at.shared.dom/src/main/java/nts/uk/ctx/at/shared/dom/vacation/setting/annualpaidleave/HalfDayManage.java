@@ -68,6 +68,6 @@ public class HalfDayManage implements Serializable {
 		} else if (this.roundProcesCla == RoundProcessingClassification.RoundUpToTheDay) {
 			return MonthVacationGrantDay.createWithRoundUp(dayRemains);
 		}
-		return new MonthVacationGrantDay(0.0);
+		return new MonthVacationGrantDay(dayRemains);
 	}
 }

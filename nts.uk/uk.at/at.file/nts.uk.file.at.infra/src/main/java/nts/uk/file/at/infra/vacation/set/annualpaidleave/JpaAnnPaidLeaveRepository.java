@@ -203,7 +203,7 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_196"), ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(isTimeManager && isTimeMaxDay ? CommonTempHolidays.getEnumTimeAnnualRoundProcesCla(Integer.valueOf(rs.getString("ROUND_PROC_CLA_TAS"))) : null, ColumnTextAlign.LEFT)));
+					, new DataEachBox(isTimeManager && isTimeMaxDay ? CommonTempHolidays.getEnumTimeAnnualRoundProcesCla(rs.getBoolean("ROUND_PROC_CLA_TAS") ? 1 : 0) : null, ColumnTextAlign.LEFT)));
 		} else {
 
 			datas = buildMasterListData();

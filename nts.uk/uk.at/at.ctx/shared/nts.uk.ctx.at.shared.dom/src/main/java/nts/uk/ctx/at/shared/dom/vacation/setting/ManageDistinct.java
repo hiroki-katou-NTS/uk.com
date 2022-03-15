@@ -3,6 +3,7 @@
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting;
+import nts.arc.enums.EnumAdaptor;
 
 /**
  * 管理区分
@@ -68,4 +69,9 @@ public enum ManageDistinct {
 	public boolean isManaged() {
 		return this == YES;
 	}
+
+	public static ManageDistinct toEnum(int value){
+		return EnumAdaptor.valueOf(value, ManageDistinct.class);
+	} 
+
 }

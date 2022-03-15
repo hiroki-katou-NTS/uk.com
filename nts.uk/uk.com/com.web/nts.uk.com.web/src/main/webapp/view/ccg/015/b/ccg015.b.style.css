@@ -213,14 +213,6 @@ margin-top: 20px;
   width: 100px;
 }
 
-#btn-1, #btn-3 {
-  width: 125px;
-}
-
-#btn-2 {
-  width: 145px;
-}
-
 .plus-icon {
   padding-top: 28px;
 }
@@ -231,4 +223,62 @@ margin-top: 20px;
 
 .pl-30 {
   padding-left: 30px;
+}
+
+.frame-layout-setting {
+  width: 175px;
+}
+
+.ccg015-image-holder {
+  position: relative;
+}
+
+.ccg015-image-holder > label {
+  margin: 0;
+  position: absolute;
+  top: 25%;
+}
+
+.setting-row {
+  min-height: 58px;
+}
+
+#B5_2 {
+  display: block;
+}
+
+#B5_4_1 {
+  left: 42%;
+}
+
+#B5_4_2 {
+  left: 25%;
+}
+
+#B5_4_3 {
+  left: 75%;
+}
+
+#B5_4_4 {
+  left: 10%;
+}
+
+#B5_4_5 {
+  left: 58%;
+}
+
+#B5_4_6 {
+  left: 8%;
+}
+
+#B5_4_7 {
+  left: 42%;
+}
+
+#B5_4_8 {
+  left: 76%;
+}
+
+.button-fix > * {
+  color: inherit;
 }
