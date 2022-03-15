@@ -24,7 +24,8 @@ public class FilterHelper {
 			ProgramsManager.CCG007F,
 			ProgramsManager.CCG007G,
 			ProgramsManager.CCG007H,
-			ProgramsManager.CCG007I
+			ProgramsManager.CCG007I,
+			ProgramsManager.KDP003A
 			);
 	
 	public static boolean isLoginPage(String requestPath){
