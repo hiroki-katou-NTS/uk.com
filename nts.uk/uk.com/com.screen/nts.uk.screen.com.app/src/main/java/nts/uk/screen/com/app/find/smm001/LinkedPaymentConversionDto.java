@@ -1,4 +1,4 @@
-package nts.uk.screen.com.app.smm.smm001.screenquery;
+package nts.uk.screen.com.app.find.smm001;
 
 import java.util.List;
 

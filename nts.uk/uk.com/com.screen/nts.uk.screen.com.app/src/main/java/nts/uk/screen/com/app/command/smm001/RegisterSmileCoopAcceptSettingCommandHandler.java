@@ -1,4 +1,4 @@
-package nts.uk.screen.com.app.smm.smm001.screencommand;
+package nts.uk.screen.com.app.command.smm001;
 
 import java.util.List;
 
@@ -11,8 +11,6 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.link.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceSetting;
 import nts.uk.ctx.link.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceSettingRepository;
-import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversionRepository;
-import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -21,21 +19,15 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
-public class RegisterSmileCooperationAcceptanceSettingScreenCommandHandler extends CommandHandler<RegisterSmileCooperationAcceptanceSettingScreenCommand> {
+public class RegisterSmileCoopAcceptSettingCommandHandler extends CommandHandler<RegisterSmileCoopAcceptSettingCommand> {
 
 	// Smile連携受入設定
 	@Inject
 	private SmileCooperationAcceptanceSettingRepository smileCooperationAcceptanceSettingRepository;
-	
-	@Inject
-	private SmileLinkageOutputSettingRepository smileLinkageOutputSettingRepository;
-	
-	@Inject
-	private LinkedPaymentConversionRepository linkedPaymentConversionRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<RegisterSmileCooperationAcceptanceSettingScreenCommand> context) {
-		RegisterSmileCooperationAcceptanceSettingScreenCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<RegisterSmileCoopAcceptSettingCommand> context) {
+		RegisterSmileCoopAcceptSettingCommand command = context.getCommand();
 		// 会社IDを指定してSM連携受入設定を取得する
 		String contractCode = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();

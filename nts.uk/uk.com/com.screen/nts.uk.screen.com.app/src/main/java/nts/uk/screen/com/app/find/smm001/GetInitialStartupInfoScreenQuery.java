@@ -1,4 +1,4 @@
-package nts.uk.screen.com.app.smm.smm001.screenquery;
+package nts.uk.screen.com.app.find.smm001;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class GetInitialStartupInformationScreenQuery {
+public class GetInitialStartupInfoScreenQuery {
 
 	// Smile連携受入設定
 	@Inject

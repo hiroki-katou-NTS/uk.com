@@ -1,4 +1,4 @@
-package nts.uk.screen.com.app.smm.smm001.screencommand;
+package nts.uk.screen.com.app.command.smm001;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,8 +25,8 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class RegisterSmileLinkageExternalIOutputScreenCommandHandler
-		extends CommandHandler<RegisterSmileLinkageExternalIOutputScreenCommand> {
+public class RegisterSmileLinkageExterOutputCommandHandler
+		extends CommandHandler<RegisterSmileLinkageExterOutputCommand> {
 
 	@Inject
 	private SmileLinkageOutputSettingRepository smileLinkageOutputSettingRepository;
@@ -35,8 +35,8 @@ public class RegisterSmileLinkageExternalIOutputScreenCommandHandler
 	private LinkedPaymentConversionRepository linkedPaymentConversionRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<RegisterSmileLinkageExternalIOutputScreenCommand> context) {
-		RegisterSmileLinkageExternalIOutputScreenCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<RegisterSmileLinkageExterOutputCommand> context) {
+		RegisterSmileLinkageExterOutputCommand command = context.getCommand();
 		
 		// get 契約コード、会社ID Object＜Smile連携出力設定＞
 		String contractCode = AppContexts.user().contractCode();

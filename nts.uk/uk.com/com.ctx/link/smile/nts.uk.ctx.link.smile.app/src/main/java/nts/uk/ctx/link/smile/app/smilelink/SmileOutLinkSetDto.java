@@ -25,7 +25,7 @@ public class SmileOutLinkSetDto {
 	private Integer monthlyApprovalCategory;
 	
 	// 給与連携条件 
-	private Optional<String> salaryCooperationConditions;
+	private String salaryCooperationConditions;
 	
 	// 連動支払変換
 	private List<LinkedPaymentDto> linkedPaymentConversion;
@@ -37,7 +37,7 @@ public class SmileOutLinkSetDto {
 		this.salaryCooperationClassification = salaryCooperationClassification;
 		this.monthlyLockClassification = monthlyLockClassification;
 		this.monthlyApprovalCategory = monthlyApprovalCategory;
-		this.salaryCooperationConditions = salaryCooperationConditions;
+		this.salaryCooperationConditions = salaryCooperationConditions.isPresent() ? salaryCooperationConditions.get() : null;
 		this.linkedPaymentConversion = linkedPaymentConversion;
 	}
 	
