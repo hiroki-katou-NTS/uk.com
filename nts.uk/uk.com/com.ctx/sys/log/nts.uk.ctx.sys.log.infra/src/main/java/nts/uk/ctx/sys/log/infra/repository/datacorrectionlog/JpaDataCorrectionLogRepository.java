@@ -1352,7 +1352,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 	@Override
 	public List<DataCorrectionLog> getInfoLog(String sid, GeneralDate targetDate, Integer itemId, TargetDataType type) {
 		return new NtsStatement(GET_LOG_BASIC, this.jdbcProxy()).paramInt("type", type.value).paramString("sid", sid)
-				.paramDate("ymd", targetDate).paramInt("itemId", itemId).getList(x -> convertRsToDomain(x));
+				.paramDate("ymd", targetDate).paramString("itemId", itemId.toString()).getList(x -> convertRsToDomain(x));
 	}
 	
 	private DataCorrectionLog convertRsToDomain(NtsResultRecord rs) {

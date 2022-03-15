@@ -763,7 +763,9 @@ export class CmmS45BComponent extends Vue {
             case '0_1':
                 return lstDisplay;
             case '0_2':
-                return lstDisplay;        
+                return lstDisplay;
+            case '0_3':
+                return lstDisplay;
             case '1':
                 return lstDisplay;
             case '2':

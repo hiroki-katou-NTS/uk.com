@@ -4,8 +4,10 @@ import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
 import { KafS00SubP2Component } from 'views/kaf/s00/sub/p2';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
-import { TimeZoneWithWorkNo, BreakTime, TimeZoneNew, WorkHoursDto, AppOverTime, InfoWithDateApplication , DisplayInfoOverTime, TimeZone, ParamBreakTime, BreakTimeZoneSetting} from '../a/define.interface';
+import { TimeZoneWithWorkNo, MultiOverTime, BreakTime, TimeZoneNew, WorkHoursDto, AppOverTime, InfoWithDateApplication , DisplayInfoOverTime, TimeZone, ParamBreakTime, BreakTimeZoneSetting} from '../a/define.interface';
 import { KafS05Component} from '../a/index';
+import { KafS05MultiComponent} from '../multiContent/index';
+
 @component({
     name: 'kafs05step1',
     route: '/kaf/s05/step1',
@@ -28,17 +30,23 @@ import { KafS05Component} from '../a/index';
         'kafs00subp2': KafS00SubP2Component,
         'kafs00-a': KafS00AComponent,
         'kafs00-b': KafS00BComponent,
-        'kafs00-c': KafS00CComponent
+        'kafs00-c': KafS00CComponent,
+        'kafs05multi': KafS05MultiComponent
     }
 })
 export class KafS05Step1Component extends Vue {
-    public title: string = 'KafS05Step1';
-
     public workInfo: WorkInfo = {} as WorkInfo;
 
     public workHours1: ValueTime = null;
 
     public workHours2?: ValueTime = null;
+
+    public multiOverTimes: Array<MultiOverTime> = [{
+        frameNo: 1,
+        valueHours: {start: null, end: null},
+        fixedReasonCode: null,
+        appReason: ''
+    }];
 
     public breakTimes: Array<BreakTime> = [];
 
@@ -64,7 +72,7 @@ export class KafS05Step1Component extends Vue {
     @Watch('workHours1', {deep: true})
     public changeWorkHours1(data: ValueTime) {
         const self = this;
-        if (_.isNil(_.get(data,'start')) || _.isNil(_.get(data, 'end')) || (self.isFirstModeUpdate && !self.$appContext.modeNew)) {
+        if (_.isNil(_.get(data,'start')) || _.isNil(_.get(data, 'end')) || self.isFirstModeUpdate) {
             self.isFirstModeUpdate = false;
 
             return;
@@ -83,12 +91,6 @@ export class KafS05Step1Component extends Vue {
         
     }
 
-    @Watch('workHours2', {deep: true})
-    public changeWorkHours2(data: any) {
-        console.log(data);
-    }
-
-
     public kafS00P1Params1: any = {
         preAppDisp: false,
         preAppTime: null,
@@ -103,16 +105,6 @@ export class KafS05Step1Component extends Vue {
 
     public created() {
         const self = this;
-
-        if (self.$appContext.getoverTimeClf() == 0) {
-            self.pgName = 'kafs05step1';
-        } else if (self.$appContext.getoverTimeClf() == 1) {
-            self.pgName = 'kafs05step2';
-        } else if (self.$appContext.getoverTimeClf() == 2) {
-            self.pgName = 'kafs05step3';
-        } else {
-            self.pgName = 'kafs05step4';
-        }
         self.loadData();     
     }
 
@@ -246,7 +238,7 @@ export class KafS05Step1Component extends Vue {
 
     public createWorkHours(mode: boolean) {
         const self = this;
- 
+
         let workHours = _.get(self.$appContext.model.displayInfoOverTime, 'infoWithDateApplicationOp.workHours') as WorkHoursDto;
         let workHours1 = {} as ValueTime;
         let workHours2 = {} as ValueTime;
@@ -276,39 +268,107 @@ export class KafS05Step1Component extends Vue {
     public loadData(displayInfoOverTime?: DisplayInfoOverTime, inputByUser?: boolean, isOpenKDL?: boolean) {
         const self = this;
         if (!_.isNil(displayInfoOverTime)) {
-
+            self.isFirstModeUpdate = true;
             if (!self.$appContext.modeNew && !inputByUser) { // bind from appovertime within update mode
                 let appOverTime = self.$appContext.model.appOverTime;
                 self.createWorkInfo(_.get(appOverTime, 'workInfoOp.workType'), _.get(appOverTime, 'workInfoOp.workTime'));
+                self.createWorkHours(false);
+
+                if (appOverTime.overTimeClf == 3) {
+                    self.multiOverTimes = appOverTime.multipleOvertimeContents.map((item) => ({
+                        frameNo: item.frameNo,
+                        valueHours: {start: item.startTime, end: item.endTime},
+                        fixedReasonCode: item.fixedReasonCode,
+                        appReason: item.appReason || ''
+                    }));
+                }
+
                 self.createBreakTime(_.map(_.get(appOverTime, 'breakTimeOp'), (x: any) => {
-                    
                     return {
                         start: x.timeZone.startTime,
                         end: x.timeZone.endTime
                     };
                 }));
-                self.createWorkHours(false);
-
 
                 return;
             }
-            let codeType = isOpenKDL ? self.workInfo.workType.code : _.get(displayInfoOverTime, 'infoWithDateApplicationOp.workTypeCD');
-            let codeTime = isOpenKDL ? self.workInfo.workTime.code : _.get(displayInfoOverTime, 'infoWithDateApplicationOp.workTimeCD');
-            self.createWorkInfo(codeType, codeTime);
-            self.createBreakTime(_.get(displayInfoOverTime, 'infoWithDateApplicationOp.breakTime.timeZones'));
-
-            // load work hours
-            self.createWorkHours(true);
+            if (displayInfoOverTime.latestMultiOvertimeApp && !isOpenKDL) {
+                self.loadDataLatestMultiOvertime(displayInfoOverTime.latestMultiOvertimeApp);
+            } else {
+                self.loadDataFromDisplayInfo(displayInfoOverTime, isOpenKDL);
+            }
 
             return;
         } else {
             self.createWorkInfo();
             self.createBreakTime();
+            if (self.$appContext.overTimeClf == 3) {
+                self.multiOverTimes = [{
+                    frameNo: 1,
+                    valueHours: {start: null, end: null},
+                    fixedReasonCode: null,
+                    appReason: ''
+                }];
+            }
+        }
+    }
+
+    public loadDataFromDisplayInfo(displayInfoOverTime: DisplayInfoOverTime, isOpenKDL?: boolean) {
+        const self = this;
+        let codeType = isOpenKDL ? self.workInfo.workType.code : _.get(displayInfoOverTime, 'infoWithDateApplicationOp.workTypeCD');
+        let codeTime = isOpenKDL ? self.workInfo.workTime.code : _.get(displayInfoOverTime, 'infoWithDateApplicationOp.workTimeCD');
+        self.createWorkInfo(codeType, codeTime);
+        self.createBreakTime(_.get(displayInfoOverTime, 'infoWithDateApplicationOp.breakTime.timeZones'));
+        // load work hours
+        self.createWorkHours(true);
+        if (self.$appContext.overTimeClf == 3) {
+            self.multiOverTimes = [{
+                frameNo: 1,
+                valueHours: {start: null, end: null},
+                fixedReasonCode: null,
+                appReason: ''
+            }];
+        }
+    }
+
+    public loadDataLatestMultiOvertime(latestMultiOvertimeApp: any) {
+        const self = this;
+        let codeType = latestMultiOvertimeApp.workInfoOp.workType;
+        let codeTime = latestMultiOvertimeApp.workInfoOp.workTime;
+        self.createWorkInfo(codeType, codeTime);
+
+        let workHours1 = {} as ValueTime;
+        let workHours2 = {} as ValueTime;
+        if (latestMultiOvertimeApp.workHoursOp) {
+            if (latestMultiOvertimeApp.workHoursOp.length > 0) {
+                workHours1.start = latestMultiOvertimeApp.workHoursOp[0].timeZone.startTime;
+                workHours1.end = latestMultiOvertimeApp.workHoursOp[0].timeZone.endTime;
+            }
+            if (latestMultiOvertimeApp.workHoursOp.length > 1) {
+                workHours2.start = latestMultiOvertimeApp.workHoursOp[1].timeZone.startTime;
+                workHours2.end = latestMultiOvertimeApp.workHoursOp[1].timeZone.endTime;
+            }
+        }
+        self.workHours1 = (_.isNumber(workHours1.start) || _.isNumber(workHours1.end)) ?  workHours1 : null;
+        self.workHours2 = (_.isNumber(workHours2.start) || _.isNumber(workHours2.end)) ?  workHours2 : null;
+
+        if (self.$appContext.overTimeClf == 3) {
+            self.multiOverTimes = latestMultiOvertimeApp.multipleOvertimeContents.map((item) => ({
+                frameNo: item.frameNo,
+                valueHours: {start: item.startTime, end: item.endTime},
+                fixedReasonCode: item.fixedReasonCode,
+                appReason: item.appReason || ''
+            }));
         }
 
-           
-
+        self.createBreakTime(_.map(latestMultiOvertimeApp.breakTimeOp, (x: any) => {
+            return {
+                start: x.timeZone.startTime,
+                end: x.timeZone.endTime
+            };
+        }));
     }
+
     // bind when change date, select worktype or worktime
     public createHoursWorkTime() {
         const self = this;
@@ -363,6 +423,17 @@ export class KafS05Step1Component extends Vue {
         }
     }
 
+    public addMultiOverTime() {
+        const self = this;
+        if (self.multiOverTimes.length < 10) {
+            self.multiOverTimes.push({
+                frameNo: self.multiOverTimes.length + 1,
+                valueHours: {start: null, end: null},
+                fixedReasonCode: null,
+                appReason: ''
+            });
+        }
+    }
 
 }
 interface WorkInfo {

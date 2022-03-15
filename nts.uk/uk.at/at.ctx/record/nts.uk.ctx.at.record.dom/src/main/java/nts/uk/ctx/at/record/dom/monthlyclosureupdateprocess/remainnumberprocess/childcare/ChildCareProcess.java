@@ -48,7 +48,7 @@ public class ChildCareProcess {
 		
 		//子の看護情報更新
 		return AtomTask.of(RemainChildCareUpdating.updateRemain(require, employeeId, output))
-				.then(DeleteTempChildCare.delete(require, employeeId, period.getPeriod()));
+				.then(DeleteTempChildCare.delete(require, employeeId, period.getPeriod().end()));
 		
 	}
 	

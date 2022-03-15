@@ -55,6 +55,7 @@ public class MPHeaderDto {
 
 	private static final String ADD_CHARACTER = "A";
 	private static final String PX = "px";
+	private static final String HEADER_COLOR = "#6A6A6A";
 
 	public MPHeaderDto(String headerText, String key, String dataType, String width, String color, boolean hidden,
 			String ntsControl, Boolean changedByOther, Boolean changedByYou) {
@@ -110,34 +111,34 @@ public class MPHeaderDto {
 	public static List<MPHeaderDto> GenerateFixedHeader() {
 		List<MPHeaderDto> lstHeader = new ArrayList<>();
 
-		lstHeader.add(new MPHeaderDto("ID", "id", "String", "30px", "", true, "Label", true, true));
+		lstHeader.add(new MPHeaderDto("ID", "id", "String", "30px", HEADER_COLOR, true, "Label", true, true));
 		// G_1 状態
 		// lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_21"),
 		// "state", "String", "30px", "", false, "FlexImage", true, true));
-		lstHeader.add(new MPHeaderDto("状<br>態", "state", "String", "30px", "", false, "FlexImage", true, true));
+		lstHeader.add(new MPHeaderDto("状<br>態", "state", "String", "30px", HEADER_COLOR, false, "FlexImage", true, true));
 		String name = TextResource.localize("KMW003_22");
 		String newName = name.replace("\n", "<br>");
 		// G_2 アラーム/エラー
-		lstHeader.add(new MPHeaderDto(newName, "error", "String", "60px", "", false, "Label", true, true));
+		lstHeader.add(new MPHeaderDto(newName, "error", "String", "60px", HEADER_COLOR, false, "Label", true, true));
 		// G_3 社員コード
-		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_23"), "employeeCode", "String", "85px", "", false,
+		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_23"), "employeeCode", "String", "85px", HEADER_COLOR, false,
 				"Label", true, true));
 		// G_4 社員名
-		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_24"), "employeeName", "String", "102px", "", false,
+		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_24"), "employeeName", "String", "102px", HEADER_COLOR, false,
 				"Label", true, true));
 		// G_5 個人プロフィール
-		lstHeader.add(new MPHeaderDto("", "picture-person", "String", "10px", "", false, "Image", true, true));
+		lstHeader.add(new MPHeaderDto("", "picture-person", "String", "10px", HEADER_COLOR, false, "Image", true, true));
 		// G_6 本人確認
-		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_25"), "identify", "boolean", "35px", "", false,
+		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_25"), "identify", "boolean", "35px", HEADER_COLOR, false,
 				"Checkbox", true, true));
 		// G_7
-		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_26"), "approval", "boolean", "35px", "", false,
+		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_26"), "approval", "boolean", "35px", HEADER_COLOR, false,
 				"Checkbox", true, true));
 		// G_8 日別確認
-		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_27"), "dailyconfirm", "String", "64px", "", false,
+		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_27"), "dailyconfirm", "String", "64px", HEADER_COLOR, false,
 				"Label", true, true));
 		// G_9 日別実績の修正
-		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_28"), "dailyperformace", "String", "85px", "",
+		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_28"), "dailyperformace", "String", "85px", HEADER_COLOR,
 				false, "Button", true, true));
 		return lstHeader;
 	}
@@ -159,7 +160,7 @@ public class MPHeaderDto {
 			MonthlyAttendanceItemDto maiDto) {
 		String key = mergeString(ADD_CHARACTER, String.valueOf(item.getId()));
 		String width = String.valueOf(item.getColumnWidth() == null ? 100 : item.getColumnWidth()) + PX;
-		MPHeaderDto dto = new MPHeaderDto("", key, "String", width, "#CFF1A5", false, "", false, false);
+		MPHeaderDto dto = new MPHeaderDto("", key, "String", width, "#6A6A6A", false, "", false, false);
 		// set constraint
 		// if (maiDto != null && maiDto.getPrimitive() != null) {
 		// dto.setConstraint(new Constraint("Primitive", false,
@@ -170,12 +171,14 @@ public class MPHeaderDto {
 			// dto.setNtsControl("TextEditorNumberSeparated");
 			//dto.setConstraint(new Constraint("Currency", false, ""));
 			dto.setGrant(true);
-			if (maiDto.getPrimitive() != null && maiDto.getPrimitive() == 54) {
-				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-999999", "999999"));
+			if (maiDto.getPrimitive() != null && maiDto.getPrimitive() == 65) {
+				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-99999999999", "99999999999"));
 			} else if (maiDto.getPrimitive() != null && maiDto.getPrimitive() == 55) {
 				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-999999999", "999999999"));
+			} else if (maiDto.getPrimitive() != null && maiDto.getPrimitive() == 67) {
+				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("0", "99999999"));
 			} else {
-				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-999999999", "999999999"));
+				dto.setConstraint(new Constraint("Currency", false, ""));
 			}
 		} else if(attendanceAtr == MonthlyAttendanceItemAtr.CODE.value){
 			List<MPHeaderDto> groups = new ArrayList<>();
@@ -210,13 +213,13 @@ public class MPHeaderDto {
 		// }
 		setShowZero(item, dto);
 		// Set header text
-		if (null != item.getLineBreakPosition() && item.getLineBreakPosition() > 0) {
+		if (null != item.getLineBreakPosition() && item.getLineBreakPosition() > 0 && item.getLineBreakPosition() < item.getName().length()) {
 			dto.headerText = item.getName() != null ? item.getName().substring(0, item.getLineBreakPosition()) + "<br/>"
 					+ item.getName().substring(item.getLineBreakPosition(), item.getName().length()) : "";
 		} else {
 			dto.headerText = item.getName() != null ? item.getName() : "";
 		}
-		if (null != ctrOfMonthlyDto) {
+		if (null != ctrOfMonthlyDto && ctrOfMonthlyDto.getHeaderBgColorOfMonthlyPer() !=null) {
 			dto.setColor(ctrOfMonthlyDto.getHeaderBgColorOfMonthlyPer());
 		}
 		

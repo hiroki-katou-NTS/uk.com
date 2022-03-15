@@ -76,6 +76,7 @@ import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationLis
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectedStateShare;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
@@ -991,7 +992,7 @@ public class DailyPerformanceCorrectionProcessor {
 				screenDto.setCellSate(rowId, columnKey, DPText.HAND_CORRECTION_MYSELF);
 			}else if(cellEdit == 1){
 				screenDto.setCellSate(rowId, columnKey, DPText.HAND_CORRECTION_OTHER);
-			}else{
+			}else if(cellEdit == 2 || cellEdit == 4){
 				screenDto.setCellSate(rowId, columnKey, DPText.REFLECT_APPLICATION);
 			}
 		}
@@ -1103,8 +1104,8 @@ public class DailyPerformanceCorrectionProcessor {
 		appplicationDisable.forEach(x -> {
 			String key = x.getEmployeeID() + "|" + x.getAppDate();
 			if (disableSignMap != null) {
-				boolean disable = (x.getReflectState() == ReflectedState_New.NOTREFLECTED.value
-						|| x.getReflectState() == ReflectedState_New.REMAND.value)
+				boolean disable = (x.getReflectState() == ReflectedStateShare.NOTREFLECTED.value
+						|| x.getReflectState() == ReflectedStateShare.REMAND.value)
 						&& x.getAppType() != nts.uk.ctx.at.request.dom.application.ApplicationType.OVER_TIME_APPLICATION.value;
 				if (disableSignMap.containsKey(key)) {
 					disableSignMap.put(key, disableSignMap.get(key) || disable);

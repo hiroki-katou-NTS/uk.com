@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import lombok.val;
@@ -22,6 +23,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
+import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
@@ -71,7 +73,7 @@ public class StockHolidayRemainingCanonicalization  extends IndependentCanonical
 
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(DomainDataColumn.SID);
+		return Arrays.asList(new DomainDataColumn(Items.SID, "SID", DataType.STRING));
 	}
 
 	@Override
@@ -101,8 +103,10 @@ public class StockHolidayRemainingCanonicalization  extends IndependentCanonical
 	}
 
 	@Override
-	protected IntermediateResult canonicalizeExtends(IntermediateResult targertResult) {
-		return addFixedItems(targertResult);
+	protected Optional<IntermediateResult> canonicalizeExtends(DomainCanonicalization.RequireCanonicalize require, 
+																						ExecutionContext context, 
+																						IntermediateResult targertResult) {
+		return Optional.of(addFixedItems(targertResult));
 	}
 	
 	/**

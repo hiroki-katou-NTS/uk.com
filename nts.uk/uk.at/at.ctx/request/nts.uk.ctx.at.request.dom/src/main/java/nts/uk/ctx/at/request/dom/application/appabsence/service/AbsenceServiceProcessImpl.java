@@ -22,10 +22,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.ChildCareNursePeriodImport;
-import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberCareAdapter;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberChildCareAdapter;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberNursingAdapter;
-import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childcare.GetRemainingNumberChildCareNurseAdapter;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.AggrResultOfHolidayOver60hImport;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.GetHolidayOver60hRemNumWithinPeriodAdapter;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -86,7 +84,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vaca
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.UseAtr;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleError;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleExport;
-import nts.uk.ctx.at.request.dom.workrecord.remainmanagement.InterimRemainDataMngCheckRegisterRequest;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -317,19 +314,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     private GetHolidayOver60hRemNumWithinPeriodAdapter getHolidayOver60hRemNumWithinPeriodAdapter;
     
     @Inject
-    private GetRemainingNumberChildCareNurseAdapter getRemainingNumberChildCareNurseAdapter;
-    
-    @Inject
-    private GetRemainingNumberCareAdapter getRemainingNumberCareAdapter;
-    
-    @Inject
     private GetRemainingNumberChildCareAdapter getRemainingNumberChildCareAdapter;
     
     @Inject
     private GetRemainingNumberNursingAdapter getRemainingNumberNursingAdapter;
-    
-    @Inject
-    private InterimRemainDataMngCheckRegisterRequest remainDataCheckRegister;
     
     @Inject
     private ComDayOffManaDataRepository comDayOffManaDataRepo;
@@ -610,10 +598,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 
 			nursingCareLeaveManagement = new NursingCareLeaveManagement(
 					childNursingLeaveSetting.getManageType(),
-					nursingLeaveSetting.getTimeCareNursingSetting().getTimeDigestiveUnit(),
-					nursingLeaveSetting.getTimeCareNursingSetting().getManageDistinct(),
-					childNursingLeaveSetting.getTimeCareNursingSetting().getTimeDigestiveUnit(),
-					childNursingLeaveSetting.getTimeCareNursingSetting().getManageDistinct(),
+					nursingLeaveSetting.getTimeVacationDigestUnit().getDigestUnit(),
+					nursingLeaveSetting.getTimeVacationDigestUnit().getManage(),
+					childNursingLeaveSetting.getTimeVacationDigestUnit().getDigestUnit(),
+					childNursingLeaveSetting.getTimeVacationDigestUnit().getManage(),
 					nursingLeaveSetting.getManageType());
 	    }catch (Exception ignored){}
 
@@ -1562,13 +1550,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		            remainVacationInfo.getOvertime60hManagement().getOverrest60HManagement());
 		}
 		// 11.時間消化登録時のエラーチェック
-		commonAlgorithm.vacationDigestionUnitCheck(timeDigestApplication
-				, Optional.ofNullable(remainVacationInfo.getOvertime60hManagement().getSuper60HDigestion())
-				, Optional.ofNullable(remainVacationInfo.getSubstituteLeaveManagement().getTimeDigestiveUnit())
-				, Optional.ofNullable(remainVacationInfo.getAnnualLeaveManagement().getTimeAnnualLeave())
-				, Optional.ofNullable(remainVacationInfo.getNursingCareLeaveManagement().getTimeChildNursingDigestive())
-				, Optional.ofNullable(remainVacationInfo.getNursingCareLeaveManagement().getTimeCareDigestive())
-				, Optional.empty());
+		commonAlgorithm.vacationDigestionUnitCheck(timeDigestApplication);
 
 		if (requiredTime.isPresent()) {
 		    this.checkVacationTimeRequire(timeDigestApplication, requiredTime.get());
