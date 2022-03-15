@@ -439,8 +439,8 @@ module nts.uk.com.view.cmm030.a {
       vm.isUpdating(false);
       if (_.isEmpty(approverDisplayData.approvalSettingInformations)) {
         vm.startDate("");
-        _.forEach(vm.approverInputList(), approverInput => approverInput.wipeData(vm.$i18n("CMM030_25")));
       }
+      _.forEach(vm.approverInputList(), approverInput => approverInput.wipeData(vm.$i18n("CMM030_25")));
       _.forEach(vm.approverInputList(), approverInput => {
         const settingInfo = _.find(approverDisplayData.approvalSettingInformations, 
           (data: any) => vm.getSettingId(data.personApprovalRoot.apprRoot) === approverInput.id);
