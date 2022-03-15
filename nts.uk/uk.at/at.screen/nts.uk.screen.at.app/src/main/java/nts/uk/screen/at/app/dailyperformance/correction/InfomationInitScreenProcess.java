@@ -45,6 +45,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ParamCommonAsync;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindAllEmployee;
+import nts.uk.screen.at.app.dailyperformance.support.GetDailySupportWorkers;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.license.option.OptionLicense;
 
@@ -75,6 +76,9 @@ public class InfomationInitScreenProcess {
 	
 	@Inject
 	private TaskOperationSettingRepository taskOperationSettingRepository;
+	
+	@Inject
+	private GetDailySupportWorkers dailySupportWorkers;
 
 	public Pair<DailyPerformanceCorrectionDto, ParamCommonAsync> initGetParam(DPParams param) {
 		
@@ -165,10 +169,13 @@ public class InfomationInitScreenProcess {
 			initDto = processor.changeListEmployeeId(employeeIds, rangeInit, mode,
 					objectShare != null, screenDto.getClosureId(), screenDto);
 			changeEmployeeIds = initDto.getLstEmpId();
+			
+			DPCorrectionStateParam stateParam = dailySupportWorkers.getDailySupportWorkers(initDto.getParam());
+			initDto.setParam(stateParam);
 		} else {
 			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 		}
-
+		// 応援勤務者の特定 - No1291
 		List<String> employeeIdsOri = changeEmployeeIds;
 		//System.out.println("time get employeeId" + (System.currentTimeMillis() - timeStart));	
 		//<<Public>> パラメータに初期値を設定する
@@ -338,8 +345,8 @@ public class InfomationInitScreenProcess {
 				new DatePeriod(screenDto.getDateRange().getStartDate(), screenDto.getDateRange().getEndDate()),
 				screenDto.getEmployeeIds(), displayFormat, screenDto.getEmployeeIds(), 
 				screenDto.getLstControlDisplayItem(), info, transferDesScreen,
-				initDto != null ? initDto.getParam().getLstWrkplaceId() : new ArrayList<>(),
-				initDto != null ? initDto.getParam().getLstEmpsSupport() : new ArrayList<>());
+				initDto != null && initDto.getParam() != null ? initDto.getParam().getLstWrkplaceId() : null,
+				initDto != null && initDto.getParam() != null ? initDto.getParam().getLstEmpsSupport() : new ArrayList<>());
 		screenDto.setStateParam(cacheParam);
 
 	}

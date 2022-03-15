@@ -92,6 +92,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindAllEmployee;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
+import nts.uk.screen.at.app.dailyperformance.support.GetDailySupportWorkers;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.FormatDailyDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -140,6 +141,9 @@ public class InitScreenMob {
 	
 	@Inject
 	private TaskSupInfoChoiceDetailsQuery taskSupInfoChoiceDetailsQuery;
+	
+	@Inject
+	private GetDailySupportWorkers supportWorkers;
 
 	private static final Integer[] DEVIATION_REASON = { 436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456,
 			458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822 };
@@ -235,6 +239,10 @@ public class InitScreenMob {
 
 		allIds = processor.changeListEmployeeId(new ArrayList<>(), rangeInit, screenMode, false,
 				screenDto.getClosureId(), screenDto);
+		
+		//
+		DPCorrectionStateParam stateParam = supportWorkers.getDailySupportWorkers(param.dpStateParam);
+		screenDto.setStateParam(stateParam);
 
 		// ログイン社員の日別実績の権限を取得する
 		screenDto.setAuthorityDto(processor.getAuthority(screenDto));

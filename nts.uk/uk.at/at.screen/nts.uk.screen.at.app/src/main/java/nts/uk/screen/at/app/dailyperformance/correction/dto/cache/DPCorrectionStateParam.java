@@ -47,7 +47,7 @@ public class DPCorrectionStateParam implements Serializable{
 	//対象職場
 	private List<String> lstWrkplaceId;
 	
-	//
+	//応援来た社員
 	private List<String> lstEmpsSupport;
 
 	public DPCorrectionStateParam(DatePeriod period, List<String> employeeIds, Integer displayMode,

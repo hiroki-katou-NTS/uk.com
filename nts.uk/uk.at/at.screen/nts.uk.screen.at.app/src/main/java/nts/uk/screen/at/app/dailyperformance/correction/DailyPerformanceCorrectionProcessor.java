@@ -1803,7 +1803,9 @@ public class DailyPerformanceCorrectionProcessor {
 		List<String> lstWplId = new ArrayList<>();
 		List<ResultRequest597Export> lstInfoEmp = new ArrayList<>();
 		DatePeriod period = new DatePeriod(range.getStartDate(), range.getEndDate());
-		InitialDisplayEmployeeDto result = new InitialDisplayEmployeeDto();
+		InitialDisplayEmployeeDto result = screenDto.getStateParam() != null ? new InitialDisplayEmployeeDto(lstEmployeeId, screenDto.getStateParam()) :
+			new InitialDisplayEmployeeDto(lstEmployeeId, new DPCorrectionStateParam(period, employeeIds, mode, 
+					new ArrayList<>(), null, null, isTranfer, new ArrayList<>(), new ArrayList<>()));
 		// 「自分のみ」以外の場合
 		if (mode == ScreenMode.NORMAL.value) {
 			
@@ -1812,7 +1814,8 @@ public class DailyPerformanceCorrectionProcessor {
 			Optional<Role> role = roleRepository.findByRoleId(AppContexts.user().roles().forAttendance());
 			if (!role.isPresent() || role.get().getEmployeeReferenceRange() == null || role.get()
 					.getEmployeeReferenceRange() == nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange.ONLY_MYSELF) {
-				return new InitialDisplayEmployeeDto(Arrays.asList(employeeIdLogin), null);
+				result.setLstEmpId(Arrays.asList(employeeIdLogin));
+				return result;
 			}
 			
 			// [No.598]社員が所属している職場を取得する
@@ -1836,8 +1839,11 @@ public class DailyPerformanceCorrectionProcessor {
 //						new DateRange(range.getStartDate(), range.getEndDate()));
 //				
 //				lstEmployeeId = narrowEmployeeAdapter.findByEmpId(listEmp, 3);
-			if (lstInfoEmp.isEmpty())
-				return new InitialDisplayEmployeeDto(Arrays.asList(employeeIdLogin), null);
+			if (lstInfoEmp.isEmpty()) {
+				result.setLstEmpId(Arrays.asList(employeeIdLogin));
+				return result;
+			}
+			
 			lstEmployeeId = lstInfoEmp.stream().map(x -> x.getSid()).distinct().collect(Collectors.toList());
 			lstEmployeeId.add(employeeIdLogin);
 			lstEmployeeId = lstEmployeeId.stream().distinct().collect(Collectors.toList());
@@ -1873,19 +1879,13 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 		// Code
 		if(mode == ScreenMode.APPROVAL.value || mode == ScreenMode.NORMAL.value) {
-			// 応援勤務に来た社員を取得する
-			List<String> lstEmpSupport = employeeSupport.getEmployeesCameToSupport(period, lstWplId);
-			List<String> lstEmp597 = lstInfoEmp.stream().map(x -> x.getSid()).collect(Collectors.toList());
- 			List<String> lstEmpCanSupport = lstEmpSupport.stream().filter(x -> !lstEmp597.contains(x)).collect(Collectors.toList());
- 			List<String> lstEmpsNew = new ArrayList<>();
- 			lstEmpsNew.addAll(lstEmp597);
- 			lstEmpsNew.addAll(lstEmpCanSupport);
-			DPCorrectionStateParam stateParam = new DPCorrectionStateParam(period, lstEmpsNew , null, new ArrayList<>(), 
-					null, null, null, lstWplId, lstEmpCanSupport);
+			// 応援者の情報をOutputにセットする - No4281
+			result.getParam().setLstWrkplaceId(lstWplId);
 			
-			return new InitialDisplayEmployeeDto(lstEmployeeId, stateParam);
+			List<String> lstEmp597 = lstInfoEmp.stream().map(x -> x.getSid()).collect(Collectors.toList());
+			result.getParam().setEmployeeIds(lstEmp597);
 		}
-		return new InitialDisplayEmployeeDto(Collections.emptyList(), null);
+		return result;
 	}
 	
 	public void insertStampSourceInfo(String employeeId, GeneralDate date, Boolean stampSourceAt,
