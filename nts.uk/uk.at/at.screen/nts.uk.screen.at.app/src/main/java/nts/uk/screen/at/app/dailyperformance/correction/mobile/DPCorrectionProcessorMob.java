@@ -67,7 +67,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeUseSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -189,6 +191,10 @@ public class DPCorrectionProcessorMob {
 	
 	@Inject
 	private RecordDomRequireService requireService;
+	
+	@Inject
+	private CompanyDailyItemService companyDailyItemService;
+	
 
 	static final Integer[] DEVIATION_REASON = { 436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458,
 			459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822 };
@@ -786,6 +792,12 @@ public class DPCorrectionProcessorMob {
 			/// 対応するドメインモデル「勤務種別日別実績の修正のフォーマット」を取得する
 			String authorityDailyID = AppContexts.user().roles().forAttendance();
 			if (lstFormat.size() > 0) {
+				
+				//EA 4253
+				//会社の日次項目を取得する
+				List<AttItemName> listAttItemName = companyDailyItemService.getDailyItems(companyId, Optional.empty(), lstAtdItemUnique, new ArrayList<>());
+				lstAtdItemUnique = listAttItemName.stream().map(c->c.getAttendanceItemId()).collect(Collectors.toList());
+				
 				lstDPBusinessTypeControl = this.repo.getListBusinessTypeControl(companyId, authorityDailyID,
 						lstAtdItemUnique, true);
 				if (lstDPBusinessTypeControl.isEmpty()) {

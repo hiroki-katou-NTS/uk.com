@@ -111,8 +111,9 @@ module nts.uk.at.view.kmk006.j {
                                 vm.nameAttendent1(exist.attendanceName);
                             } else {
                                 if (output.length == 0) {
-                                    vm.nameAttendent1('');
+                                    vm.nameAttendent1('');                                    
                                 }
+                                vm.nameAttendent1(this.$i18n('KDW006_349'));
                             }
                             break;
                         case 2:
@@ -153,6 +154,8 @@ module nts.uk.at.view.kmk006.j {
                         vm.textInput1(data[i].displayName);
                         if (exist) {
                             vm.nameAttendent1(exist.attendanceName);
+                        } else {
+                            vm.nameAttendent1(this.$i18n('KDW006_349'));
                         }
                         break;
                     }
@@ -161,6 +164,8 @@ module nts.uk.at.view.kmk006.j {
                         vm.textInput2(data[i].displayName);
                         if (exist) {
                             vm.nameAttendent2(exist.attendanceName);
+                        } else {
+                            vm.nameAttendent2(this.$i18n('KDW006_349'));
                         }
                         break;
                     }
@@ -169,6 +174,8 @@ module nts.uk.at.view.kmk006.j {
                         vm.textInput3(data[i].displayName);
                         if (exist) {
                             vm.nameAttendent3(exist.attendanceName);
+                        } else {
+                            vm.nameAttendent3(this.$i18n('KDW006_349'));
                         }
                         break;
                     }
@@ -212,6 +219,8 @@ module nts.uk.at.view.kmk006.j {
                 }))
                 if (exist) {
                     itemUse.push({ id: exist.displayNumber, name: exist.attendanceName });
+                } else {
+                    itemUse.push({ id: null, name: this.$i18n('KDW006_349')});
                 }
             }))
 
