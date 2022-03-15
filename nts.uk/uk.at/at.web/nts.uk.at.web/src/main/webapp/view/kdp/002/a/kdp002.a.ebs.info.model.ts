@@ -34,8 +34,8 @@ module nts.uk.at.view.kdp002.a {
 						self.bindItemData(start.stampDataOfEmployees);
 
 						self.dateValue({
-							startDate: moment(c).add(ko.unwrap(regionalTime), 'm').add(-3, 'days').format('YYYY/MM/DD'),
-							endDate: moment(c).add(ko.unwrap(regionalTime), 'm').format('YYYY/MM/DD')
+							startDate: moment(c).add(ko.unwrap(regionalTime), 'm').add(-3, 'days').utc().format('YYYY/MM/DD'),
+							endDate: moment(c).add(ko.unwrap(regionalTime), 'm').utc().format('YYYY/MM/DD')
 						});
 					});
 				self.workManagementMultiple(workManagementMultiple);
