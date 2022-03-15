@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -89,6 +91,16 @@ public class FlowWorkTimezoneSetting extends WorkTimeDomainObject implements Clo
 			return Optional.empty();
 		}
 		return Optional.of(timeSheet.get(0));
+	}
+	
+	/**
+	 * 法定内残業枠Noを取得する
+	 * @return 法定内残業枠No(List)
+	 */
+	public List<OverTimeFrameNo> getInLegalOverTime() {
+		return this.lstOTTimezone.stream()
+				.map(o -> new OverTimeFrameNo(o.getInLegalOTFrameNo().v().intValue()))
+				.collect(Collectors.toList());
 	}
 	
 	/**

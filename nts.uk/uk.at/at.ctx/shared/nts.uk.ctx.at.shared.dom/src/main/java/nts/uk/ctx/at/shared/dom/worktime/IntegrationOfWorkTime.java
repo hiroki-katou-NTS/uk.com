@@ -325,7 +325,7 @@ public class IntegrationOfWorkTime {
 		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
 			case FIXED:				return this.fixedWorkSetting.get().getLegalOverTimeFrameNoList(workType);
 			case FLEX:				return Collections.emptyList();
-			case FLOW:				return Collections.emptyList();
+			case FLOW:				return this.flowWorkSetting.get().getInLegalOverTime();
 			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
 			default:				throw new RuntimeException("Non-conformity No Work");
 		}

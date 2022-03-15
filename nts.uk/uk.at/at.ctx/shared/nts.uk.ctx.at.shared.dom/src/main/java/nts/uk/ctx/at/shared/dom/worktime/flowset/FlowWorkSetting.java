@@ -260,6 +260,16 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 				.collect(Collectors.toMap(k->new EmTimezoneNo(k.getWorktimeNo()), v->new OverTimeFrameNo(v.getInLegalOTFrameNo().v().intValue())));
 	}
 
+	/**
+	 * 法定内残業枠Noを取得する
+	 * @return 法定内の残業枠No(List)
+	 */
+	public List<OverTimeFrameNo> getInLegalOverTime() {
+		if(this.legalOTSetting.isOutsideLegal()) {
+			return new ArrayList<>();
+		}
+		return this.halfDayWorkTimezone.getInLegalOverTime();
+	}
 
 	/**
 	 * 変更可能な勤務時間帯を取得する

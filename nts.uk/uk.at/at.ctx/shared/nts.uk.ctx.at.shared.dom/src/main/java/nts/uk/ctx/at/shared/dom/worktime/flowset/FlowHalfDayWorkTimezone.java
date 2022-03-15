@@ -5,8 +5,11 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -75,6 +78,14 @@ public class FlowHalfDayWorkTimezone extends WorkTimeDomainObject implements Clo
 	 */
 	public void correctDefaultData() {
 		this.workTimeZone.correctDefaultData();
+	}
+	
+	/**
+	 * 法定内残業枠Noを取得する
+	 * @return 法定内残業枠No(List)
+	 */
+	public List<OverTimeFrameNo> getInLegalOverTime() {
+		return this.workTimeZone.getInLegalOverTime();
 	}
 	
 	@Override
