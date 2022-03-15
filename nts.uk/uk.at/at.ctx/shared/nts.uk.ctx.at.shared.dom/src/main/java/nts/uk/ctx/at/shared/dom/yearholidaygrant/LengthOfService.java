@@ -52,7 +52,11 @@ public class LengthOfService {
 					if (previousGrantDate.get().afterOrEquals(GeneralDate.ymd(c.year() ,
 							simultaneousGrantDate.month(), simultaneousGrantDate.day()))) {
 						return Optional.empty();
-					} else {
+					} else if ((c.month() != simultaneousGrantDate.month() || c.day() < simultaneousGrantDate.day())
+							&& c.month() <= simultaneousGrantDate.month()) {
+						return Optional.of(GeneralDate.ymd(c.year() - 1, simultaneousGrantDate.month(),
+								simultaneousGrantDate.day()));
+					}else {
 						return Optional.of(GeneralDate.ymd(c.year(), simultaneousGrantDate.month(),
 								simultaneousGrantDate.day()));
 					}
