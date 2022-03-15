@@ -1296,12 +1296,7 @@ const API = {
     calculate: 'at/request/application/overtime/mobile/calculate',
     checkBeforeRegister: 'at/request/application/overtime/mobile/checkBeforeInsert',
     register: 'at/request/application/overtime/mobile/insert',
-<<<<<<< HEAD
-
-=======
-    reflectApp: 'at/request/application/reflect-app',
     getLatestMultiApp: 'at/request/application/overtime/latestMultiApp',
->>>>>>> pj/at/release_ver4
     sendMailAfterRegisterSample: ''
 };
 
