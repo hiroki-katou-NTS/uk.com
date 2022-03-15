@@ -5,7 +5,7 @@ module nts.uk.ui.at.kdw013.confirm {
         `<td id='confirm-header' data-bind="html:$component.headerText, click:$component.toggleConfirmList"></td>
             <!-- ko foreach: { data: $component.params.confirmers, as: 'confirm' } -->
                  <td class="fc-day fc-confirm" style='position: relative;'">
-                    <div class='fc-confirm-checkbox' data-bind="ntsCheckBox: { checked: confirm.checked, enabled: confirm.checkEnable , text: confirm.text }"></div>
+                    <div class='fc-confirm-checkbox' data-bind="ntsCheckBox: { checked: confirm.checked, enable: confirm.checkEnable , text: confirm.text }"></div>
                 </td>
             <!-- /ko -->
         <style rel="stylesheet">

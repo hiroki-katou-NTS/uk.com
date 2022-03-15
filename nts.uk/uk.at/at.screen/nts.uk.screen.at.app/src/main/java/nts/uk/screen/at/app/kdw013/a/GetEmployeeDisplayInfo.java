@@ -86,8 +86,7 @@ public class GetEmployeeDisplayInfo {
 		// 3. call 社員ID,基準日 List＜確認者>
 		List<ConfirmerByDay> comfirmByDayList = new ArrayList<>();
 		period.datesBetween().forEach(date -> {
-
-			List<ConfirmerDto> confirmers = this.getWorkConfirmationStatus.get(sid, refDate);
+			List<ConfirmerDto> confirmers = this.getWorkConfirmationStatus.get(sid, date);
 			comfirmByDayList.add(new ConfirmerByDay(date, confirmers));
 		});
 		

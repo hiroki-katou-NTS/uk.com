@@ -67,30 +67,37 @@ module nts.uk.ui.at.kdw013.a {
         refDate: ''
     })
     
-    export class Comfirmer extends ko.ViewModel {
+    export class Confirmer extends ko.ViewModel {
         date : string;
         checked: KnockoutObservable<boolean> =  ko.observable(false);
         checkEnable: KnockoutObservable<boolean> = ko.observable(true);
         text: string;
         confirmers: Array<any>;
+        param: any;
         
         
-        constructor(dto: nts.uk.ui.at.kdw013.ConfirmerByDayDto) {
+        constructor(dto: nts.uk.ui.at.kdw013.ConfirmerByDayDto, param) {
             let vm = this;
+            vm.param = param;
             vm.date = dto.date;
-            vm.checked(vm.jugChecked(dto));
-            vm.checkEnable(dto);
-            vm.text =  vm.getText(dto);
             vm.confirmers = _.map(dto.confirmers, ({confirmSID: id, confirmSCD: code, businessName: name}) => ({ id, code, name }));
+            vm.checked(vm.jugChecked(dto));
+            vm.checkEnable(vm.jugEnable(dto));
+            vm.text =  vm.getText(dto);
             
             vm.checked.subscribe(value => {
-                console.log(vm.date + ' ' + value);
+                let date = vm.date;
+                if (value) {
+                    param.confirm(param.vm, date);
+                } else {
+                    param.removeConfirm(param.vm, date);
+                }
             });
         }
 
-        jugChecked(dto: nts.uk.ui.at.kdw013.ConfirmerByDayDto) {
-            let vm  =this;
-            return !!_.find(vm.confirmers, ['confirmSID', vm.$user.employeeId]);
+        jugChecked() {
+            let vm = this;
+            return !!_.find(vm.confirmers, ['id', vm.$user.employeeId]);
         }
 
         getText(dto: nts.uk.ui.at.kdw013.ConfirmerByDayDto) {
@@ -99,12 +106,20 @@ module nts.uk.ui.at.kdw013.a {
             return vm.$i18n(resourceCode);
         }
 
-        checkEnable(dto: nts.uk.ui.at.kdw013.ConfirmerByDayDto) {
+        jugEnable(dto: nts.uk.ui.at.kdw013.ConfirmerByDayDto) {
+            let vm = this;
+            let logginSid = vm.$user.employeeId;
+            //選択している社員ID = ログイン社員ID　OR　（「確認者」の数が>= 5　AND　「確認者．社員ID」にログイン社員IDが含まれてない）
+            if (!vm.param.employee() || (vm.param.employee() == logginSid)) {
+                return false;
+            }
+            
+            if (vm.confirmers.length >= 5 && !!_.find(vm.confirmers, ['id', logginSid])) {
+                return false;
+            }
+            
             return true;
         }
-        
-        
-        
 
     }
     
@@ -444,7 +459,7 @@ module nts.uk.ui.at.kdw013.a {
                         return _
                             .chain(lstComfirmerDto)
                             .map(
-                            (dto) => (new Comfirmer(dto)))
+                            (dto) => (new Confirmer(dto, { confirm: vm.confirm, removeConfirm: vm.removeConfirm, employee: vm.employee, vm })))
                             .value();
                     }
 
@@ -1152,10 +1167,8 @@ module nts.uk.ui.at.kdw013.a {
             return ids;
         }
         // 作業実績を確認する
-        confirm() {
-            let vm = this;
+        confirm(vm, date) {
             let { $user, $datas, employee, initialDate } = vm;
-            let date = ko.unwrap(initialDate);
             let employeeId = ko.unwrap(employee);
             if (employeeId) {
                 let command: AddWorkRecodConfirmationCommand = {
@@ -1167,7 +1180,7 @@ module nts.uk.ui.at.kdw013.a {
                     date: moment(date).toISOString(),
                     //確認者
                     // 作業詳細.作業グループ
-                    confirmerId: $user.employeeId
+                    confirmerId: vm.$user.employeeId
                 };
 
                 vm
@@ -1180,14 +1193,14 @@ module nts.uk.ui.at.kdw013.a {
                         if (_datas) {
                             _.forEach(_datas.lstComfirmerDto, cf => {
                                 if (moment(cf.date).isSame(date, 'days')) {
-                                    cf.confirmers = lstComfirmerDto
+                                    cf.confirmers = lstComfirmerDto;
                                 }
-                            })
+                            });
                             // update confirmers
                             $datas.valueHasMutated();
                             vm.dataChanged(false);
                         } else {
-                            $datas({ [{ date, confirmers: lstComfirmerDto }], lstWorkRecordDetailDto: [], workCorrectionStartDate: '', workGroupDtos: [] });
+                            $datas({ lstComfirmerDto: [{ date, confirmers: lstComfirmerDto }], lstWorkRecordDetailDto: [], workCorrectionStartDate: '', workGroupDtos: [] });
                         }
                     })
                     //.then(() => vm.editable.valueHasMutated())
@@ -1196,10 +1209,8 @@ module nts.uk.ui.at.kdw013.a {
         }
 
         // 作業実績の確認を解除する
-        removeConfirm() {
-            let vm = this;
+        removeConfirm(vm, date) {
             let { $user, $datas, employee, initialDate } = vm;
-            let date = ko.unwrap(initialDate);
             let employeeId = ko.unwrap(employee);
 
             if (employeeId) {
@@ -1223,13 +1234,16 @@ module nts.uk.ui.at.kdw013.a {
                         let _datas = ko.unwrap($datas);
 
                         if (_datas) {
-                            _datas.lstComfirmerDto = lstComfirmerDto;
-
+                            _.forEach(_datas.lstComfirmerDto, cf => {
+                                if (moment(cf.date).isSame(date, 'days')) {
+                                    cf.confirmers = lstComfirmerDto;
+                                }
+                            })
                             // update confirmers
                             $datas.valueHasMutated();
                             vm.dataChanged(false);
                         } else {
-                            $datas({ lstComfirmerDto, lstWorkRecordDetailDto: [], workCorrectionStartDate: '', workGroupDtos: [] });
+                            $datas({ lstComfirmerDto: [{ date, confirmers: lstComfirmerDto }], lstWorkRecordDetailDto: [], workCorrectionStartDate: '', workGroupDtos: [] });
                         }
                     })
                     // trigger reload event on child component
