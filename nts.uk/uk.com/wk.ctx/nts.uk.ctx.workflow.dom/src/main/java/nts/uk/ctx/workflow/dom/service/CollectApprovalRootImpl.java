@@ -497,7 +497,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						approvalPhase.getApprovalAtr());
 				levelInforOutput.setApproverLst(Arrays.asList(new LevelApproverList(1, "", false, upperLevelApproverInfo)));
 			}
-			if(!opLowerOrderFlg.isPresent() || (opLowerOrderFlg.isPresent() && opLowerOrderFlg.get())) {
+			if(!(levelInforOutput.getApproverLst().isEmpty()
+					&& approvalPhase.getApprovalAtr() == ApprovalAtr.APPROVER_GROUP
+					&& opLowerOrderFlg.isPresent() && opLowerOrderFlg.get())) {
 				result.getLevelInforLst().add(levelInforOutput);
 			}
 		}
