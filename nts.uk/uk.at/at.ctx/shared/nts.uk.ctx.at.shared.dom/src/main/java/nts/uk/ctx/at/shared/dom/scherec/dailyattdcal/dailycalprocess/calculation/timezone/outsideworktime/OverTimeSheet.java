@@ -640,15 +640,11 @@ public class OverTimeSheet {
 		if(statutoryAtr.isStatutory() ) {
 			return autoCalcSet.getLegalMidOtTime();
 		}
-		else {
-			//早出である
-			if(goEarly) {
-				return autoCalcSet.getEarlyMidOtTime();
-			}
-			else {
-				return autoCalcSet.getNormalMidOtTime();
-			}
+		//早出である
+		if(goEarly) {
+			return autoCalcSet.getEarlyMidOtTime();
 		}
+		return autoCalcSet.getNormalMidOtTime();
 	}
 	
 	/**
