@@ -53,13 +53,13 @@
 					</div>
 					<div class="flex-row_right">
 						<!-- A3_2 -->
-						<input tabindex="3" data-bind="ntsTextEditor: {
+						<input id="idpRedirectUrl" tabindex="3" data-bind="ntsTextEditor: {
 							name: '#[CMM004_6]',
 							value: idpRedirectUrl,
 							constraint: 'SamlRedirectUrl',
 							required: useSingleSignOn,
 							enable: useSingleSignOn,
-							option: { width: '450' }
+							option: { width: '550' }
 						}" />
 					</div>
 				</div>
@@ -71,13 +71,13 @@
 					</div>
 					<div class="flex-row_right">
 						<!-- A3_4 -->
-						<input tabindex="4" data-bind="ntsTextEditor: {
+						<input id="clientId" tabindex="4" data-bind="ntsTextEditor: {
 							name: '#[CMM004_7]',
 							value: clientId,
 							constraint: 'SamlClientId',
 							required: useSingleSignOn,
 							enable: useSingleSignOn,
-							option: { width: '450' }
+							option: { width: '400' }
 						}" />
 					</div>
 				</div>
@@ -89,13 +89,13 @@
 					</div>
 					<div class="flex-row_right">
 						<!-- A3_6 -->
-						<input tabindex="5" data-bind="ntsTextEditor: {
+						<input id="idpEntityId" tabindex="5" data-bind="ntsTextEditor: {
 							name: '#[CMM004_8]',
 							value: idpEntityId,
 							constraint: 'SamlIdpEntityId',
 							required: useSingleSignOn,
 							enable: useSingleSignOn,
-							option: { width: '450' }
+							option: { width: '550' }
 						}" />
 					</div>
 				</div>
@@ -107,12 +107,12 @@
 					</div>
 					<div class="flex-row_right">
 						<!-- A3_8 -->
-						<textarea tabindex="6" rows="15" data-bind="ntsMultilineEditor: {
+						<textarea id="idpCertificate" tabindex="6" rows="15" data-bind="ntsMultilineEditor: {
 							name: '#[CMM004_9]',
 							value: idpCertificate,
 							option: {
 								resizeable: false,
-								width: '450',
+								width: '550',
 								textalign: 'left'
 							},
 							required: useSingleSignOn,

@@ -24,6 +24,7 @@ module nts.uk.com.view.cmm004.a.screenModel {
       vm
         .$blockui('grayout')
         .then(() => vm.initScreen())
+        .then(() => $('#useSingleSignOn').focus())
         .always(() => vm.$blockui('clear'));
     }
 
@@ -33,18 +34,17 @@ module nts.uk.com.view.cmm004.a.screenModel {
       $
         .when(vm.$ajax('com', API.operation), vm.$ajax('com', API.validation))
         .then((operation: SamlOperation, validation: SamlResponseValidation) => {
-          
+          vm.useSingleSignOn(operation?.useSingleSignOn || false);
+          vm.idpRedirectUrl(_.isNil(operation?.idpRedirectUrl) ? '' : operation?.idpRedirectUrl);
+          vm.clientId(_.isNil(validation?.clientId) ? '' : validation?.clientId);
+          vm.idpEntityId(_.isNil(validation?.idpEntityId) ? '' : validation?.idpEntityId);
+          vm.idpCertificate(_.isNil(validation?.idpCertificate) ? '' : validation?.idpCertificate);
+
           if (!!operation) {
             vm.operation = operation;
-            vm.useSingleSignOn(operation.useSingleSignOn);
-            vm.idpRedirectUrl(operation.idpRedirectUrl);
           }
-
           if (!!validation) {
             vm.validation = validation;
-            vm.clientId(validation.clientId);
-            vm.idpEntityId(validation.idpEntityId);
-            vm.idpCertificate(validation.idpCertificate);
           }
           dfd.resolve();
         })
@@ -55,13 +55,12 @@ module nts.uk.com.view.cmm004.a.screenModel {
 
     mounted() {
       const vm = this;
-      $('#useSingleSignOn').focus();
       vm.useSingleSignOn.subscribe(value => {
         if (!value) {
           vm.$errors('clear');
           return;
         }
-        vm.$validate();
+
       })
     }
 
@@ -70,10 +69,18 @@ module nts.uk.com.view.cmm004.a.screenModel {
       const handler = () => {
         const command = {
           useSingleSignOn: vm.useSingleSignOn(),
-          idpRedirectUrl: vm.useSingleSignOn() ? vm.idpRedirectUrl() : vm.operation.idpRedirectUrl,
-          clientId: vm.useSingleSignOn() ? vm.clientId() : vm.validation.clientId,
-          idpEntityId: vm.useSingleSignOn() ? vm.idpEntityId() : vm.validation.idpEntityId,
-          idpCertificate: vm.useSingleSignOn() ? vm.idpCertificate() : vm.validation.idpCertificate,
+          idpRedirectUrl: vm.useSingleSignOn()
+            ? vm.idpRedirectUrl()
+            : (_.isNil(vm.operation.idpRedirectUrl) ? '' : vm.operation.idpRedirectUrl),
+          clientId: vm.useSingleSignOn()
+            ? vm.clientId()
+            : (_.isNil(vm.validation.clientId) ? '' : vm.validation.clientId),
+          idpEntityId: vm.useSingleSignOn()
+            ? vm.idpEntityId()
+            : (_.isNil(vm.validation.idpEntityId) ? '' : vm.validation.idpEntityId),
+          idpCertificate: vm.useSingleSignOn()
+            ? vm.idpCertificate()
+            : (_.isNil(vm.validation.idpCertificate) ? '' : vm.validation.idpCertificate),
         };
   
         vm
