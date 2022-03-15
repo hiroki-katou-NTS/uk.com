@@ -146,7 +146,7 @@ module nts.uk.com.view.cmm030.f {
           return;
         }
         const approvers: ApproverModel[] = _.chain(result.personApprovalRoots)
-        .orderBy((data: any) => [data.apprRoot.employmentRootAtr, data.apprRoot.applicationType, data.apprRoot.confirmRootType], ["asc", "asc", "asc"])
+        .orderBy(["apprRoot.employmentRootAtr", "apprRoot.applicationType", "apprRoot.confirmRootType"], ["asc", "asc", "asc"])
         .map((data: any) => {
           const approverNames = _.chain(result.approvalPhases).orderBy("phaseOrder", "desc")
           .filter((phase: any) => phase.approvalId === data.approvalId)
