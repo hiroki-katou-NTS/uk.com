@@ -2221,11 +2221,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let startTime = null, endTime = null;
                         let isChangeTime = false;
                         if (!_.isEmpty(cellStartTime) && !_.isNil(cellStartTime)) {
-                            startTime = duration.parseString(cellStartTime).toValue();
+                            startTime = self.getPrimitiveValue(cellStartTime);
                             isChangeTime = true;
                         }
                         if (!_.isEmpty(cellEndTime) && !_.isNil(cellEndTime)) {
-                            endTime = duration.parseString(cellEndTime).toValue();
+                            endTime = self.getPrimitiveValue(cellEndTime);
                             isChangeTime = true;
                         }
 
@@ -6257,6 +6257,33 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             setTimeout(() => {
                 $('.extable-header-detail a').css("pointer-events", "none");
             }, 500);
+        }
+        
+        getPrimitiveValue(value: any): string {
+            var self = this;
+            let valueResult: string = "";
+            // Time
+            valueResult = value == "" ? null : String(self.getHoursAll(value));
+            return valueResult;
+        }
+
+        getHours(value: any): number {
+            return Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]);
+        }
+
+        //time day
+        getHoursAll(value: any): number {
+            var self = this;
+            if (value.indexOf(":") != -1) {
+                if (value.indexOf("-") != -1) {
+                    let valueTemp = value.split('-')[1];
+                    return self.getHours(valueTemp) - 24 * 60;
+                } else {
+                    return self.getHours(value);
+                }
+            } else {
+                return value;
+            }
         }
     }
 
