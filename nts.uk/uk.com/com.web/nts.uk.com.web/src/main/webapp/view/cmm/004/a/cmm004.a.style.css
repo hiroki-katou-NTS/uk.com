@@ -12,7 +12,7 @@
 }
 .flex-row:first-child::after {
 	content: '';
-	width: 750px;
+	width: 830px;
 	position: absolute;
 	bottom: 0;
 	border-bottom: 1px solid #B1B1B1;
