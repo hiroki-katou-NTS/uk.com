@@ -132,7 +132,7 @@ module nts.uk.ui.at.kdw013.setting {
         const vm = this;
         const { params } = vm;
         const state = { open: false };
-        const { firstDay, scrollTime, slotDuration, position, initialView} = params;
+        const { firstDay, scrollTime, slotDuration, position, initialView, showConfirm} = params;
 
         // store all value to charactorgistic domain
         ko.computed({
@@ -142,6 +142,7 @@ module nts.uk.ui.at.kdw013.setting {
                 const sc = ko.unwrap(scrollTime);
                 const sd = ko.unwrap(slotDuration);
                 const iv = ko.unwrap(initialView);
+                const sf = ko.unwrap(showConfirm);
                 // store when popup opened
                 if (state.open) {
                     storeSetting().then((value) => {
@@ -149,13 +150,14 @@ module nts.uk.ui.at.kdw013.setting {
                             firstDay: fd,
                             scrollTime: sc,
                             slotDuration: sd,
-                            initialView: iv
+                            initialView: iv,
+                            showConfirm:sf
                         };
                         value.firstDay = fd;
                         value.scrollTime = sc;
                         value.slotDuration = sd;
                         value.initialView = value.initialView;
-
+                        value.showConfirm = sf;
                         storeSetting(value);
                     });
                 } else if (ps) {

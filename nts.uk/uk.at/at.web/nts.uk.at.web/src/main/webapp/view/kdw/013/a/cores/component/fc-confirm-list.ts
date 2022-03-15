@@ -2,9 +2,15 @@ module nts.uk.ui.at.kdw013.confirm {
     @component({
         name: 'fc-confirm-list',
         template:
-        `<td data-bind="i18n: 'KDW013_100', visible:$component.params.showConfirmList"></td>
-            <!-- ko foreach: { data: $component.params.timesSet, as: 'time' } -->
-                <td class="fc-day fc-confirm" style='position: relative;' data-bind="html: time.date, attr: { 'data-date': time.date }, visible:$component.params.showConfirmList"></td>
+        `<td data-bind="i18n: 'KDW013_100', visible:$component.params.screenA.showConfirm"></td>
+            <!-- ko foreach: { data: $component.params.confirmers, as: 'confirmer' } -->
+                <td class="fc-day fc-confirm" style='position: relative;' data-bind="visible:$component.params.screenA.showConfirm">
+                    <div style='text-align: left;flex-grow: 1;'">
+                            <!-- ko foreach: { data: confirmer.confirmers, as: 'cfInfo'  } -->
+                                <div class="text-note" data-bind="text: cfInfo.name"></div>
+                            <!-- /ko -->
+                    </div>
+                </td>
             <!-- /ko -->
         <style rel="stylesheet">
             .fc-confirm {
@@ -13,26 +19,23 @@ module nts.uk.ui.at.kdw013.confirm {
         </style>
                 `
     })
-    export class FullCalendarConFirmComponent extends ko.ViewModel {
-        today: string = moment().format('YYYY-MM-DD');
-        headerText: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText('KDW013_99') + '△');
+    export class FullCalendarConfirmListComponent extends ko.ViewModel {
 
-        constructor(private params: TimeHeaderParams) {
+        constructor(private params: ConfirmListParam) {
             super();
-
-            if (!this.params || !this.params.timesSet) {
-                this.params.timesSet = ko.computed(() => []);
+            if (!this.params || !this.params.confirmers) {
+                this.params.confirmers = ko.computed(() => []);
             }
         }
 
         mounted() {
             const vm = this;
             const { $el, params } = vm;
-            const {timesSet} = params;
+            const {confirmers} = params;
 
             ko.computed({
                 read: () => {
-                    const ds = ko.unwrap(timesSet);
+                    const ds = ko.unwrap(confirmers);
 
                     if (ds.length) {
                         $el.style.display = null;
@@ -50,10 +53,10 @@ module nts.uk.ui.at.kdw013.confirm {
         }
         
     }
-    type TimeHeaderParams = {
+    type ConfirmListParam = {
         items: KnockoutObservableArray<any>;
         mode: KnockoutComputed<boolean>;
         screenA: nts.uk.ui.at.kdw013.a.ViewModel;
-        showConfirmList: KnockoutComputed<boolean>;
+        confirmers: Array<nts.uk.ui.at.kdw013.ConfirmerByDayDto>;
     }; 
 }

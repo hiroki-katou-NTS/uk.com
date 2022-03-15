@@ -522,6 +522,7 @@ module nts.uk.ui.at.kdw013.calendar {
         initialDate: Date | KnockoutObservable<Date>;
         scrollTime: number | KnockoutObservable<number>;
         slotDuration: SlotDuration | KnockoutObservable<SlotDuration>;
+        showConfirm: KnockoutObservable<boolean>;
         editable: boolean | KnockoutObservable<boolean>;
         firstDay: DayOfWeek | KnockoutObservable<DayOfWeek>;
         attendanceTimes: AttendanceTime[] | KnockoutObservableArray<AttendanceTime>;
@@ -550,6 +551,7 @@ module nts.uk.ui.at.kdw013.calendar {
         firstDay: KnockoutObservable<DayOfWeek>;
         scrollTime: KnockoutObservable<number>;
         slotDuration: KnockoutObservable<SlotDuration>;
+        showConfirm: KnockoutObservable<boolean>;
     };
 
     export type DatesSet = {
@@ -561,7 +563,8 @@ module nts.uk.ui.at.kdw013.calendar {
         firstDay: DayOfWeek;
         scrollTime: number;
         slotDuration: SlotDuration;
-        InitialView:string;
+        InitialView: string;
+        showConfirm: boolean;
     };
 
     let DATE_FORMAT = 'YYYY-MM-DD';
@@ -602,7 +605,8 @@ module nts.uk.ui.at.kdw013.calendar {
             firstDay: ko.observable(1),
             scrollTime: ko.observable(420),
             slotDuration: ko.observable(30),
-            initialView : ko.observable('fullWeek')
+            initialView : ko.observable('fullWeek'),
+            showConfirm: ko.observable(false)
         },
         excludeTimes: ko.observableArray([])
     });
@@ -671,13 +675,6 @@ module nts.uk.ui.at.kdw013.calendar {
                     $settings: $component.params.$settings,
                     screenA:$component.params.screenA
                 "></div>
-            <div class="fc-employees confirmer" data-bind="
-                    kdw013-approveds: 'kdw013-approveds',
-                    mode: $component.params.editable,
-                    confirmers: $component.params.confirmers,
-                    initialDate: $component.params.initialDate,
-                    $settings: $component.params.$settings
-                "></div>
             <div class="fc-task-events" data-bind="
                     kdw013-task-events: 'kdw013-task-events',
                     mode: $component.params.editable,
@@ -743,6 +740,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     slotDuration: ko.observable(30),
                     editable: ko.observable(false),
                     initialView: ko.observable('fullWeek'),
+                    showConfirm: ko.observable(false),
                     availableView: ko.observableArray([]),
                     initialDate: ko.observable(new Date()),
                     events: ko.observableArray([]),
@@ -781,6 +779,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 editable,
                 firstDay,
                 slotDuration,
+                showConfirm,
                 attendanceTimes,
                 breakTime,
                 businessHours,
@@ -823,6 +822,10 @@ module nts.uk.ui.at.kdw013.calendar {
 
             if (slotDuration === undefined) {
                 this.params.slotDuration = ko.observable(30);
+            }
+            
+            if(showConfirm === undefined){
+                this.params.showConfirm = ko.observable(false);    
             }
 
             if (events === undefined) {
@@ -1104,6 +1107,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 initialDate,
                 isShowBreakTime,
                 initialView,
+                showConfirm,
                 availableView,
                 viewModel,
                 validRange,
@@ -1505,6 +1509,14 @@ module nts.uk.ui.at.kdw013.calendar {
                 .then((value) => {
                     value = value ? value : { initialView: view };
                     value.initialView = view;
+                storeSetting(value);
+                });
+            });
+            showConfirm.subscribe(isShow => {
+
+                storeSetting()
+                .then((value) => {
+                    value.showConfirm = isShow;
                 storeSetting(value);
                 });
             });
@@ -2434,9 +2446,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                     // binding sum of work time within same day
                                     ko.applyBindingsToNode(__times, { component: { name: 'fc-times', params: { timesSet: timesSet, screenA: vm.params.screenA } } }, vm);
                                     //binding confirm status 
-                                    ko.applyBindingsToNode(__confirm, { component: { name: 'fc-confirm', params: { timesSet: timesSet, screenA: vm.params.screenA , showConfirmList: showConfirmList  } } }, vm);
+                                    ko.applyBindingsToNode(__confirm, { component: { name: 'fc-confirm', params: { screenA: vm.params.screenA , confirmers: vm.params.confirmers} } }, vm);
                                     //binding comfirm list
-                                    ko.applyBindingsToNode(__confirm_list, { component: { name: 'fc-confirm-list', params: { timesSet: timesSet, screenA: vm.params.screenA, showConfirmList: showConfirmList } } }, vm);
+                                    ko.applyBindingsToNode(__confirm_list, { component: { name: 'fc-confirm-list', params: { screenA: vm.params.screenA , confirmers: vm.params.confirmers}  } }, vm);
                                     // binding note for same day
                                     ko.applyBindingsToNode(_events, { component: { name: 'fc-event-header', params: { screenA: vm.params.screenA,  data: attendancesSet, setting: $settings } } }, vm);
                                 })
@@ -3580,7 +3592,7 @@ module nts.uk.ui.at.kdw013.calendar {
             });
 
             storeSetting()
-                // update setting from domain charactorgistic
+                // update setting from domain charactergistic
                 .then((value) => {
                     if (value) {
                         let { setting } = popupData;

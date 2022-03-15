@@ -67,6 +67,47 @@ module nts.uk.ui.at.kdw013.a {
         refDate: ''
     })
     
+    export class Comfirmer extends ko.ViewModel {
+        date : string;
+        checked: KnockoutObservable<boolean> =  ko.observable(false);
+        checkEnable: KnockoutObservable<boolean> = ko.observable(true);
+        text: string;
+        confirmers: Array<any>;
+        
+        
+        constructor(dto: nts.uk.ui.at.kdw013.ConfirmerByDayDto) {
+            let vm = this;
+            vm.date = dto.date;
+            vm.checked(vm.jugChecked(dto));
+            vm.checkEnable(dto);
+            vm.text =  vm.getText(dto);
+            vm.confirmers = _.map(dto.confirmers, ({confirmSID: id, confirmSCD: code, businessName: name}) => ({ id, code, name }));
+            
+            vm.checked.subscribe(value => {
+                console.log(vm.date + ' ' + value);
+            });
+        }
+
+        jugChecked(dto: nts.uk.ui.at.kdw013.ConfirmerByDayDto) {
+            let vm  =this;
+            return !!_.find(vm.confirmers, ['confirmSID', vm.$user.employeeId]);
+        }
+
+        getText(dto: nts.uk.ui.at.kdw013.ConfirmerByDayDto) {
+            let vm = this;
+            let resourceCode = vm.checked() ? 'KDW013_99' : 'KDW013_100';
+            return vm.$i18n(resourceCode);
+        }
+
+        checkEnable(dto: nts.uk.ui.at.kdw013.ConfirmerByDayDto) {
+            return true;
+        }
+        
+        
+        
+
+    }
+    
     export class StartProcess {
         attItemName: Array<any>;
         dailyAttendanceItem: Array<any>;
@@ -166,6 +207,7 @@ module nts.uk.ui.at.kdw013.a {
         isShowBreakTime: KnockoutObservable<boolean> = ko.observable(false);
         dateRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({});
         initialView: KnockoutObservable<string> = ko.observable('fullWeek');
+        showConfirm: KnockoutObservable < boolean > = ko.observable(false);
         availableView: KnockoutObservableArray<calendar.InitialView> = ko.observableArray(['oneDay', 'fullWeek']);
         validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({end: '9999-12-32'});
         removeList: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -401,16 +443,8 @@ module nts.uk.ui.at.kdw013.a {
 
                         return _
                             .chain(lstComfirmerDto)
-                            .map(({
-                                confirmSID: id,
-                                confirmSCD: code,
-                                businessName: name
-                            }) => ({
-                                id,
-                                code,
-                                name,
-                                selected: false
-                            }))
+                            .map(
+                            (dto) => (new Comfirmer(dto)))
                             .value();
                     }
 
@@ -544,6 +578,7 @@ module nts.uk.ui.at.kdw013.a {
                     .then((value: any) => {
                         if (value) {
                             vm.initialView(value.initialView || 'fullWeek');
+                            vm.showConfirm(value.showConfirm || false);
                             vm.firstDay(value.firstDay !== undefined ? value.firstDay : 1);
                             vm.scrollTime(value.scrollTime || 420);
                             vm.slotDuration(value.slotDuration || 30);
@@ -731,6 +766,7 @@ module nts.uk.ui.at.kdw013.a {
                         .then((value: any) => {
                             if (value) {
                                 vm.initialView(value.initialView || 'fullWeek');
+                                vm.showConfirm(value.showConfirm || false);
                                 vm.firstDay(value.firstDay !== undefined ? value.firstDay : 1);
                                 vm.scrollTime(value.scrollTime || 420);
                                 vm.slotDuration(value.slotDuration || 30);
@@ -1121,7 +1157,6 @@ module nts.uk.ui.at.kdw013.a {
             let { $user, $datas, employee, initialDate } = vm;
             let date = ko.unwrap(initialDate);
             let employeeId = ko.unwrap(employee);
-
             if (employeeId) {
                 let command: AddWorkRecodConfirmationCommand = {
                     //対象者
@@ -1143,13 +1178,16 @@ module nts.uk.ui.at.kdw013.a {
                         let _datas = ko.unwrap($datas);
 
                         if (_datas) {
-                            _datas.lstComfirmerDto = lstComfirmerDto;
-
+                            _.forEach(_datas.lstComfirmerDto, cf => {
+                                if (moment(cf.date).isSame(date, 'days')) {
+                                    cf.confirmers = lstComfirmerDto
+                                }
+                            })
                             // update confirmers
                             $datas.valueHasMutated();
                             vm.dataChanged(false);
                         } else {
-                            $datas({ lstComfirmerDto, lstWorkRecordDetailDto: [], workCorrectionStartDate: '', workGroupDtos: [] });
+                            $datas({ [{ date, confirmers: lstComfirmerDto }], lstWorkRecordDetailDto: [], workCorrectionStartDate: '', workGroupDtos: [] });
                         }
                     })
                     //.then(() => vm.editable.valueHasMutated())
