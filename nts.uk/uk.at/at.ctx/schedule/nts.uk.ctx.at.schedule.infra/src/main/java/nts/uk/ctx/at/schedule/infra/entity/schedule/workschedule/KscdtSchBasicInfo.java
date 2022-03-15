@@ -136,7 +136,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 	public Integer nursingLicenseClass;
 	// 看護管理者か
 	@Column(name = "IS_NURSE_ADMINISTRATOR")
-	public Integer nursingManager;
+	public Boolean nursingManager;
 	// 加給コード
 	@Column(name = "BONUS_PAY_CD")
 	public String bonusPaySettingCode;
@@ -244,7 +244,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				days,
 				workInfo.getWorkplaceGroupId().isPresent() ? workInfo.getWorkplaceGroupId().get() : null,
 				workInfo.getNursingLicenseClass().isPresent()? workInfo.getNursingLicenseClass().get().value : null,
-				workInfo.getIsNursingManager().isPresent()? workInfo.getIsNursingManager().get()?1:0 : null,
+				workInfo.getIsNursingManager().isPresent()? workInfo.getIsNursingManager().get() : null,
                 workInfo.getBonusPaySettingCode().isPresent() ? workInfo.getBonusPaySettingCode().get().toString() : null,
 				kscdtSchTimes, kscdtEditStates, kscdtSchAtdLvwTimes,
 				kscdtSchShortTimeTs, kscdtSchBreakTs,listKscdtSchGoingOutTs);
@@ -275,7 +275,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				Optional.ofNullable(new BonusPaySettingCode(bonusPaySettingCode)), //  bonusPaySettingCode
 				Optional.ofNullable(workplaceGroupId), //  workplaceGroupId
 				EnumAdaptor.optionalOf(nursingLicenseClass, LicenseClassification.class), //  nursingLicenseClass
-				Optional.ofNullable(nursingManager ==null?null:nursingManager ==1?true:false)); //  isnursingLicenseManager
+				Optional.ofNullable(nursingManager)); //  isnursingLicenseManager
 
 		// create List<BreakTimeOfDailyAttd>
 		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
