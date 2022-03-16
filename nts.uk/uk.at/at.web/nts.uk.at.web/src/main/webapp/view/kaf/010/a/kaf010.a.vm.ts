@@ -1636,7 +1636,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					self.bindHolidayTime(self.dataSource, 1);
 					self.bindOverTime(self.dataSource, 1);
 				})
-				.fail(() => {})
+				.fail((failData) => { self.$dialog.error(failData); })
 				.always(() => self.$blockui('hide'));
 		}
 
