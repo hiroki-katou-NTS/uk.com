@@ -53,27 +53,17 @@ public class OptionalAggrPeriodExecLogFinder {
 		List<String> listEmployeeId = listLog.stream().map(l -> l.getExecutionEmpId()).collect(Collectors.toList());
 		List<EmployeeRecordImport> lstEmpInfo = empAdapter.getPersonInfor(listEmployeeId);
 		for (AggrPeriodExcution log : listLog) {
-			Optional<AnyAggrPeriod> optAggr = aggrPeriodRepo.findOneByCompanyIdAndFrameCode(companyId, log.getAggrFrameCode().v());
 			List<AggrPeriodTarget> listTarget = targetRepo.findAll(log.getAggrId());
 			List<AggrPeriodInfor> listError = errorInfoRepo.findAll(log.getAggrId());
 			EmployeeRecordImport empInfo = lstEmpInfo.stream().filter(e -> e.getEmployeeId().equals(log.getExecutionEmpId()))
 					.findFirst()
 					.orElse(null);
 			if (empInfo == null) continue;
-			if (optAggr.isPresent()) {
-				AnyAggrPeriod aggr = optAggr.get();
 				OptionalAggrPeriodExecLogDto dto = new OptionalAggrPeriodExecLogDto(log.getAggrId(),
-						log.getAggrFrameCode().v(), aggr.getOptionalAggrName().v(), log.getStartDateTime(),
-						empInfo.getEmployeeCode(), empInfo.getPname(), aggr.getPeriod().start(),
-						aggr.getPeriod().end(), log.getExecutionStatus().get().name, listTarget.size(), listError.size());
+						log.getAggrFrameCode().v(), log.getAnyAggrName().v(), log.getStartDateTime(),
+						empInfo.getEmployeeCode(), empInfo.getPname(), log.getPeriod().start(),
+						log.getPeriod().end(), log.getExecutionStatus().get().name, listTarget.size(), listError.size());
 				result.add(dto);
-			} else {
-				OptionalAggrPeriodExecLogDto dto = new OptionalAggrPeriodExecLogDto(log.getAggrId(),
-						log.getAggrFrameCode().v(), TextResource.localize("Msg_1307"), log.getStartDateTime(),
-						empInfo.getEmployeeCode(), empInfo.getPname(), null, null, log.getExecutionStatus().get().name,
-						listTarget.size(), listError.size());
-				result.add(dto);
-			}
 		}
 		result.sort((OptionalAggrPeriodExecLogDto c1, OptionalAggrPeriodExecLogDto c2) -> c2.getExecutionDt()
 				.compareTo(c1.getExecutionDt()));

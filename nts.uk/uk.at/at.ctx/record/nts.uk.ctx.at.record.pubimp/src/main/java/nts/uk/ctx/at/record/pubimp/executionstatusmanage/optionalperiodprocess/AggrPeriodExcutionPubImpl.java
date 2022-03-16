@@ -31,8 +31,4 @@ public class AggrPeriodExcutionPubImpl implements AggrPeriodExcutionPub {
 		this.repo.addExcution(excution);
 	}
 
-	@Override
-	public void addExcution(AggrPeriodExcution excution, String aggrFrameName, GeneralDate startYmd, GeneralDate endYmd) {
-		this.repo.addExcution(excution,aggrFrameName,startYmd,endYmd);
-	}
 }
