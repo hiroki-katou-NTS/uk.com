@@ -49,23 +49,6 @@ public interface AggrPeriodExcutionRepository {
 	 */
 	List<AggrPeriodExcution> findExecutionPeriod(String companyId, GeneralDate start, GeneralDate end);
 
-	/**
-	 * 
-	 * @param excution
-	 */
-	void addExcution(AggrPeriodExcution excution,String aggrFrameName,GeneralDate startYmd,GeneralDate endYmd);
-
-	/**
-	 * 
-	 * @param excution
-	 */
-	void updateExcution(AggrPeriodExcution excution,String aggrFrameName,GeneralDate startYmd,GeneralDate endYmd);
-	/**
-	 * 
-	 * @param companyId
-	 * @param executionId
-	 * @return
-	 */
 	Optional<AggrPeriodExcution> findBy(String companyId, String aggrId, int status);
 	
 	Optional<AggrPeriodExcution> findByAggr(String companyId,String aggrId);

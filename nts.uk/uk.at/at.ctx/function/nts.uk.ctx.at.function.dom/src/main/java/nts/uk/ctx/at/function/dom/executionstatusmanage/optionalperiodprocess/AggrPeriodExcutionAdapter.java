@@ -12,7 +12,6 @@ public interface AggrPeriodExcutionAdapter {
 	 *
 	 * @param excution the excution
 	 */
-	public void addExcution(AggrPeriodExcutionImport excution);
 
 	public void addExcution(AggrPeriodExcutionImport excution, String aggrFrameName, GeneralDate startYmd, GeneralDate endYmd);
 }

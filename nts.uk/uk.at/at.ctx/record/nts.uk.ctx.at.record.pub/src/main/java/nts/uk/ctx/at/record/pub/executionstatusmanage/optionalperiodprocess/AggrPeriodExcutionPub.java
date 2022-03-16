@@ -15,5 +15,4 @@ public interface AggrPeriodExcutionPub {
 	 */
 	void addExcution(AggrPeriodExcution excution);
 
-	void addExcution(AggrPeriodExcution excution, String aggrFrameName, GeneralDate startYmd, GeneralDate endYmd);
 }
