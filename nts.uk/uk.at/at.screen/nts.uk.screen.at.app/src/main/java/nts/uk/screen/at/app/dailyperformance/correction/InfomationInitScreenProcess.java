@@ -159,19 +159,22 @@ public class InfomationInitScreenProcess {
 		// 対象社員の特定
 		List<String> changeEmployeeIds = new ArrayList<>();
 		InitialDisplayEmployeeDto initDto = null;
+		
+		val employeeIds = objectShare == null
+				? lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList())
+	                    : CollectionUtil.isEmpty(objectShare.getLstExtractedEmployee()) ?  objectShare.getLstEmployeeShare() : objectShare.getLstExtractedEmployee();
+		
+		// 初期表示社員を取得する
+		initDto = processor.changeListEmployeeId(employeeIds, rangeInit, mode,
+				objectShare != null, screenDto.getClosureId(), screenDto);
+		DPCorrectionStateParam stateParam = processor.getDailySupportWorkers(initDto.getParam());
+		initDto.setParam(stateParam);
+		
 		if (lstEmployee.isEmpty()) {
-			val employeeIds = objectShare == null
-					? lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList())
-		                    : CollectionUtil.isEmpty(objectShare.getLstExtractedEmployee()) ?  objectShare.getLstEmployeeShare() : objectShare.getLstExtractedEmployee();
 			if (employeeIds.isEmpty())
 				needSortEmp = true;
-			// 初期表示社員を取得する
-			initDto = processor.changeListEmployeeId(employeeIds, rangeInit, mode,
-					objectShare != null, screenDto.getClosureId(), screenDto);
-			changeEmployeeIds = initDto.getLstEmpId();
 			
-			DPCorrectionStateParam stateParam = dailySupportWorkers.getDailySupportWorkers(initDto.getParam());
-			initDto.setParam(stateParam);
+			changeEmployeeIds = initDto.getLstEmpId();
 		} else {
 			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 		}
@@ -345,7 +348,7 @@ public class InfomationInitScreenProcess {
 				new DatePeriod(screenDto.getDateRange().getStartDate(), screenDto.getDateRange().getEndDate()),
 				screenDto.getEmployeeIds(), displayFormat, screenDto.getEmployeeIds(), 
 				screenDto.getLstControlDisplayItem(), info, transferDesScreen,
-				initDto != null && initDto.getParam() != null ? initDto.getParam().getLstWrkplaceId() : null,
+				initDto != null && initDto.getParam() != null ? initDto.getParam().getLstWrkplaceId() : new ArrayList<>(),
 				initDto != null && initDto.getParam() != null ? initDto.getParam().getLstEmpsSupport() : new ArrayList<>());
 		screenDto.setStateParam(cacheParam);
 

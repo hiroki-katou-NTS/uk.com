@@ -502,6 +502,13 @@ public class InitScreenMob {
 			if(lockDay || lockHist || dataSign == null || (!dataSign.isStatus() ? (!dataSign.notDisableForConfirm() ? true : false) : !dataSign.notDisableForConfirm())){
 				screenDto.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
 			}
+			
+			if (displayFormat == 1 || displayFormat == 2) {
+				if (screenDto.getStateParam().getLstEmpsSupport().contains(data.getEmployeeId())) {
+					cellEditColor(screenDto,data.getId(), "employeeName", 9);
+					cellEditColor(screenDto,data.getId(), "employeeCode", 9);
+				}
+			}
 		}
 		screenDto.setLstData(lstData);
 		setStateParam(screenDto, resultPeriod, displayFormat, false);
@@ -877,12 +884,21 @@ public class InitScreenMob {
 
 	public void cellEditColor(DailyPerformanceCorrectionDto screenDto, String rowId, String columnKey,
 			Integer cellEdit) {
+		// 日別実績の編集状態:
+		// 0: 手修正（本人）
+		// 1: 手修正（他人）
+		// 2: 申請反映
+		// 3: 打刻反映
+		// 4: 申告反映
+		// 9: 応援
 		// set color edit
 		if (cellEdit != null) {
 			if (cellEdit == 0) {
 				screenDto.setCellSate(rowId, columnKey, DPText.HAND_CORRECTION_MYSELF);
 			} else if (cellEdit == 1) {
 				screenDto.setCellSate(rowId, columnKey, DPText.HAND_CORRECTION_OTHER);
+			} else if (cellEdit == 9) {
+				screenDto.setCellSate(rowId, columnKey, DPText.COLOR_SUPPORT);
 			} else {
 				screenDto.setCellSate(rowId, columnKey, DPText.REFLECT_APPLICATION);
 			}
