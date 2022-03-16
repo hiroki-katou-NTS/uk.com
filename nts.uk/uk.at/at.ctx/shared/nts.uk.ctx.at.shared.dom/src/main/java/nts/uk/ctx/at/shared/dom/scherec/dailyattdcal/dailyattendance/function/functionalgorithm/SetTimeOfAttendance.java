@@ -8,11 +8,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.CorrectLateArrivalDepartureTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.DetermineClassifiByWorkInfoCond.AutoStampSetClassifi;
@@ -27,8 +26,9 @@ import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 @Stateless
 public class SetTimeOfAttendance {
 
+	
 	@Inject
-	private SetPredetermineTimeZone setPredetermineTimeZone;
+	private CorrectLateArrivalDepartureTime correctLateArrivalDepartureTime;
 
 
 	public List<TimeLeavingWork> process(String companyId, WorkInfoOfDailyAttendance workInfo,
@@ -59,8 +59,8 @@ public class SetTimeOfAttendance {
 //		}
 
 //		// ジャスト遅刻早退時刻を補正する
-//		correctLateArrivalDepartureTime.process(companyId, workInfo.getRecordInfo().getWorkTimeCode().v(),
-//				lstTimeLeavingWork);
+			lstTimeLeavingWork = correctLateArrivalDepartureTime.process(companyId, workInfo.getRecordInfo().getWorkTimeCode().v(),
+				lstTimeLeavingWork);
 
 		// 「自動打刻セット区分」元に「出退勤（List）」を整理する
 		lstTimeLeavingWork.forEach(data -> {
@@ -77,14 +77,4 @@ public class SetTimeOfAttendance {
 		return lstTimeLeavingWork;
 	}
 
-	private boolean compareWorkInfo(WorkInformation recordInfo, WorkInformation scheduleInfo) {
-
-		if (recordInfo.getWorkTypeCode().v() == scheduleInfo.getWorkTypeCode().v()
-				&& ((recordInfo.getWorkTimeCode() == null && scheduleInfo.getWorkTimeCode() == null)
-						|| (recordInfo.getWorkTimeCode() != null && scheduleInfo.getWorkTimeCode() != null)
-								&& recordInfo.getWorkTimeCode().v().equals(scheduleInfo.getWorkTimeCode().v()))) {
-			return true;
-		}
-		return false;
-	}
 }

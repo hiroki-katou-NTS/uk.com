@@ -30,3 +30,7 @@
 	overflow-y: hidden;
 	overflow-x: hidden;
 }
+
+#component-ccg001 .tabs-content {
+	height: calc(100% - 150px) !important;
+}

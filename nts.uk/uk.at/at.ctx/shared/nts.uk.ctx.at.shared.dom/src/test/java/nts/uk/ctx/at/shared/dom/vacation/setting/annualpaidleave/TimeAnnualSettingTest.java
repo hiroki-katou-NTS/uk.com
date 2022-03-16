@@ -30,7 +30,7 @@ public class TimeAnnualSettingTest {
 		TimeAnnualMaxDay annualMaxDay = TimeAnnualMaxDayHelper.createTimeAnnualMaxDay();
 		
 		TimeAnnualSetting annualSetting = new TimeAnnualSetting(
-				annualMaxDay, TimeAnnualRoundProcesCla.RoundUpToTheDay, new TimeAnnualLeaveTimeDay(),
+				annualMaxDay, TimeAnnualRoundProcesCla.TruncateOnDay0, new TimeAnnualLeaveTimeDay(),
 				new TimeVacationDigestUnit(ManageDistinct.YES, TimeDigestiveUnit.OneHour));
 		NtsAssert.invokeGetters(annualSetting);
 	}

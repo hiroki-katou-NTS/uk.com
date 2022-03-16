@@ -941,7 +941,6 @@ export class KafS05Component extends KafS00ShrComponent {
                         isMailServer: vm.model.displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.mailServerSet,
                         appDispInfoStartupOutput: vm.model.displayInfoOverTime.appDispInfoStartup
                     }).then((result: any) => {
-                        vm.$http.post('at', API.reflectApp, result.data.reflectAppIdLst);
                         vm.appId = result.data.appIDLst[0];
                         vm.toStep(3);
                     });
@@ -1297,7 +1296,6 @@ const API = {
     calculate: 'at/request/application/overtime/mobile/calculate',
     checkBeforeRegister: 'at/request/application/overtime/mobile/checkBeforeInsert',
     register: 'at/request/application/overtime/mobile/insert',
-    reflectApp: 'at/request/application/reflect-app',
     getLatestMultiApp: 'at/request/application/overtime/latestMultiApp',
     sendMailAfterRegisterSample: ''
 };
