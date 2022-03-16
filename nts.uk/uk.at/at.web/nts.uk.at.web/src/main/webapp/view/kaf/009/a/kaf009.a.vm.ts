@@ -126,10 +126,10 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 }
             }).fail((failData: any) => {
                 let param;
-                if (failData.message) {
-                    param = {message: failData.message, messageParams: failData.parameterIds};
+                if (failData.messageId) {
+					param = {messageId: failData.messageId, messageParams: failData.parameterIds};
                 } else {
-                    param = {messageId: failData.messageId, messageParams: failData.parameterIds}
+                    param = {message: failData.message, messageParams: failData.parameterIds};
                 }
                 vm.$dialog.error(param);
 
