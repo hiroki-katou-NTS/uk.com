@@ -23,6 +23,7 @@ import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.errors.ItemError;
+import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
 /**
  * 受入可能項目
@@ -52,6 +53,18 @@ public class ImportableItem implements DomainAggregate{
 	
 	public boolean isOptional() {
 		return !required && !isPrimaryKey;
+	}
+
+	/**
+	 * ゼロ埋めするコードの型か
+	 * @return
+	 */
+	public boolean isZeroPaddedCode() {
+		return domainConstraint
+				.filter(dc -> dc.getCheckMethod() == CheckMethod.PRIMITIVE_VALUE)
+				.map(dc -> dc.getConstraintClass())
+				.map(pv -> pv.getAnnotation(ZeroPaddedCode.class) != null)
+				.orElse(false);
 	}
 
 	/**

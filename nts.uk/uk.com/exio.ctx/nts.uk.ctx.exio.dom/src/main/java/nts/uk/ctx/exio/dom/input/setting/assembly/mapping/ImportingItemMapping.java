@@ -106,7 +106,7 @@ public class ImportingItemMapping {
 
 			// 編集
 			return require.getReviseItem(context.getExternalImportCode(), context.getDomainId(), itemNo)
-					.map(r -> r.revise(csvItem.getCsvValue()))
+					.map(r -> r.revise(require, csvItem.getCsvValue()))
 					.orElseGet(() -> noRevise(require, context, csvItem));
 		}
 	}
@@ -129,7 +129,7 @@ public class ImportingItemMapping {
 					.map(value -> new DataItem(csvItem.getItemNo(), value));
 	}
 
-	public static interface RequireAssemble {
+	public static interface RequireAssemble extends ReviseItem.Require {
 
 		Optional<ReviseItem> getReviseItem(ExternalImportCode settingCode, ImportingDomainId domainId, int itemNo);
 

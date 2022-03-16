@@ -1,9 +1,5 @@
 package nts.uk.ctx.exio.dom.input.validation;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import lombok.val;
 import nts.gul.util.Either;
 import nts.uk.ctx.exio.dom.input.DataItem;
@@ -14,8 +10,11 @@ import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.errors.ItemError;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
-import nts.uk.ctx.exio.dom.input.validation.system.CorrectEmployeeCode;
 import nts.uk.ctx.exio.dom.input.validation.user.ImportingUserCondition;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * 値の検証
@@ -36,29 +35,16 @@ public class ValidateData {
 
 		for (val item : record.getItems()) {
 			validateBySystem(require, context, item)
-					.ifRight(__ -> correctedItems.add(correct(require, context, item)))
+					.ifRight(__ -> correctedItems.add(CorrectValueByType.correct(require, context, item)))
 					.mapEither(__ -> validateByUserCondition(require, context, item))
 					.ifLeft(err -> errors.add(new ItemError(item.getItemNo(), err.getText())));
 		}
 
 		if (!errors.isEmpty()) {
-			Either.left(errors);
 			return Either.left(errors);
 		}
 
 		return Either.right(new RevisedDataRecord(record.getRowNo(), correctedItems));
-	}
-
-	/**
-	 * ユーザ設定の検証をする前に、型による補正がかかる項目を自動補正する
-	 * @param require
-	 * @param context
-	 * @param item
-	 * @return
-	 */
-	private static DataItem correct(ValidateRequire require, ExecutionContext context, DataItem item) {
-		item = CorrectEmployeeCode.correct(require, context, item);
-		return item;
 	}
 
 	private static Either<ErrorMessage, Void> validateBySystem(ValidateRequire require, ExecutionContext context,
@@ -87,7 +73,7 @@ public class ValidateData {
 		return Either.rightVoid();
 	}
 
-	public interface ValidateRequire extends CorrectEmployeeCode.EmployeeCodeValidateRequire{
+	public interface ValidateRequire extends CorrectValueByType.Require {
 
 		ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo);
 
