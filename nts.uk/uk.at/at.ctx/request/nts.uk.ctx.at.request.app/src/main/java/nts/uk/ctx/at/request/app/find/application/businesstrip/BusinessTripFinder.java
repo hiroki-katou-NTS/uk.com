@@ -161,27 +161,8 @@ public class BusinessTripFinder {
         );
 
         Optional<List<ActualContentDisplay>> opActualContentDisplayLst = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
-
-        // アルゴリズム「出張申請未承認申請を取得」を実行する
-        businessTripService.getBusinessTripNotApproved(sid, appDate, opActualContentDisplayLst);
-
-        List<BusinessTripWorkTypes> businessTripWorkTypes = new ArrayList<>();
-
-        if (opActualContentDisplayLst.isPresent() && !opActualContentDisplayLst.get().isEmpty()) {
-            List<String> cds = opActualContentDisplayLst.get().stream().filter(i -> i.getOpAchievementDetail().isPresent())
-                    .map(i -> i.getOpAchievementDetail().get().getWorkTypeCD())
-                    .distinct()
-                    .collect(Collectors.toList());
-            // ドメインモデル「勤務種類」を取得する
-            Map<String, WorkType> mapWorkCds = wkTypeRepo.getPossibleWorkType(cid, cds).stream().collect(Collectors.toMap(i -> i.getWorkTypeCode().v(), i -> i));
-            businessTripWorkTypes = opActualContentDisplayLst.get().stream().map(i -> new BusinessTripWorkTypes(
-                    i.getDate(),
-                    i.getOpAchievementDetail().isPresent() ? mapWorkCds.get(i.getOpAchievementDetail().get().getWorkTypeCD()) : null, 
-                    null))
-                    .collect(Collectors.toList());
-        }
         
-    	List<ActualContentDisplay> actualContentDisplayLst = opActualContentDisplayLst.orElse(new ArrayList<>());
+        List<ActualContentDisplay> actualContentDisplayLst = opActualContentDisplayLst.orElse(new ArrayList<>());
     	// 申請対象日リスト全ての日付に対し「表示する実績内容」が存在する
         List<ActualContentDisplay> dateNotHaveContentLst = actualContentDisplayLst.stream().filter(i -> !i.getOpAchievementDetail().isPresent() || i.getOpAchievementDetail() == null).collect(Collectors.toList());
         actualContentDisplayLst.removeAll(dateNotHaveContentLst);
@@ -205,6 +186,25 @@ public class BusinessTripFinder {
         }
         opActualContentDisplayLst = Optional.of(actualContentDisplayLst);
         appDispInfoStartupOutput.getAppDispInfoWithDateOutput().setOpActualContentDisplayLst(opActualContentDisplayLst);
+        
+        // アルゴリズム「出張申請未承認申請を取得」を実行する
+        businessTripService.getBusinessTripNotApproved(sid, appDate, opActualContentDisplayLst);
+
+        List<BusinessTripWorkTypes> businessTripWorkTypes = new ArrayList<>();
+
+        if (opActualContentDisplayLst.isPresent() && !opActualContentDisplayLst.get().isEmpty()) {
+            List<String> cds = opActualContentDisplayLst.get().stream().filter(i -> i.getOpAchievementDetail().isPresent())
+                    .map(i -> i.getOpAchievementDetail().get().getWorkTypeCD())
+                    .distinct()
+                    .collect(Collectors.toList());
+            // ドメインモデル「勤務種類」を取得する
+            Map<String, WorkType> mapWorkCds = wkTypeRepo.getPossibleWorkType(cid, cds).stream().collect(Collectors.toMap(i -> i.getWorkTypeCode().v(), i -> i));
+            businessTripWorkTypes = opActualContentDisplayLst.get().stream().map(i -> new BusinessTripWorkTypes(
+                    i.getDate(),
+                    i.getOpAchievementDetail().isPresent() ? mapWorkCds.get(i.getOpAchievementDetail().get().getWorkTypeCD()) : null, 
+                    null))
+                    .collect(Collectors.toList());
+        }
         
         // 取得した情報をOUTPUT「出張申請の表示情報」にセットしてを返す
         BusinessTripInfoOutput output = new BusinessTripInfoOutput(
