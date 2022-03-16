@@ -304,7 +304,9 @@ module nts.uk.at.kdp003.a {
 							vm.workPlace = [];
 							vm.workPlace.push(data.workPlaceId);
 							vm.modeBasyo(true);
-							dfd.resolve(loginData);
+							setTimeout(() => {
+								dfd.resolve(loginData);
+							}, 100);
 						} else {
 							//  Check IP
 							const param = {
@@ -318,8 +320,10 @@ module nts.uk.at.kdp003.a {
 									vm.workPlace = [];
 									vm.workPlace.push(data.workPlaceId);
 									vm.modeBasyo(true);
-									dfd.resolve(loginData);
-								} else {
+									setTimeout(() => {
+										dfd.resolve(loginData);
+									}, 100);
+								} else {ss
 									vm.getWorkPlaceAndTimeZone();
 									dfd.resolve(loginData);
 								}
@@ -330,6 +334,7 @@ module nts.uk.at.kdp003.a {
 							.then((c) => {
 								const date = moment(moment(c, 'YYYY-MM-DDTHH:mm:ss').add(ko.unwrap(vm.regionalTime), 'm').toDate()).toDate();
 								vm.employeeData.baseDate(date);
+								dfd.resolve(loginData);
 							});
 					});
 				} else {
@@ -467,16 +472,16 @@ module nts.uk.at.kdp003.a {
 							}
 						});
 
-					// $.urlParam = function (name) {
-					// 	let results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+					$.urlParam = function (name) {
+						let results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
 
-					// 	if (results == null) {
-					// 		return null;
-					// 	}
-					// 	else {
-					// 		return decodeURI(results[1]) || 0;
-					// 	}
-					// }
+						if (results == null) {
+							return null;
+						}
+						else {
+							return decodeURI(results[1]) || 0;
+						}
+					}
 
 					return data;
 				})
@@ -505,6 +510,30 @@ module nts.uk.at.kdp003.a {
 									loginData,
 									workplaceData
 								})) as JQueryPromise<LoginData>;
+						}
+					}
+
+					return data;
+				})
+				.then((data: LoginData) => {
+					vm.$ajax(API.confirmUseOfStampInput, { employeeId: null, stampMeans: 0 })
+						.then((data: any) => {
+
+							if (data.used == 2) {
+								checkUsed = false;
+							} else {
+								checkUsed = true;
+							}
+						});
+
+					$.urlParam = function (name) {
+						let results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+
+						if (results == null) {
+							return null;
+						}
+						else {
+							return decodeURI(results[1]) || 0;
 						}
 					}
 
