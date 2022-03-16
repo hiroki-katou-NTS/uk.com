@@ -43,6 +43,7 @@ public class ValidateData {
 
 		if (!errors.isEmpty()) {
 			Either.left(errors);
+			return Either.left(errors);
 		}
 
 		return Either.right(new RevisedDataRecord(record.getRowNo(), correctedItems));
