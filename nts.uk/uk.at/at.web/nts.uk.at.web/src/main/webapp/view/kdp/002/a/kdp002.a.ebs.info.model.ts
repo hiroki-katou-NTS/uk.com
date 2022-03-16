@@ -34,8 +34,8 @@ module nts.uk.at.view.kdp002.a {
 						self.bindItemData(start.stampDataOfEmployees);
 
 						self.dateValue({
-							startDate: moment(c).add(ko.unwrap(regionalTime), 'm').add(-3, 'days').format('YYYY/MM/DD'),
-							endDate: moment(c).add(ko.unwrap(regionalTime), 'm').format('YYYY/MM/DD')
+							startDate: moment(c).add(ko.unwrap(regionalTime), 'm').add(-3, 'days').utc().format('YYYY/MM/DD'),
+							endDate: moment(c).add(ko.unwrap(regionalTime), 'm').utc().format('YYYY/MM/DD')
 						});
 					});
 				self.workManagementMultiple(workManagementMultiple);
@@ -225,5 +225,7 @@ module nts.uk.at.view.kdp002.a {
 }
 
 var setScroll = function (currentCode: number) {
-	$("#time-card-list_scrollContainer").scrollTop(24 * (currentCode - 3));
+	setTimeout(() => {
+		$("#time-card-list_scrollContainer").scrollTop(30 * (currentCode - 3));
+	}, 300);
 }
