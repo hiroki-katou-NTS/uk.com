@@ -325,10 +325,10 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 					}
 				}).fail(res => {
 					let param;
-                    if (res.message) {
-                        param = {message: res.message, messageParams: res.parameterIds};
+                    if (res.messageId) {
+						param = {messageId: res.messageId, messageParams: res.parameterIds};
                     } else {
-                        param = {messageId: res.messageId, messageParams: res.parameterIds}
+                        param = {message: res.message, messageParams: res.parameterIds};
                     }
                     vm.$dialog.error(param);
 				}).always(res => {
@@ -359,10 +359,10 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 .fail(res => {
 
                     let param;
-                    if (res.message) {
-                        param = {message: res.message, messageParams: res.parameterIds};
+                    if (res.messageId) {
+						param = {messageId: res.messageId, messageParams: res.parameterIds};
                     } else {
-                        param = {messageId: res.messageId, messageParams: res.parameterIds}
+                        param = {message: res.message, messageParams: res.parameterIds};
                     }
                     vm.$dialog.error(param);
                 })
