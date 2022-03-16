@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.command.application.applicationlist;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -16,8 +17,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.task.AsyncTask;
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.application.common.ApproveAppHandler;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -29,15 +28,18 @@ import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 import nts.uk.ctx.at.request.dom.application.applist.service.WorkMotionData;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailServerSetImport;
+import nts.uk.ctx.at.request.dom.application.common.service.application.ApproveAppProcedure;
+import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApproveAppProcedureOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.ApprovalProcessParam;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.AppReflectManagerFromRecord;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRec;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * refactor 4
@@ -54,16 +56,10 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 	private ApproveAppHandler approveAppHandler;
 	
 	@Inject
-	private ManagedParallelWithContext parallel;
-	
-	@Inject
 	private ApprovalListService approvalListService;
 	
 	@Inject
 	private ApprovalListDispSetRepository approvalListDispSetRepository;
-	
-	@Inject
-	private AppReflectManagerFromRecord appReflectManager;
 	
 	@Resource
 	private ManagedExecutorService executerService;
@@ -73,6 +69,9 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 	
 	@Inject
 	private EnvAdapter envAdapter;
+	
+	@Inject
+	private ApproveAppProcedure approveAppProcedure;
 	
 	/**
 	 * refactor 4
@@ -171,22 +170,33 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 		if(CollectionUtil.isEmpty(listOfApplicationCmds)) {
 			return result;
 		}
-		listOfApplicationCmds.forEach(listOfApplicationCmd -> {
-			Pair<Boolean, String> pair = this.approveSingleApp(companyID, listOfApplicationCmd, listOfAppTypes);
-			if(pair.getLeft()) {
-				result.getSuccessMap().put(listOfApplicationCmd.getAppID(), pair.getRight());
+		ApplicationSetting applicationSetting = applicationSettingRepository.findByCompanyId(companyID).get();
+		List<Application> appLst = listOfApplicationCmds.stream().map(x -> x.getApplication().toDomain()).collect(Collectors.toList());
+		List<AppHdsubRec> appHdsubRecLst = listOfApplicationCmds.stream()
+				.filter(x -> x.getAppType()==ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value)
+				.filter(x -> x.getOpComplementLeaveApp()!=null)
+				.filter(x -> x.getOpComplementLeaveApp().getAppHdsubRec()!=null)
+				.map(x -> x.getOpComplementLeaveApp().getAppHdsubRec().toDomain()).collect(Collectors.toList());
+		ApproveAppProcedureOutput approveAppProcedureOutput = approveAppProcedure.approveAppProcedure(
+        		AppContexts.user().companyId(), 
+        		appLst, 
+        		appHdsubRecLst, 
+        		AppContexts.user().employeeId(), 
+        		Optional.empty(), 
+        		applicationSetting.getAppTypeSettings(), 
+        		true,
+        		false);
+		String approveFailMsgContent = TextResource.localize("Msg_3320");
+		String deleteMsgContent = TextResource.localize("Msg_3321");
+		for(Application application : appLst) {
+			if(approveAppProcedureOutput.getApproveFailLst().contains(application.getAppID())) {
+				result.getFailMap().put(application.getAppID(), approveFailMsgContent);
+			} else if(approveAppProcedureOutput.getDeleteLst().contains(application.getAppID())) {
+				result.getFailMap().put(application.getAppID(), deleteMsgContent);
 			} else {
-				result.getFailMap().put(listOfApplicationCmd.getAppID(), pair.getRight());
+				result.getSuccessMap().put(application.getAppID(), "");
 			}
-		});
-		
-		// reflect app
-		AsyncTask task = AsyncTask.builder().keepsTrack(false).threadName(this.getClass().getName() + ".reflect-app: ")
-				.build(() -> {
-					appReflectManager
-							.reflectApplication(result.getSuccessMap().keySet().stream().collect(Collectors.toList()));
-				});
-		this.executerService.submit(task);
+		}
 		return result;
 	}
 

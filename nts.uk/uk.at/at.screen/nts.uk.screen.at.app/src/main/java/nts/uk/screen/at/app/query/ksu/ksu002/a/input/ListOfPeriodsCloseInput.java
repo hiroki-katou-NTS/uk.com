@@ -14,4 +14,5 @@ import nts.arc.time.YearMonth;
 @AllArgsConstructor
 public class ListOfPeriodsCloseInput {
 	public YearMonth yearMonth;
+	public String sid;
 }

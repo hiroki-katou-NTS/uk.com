@@ -68,8 +68,6 @@ div.form-label.broken {
 }
 
 .workSelectKAF010{
-    height: 60px;
-    margin-top: 10px;
 }
 .panel.panel-gray-bg {
     margin-bottom: 15px;
@@ -163,7 +161,8 @@ div.form-label.broken {
 }
 
 .headerKAF010 {
-	background-color: #CFF1A5;
+	background-color: #6A6A6A;
+    color: #fff;
 }
 
 .scroll-header{
@@ -171,4 +170,8 @@ div.form-label.broken {
 }
 th {
 	text-align: center !important;
+}
+
+.code-name{
+	display: inline-block;
 }

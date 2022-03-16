@@ -42,7 +42,7 @@
       <option v-for="item in lstAppType" v-bind:key="item.code" :value="item.code">{{item.appName}}</option>
     </nts-dropdown>
     <!-- Button Change Mode B2_2-->
-    <button v-if="filterByAppType.length > 0" v-bind:class = "btnChangeMode.class" class="btn-block p-1 m-1 mt-2"  v-on:click="modeAppr = !modeAppr">{{btnChangeMode.name | i18n}}</button>
+    <button v-if="filterByAppType.length > 0 && data.appListInfoDto.displaySet.useApprovalFunction == 1" v-bind:class = "btnChangeMode.class" class="btn-block p-1 m-1 mt-2"  v-on:click="modeAppr = !modeAppr">{{btnChangeMode.name | i18n}}</button>
     <!-- List App -->
     <div class="accordion accordion-mn3 pt-2">
         <div

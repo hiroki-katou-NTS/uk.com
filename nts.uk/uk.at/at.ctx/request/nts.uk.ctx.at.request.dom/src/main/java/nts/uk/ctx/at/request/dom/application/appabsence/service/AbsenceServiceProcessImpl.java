@@ -22,10 +22,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.ChildCareNursePeriodImport;
-import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberCareAdapter;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberChildCareAdapter;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberNursingAdapter;
-import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childcare.GetRemainingNumberChildCareNurseAdapter;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.AggrResultOfHolidayOver60hImport;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.GetHolidayOver60hRemNumWithinPeriodAdapter;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -61,9 +59,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.ba
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
+import nts.uk.ctx.at.request.dom.application.common.service.application.ApproveAppProcedure;
+import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApproveAppProcedureOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -85,7 +84,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vaca
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.UseAtr;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleError;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleExport;
-import nts.uk.ctx.at.request.dom.workrecord.remainmanagement.InterimRemainDataMngCheckRegisterRequest;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -280,9 +278,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     private ApplicationApprovalService applicationService;
 
 	@Inject
-	private RegisterAtApproveReflectionInfoService registerApproveReflectInfoService;
-
-	@Inject
 	private LeaveComDayOffManaRepository leaveComDayOffManaRepo;
 
 	@Inject
@@ -319,19 +314,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     private GetHolidayOver60hRemNumWithinPeriodAdapter getHolidayOver60hRemNumWithinPeriodAdapter;
     
     @Inject
-    private GetRemainingNumberChildCareNurseAdapter getRemainingNumberChildCareNurseAdapter;
-    
-    @Inject
-    private GetRemainingNumberCareAdapter getRemainingNumberCareAdapter;
-    
-    @Inject
     private GetRemainingNumberChildCareAdapter getRemainingNumberChildCareAdapter;
     
     @Inject
     private GetRemainingNumberNursingAdapter getRemainingNumberNursingAdapter;
-    
-    @Inject
-    private InterimRemainDataMngCheckRegisterRequest remainDataCheckRegister;
     
     @Inject
     private ComDayOffManaDataRepository comDayOffManaDataRepo;
@@ -386,6 +372,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 	
 	@Inject
 	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
+	
+	@Inject
+	private ApproveAppProcedure approveAppProcedure;
 
 	private final String FORMAT_DATE = "yyyy/MM/dd";
 
@@ -609,10 +598,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 
 			nursingCareLeaveManagement = new NursingCareLeaveManagement(
 					childNursingLeaveSetting.getManageType(),
-					nursingLeaveSetting.getTimeCareNursingSetting().getTimeDigestiveUnit(),
-					nursingLeaveSetting.getTimeCareNursingSetting().getManageDistinct(),
-					childNursingLeaveSetting.getTimeCareNursingSetting().getTimeDigestiveUnit(),
-					childNursingLeaveSetting.getTimeCareNursingSetting().getManageDistinct(),
+					nursingLeaveSetting.getTimeVacationDigestUnit().getDigestUnit(),
+					nursingLeaveSetting.getTimeVacationDigestUnit().getManage(),
+					childNursingLeaveSetting.getTimeVacationDigestUnit().getDigestUnit(),
+					childNursingLeaveSetting.getTimeVacationDigestUnit().getManage(),
 					nursingLeaveSetting.getManageType());
 	    }catch (Exception ignored){}
 
@@ -1561,13 +1550,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		            remainVacationInfo.getOvertime60hManagement().getOverrest60HManagement());
 		}
 		// 11.時間消化登録時のエラーチェック
-		commonAlgorithm.vacationDigestionUnitCheck(timeDigestApplication
-				, Optional.ofNullable(remainVacationInfo.getOvertime60hManagement().getSuper60HDigestion())
-				, Optional.ofNullable(remainVacationInfo.getSubstituteLeaveManagement().getTimeDigestiveUnit())
-				, Optional.ofNullable(remainVacationInfo.getAnnualLeaveManagement().getTimeAnnualLeave())
-				, Optional.ofNullable(remainVacationInfo.getNursingCareLeaveManagement().getTimeChildNursingDigestive())
-				, Optional.ofNullable(remainVacationInfo.getNursingCareLeaveManagement().getTimeCareDigestive())
-				, Optional.empty());
+		commonAlgorithm.vacationDigestionUnitCheck(timeDigestApplication);
 
 		if (requiredTime.isPresent()) {
 		    this.checkVacationTimeRequire(timeDigestApplication, requiredTime.get());
@@ -1992,8 +1975,22 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 
         Application appNew = this.applicationRepository.findByID(applyForLeave.getApplication().getAppID()).get();
 
-        // アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
-        String reflectAppId = this.registerApproveReflectInfoService.newScreenRegisterAtApproveInfoReflect(applyForLeave.getApplication().getEmployeeID(), appNew);
+        // 申請承認する時の手続き
+        List<String> autoSuccessMail = new ArrayList<>();
+		List<String> autoFailMail = new ArrayList<>();
+		List<String> autoFailServer = new ArrayList<>();
+        ApproveAppProcedureOutput approveAppProcedureOutput = approveAppProcedure.approveAppProcedure(
+        		AppContexts.user().companyId(), 
+        		Arrays.asList(applyForLeave.getApplication()), 
+        		Collections.emptyList(), 
+        		AppContexts.user().employeeId(), 
+        		Optional.empty(), 
+        		Arrays.asList(appTypeSetting), 
+        		false,
+        		true);
+        autoSuccessMail.addAll(approveAppProcedureOutput.getSuccessList().stream().distinct().collect(Collectors.toList()));
+		autoFailMail.addAll(approveAppProcedureOutput.getFailList().stream().distinct().collect(Collectors.toList()));
+		autoFailServer.addAll(approveAppProcedureOutput.getFailServerList().stream().distinct().collect(Collectors.toList()));
 
         // 休暇紐付け管理を登録する
         this.registerVacationLinkManage(leaveComDayOffMana, payoutSubofHDManagements);
@@ -2008,9 +2005,12 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         		appTypeSetting,
         		mailServerSet,
         		false);
-        if(Strings.isNotBlank(reflectAppId)) {
-        	result.setReflectAppIdLst(Arrays.asList(reflectAppId));
-        }
+        result.getAutoSuccessMail().addAll(autoSuccessMail);
+		result.getAutoFailMail().addAll(autoFailMail);
+		result.getAutoFailServer().addAll(autoFailServer);
+		result.setAutoSuccessMail(result.getAutoSuccessMail().stream().distinct().collect(Collectors.toList()));
+		result.setAutoFailMail(result.getAutoFailMail().stream().distinct().collect(Collectors.toList()));
+		result.setAutoFailServer(result.getAutoFailServer().stream().distinct().collect(Collectors.toList()));
         return result;
     }
 

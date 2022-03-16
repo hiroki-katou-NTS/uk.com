@@ -87,6 +87,7 @@ public class AddAggrPeriodCommandHandler
 			}
 		} else {
 
+			// Update Optional Aggr Period
 			repository.updateAnyAggrPeriod(anyAggrPeriod);
 
 			List<AggrPeriodTarget> periodTarget = command.getTargetCommand().toDomain(optionalAggrPeriodID);

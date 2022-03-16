@@ -1509,7 +1509,8 @@ module cmm045.a.viewmodel {
         print(params: any) {
             let self = this;
             let lstApp = self.appListInfo,
-                programName = self.menuName().replace('CMM045A ', '');
+                // programName = self.menuName().replace('CMM045A ', '');
+                programName = $("#pg-disp-name").text().trim();
             lstApp.appLst = ko.toJS(self.items);
             lstApp.displaySet.startDateDisp = self.appListExtractConditionDto.periodStartDate;
             lstApp.displaySet.endDateDisp = self.appListExtractConditionDto.periodEndDate;
@@ -1724,9 +1725,7 @@ module cmm045.a.viewmodel {
 							return data;
 						}
 		            }).then((data) => {
-						if(!_.isEmpty(data.successMap)) {
-							return service.findByPeriod(self.appListExtractConditionDto);
-						}
+						return service.findByPeriod(self.appListExtractConditionDto);
 					}).then((data: any) => {
 						if(data) {
 							return self.reload(data.appListExtractCondition, data.appListInfo);
