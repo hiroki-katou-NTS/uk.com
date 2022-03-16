@@ -334,7 +334,7 @@ module nts.uk.at.kdp003.a {
 						ipv4Address: ipv4Address
 					}
 					vm.$ajax('at', API.GetWorkLocationRagionalTime, param).done((data: GetWorkPlaceRegionalTime) => {
-						if (data.workLocationCD != null && data.workLocationCD !== '' && data.workPlaceId != null && data.workPlaceId != '') {
+						if (data.workLocationCD != null && data.workLocationCD !== '' ) {
 							vm.regionalTime(data.regional);
 							vm.worklocationCode = locationCd;
 							vm.workPlace = [];
