@@ -284,9 +284,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         checkUnLock: KnockoutObservable<boolean> = ko.observable(false);
 
+		mode: KnockoutObservable<number> = ko.observable(1);
+		menuName: KnockoutObservable<string> = ko.observable("");
+
         constructor(dataShare: any) {
             var self = this;
-
+			self.getMenu();
             self.initLegendButton();
             self.initDateRanger();
             self.initDisplayFormat();
@@ -496,6 +499,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     { colorCode: '#F9D4A9', labelText: '計算値' },
                     { colorCode: '#FFE5E5', labelText: getText("KDW003_44") },
                     { colorCode: '#FFF1BF', labelText: getText("KDW003_45") },
+					{ colorCode: '#FEDFE6', labelText: getText("KDW003_144") },
                 ]
             };
         }
@@ -545,7 +549,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 { code: 1, name: getText("Enum_DisplayFormat_ByDate") },
                 { code: 2, name: getText("Enum_DisplayFormat_ErrorAlarm") }
             ]);
+			if(self.menuName() == '')
             self.displayFormat(0);
+
+			if(self.menuName() == "a=0")
+            self.displayFormat(0);
+
+			if(self.menuName() == "a=1")
+            self.displayFormat(1);
         }
 
         createSumColumn(data: any) {
@@ -774,6 +785,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             })
             return dfd.promise();
         }
+
+		getMenu(){
+            let self = this;
+            service.getMenu().done((data)=>{
+				if(!_.isNil(data)){
+					let item = _.filter(data, (e)=>e.param.equals(self.mode() == 1 ? "a=1" :"a=0"));
+                   
+					if (item.length > 0)
+					self.menuName(item[0].name);
+				}
+                
+            })
+        };
 
         processMapData(data) {
             var self = this;

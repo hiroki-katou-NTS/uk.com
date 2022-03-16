@@ -92,6 +92,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindAllEmployee;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
+import nts.uk.screen.at.app.dailyperformance.support.GetDailySupportWorkers;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.FormatDailyDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -140,6 +141,9 @@ public class InitScreenMob {
 	
 	@Inject
 	private TaskSupInfoChoiceDetailsQuery taskSupInfoChoiceDetailsQuery;
+	
+	@Inject
+	private GetDailySupportWorkers supportWorkers;
 
 	private static final Integer[] DEVIATION_REASON = { 436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456,
 			458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822 };
@@ -235,6 +239,10 @@ public class InitScreenMob {
 
 		allIds = processor.changeListEmployeeId(new ArrayList<>(), rangeInit, screenMode, false,
 				screenDto.getClosureId(), screenDto);
+		
+		//
+		DPCorrectionStateParam stateParam = supportWorkers.getDailySupportWorkers(param.dpStateParam);
+		screenDto.setStateParam(stateParam);
 
 		// ログイン社員の日別実績の権限を取得する
 		screenDto.setAuthorityDto(processor.getAuthority(screenDto));
@@ -493,6 +501,13 @@ public class InitScreenMob {
 			}
 			if(lockDay || lockHist || dataSign == null || (!dataSign.isStatus() ? (!dataSign.notDisableForConfirm() ? true : false) : !dataSign.notDisableForConfirm())){
 				screenDto.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
+			}
+			
+			if (displayFormat == 1 || displayFormat == 2) {
+				if (screenDto.getStateParam().getLstEmpsSupport().contains(data.getEmployeeId())) {
+					cellEditColor(screenDto,data.getId(), "employeeName", 9);
+					cellEditColor(screenDto,data.getId(), "employeeCode", 9);
+				}
 			}
 		}
 		screenDto.setLstData(lstData);
@@ -869,12 +884,21 @@ public class InitScreenMob {
 
 	public void cellEditColor(DailyPerformanceCorrectionDto screenDto, String rowId, String columnKey,
 			Integer cellEdit) {
+		// 日別実績の編集状態:
+		// 0: 手修正（本人）
+		// 1: 手修正（他人）
+		// 2: 申請反映
+		// 3: 打刻反映
+		// 4: 申告反映
+		// 9: 応援
 		// set color edit
 		if (cellEdit != null) {
 			if (cellEdit == 0) {
 				screenDto.setCellSate(rowId, columnKey, DPText.HAND_CORRECTION_MYSELF);
 			} else if (cellEdit == 1) {
 				screenDto.setCellSate(rowId, columnKey, DPText.HAND_CORRECTION_OTHER);
+			} else if (cellEdit == 9) {
+				screenDto.setCellSate(rowId, columnKey, DPText.COLOR_SUPPORT);
 			} else {
 				screenDto.setCellSate(rowId, columnKey, DPText.REFLECT_APPLICATION);
 			}
