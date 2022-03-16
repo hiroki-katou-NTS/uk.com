@@ -102,7 +102,7 @@ module nts.uk.ui.at.kdw013.a {
 
         getText(dto: nts.uk.ui.at.kdw013.ConfirmerByDayDto) {
             let vm = this;
-            let resourceCode = vm.checked() ? 'KDW013_99' : 'KDW013_100';
+            let resourceCode = vm.checked() ? 'KDW013_102' : 'KDW013_101';
             return vm.$i18n(resourceCode);
         }
 
@@ -114,7 +114,7 @@ module nts.uk.ui.at.kdw013.a {
                 return false;
             }
             
-            if (vm.confirmers.length >= 5 && !!_.find(vm.confirmers, ['id', logginSid])) {
+            if (vm.confirmers.length >= 5 && !_.find(vm.confirmers, ['id', logginSid])) {
                 return false;
             }
             
