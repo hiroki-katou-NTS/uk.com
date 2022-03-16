@@ -16,6 +16,7 @@ import nts.uk.ctx.sys.gateway.dom.login.CheckIfCanLogin;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.AuthenticateTenant;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationResult;
 import nts.uk.shr.com.net.Ipv4Address;
 import nts.uk.shr.com.system.property.UKServerSystemProperties;
 
@@ -53,8 +54,7 @@ public abstract class LoginCommandHandlerBase<
 		
 		// テナント認証
 		if (UKServerSystemProperties.isCloud()) {
-			val tenantAuthResult = ConnectDataSourceOfTenant.connect(
-					require, loginClient, command.getTenantCode(), command.getTenantPasswordPlainText());
+			val tenantAuthResult = tenanteAuthenticate(require, command, loginClient);
 			
 			if(tenantAuthResult.isFailure()) {
 				transaction.execute(() -> {
@@ -75,6 +75,18 @@ public abstract class LoginCommandHandlerBase<
 
 		// ログイン成功
 		return loginCompleted(require, authen, msg);
+	}
+
+	/**
+	 * テナント認証
+	 * @param require
+	 * @param command
+	 * @param loginClient
+	 * @return
+	 */
+	protected TenantAuthenticationResult tenanteAuthenticate(Req require, Command command, LoginClient loginClient) {
+		return ConnectDataSourceOfTenant.connect(
+				require, loginClient, command.getTenantCode(), command.getTenantPasswordPlainText());
 	}
 	
 	/**

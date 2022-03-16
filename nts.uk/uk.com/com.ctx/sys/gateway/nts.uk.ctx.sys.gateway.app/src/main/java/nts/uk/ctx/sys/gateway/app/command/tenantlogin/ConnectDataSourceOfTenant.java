@@ -44,4 +44,33 @@ public class ConnectDataSourceOfTenant {
 		}
 		return result;
 	}
+
+	public static TenantAuthenticationResult connectForUrlLogin(Require require, LoginClient loginClient, String tenantCode) {
+
+		/* テナントロケーター処理 */
+		if (UKServerSystemProperties.usesTenantLocator()) {
+			// テナント認証するため、一旦接続する
+
+			TenantLocatorService.connect(tenantCode);
+			// テナントの特定に失敗
+			if(!TenantLocatorService.isConnected()) {
+				// 失敗記録
+				val failureLog = TenantAuthenticationFailureLog.failedNow(loginClient, tenantCode, "");
+				val atomTask = AtomTask.of(() -> {
+					require.insert(failureLog);
+				});
+				return TenantAuthenticationResult.failedToIdentifyTenant(atomTask);
+			}
+		}
+
+		// テナント認証
+		val result = AuthenticateTenant.authenticateNoPassword(require, tenantCode, loginClient);
+		if(result.isFailure()) {
+			if (UKServerSystemProperties.usesTenantLocator()) {
+				// テナント認証に失敗した場合、データソースとの接続を切断する
+				TenantLocatorService.disconnect();
+			}
+		}
+		return result;
+	}
 }
