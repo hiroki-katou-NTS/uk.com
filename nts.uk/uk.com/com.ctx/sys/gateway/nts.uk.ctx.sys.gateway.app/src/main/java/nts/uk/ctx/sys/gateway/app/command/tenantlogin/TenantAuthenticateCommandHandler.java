@@ -1,25 +1,18 @@
 package nts.uk.ctx.sys.gateway.app.command.tenantlogin;
 
-import java.util.Optional;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.gul.web.HttpClientIpAddress;
 import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.AuthenticateTenant;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationFailureLog;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationFailureLogRepository;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
-import nts.uk.shr.com.net.Ipv4Address;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.*;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import java.util.Optional;
 
 /**
  * テナント認証する
@@ -47,10 +40,8 @@ public class TenantAuthenticateCommandHandler extends CommandHandler<TenantAuthe
 		}
 		
 		// ログインクライアントの生成
-		val loginClient = new LoginClient(
-				Ipv4Address.parse(HttpClientIpAddress.get(request)), 
-				request.getHeader("user-agent"));
-		
+		val loginClient = LoginClient.create(request);
+
 		val tenantAuthResult = ConnectDataSourceOfTenant.connect(
 				require, loginClient, command.getTenantCode(), command.getPassword());
 		
