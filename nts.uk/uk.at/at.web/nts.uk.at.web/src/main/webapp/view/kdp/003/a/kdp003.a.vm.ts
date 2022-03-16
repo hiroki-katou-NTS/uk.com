@@ -215,12 +215,12 @@ module nts.uk.at.kdp003.a {
 				dialogClass: 'no-close'
 			}).onClosed(() => {
 				vm.$window.storage('contractInfo')
-				.done((data: any) => {
-					setTimeout(() => {
-						vm.contractCode = data.contractCode
-					vm.getDataStartScreen();
-					}, 300);
-				});
+					.done((data: any) => {
+						setTimeout(() => {
+							vm.contractCode = data.contractCode
+							vm.getDataStartScreen();
+						}, 300);
+					});
 			});
 		}
 
@@ -281,14 +281,15 @@ module nts.uk.at.kdp003.a {
 			vm.getTimeZone();
 		}
 
-		getTimeZone(): JQueryPromise<void> {
+		getTimeZone(loginData?): JQueryPromise<LoginData> {
 			const vm = this,
 				locationCd = $.urlParam('basyo');
-			let dfd = $.Deferred<void>();
+			let dfd = $.Deferred<LoginData>();
 			let ipv4Address: string;
 			vm.$ajax(API.GetIPAddress, { contractCode: vm.contractCode }).done((response) => {
 				ipv4Address = response.ipaddress;
 			}).then(() => {
+				
 				if (locationCd) {
 					const param = {
 						contractCode: vm.contractCode,
@@ -303,6 +304,7 @@ module nts.uk.at.kdp003.a {
 							vm.workPlace = [];
 							vm.workPlace.push(data.workPlaceId);
 							vm.modeBasyo(true);
+							dfd.resolve(loginData);
 						} else {
 							//  Check IP
 							const param = {
@@ -316,8 +318,10 @@ module nts.uk.at.kdp003.a {
 									vm.workPlace = [];
 									vm.workPlace.push(data.workPlaceId);
 									vm.modeBasyo(true);
+									dfd.resolve(loginData);
 								} else {
 									vm.getWorkPlaceAndTimeZone();
+									dfd.resolve(loginData);
 								}
 							})
 						}
@@ -334,14 +338,16 @@ module nts.uk.at.kdp003.a {
 						ipv4Address: ipv4Address
 					}
 					vm.$ajax('at', API.GetWorkLocationRagionalTime, param).done((data: GetWorkPlaceRegionalTime) => {
-						if (data.workLocationCD != null && data.workLocationCD !== '' ) {
+						if (data.workLocationCD != null && data.workLocationCD !== '') {
 							vm.regionalTime(data.regional);
 							vm.worklocationCode = locationCd;
 							vm.workPlace = [];
 							vm.workPlace.push(data.workPlaceId);
 							vm.modeBasyo(true);
+							dfd.resolve(loginData);
 						} else {
 							vm.getWorkPlaceAndTimeZone();
+							dfd.resolve(loginData);
 						}
 					});
 				}
@@ -400,9 +406,14 @@ module nts.uk.at.kdp003.a {
 				.then((storageData: undefined | StorageData) => {
 					if (storageData === undefined) {
 						return vm.$window.modal('at', DIALOG.F, { mode: 'admin' })
-							.then((loginData: f.TimeStampLoginData) => ({
-								loginData
-							})) as JQueryPromise<LoginData>;
+							.then((loginData: f.TimeStampLoginData) => {
+								
+								return vm.getTimeZone(loginData).then((loginData: f.TimeStampLoginData) => ({
+									loginData
+								}));
+								
+							
+						})
 					}
 
 					// data login by storage
@@ -433,9 +444,11 @@ module nts.uk.at.kdp003.a {
 								// UI[F2]  打刻使用可能会社の取得と判断 
 								vm.showClockButton.setting(false);
 
-								return {
-									storageData
-								};
+								vm.getTimeZone().then(() => {
+									return {
+										storageData
+									};
+								})
 							}
 
 							vm.showClockButton.setting(true);
@@ -458,18 +471,16 @@ module nts.uk.at.kdp003.a {
 							}
 						});
 
-					$.urlParam = function (name) {
-						let results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+					// $.urlParam = function (name) {
+					// 	let results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
 
-						if (results == null) {
-							return null;
-						}
-						else {
-							return decodeURI(results[1]) || 0;
-						}
-					}
-
-					vm.getTimeZone().then(() => data);
+					// 	if (results == null) {
+					// 		return null;
+					// 	}
+					// 	else {
+					// 		return decodeURI(results[1]) || 0;
+					// 	}
+					// }
 
 					return data;
 				})

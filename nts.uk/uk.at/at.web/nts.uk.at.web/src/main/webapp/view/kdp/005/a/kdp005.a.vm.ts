@@ -1134,22 +1134,31 @@ module nts.uk.at.view.kdp005.a {
                                         if (workLoc && workLocationCD != null && workLocationName != null) {
 
                                             self.worklocationCode = locationCd;
-                                            self.modeBasyo(true);
+                                            
                                             
                                             if (workPlaceId) {
                                                 self.workplace = [workPlaceId];
+												self.modeBasyo(true);
                                                 dfd.resolve();
                                             } else {
                                                 characteristics.restore("loginKDP005").done(function(loginInfo: ILoginInfo) {
-                                                    if (!_.get(loginInfo, 'selectedWP', []).length) {
+
+													if(!loginInfo){
+														dfd.resolve();
+													}else{
+														
+                                                    if (!_.get(loginInfo, 'selectedWP')) {
                                                         self.openDialogK().done((result) => {
                                                             self.workplace = result;
+															self.modeBasyo(true);
                                                             dfd.resolve();
                                                         });
                                                     } else {
                                                         self.workplace = loginInfo.selectedWP;
+														self.modeBasyo(true);
                                                         dfd.resolve();
                                                     }
+												}
                                                 });
                                             }
                                         } else {
