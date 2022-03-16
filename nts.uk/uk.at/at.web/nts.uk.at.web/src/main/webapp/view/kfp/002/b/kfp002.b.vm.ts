@@ -20,7 +20,7 @@ module nts.uk.at.view.kfp002.b {
             const self = this;
             self.$blockui("show");
             self.$ajax(Paths.getAllFormats).done(formats => {
-                self.formats(formats);
+                self.formats(_.sortBy(formats, ["code"]));
             }).fail(error => {
                 self.$dialog.alert(error).then(() => {
                     if (error.messageId == "Msg_1402") {

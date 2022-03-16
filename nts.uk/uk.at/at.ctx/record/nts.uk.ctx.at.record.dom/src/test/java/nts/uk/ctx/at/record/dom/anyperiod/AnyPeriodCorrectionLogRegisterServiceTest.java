@@ -5,20 +5,26 @@ import mockit.Injectable;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceName;
+import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.DisplayMonthResultsMethod;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.anyperiod.attendancetime.converter.AnyPeriodRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.anyperiodattdcal.AnyPeriodActualResultCorrectionDetail;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.anyaggrperiod.AnyAggrFrameCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.PrimitiveValueOfAttendanceItem;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,8 +33,11 @@ public class AnyPeriodCorrectionLogRegisterServiceTest {
     @Injectable
     private AnyPeriodCorrectionLogRegisterService.Require require;
 
+    @Mocked
+    private AnyPeriodRecordToAttendanceItemConverter converter;
+
     @Test
-    public void testCreateLogContent(@Mocked AnyPeriodRecordToAttendanceItemConverter converter) {
+    public void testCreateLogContent() {
         List<ItemValue> original = Arrays.asList(
                 new ItemValue("30", ValueType.TIME, null, 1),
                 new ItemValue("3.0", ValueType.COUNT_WITH_DECIMAL, null, 2),
@@ -53,11 +62,11 @@ public class AnyPeriodCorrectionLogRegisterServiceTest {
                 result = calculated;
             }
             {
-                require.getNameOfAttendanceItem((List<Integer>) any, (TypeOfItemImport) any);
+                require.findByAttendanceItemId(anyString, (List<Integer>) any);
                 result = Arrays.asList(
-                        createAttItemName(1, "name 1", 1),
-                        createAttItemName(2, "name 2", 2),
-                        createAttItemName(3, "name 3", 2)
+                        createAttItem(1, "name 1", 1),
+                        createAttItem(2, "name 2", 2),
+                        createAttItem(3, "name 3", 2)
                 );
             }
         };
@@ -78,12 +87,49 @@ public class AnyPeriodCorrectionLogRegisterServiceTest {
         assertThat(result.getCalculatedList().size()).isEqualTo(1);
     }
 
-    private AttItemName createAttItemName(int itemId, String itemName, int attendanceAtr) {
-        AttItemName obj = new AttItemName();
-        obj.setAttendanceItemId(itemId);
-        obj.setAttendanceItemName(itemName);
-        obj.setOldName(itemName);
-        obj.setAttendanceAtr(attendanceAtr);
+    private MonthlyAttendanceItem createAttItem(int itemId, String itemName, int attendanceAtr) {
+        MonthlyAttendanceItem obj = new MonthlyAttendanceItem(new MonthlyAttendanceItemGetMemento() {
+            @Override
+            public UseSetting getUserCanUpdateAtr() {
+                return UseSetting.UseAtr_Use;
+            }
+            @Override
+            public DisplayMonthResultsMethod getTwoMonthlyDisplay() {
+                return DisplayMonthResultsMethod.DISPLAY_FIRST_ITEM;
+            }
+            @Override
+            public Optional<PrimitiveValueOfAttendanceItem> getPrimitiveValue() {
+                return Optional.empty();
+            }
+            @Override
+            public int getNameLineFeedPosition() {
+                return 0;
+            }
+            @Override
+            public MonthlyAttendanceItemAtr getMonthlyAttendanceAtr() {
+                return MonthlyAttendanceItemAtr.valueOf(attendanceAtr);
+            }
+            @Override
+            public int getDisplayNumber() {
+                return 1;
+            }
+            @Override
+            public Optional<AttendanceName> getDisplayName() {
+                return Optional.of(new AttendanceName(itemName));
+            }
+            @Override
+            public String getCompanyId() {
+                return "";
+            }
+            @Override
+            public AttendanceName getAttendanceName() {
+                return new AttendanceName(itemName);
+            }
+            @Override
+            public int getAttendanceItemId() {
+                return itemId;
+            }
+        });
         return obj;
     }
 }

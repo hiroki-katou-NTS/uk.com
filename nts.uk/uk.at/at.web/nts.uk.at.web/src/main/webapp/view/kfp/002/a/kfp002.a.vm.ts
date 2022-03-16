@@ -199,7 +199,10 @@ module nts.uk.at.view.kfp002.a.viewmodel {
             localStorage.removeItem(window.location.href + '/anpGrid');
             self.$blockui('show');
             self.$ajax(Paths.getFrames).done(frames => {
-                $.when(self.aggregateFrames(frames)).then(() => {
+                frames.forEach((f: any) => {
+                    f.optionalAggrName = f.aggrFrameCode + "：" + f.optionalAggrName;
+                });
+                $.when(self.aggregateFrames(_.sortBy(frames, ["aggrFrameCode"]))).then(() => {
                     self.isStartScreen(false);
                 });
                 self.getFormatSetting();
@@ -256,7 +259,7 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                 self.summaryColumns(_.cloneDeep(FIXED_SUMMARY_COLUMN));
 
                 // mapping
-                displayFormat.formatSetting.sheetSettings.forEach((sheet: any, index: number) => {
+                _.sortBy(displayFormat.formatSetting.sheetSettings, ["sheetNo"]).forEach((sheet: any, index: number) => {
                     const items = _.sortBy(sheet.listDisplayTimeItem, ['displayOrder']);
                     const tmp: Array<any> = [];
                     items.forEach((item1: any) => {
@@ -264,83 +267,85 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                             if (item1.itemDaily == item2.attendanceItemId) {
                                 let key = "C" + String(item2.attendanceItemId);
                                 tmp.push(key);
-                                let colWidth = _.find(self.savedColumnWidths(), s => s.itemId == item2.attendanceItemId);
-                                let monthlyItem = _.find(displayFormat.monthlyItems, (mi: any) => mi.attendanceItemId == item2.attendanceItemId);
-                                let column: any = {
-                                    key: key,
-                                    headerText: self.formatHeaderText(
-                                        self.displayItemNumber() ? "[" + item2.attendanceItemDisplayNumber + "] " + item2.oldName : item2.attendanceItemName,
-                                        monthlyItem,
-                                        item2.nameLineFeedPosition
-                                    ),
-                                    dataType: 'string',
-                                    width: colWidth ? colWidth.columnWidth + 'px' : (item1.columnWidthTable ? item1.columnWidthTable + 'px' : DEFAULT_WIDTH),
-                                    grant: true,
-                                    // columnCssClass: "text-right-align",
-                                    // headerCssClass: "text-center-align"
-                                };
-                                if (monthlyItem) {
-                                    if (monthlyItem.primitive && self.getPrimitive(monthlyItem.primitive)) {
-                                        column.constraint = {
-                                            primitiveValue: self.getPrimitive(monthlyItem.primitive),
-                                            required: false
-                                        };
-                                        if (monthlyItem.monthlyAttendanceAtr == 4) {
-                                            const constraint = nts.uk.ui.validation.getConstraint(column.constraint.primitiveValue);
+                                if (!_.find(self.columns(), c => c.key == key)) {
+                                    let colWidth = _.find(self.savedColumnWidths(), s => s.itemId == item2.attendanceItemId);
+                                    let monthlyItem = _.find(displayFormat.monthlyItems, (mi: any) => mi.attendanceItemId == item2.attendanceItemId);
+                                    let column: any = {
+                                        key: key,
+                                        headerText: self.formatHeaderText(
+                                            self.displayItemNumber() ? "[" + item2.attendanceItemDisplayNumber + "] " + item2.oldName : item2.attendanceItemName,
+                                            monthlyItem,
+                                            item2.nameLineFeedPosition
+                                        ),
+                                        dataType: 'string',
+                                        width: colWidth ? colWidth.columnWidth + 'px' : (item1.columnWidthTable ? item1.columnWidthTable + 'px' : DEFAULT_WIDTH),
+                                        grant: true,
+                                        // columnCssClass: "text-right-align",
+                                        // headerCssClass: "text-center-align"
+                                    };
+                                    if (monthlyItem) {
+                                        if (monthlyItem.primitive && self.getPrimitive(monthlyItem.primitive)) {
                                             column.constraint = {
-                                                cDisplayType: "Currency",
-                                                min: constraint.min,
-                                                max: constraint.max
+                                                primitiveValue: self.getPrimitive(monthlyItem.primitive),
+                                                required: false
                                             };
-                                            column.columnCssClass = "currency-symbol";
+                                            if (monthlyItem.monthlyAttendanceAtr == 4) {
+                                                const constraint = nts.uk.ui.validation.getConstraint(column.constraint.primitiveValue);
+                                                column.constraint = {
+                                                    cDisplayType: "Currency",
+                                                    min: constraint.min,
+                                                    max: constraint.max
+                                                };
+                                                // column.columnCssClass = "currency-symbol";
+                                            }
+                                        } else {
+                                            if (monthlyItem.monthlyAttendanceAtr == 1) {
+                                                column.constraint = {
+                                                    cDisplayType: "Clock",
+                                                    min: "0:00",
+                                                    max: "999:59"
+                                                };
+                                            } else if (monthlyItem.monthlyAttendanceAtr == 2) {
+                                                column.constraint = {
+                                                    cDisplayType: "Integer",
+                                                    min: "0",
+                                                    max: "99"
+                                                };
+                                            } else if (monthlyItem.monthlyAttendanceAtr == 3) {
+                                                column.constraint = {
+                                                    cDisplayType: "HalfInt",
+                                                    min: "0",
+                                                    max: "99.5"
+                                                };
+                                            } else if (monthlyItem.monthlyAttendanceAtr == 4) {
+                                                column.constraint = {
+                                                    cDisplayType: "Currency",
+                                                    min: "0",
+                                                    max: "999999999"
+                                                };
+                                                // column.columnCssClass = "currency-symbol";
+                                            }
                                         }
-                                    } else {
-                                        if (monthlyItem.monthlyAttendanceAtr == 1) {
-                                            column.constraint = {
-                                                cDisplayType: "Clock",
-                                                min: "0:00",
-                                                max: "999:59"
-                                            };
-                                        } else if (monthlyItem.monthlyAttendanceAtr == 2) {
-                                            column.constraint = {
-                                                cDisplayType: "Integer",
-                                                min: "0",
-                                                max: "99"
-                                            };
-                                        } else if (monthlyItem.monthlyAttendanceAtr == 3) {
-                                            column.constraint = {
-                                                cDisplayType: "HalfInt",
-                                                min: "0",
-                                                max: "99.5"
-                                            };
-                                        } else if (monthlyItem.monthlyAttendanceAtr == 4) {
-                                            column.constraint = {
-                                                cDisplayType: "Currency",
-                                                min: "0",
-                                                max: "999999999"
-                                            };
-                                            column.columnCssClass = "currency-symbol";
-                                        }
+                                        self.summaryColumns.push({
+                                            columnKey: key,
+                                            allowSummaries: true,
+                                            summaryCalculator: monthlyItem.monthlyAttendanceAtr == 1 ? 'Time' : 'Number',
+                                            formatter: monthlyItem.monthlyAttendanceAtr == 4 ? 'Currency' : ''
+                                        });
                                     }
-                                    self.summaryColumns.push({
-                                        columnKey: key,
-                                        allowSummaries: true,
-                                        summaryCalculator: monthlyItem.monthlyAttendanceAtr == 1 ? 'Time' : 'Number',
-                                        formatter: monthlyItem.monthlyAttendanceAtr == 4 ? 'Currency' : ''
-                                    });
-                                }
-                                self.columns.push(column);
-                                const monthlyControl = _.find(displayFormat.monthlyItemControls, (i: any) => i.itemMonthlyId == item2.attendanceItemId);
-                                if (monthlyControl && monthlyControl.headerBgColorOfMonthlyPer) {
-                                    self.headerColors.push({
-                                        key: key,
-                                        colors: [monthlyControl.headerBgColorOfMonthlyPer]
-                                    });
-                                } else {
-                                    self.headerColors.push({
-                                        key: key,
-                                        colors: [DEFAULT_HEADER_COLOR]
-                                    });
+                                    self.columns.push(column);
+                                    const monthlyControl = _.find(displayFormat.monthlyItemControls, (i: any) => i.itemMonthlyId == item2.attendanceItemId);
+                                    if (monthlyControl && monthlyControl.headerBgColorOfMonthlyPer) {
+                                        self.headerColors.push({
+                                            key: key,
+                                            colors: [monthlyControl.headerBgColorOfMonthlyPer]
+                                        });
+                                    } else {
+                                        self.headerColors.push({
+                                            key: key,
+                                            colors: [DEFAULT_HEADER_COLOR]
+                                        });
+                                    }
                                 }
                             }
                         });
@@ -699,6 +704,7 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                 enter: self.cursorDirection() == 0 ? 'below' : 'right',
                 autoFitWindow: true,
                 preventEditInError: false,
+                errorsOnPage: true,
                 hidePrimaryKey: true,
                 userId: __viewContext.user.employeeId,
                 getUserId: function(k) { return String(k); },
@@ -759,6 +765,10 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                 {
                     name: 'HeaderStyles',
                     columns: self.headerColors()
+                },
+                {
+                    name: 'Tooltip',
+                    error: true
                 }
             ];
             if (self.sheets().length > 0) {

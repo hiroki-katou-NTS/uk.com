@@ -4,6 +4,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.record.dom.anyperiod.AnyPeriodCorrectionLogRegisterService;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.anyperiod.attendancetime.converter.AnyPeriodRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.anyperiodattdcal.AnyPeriodActualResultCorrectionDetail;
 import nts.uk.ctx.at.shared.dom.scherec.anyperiodattdcal.AnyPeriodResultRegisterAndStateEditService;
@@ -14,9 +16,6 @@ import nts.uk.ctx.at.shared.dom.scherec.anyperiodattdcal.editstate.AnyPeriodEdit
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriodRepository;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AtItemNameAdapter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
 import nts.uk.screen.at.app.kdw013.a.ItemValueCommand;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -37,7 +36,7 @@ public class CorrectAnyPeriodResultsScreenCommandHandler extends CommandHandlerW
     private AttendanceItemConvertFactory converterFactory;
 
     @Inject
-    private AtItemNameAdapter atItemNameAdapter;
+    private MonthlyAttendanceItemRepository monthlyItemRepo;
 
     @Inject
     private AnyPeriodEditingStateRepository anyPeriodEditingStateRepo;
@@ -86,8 +85,8 @@ public class CorrectAnyPeriodResultsScreenCommandHandler extends CommandHandlerW
         AnyPeriodCorrectionLogRegisterService.register(
                 new AnyPeriodCorrectionLogRegisterService.Require() {
                     @Override
-                    public List<AttItemName> getNameOfAttendanceItem(List<Integer> attendanceItemIds, TypeOfItemImport type) {
-                        return atItemNameAdapter.getNameOfAttendanceItem(attendanceItemIds, type);
+                    public List<MonthlyAttendanceItem> findByAttendanceItemId(String companyId, List<Integer> attendanceItemIds) {
+                        return monthlyItemRepo.findByAttendanceItemId(companyId, attendanceItemIds);
                     }
                     @Override
                     public Optional<AttendanceTimeOfAnyPeriod> find(String frameCode, String employeeId) {
