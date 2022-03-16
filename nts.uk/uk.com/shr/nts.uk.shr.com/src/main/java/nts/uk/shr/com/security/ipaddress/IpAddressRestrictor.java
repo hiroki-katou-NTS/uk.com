@@ -14,7 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.val;
 import nts.gul.web.HttpClientIpAddress;
+import nts.tenantlocator.client.TenantLocatorClient;
 import nts.uk.shr.com.net.Ipv4Address;
+import nts.uk.shr.com.system.property.UKServerSystemProperties;
+import nts.uk.shr.infra.data.TenantLocatorService;
 
 public class IpAddressRestrictor implements Filter {
 	
@@ -30,7 +33,13 @@ public class IpAddressRestrictor implements Filter {
 			throws IOException, ServletException {
 		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		
+
+		// テナントロケータ未接続ならチェックしない
+		if (UKServerSystemProperties.usesTenantLocator() && !TenantLocatorService.isConnected()) {
+			chain.doFilter(request, response);
+			return;
+		}
+
 		val targetIpAddress = Ipv4Address.parse(HttpClientIpAddress.get(httpRequest));
 		
 		if(!validateIpAddressService.validate(targetIpAddress)) {
