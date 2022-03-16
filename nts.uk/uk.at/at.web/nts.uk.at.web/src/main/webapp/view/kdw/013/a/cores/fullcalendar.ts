@@ -1952,6 +1952,8 @@ module nts.uk.ui.at.kdw013.calendar {
                 let sltds = vm.selectedEvents;
                 let isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => (formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')) && (formatDate(_.get(e,'end')) === formatDate(_.get(m,'end')) ) ));
                 let data = ko.unwrap(params.$datas);
+                let setting = ko.unwrap(params.$settings);
+               
                 
                 let isLock = (lockStatus) => {
                     if (_.get(lockStatus, 'lockDailyResult', 1) == 0) { return true; }
@@ -1963,17 +1965,45 @@ module nts.uk.ui.at.kdw013.calendar {
                     if (_.get(lockStatus, 'lockPast', 1) == 0) { return true; }
                     return false;
                 }
+
+                let islockBySetting = (event, lockSetting, getAtr) => {
+
+                    let lockItems = [{ no: 1, itemId: [157, 159] },
+                        { no: 2, itemId: [163, 165] },
+                        { no: 3, itemId: [169, 171] },
+                        { no: 4, itemId: [175, 177] },
+                        { no: 5, itemId: [181, 183] },
+                        { no: 6, itemId: [187, 189] },
+                        { no: 7, itemId: [193, 195] },
+                        { no: 8, itemId: [199, 201] },
+                        { no: 9, itemId: [205, 207] },
+                        { no: 10, itemId: [211, 213] }];
+
+                    let lockIds = _.find(lockItems, ['no', event.extendedProps.no]).itemId;
+
+                    if (!_.get(_.find(lockSetting, lock => { return lockIds[0] == lock.itemDailyID }), getAtr, true)) {
+                        return true;
+                    }
+
+                    if (!_.get(_.find(lockSetting, lock => { return lockIds[1] == lock.itemDailyID }), getAtr, true)) {
+                        return true;
+                    }
+
+                    return false;
+                }
                
-                let getEditable = (date, isTimeBreak) => {
+                let getEditable = (date, isTimeBreak, event) => {
                     let startDate = moment(_.get(data, 'workStartDate'));
                     let lockStatus = _.find(_.get(data, 'lockInfos'), li => { return moment(li.date).isSame(moment(date), 'days'); });
-                    return startDate.isAfter(date) ? false : !(isTimeBreak && isLock(lockStatus));
+                    let lockSetting = _.get(setting, 'dailyAttendanceItemAuthority.displayAndInput');
+                    return startDate.isAfter(date) ? false : !((isTimeBreak && isLock(lockStatus)) || (isTimeBreak && islockBySetting(event, lockSetting , getAtr)));
                 };
                 let events = ko.unwrap<EventRaw[]>(params.events);
                 
+                let getAtr = (vm.params.employee() == '' || vm.params.employee() == vm.$user.employeeId) ? 'youCanChangeIt' : 'canBeChangedByOthers';
                 //set editable
                 _.forEach(events, e => {
-                    e.editable = getEditable(formatDate(_.get(e, 'start')), e.extendedProps.isTimeBreak);
+                    e.editable = getEditable(formatDate(_.get(e, 'start')), e.extendedProps.isTimeBreak , e , getAtr);
                 });
                 
                 

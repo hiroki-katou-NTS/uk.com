@@ -102,6 +102,7 @@ module nts.uk.ui.at.kdw013.a {
             this.workTimeSettings = data.workTimeSettings;
             this.workTypes = data.workTypes;
             this.workplaceInfos = data.workplaceInfos;
+            this.dailyAttendanceItemAuthority = data.dailyAttendanceItemAuthority;
         }
 
         updateFavTask(data) {

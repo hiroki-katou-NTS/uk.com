@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.request.app.find.application.overtime.DivergenceReasonInputMethodDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.DivergenceTimeRootDto;
+import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.DailyAttendanceItemAuthorityDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.screen.at.app.kdw006.j.DailyAttendanceItemDto;
@@ -75,6 +76,9 @@ public class StartProcessDto {
 
 	// お気に入り作業の表示順
 	public FavoriteTaskDisplayOrderDto favTaskDisplayOrders;
+	
+	// Optional<権限別日次項目制御>
+	public DailyAttendanceItemAuthorityDto dailyAttendanceItemAuthority;
 
 	public void setManHourInput(StartManHourInput domain) {
 		
@@ -95,6 +99,7 @@ public class StartProcessDto {
 		this.workTimeSettings = itemMasterInfo.getWorkTimeSettings();
 		this.divergenceTimeRoots = itemMasterInfo.getDivergenceTimeRoots();
 		this.divergenceReasonInputMethods = itemMasterInfo.getDivergenceReasonInputMethods();
+		this.dailyAttendanceItemAuthority = itemMasterInfo.getDailyAttendanceItemAuthority();
 		
 	}
 
