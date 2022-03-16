@@ -35,6 +35,7 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			"/sys/portal/webmenu/logout",
 			"/ctx/sys/gateway/kdp/login/.*",
 			"/at/record/stamp/.*",
+			"/at/record/kdp/common/.*",
 			"/ctx/cld/.*",
 			"/view-context/user",
 			"/nr/process/.*"
