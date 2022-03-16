@@ -907,6 +907,10 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		// 社員の労働条件を取得する
 		Optional<WorkingConditionItem> workingConditionItem =
 				workingConditionItemRepository.getBySidAndStandardDate(employeeId, baseDate);
+		if(!workingConditionItem.isPresent()) {
+			// エラーメッセージ（Msg_3267）を表示する
+			throw new BusinessException("Msg_3267");
+		}
 		Optional<WorkTypeCode> initWorkTypeCd = Optional.empty();
 		Optional<WorkTimeCode> initWorkTimeCd = Optional.empty();
 		
@@ -967,10 +971,6 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 			Optional<HolidayAtr> holidayAtrOp,
 			Optional<WorkingConditionItem> workingConditionItemOp
 			) {
-		if(!workingConditionItemOp.isPresent()) {
-			// エラーメッセージ（Msg_3267）を表示する
-			throw new BusinessException("Msg_3267");
-		}
 		WorkHolidayInfo output =new WorkHolidayInfo();
 		if (holidayAtrOp.isPresent() && workingConditionItemOp.isPresent()) {
 			HolidayAtr holidayAtr = holidayAtrOp.get();
