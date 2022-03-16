@@ -91,7 +91,7 @@ public class StockHolidayRemainingCanonicalization  extends IndependentCanonical
 				}
 				importingKeys.add(keyValue);
 				
-				super.canonicalize(require, context, interm, keyValue);
+				super.canonicalize(require, context, interm);
 			}
 		});
 	}
@@ -121,11 +121,6 @@ public class StockHolidayRemainingCanonicalization  extends IndependentCanonical
 				  .addCanonicalized(CanonicalItem.of(Items.上限超過消滅日数, BigDecimal.ZERO))
 				  .addCanonicalized(CanonicalItem.of(Items.残数時間, 0))
 				  .addCanonicalized(CanonicalItem.of(Items.使用率, BigDecimal.ZERO));
-	}
-	
-	@Override
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
-		return Arrays.asList(Items.SID);
 	}
 	
 	@Override
