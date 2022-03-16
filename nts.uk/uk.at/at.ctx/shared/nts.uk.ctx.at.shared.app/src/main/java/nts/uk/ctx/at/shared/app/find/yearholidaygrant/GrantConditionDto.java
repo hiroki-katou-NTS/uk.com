@@ -28,14 +28,18 @@ public class GrantConditionDto {
 	/** 未設定 **/
 	private boolean hadSet;
 	
-	public static GrantConditionDto fromDomain(GrantCondition domain){
+	public static GrantConditionDto fromDomain(GrantCondition domain ,Require require){
 		return new GrantConditionDto(
 			domain.getCompanyId(),
 			domain.getYearHolidayCode().v(),
 			domain.getConditionNo(),
-			domain.getConditionValue() != null ? domain.getConditionValue().v() : null,
+			domain.getConditionValueToDouble(),
 			domain.getUseConditionAtr().value,
-			domain.isHadSet()
+			domain.isHadSet(require)
 		);
+	}
+	
+	public static interface Require extends GrantCondition.Require{
+		
 	}
 }

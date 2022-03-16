@@ -524,8 +524,8 @@ module nts.uk.at.view.ktg026.a {
             const vm = this;
             vm.legendOptions = {
                 items: [
-                    { colorCode: '#fff768', labelText: vm.$i18n('KTG026_2') },
-                    { colorCode: '#A5C9C1', labelText: vm.$i18n('KTG026_3') },
+                    { colorCode: '#99FF66', labelText: vm.$i18n('KTG026_2') },
+                    { colorCode: '#00CC00', labelText: vm.$i18n('KTG026_3') },
                 ],
                 template :
                 '<div class="legend-item-label">'

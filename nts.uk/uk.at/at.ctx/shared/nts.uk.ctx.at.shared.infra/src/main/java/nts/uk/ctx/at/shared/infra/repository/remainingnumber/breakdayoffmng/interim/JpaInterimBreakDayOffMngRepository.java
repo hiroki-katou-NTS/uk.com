@@ -580,4 +580,29 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 				.setParameter("remainMngIds", remainManaIds)
 				.getList(this::toDomainDayoffMng);
 	}
+	
+	
+	private static final String DELETE_KYUSYUTSU_BY_SID_BEFORETHEYMD = "DELETE FROM KrcdtInterimHdwkMng c "
+			+ " WHERE c.pk.sid = :sid AND c.pk.ymd <= :ymd";
+
+	@Override
+	public void deleteBreakoffBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+		this.getEntityManager().createQuery(DELETE_KYUSYUTSU_BY_SID_BEFORETHEYMD)
+		.setParameter("sid", sid)
+		.setParameter("ymd", ymd)
+		.executeUpdate();
+		
+	}
+	
+	private static final String DELETE_DAIKYU_BY_SID_BEFORETHEYMD = "DELETE FROM KrcmtInterimDayOffMng c "
+			+ " WHERE c.pk.sid = :sid AND c.pk.ymd <= :ymd";
+
+	@Override
+	public void deleteDayoffBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+		this.getEntityManager().createQuery(DELETE_DAIKYU_BY_SID_BEFORETHEYMD)
+		.setParameter("sid", sid)
+		.setParameter("ymd", ymd)
+		.executeUpdate();
+	}
+	
 }

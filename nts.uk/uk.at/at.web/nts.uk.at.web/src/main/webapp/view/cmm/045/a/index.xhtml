@@ -99,23 +99,24 @@
 									optionsText: 'orderName',
 									enable: true }"></div>
 							</div>
-							
-							<div class="item status-filters" data-bind="visible: mode()==1">
-								<!-- A4_1 -->
-								<div tabindex="4" data-bind="ntsMultiCheckBox: {
-								options: itemList,
-								optionsValue: 'id',
-								optionsText: 'name',
-								value: selectedIds,
-								enable: true}"></div>
-							</div>
-							
-							<div class="item">
-								<button id="search-option">#{i18n.getText("CMM045_87")}</button>
-							</div>
-							
-							<div class="item">
-								<button id="execute-search" class="proceed" tabindex="6" data-bind="click: findByPeriod">抽出</button>
+							<div style="display: inline-block;">
+								<div class="item status-filters" data-bind="visible: mode()==1">
+									<!-- A4_1 -->
+									<div tabindex="4" data-bind="ntsMultiCheckBox: {
+									options: itemList,
+									optionsValue: 'id',
+									optionsText: 'name',
+									value: selectedIds,
+									enable: true}"></div>
+								</div>
+								
+								<div class="item">
+									<button id="search-option">#{i18n.getText("CMM045_87")}</button>
+								</div>
+								
+								<div class="item">
+									<button id="execute-search" class="proceed" tabindex="6" data-bind="click: findByPeriod">抽出</button>
+								</div>
 							</div>
 						</div>
 					</div>

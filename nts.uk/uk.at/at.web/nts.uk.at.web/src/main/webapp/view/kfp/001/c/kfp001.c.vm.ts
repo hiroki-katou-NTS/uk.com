@@ -154,6 +154,7 @@ module nts.uk.at.view.kfp001.c {
                         });
                         self.multiSelectedCode([]);
                         self.multiSelectedCode(selectList);
+                        $('#component-items-list').ntsListComponent(self.listComponentOption);
                     }
                 }
 

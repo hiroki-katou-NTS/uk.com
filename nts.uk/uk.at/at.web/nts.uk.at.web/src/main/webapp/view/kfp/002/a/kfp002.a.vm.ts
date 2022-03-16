@@ -323,7 +323,7 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                                         }
                                     }
                                     self.summaryColumns.push({
-                                        columnKey: column.key,
+                                        columnKey: key,
                                         allowSummaries: true,
                                         summaryCalculator: monthlyItem.monthlyAttendanceAtr == 1 ? 'Time' : 'Number',
                                         formatter: monthlyItem.monthlyAttendanceAtr == 4 ? 'Currency' : ''
@@ -392,12 +392,28 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                     tmpDataSource.push(tmp);
                 });
                 self.dataSource(_.sortBy(tmpDataSource, ["code"]));
-                data.editStates.forEach((state: any) => {
-                    self.cellStates.push({
-                        columnKey: "C" + String(state.itemId),
-                        rowId: state.employeeId,
-                        state: state.editState == 0 ? [nts.uk.ui.mgrid.color.ManualEditTarget] : [nts.uk.ui.mgrid.color.ManualEditOther]
+                self.displayFormat().monthlyItems.forEach((monthlyItem: any) => {
+                    tmpDataSource.forEach(row => {
+                        if (monthlyItem.userCanUpdateAtr == 0) {
+                            self.cellStates.push({
+                                columnKey: "C" + String(monthlyItem.attendanceItemId),
+                                rowId: row.id,
+                                state: [nts.uk.ui.mgrid.color.Disable]
+                            });
+                        }
                     });
+                });
+                data.editStates.forEach((state: any) => {
+                    const existedState = _.findIndex(self.cellStates(), s => s.columnKey == "C" + String(state.itemId) && s.rowId == state.employeeId);
+                    if (existedState >= 0) {
+                        self.cellStates()[existedState].state.push(state.editState == 0 ? nts.uk.ui.mgrid.color.ManualEditTarget : nts.uk.ui.mgrid.color.ManualEditOther);
+                    } else {
+                        self.cellStates.push({
+                            columnKey: "C" + String(state.itemId),
+                            rowId: state.employeeId,
+                            state: state.editState == 0 ? [nts.uk.ui.mgrid.color.ManualEditTarget] : [nts.uk.ui.mgrid.color.ManualEditOther]
+                        });
+                    }
                 });
                 self.loadGrid();
                 dfd.resolve();
@@ -515,7 +531,7 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                     dataUpdate.items[empId] = cells.map((c: any) => {
                         const monthlyItem = _.find(self.displayFormat().monthlyItems, (mi: any) => mi.attendanceItemId == Number(c.columnKey.substring(1)));
                         let valueType = 1; // time
-                        if (monthlyItem.monthlyAttendanceAtr == 2) valueType = 8; // count
+                        if (monthlyItem.monthlyAttendanceAtr == 2) valueType = monthlyItem.primitive == 59 || monthlyItem.primitive == 58 ? 8 : 7; // count
                         if (monthlyItem.monthlyAttendanceAtr == 3) valueType = 12; // days
                         if (monthlyItem.monthlyAttendanceAtr == 4) valueType = monthlyItem.primitive == 65 ? 17 : 16; // amount
                         return {

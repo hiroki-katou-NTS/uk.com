@@ -213,7 +213,18 @@ public class FlexTime implements Serializable{
 		
 		return new AttendanceTimeMonth(this.timeSeriesWorks.entrySet()
 						.stream().map(c -> c.getValue())
-						.mapToInt(c -> c.getFlexTime().getFlexOverTime().v())
+						.filter(c -> c.getFlexTime().getFlexTime().getTime().v() > 0)
+						.mapToInt(c -> c.getFlexTime().getFlexTime().getTime().v())
+						.sum());
+	}
+	
+	/** 日単位のフレックス不足時間を合計する */
+	public AttendanceTimeMonthWithMinus getMinusFlexTime () {
+		
+		return new AttendanceTimeMonthWithMinus(this.timeSeriesWorks.entrySet()
+						.stream().map(c -> c.getValue())
+						.filter(c -> c.getFlexTime().getFlexTime().getTime().v() < 0)
+						.mapToInt(c -> c.getFlexTime().getFlexTime().getTime().v())
 						.sum());
 	}
 }

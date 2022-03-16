@@ -21,85 +21,84 @@ import java.util.List;
 
 
 @Stateless
-public class AddAggrPeriodCommandHandler
-        extends CommandHandlerWithResult<AddAggrPeriodCommand, AddAggrPeriodCommandResult> {
+public class AddAggrPeriodCommandHandler   extends CommandHandlerWithResult<AddAggrPeriodCommand, AddAggrPeriodCommandResult> {
 
-    @Inject
-    private AnyAggrPeriodRepository repository;
-    @Inject
-    private AggrPeriodExcutionRepository excutionrRepository;
-    @Inject
-    private AggrPeriodTargetRepository targetRepository;
+	@Inject
+	private AnyAggrPeriodRepository repository;
+	@Inject
+	private AggrPeriodExcutionRepository excutionrRepository;
+	@Inject
+	private AggrPeriodTargetRepository targetRepository;
 
-    @Inject
-    private RemoveOptionalAggrPeriodCommandHandler periodCommandHandler;
-
-
-    @Override
-    protected AddAggrPeriodCommandResult handle(CommandHandlerContext<AddAggrPeriodCommand> context) {
-        String companyId = AppContexts.user().companyId();
-        String executionEmpId = AppContexts.user().employeeId();
-        AddAggrPeriodCommand command = context.getCommand();
+	@Inject
+	private RemoveOptionalAggrPeriodCommandHandler periodCommandHandler;
 
 
-        GeneralDateTime endDateTime = GeneralDateTime.now();
-        GeneralDateTime startDateTime = GeneralDateTime.now();
+	@Override
+	protected AddAggrPeriodCommandResult handle(CommandHandlerContext<AddAggrPeriodCommand> context) {
+		String companyId = AppContexts.user().companyId();
+		String executionEmpId = AppContexts.user().employeeId();
+		AddAggrPeriodCommand command = context.getCommand();
 
 
-        AnyAggrPeriod anyAggrPeriod = AnyAggrPeriod.createFromMemento(companyId, command.getAggrPeriodCommand());
-        String optionalAggrPeriodID = IdentifierUtil.randomUniqueId();
-        if (command.getMode() == 0) {
-            boolean existsBranch = repository.checkExisted(companyId,
-                    command.getAggrPeriodCommand().getAggrFrameCode());
-            if (existsBranch) {
-                throw new BusinessException("Msg_3");
-            }
+		GeneralDateTime endDateTime = GeneralDateTime.now();
+		GeneralDateTime startDateTime = GeneralDateTime.now();
 
-            List<AnyAggrPeriod> aggrList = repository.findAllByCompanyId(companyId);
-            if (aggrList.size() <= 99) {
 
-                // Add Optional Aggr Period
-                repository.addAnyAggrPeriod(anyAggrPeriod);
+		AnyAggrPeriod anyAggrPeriod = AnyAggrPeriod.createFromMemento(companyId, command.getAggrPeriodCommand());
+		String optionalAggrPeriodID = IdentifierUtil.randomUniqueId();
+		if (command.getMode() == 0) {
+			boolean existsBranch = repository.checkExisted(companyId,
+					command.getAggrPeriodCommand().getAggrFrameCode());
+			if (existsBranch) {
+				throw new BusinessException("Msg_3");
+			}
 
-                List<AggrPeriodTarget> periodTarget = command.getTargetCommand().toDomain(optionalAggrPeriodID);
+			List<AnyAggrPeriod> aggrList = repository.findAllByCompanyId(companyId);
+			if (aggrList.size() <= 99) {
 
-                // Add Aggr Period Target
-                targetRepository.addTarget(periodTarget);
-                //EA4209
-                AggrPeriodExcution periodExcution = command.getExecutionCommand().toDomain(companyId, executionEmpId,
-                        optionalAggrPeriodID, startDateTime, endDateTime, command.getAggrPeriodCommand().getOptionalAggrName(),
-                        new DatePeriod(command.getAggrPeriodCommand().getStartDate(),
-                                command.getAggrPeriodCommand().getEndDate()));
-                // Add Aggr Period Excution
-                excutionrRepository.addExcution(periodExcution);
+				// Add Optional Aggr Period
+				repository.addAnyAggrPeriod(anyAggrPeriod);
 
-            } else {
-                throw new BusinessException("Msg_1165");
-            }
-        } else {
+				List<AggrPeriodTarget> periodTarget = command.getTargetCommand().toDomain(optionalAggrPeriodID);
 
-            repository.updateAnyAggrPeriod(anyAggrPeriod);
+				// Add Aggr Period Target
+				targetRepository.addTarget(periodTarget);
+				//EA4209
+				AggrPeriodExcution periodExcution = command.getExecutionCommand().toDomain(companyId, executionEmpId,
+						optionalAggrPeriodID, startDateTime, endDateTime, command.getAggrPeriodCommand().getOptionalAggrName(),
+						new DatePeriod(command.getAggrPeriodCommand().getStartDate(),
+								command.getAggrPeriodCommand().getEndDate()));
+				// Add Aggr Period Excution
+				excutionrRepository.addExcution(periodExcution);
 
-            List<AggrPeriodTarget> periodTarget = command.getTargetCommand().toDomain(optionalAggrPeriodID);
+			} else {
+				throw new BusinessException("Msg_1165");
+			}
+		} else {
 
-            // Add Aggr Period Target
-            targetRepository.addTarget(periodTarget);
-            //EA4209
-            AggrPeriodExcution periodExcution = command.getExecutionCommand().toDomain(companyId, executionEmpId,
-                    optionalAggrPeriodID, startDateTime, endDateTime, command.getAggrPeriodCommand().getOptionalAggrName(),
-                    new DatePeriod(command.getAggrPeriodCommand().getStartDate(),
-                            command.getAggrPeriodCommand().getEndDate()));
-            // Add Aggr Period Excution
-            excutionrRepository.addExcution(periodExcution);
-            //EA4209
-            if (command.isReintegration()) {
-                periodCommandHandler.deletionOfaggreDataForAnyPeriod(command.getAggrPeriodCommand().getAggrFrameCode(), companyId);
-            }
-        }
-        AddAggrPeriodCommandResult aggrPeriodCommandResult = new AddAggrPeriodCommandResult();
-        aggrPeriodCommandResult.setAnyPeriodAggrLogId(optionalAggrPeriodID);
-        aggrPeriodCommandResult.setStartDateTime(startDateTime);
-        aggrPeriodCommandResult.setEndDateTime(endDateTime);
-        return aggrPeriodCommandResult;
-    }
+			repository.updateAnyAggrPeriod(anyAggrPeriod);
+
+			List<AggrPeriodTarget> periodTarget = command.getTargetCommand().toDomain(optionalAggrPeriodID);
+
+			// Add Aggr Period Target
+			targetRepository.addTarget(periodTarget);
+			//EA4209
+			AggrPeriodExcution periodExcution = command.getExecutionCommand().toDomain(companyId, executionEmpId,
+					optionalAggrPeriodID, startDateTime, endDateTime, command.getAggrPeriodCommand().getOptionalAggrName(),
+					new DatePeriod(command.getAggrPeriodCommand().getStartDate(),
+							command.getAggrPeriodCommand().getEndDate()));
+			// Add Aggr Period Excution
+			excutionrRepository.addExcution(periodExcution);
+			//EA4209
+			if (command.isReintegration()) {
+				periodCommandHandler.deletionOfaggreDataForAnyPeriod(command.getAggrPeriodCommand().getAggrFrameCode(), companyId);
+			}
+		}
+		AddAggrPeriodCommandResult aggrPeriodCommandResult = new AddAggrPeriodCommandResult();
+		aggrPeriodCommandResult.setAnyPeriodAggrLogId(optionalAggrPeriodID);
+		aggrPeriodCommandResult.setStartDateTime(startDateTime);
+		aggrPeriodCommandResult.setEndDateTime(endDateTime);
+		return aggrPeriodCommandResult;
+	}
 }

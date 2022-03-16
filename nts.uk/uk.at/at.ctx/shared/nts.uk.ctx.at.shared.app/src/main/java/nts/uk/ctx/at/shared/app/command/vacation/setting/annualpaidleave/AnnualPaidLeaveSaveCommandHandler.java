@@ -98,7 +98,7 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
                  retentionYearlySettingEvent.toBePublished();
 
                  //get timeManageType from DB
-                 int timeManageTypeDB = domain != null ? domain.getTimeSetting().getTimeManageType().value : -1;
+                 int timeManageTypeDB = domain != null ? domain.getTimeSetting().getTimeVacationDigestUnit().getManage().value : -1;
                  //check timeManageType change
                  boolean flatTimeManageType = command.getTimeManageType() != timeManageTypeDB;
                  if(flatTimeManageType){
@@ -140,7 +140,7 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         }
         if(manage){
         	 //get timeManageType from DB
-            int timeManageTypeDB = domain != null ? domain.getTimeSetting().getTimeManageType().value : -1;
+            int timeManageTypeDB = domain != null ? domain.getTimeSetting().getTimeVacationDigestUnit().getManage().value : -1;
             //check timeManageType change
             boolean flatTimeManageType = command.getTimeManageType() != timeManageTypeDB;
             if(flatTimeManageType){
@@ -222,8 +222,8 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
 			}
 
             // Time Leave Setting
-            command.setTimeManageType(setttingDB.getTimeSetting().getTimeManageType().value);
-            command.setTimeUnit(setttingDB.getTimeSetting().getTimeUnit().value);
+            command.setTimeManageType(setttingDB.getTimeSetting().getTimeVacationDigestUnit().getManage().value);
+            command.setTimeUnit(setttingDB.getTimeSetting().getTimeVacationDigestUnit().getDigestUnit().value);
             command.setManageMaxDayVacation(setttingDB.getTimeSetting().getMaxYearDayLeave().manageType.value);
             command.setReference(setttingDB.getTimeSetting().getMaxYearDayLeave().reference.value);
             command.setMaxTimeDay(setttingDB.getTimeSetting().getMaxYearDayLeave().maxNumberUniformCompany.v());
@@ -277,7 +277,7 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         command.setManageMaxDayVacation(ManageDistinct.YES.value);
         command.setReference(MaxDayReference.CompanyUniform.value);
         command.setMaxTimeDay(null);
-        command.setRoundProcessClassific(TimeAnnualRoundProcesCla.TruncateOnDay0.value);
+        command.setRoundProcessClassific(TimeAnnualRoundProcesCla.RoundUpToOneDay.value);
         //
         command.setUniformTime(0);
         command.setContractTimeRound(0);

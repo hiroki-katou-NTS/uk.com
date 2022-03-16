@@ -51,13 +51,7 @@ public class CsvBaseLayoutDto {
 	}
 
 	private static int checkImportSource(ImportingItemMapping mapping) {
-		val optCsvColumnNo = mapping.getCsvColumnNo();
-		if(optCsvColumnNo.isPresent()){
-			return 0;
-		}
-		else {
-			return 1;
-		}
+		return mapping.isFixedValue() ? 1 : 0;
 	}
 
 

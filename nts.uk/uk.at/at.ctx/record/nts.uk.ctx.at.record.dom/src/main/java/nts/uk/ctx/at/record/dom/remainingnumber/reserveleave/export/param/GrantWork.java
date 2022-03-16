@@ -40,8 +40,7 @@ public class GrantWork {
 	 *            付与日数
 	 * @return 積立年休付与WORK
 	 */
-	public static GrantWork of(
-			GeneralDate grantYmd, LeaveGrantDayNumber grantDays, int grantNumber) {
+	public static GrantWork of(GeneralDate grantYmd, LeaveGrantDayNumber grantDays, int grantNumber) {
 		
 		GrantWork domain = new GrantWork();
 		domain.grantYmd = grantYmd;
