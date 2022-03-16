@@ -42,7 +42,6 @@ public class ValidateData {
 		}
 
 		if (!errors.isEmpty()) {
-			Either.left(errors);
 			return Either.left(errors);
 		}
 
