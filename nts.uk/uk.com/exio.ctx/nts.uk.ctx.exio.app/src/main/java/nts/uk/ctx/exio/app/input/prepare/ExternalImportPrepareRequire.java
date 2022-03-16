@@ -174,6 +174,8 @@ public class ExternalImportPrepareRequire {
 		private final MapCache<Pair<ImportingDomainId, Integer>, ImportableItem> cacheImportableItem;
 
 		private final MapCache<Pair<String, Integer>, ImportingUserCondition> cacheImportingUserCondition;
+		
+		private final MapCache<ExternalImportCode, ExternalImportSetting> cacheImportSetting;
 
 		private final MapCache<String, EmployeeCESetting> cacheEmployeeCESetting;
 		
@@ -192,7 +194,9 @@ public class ExternalImportPrepareRequire {
 			this.cacheImportingUserCondition = MapCache.incremental(key -> {
 				return importingUserConditionRepo.get(companyId, key.getLeft(), key.getRight());
 			});
-			
+			this.cacheImportSetting = MapCache.incremental(key -> {
+				return settingRepo.get(null, companyId, key);
+			});
 			this.cacheEmployeeCESetting = MapCache.incremental(key->{
 				return iEmployeeCESettingRepo.getByComId(companyId);
 			});
@@ -218,7 +222,7 @@ public class ExternalImportPrepareRequire {
 
 		@Override
 		public ExternalImportSetting getExternalImportSetting(ExternalImportCode settingCode) {
-			return settingRepo.get(null, companyId, settingCode)
+			return cacheImportSetting.get(settingCode)
 					.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
 		}
 
@@ -329,6 +333,12 @@ public class ExternalImportPrepareRequire {
 		/***** domains for canonicalization *****/
 
 		@Override
+		public ExternalImportSetting getExternalImportSetting(ExecutionContext context) {
+			return this.cacheImportSetting.get(new ExternalImportCode(context.getSettingCode())).get();
+		}
+		
+		
+		@Override
 		public Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeCode(String employeeCode) {
 			return employeeDataMngInfoRepo.findByScdNotDel(employeeCode, companyId);
 		}
@@ -396,6 +406,13 @@ public class ExternalImportPrepareRequire {
 		@Override
 		public boolean existsStamp(String cardNumber, GeneralDateTime stampDateTime, int changeClockArt) {
 			return stampDakokuRepo.existsStamp(new ContractCode(contractCode), new StampNumber(cardNumber), stampDateTime, ChangeClockAtr.valueOf(changeClockArt));
+		}
+
+
+		@Override
+		public List<CanonicalizedDataRecord> getCanonicalizedData(ExecutionContext context, ImportingDomainId domainId,
+				int targetItemNo, String targetItemValue) {
+			return canonicalizedDataRecordRepo.findByCriteria(this, context, domainId, targetItemNo, targetItemValue);
 		}
 	}
 }
