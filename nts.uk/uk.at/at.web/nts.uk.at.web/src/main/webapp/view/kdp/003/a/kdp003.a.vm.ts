@@ -289,7 +289,7 @@ module nts.uk.at.kdp003.a {
 			vm.$ajax(API.GetIPAddress, { contractCode: vm.contractCode }).done((response) => {
 				ipv4Address = response.ipaddress;
 			}).then(() => {
-				
+
 				if (locationCd) {
 					const param = {
 						contractCode: vm.contractCode,
@@ -340,9 +340,9 @@ module nts.uk.at.kdp003.a {
 					vm.$ajax('at', API.GetWorkLocationRagionalTime, param).done((data: GetWorkPlaceRegionalTime) => {
 						if (data.workLocationCD != null && data.workLocationCD !== '') {
 							vm.regionalTime(data.regional);
-						} 
+						}
 						vm.getWorkPlaceAndTimeZone();
-							dfd.resolve(loginData);
+						dfd.resolve(loginData);
 					});
 				}
 			});
@@ -358,15 +358,15 @@ module nts.uk.at.kdp003.a {
 				.then((data: any) => {
 					if (data.WKPID.length > 0) {
 						const param = {
-							contractCode: vm.$user.contractCode,
-							cid: vm.$user.companyId,
+							contractCode: vm.contractCode,
+							cid: data.CID,
 							sid: null,
 							workPlaceId: data.WKPID[0]
 						}
 						vm.$ajax('at', API.GetWorkPlaceRegionalTime, param).then((data: GetWorkPlaceRegionalTime) => {
 							if (data) {
-								if (ko.unwrap(vm.regionalTime) != 0) {
-									vm.regionalTime(data.regional);	
+								if (ko.unwrap(vm.regionalTime) == 0) {
+									vm.regionalTime(data.regional);
 								}
 							}
 						})
@@ -403,13 +403,13 @@ module nts.uk.at.kdp003.a {
 					if (storageData === undefined) {
 						return vm.$window.modal('at', DIALOG.F, { mode: 'admin' })
 							.then((loginData: f.TimeStampLoginData) => {
-								
+
 								return vm.getTimeZone(loginData).then((loginData: f.TimeStampLoginData) => ({
 									loginData
 								}));
-								
-							
-						})
+
+
+							})
 					}
 
 					// data login by storage
@@ -661,6 +661,10 @@ module nts.uk.at.kdp003.a {
 						vm.loadNotice(data);
 						return vm.loadData(data);
 					}
+				}).then(() => {
+					vm.getTimeZone().then(() => {
+						vm.regionalTime.valueHasMutated();
+					})
 				})
 				// show message from login data (return by f dialog)
 				.fail((message: { messageId: string }) => {
