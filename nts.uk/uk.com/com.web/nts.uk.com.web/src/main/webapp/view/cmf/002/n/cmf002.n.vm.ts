@@ -58,8 +58,9 @@ module nts.uk.com.view.cmf002.n.viewmodel {
                 service.getAWDataFormatSetting().done(result => {
                     if (result != null) {
                         self.atWorkDataOutputItem().update(result);
-                        self.atWorkDataOutputItem().fixedValue.valueHasMutated();
+
                     }
+                    self.atWorkDataOutputItem().fixedValue.valueHasMutated();
                     dfd.resolve();
                 }).fail((err) => {
                     nts.uk.ui.dialog.alertError(error);

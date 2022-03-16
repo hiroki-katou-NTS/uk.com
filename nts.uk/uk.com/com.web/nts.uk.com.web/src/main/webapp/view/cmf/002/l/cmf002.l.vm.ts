@@ -76,6 +76,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
                 }else {
                     self.enableFormatSelectionCls(false);
                 }
+                self.timeDataFormatSetting().selectHourMinute.valueHasMutated();
             })
             self.timeDataFormatSetting().selectHourMinute.subscribe((value)=>{
                 //※L5

@@ -62,7 +62,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             self.inTimeDataFormatSetting().fixedValue.subscribe((value)=>{
                 //※M1　～　※M6
                 self.enableFormatSelectionCls(value == model.NOT_USE_ATR.NOT_USE );
-
+                self.inTimeDataFormatSetting().timeSeletion.valueHasMutated();
             })
             self.inTimeDataFormatSetting().timeSeletion.subscribe((value)=> {
                 //※M5

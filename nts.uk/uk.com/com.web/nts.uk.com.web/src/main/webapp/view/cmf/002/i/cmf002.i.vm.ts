@@ -111,6 +111,13 @@ module nts.uk.com.view.cmf002.i.viewmodel {
             }
             return enable;
         }
+
+        enableRoudingSelection() {
+            let self = this;
+            let enable = self.numberDataFormatSetting().formatSelection() == model.FORMAT_SELECTION.NO_DECIMAL && self.enableGlobal();
+
+            return enable;
+        }
         enableRegister() {
             return errors.hasError();
         }
