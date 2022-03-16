@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.employeebasic;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,9 +19,12 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.sys.shared.dom.user.User;
@@ -444,4 +447,32 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 		return Items.SID;
 	}
 
+	/**
+	 * 個人基本情報の正準化済みデータからPIDを取得する。
+	 * 検索条件(SID=employeeId)と一致する正準化済みデータが存在しない場合、PIDは取得できない。
+	 */
+	public static Optional<String> getPIDFromCanonicalizedData(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, String employeeId){
+		return getTargetItemCanonicalizedData(require, context, Items.SID, employeeId, Items.PID);
+	}
+
+	/**
+	 * 個人基本情報の正準化済みデータからSIDを取得する。
+	 * 検索条件(社員コード=employeeCode)と一致する正準化済みデータが存在しない場合、SIDは取得できない。
+	 */
+	public static Optional<String> getSIDFromCanonicalizedData(CanonicalizationMethodRequire require, ExecutionContext context, String employeeCode){
+		return getTargetItemCanonicalizedData(require, context, Items.社員コード, employeeCode, Items.SID);
+	}
+
+	private static Optional<String> getTargetItemCanonicalizedData(CanonicalizationMethodRequire require, ExecutionContext context,
+			int conditionItemNo, String conditionItemValue, int targetItemNo) {
+		return require.getCanonicalizedData(context, ImportingDomainId.EMPLOYEE_BASIC, conditionItemNo, conditionItemValue)
+				.stream()
+				.map(c -> c.getItemByNo(targetItemNo).get().getString())
+				.findFirst();
+	}
+	
+	public static interface GetCanonicalizedDataRequire{
+		List<CanonicalizedDataRecord> getCanonicalizedData(ExecutionContext context, ImportingDomainId domainId, int targetItemNo, String targetItemValue);
+	}
+	
 }
