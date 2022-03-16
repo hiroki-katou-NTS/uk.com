@@ -79,7 +79,7 @@ public enum LegalOTSetting {
 	}
 
 	/**
-	 * 法定内の残業時間を法定外時間として扱う
+	 * 法定内の残業時間を法定外時間として扱うか
 	 * @return　法定外残業として扱う
 	 */
 	public boolean isOutsideLegal() {

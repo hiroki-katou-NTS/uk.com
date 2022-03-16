@@ -4,12 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 // 流動勤務時間帯設定
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class FlowWorkTimezoneSetting extends WorkTimeDomainObject implements Cloneable{
 
 	/** The work time rounding. */
@@ -94,12 +95,14 @@ public class FlowWorkTimezoneSetting extends WorkTimeDomainObject implements Clo
 	}
 	
 	/**
-	 * 法定内残業枠Noを取得する
-	 * @return 法定内残業枠No(List)
+	 * 法定内残業枠NOを取得する
+	 * @return 法定内残業枠NO(List)
 	 */
-	public List<OverTimeFrameNo> getInLegalOverTime() {
+	public List<OverTimeFrameNo> getInLegalOverTimes() {
 		return this.lstOTTimezone.stream()
 				.map(o -> new OverTimeFrameNo(o.getInLegalOTFrameNo().v().intValue()))
+				.distinct()
+				.sorted((f,s) -> f.compareTo(s))
 				.collect(Collectors.toList());
 	}
 	
