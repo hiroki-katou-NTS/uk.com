@@ -142,7 +142,7 @@ public class AchievementDetail {
 	@Setter
 	private Optional<AttendanceTimeOfExistMinus> opFlexTime = Optional.empty();
 	
-	public AchievementDetail(String workTypeCD, String workTimeCD) {
+	public AchievementDetail(String workTypeCD, String workTimeCD, String workTypeName, String workTimeName) {
 		this.workTypeCD = workTypeCD;
 		this.workTimeCD = workTimeCD;
 		this.breakTimeSheets = Collections.emptyList();
@@ -152,8 +152,8 @@ public class AchievementDetail {
 		this.shortWorkTimeLst = Collections.emptyList();
 		this.achievementEarly = new AchievementEarly(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 		this.opDepartureTime2 = Optional.empty();
-		this.opWorkTypeName = Optional.empty();
-		this.opWorkTimeName = Optional.empty();
+		this.opWorkTypeName = Optional.of(workTypeName);
+		this.opWorkTimeName = Optional.of(workTimeName);
 		this.opWorkTime = Optional.empty();
 		this.opLeaveTime = Optional.empty();
 		this.opAchievementStatus = Optional.empty();

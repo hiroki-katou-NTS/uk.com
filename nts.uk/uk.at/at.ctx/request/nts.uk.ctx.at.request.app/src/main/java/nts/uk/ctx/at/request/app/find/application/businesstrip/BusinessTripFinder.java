@@ -4,6 +4,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -71,6 +72,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -105,6 +107,9 @@ public class BusinessTripFinder {
     
     @Inject
 	private WorkingConditionRepository workingConditionRepository;
+    
+    @Inject
+    private WorkTimeSettingRepository wkTimeRepo;
 
     /**
      * 起動する
@@ -167,6 +172,8 @@ public class BusinessTripFinder {
         List<ActualContentDisplay> dateNotHaveContentLst = actualContentDisplayLst.stream().filter(i -> !i.getOpAchievementDetail().isPresent() || i.getOpAchievementDetail() == null).collect(Collectors.toList());
         actualContentDisplayLst.removeAll(dateNotHaveContentLst);
         if (!CollectionUtil.isEmpty(dateNotHaveContentLst)) {
+        	Map<String, String> mapWorkTypeCDName = new HashMap<>();
+        	Map<String, String> mapWorkTimeCDName = new HashMap<>();
         	for(GeneralDate loopDate : dateNotHaveContentLst.stream().map(x -> x.getDate()).collect(Collectors.toList())) {
         		// 社員の労働条件を取得する
         		Optional<WorkingConditionItem> opWorkingConditionItem = WorkingConditionService.findWorkConditionByEmployee(
@@ -179,7 +186,23 @@ public class BusinessTripFinder {
         		}
         		// 実績データに労働条件を追加する
         		WorkInformation workInformation = opWorkingConditionItem.get().getWorkCategory().getWorkInformationWorkDay();
-        		AchievementDetail achievementDetail = new AchievementDetail(workInformation.getWorkTypeCode().v(), workInformation.getWorkTimeCode().v());
+        		String workTypeCD = workInformation.getWorkTypeCode().v();
+        		String workTimeCD = workInformation.getWorkTimeCodeNotNull().map(x -> x.v()).orElse(null);
+        		String workTypeName = null;
+        		if(mapWorkTypeCDName.containsKey(workTypeCD)) {
+        			workTypeName = mapWorkTypeCDName.get(workTypeCD);
+        		} else {
+        			workTypeName = wkTypeRepo.findByPK(cid, workTypeCD).map(x -> x.getName().v()).orElse(null);
+        			mapWorkTypeCDName.put(workTypeCD, workTypeName);
+        		}
+        		String workTimeName = null;
+        		if(mapWorkTimeCDName.containsKey(workTimeCD)) {
+        			workTimeName = mapWorkTimeCDName.get(workTimeCD);
+        		} else {
+        			workTimeName = workTimeCD == null ? null : wkTimeRepo.findByCode(cid, workTimeCD).map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse(null);
+        			mapWorkTimeCDName.put(workTimeCD, workTimeName);
+        		}
+        		AchievementDetail achievementDetail = new AchievementDetail(workTypeCD, workTimeCD, workTypeName, workTimeName);
         		ActualContentDisplay actualContentDisplay = new ActualContentDisplay(loopDate, Optional.of(achievementDetail));
         		actualContentDisplayLst.add(actualContentDisplay);
         	}
@@ -318,6 +341,8 @@ public class BusinessTripFinder {
         List<ActualContentDisplay> dateNotHaveContentLst = opActualContentDisplayLst.get().stream().filter(i -> !i.getOpAchievementDetail().isPresent() || i.getOpAchievementDetail() == null).collect(Collectors.toList());
         actualContentDisplayLst.removeAll(dateNotHaveContentLst);
         if (!CollectionUtil.isEmpty(dateNotHaveContentLst)) {
+        	Map<String, String> mapWorkTypeCDName = new HashMap<>();
+        	Map<String, String> mapWorkTimeCDName = new HashMap<>();
         	for(GeneralDate loopDate : dateNotHaveContentLst.stream().map(x -> x.getDate()).collect(Collectors.toList())) {
         		// 社員の労働条件を取得する
         		Optional<WorkingConditionItem> opWorkingConditionItem = WorkingConditionService.findWorkConditionByEmployee(
@@ -330,7 +355,23 @@ public class BusinessTripFinder {
         		}
         		// 実績データに労働条件を追加する
         		WorkInformation workInformation = opWorkingConditionItem.get().getWorkCategory().getWorkInformationWorkDay();
-        		AchievementDetail achievementDetail = new AchievementDetail(workInformation.getWorkTypeCode().v(), workInformation.getWorkTimeCode().v());
+        		String workTypeCD = workInformation.getWorkTypeCode().v();
+        		String workTimeCD = workInformation.getWorkTimeCodeNotNull().map(x -> x.v()).orElse(null);
+        		String workTypeName = null;
+        		if(mapWorkTypeCDName.containsKey(workTypeCD)) {
+        			workTypeName = mapWorkTypeCDName.get(workTypeCD);
+        		} else {
+        			workTypeName = wkTypeRepo.findByPK(cid, workTypeCD).map(x -> x.getName().v()).orElse(null);
+        			mapWorkTypeCDName.put(workTypeCD, workTypeName);
+        		}
+        		String workTimeName = null;
+        		if(mapWorkTimeCDName.containsKey(workTimeCD)) {
+        			workTimeName = mapWorkTimeCDName.get(workTimeCD);
+        		} else {
+        			workTimeName = workTimeCD == null ? null : wkTimeRepo.findByCode(cid, workTimeCD).map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse(null);
+        			mapWorkTimeCDName.put(workTimeCD, workTimeName);
+        		}
+        		AchievementDetail achievementDetail = new AchievementDetail(workTypeCD, workTimeCD, workTypeName, workTimeName);
         		ActualContentDisplay actualContentDisplay = new ActualContentDisplay(loopDate, Optional.of(achievementDetail));
         		actualContentDisplayLst.add(actualContentDisplay);
         	}
@@ -665,42 +706,72 @@ public class BusinessTripFinder {
                     businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput(), Optional.empty());
 
             Optional<List<ActualContentDisplay>> opActualContentDisplayLst = appDispInfoWithDateOutput.getOpActualContentDisplayLst();
-
-
-            if (opActualContentDisplayLst.isPresent()) {
-                // 申請対象日リスト全ての日付に対し「表示する実績内容」が存在する
-                val dateNotHaveContent = opActualContentDisplayLst.get().stream()
-                        .filter(i -> !i.getOpAchievementDetail().isPresent() || i.getOpAchievementDetail().get() == null)
-                        .findAny();
-                if (dateNotHaveContent.isPresent()) {
-                    // エラーメッセージとして「#Msg_1695」を返す({0}＝年月日)
-                    throw new BusinessException("Msg_1695", dateNotHaveContent.get().getDate().toString());
-                }
-
-                businessTripService.getBusinessTripNotApproved(sid, dates, opActualContentDisplayLst);
-
-                List<BusinessTripWorkTypes> businessTripWorkTypes = new ArrayList<>();
-                if (!opActualContentDisplayLst.get().isEmpty()) {
-                    List<String> cds = opActualContentDisplayLst.get().stream().filter(i -> i.getOpAchievementDetail().isPresent())
-                            .map(i -> i.getOpAchievementDetail().get().getWorkTypeCD())
-                            .distinct()
-                            .collect(Collectors.toList());
-                    // ドメインモデル「勤務種類」を取得する
-                    Map<String, WorkType> mapWorkCds = wkTypeRepo.getPossibleWorkType(cid, cds).stream().collect(Collectors.toMap(i -> i.getWorkTypeCode().v(), i -> i));
-                    businessTripWorkTypes = opActualContentDisplayLst.get().stream().map(i -> new BusinessTripWorkTypes(
-                            i.getDate(),
-                            i.getOpAchievementDetail().isPresent() ? mapWorkCds.get(i.getOpAchievementDetail().get().getWorkTypeCD()) : null, 
-                            null
-                    )).collect(Collectors.toList());
-                }
-
-                businessTripInfoOutput.setActualContentDisplay(appDispInfoWithDateOutput.getOpActualContentDisplayLst());
-                businessTripInfoOutput.setWorkTypeBeforeChange(Optional.of(businessTripWorkTypes));
-
-                result.setResult(true);
-                result.setConfirmMsgOutputs(confirmMsgOutputs);
-                result.setBusinessTripInfoOutputDto(BusinessTripInfoOutputDto.convertToDto(businessTripService.setInitValueAppWorkTime(businessTripInfoOutput)));
+            List<ActualContentDisplay> actualContentDisplayLst = opActualContentDisplayLst.orElse(new ArrayList<>());
+        	// 申請対象日リスト全ての日付に対し「表示する実績内容」が存在する
+            List<ActualContentDisplay> dateNotHaveContentLst = actualContentDisplayLst.stream().filter(i -> !i.getOpAchievementDetail().isPresent() || i.getOpAchievementDetail() == null).collect(Collectors.toList());
+            actualContentDisplayLst.removeAll(dateNotHaveContentLst);
+            if (!CollectionUtil.isEmpty(dateNotHaveContentLst)) {
+            	Map<String, String> mapWorkTypeCDName = new HashMap<>();
+            	Map<String, String> mapWorkTimeCDName = new HashMap<>();
+            	for(GeneralDate loopDate : dateNotHaveContentLst.stream().map(x -> x.getDate()).collect(Collectors.toList())) {
+            		// 社員の労働条件を取得する
+            		Optional<WorkingConditionItem> opWorkingConditionItem = WorkingConditionService.findWorkConditionByEmployee(
+            				createRequireM1(), 
+            				businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
+            				loopDate);
+            		if(!opWorkingConditionItem.isPresent()) {
+            			// エラーメッセージ（Msg_3267）を表示する
+            			throw new BusinessException("Msg_3267");
+            		}
+            		// 実績データに労働条件を追加する
+            		WorkInformation workInformation = opWorkingConditionItem.get().getWorkCategory().getWorkInformationWorkDay();
+            		String workTypeCD = workInformation.getWorkTypeCode().v();
+            		String workTimeCD = workInformation.getWorkTimeCodeNotNull().map(x -> x.v()).orElse(null);
+            		String workTypeName = null;
+            		if(mapWorkTypeCDName.containsKey(workTypeCD)) {
+            			workTypeName = mapWorkTypeCDName.get(workTypeCD);
+            		} else {
+            			workTypeName = wkTypeRepo.findByPK(cid, workTypeCD).map(x -> x.getName().v()).orElse(null);
+            			mapWorkTypeCDName.put(workTypeCD, workTypeName);
+            		}
+            		String workTimeName = null;
+            		if(mapWorkTimeCDName.containsKey(workTimeCD)) {
+            			workTimeName = mapWorkTimeCDName.get(workTimeCD);
+            		} else {
+            			workTimeName = workTimeCD == null ? null : wkTimeRepo.findByCode(cid, workTimeCD).map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse(null);
+            			mapWorkTimeCDName.put(workTimeCD, workTimeName);
+            		}
+            		AchievementDetail achievementDetail = new AchievementDetail(workTypeCD, workTimeCD, workTypeName, workTimeName);
+            		ActualContentDisplay actualContentDisplay = new ActualContentDisplay(loopDate, Optional.of(achievementDetail));
+            		actualContentDisplayLst.add(actualContentDisplay);
+            	}
             }
+            opActualContentDisplayLst = Optional.of(actualContentDisplayLst);
+            businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().setOpActualContentDisplayLst(opActualContentDisplayLst);
+
+            businessTripService.getBusinessTripNotApproved(sid, dates, opActualContentDisplayLst);
+
+            List<BusinessTripWorkTypes> businessTripWorkTypes = new ArrayList<>();
+            if (!opActualContentDisplayLst.get().isEmpty()) {
+                List<String> cds = opActualContentDisplayLst.get().stream().filter(i -> i.getOpAchievementDetail().isPresent())
+                        .map(i -> i.getOpAchievementDetail().get().getWorkTypeCD())
+                        .distinct()
+                        .collect(Collectors.toList());
+                // ドメインモデル「勤務種類」を取得する
+                Map<String, WorkType> mapWorkCds = wkTypeRepo.getPossibleWorkType(cid, cds).stream().collect(Collectors.toMap(i -> i.getWorkTypeCode().v(), i -> i));
+                businessTripWorkTypes = opActualContentDisplayLst.get().stream().map(i -> new BusinessTripWorkTypes(
+                        i.getDate(),
+                        i.getOpAchievementDetail().isPresent() ? mapWorkCds.get(i.getOpAchievementDetail().get().getWorkTypeCD()) : null, 
+                        null
+                )).collect(Collectors.toList());
+            }
+
+            businessTripInfoOutput.setActualContentDisplay(appDispInfoWithDateOutput.getOpActualContentDisplayLst());
+            businessTripInfoOutput.setWorkTypeBeforeChange(Optional.of(businessTripWorkTypes));
+
+            result.setResult(true);
+            result.setConfirmMsgOutputs(confirmMsgOutputs);
+            result.setBusinessTripInfoOutputDto(BusinessTripInfoOutputDto.convertToDto(businessTripService.setInitValueAppWorkTime(businessTripInfoOutput)));
         }
         return result;
     }
