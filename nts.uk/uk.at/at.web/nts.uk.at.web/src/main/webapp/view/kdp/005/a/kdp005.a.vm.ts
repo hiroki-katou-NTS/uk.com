@@ -1141,8 +1141,15 @@ module nts.uk.at.view.kdp005.a {
                                                 dfd.resolve();
                                             } else {
                                                 characteristics.restore("loginKDP005").done(function(loginInfo: ILoginInfo) {
-                                                    self.workplace =  _.get(loginInfo,'selectedWP');
-                                                    dfd.resolve();
+                                                    if (!_.get(loginInfo, 'selectedWP', []).length) {
+                                                        self.openDialogK().done((result) => {
+                                                            self.workplace = result;
+                                                            dfd.resolve();
+                                                        });
+                                                    } else {
+                                                        self.workplace = loginInfo.selectedWP;
+                                                        dfd.resolve();
+                                                    }
                                                 });
                                             }
                                         } else {
