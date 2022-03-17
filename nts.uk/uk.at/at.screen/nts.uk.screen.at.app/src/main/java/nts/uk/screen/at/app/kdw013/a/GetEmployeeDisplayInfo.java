@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.GetAllEmployeeWithWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.GetWorkplaceOfEmployeeAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workplace.ReferenceableWorkplaceImport;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.DailyLock;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSetting;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSettingRepository;
@@ -135,12 +136,12 @@ public class GetEmployeeDisplayInfo {
 		}
 
 		@Override
-		public Map<String, String> getWorkPlace(String userID, String employeeID, GeneralDate date) {
+		public ReferenceableWorkplaceImport getWorkPlace(String userID, String employeeID, GeneralDate date) {
 			return getWorkplaceOfEmployeeAdapter.get(userID, employeeID, date);
 		}
 
 		@Override
-		public Map<String, String> getByCID(String companyId, GeneralDate baseDate) {
+		public ReferenceableWorkplaceImport getByCID(String companyId, GeneralDate baseDate) {
 			return getAllEmployeeWithWorkplaceAdapter.get(companyId, baseDate);
 		}
 

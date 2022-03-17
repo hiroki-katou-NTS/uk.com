@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.workplace.ReferenceableWorkplaceImport;
 
 /**
  * 
@@ -209,14 +211,14 @@ public class ManHourRecordReferenceSettingTest {
 		new Expectations() {
 			{
 				require.getWorkPlace(userId, employeeId, date);
-				result = map;
+				result = new ReferenceableWorkplaceImport(Collections.emptyList(), map);
 			}
 		};
 
-		Map<String, String> result = setting.getWorkCorrectionStartDate(require, cid, userId, employeeId, date);
+		ReferenceableWorkplaceImport result = setting.getWorkCorrectionStartDate(require, cid, userId, employeeId, date);
 
-		assertThat(result.get("Key1")).isEqualTo("Value1");
-		assertThat(result.get("Key2")).isEqualTo("Value2");
+		assertThat(result.getAffiliationInformation().get("Key1")).isEqualTo("Value1");
+		assertThat(result.getAffiliationInformation().get("Key2")).isEqualTo("Value2");
 	}
 
 	// return require.getByCID(companyId, baseDate);
@@ -233,14 +235,14 @@ public class ManHourRecordReferenceSettingTest {
 		new Expectations() {
 			{
 				require.getByCID(cid, date);
-				result = map;
+				result = new ReferenceableWorkplaceImport(Collections.emptyList(), map);
 			}
 		};
 
-		Map<String, String> result = setting.getWorkCorrectionStartDate(require, cid, userId, employeeId, date);
+		ReferenceableWorkplaceImport result = setting.getWorkCorrectionStartDate(require, cid, userId, employeeId, date);
 
-		assertThat(result.get("Key1")).isEqualTo("Value1");
-		assertThat(result.get("Key2")).isEqualTo("Value2");
+		assertThat(result.getAffiliationInformation().get("Key1")).isEqualTo("Value1");
+		assertThat(result.getAffiliationInformation().get("Key2")).isEqualTo("Value2");
 	}
 
 }

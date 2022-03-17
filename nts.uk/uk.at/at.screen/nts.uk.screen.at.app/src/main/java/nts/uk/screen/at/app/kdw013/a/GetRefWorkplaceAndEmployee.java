@@ -15,6 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.GetAllEmployeeWithWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.GetWorkplaceOfEmployeeAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workplace.ReferenceableWorkplaceImport;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSetting;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.CheckShortageFlex;
@@ -69,14 +70,14 @@ public class GetRefWorkplaceAndEmployee {
 		RequireImpl require = new RequireImpl(manRepo, getWorkplaceOfEmployeeAdapter,getAllEmployeeWithWorkplaceAdapter, checkShortageFlex);
 		List<String> lstEmpIds = new ArrayList<>();
 		List<String> listWorkplaceId = new ArrayList<>();
-		Map<String, String> employeeInfos = new HashMap<>();
+		ReferenceableWorkplaceImport wkp = null;
 		
 		if (optWorkChangeablePeriodSetting.isPresent()) {
-			employeeInfos = optWorkChangeablePeriodSetting.get()
+			wkp = optWorkChangeablePeriodSetting.get()
 					.getWorkCorrectionStartDate(require, companyId, AppContexts.user().userId(), AppContexts.user().employeeId(), refDate);
 			
-			lstEmpIds = new ArrayList<String>(employeeInfos.keySet());
-			listWorkplaceId = employeeInfos.values().stream().distinct().collect(Collectors.toList());
+			lstEmpIds = new ArrayList<String>(wkp.getAffiliationInformation().keySet());
+			listWorkplaceId = wkp.getWorkplaceList();
 		}
 
 		// 3: <call>()
@@ -104,7 +105,7 @@ public class GetRefWorkplaceAndEmployee {
 
 		result.setWorkplaceInfos(workplaceInfos);
 		result.setLstEmployeeInfo(lstEmployeeInfo);
-		result.setEmployeeInfos(employeeInfos);
+		result.setEmployeeInfos(wkp.getAffiliationInformation());
 
 		return result;
 	}
@@ -131,12 +132,12 @@ public class GetRefWorkplaceAndEmployee {
 		}
 
 		@Override
-		public Map<String, String> getWorkPlace(String userID, String employeeID, GeneralDate date) {
+		public ReferenceableWorkplaceImport getWorkPlace(String userID, String employeeID, GeneralDate date) {
 			return getWorkplaceOfEmployeeAdapter.get(userID, employeeID, date);
 		}
 
 		@Override
-		public Map<String, String> getByCID(String companyId, GeneralDate baseDate) {
+		public ReferenceableWorkplaceImport getByCID(String companyId, GeneralDate baseDate) {
 			return getAllEmployeeWithWorkplaceAdapter.get(companyId, baseDate);
 		}
 		
