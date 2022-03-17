@@ -30,7 +30,7 @@ public class UkRelayState {
 	}
 	
 	public static UkRelayState deserialize(HttpServletRequest request) {
-		val relayState = RelayState.deserialize(request);
+		RelayState relayState = RelayState.deserialize(request);
 		return new UkRelayState(
 				relayState.get("tenantCode"),
 				relayState.get("tenantPassword"));
