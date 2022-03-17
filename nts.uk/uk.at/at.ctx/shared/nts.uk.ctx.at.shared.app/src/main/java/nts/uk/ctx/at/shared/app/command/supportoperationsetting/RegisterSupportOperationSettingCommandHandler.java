@@ -11,21 +11,20 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 @Stateless
-public class RegisterSupportOperationSettingCommandHandler extends CommandHandler<RegisterSupportOperationSettingCommand> {
+public class RegisterSupportOperationSettingCommandHandler
+		extends CommandHandler<RegisterSupportOperationSettingCommand> {
 
-    @Inject
-    private SupportOperationSettingRepository repository;
+	@Inject
+	private SupportOperationSettingRepository repository;
 
-    @Override
-    protected void handle(CommandHandlerContext<RegisterSupportOperationSettingCommand> commandHandlerContext) {
-        RegisterSupportOperationSettingCommand command = commandHandlerContext.getCommand();
-        String cid = AppContexts.user().companyId();
-        SupportOperationSetting supportOperationSetting = new SupportOperationSetting(
-                command.getIsUsed()==1,
-                false, // default value
-                new MaximumNumberOfSupport(command.getMaxNumberOfSupportOfDay())
-        );
+	@Override
+	protected void handle(CommandHandlerContext<RegisterSupportOperationSettingCommand> commandHandlerContext) {
+		RegisterSupportOperationSettingCommand command = commandHandlerContext.getCommand();
+		String cid = AppContexts.user().companyId();
+		SupportOperationSetting supportOperationSetting = new SupportOperationSetting(command.getIsUsed() == 1, false, // default
+																														// value
+				new MaximumNumberOfSupport(command.getMaxNumberOfSupportOfDay()));
 
-        repository.update(cid, supportOperationSetting);
-    }
+		repository.update(cid, supportOperationSetting);
+	}
 }
