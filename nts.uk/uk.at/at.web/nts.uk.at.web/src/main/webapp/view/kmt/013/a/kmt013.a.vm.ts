@@ -158,6 +158,11 @@ module nts.uk.at.view.kmt013.a {
 
         registerSupport() {
             const vm = this;
+            if (_.isEmpty(vm.supportableList())){
+                vm.$dialog.error({messageId: "Msg_583",messageParams: [vm.a4_1Txt()]}).done(()=>{
+                    return;
+                })
+            }
             vm.$blockui("show").then(() => {
                 const data: RegisterSupportAllowOrgCommand
                     = new RegisterSupportAllowOrgCommand(vm.unit(),vm.unit() == OrgUnit.WORKPLACE ? vm.selectedWkpId(): vm.selectedWkpGroupId(),_.map(vm.supportableList(),(item)=>{
