@@ -1,12 +1,5 @@
 package nts.uk.ctx.sys.gateway.app.command.login.password;
 
-import java.util.Optional;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-
 import nts.arc.task.tran.TransactionService;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateWithEmployeeCode;
@@ -15,6 +8,12 @@ import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.IdentificationResult;
 import nts.uk.shr.com.system.config.SystemConfiguration;
 import nts.uk.shr.com.system.property.UKServerSystemProperties;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import java.util.Optional;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -142,7 +141,8 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 
 	public static interface Require extends PasswordAuthenticateWithEmployeeCode.Require,
 											LoginCommandHandlerBase.Require,
-											LoginBuiltInUser.RequireLogin {
+											LoginBuiltInUser.RequireLogin,
+											EmployeeIdentify.RequireByEmployeeCode {
 		
 		String createCompanyId(String tenantCode, String companyCode);
 	}

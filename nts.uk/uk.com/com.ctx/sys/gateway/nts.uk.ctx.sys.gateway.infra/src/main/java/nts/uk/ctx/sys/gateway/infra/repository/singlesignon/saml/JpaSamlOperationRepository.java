@@ -1,16 +1,14 @@
 package nts.uk.ctx.sys.gateway.infra.repository.singlesignon.saml;
 
-import java.util.Optional;
-
-import javax.ejb.Stateless;
-
-import org.apache.commons.lang3.BooleanUtils;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.SamlOperation;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.SamlOperationRepository;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.operate.SamlOperation;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.operate.SamlOperationRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.saml.SgwmtSamlOperation;
+import org.apache.commons.lang3.BooleanUtils;
+
+import javax.ejb.Stateless;
+import java.util.Optional;
 
 @Stateless
 public class JpaSamlOperationRepository extends JpaRepository implements SamlOperationRepository {
@@ -22,8 +20,7 @@ public class JpaSamlOperationRepository extends JpaRepository implements SamlOpe
 		return new SgwmtSamlOperation(
 				domain.getTenantCode(), 
 				BooleanUtils.toInteger(domain.isUseSingleSignOn()),
-				domain.getRealmName(), 
-				domain.getIdpRedirectUrl());
+				domain.getIdpRedirectUrl().map(u -> u.v()).orElse(null));
 	}
 
 	@Override

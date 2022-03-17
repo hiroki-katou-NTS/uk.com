@@ -2828,6 +2828,14 @@ public class ProgramsManager {
      */
     public static final Program CMM001E = new Program(WebAppId.COM, ProgramIdConsts.CMM001E, "CMM001_68",
             "/view/cmm/001/e/index.xhtml");
+    
+    /**
+     * CMM004A
+     */
+    public static final Program CMM004A = new Program(WebAppId.COM, ProgramIdConsts.CMM004A, "",
+            "/view/cmm/004/a/index.xhtml");
+    
+    
     /**
      * KMW003
      */

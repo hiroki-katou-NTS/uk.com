@@ -140,7 +140,7 @@ public class UrlLoginCommandHandler extends LoginCommandHandlerBase<
 	public interface Require extends
 			LoginCommandHandlerBase.Require,
 			UrlLoginRequestValidator.Require,
-			EmployeeIdentify.Require {
+			EmployeeIdentify.RequireByEmployeeCode {
 		void loginRecord(LoginRecordInput loginRecord, String cid);
 	}
 
