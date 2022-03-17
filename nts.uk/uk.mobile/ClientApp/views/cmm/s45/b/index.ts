@@ -644,12 +644,13 @@ export class CmmS45BComponent extends Vue {
                         let isInfoDialog = true,
                             displayMsg = '';
                         if (!_.isEmpty(result.data.successMap)) {
-                            displayMsg += self.$i18n('Msg_220') + ',';
+                            displayMsg += self.$i18n('Msg_220');
                         } else {
                             isInfoDialog = false;
                         }
                         if (!_.isEmpty(result.data.failMap)) {
                             if (isInfoDialog) {
+                                displayMsg += ',';
                                 displayMsg += self.$i18n('Msg_1726');
                             } else {
                                 displayMsg += self.$i18n('Msg_1725');
