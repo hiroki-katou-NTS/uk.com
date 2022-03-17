@@ -234,13 +234,7 @@ public class TaskScheduleTimeZoneSaveCommandHandler extends CommandHandler<TaskS
 			if(listAffJobTitleHis.isEmpty())
 				return null;
 			return listAffJobTitleHis.get(0);
-		}
-
-		@Override
-		public SharedAffWorkPlaceHisImport getAffWorkplaceHistory(String employeeId, GeneralDate standardDate) {
-			Optional<SharedAffWorkPlaceHisImport> rs = sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, standardDate);
-			return rs.isPresent() ? rs.get() : null;
-		}
+		}	
 
 		@Override
 		public SClsHistImport getClassificationHistory(String employeeId, GeneralDate standardDate) {

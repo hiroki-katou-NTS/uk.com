@@ -230,12 +230,6 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 		}
 
 		@Override
-		public SharedAffWorkPlaceHisImport getAffWorkplaceHistory(String employeeId, GeneralDate standardDate) {
-			Optional<SharedAffWorkPlaceHisImport> rs = sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, standardDate);
-			return rs.isPresent() ? rs.get() : null;
-		}
-
-		@Override
 		public SClsHistImport getClassificationHistory(String employeeId, GeneralDate standardDate) {
 			Optional<SClsHistImported> imported = syClassificationAdapter.findSClsHistBySid(companyId, employeeId, standardDate);
 			if (!imported.isPresent()) {
