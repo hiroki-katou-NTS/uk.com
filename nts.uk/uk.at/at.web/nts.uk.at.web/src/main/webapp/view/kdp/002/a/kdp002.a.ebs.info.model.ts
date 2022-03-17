@@ -35,7 +35,9 @@ module nts.uk.at.view.kdp002.a {
 						const yearMonth = moment(c).add(ko.unwrap(regionalTime), 'm').utc().format('YYYY/MM');
 
 						self.yearMonth(yearMonth);
-                        self.yearMonth.valueHasMutated();
+						setTimeout(() => {
+							self.yearMonth.valueHasMutated();
+						}, 300);
 						self.systemDate(sysDate);
 
 						self.dateValue({
