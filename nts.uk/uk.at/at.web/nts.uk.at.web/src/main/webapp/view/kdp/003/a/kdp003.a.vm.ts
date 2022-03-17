@@ -298,12 +298,15 @@ module nts.uk.at.kdp003.a {
 					}
 					// Khong check IP
 					vm.$ajax('at', API.GetWorkLocationRagionalTime, param).then((data: GetWorkPlaceRegionalTime) => {
-						if (data.workLocationCD != null && data.workLocationCD !== '' && data.workPlaceId != null && data.workPlaceId != '') {
+						if (data.workLocationCD != null && data.workLocationCD !== '') {
 							vm.regionalTime(data.regional);
-							vm.worklocationCode = locationCd;
-							vm.workPlace = [];
-							vm.workPlace.push(data.workPlaceId);
-							vm.modeBasyo(true);
+
+							if (data.workPlaceId != null && data.workPlaceId != '') {
+								vm.worklocationCode = locationCd;
+								vm.workPlace = [];
+								vm.workPlace.push(data.workPlaceId);
+								vm.modeBasyo(true);
+							}
 							dfd.resolve(loginData);
 						} else {
 							//  Check IP

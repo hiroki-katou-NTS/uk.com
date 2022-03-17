@@ -8,7 +8,7 @@ module nts.uk.at.view.kdp002.a {
 			items: KnockoutObservableArray<any> = ko.observableArray([]);
 			displayMethod: KnockoutObservable<any>;
 			displayType: any = { HIDE: 0, DISPLAY: 1, SHOW_TIME_CARD: 2 };
-			dateValue: KnockoutObservable<{ startDate: string; endDate: string; }> = ko.observable({startDate: '', endDate: ''});
+			dateValue: KnockoutObservable<{ startDate: string; endDate: string; }> ;
 			yearMonth: KnockoutObservable<any> = ko.observable('');
 			workManagementMultiple: KnockoutObservable<boolean> = ko.observable(false);
 			systemDate: KnockoutObservable<any> = ko.observable('');
@@ -19,6 +19,11 @@ module nts.uk.at.view.kdp002.a {
 				let setting = start.stampSetting;
 
 				self.displayMethod = ko.observable(setting.historyDisplayMethod);
+                self.dateValue = ko.observable({
+                    startDate: moment(vm.$date.now()).add(-3, 'days').format('YYYY/MM/DD'),
+                    endDate: moment(vm.$date.now()).format('YYYY/MM/DD')
+                });
+                //self.bindItemData(start.stampDataOfEmployees);
 				// self.dateValue = ko.observable({
 				// 	startDate: moment(vm.$date.now()).add(ko.unwrap(regionalTime), 'm').add(-3, 'days').format('YYYY/MM/DD'),
 				// 	endDate: moment(vm.$date.now()).add(ko.unwrap(regionalTime), 'm').format('YYYY/MM/DD')
@@ -30,8 +35,10 @@ module nts.uk.at.view.kdp002.a {
 						const yearMonth = moment(c).add(ko.unwrap(regionalTime), 'm').utc().format('YYYY/MM');
 
 						self.yearMonth(yearMonth);
+						setTimeout(() => {
+							self.yearMonth.valueHasMutated();
+						}, 300);
 						self.systemDate(sysDate);
-						self.bindItemData(start.stampDataOfEmployees);
 
 						self.dateValue({
 							startDate: moment(c).add(ko.unwrap(regionalTime), 'm').add(-3, 'days').utc().format('YYYY/MM/DD'),
@@ -47,7 +54,7 @@ module nts.uk.at.view.kdp002.a {
 						{ headerText: nts.uk.resource.getText('KDP002_31'), key: 'stampHowAndTime', width: 90 },
 						{ headerText: nts.uk.resource.getText('KDP002_32'), key: 'timeStampType', width: 90 }
 					]);
-					//self.bindItemData(start.stampDataOfEmployees);
+					self.bindItemData(start.stampDataOfEmployees);
 				} else if (self.displayMethod() == self.displayType.SHOW_TIME_CARD) {
 					if (workManagementMultiple) {
 						self.columns([
@@ -56,7 +63,7 @@ module nts.uk.at.view.kdp002.a {
 							{ headerText: nts.uk.resource.getText('KDP002_33', ['#Com_WorkIn']), key: 'workIn1', width: 90 },
 							{ headerText: nts.uk.resource.getText('KDP002_34', ['#Com_WorkOut']), key: 'workOut1', width: 100 }
 						]);
-						//self.bindItemData(start.timeCard.listAttendances);
+						self.bindItemData(start.timeCard.listAttendances);
 					} else {
 						self.columns([
 							{ headerText: 'コード', key: 'code', width: 100, hidden: true },
@@ -66,7 +73,7 @@ module nts.uk.at.view.kdp002.a {
 							{ headerText: nts.uk.resource.getText('KDP002_35', ['#Com_WorkIn']), key: 'workIn2', width: 90 },
 							{ headerText: nts.uk.resource.getText('KDP002_36', ['#Com_WorkOut']), key: 'workOut2', width: 110 }
 						]);
-						//self.bindItemData(start.timeCard.listAttendances);
+						self.bindItemData(start.timeCard.listAttendances);
 					}
 				}
 
