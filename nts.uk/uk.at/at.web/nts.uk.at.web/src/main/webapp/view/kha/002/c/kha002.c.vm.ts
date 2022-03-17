@@ -14,7 +14,7 @@ module nts.uk.at.kha002.c {
             const vm = this;
             vm.aggregateUnit = ko.observable(null);
             vm.judgmentAtr = ko.observable(0);
-            vm.standardHierarchy = ko.observable(1);
+            vm.standardHierarchy = ko.observable(9);
         }
 
         mounted() {
