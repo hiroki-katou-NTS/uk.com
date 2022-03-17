@@ -66,7 +66,7 @@ module nts.uk.com.view.smm001.b {
     salaryCooperationClassification: KnockoutObservable<boolean> = ko.observable(false);
     monthlyLockClassification: KnockoutObservable<number> = ko.observable(0);
     monthlyApprovalCategory: KnockoutObservable<number> = ko.observable(0);
-    salaryCooperationConditions: KnockoutObservable<string> = ko.observable('0');
+    salaryCooperationConditions: KnockoutObservable<string> = ko.observable(null);
     tempEmploymentDtos: GridItem[] = [];
     employmentDtos: KnockoutObservableArray<GridItem> = ko.observableArray([]);
     rightEmployments: KnockoutObservableArray<GridItem> = ko.observableArray([]);
@@ -177,10 +177,7 @@ module nts.uk.com.view.smm001.b {
     getInformationOnExternal() {
       const vm = this;
       vm.$blockui('grayout');
-      let finalArray = [{
-        code: '0',
-        name: ''
-      }];
+      let finalArray = [];
       vm.$ajax('com', API.getInformationOnExternal).then((response: any) => {
         if (response) {
           // After has response - Process for setting behind
@@ -262,7 +259,7 @@ module nts.uk.com.view.smm001.b {
 
     validateBeforeSave() {
       const vm = this;
-      if (vm.salaryCooperationClassification() && vm.salaryCooperationConditions() === '0') {
+      if (vm.salaryCooperationClassification() && !vm.salaryCooperationConditions()) {
         return false;
       }
       return true;
