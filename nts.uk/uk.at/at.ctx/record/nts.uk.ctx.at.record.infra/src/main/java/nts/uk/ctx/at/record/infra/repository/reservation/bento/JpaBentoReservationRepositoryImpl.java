@@ -418,4 +418,12 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		return result.toString();
 	}
 
+	private final static String REMOVE_CARDNUM_DATE = "DELETE FROM  KrcdtReservation r WHERE r.cardNo = :cardNo AND r.date = :date AND r.ordered = FALSE";
+
+	@Override
+	public void removeWithCardNumberDate(String cardNumber, GeneralDate date) {
+		this.queryProxy().query(REMOVE_CARDNUM_DATE, KrcdtReservation.class).setParameter("cardNo", cardNumber)
+				.setParameter("date", date).getQuery().executeUpdate();
+	}
+
 }
