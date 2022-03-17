@@ -214,8 +214,6 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             let self = this;
             if (self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE) return false;
             if (self.timeDataFormatSetting().decimalSelection() == model.getDecimalSelect()[0].code) return false;
-            if (self.timeDataFormatSetting().decimalSelection() == model.getDecimalSelect()[1].code
-                && self.timeDataFormatSetting().selectHourMinute() == model.getTimeSelected()[1].code) return false;
             return true;
         }
 
