@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
@@ -40,12 +41,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWorkEnum;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
+import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -165,7 +168,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 							companyCommonSetting.getMidNightTimeSheet(),
 							deductionTimeSheet,
 							Optional.of(integrationOfWorkTime.getCommonSetting()),
-							integrationOfDaily.getSpecDateAttr());
+							integrationOfDaily.getSpecDateAttr(), companyCommonSetting);
 			if (overTimeFrameTimeSheet.isPresent()) {
 				createTimeSheet.add(overTimeFrameTimeSheet.get());
 			}
@@ -217,7 +220,8 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 			MidNightTimeSheet midNightTimeSheet,
 			DeductionTimeSheet deductTimeSheet,
 			Optional<WorkTimezoneCommonSet> commonSetting,
-			Optional<SpecificDateAttrOfDailyAttd> specificDateAttrSheets) {
+			Optional<SpecificDateAttrOfDailyAttd> specificDateAttrSheets, 
+			ManagePerCompanySet companyCommonSetting) {
 		
 		// 計算範囲の取得
 		Optional<TimeSpanForCalc> calcrange = overTimeHourSet.getTimezone().getDuplicatedWith(timeLeavingWork.getTimespan());
@@ -239,7 +243,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 				new ArrayList<>(),
 				MidNightTimeSheetForCalcList.createEmpty(),
 				overTimeFrameTime,
-				StatutoryAtr.Excess,
+				getStatutoryAtr(companyCommonSetting.getOvertimeFrameList(), overTimeHourSet.getOtFrameNo()),
 				overTimeHourSet.isEarlyOTUse(),
 				overTimeHourSet.getWorkTimezoneNo(),
 				false,
@@ -253,6 +257,19 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 		overTimeFrameTimeSheet.createMidNightTimeSheet(midNightTimeSheet, commonSetting, deductTimeSheet);
 		
 		return Optional.of(overTimeFrameTimeSheet);
+	}
+	
+	//法定内区分を作成する
+	private static StatutoryAtr getStatutoryAtr(List<OvertimeWorkFrame> overtimeFrameLis, OTFrameNo overtimeNo) {
+		return overtimeFrameLis.stream()
+				.filter(x -> x.getOvertimeWorkFrNo().v().intValue() == overtimeNo.v().intValue() && x.isUse())
+				.findFirst().map(x -> {
+					if (x.getRole() == RoleOvertimeWorkEnum.OT_STATUTORY_WORK) {
+						return StatutoryAtr.Statutory;
+					} else {
+						return StatutoryAtr.Excess;
+					}
+				}).orElse(StatutoryAtr.Excess);
 	}
 	
 	/**

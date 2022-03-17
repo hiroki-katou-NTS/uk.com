@@ -1993,18 +1993,17 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		} else {
 			
 			/** 就業時間の合計処理 */
-			/** ○就業時間←就業合計時間 */
 			aggregateTotalWorkingTime.getWorkTime().totalizeWorkTime(datePeriod);
 			val workTime = aggregateTotalWorkingTime.getWorkTime().getWorkTime();
 			
 			/** フレックス時間発生するかを確認する */
 			if (this.checkIsFlexTimeOccur(settingsByFlex.getFlexAggrSet())) {
 				
-//				/** 日単位のフレックス不足時間を合計する */
-//				val flexShortage = this.flexTime.getMinusFlexTime(); 
+				/** 日単位のフレックス不足時間を合計する */
+				val flexShortage = this.flexTime.getMinusFlexTime(); 
 				
 				/** ○就業時間←就業合計時間　+ フレックス不足時間 */
-				return Optional.of(workTime);
+				return Optional.of(workTime.addMinutes(flexShortage.valueAsMinutes() * -1));
 			}
 			/** 日単位のフレックス超過時間を合計する */
 			val flexOver = this.flexTime.getPlusFlexTime();
@@ -2250,8 +2249,14 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		/** ○「集計方法」を確認する */
 		if (this.flexAggrSet.getAggrMethod() == FlexAggregateMethod.FOR_CONVENIENCE) { /** 便宜上集計 */
 			
-			/** 日単位のフレックス超過時間を合計する */
-			return this.flexTime.getPlusFlexTime();
+			/** フレックス発生するか確認する　*/
+			if (checkIsFlexTimeOccur(flexAggrSet)) {
+
+				/** 日単位のフレックス超過時間を合計する - 日単位のフレックス不足時間を合計する */
+				return this.flexTime.getPlusFlexTime().addMinutes(this.flexTime.getMinusFlexTime().valueAsMinutes());
+			}
+			
+			return new AttendanceTimeMonth(0);
 		}
 		
 		/** 原則集計 */

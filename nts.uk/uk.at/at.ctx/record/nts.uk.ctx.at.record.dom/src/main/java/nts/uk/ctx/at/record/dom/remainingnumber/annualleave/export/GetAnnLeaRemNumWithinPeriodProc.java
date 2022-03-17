@@ -23,7 +23,6 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualL
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.DividedDayEachProcess;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
@@ -42,7 +41,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
@@ -269,7 +267,9 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 					Optional.of(annualLeaveSet), Optional.of(employee), annualLeaveEmpBasicInfoOpt,
 					grantHdTblSetOpt, lengthServiceTblsOpt, operationStartSetOpt);
 			}else{
-				resultRateOpt = Optional.of(new CalYearOffWorkAttendRate(100.0,0.0,365.0,0.0));
+				resultRateOpt = Optional.of(new CalYearOffWorkAttendRate(100.0, 0.0, 365.0, 0.0,
+						Optional.of(new DatePeriod(nextAnnualGrantList.getGrantDate().addYears(-1),
+								nextAnnualGrantList.getGrantDate().addDays(-1)))));
 			}
 
 			if (!resultRateOpt.isPresent())
@@ -277,20 +277,21 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			
 			val resultRate = resultRateOpt.get();
 			nextAnnualGrantList.setAttendanceRate(Optional.of(
-					new AttendanceRate(resultRate.getAttendanceRate())));
+						resultRate.getAttendanceRate()));
 			nextAnnualGrantList.setPrescribedDays(Optional.of(
-					new YearlyDays(resultRate.getPrescribedDays())));
+						resultRate.getPrescribedDays()));
 			nextAnnualGrantList.setWorkingDays(Optional.of(
-					new YearlyDays(resultRate.getWorkingDays())));
+						resultRate.getWorkingDays()));
 			nextAnnualGrantList.setDeductedDays(Optional.of(
-					new YearlyDays(resultRate.getDeductedDays())));
+						resultRate.getDeductedDays()));
 
 			// 日数と出勤率から年休付与テーブルを取得する
 			val grantConditionOpt = grantHdTblSetOpt.get().getGrantCondition(
 					resultRate.getAttendanceRate(),
 					resultRate.getPrescribedDays(),
 					resultRate.getWorkingDays(),
-					resultRate.getDeductedDays());
+					resultRate.getDeductedDays(),
+					resultRate.getPeriod());
 
 			if (!grantConditionOpt.isPresent()){
 				// 出勤率に応じたテーブルがない場合（出勤率が足りなくて年休が付与されないケース）
