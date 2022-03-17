@@ -49,7 +49,7 @@
 					<div id="code-text-d4" style="margin-top: -30px">
 						<input id="code-text-d4-21" style="margin-left: 130px ! important"
 							tabindex="5"
-							data-bind="ntsTextEditor: {value: optionalAggrName ,constraint:'AnyAggrName', required: true, name: '#[KFP001_17]', enable:$parent.enableText}" />
+							data-bind="ntsTextEditor: {value: optionalAggrName ,constraint:'AnyAggrName', required: true, name: '#[KFP001_17]'}" />
 					</div>
 					<hr></hr>
 				</div>
@@ -79,22 +79,12 @@
 				</div>
 				<hr></hr>
 			</div>
-
-		</div>
-		<div id="update-mode" style="margin-left: 340px;">
-			<div id="label-hidden">
-				<div id="label2-B7_1" class="label"
-					data-bind="ntsFormLabel: {required: true}">
-					#{i18n.getText('KFP001_22')}</div>
-				<span id="people" style="margin-left: 7px;" data-bind="text: peopleCount"></span>
-				<button id="button-reference-B7_3" data-bind="click : opendScreenF"
-					tabindex="8">#{i18n.getText('KFP001_24')}</button>
-				<hr style="margin-top: 10px;"></hr>
-			</div>
 		</div>
 		<div class="text-comment">集計実行時に指定内容が登録されます。</div>
-		<button id="next-button-B" class="proceed x-large"
-			data-bind="click : opendScreenBorJ,enable: $root.errors.isEmpty" tabindex="9" >#{i18n.getText('KFP001_25')}</button>
+		<div >
+			<button id="next-button-B" class="proceed x-large"
+					data-bind="click : opendScreenBorJ,enable: $root.errors.isEmpty &amp;&amp; currentItem().aggrFrameCode() &amp;&amp; currentItem().optionalAggrName()" tabindex="9" >#{i18n.getText('KFP001_25')}</button>
+		</div>
 	</ui:composition>
 </body>
 </html>
