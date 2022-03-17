@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * エンティティ：申告設定
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSRMT_DECLARE_SET")
-public class KsrmtDeclareSet extends UkJpaEntity implements Serializable{
+public class KsrmtDeclareSet extends ContractUkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 

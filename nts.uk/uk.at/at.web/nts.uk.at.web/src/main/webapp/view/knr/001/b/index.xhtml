@@ -1,0 +1,309 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+  <ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+      <script>
+        var dialogSize = {
+          width: 700,
+          height: 700
+        };
+      </script>
+      <com:scriptfile set="IGNITE" />
+      <com:stylefile path="knr001.b.style.css" />
+      <com:scriptfile path="knr001.b.start.js" />
+      <com:scriptfile path="knr001.b.service.js" />
+      <com:scriptfile path="knr001.b.vm.js" />
+    </ui:define>
+
+    <ui:define name="content">
+      <div id="contents-area">
+        <div class="d-flex mb-1">
+          <!-- ＃KNR001_61 -->
+          <div class="ml-1 w-9" id="KNR001_61">
+            #{i18n.getText('KNR001_61')}
+          </div>
+          <div class="ml-2">
+            <!-- ＃KNR001_62-->
+            <div class="cf" id="B1_2" tabindex="1" data-bind="ntsSwitchButton: {
+                name: '#KNR001_62',
+                options: usageAtrSwitchList,
+                optionsValue: 'code',
+                optionsText: 'name',
+                value: usageAtr,
+                enable: true }"></div>
+          </div>
+        </div>
+
+        <div class="d-flex mb-1">
+          <!-- KNR001_65 -->
+          <div class="ml-1 w-9" id="KNR001_65">
+            #{i18n.getText('KNR001_65')}
+          </div>
+          <div class="ml-2">
+            <!-- KNR001_67 - KNR001_68 -->
+            <div class="KNR001_67-KNR001_68" tabindex="2" data-bind="ntsRadioBoxGroup: {
+              options: frameSetItemList,
+              optionsValue: 'code',
+              optionsText: 'name',
+              value: frameSet,
+              enable: ko.computed(() => isEnableWithUsageAtr()) }"></div>
+          </div>
+        </div>
+
+        <div class="d-flex mb-1">
+          <!-- KNR001_69 -->
+          <div class="ml-1 w-9" id="KNR001_69">
+            #{i18n.getText('KNR001_69')}
+          </div>
+          <div class="ml-2">
+            <!-- KNR001_70-->
+            <div class="cf" tabindex="3" data-bind="ntsSwitchButton: {
+                name: '＃KNR001_70',
+                options: midnightAutoCalcSwitchList,
+                optionsValue: 'code',
+                optionsText: 'name',
+                value: midnightAutoCalc,
+                enable: ko.computed(() => isEnable()) }"></div>
+          </div>
+        </div>
+
+        <div class="d-flex mb-1">
+          <!-- KNR001_73 -->
+          <div class="ml-1 w-9" id="KNR001_73">
+            #{i18n.getText('KNR001_73')}
+          </div>
+        </div>
+
+        <div class="d-flex mb-1">
+          <!-- KNR001_74 -->
+          <div class="ml-2 w-4" id="KNR001_74">
+            #{i18n.getText('KNR001_74')}
+          </div>
+          <div class="ml-2">
+            <!-- KNR001_75 -->
+            <div id="combo-box" tabindex="4" data-bind="ntsComboBox: {
+              name: '＃KNR001_75',
+              options: optionalOvertimeWorkFrameDto,
+              optionsValue: 'code',
+              visibleItemsCount: 11,
+              value: earlyOvertime,
+              optionsText: 'name',
+              editable: false,
+              enable: isEnable(),
+              selectFirstIfNull: selectFirstIfNull,
+              columns: [
+                { prop: 'name', length: 10 },
+              ]}"></div>
+          </div>
+
+          <!-- KNR001_84 -->
+          <div class="ml-2 w-6" id="KNR001_84">
+            #{i18n.getText('KNR001_84')}
+          </div>
+          <div class="ml-2">
+            <!-- KNR001_85 -->
+            <div id="combo-box" tabindex="5" data-bind="ntsComboBox: {
+              name: '#KNR001_85',
+              options: optionalOvertimeWorkFrameDto,
+              optionsValue: 'code',
+              visibleItemsCount: 11,
+              value: overtime,
+              optionsText: 'name',
+              editable: false,
+              enable: isEnable(),
+              selectFirstIfNull: selectFirstIfNull,
+              columns: [
+                { prop: 'name', length: 10 },
+              ]}"></div>
+          </div>
+        </div>
+
+        <div class="d-flex mb-1">
+          <!-- KNR001_76 -->
+          <div class="ml-2 w-4" id="KNR001_76">
+            #{i18n.getText('KNR001_76')}
+          </div>
+          <div class="ml-2">
+            <!-- KNR001_77 -->
+            <div id="combo-box" tabindex="6" data-bind="ntsComboBox: {
+              name: '#KNR001_77',
+              options: optionalOvertimeWorkFrameDto,
+              optionsValue: 'code',
+              visibleItemsCount: 11,
+              value: earlyOvertimeMn,
+              optionsText: 'name',
+              editable: false,
+              enable: isEnable(),
+              selectFirstIfNull: selectFirstIfNull,
+              columns: [
+                { prop: 'name', length: 10 },
+              ]}"></div>
+          </div>
+
+          <!-- KNR001_86 -->
+          <div class="ml-2 w-6" id="KNR001_86">
+            #{i18n.getText('KNR001_86')}
+          </div>
+          <div class="ml-2">
+            <!-- KNR001_87 -->
+            <div id="combo-box" tabindex="7" data-bind="ntsComboBox: {
+              name: '#KNR001_87',
+              options: optionalOvertimeWorkFrameDto,
+              optionsValue: 'code',
+              visibleItemsCount: 11,
+              value: overtimeMn,
+              optionsText: 'name',
+              editable: false,
+              enable: isEnable(),
+              selectFirstIfNull: selectFirstIfNull,
+              columns: [
+                { prop: 'name', length: 10 },
+              ]}"></div>
+          </div>
+        </div>
+
+        <div class="d-flex mb-1">
+          <!-- KNR001_78 -->
+          <div class="ml-2 w-4" id="KNR001_78">
+            #{i18n.getText('KNR001_78')}
+          </div>
+          <div class="ml-2">
+            <!-- KNR001_79 -->
+            <div id="combo-box" tabindex="8" data-bind="ntsComboBox: {
+              name: '#KNR001_79',
+              options: optionalWorkdayoffFrameDto,
+              optionsValue: 'code',
+              visibleItemsCount: 11,
+              value: holidayWorkStatutory,
+              optionsText: 'name',
+              editable: false,
+              enable: isEnable(),
+              selectFirstIfNull: selectFirstIfNull,
+              columns: [
+                { prop: 'name', length: 10 },
+              ]}"></div>
+          </div>
+
+          <!-- KNR001_88 -->
+          <div class="ml-2 w-6" id="KNR001_88">
+            #{i18n.getText('KNR001_88')}
+          </div>
+          <div class="ml-2">
+            <!-- KNR001_89 -->
+            <div id="combo-box" tabindex="9" data-bind="ntsComboBox: {
+              name: '#KNR001_89',
+              options: optionalWorkdayoffFrameDto,
+              optionsValue: 'code',
+              visibleItemsCount: 11,
+              value: holidayWorkMnStatutory,
+              optionsText: 'name',
+              editable: false,
+              enable: isEnable(),
+              selectFirstIfNull: selectFirstIfNull,
+              columns: [
+                { prop: 'name', length: 10 },
+              ]}"></div>
+          </div>
+        </div>
+
+        <div class="d-flex mb-1">
+          <!-- KNR001_80 -->
+          <div class="ml-2 w-4" id="KNR001_80">
+            #{i18n.getText('KNR001_80')}
+          </div>
+          <div class="ml-2">
+            <!-- KNR001_81 -->
+            <div id="combo-box" tabindex="10" data-bind="ntsComboBox: {
+              name: '#KNR001_81',
+              options: optionalWorkdayoffFrameDto,
+              optionsValue: 'code',
+              visibleItemsCount: 11,
+              value: holidayWorkNotStatutory,
+              optionsText: 'name',
+              editable: false,
+              enable: isEnable(),
+              selectFirstIfNull: selectFirstIfNull,
+              columns: [
+                { prop: 'name', length: 10 },
+              ]}"></div>
+          </div>
+
+          <!-- KNR001_90 -->
+          <div class="ml-2 w-6" id="KNR001_90">
+            #{i18n.getText('KNR001_90')}
+          </div>
+          <div class="ml-2">
+            <!-- KNR001_91 -->
+            <div id="combo-box" tabindex="11" data-bind="ntsComboBox: {
+              name: '#KNR001_91',
+              options: optionalWorkdayoffFrameDto,
+              optionsValue: 'code',
+              visibleItemsCount: 11,
+              value: holidayWorkMnNotStatutory,
+              optionsText: 'name',
+              editable: false,
+              enable: isEnable(),
+              selectFirstIfNull: selectFirstIfNull,
+              columns: [
+                { prop: 'name', length: 10 },
+              ]}"></div>
+          </div>
+        </div>
+
+        <div class="d-flex mb-1">
+          <!-- KNR001_82 -->
+          <div class="ml-2 w-4" id="KNR001_82">
+            #{i18n.getText('KNR001_82')}
+          </div>
+          <div class="ml-2">
+            <!-- KNR001_83 -->
+            <div id="combo-box" tabindex="12" data-bind="ntsComboBox: {
+              name: '#KNR001_83',
+              options: optionalWorkdayoffFrameDto,
+              optionsValue: 'code',
+              visibleItemsCount: 11,
+              value: holidayWorkNotStatHoliday,
+              optionsText: 'name',
+              editable: false,
+              enable: isEnable(),
+              selectFirstIfNull: selectFirstIfNull,
+              columns: [
+                { prop: 'name', length: 10 },
+              ]}"></div>
+          </div>
+
+          <!-- KNR001_92 -->
+          <div class="ml-2 w-6" id="KNR001_92">
+            #{i18n.getText('KNR001_92')}
+          </div>
+          <div class="ml-2">
+            <!-- KNR001_93 -->
+            <div id="combo-box" tabindex="13" data-bind="ntsComboBox: {
+              name: '#KNR001_93',
+              options: optionalWorkdayoffFrameDto,
+              optionsValue: 'code',
+              visibleItemsCount: 11,
+              value: holidayWorkMnNotStatHoliday,
+              optionsText: 'name',
+              editable: false,
+              enable: isEnable(),
+              selectFirstIfNull: selectFirstIfNull,
+              columns: [
+                { prop: 'name', length: 10 },
+              ]}"></div>
+          </div>
+        </div>
+      </div>
+      <div id="functions-area-bottom" class="knr001-b-bottom">
+        <button tabindex="14" data-bind="click: proceed" class="proceed" id="B7_1">#{i18n.getText('KNR001_94')}</button>
+        <button tabindex="15" data-bind="click: cancel" id="B7_2">#{i18n.getText('KNR001_95')}</button>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+
+</html>
