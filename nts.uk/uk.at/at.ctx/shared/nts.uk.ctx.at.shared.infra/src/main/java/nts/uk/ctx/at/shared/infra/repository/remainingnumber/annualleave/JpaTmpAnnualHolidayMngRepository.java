@@ -15,9 +15,10 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveUsedNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpDailyLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpDailyLeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
@@ -26,12 +27,15 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KshdtInterimHdpaid;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KshdtInterimHdpaidPK;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpDailyLeaveUsedDayNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpDailyLeaveUsedTime;
 
 @Stateless
 public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements TmpAnnualHolidayMngRepository{
 
+	private static final String DELETE_BY_SID_CD_BEFORETHEYMD = "DELETE FROM KshdtInterimHdpaid a"
+			+ " WHERE a.pk.sid = :sid "
+			+ " AND a.pk.ymd <= :ymd";
+	
+	
 	private TempAnnualLeaveMngs toDomain(String mngId, String sid, GeneralDate ymd,
 			int creatorAtr, int timeDigestAtr, int timeHdType, String workTypeCode,
 			Double useDays, Integer useTime) {
@@ -115,6 +119,18 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 		.setParameter("id", sid)
 		.setParameter("ymd", ymd)
 		.executeUpdate();
+	}
+	
+	
+
+
+	@Override
+	public void deleteBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+		this.getEntityManager().createQuery(DELETE_BY_SID_CD_BEFORETHEYMD)
+		.setParameter("sid", sid)
+		.setParameter("ymd", ymd)
+		.executeUpdate();
+		
 	}
 
 }

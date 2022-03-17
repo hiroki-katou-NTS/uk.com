@@ -477,7 +477,6 @@ export class CmmS45DComponent extends Vue {
     public reflectApp(reflectAppIdLst: Array<string>): void {
         let self = this;
         if (!_.isEmpty(reflectAppIdLst)) {
-            self.$http.post('at', API.reflectApp, reflectAppIdLst);
         }
     }
 
@@ -781,6 +780,5 @@ const API = {
     approve: 'at/request/application/approveapp',
     deny: 'at/request/application/denyapp',
     release: 'at/request/application/releaseapp',
-    reflectApp: 'at/request/application/reflect-app',
     checkVersion: 'at/request/application/checkVersion'
 };

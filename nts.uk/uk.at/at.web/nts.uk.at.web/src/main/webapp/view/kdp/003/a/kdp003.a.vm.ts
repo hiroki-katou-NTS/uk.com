@@ -201,7 +201,7 @@ module nts.uk.at.kdp003.a {
 				width: 400,
 				title: nts.uk.resource.getText("CCG007_9"),
 				dialogClass: 'no-close'
-			}).onClosed(() => { vm.getDataStartScreen() });
+			}).onClosed(() => { location.reload() });
 		}
 
 		getDataStartScreen() {

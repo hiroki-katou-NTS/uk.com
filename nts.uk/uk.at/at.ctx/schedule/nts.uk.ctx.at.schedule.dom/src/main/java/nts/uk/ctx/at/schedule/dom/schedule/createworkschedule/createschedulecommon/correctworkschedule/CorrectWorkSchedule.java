@@ -89,7 +89,7 @@ public class CorrectWorkSchedule {
 		integrationOfDaily.setYmd(targetDate);
 		lstInteOfDaily.add(integrationOfDaily);
 		CalculateOption calculateOption = new CalculateOption(false, true);
-		lstInteOfDaily = centerNew.calculatePassCompanySetting(calculateOption, lstInteOfDaily, ExecutionType.NORMAL_EXECUTION);
+		lstInteOfDaily = centerNew.calculateForSchedule(calculateOption, lstInteOfDaily);
 		
 		return lstInteOfDaily;
 	}
