@@ -159,9 +159,8 @@ module nts.uk.at.view.kmt013.a {
         registerSupport() {
             const vm = this;
             if (_.isEmpty(vm.supportableList())){
-                vm.$dialog.error({messageId: "Msg_583",messageParams: [vm.a4_1Txt()]}).done(()=>{
-                    return;
-                })
+                vm.$dialog.error({messageId: "Msg_583",messageParams: [vm.a4_1Txt()]});
+                return;
             }
             vm.$blockui("show").then(() => {
                 const data: RegisterSupportAllowOrgCommand
