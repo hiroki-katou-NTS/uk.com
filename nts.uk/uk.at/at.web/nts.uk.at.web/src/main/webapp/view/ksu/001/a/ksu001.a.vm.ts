@@ -5474,7 +5474,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 endDate: moment(self.dtAft()).format('YYYY/MM/DD'),  // 基準期間.終了日
                 employeeIds: self.listSidByOrg, // List<社員ID>
             });
-            nts.uk.ui.windows.sub.modeless("/view/kdl/016/a/index.xhtml").onClosed(() => { });
+            nts.uk.ui.windows.sub.modal("/view/kdl/016/a/index.xhtml").onClosed(() => { });
         }
 
         // A2_1
