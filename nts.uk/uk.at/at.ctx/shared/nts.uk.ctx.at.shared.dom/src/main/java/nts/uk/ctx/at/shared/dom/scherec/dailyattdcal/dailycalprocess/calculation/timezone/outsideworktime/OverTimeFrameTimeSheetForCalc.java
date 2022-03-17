@@ -305,7 +305,8 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 							createTimeSheet,
 							integrationOfDaily.getCalAttr().getOvertimeSetting(),
 							new HashMap<>(),
-							personDailySetting.getAddSetting().getVacationCalcMethodSet());
+							personDailySetting.getAddSetting().getVacationCalcMethodSet(),
+							StatutoryAtr.DeformationCriterion);
 			}
 		}
 		return createTimeSheet;
@@ -392,7 +393,8 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 							.collect(Collectors.toList()),
 					integrationOfDaily.getCalAttr().getOvertimeSetting(),
 					integrationOfWorkTime.getLegalOverTimeFrameNoMap(todayWorkType),
-					personDailySetting.getAddSetting().getVacationCalcMethodSet());
+					personDailySetting.getAddSetting().getVacationCalcMethodSet(),
+					StatutoryAtr.Statutory);
 					
 					return result;
 				}
@@ -408,7 +410,8 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 	 * @param autoCalculationSet　時間外の自動計算設定
 	 */
 	public static List<OverTimeFrameTimeSheetForCalc> reclassified(AttendanceTime ableRangeTime,List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheetList,
-			AutoCalOvertimeSetting autoCalculationSet,Map<EmTimezoneNo, OverTimeFrameNo> statutoryOverFrames,HolidayCalcMethodSet holidayCalcMethodSet) {
+			AutoCalOvertimeSetting autoCalculationSet,Map<EmTimezoneNo, OverTimeFrameNo> statutoryOverFrames,HolidayCalcMethodSet holidayCalcMethodSet,
+			StatutoryAtr statutoryAtr) {
 		boolean forceAtr = true;
 		AttendanceTime overTime = new AttendanceTime(0);
 		AttendanceTime transTime = new AttendanceTime(0);
@@ -438,7 +441,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 			TimeWithDayAttr endTime = reCreateSiteiTimeFromStartTime(transTime,overTimeWorkFrameTimeSheetList.get(number));
 			
 			/*ここで分割*/
-			overTimeWorkFrameTimeSheetList = correctTimeSpan(overTimeWorkFrameTimeSheetList.get(number).splitTimeSpan(endTime,statutoryOverFrames),overTimeWorkFrameTimeSheetList,number);
+			overTimeWorkFrameTimeSheetList = correctTimeSpan(overTimeWorkFrameTimeSheetList.get(number).splitTimeSpan(endTime,statutoryOverFrames, statutoryAtr),overTimeWorkFrameTimeSheetList,number);
 			
 			ableRangeTime = ableRangeTime.minusMinutes(transTime.valueAsMinutes()) ;
 		}
@@ -503,7 +506,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
      * @param statutoryOverFrames Map<就業時間帯No, 法定内残業枠No>
      * @return
      */
-    public List<OverTimeFrameTimeSheetForCalc> splitTimeSpan(TimeWithDayAttr baseTime, Map<EmTimezoneNo, OverTimeFrameNo> statutoryOverFrames){
+    public List<OverTimeFrameTimeSheetForCalc> splitTimeSpan(TimeWithDayAttr baseTime, Map<EmTimezoneNo, OverTimeFrameNo> statutoryOverFrames, StatutoryAtr statutoryAtr){
         List<OverTimeFrameTimeSheetForCalc> returnList = new ArrayList<>();
 
         val statutoryOverFrameNo = Optional.ofNullable(statutoryOverFrames.get(this.getOverTimeWorkSheetNo()));
@@ -517,7 +520,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
                     										,this.specBonusPayTimesheet
                     										,this.midNightTimeSheet
                     										,this.getFrameTime().changeFrameNo(statutoryOverFrameNo.isPresent()?statutoryOverFrameNo.get().v():this.getFrameTime().getOverWorkFrameNo().v())
-                    										,StatutoryAtr.DeformationCriterion
+                    										,statutoryAtr
                     										,this.goEarly
                     										,this.getOverTimeWorkSheetNo()
                     										,this.asTreatBindTime
@@ -559,7 +562,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
                                                          ,beforeSpecBp
                                                          ,beforeMid
                                                          ,this.getFrameTime().changeFrameNo(statutoryOverFrameNo.isPresent()?statutoryOverFrameNo.get().v():this.getFrameTime().getOverWorkFrameNo().v())
-                                                         ,StatutoryAtr.DeformationCriterion
+                                                         ,statutoryAtr
                                                          ,this.goEarly
                                                          ,this.getOverTimeWorkSheetNo()
                                                          ,this.asTreatBindTime
