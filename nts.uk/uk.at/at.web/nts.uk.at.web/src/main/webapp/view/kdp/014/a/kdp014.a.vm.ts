@@ -154,6 +154,7 @@ module nts.uk.at.view.kdp014.a {
         }
       });
       vm.enabledelete(true);
+      vm.getDetail(vm.selectedEmployeeCode());
       vm.getAll();
     }
 
