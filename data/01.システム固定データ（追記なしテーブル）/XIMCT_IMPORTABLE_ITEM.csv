@@ -63,7 +63,7 @@ DOMAIN_ID,ITEM_NO,ITEM_NAME,ITEM_TYPE,REQUIRED,IS_PRIMARYKEY,CHECK_METHOD,FQN
 100,1,"社員コード",0,false,true,1,"nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode"
 100,2,"個人名",0,true,false,1,"nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullName"
 100,3,"個人名カナ",0,true,false,1,"nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullNameKana"
-100,4,"ログインID",0,true,false,1,"nts.uk.ctx.sys.shared.dom.user.LoginID"
+100,4,"ログインID",0,false,false,1,"nts.uk.ctx.sys.shared.dom.user.LoginID"
 100,5,"パスワード",0,true,false,,""
 100,6,"生年月日",3,true,false,,""
 100,7,"性別",1,true,false,2,"nts.uk.ctx.bs.person.dom.person.info.GenderPerson"
