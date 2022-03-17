@@ -30,7 +30,7 @@ public class WorkLocation extends AggregateRoot {
 	private WorkLocationName workLocationName; 
 	
 	/** 打刻範囲 */
-	private StampMobilePossibleRange stampRange;
+	private Optional<StampMobilePossibleRange> stampRange;
 	
 	/** IPアドレス一覧*/
 	private List<Ipv4Address> listIPAddress;
@@ -45,11 +45,11 @@ public class WorkLocation extends AggregateRoot {
 	 * @return
 	 */
 	public boolean canStamptedByMobile(GeoCoordinate geoCoordinate) {
-		return this.stampRange.checkWithinStampRange(geoCoordinate);
+		return this.stampRange.map(s -> s.checkWithinStampRange(geoCoordinate)).orElse(true);
 	}
 
 	public WorkLocation(ContractCode contractCode, WorkLocationCD workLocationCD, WorkLocationName workLocationName,
-			StampMobilePossibleRange stampRange, List<Ipv4Address> listIPAddress, Optional<WorkplacePossible> workplace) {
+						Optional<StampMobilePossibleRange> stampRange, List<Ipv4Address> listIPAddress, Optional<WorkplacePossible> workplace) {
 		super();
 		this.contractCode = contractCode;
 		this.workLocationCD = workLocationCD;

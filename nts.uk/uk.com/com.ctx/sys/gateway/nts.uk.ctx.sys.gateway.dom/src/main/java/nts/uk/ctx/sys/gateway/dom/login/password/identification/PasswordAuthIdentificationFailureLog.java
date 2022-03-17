@@ -27,8 +27,8 @@ public class PasswordAuthIdentificationFailureLog implements DomainAggregate {
 	
 	/**
 	 * いま失敗した
-	 * @param userId
-	 * @param password
+	 * @param companyId
+	 * @param employeeCode
 	 * @return
 	 */
 	public static PasswordAuthIdentificationFailureLog create(String companyId, String employeeCode) {

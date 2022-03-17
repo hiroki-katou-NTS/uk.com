@@ -48,7 +48,7 @@ public class UpdatePersonInfoRoleAuthCommandHandler extends CommandHandler<Updat
 							ctg.getSelfPastHisAuth(),
 							ctg.getSelfFutureHisAuth(), ctg.getSelfAllowAddHis(), ctg.getSelfAllowDelHis(),
 							ctg.getOtherPastHisAuth(), ctg.getOtherFutureHisAuth(), ctg.getOtherAllowAddHis(),
-							ctg.getOtherAllowDelMulti(), ctg.getSelfAllowAddMulti(), ctg.getSelfAllowDelMulti(),
+							ctg.getOtherAllowDelHis(), ctg.getSelfAllowAddMulti(), ctg.getSelfAllowDelMulti(),
 							ctg.getOtherAllowAddMulti(), ctg.getOtherAllowDelMulti());
 					this.ctgAuthRepo.add(addCtg);
 					List<PersonInfoItemAuth> itemLst = this.itemAuthRepo.getAllItemAuth(update.getRoleIdDestination(),
