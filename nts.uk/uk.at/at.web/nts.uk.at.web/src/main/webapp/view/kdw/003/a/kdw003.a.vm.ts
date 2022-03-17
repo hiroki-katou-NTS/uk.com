@@ -1343,6 +1343,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 			}
             if (checkDailyChange || (self.valueUpdateMonth != null && !_.isEmpty(self.valueUpdateMonth.items)) || self.flagCalculation || !_.isEmpty(sprStampSourceInfo)) {
                 service.addAndUpdate(dataParentDto).done((res : any) => {
+					self.dataSessionDto = res.dataSessionDto;
                     // alert("done");
                     let dataAfter = res.dataResultAfterIU;
                     let onlyCheckBox: boolean = false;
@@ -1759,6 +1760,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 				dataSessionDto : self.dataSessionDto
 			}
             service.calculation(dataParentDto).done((res : any) => {
+			self.dataSessionDto = res.dataSessionDto;
 			let data = res.dailyPerformanceCalculationDto;
                 if(data.dailyCorrectDto){
                       self.processFlex(data.dailyCorrectDto, true);
@@ -2204,6 +2206,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 			dPPramLoadRowDto.dataSessionDto.dpStateParam = self.dpStateParam;
 			dPPramLoadRowDto.dataSessionDto.paramCommonAsync = self.paramCommonAsync;
             service.loadRow(dPPramLoadRowDto).done((data) => {
+				self.dataSessionDto = data.dataSessionDto;
                 self.flagCalculation = false;
                 if (onlyLoadMonth && errorFlex == false) {
                     self.processFlex(data, true);
@@ -2525,7 +2528,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     closureId: self.closureId,
                     initFromScreenOther: self.initFromScreenOther,
                     changeFormat: hasChangeFormat,
-                    screenDto: null
+                    screenDto: null,
+					dpStateParam: self.dpStateParam
                 };
                 self.characteristics.formatExtract = param.displayFormat;
                 character.save('characterKdw003a', self.characteristics);
@@ -3241,7 +3245,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                             errorCodes: errorCodes,
                             formatCodes: self.formatCodes(),
-                            showLock: self.showLock()
+                            showLock: self.showLock(),
+							screenDto : self.screenDto
                         };
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
@@ -3491,7 +3496,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (self.showFlex()) {
                 self.insertUpdate("Tight").done((loadContinue: boolean) => {
                     if(!loadContinue){
-					empAndDateDto.empAndDate = { employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail, showFlex: self.showFlex() };
+					empAndDateDto.empAndDate = { employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail._i, showFlex: self.showFlex() };
 					empAndDateDto.dataSessionDto.dpStateParam = self.dpStateParam;
 					empAndDateDto.dataSessionDto.paramCommonAsync = self.paramCommonAsync;
                     service.addClosure(empAndDateDto).done((data) => {
@@ -3507,7 +3512,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }
                 });
             } else {
-				empAndDateDto.empAndDate = { employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail, showFlex: self.showFlex() };
+				empAndDateDto.empAndDate = { employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail._i, showFlex: self.showFlex() };
                 service.addClosure(empAndDateDto).done((data) => {
                     self.processLockButton(self.showLock());
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
@@ -3527,14 +3532,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.block.grayout();
             let dataRowEnd = dataSource[dataSource.length - 1];
 			let empAndDateDto = {
-				empAndDate : { employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail },
+				empAndDate : { employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail._i },
 				dataSessionDto : self.dataSessionDto
 			}
 			empAndDateDto.dataSessionDto.dpStateParam = self.dpStateParam;
 			empAndDateDto.dataSessionDto.paramCommonAsync = self.paramCommonAsync;
             service.releaseClosure(empAndDateDto).done((res: any) => {
+				self.dataSessionDto = res.dataSessionDto;
 				let data = res.result;
-                if (!_.isEmpty(data)) {
+                if (!_.isEmpty(data)&&data.value != "") {
                     nts.uk.ui.dialog.info({ messageId: data }).then(() => {
                     });
                 } else {

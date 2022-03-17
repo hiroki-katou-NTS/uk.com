@@ -67,6 +67,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.GetWkpIDOutput;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.GetWkpIDParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.HolidayRemainNumberDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.InitParamOutput;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.SidDateErrorCalcDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTimeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTimeParamDto;
@@ -310,12 +311,18 @@ public class DailyPerformanceCorrectionWebService {
 			dataParentDto.getDataSessionDto().setDomainMonthOpt(null); // domainMonths
 //		}
 
-		  dataParentDto.getDataSessionDto().setLstSidDateErrorCalc(dataResultAfterIU.getLstSidDateDomainError()); // lstSidDateErrorCalc
+		  dataParentDto.getDataSessionDto().setLstSidDateErrorCalc(convertDataErrorDto(dataResultAfterIU.getLstSidDateDomainError())); // lstSidDateErrorCalc
 		  dataParentDto.getDataSessionDto().setErrorAllCalc(dataResultAfterIU.isErrorAllSidDate()); // errorAllCalc
 		  
 		DataResultAfterIUDto dataResultAfterIUDto = new DataResultAfterIUDto(dataResultAfterIU, dataParentDto.getDataSessionDto());
 		return dataResultAfterIUDto;
 	}
+	
+	private List<SidDateErrorCalcDto>  convertDataErrorDto(List<Pair<String, GeneralDate>> listPairError){
+		List<SidDateErrorCalcDto> listData = listPairError.stream().map(c-> new SidDateErrorCalcDto(c.getLeft(), c.getRight())).collect(Collectors.toList());
+		return listData;
+	}
+
 
 	@POST
 	@Path("execMonthlyAggregateAsync")
@@ -338,7 +345,7 @@ public class DailyPerformanceCorrectionWebService {
 		dataParentDto.getDataParent().setDailyOldForLog(dataParentDto.getDataSessionDto().getDomainOldForLog());
 		dataParentDto.getDataParent().setLstAttendanceItem(dataParentDto.getDataSessionDto().getItemIdRCs());
 		dataParentDto.getDataParent().setErrorAllSidDate(dataParentDto.getDataSessionDto().isErrorAllCalc());
-		dataParentDto.getDataParent().setLstSidDateDomainError(dataParentDto.getDataSessionDto().getLstSidDateErrorCalc());
+		dataParentDto.getDataParent().setLstSidDateDomainError(convertDataError(dataParentDto.getDataSessionDto().getLstSidDateErrorCalc()));
 		dataParentDto.getDataParent().setApprovalConfirmCache(dataParentDto.getDataSessionDto().getApprovalConfirmCache());
 
 		Object objectCacheMonth = dataParentDto.getDataSessionDto().getDomainMonthOpt();
@@ -396,7 +403,7 @@ public class DailyPerformanceCorrectionWebService {
 			dailyEdits = (List<DailyRecordDto>) domain;
 		}
 		param.getDpPramLoadRow().setDailys(dailyEdits);
-		param.getDpPramLoadRow().setLstSidDateDomainError(param.getDataSessionDto().getLstSidDateErrorCalc()); // lstSidDateErrorCalc
+		param.getDpPramLoadRow().setLstSidDateDomainError(convertDataError(param.getDataSessionDto().getLstSidDateErrorCalc())); // lstSidDateErrorCalc
 		param.getDpPramLoadRow().setErrorAllSidDate(param.getDataSessionDto().isErrorAllCalc()); // errorAllCalc
 		Integer closureId = param.getDataSessionDto().getClosureId(); // closureId
 		param.getDpPramLoadRow().setClosureId(closureId);
@@ -419,7 +426,13 @@ public class DailyPerformanceCorrectionWebService {
 		param.getDataSessionDto().setDomainEdits(null); // domainEdits
 		result.setLstCellState(result.getMapCellState().values().stream().collect(Collectors.toList()));
 		result.setMapCellState(null);
+		result.setDataSessionDto(param.getDataSessionDto());
 		return result;
+	}
+	
+	private List<Pair<String, GeneralDate>>  convertDataError(List<SidDateErrorCalcDto> listSidDateErrorCalcDto){
+		List<Pair<String, GeneralDate>> listData = listSidDateErrorCalcDto.stream().map(c-> Pair.of(c.getSid(), c.getDate())).collect(Collectors.toList());
+		return listData;
 	}
 
 	@POST
@@ -539,7 +552,7 @@ public class DailyPerformanceCorrectionWebService {
 		val result = dailyCalculationService.calculateCorrectedResults(dataParentDto.getDataParent());
 
 		dataParentDto.getDataSessionDto().setDomainEdits(result.getCalculatedRows());// domainEdits
-		dataParentDto.getDataSessionDto().setLstSidDateErrorCalc(result.getLstSidDateDomainError());// lstSidDateErrorCalc
+		dataParentDto.getDataSessionDto().setLstSidDateErrorCalc(convertDataErrorDto(result.getLstSidDateDomainError()));// lstSidDateErrorCalc
 		dataParentDto.getDataSessionDto().setErrorAllCalc(result.isErrorAllSidDate());// errorAllCalc
 		result.setCalculatedRows(Collections.emptyList());
 		
