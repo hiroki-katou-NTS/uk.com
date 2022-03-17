@@ -3,11 +3,8 @@ package nts.uk.ctx.at.record.dom.anyperiod;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriodRepository;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AtItemNameAdapter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.security.audittrail.correction.content.*;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionLogProcessorContext;
@@ -29,7 +26,7 @@ public class AnyPeriodCorrectionLogProcessor extends DataCorrectionLogProcessor 
     private AnyAggrPeriodRepository anyAggrPeriodRepo;
 
     @Inject
-    private AtItemNameAdapter atItemNameAdapter;
+    private MonthlyAttendanceItemRepository monthlyItemRepo;
 
     @Override
     public CorrectionProcessorId getId() {
@@ -56,11 +53,9 @@ public class AnyPeriodCorrectionLogProcessor extends DataCorrectionLogProcessor 
         List<String> employeeIds = contents.stream().map(AnyPeriodLogContent::getEmployeeId).distinct().collect(Collectors.toList());
         Map<String, UserInfo> userMap = this.userInfoAdaptor.findByEmployeeId(employeeIds)
                 .stream().collect(Collectors.toMap(UserInfo::getEmployeeId, Function.identity()));
-        Map<String, AnyAggrPeriod> anyAggrPeriodMap = anyAggrPeriodRepo.findAllByCompanyId(AppContexts.user().companyId())
-                .stream().collect(Collectors.toMap(i -> i.getAggrFrameCode().v(), Function.identity()));
         contents.forEach(content -> {
             UserInfo userInfo = userMap.getOrDefault(content.getEmployeeId(), new UserInfo("", "", ""));
-            Optional<AnyAggrPeriod> anyAggrPeriod = Optional.ofNullable(anyAggrPeriodMap.getOrDefault(content.getAnyPeriodFrameCode(), null));
+            Optional<AnyAggrPeriod> anyAggrPeriod = anyAggrPeriodRepo.findOneByCompanyIdAndFrameCode(AppContexts.user().companyId(), content.getAnyPeriodFrameCode());
             List<AnyPeriodCorrection> targetInfos = this.createTargetInfoList(userInfo, content, anyAggrPeriod);
             result.addAll(targetInfos);
         });
@@ -77,29 +72,29 @@ public class AnyPeriodCorrectionLogProcessor extends DataCorrectionLogProcessor 
         List<AnyPeriodCorrection> result = new ArrayList<>();
         Set<Integer> itemIds = content.getCorrectedList().stream().map(i -> Integer.parseInt(i.getId())).collect(Collectors.toSet());
         itemIds.addAll(content.getCalculatedList().stream().map(i -> Integer.parseInt(i.getId())).collect(Collectors.toSet()));
-        Map<Integer, AttItemName> attItemNameMap = atItemNameAdapter.getNameOfAttendanceItem(new ArrayList<>(itemIds), TypeOfItemImport.AnyPeriod)
-                .stream().collect(Collectors.toMap(AttItemName::getAttendanceItemId, Function.identity()));
+        Map<Integer, MonthlyAttendanceItem> attItemMap = monthlyItemRepo.findByAttendanceItemId(AppContexts.user().companyId(), new ArrayList<>(itemIds))
+                .stream().collect(Collectors.toMap(MonthlyAttendanceItem::getAttendanceItemId, Function.identity()));
         content.getCorrectedList().forEach(i -> {
-            AttItemName attItemName = attItemNameMap.get(Integer.parseInt(i.getId()));
+            MonthlyAttendanceItem attItem = attItemMap.get(Integer.parseInt(i.getId()));
             AnyPeriodCorrection data = createTargetInformation(
                     userInfo,
                     content.getAnyPeriodFrameCode(),
                     CorrectionAttr.EDIT,
                     i,
                     anyAggrPeriod,
-                    attItemName != null ? attItemName.getAttendanceItemDisplayNumber() : 0
+                    attItem != null ? attItem.getDisplayNumber() : 0
             );
             result.add(data);
         });
         content.getCalculatedList().forEach(i -> {
-            AttItemName attItemName = attItemNameMap.get(Integer.parseInt(i.getId()));
+            MonthlyAttendanceItem attItem = attItemMap.get(Integer.parseInt(i.getId()));
             AnyPeriodCorrection data = createTargetInformation(
                     userInfo,
                     content.getAnyPeriodFrameCode(),
                     CorrectionAttr.CALCULATE,
                     i,
                     anyAggrPeriod,
-                    attItemName != null ? attItemName.getAttendanceItemDisplayNumber() : 0
+                    attItem != null ? attItem.getDisplayNumber() : 0
             );
             result.add(data);
         });

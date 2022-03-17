@@ -28,11 +28,7 @@ public class JpaAnyPeriodCorrectionGridColumnWidthRepository extends JpaReposito
     public void update(AnyPeriodCorrectionGridColumnWidth setting) {
         List<KfndtAnpGridColWidth> entities = this.queryProxy().query(GET_LIST_SETTING_QUERY, KfndtAnpGridColWidth.class)
                 .setParameter("employeeId", setting.getEmployeeId()).getList();
-        List<Integer> tmp = setting.getColumnWidths().stream().map(DisplayItemColumnWidth::getAttendanceItemId).collect(Collectors.toList());
-        List<KfndtAnpGridColWidth> toBeRemoved = entities.stream().filter(e -> !tmp.contains(e.pk.attendanceItemId)).collect(Collectors.toList());
-        if (!toBeRemoved.isEmpty()) {
-            this.commandProxy().removeAll(toBeRemoved);
-        }
+
         setting.getColumnWidths().forEach(s -> {
             Optional<KfndtAnpGridColWidth> exist = entities.stream().filter(e -> e.pk.attendanceItemId == s.getAttendanceItemId()).findFirst();
             if (exist.isPresent()) {

@@ -57,11 +57,13 @@ public class AnyPeriodCorrectionLogRegisterService {
 
         List<ItemInfo> manualItems = CorrectionLogInfoItemCreateService.create(
                 require,
+                companyId,
                 beforeCorrectItems,
                 afterCorrectItems
         );
         List<ItemInfo> calculatedItems = CorrectionLogInfoItemCreateService.create(
                 require,
+                companyId,
                 afterCorrectItems,
                 afterCalculateItems
         );

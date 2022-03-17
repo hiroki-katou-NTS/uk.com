@@ -86,18 +86,15 @@
 				<div style="margin-left: 50px;">
 					<div class="control-group valign-center">
 						<div id="A2_1"
-							 style="width: 250px;"
+							 style="width: 350px;"
 							 data-bind="ntsComboBox: {
 										name:'#[KFP002_4]',
 										options: aggregateFrames,
 										optionsValue: 'aggrFrameCode',
 										visibleItemsCount: 10,
 										value: selectedFrameCode,
-										optionsText: 'optionalAggrName',
-										columns: [
-											{ prop: 'aggrFrameCode', length: 4 },
-											{ prop: 'optionalAggrName', length: 10 },
-										]}">
+										optionsText: 'optionalAggrName'
+									}">
 						</div>
 						<button data-bind="ntsLegendButton: legendOptions" style="margin-left: 28px;">#{i18n.getText('KMW003_33')}</button>
 						<button data-bind="click: saveColumnWidth, enable: ko.computed(() => displayFormat() &amp;&amp; displayFormat().items.length > 0)">#{i18n.getText('KFP002_5')}</button>
