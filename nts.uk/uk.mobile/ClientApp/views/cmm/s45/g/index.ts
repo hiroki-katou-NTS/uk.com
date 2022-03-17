@@ -16,9 +16,11 @@ export class CmmS45GComponent extends Vue {
     public isPreError: boolean = true;
     public topComment: string = '';
     public bottomComment: string = '';
+    public appContent: string = '';
 
     public created() {
         const vm = this;
+        vm.appContent = _.escape(vm.params.appContent).replace(/\n/g, '<br/>');
         if (vm.params.opBackgroundColor == 'bg-pre-application-excess') {
             vm.topComment = _.escape(vm.$i18n('CMMS45_97')).replace(/\n/g, '<br/>');
             vm.bottomComment = vm.$i18n('CMMS45_98');

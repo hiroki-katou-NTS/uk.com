@@ -1,6 +1,7 @@
 <template>
 <div class="cmms45g">
     <div class="modal-header" style="height: 37px;">
+        {{'CMMS45_94' | i18n}}
     </div>
     <div class="col-12" style="font-size: large">
         {{ params.applicantName }}
@@ -18,7 +19,7 @@
     <div class="col-12 pt-2 pb-2" v-html="topComment"></div>
     <div class="card-header pt-2">{{'CMMS45_95' | i18n}}</div>
     <div class="col-12 pt-2" v-bind:class="{ 'bg-pre-application-excess': isPreError, 'bg-workinh-result-excess': !isPreError }">
-        <div v-html="params.appContent"></div>
+        <div v-html="appContent"></div>
     </div>
     <div class="col-12 pt-2" v-html="bottomComment"></div>
     <div class="col-12 pt-2">
