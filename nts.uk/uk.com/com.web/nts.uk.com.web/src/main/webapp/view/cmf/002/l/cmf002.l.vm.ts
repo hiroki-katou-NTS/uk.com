@@ -81,7 +81,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             self.timeDataFormatSetting().selectHourMinute.subscribe((value)=>{
                 //※L5
                 self.enableSelectTimeCls(value == 0 && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
-                if (value == 0){
+                if (value == 1){
                     self.timeDataFormatSetting().decimalSelection(1);
                 }
             });
