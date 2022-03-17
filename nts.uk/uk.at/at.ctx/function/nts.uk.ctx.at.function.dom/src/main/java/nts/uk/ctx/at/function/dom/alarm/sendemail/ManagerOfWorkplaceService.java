@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.alarm.sendemail;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.auth.dom.adapter.workplace.AffWorkplaceHistoryItemImport;
 import nts.uk.ctx.at.function.dom.adapter.alarm.MailExportRolesDto;
 import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerImport;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmMailSendingRole;
@@ -15,7 +16,6 @@ import java.util.stream.Collectors;
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.アラーム.メール設定.App.アラームチェックをしてメールを上司に送るとトップページに表示する可能対象者を取得する.アラームチェックをしてメールを上司に送るとトップページに表示する可能対象者を取得する
  */
 public class ManagerOfWorkplaceService {
-
     /**
      * @param require
      * @param cid            会社ID
@@ -47,12 +47,13 @@ public class ManagerOfWorkplaceService {
             List<String> managerIds = new ArrayList<>();
             // ②取得したList＜職場ID＞をループする
             for (String workplaceIdUpper : workplaceIdUppers) {
-                // [No.XXX]職場から職場管理者社員を取得する:
-                List<WkpManagerImport> wkpManagerList = require.findByPeriodAndBaseDate(workplaceIdUpper, systemDate);
-                List<String> administratorOfWorkplaces = wkpManagerList.stream().map(WkpManagerImport::getEmployeeId).collect(Collectors.toList());
+
+                // 職場から社員IDを取得する: #122420: Update 2022.03.16
+                List<AffWorkplaceHistoryItemImport> workplaceHistoryItems = require.getWorkHisItemfromWkpIdAndBaseDate(workplaceIdUpper, systemDate);
+                List<String> employeeOfWkpList = workplaceHistoryItems.stream().map(AffWorkplaceHistoryItemImport::getEmployeeId).collect(Collectors.toList());
 
                 // 社員IDListから就業ロールIDを取得 : Map <EmployeeID, RoleID>
-                Map<String, String> administratorRoleMap = GetRoleWorkByEmployeeService.get(require, administratorOfWorkplaces, systemDate);
+                Map<String, String> administratorRoleMap = GetRoleWorkByEmployeeService.get(require, employeeOfWkpList, systemDate);
 
                 // 就業担当者のロール、参照範囲自分のみを持つ管理者を消す
                 Iterator<Map.Entry<String, String>> itr = administratorRoleMap.entrySet().iterator();
@@ -83,10 +84,21 @@ public class ManagerOfWorkplaceService {
                     val adminIds = administratorRoleMap.entrySet().stream().map(Map.Entry::getKey).distinct().collect(Collectors.toList());
                     managerIds.addAll(adminIds);
                 }
+
+                // #122420: Update 2022.03.16
+                // ①のループ中の職場ID　==②のループ中
+                if (workplaceId.equals(workplaceIdUpper)) {
+                    // [No.XXX]職場から職場管理者社員を取得する
+                    List<WkpManagerImport> wkpManagerList = require.findByPeriodAndBaseDate(workplaceIdUpper, systemDate);
+                    List<String> administratorOfWorkplaces = wkpManagerList.stream().map(WkpManagerImport::getEmployeeId).collect(Collectors.toList());
+                    if (!administratorOfWorkplaces.isEmpty()) {
+                        managerIds.addAll(administratorOfWorkplaces);
+                    }
+                }
             }
 
             if (!managerIds.isEmpty()) {
-                managerOfWorkplaceMap.put(workplaceId, managerIds);
+                managerOfWorkplaceMap.put(workplaceId, managerIds.stream().distinct().collect(Collectors.toList()));
             }
         }
 
@@ -102,6 +114,8 @@ public class ManagerOfWorkplaceService {
         List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId);
 
         List<WkpManagerImport> findByPeriodAndBaseDate(String wkpId, GeneralDate baseDate);
+
+        List<AffWorkplaceHistoryItemImport> getWorkHisItemfromWkpIdAndBaseDate(String workPlaceId, GeneralDate baseDate);
     }
 
 }

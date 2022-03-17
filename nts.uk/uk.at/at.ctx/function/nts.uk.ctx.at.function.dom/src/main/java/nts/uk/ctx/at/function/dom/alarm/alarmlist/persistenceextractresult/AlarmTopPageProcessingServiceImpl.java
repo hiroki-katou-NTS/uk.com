@@ -6,6 +6,8 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.task.tran.TransactionService;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.auth.dom.adapter.workplace.AffWorkplaceHistoryItemImport;
+import nts.uk.ctx.at.auth.dom.adapter.workplace.AuthWorkPlaceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.alarm.*;
 import nts.uk.ctx.at.function.dom.adapter.role.AlarmMailSettingsAdapter;
 import nts.uk.ctx.at.function.dom.adapter.role.RoleSetExportAdapter;
@@ -70,6 +72,9 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
 
     @Inject
     private AlarmMailSendingRoleRepository alarmMailSendingRoleRepo;
+
+    @Inject
+    private AuthWorkPlaceAdapter authWorkPlaceAdapter;
 
 
     /**
@@ -177,7 +182,7 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
 
         //アラームリストからトップページアラームデータに変換する
         RequireImpl require = new RequireImpl(alarmExtractResultRepo, topPageAlarmAdapter, employeeWorkplaceAdapter, adminReceiveAlarmMailAdapter,
-                mailAdapter, roleAdapter, userEmployeeAdapter, affWorkplaceAdapter, workplaceAdapter, alarmMailSendingRoleRepo);
+                mailAdapter, roleAdapter, userEmployeeAdapter, affWorkplaceAdapter, workplaceAdapter, alarmMailSendingRoleRepo, authWorkPlaceAdapter);
         List<AtomTask> atomTasks = ConvertAlarmListToTopPageAlarmDataService.convert(require, cid, lstSid,
                 new AlarmPatternCode(pattentCd), new ExecutionCode(runCode), isDisplayByAdmin, isDisplayByPerson);
 
@@ -284,6 +289,7 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
         private AffWorkplaceAdapter affWorkplaceAdapter;
         private WkpManagerAdapter workplaceAdapter;
         private AlarmMailSendingRoleRepository alarmMailSendingRoleRepo;
+        private AuthWorkPlaceAdapter authWorkPlaceAdapter;
 
         @Override
         public Optional<PersistenceAlarmListExtractResult> getAlarmListExtractionResult(String companyId, String patternCode, String autoRunCode, List<String> empIds) {
@@ -338,6 +344,11 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
         @Override
         public List<WkpManagerImport> findByPeriodAndBaseDate(String wkpId, GeneralDate baseDate) {
             return workplaceAdapter.findByPeriodAndBaseDate(wkpId, baseDate);
+        }
+
+        @Override
+        public List<AffWorkplaceHistoryItemImport> getWorkHisItemfromWkpIdAndBaseDate(String workPlaceId, GeneralDate baseDate) {
+            return authWorkPlaceAdapter.getWorkHisItemfromWkpIdAndBaseDate(workPlaceId, baseDate);
         }
     }
 }

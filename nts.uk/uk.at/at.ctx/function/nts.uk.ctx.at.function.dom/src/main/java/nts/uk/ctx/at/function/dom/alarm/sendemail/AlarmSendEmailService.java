@@ -10,6 +10,8 @@ import nts.gul.mail.send.MailAttachedFileItf;
 import nts.gul.mail.send.MailAttachedFilePath;
 import nts.gul.mail.send.MailContents;
 import nts.gul.mail.send.MailSendOptions;
+import nts.uk.ctx.at.auth.dom.adapter.workplace.AffWorkplaceHistoryItemImport;
+import nts.uk.ctx.at.auth.dom.adapter.workplace.AuthWorkPlaceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.alarm.*;
 import nts.uk.ctx.at.function.dom.adapter.role.AlarmMailSettingsAdapter;
 import nts.uk.ctx.at.function.dom.adapter.role.RoleSetExportAdapter;
@@ -67,6 +69,9 @@ public class AlarmSendEmailService implements SendEmailService {
 
 	@Inject
 	private AffWorkplaceAdapter affWorkplaceAdapter;
+
+	@Inject
+	private AuthWorkPlaceAdapter authWorkPlaceAdapter;
 	
 	public String alarmSendEmail(String companyID, GeneralDate executeDate, List<String> employeeTagetIds,
 			List<String> managerTagetIds, List<ValueExtractAlarmDto> valueExtractAlarmDtos,
@@ -205,6 +210,11 @@ public class AlarmSendEmailService implements SendEmailService {
 					@Override
 					public List<WkpManagerImport> findByPeriodAndBaseDate(String wkpId, GeneralDate baseDate) {
 						return workplaceAdapter.findByPeriodAndBaseDate(wkpId, baseDate);
+					}
+
+					@Override
+					public List<AffWorkplaceHistoryItemImport> getWorkHisItemfromWkpIdAndBaseDate(String workPlaceId, GeneralDate baseDate) {
+						return authWorkPlaceAdapter.getWorkHisItemfromWkpIdAndBaseDate(workPlaceId, baseDate);
 					}
 				},
 				cid,

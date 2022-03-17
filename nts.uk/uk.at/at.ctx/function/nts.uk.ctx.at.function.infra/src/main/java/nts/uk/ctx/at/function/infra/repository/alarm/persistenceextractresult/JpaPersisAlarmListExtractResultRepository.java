@@ -180,6 +180,7 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
                 .getList();
 
         List<String> processIds = extractResults.stream().map(i -> i.pk.processId).distinct().collect(Collectors.toList());
+        if (processIds.isEmpty()) return Collections.emptyList();
         try (PreparedStatement statement = this.connection()
                 .prepareStatement("select * from KFNDT_PERSIS_ALARM_EXT a where a.CID = ? and a.PROCESS_ID in ("
                         + processIds.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {

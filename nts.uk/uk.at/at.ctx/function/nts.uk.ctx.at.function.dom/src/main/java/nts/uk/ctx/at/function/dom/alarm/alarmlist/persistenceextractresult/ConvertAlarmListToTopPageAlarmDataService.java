@@ -71,6 +71,7 @@ public class ConvertAlarmListToTopPageAlarmDataService {
                     .sids(empIdListNoErrors)
                     .displayAtr(0)
                     .patternCode(Optional.of(patternCode.v()))
+                    .subEmpNoErrs(Collections.emptyList())
                     .build());
         }
 

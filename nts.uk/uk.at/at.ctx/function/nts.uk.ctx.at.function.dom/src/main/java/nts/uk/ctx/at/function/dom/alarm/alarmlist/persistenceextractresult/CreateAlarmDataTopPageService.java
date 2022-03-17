@@ -77,7 +77,7 @@ public class CreateAlarmDataTopPageService {
         if (!CollectionUtil.isEmpty(wkplIdListNotErrors)) {
             // $全てエラーが解除済み社員　＝　アラームチェックをしてメールを上司に送るとトップページに表示する可能対象者を取得する(社ID,$エラーがなくなった職場IDList、個人職場区分.職場別）
             // .map　：$.value
-            Map<String, List<String>> adminReceiveAlarmMailMap = ManagerOfWorkplaceService.get(require, companyId, wkplIdListNotErrors, IndividualWkpClassification.WORKPLACE);
+            Map<String, List<String>> adminReceiveAlarmMailMap = ManagerOfWorkplaceService.get(require, companyId, wkplIdListNotErrors, IndividualWkpClassification.INDIVIDUAL);
             List<String> allEmpErrorsRemoved = adminReceiveAlarmMailMap.isEmpty() ? Collections.emptyList():
                     adminReceiveAlarmMailMap.values().stream()
                             .flatMap(Collection::stream)
@@ -89,6 +89,7 @@ public class CreateAlarmDataTopPageService {
                     .sids(allEmpErrorsRemoved)
                     .displayAtr(1)
                     .patternCode(patternCode)
+                    .subEmpNoErrs(empIdWithNoErrors)
                     .build());
         }
 

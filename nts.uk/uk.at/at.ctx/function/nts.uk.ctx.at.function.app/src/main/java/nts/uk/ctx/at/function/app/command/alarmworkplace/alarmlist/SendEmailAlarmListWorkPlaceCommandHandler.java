@@ -5,6 +5,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.auth.dom.adapter.workplace.AffWorkplaceHistoryItemImport;
+import nts.uk.ctx.at.auth.dom.adapter.workplace.AuthWorkPlaceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.alarm.EmployeeAlarmListAdapter;
 import nts.uk.ctx.at.function.dom.adapter.alarm.MailExportRolesDto;
 import nts.uk.ctx.at.function.dom.adapter.mailserver.MailServerAdapter;
@@ -69,6 +71,9 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
     @Inject
     private AffWorkplaceAdapter affWorkplaceAdapter;
 
+    @Inject
+    private AuthWorkPlaceAdapter authWorkPlaceAdapter;
+
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     protected String handle(CommandHandlerContext<SendEmailAlarmListWorkPlaceCommand> context) {
@@ -128,6 +133,11 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
                     @Override
                     public List<WkpManagerImport> findByPeriodAndBaseDate(String wkpId, GeneralDate baseDate) {
                         return workplaceAdapter.findByPeriodAndBaseDate(wkpId, baseDate);
+                    }
+
+                    @Override
+                    public List<AffWorkplaceHistoryItemImport> getWorkHisItemfromWkpIdAndBaseDate(String workPlaceId, GeneralDate baseDate) {
+                        return authWorkPlaceAdapter.getWorkHisItemfromWkpIdAndBaseDate(workPlaceId, baseDate);
                     }
                 },
                 companyId, command.getWorkplaceIds(),
