@@ -97,7 +97,7 @@ module nts.uk.ui.at.kdw013.timeheader {
             }
             const className = 'wrn-' + time.date;
 
-            let icon = vm.isHasWarning(time.date) ? `<i class='warningIcon ` + className + `'> </i>` : '';
+            let icon = vm.isHasWarning(time.date) ? `<i tabindex="0" class='warningIcon ` + className + `'> </i>` : '';
             
             if (vm.isNoCvrTaskList(time.date)) {
                 return '&nbsp;' + icon;
