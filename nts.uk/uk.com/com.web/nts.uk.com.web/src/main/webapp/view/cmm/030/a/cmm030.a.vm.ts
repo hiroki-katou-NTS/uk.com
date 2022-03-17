@@ -425,7 +425,7 @@ module nts.uk.com.view.cmm030.a {
             phaseOrder: 5 - index,
             approverId: approver.sid
           };
-        }).filter(data => !_.isNil(data.approverId)).value();
+        }).filter(data => !_.isEmpty(data.approverId)).value();
         return {
           approvalRootInfo: approvalRootInfo,
           approvalPhases: approvalPhases
