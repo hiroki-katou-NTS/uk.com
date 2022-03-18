@@ -101,8 +101,8 @@ module nts.uk.at.kdp003.r {
                 const noticeParam: NoticeParam = {
                     //システム日付～システム日付
                     periodDto: new DatePeriod({
-                        startDate: moment().toDate(),
-                        endDate: moment().toDate()
+                        startDate: moment().add(vm.regionalTime, 'm').toDate(),
+                        endDate: moment().add(vm.regionalTime, 'm').toDate()
                     }),
 
                     //「localStorage.選択職場ID」(List)
@@ -152,8 +152,8 @@ module nts.uk.at.kdp003.r {
                 const noticeParam: NoticeParam = {
                     //システム日付～システム日付
                     periodDto: new DatePeriod({
-                        startDate: moment(vm.$date.now()).toDate(),
-                        endDate: moment(vm.$date.now()).toDate()
+                        startDate: moment(vm.$date.now()).add(vm.regionalTime, 'm').toDate(),
+                        endDate: moment(vm.$date.now()).add(vm.regionalTime, 'm').toDate()
                     }),
 
                     //「localStorage.選択職場ID」(List)
