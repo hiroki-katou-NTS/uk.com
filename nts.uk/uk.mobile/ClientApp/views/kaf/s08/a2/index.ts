@@ -352,7 +352,6 @@ export class KafS08A2Component extends KafS00ShrComponent {
             }).then((res: any) => {
                 //vm.appID = res.data.appID;
                 if (res) {
-                    vm.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
                     vm.$emit('nextToStepThree', res.data.appIDLst[0]);
                 } 
                 vm.$mask('hide');
@@ -384,7 +383,6 @@ const API = {
     startKAFS08: 'at/request/application/businesstrip/mobile/startMobile',
     checkBeforeApply: 'at/request/application/businesstrip/mobile/checkBeforeRegister',
     register: 'at/request/application/businesstrip/mobile/register',
-    updateBusinessTrip: 'at/request/application/businesstrip/mobile/updateBusinessTrip',
-    reflectApp: 'at/request/application/reflect-app'
+    updateBusinessTrip: 'at/request/application/businesstrip/mobile/updateBusinessTrip'
 };
 

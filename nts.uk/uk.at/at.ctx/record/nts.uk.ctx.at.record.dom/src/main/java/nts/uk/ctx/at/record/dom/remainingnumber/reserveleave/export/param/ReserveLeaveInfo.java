@@ -315,8 +315,10 @@ public class ReserveLeaveInfo implements Cloneable {
 		if (!aggrPeriodWork.getGrantWork().isGrantAtr())
 			return aggrResult;
 
-		// 付与日から期限日を計算
-		if (!aggrPeriodWork.getGrantWork().getReserveLeaveGrant().isPresent()) return aggrResult;
+
+		if (!aggrPeriodWork.getGrantWork().getReserveLeaveGrant().isPresent()) 
+			return aggrResult;
+		
 
 		// 「積立年休付与残数データ」を作成する
 		val newRemainData = aggrPeriodWork.getGrantWork().getReserveLeaveGrant().get().toReserveLeaveGrantRemainingData(employeeId);
