@@ -14,7 +14,6 @@ import javax.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.function.dom.adapter.employeebasic.SyEmployeeFnAdapter;
-import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.FuncEmpInfoTerminalImport;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.RQEmpInfoTerminalAdapter;
 import nts.uk.ctx.at.function.dom.adapter.stamp.FuncStampCardAdapter;
 import nts.uk.ctx.at.function.dom.adapter.stamp.StampCard;
@@ -82,11 +81,6 @@ public class NRWebQueryDispatcher {
 		private final SyEmployeeFnAdapter syEmployeeFnAdapter;
 		
 		@Override
-		public Optional<FuncEmpInfoTerminalImport> getEmpInfoTerminal(String empInfoTerCode, String contractCode) {
-			return rQEmpInfoTerminalAdapter.getEmpInfoTerminal(empInfoTerCode, contractCode);
-		}
-
-		@Override
 		public Optional<StampCard> getByCardNoAndContractCode(String contractCode, String stampNumber) {
 			return funcStampCardAdapter.getByCardNoAndContractCode(contractCode, stampNumber);
 		}
@@ -94,6 +88,11 @@ public class NRWebQueryDispatcher {
 		@Override
 		public Optional<String> getCompanyId(String employeeId) {
 			return syEmployeeFnAdapter.getCompanyId(employeeId);
+		}
+
+		@Override
+		public Optional<String> getEmpInfoTerminalCodeMac(String contractCode, String macAddr) {
+			return rQEmpInfoTerminalAdapter.getEmpInfoTerminalCode(contractCode, macAddr);
 		}
 
 	}

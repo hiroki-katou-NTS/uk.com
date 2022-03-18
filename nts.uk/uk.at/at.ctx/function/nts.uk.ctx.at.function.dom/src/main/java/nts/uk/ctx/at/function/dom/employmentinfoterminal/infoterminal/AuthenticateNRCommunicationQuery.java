@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.FuncEmpInfoTerminalImport;
 import nts.uk.ctx.at.function.dom.adapter.stamp.StampCard;
 import nts.uk.shr.com.system.property.UKServerSystemProperties;
 import nts.uk.shr.infra.data.TenantLocatorService;
@@ -18,7 +17,7 @@ public class AuthenticateNRCommunicationQuery {
 	public static boolean process(Require require, String contractCode, String macAddr) {
 
 		connectCloud(contractCode);
-		return require.getEmpInfoTerminal(contractCode, macAddr).isPresent();
+		return require.getEmpInfoTerminalCodeMac(contractCode, macAddr).isPresent();
 
 	}
 	
@@ -39,7 +38,7 @@ public class AuthenticateNRCommunicationQuery {
 	public static interface Require{
 		
 		//	[R-1] 就業情報端末を取得する
-		public Optional<FuncEmpInfoTerminalImport> getEmpInfoTerminal(String empInfoTerCode, String contractCode);
+		public Optional<String> getEmpInfoTerminalCodeMac(String contractCode, String macAddr);
 		
 		//	[R-2] 打刻カードを取得する
 		public Optional<StampCard> getByCardNoAndContractCode(String contractCode, String stampNumber);

@@ -21,6 +21,7 @@ import nts.uk.ctx.at.function.app.nrl.data.MarshalResult;
 import nts.uk.ctx.at.function.app.nrl.data.RequestData;
 import nts.uk.ctx.at.function.app.nrl.exceptions.ErrorCode;
 import nts.uk.ctx.at.function.app.nrl.exceptions.InvalidFrameException;
+import nts.uk.ctx.at.function.app.nrl.message.GetNotificationMessageQuery;
 import nts.uk.ctx.at.function.app.nrl.response.NRLResponse;
 import nts.uk.ctx.at.function.app.nrl.xml.DefaultXDocument;
 import nts.uk.ctx.at.function.app.nrl.xml.Element;
@@ -73,6 +74,7 @@ public class RequestDispatcher {
 		RequestMapper.put(Command.APPLICATION_INFO.Request, ApplicationReasonRequest.class);
 		RequestMapper.put(Command.UK_SWITCH_MODE.Request, DateTimeSwitchUKModeRequest.class);
 		RequestMapper.put(Command.TR_REMOTE_SEND_SETTING.Request, ReceiveNRLRemoteDataSetting.class);
+		RequestMapper.put(Command.MESSAGE.Request, GetNotificationMessageQuery.class);
 	}
 	
 	/**
@@ -209,6 +211,11 @@ public class RequestDispatcher {
 		@Override
 		public Optional<StampCard> getByCardNoAndContractCode(String contractCode, String stampNumber) {
 			return funcStampCardAdapter.getByCardNoAndContractCode(contractCode, stampNumber);
+		}
+
+		@Override
+		public Optional<String> getEmpInfoTerminalCodeMac(String contractCode, String macAddr) {
+			return rQEmpInfoTerminalAdapter.getEmpInfoTerminalCode(contractCode, macAddr);
 		}
 		
 	}

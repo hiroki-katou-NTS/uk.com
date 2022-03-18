@@ -130,7 +130,7 @@ public abstract class XDocument<T> {
 					length = DefaultValue.ALL_PETITIONS_PKT_LEN_XPL;
 					break;
 				default:
-					return null;
+					return IOUtils.toByteArray(input);
 			}
 			byte[] inputBytes = IOUtils.toByteArray(input);
 			length = pktLength - length;
