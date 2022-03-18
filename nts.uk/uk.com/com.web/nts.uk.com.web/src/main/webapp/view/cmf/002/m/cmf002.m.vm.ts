@@ -67,7 +67,9 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             self.inTimeDataFormatSetting().timeSeletion.subscribe((value)=> {
                 //※M5
                 self.enableSelectTimeCls (value == 0 && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
-
+                if (value == 1){
+                    self.inTimeDataFormatSetting().decimalSelection(1);
+                }
             })
 
         }
@@ -175,7 +177,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         //※M6
         decimalSelectionCls() {
             let self = this;
-            let enable = (self.inTimeDataFormatSetting().timeSeletion() == model.getTimeSelected()[0].code && self.inTimeDataFormatSetting().decimalSelection() == model.getTimeSelected()[1].code && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            let enable = (self.inTimeDataFormatSetting().decimalSelection() == model.getTimeSelected()[1].code && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
             if (!enable) {
                 self.inTimeDataFormatSetting().minuteFractionDigit(null);
                 $('#M3_1').ntsError('clear');
