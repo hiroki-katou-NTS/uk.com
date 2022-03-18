@@ -23,6 +23,7 @@ module nts.uk.at.kdp003.r {
 
         notiStopBySystem: KnockoutObservable<String> = ko.observable('');
         notiStopByCompany: KnockoutObservable<String> = ko.observable('');
+        regionalTime = 0;
 
         // ver50
         // R5 利用停止前内容
@@ -49,6 +50,7 @@ module nts.uk.at.kdp003.r {
                 vm.noticeSetting = params.setting;
 
                 vm.screen = params.screen;
+                vm.regionalTime = params.regionalTime;
             }
 
         }
@@ -314,6 +316,7 @@ module nts.uk.at.kdp003.r {
     export interface IParam {
         setting: NoticeSet;
         screen: String;
+        regionalTime: number;
     }
 
     interface IMessage {
