@@ -28,7 +28,7 @@ module nts.uk.at.view.kmp001.j {
 		]);
 
 		qrSize: KnockoutObservable<number> = ko.observable(0);
-		textEditorJ2_12: KnockoutObservable<number> = ko.observable(4);
+		textEditorJ2_12: KnockoutObservable<number> = ko.observable(5);
 		textEditorJ2_16: KnockoutObservable<number> = ko.observable(3);
 
 		created() {
@@ -75,7 +75,7 @@ module nts.uk.at.view.kmp001.j {
 				returnDataFromCcg001: function(data: any) {
 					const employees = data.listEmployee
 						.map((m: any) => ({
-							workplaceName: m.affiliationName,
+							affiliationName: m.affiliationName,
 							code: m.employeeCode,
 							name: m.employeeName,
 							id: m.employeeId
@@ -112,24 +112,24 @@ module nts.uk.at.view.kmp001.j {
 			vm.qrSize.subscribe((s) => {
 				switch (s) {
 					case 0:
-						vm.textEditorJ2_12(4);
+						vm.textEditorJ2_12(5);
 						vm.textEditorJ2_16(3);
 						break;
 					case 1:
-						vm.textEditorJ2_12(5);
+						vm.textEditorJ2_12(6);
 						vm.textEditorJ2_16(4);
 						break;
 					case 2:
-						vm.textEditorJ2_12(6);
-						vm.textEditorJ2_16(5);
+						vm.textEditorJ2_12(8);
+						vm.textEditorJ2_16(6);
 						break;
 				}
 			});
 
 			// 大
 			vm.textEditorJ2_12.subscribe((s) => {
-				if (vm.qrSize() == 0 && s > 4) {
-					vm.textEditorJ2_12(4);
+				if (vm.qrSize() == 0 && s > 5) {
+					vm.textEditorJ2_12(5);
 				}
 			});
 
@@ -141,8 +141,8 @@ module nts.uk.at.view.kmp001.j {
 
 			// 中
 			vm.textEditorJ2_12.subscribe((s) => {
-				if (vm.qrSize() == 1 && s > 5) {
-					vm.textEditorJ2_12(5);
+				if (vm.qrSize() == 1 && s > 6) {
+					vm.textEditorJ2_12(6);
 				}
 			});
 
@@ -154,14 +154,14 @@ module nts.uk.at.view.kmp001.j {
 
 			// 小
 			vm.textEditorJ2_12.subscribe((s) => {
-				if (vm.qrSize() == 2 && s > 6) {
-					vm.textEditorJ2_12(6);
+				if (vm.qrSize() == 2 && s > 8) {
+					vm.textEditorJ2_12(8);
 				}
 			});
 
 			vm.textEditorJ2_16.subscribe((s) => {
-				if (vm.qrSize() == 2 && s > 5) {
-					vm.textEditorJ2_16(5);
+				if (vm.qrSize() == 2 && s > 6) {
+					vm.textEditorJ2_16(6);
 				}
 			});
 

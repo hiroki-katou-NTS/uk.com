@@ -23,6 +23,7 @@ module nts.uk.at.kdp003.r {
 
         notiStopBySystem: KnockoutObservable<String> = ko.observable('');
         notiStopByCompany: KnockoutObservable<String> = ko.observable('');
+        regionalTime = 0;
 
         // ver50
         // R5 利用停止前内容
@@ -49,6 +50,7 @@ module nts.uk.at.kdp003.r {
                 vm.noticeSetting = params.setting;
 
                 vm.screen = params.screen;
+                vm.regionalTime = params.regionalTime;
             }
 
         }
@@ -99,8 +101,8 @@ module nts.uk.at.kdp003.r {
                 const noticeParam: NoticeParam = {
                     //システム日付～システム日付
                     periodDto: new DatePeriod({
-                        startDate: moment().toDate(),
-                        endDate: moment().toDate()
+                        startDate: moment().add(vm.regionalTime, 'm').toDate(),
+                        endDate: moment().add(vm.regionalTime, 'm').toDate()
                     }),
 
                     //「localStorage.選択職場ID」(List)
@@ -150,8 +152,8 @@ module nts.uk.at.kdp003.r {
                 const noticeParam: NoticeParam = {
                     //システム日付～システム日付
                     periodDto: new DatePeriod({
-                        startDate: moment(vm.$date.now()).toDate(),
-                        endDate: moment(vm.$date.now()).toDate()
+                        startDate: moment(vm.$date.now()).add(vm.regionalTime, 'm').toDate(),
+                        endDate: moment(vm.$date.now()).add(vm.regionalTime, 'm').toDate()
                     }),
 
                     //「localStorage.選択職場ID」(List)
@@ -314,6 +316,7 @@ module nts.uk.at.kdp003.r {
     export interface IParam {
         setting: NoticeSet;
         screen: String;
+        regionalTime: number;
     }
 
     interface IMessage {

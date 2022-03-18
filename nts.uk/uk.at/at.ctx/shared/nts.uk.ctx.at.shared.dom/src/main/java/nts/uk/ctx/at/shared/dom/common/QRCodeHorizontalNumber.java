@@ -10,7 +10,7 @@ import nts.arc.primitive.constraint.IntegerMinValue;
  * 
  */
 @IntegerMinValue(1)
-@IntegerMaxValue(5)
+@IntegerMaxValue(6)
 public class QRCodeHorizontalNumber extends IntegerPrimitiveValue<QRCodeHorizontalNumber> {
 	private static final long serialVersionUID = 1L;
 

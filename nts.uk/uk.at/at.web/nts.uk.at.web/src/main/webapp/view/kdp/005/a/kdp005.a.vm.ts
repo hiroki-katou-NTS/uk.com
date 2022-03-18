@@ -504,7 +504,7 @@ module nts.uk.at.view.kdp005.a {
 						
 						// QRコード　の場合
 						if (authcMethod == 1) {
-							modal('at', '/view/kdp/005/q/index.xhtml').onClosed(function(): any {
+							modal('at', '/view/kdp/005/h2/index.xhtml').onClosed(function(): any {
 								let ICCard = getShared('ICCardFromQRCode');
 								if (ICCard && ICCard != '') {
 									block.grayout();
@@ -586,7 +586,7 @@ module nts.uk.at.view.kdp005.a {
 
 				// QRコード　の場合
 				if (authcMethod == 1) {
-					modal('at', '/view/kdp/005/q/index.xhtml').onClosed(function(): any {
+					modal('at', '/view/kdp/005/h2/index.xhtml').onClosed(function(): any {
 						let ICCard = getShared('ICCardFromQRCode');
 						if (ICCard && ICCard != '') {
 							block.grayout();
@@ -973,8 +973,11 @@ module nts.uk.at.view.kdp005.a {
 			shoNoti() {
 				const self = this;
 				let vm = new ko.ViewModel();
-				const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP005' };
-				vm.$window.modal(DIALOG.R, param);
+				vm.$window.storage("workLocationInfo").then((workLocInfo) => {
+					const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP005', regionalTime: workLocInfo.regional };
+
+					vm.$window.modal(DIALOG.R, param);
+				});
 			}
 
 			settingNoti() {
@@ -1042,9 +1045,11 @@ module nts.uk.at.view.kdp005.a {
 
                                                         setTimeout(() => {
                                                             self.totalOpenViewR++;
-                                                            const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP005' };
-
-                                                            vm.$window.modal(DIALOG.R, param);
+															vm.$window.storage("workLocationInfo").then((workLocInfo) => {
+																const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP005', regionalTime: workLocInfo.regional };
+											
+																vm.$window.modal(DIALOG.R, param);
+															});
                                                         }, 1000);
                                                     }
                                                 }
@@ -1072,9 +1077,11 @@ module nts.uk.at.view.kdp005.a {
 
                                                     setTimeout(() => {
                                                         self.totalOpenViewR++;
-                                                        const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP005' };
-
-                                                        vm.$window.modal(DIALOG.R, param);
+														vm.$window.storage("workLocationInfo").then((workLocInfo) => {
+															const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP005', regionalTime: workLocInfo.regional };
+										
+															vm.$window.modal(DIALOG.R, param);
+														});
                                                     }, 1000);
                                                 }
                                             }
