@@ -18,6 +18,7 @@ public enum ActualWorkTimeSheetAtr {
 	public boolean isWithinWorkTime() {
 		return this.equals(WithinWorkTime);
 	}
+
 	
 	/**
 	 * 残業か
