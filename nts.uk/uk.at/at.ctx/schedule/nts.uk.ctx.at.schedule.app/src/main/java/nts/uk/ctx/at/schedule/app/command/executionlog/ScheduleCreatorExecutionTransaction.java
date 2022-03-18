@@ -1618,9 +1618,7 @@ public class ScheduleCreatorExecutionTransaction {
 	// 勤務種類から出勤系の勤務種類設定を取得する（勤務種類）： 勤務種類設定（Optional））: 115638
 	private Optional<WorkTypeSet>  getWorkTimeSet(WorkType workType) {
 		Optional<WorkTypeSet> workTypeSet = Optional.empty();
-			Optional<WorkAtr> workAtrOpt = workType.getWorkAtrForAbsenceDay();
-			if (workAtrOpt.isPresent()) {
-				WorkAtr workAtr = workAtrOpt.get();
+		List<WorkTypeSet> workTypeSetList = workType.getWorkTypeSetList();
 				// 1日半日出勤・1日休日系の判定（休出判定あり）
 				AttendanceDayAttr attDayAttr = workType.chechAttendanceDay();
 				switch(attDayAttr) {
@@ -1629,15 +1627,14 @@ public class ScheduleCreatorExecutionTransaction {
 					break;
 				/** 半日出勤系(午後) */
 				case HALF_TIME_PM:
-					workTypeSet = workType.getWorkTypeSetByAtr(workAtr);
+					workTypeSet = workTypeSetList.stream().filter(wkTS -> wkTS.getWorkAtr() == WorkAtr.Afternoon).findAny();
 					break;
 					/** １日出勤系 OR 休出*/
 				default:
-					workTypeSet = workType.getWorkTypeSetByAtr(workAtr);
+					workTypeSet = workTypeSetList.stream().filter(wkTS -> wkTS.getWorkAtr() == WorkAtr.OneDay ||  wkTS.getWorkAtr() == WorkAtr.Monring).findAny();
 					break;
 				}
-			}
-			return workTypeSet;
+		return workTypeSet;
 	}
 
 	@AllArgsConstructor
