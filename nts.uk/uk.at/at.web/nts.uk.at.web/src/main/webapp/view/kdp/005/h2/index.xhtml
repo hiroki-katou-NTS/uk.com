@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script src="../../share/QRCodeScanner.js">
+				
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="kdp005.h2.vm.js" />
+			<script>
+				var dialogSize = {
+					width : 402,
+					height : 450
+				};
+			</script>
+
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area" style="display: none; height: 0;"></div>
+			<div class="contents-area">
+
+				<div id="divScan" class="float-left"
+					style="width: 400px; height: 334px">
+					<div style="width: 100%;" id="reader"></div>
+
+					<button id="btn-clear" style="color: #FFFFFF; width: 400px">
+						ＱＲコード読み取り</button>
+
+					<div style="width: 327px; padding-left: 40px; ">
+						<label id="lbl-error" style="color: red; font-weight: bold;">#{i18n.getText('KDP005_22')}</label>
+					</div>
+
+					<div style="margin-top: 15px; text-align: center;">
+						<button id="btn-cancel" tabindex="3" class="x-large">#{i18n.getText('KDP005_8')}</button>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
+
