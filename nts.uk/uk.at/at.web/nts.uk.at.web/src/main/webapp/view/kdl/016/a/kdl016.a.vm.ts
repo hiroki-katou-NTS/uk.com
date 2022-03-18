@@ -441,7 +441,7 @@ module nts.uk.at.view.kdl016.a {
                 return parseInt(dateVale[0].split('/').join('')) == parseInt(expression.split('/').join(''));
             }
             if (dateVale.length == 2) {
-                return parseInt(dateVale[0].split('/').join('')) <= parseInt(expression.split('/').join('')) ||
+                return parseInt(dateVale[0].split('/').join('')) <= parseInt(expression.split('/').join('')) &&
                     parseInt(dateVale[1].split('/').join('')) >= parseInt(expression.split('/').join(''));
             }
         }
