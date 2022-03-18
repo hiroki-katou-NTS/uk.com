@@ -504,7 +504,7 @@ module nts.uk.at.view.kdp005.a {
 						
 						// QRコード　の場合
 						if (authcMethod == 1) {
-							modal('at', '/view/kdp/005/q/index.xhtml').onClosed(function(): any {
+							modal('at', '/view/kdp/005/h2/index.xhtml').onClosed(function(): any {
 								let ICCard = getShared('ICCardFromQRCode');
 								if (ICCard && ICCard != '') {
 									block.grayout();
