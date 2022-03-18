@@ -23,7 +23,23 @@
           { prop: 'name', length: 10 },
         ]}">
       </div>
-    </div>
+
+		<!--B2_4-->
+		<input tabindex="20" class="init-data-text init-text8"
+			data-bind="ntsTextEditor: {
+		            value: initDataText8, 
+		            constraint: ['ExternalOutputConditionCode'],
+		            enable: salaryCooperationClassification,
+		            name: '#[SMM001_19]'}" />
+		            
+        <!-- B2_5 -->
+        <button tabindex="21" class= "large init-data-button" 
+        							data-bind="enable: salaryCooperationClassification,
+        										click: salary">
+        	#{i18n.getText('SMM001_18')}
+        </button>   		            
+		
+	</div>
   </div>
 
   <div class="smile-div">
@@ -31,9 +47,9 @@
       #{i18n.getText('SMM001_9')}
     </div>
     <div class="ml-2">
-      <label tabindex="20"
+      <label tabindex="22"
         data-bind="ntsRadioButton: { checked: monthlyLockClassification, optionText: DO_TEXT, checkedValue: 1, group: 'lockClassification' }"></label>
-      <label tabindex="21"
+      <label tabindex="23"
         data-bind="ntsRadioButton: { checked: monthlyLockClassification, optionText: DO_NOT_TEXT, checkedValue: 0, group: 'lockClassification' }"></label>
     </div>
   </div>
@@ -42,9 +58,9 @@
       #{i18n.getText('SMM001_10')}
     </div>
     <div class="ml-2">
-      <label tabindex="23"
-        data-bind="ntsRadioButton: { checked: monthlyApprovalCategory, optionText: DO_TEXT, checkedValue: 1, group: 'approvalCategory' }"></label>
       <label tabindex="24"
+        data-bind="ntsRadioButton: { checked: monthlyApprovalCategory, optionText: DO_TEXT, checkedValue: 1, group: 'approvalCategory' }"></label>
+      <label tabindex="25"
         data-bind="ntsRadioButton: { checked: monthlyApprovalCategory, optionText: DO_NOT_TEXT, checkedValue: 0, group: 'approvalCategory' }"></label>
     </div>
   </div>

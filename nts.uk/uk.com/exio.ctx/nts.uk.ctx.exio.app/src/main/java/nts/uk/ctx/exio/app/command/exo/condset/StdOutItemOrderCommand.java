@@ -24,4 +24,13 @@ public class StdOutItemOrderCommand {
 	 * 順序
 	 */
 	private int order;
+
+	public StdOutItemOrderCommand(String cid, String outItemCd, String condSetCd, int order) {
+		super();
+		this.cid = cid;
+		this.outItemCd = outItemCd;
+		this.condSetCd = condSetCd;
+		this.order = order;
+	}
+	
 }

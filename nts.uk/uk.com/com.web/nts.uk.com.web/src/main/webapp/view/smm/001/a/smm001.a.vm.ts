@@ -310,7 +310,7 @@ module nts.uk.com.view.smm001.a {
         const vm = this;
         nts.uk.ui.errors.clearAll()
         if(!vm.initDataText1()){
-            vm.$dialog.error("Msg_3325");
+            vm.$dialog.error({ messageId: "Msg_3325" });
             return;
         }
         $('.init-text1').ntsError('check');
@@ -322,7 +322,7 @@ module nts.uk.com.view.smm001.a {
         const vm = this;
         nts.uk.ui.errors.clearAll()
         if(!vm.initDataText2()){
-            vm.$dialog.error("Msg_3325");
+            vm.$dialog.error({ messageId: "Msg_3325" });
             return;    
         }
         $('.init-text2').ntsError('check');
@@ -334,7 +334,7 @@ module nts.uk.com.view.smm001.a {
         const vm = this;
         nts.uk.ui.errors.clearAll()
         if(!vm.initDataText3()){
-            vm.$dialog.error("Msg_3325");
+            vm.$dialog.error({ messageId: "Msg_3325" });
             return;
         }
         $('.init-text3').ntsError('check');
@@ -346,7 +346,7 @@ module nts.uk.com.view.smm001.a {
         const vm = this;
         nts.uk.ui.errors.clearAll()
         if(!vm.initDataText4()){
-            vm.$dialog.error("Msg_3325");
+            vm.$dialog.error({ messageId: "Msg_3325" });
             return;
         }            
         $('.init-text4').ntsError('check');
@@ -358,7 +358,7 @@ module nts.uk.com.view.smm001.a {
         const vm = this;
         nts.uk.ui.errors.clearAll()
         if(!vm.initDataText5()){
-            vm.$dialog.error("Msg_3325");
+            vm.$dialog.error({ messageId: "Msg_3325" });
             return;
         }            
         $('.init-text5').ntsError('check');
@@ -370,7 +370,7 @@ module nts.uk.com.view.smm001.a {
         const vm = this;
         nts.uk.ui.errors.clearAll()
         if(!vm.initDataText6()){
-            vm.$dialog.error("Msg_3325");
+            vm.$dialog.error({ messageId: "Msg_3325" });
             return;
         }            
         $('.init-text6').ntsError('check');
@@ -382,7 +382,7 @@ module nts.uk.com.view.smm001.a {
         const vm = this;
         nts.uk.ui.errors.clearAll()
         if(!vm.initDataText7()){
-            vm.$dialog.error("Msg_3325");
+            vm.$dialog.error({ messageId: "Msg_3325" });
             return;
         }            
         $('.init-text7').ntsError('check');

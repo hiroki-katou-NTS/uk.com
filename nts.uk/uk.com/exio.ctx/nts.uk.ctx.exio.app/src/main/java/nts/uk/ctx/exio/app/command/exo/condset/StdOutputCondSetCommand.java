@@ -71,4 +71,27 @@ public class StdOutputCondSetCommand implements StdOutputCondSet.MementoGetter {
 
 	private List<StdOutItemOrderCommand> listStandardOutputItem;
 
+	public StdOutputCondSetCommand(String companyId, String conditionSetCode, int categoryId, int delimiter,
+			int itemOutputName, int autoExecution, String conditionSetName, int conditionOutputName, int stringFormat,
+			Long version, String copyDestinationCode, boolean overWrite, boolean newMode, String destinationName,
+			int standType, List<StdOutItemOrderCommand> listStandardOutputItem) {
+		super();
+		this.companyId = companyId;
+		this.conditionSetCode = conditionSetCode;
+		this.categoryId = categoryId;
+		this.delimiter = delimiter;
+		this.itemOutputName = itemOutputName;
+		this.autoExecution = autoExecution;
+		this.conditionSetName = conditionSetName;
+		this.conditionOutputName = conditionOutputName;
+		this.stringFormat = stringFormat;
+		this.version = version;
+		this.copyDestinationCode = copyDestinationCode;
+		this.overWrite = overWrite;
+		this.newMode = newMode;
+		this.destinationName = destinationName;
+		this.standType = standType;
+		this.listStandardOutputItem = listStandardOutputItem;
+	}
+	
 }
