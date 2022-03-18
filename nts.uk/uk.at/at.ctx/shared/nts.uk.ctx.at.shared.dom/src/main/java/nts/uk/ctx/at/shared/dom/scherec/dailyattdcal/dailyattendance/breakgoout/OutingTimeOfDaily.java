@@ -29,6 +29,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.OutingCalcWithinCoreTime;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -170,9 +171,9 @@ public class OutingTimeOfDaily {
 							.map(o -> o.getTimeVacationUseOfDaily())
 							.findFirst());
 			//計上用合計時間
-			recordTotalTime = calcOutingTimeDeductAppro(oneDay, reason, outingCalcSet, DeductionAtr.Appropriate); 
+			recordTotalTime = calcOutingTimeDeductAppro(oneDay, reason, outingCalcSet, DeductionAtr.Appropriate, commonSetting.map(c -> c.getGoOutSet())); 
 			//控除用合計時間
-			dedTotalTime = calcOutingTimeDeductAppro(oneDay, reason, outingCalcSet, DeductionAtr.Deduction);
+			dedTotalTime = calcOutingTimeDeductAppro(oneDay, reason, outingCalcSet, DeductionAtr.Deduction, commonSetting.map(c -> c.getGoOutSet()));
 			//補正後時間帯 
 		}
 		return new OutingTimeOfDaily(
@@ -187,14 +188,14 @@ public class OutingTimeOfDaily {
 	//外出合計時間の計算
 	private static OutingTotalTime calcOutingTimeDeductAppro(CalculationRangeOfOneDay oneDay,
 			GoingOutReason reason,
-			Optional<OutingCalcWithinCoreTime> outingCalcSet, DeductionAtr deductAtr) {
+			Optional<OutingCalcWithinCoreTime> outingCalcSet, DeductionAtr deductAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
 		
 		//外出時間の計算
-		OutingTotalTime recordTotalTime = OutingTotalTime.calcOutingTime(oneDay, deductAtr, reason, outingCalcSet,
+		OutingTotalTime recordTotalTime = OutingTotalTime.calcOutingTime(oneDay, deductAtr, reason, outingCalcSet, goOutSet,
 				deductAtr == DeductionAtr.Deduction ? NotUseAtr.NOT_USE : NotUseAtr.USE);
 
 		//計算外出時間の計算
-		OutingTotalTime calcTotalTime = OutingTotalTime.calcOutingTime(oneDay, deductAtr, reason, outingCalcSet, NotUseAtr.NOT_USE);
+		OutingTotalTime calcTotalTime = OutingTotalTime.calcOutingTime(oneDay, deductAtr, reason, outingCalcSet, goOutSet, NotUseAtr.NOT_USE);
 		
 		return OutingTotalTime.of(
 				TimeWithCalculation.mergeTimeAndCalcTime(recordTotalTime.getTotalTime(), calcTotalTime.getTotalTime()),

@@ -51,7 +51,7 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 		
 		CanonicalizeUtil.forEachRow(require, context, revisedData -> {
 			
-			KeyValues key = getPrimaryKeys(revisedData, workspace);
+			KeyValues key = getWorkspacePrimaryKeyValues(revisedData, workspace);
 			if (importingKeys.contains(key)) {
 				require.add(ExternalImportError.record(revisedData.getRowNo(), context.getDomainId(),"受入データの中にキーの重複があります。"));
 				return; // 次のレコードへ
@@ -61,52 +61,60 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 			
 			// データ自体を正準化する必要は無い
 			val intermResult = IntermediateResult.create(revisedData);
-			canonicalize(require, context, intermResult, key);
+			canonicalize(require, context, intermResult);
 		});
 	}
-	
+
 	/**
-	 * Record(CSV行番号, 編集済みの項目List)のListの方からworkspaceの項目Noに一致しているやつの値を取る 
+	 * WorkspaceとしてのPrimaryKeyを取得する
 	 */
-	protected KeyValues getPrimaryKeys(RevisedDataRecord record, DomainWorkspace workspace) {
-		val itemNos = getDomainDataKeys().stream()
-				.map(d -> d.getItemNo())
-				.collect(Collectors.toList());
+	private KeyValues getWorkspacePrimaryKeyValues(RevisedDataRecord record, DomainWorkspace workspace) {
+		val itemNos = workspace.getPkItemNos();
 		return KeyValues.create(IntermediateResult.create(record), itemNos);
-	}
-	
-	/**
-	 * 既存データの補正に使用する主キーが格納される項目NOを返す（Workspaceとは別の主キーを指定したければOverrideすること）
-	 * @return
-	 */
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
-		return workspace.getPkItemNos();
 	}
 
 	protected void canonicalize(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
-			IntermediateResult intermResult,
-			KeyValues keyValues) {
-		
-		val domainDataId = DomainDataId.createDomainDataId(getParentTableName(), getDomainDataKeys(), keyValues);
+			IntermediateResult intermResult) {
+
+		//追加の正準化処理
+		val intermExtends = canonicalizeExtends(require, context, intermResult);
+		if(intermExtends.isPresent()){
+			intermResult = intermExtends.get();
+		} else {
+			// 追加の正準化で受け入れない場合は無視する
+			return;
+		}
+
+		val domainDataKeyValues = KeyValues.create(intermResult, getDomainKeyNos());
+		val domainDataId = DomainDataId.createDomainDataId(getParentTableName(), getDomainDataKeys(), domainDataKeyValues);
 		boolean exists = require.existsDomainData(domainDataId);
-		
+
 		// 受け入れず無視するケース
 		if (!context.getMode().canImport(exists)) {
 			return;
 		}
-		
+
+		// 正準化した結果を永続化
+		require.save(context, intermResult.complete());
+
+		// 既存データの調整準備
+		prepareAdjust(require, context, domainDataKeyValues);
+	}
+
+	/**
+	 * 既存データを調整するための準備
+	 * @param require
+	 * @param context
+	 * @param domainDataKeyValues
+	 */
+	private void prepareAdjust(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, KeyValues domainDataKeyValues) {
 		if (context.getMode() == DELETE_RECORD_BEFOREHAND) {
 			// 既存データがあれば削除する（DELETE文になるので、実際にデータがあるかどうかのチェックは不要）
 			val workspace = require.getDomainWorkspace(context.getDomainId());
-			require.save(context, toDelete(context, workspace, keyValues));
+			require.save(context, toDelete(context, workspace, domainDataKeyValues));
 		}
-		
-		//追加の正規化処理やって、データを登録したくない場合はOptional.empty
-		canonicalizeExtends(require, context, intermResult).ifPresent(interm ->{
-			require.save(context, interm.complete());
-		});
 	}
 	
 	/**
@@ -122,13 +130,23 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 		return Optional.of(targertResult);
 	}
 
+
+	/**
+	 * DomainとしてのKey項目のNo一覧を取得する
+	 */
+	private List<Integer> getDomainKeyNos() {
+		return getDomainDataKeys().stream()
+				.map(d -> d.getItemNo())
+				.collect(Collectors.toList());
+	}
+
 	private AnyRecordToDelete toDelete(
 			ExecutionContext context,
 			DomainWorkspace workspace,
 			KeyValues keyValues) {
 		
 		val toDelete = AnyRecordToDelete.create(context); 
-		val keys = getPrimaryKeyItemNos(workspace);
+		val keys = getDomainKeyNos();
 		
 		for (int i = 0; i < keys.size(); i++) {
 			val pkItemNo = keys.get(i);

@@ -49,6 +49,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WorkHour;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.StaggerDiductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.service.ActualWorkTimeSheetListService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
@@ -62,6 +63,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
@@ -1025,9 +1027,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @return 控除時間
 	 */
 	public AttendanceTime getDeductionTime(
-			ConditionAtr conditionAtr, DeductionAtr dedAtr, TimeSheetRoundingAtr roundAtr, NotUseAtr canOffset) {
+			ConditionAtr conditionAtr, DeductionAtr dedAtr, Optional<WorkTimezoneGoOutSet> goOutSet, NotUseAtr canOffset) {
 		
-		return ActualWorkTimeSheetListService.calcDeductionTime(conditionAtr, dedAtr, roundAtr,
+		return ActualWorkTimeSheetListService.calcDeductionTime(ActualWorkTimeSheetAtr.WithinWorkTime, conditionAtr, dedAtr, goOutSet,
 				this.withinWorkTimeFrame.stream().map(tc -> (ActualWorkingTimeSheet)tc).collect(Collectors.toList()), canOffset);
 	}
 	
@@ -1374,8 +1376,13 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			// 上限実働就業時間をセット
 			this.limitActualWorkTime = Optional.empty();
 			
-			// 控除時間帯と重複している分、退勤時刻を後ろにずらす
-			endTime = new TimeSpanForDailyCalc(startTime, endTime).forwardByDeductionTime(deductionTimeSheet.getForDeductionTimeZoneList());
+			// 控除時間分、終了時刻をズラす
+			StaggerDiductionTimeSheet forward = new StaggerDiductionTimeSheet(
+					new TimeSpanForDailyCalc(startTime, endTime),
+					this.withinWorkTimeFrame.get(0).getRounding(),
+					deductionTimeSheet.getForDeductionTimeZoneList());
+			endTime = forward.getForwardEnd(ActualWorkTimeSheetAtr.WithinWorkTime, integrationOfWorkTime.getCommonSetting(),
+					personDailySetting.getAddSetting().getVacationCalcMethodSet());
 			
 		}
 		// 残業開始時刻

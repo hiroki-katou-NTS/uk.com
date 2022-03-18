@@ -35,7 +35,7 @@ public class TenantAuthenticationResult {
 	
 	/**
 	 * テナントの特定に失敗
-	 * @param data.failureLog
+	 * @param atomTask
 	 * @return
 	 */
 	public static TenantAuthenticationResult failedToIdentifyTenant(AtomTask atomTask) {
@@ -44,7 +44,7 @@ public class TenantAuthenticationResult {
 	
 	/**
 	 * テナントのパスワード検証に失敗
-	 * @param data.failureLog
+	 * @param atomTask
 	 * @return
 	 */
 	public static TenantAuthenticationResult failedDueToIncorrectPassword(AtomTask atomTask) {
@@ -53,7 +53,7 @@ public class TenantAuthenticationResult {
 	
 	/**
 	 * テナントの有効期限切れ
-	 * @param data.failureLog
+	 * @param atomTask
 	 * @return
 	 */
 	public static TenantAuthenticationResult failedDueToExpiration(AtomTask atomTask) {

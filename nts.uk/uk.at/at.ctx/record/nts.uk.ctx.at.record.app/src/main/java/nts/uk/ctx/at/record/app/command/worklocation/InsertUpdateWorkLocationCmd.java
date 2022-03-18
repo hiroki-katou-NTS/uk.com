@@ -28,14 +28,14 @@ public class InsertUpdateWorkLocationCmd {
 
 	/** 名称 */
 	private String workLocationName; 
-	
+
 	/** 打刻範囲.半径 */
-	private int radius;
+	private Integer radius;
 	
 	/** 打刻範囲.地理座標 .latitude */
-	private double latitude;
+	private Double latitude;
 	/** 打刻範囲.地理座標 .longitude */
-	private double longitude;
+	private Double longitude;
 	
 	/** IPアドレス一覧*/
 	private List<Ipv4AddressDto> listIPAddress;
@@ -47,10 +47,9 @@ public class InsertUpdateWorkLocationCmd {
 		return new WorkLocation(
 				new ContractCode(AppContexts.user().contractCode()),
 				new WorkLocationCD(this.workLocationCD), 
-				new WorkLocationName(this.workLocationName), 
-				new StampMobilePossibleRange(
-						RadiusAtr.toEnum(this.radius), 
-						new GeoCoordinate(this.latitude, this.longitude)),
+				new WorkLocationName(this.workLocationName),
+				Optional.ofNullable(radius == null || latitude == null || longitude == null ?
+						null : new StampMobilePossibleRange(RadiusAtr.toEnum(radius), new GeoCoordinate(latitude, longitude))),
 				this.listIPAddress.stream().map(c->c.toDomain()).collect(Collectors.toList()),
 				this.workplace == null ? Optional.empty() : Optional.of(this.workplace.toDomain()));
 	}
@@ -58,10 +57,10 @@ public class InsertUpdateWorkLocationCmd {
 	public static InsertUpdateWorkLocationCmd toDto(WorkLocation domain) {
 		return new InsertUpdateWorkLocationCmd(
 				domain.getWorkLocationCD().v(), 
-				domain.getWorkLocationName().v(), 
-				domain.getStampRange().getRadius().value,
-				domain.getStampRange().getGeoCoordinate().getLatitude(),
-				domain.getStampRange().getGeoCoordinate().getLongitude(),
+				domain.getWorkLocationName().v(),
+				domain.getStampRange().map(s -> s.getRadius().value).orElse(null),
+				domain.getStampRange().map(s -> s.getGeoCoordinate().getLatitude()).orElse(null),
+				domain.getStampRange().map(s -> s.getGeoCoordinate().getLongitude()).orElse(null),
 				domain.getListIPAddress().stream().map(c-> new Ipv4AddressDto(c)).collect(Collectors.toList()),
 				domain.getWorkplace().map(c-> WorkplacePossibleCmd.toDto(c)).orElse(null));
 	}

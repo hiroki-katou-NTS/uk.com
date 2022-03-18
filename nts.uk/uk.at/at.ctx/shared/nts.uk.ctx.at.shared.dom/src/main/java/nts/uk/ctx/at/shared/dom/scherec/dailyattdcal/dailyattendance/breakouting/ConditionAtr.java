@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
 /**
@@ -63,6 +65,29 @@ public enum ConditionAtr {
 				return PublicGoOut;
 			default:
 				throw new RuntimeException("unknown GoOutReason in ConditionAtr:"+goingOutReason);
+		}
+	}
+
+	/**
+	 * 変換する
+	 * @return 外出理由
+	 */
+	public Optional<GoingOutReason> toGoingOutReason() {
+		switch(this) {
+		//私用
+		case PrivateGoOut:
+			return Optional.of(GoingOutReason.PRIVATE);
+		//公用
+		case PublicGoOut:
+			return Optional.of(GoingOutReason.PUBLIC);
+		//有償
+		case CompesationGoOut:
+			return Optional.of(GoingOutReason.COMPENSATION);
+		//組合
+		case UnionGoOut:
+			return Optional.of(GoingOutReason.UNION);
+		default:
+			return Optional.empty();
 		}
 	}
 }

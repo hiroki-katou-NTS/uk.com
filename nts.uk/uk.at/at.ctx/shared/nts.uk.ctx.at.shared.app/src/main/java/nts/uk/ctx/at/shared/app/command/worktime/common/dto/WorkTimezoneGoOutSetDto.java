@@ -5,8 +5,8 @@
 package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 
 import lombok.Value;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetGetMemento;
 
 /**
@@ -15,8 +15,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetGetMemento;
 @Value
 public class WorkTimezoneGoOutSetDto implements WorkTimezoneGoOutSetGetMemento {
 
-	/** The total rounding set. */
-	private TotalRoundingSetDto totalRoundingSet;
+	/** The rounding method. */
+	private Integer roundingMethod;
 
 	/** The diff timezone setting. */
 	private GoOutTimezoneRoundingSetDto diffTimezoneSetting;
@@ -26,11 +26,11 @@ public class WorkTimezoneGoOutSetDto implements WorkTimezoneGoOutSetGetMemento {
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetGetMemento#
-	 * getTotalRoundingSet()
+	 * getRoundingMethod()
 	 */
 	@Override
-	public TotalRoundingSet getTotalRoundingSet() {
-		return new TotalRoundingSet(this.totalRoundingSet);
+	public GoOutTimeRoundingMethod getRoundingMethod() {
+		return GoOutTimeRoundingMethod.valueOf(this.roundingMethod);
 	}
 
 	/*

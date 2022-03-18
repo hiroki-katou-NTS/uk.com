@@ -12,7 +12,7 @@ import nts.gul.location.GeoCoordinate;
 public class StampMobilePossibleRangeTest {
 	@Test
 	public void getters() {
-		StampMobilePossibleRange stampRange = WorkLocationHelper.getDefault().getStampRange();
+		StampMobilePossibleRange stampRange = WorkLocationHelper.getDefault().getStampRange().get();
 		NtsAssert.invokeGetters(stampRange);
 	}
 

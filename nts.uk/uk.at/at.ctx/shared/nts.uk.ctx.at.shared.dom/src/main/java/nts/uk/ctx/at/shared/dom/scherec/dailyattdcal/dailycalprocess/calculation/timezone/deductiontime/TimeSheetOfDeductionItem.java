@@ -663,16 +663,16 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 			if(this.getWorkingBreakAtr().isWorking()) {
 				return Optional.empty();
 			}
-			return Optional.of(rounding);
+			return Optional.of(this.rounding);
 		//介護
 		case CHILD_CARE:
 			return getShortTimeRounding(dedAtr, commonSet,rounding);
 		//外出
 		case GO_OUT:
-			if(actualAtr.isWithinWorkTime()) {
-				return goOutingRoundingActual(commonSet.getGoOutSet(), actualAtr, dedAtr,rounding);
+			if(!this.goOutReason.isPresent()) {
+				return Optional.empty();
 			}
-			return Optional.of(new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN));
+			return commonSet.getGoOutSet().getInFrame(actualAtr, this.goOutReason.get(), dedAtr, rounding);
 		//計上無し
 		case NON_RECORD:
 			return Optional.of(rounding);
@@ -716,7 +716,11 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 						return beforeAttendance.isPresent()?Optional.of(beforeAttendance.get().getDelTimeRoundingSet()):Optional.empty();
 						//勤務中
 					case WORKING_TIME:
-						return goOutingRoundingActual(commonSet.getGoOutSet(),ActualWorkTimeSheetAtr.WithinWorkTime,dedAtr,rounding);
+						return Optional.of(commonSet.getGoOutSet().getDiffTimezoneSetting().getRoundingSet(
+								ActualWorkTimeSheetAtr.WithinWorkTime,
+								GoingOutReason.PRIVATE,
+								dedAtr,
+								rounding));
 					default:
 						throw new RuntimeException("Unknown shortTimeSheetAtr:"+ this.getShortTimeSheetAtr().get());
 					}
@@ -729,98 +733,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		}
 	}
 	
-	
-	/**
-	 * 就内・残業・休出どの設定を使用するか決定する
-	 * @param goOutSet　外出設定
-	 * @param actualAtr　実働時間帯区分
-	 * @param dedAtr　控除区分
-	 * @return　外出丸め設定
-	 */
-	private Optional<TimeRoundingSetting> goOutingRoundingActual(WorkTimezoneGoOutSet goOutSet,ActualWorkTimeSheetAtr actualAtr,DeductionAtr dedAtr,TimeRoundingSetting rounding){
-		
-		if(goOutSet.getTotalRoundingSet().getSetSameFrameRounding().isRoundingAndTotal()) {
-			switch(actualAtr) {
-			//就業時間内
-			case WithinWorkTime:
-				return goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getWorkTimezone(),rounding);
-			//残業
-			case EarlyWork://早出
-			case OverTimeWork://普通
-			case StatutoryOverTimeWork://法内
-				return goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getOttimezone(),rounding);
-			//休出
-			case HolidayWork:
-				return goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getPubHolWorkTimezone(),rounding);
-			default:
-				throw new RuntimeException("Unknown ActualAtr:"+actualAtr);
-			}
-		}
-		
-		return Optional.of(new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN));
-	}
-	
-	/**
-	 * 外出理由からどの設定を参照するか決定する
-	 * @param dedAtr 控除区分
-	 * @param set　丸め設定
-	 * @return 外出時丸め設定取得(逆丸め、丸め判定)
-	 */
-	private Optional<TimeRoundingSetting> goOutingRounding(DeductionAtr dedAtr,GoOutTypeRoundingSet set,TimeRoundingSetting rounding) {
-		if(this.getGoOutReason() != null
-		 &&this.getGoOutReason().isPresent()) {
-			switch(this.getGoOutReason().get()) {
-			case PRIVATE://私用
-			case UNION://組合
-				return Optional.of(goOutingRond(dedAtr,set.getPrivateUnionGoOut(), rounding));
-			case COMPENSATION://公用
-			case PUBLIC://有償
-				return Optional.of(goOutingRond(dedAtr,set.getOfficalUseCompenGoOut(), rounding));
-			default://例外
-				throw new RuntimeException("Unknown GoOutReason:"+this.getGoOutReason().get());
-			}
-		}
-		return Optional.empty();
-	}
-	
-	/**
-	 * 控除or計上どちらを使用する蚊決定する
-	 * @param dedAtr 控除区分
-	 * @param set 丸め設定
-	 * @return　外出時丸め設定取得(逆丸め、丸め判定)
-	 */
-	private TimeRoundingSetting goOutingRond(DeductionAtr dedAtr,DeductGoOutRoundingSet set,TimeRoundingSetting rounding) {
-		switch(dedAtr) {
-		//計上
-		case Appropriate:
-			return getouting(set.getApproTimeRoundingSetting(),rounding);
-		//控除
-		case Deduction:
-			return getouting(set.getDeductTimeRoundingSetting(),rounding);
-		default:
-			throw new RuntimeException("Unknown DedctionAtr:"+dedAtr);
-		}
-	}
-	
-	/**
-	 * 外出時丸め設定取得(逆丸め、丸め判定)
-	 * @param set 丸め設定
-	 * @return　外出時丸め設定取得(逆丸め、丸め判定)
-	 */
-	private TimeRoundingSetting getouting(GoOutTimeRoundingSetting set,TimeRoundingSetting rounding) {
-		switch(set.getRoundingMethod()) {
-		//逆丸め
-		case INDIVIDUAL_ROUNDING:
-			//return set.getRoundingSetting().getReverseRounding();
-			return rounding.getReverseRounding();
-		//個別丸め
-		case REVERSE_ROUNDING_EACH_TIMEZONE:
-			return set.getRoundingSetting();
-		default:
-			throw new RuntimeException("Unknown GetRoundinMethod:"+set.getRoundingMethod());
-		}
-	}
-
 	/**
 	 * 短時間勤務時間帯の収集
 	 * @return　自身と自身が持つ短時間勤務リスト
