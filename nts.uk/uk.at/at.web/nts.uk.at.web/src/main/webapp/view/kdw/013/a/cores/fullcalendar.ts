@@ -1968,28 +1968,10 @@ module nts.uk.ui.at.kdw013.calendar {
 
                 let islockBySetting = (event, lockSetting, getAtr) => {
 
-                    let lockItems = [{ no: 1, itemId: [157, 159] },
-                        { no: 2, itemId: [163, 165] },
-                        { no: 3, itemId: [169, 171] },
-                        { no: 4, itemId: [175, 177] },
-                        { no: 5, itemId: [181, 183] },
-                        { no: 6, itemId: [187, 189] },
-                        { no: 7, itemId: [193, 195] },
-                        { no: 8, itemId: [199, 201] },
-                        { no: 9, itemId: [205, 207] },
-                        { no: 10, itemId: [211, 213] }];
+                    let lockItems = [157, 159, 163, 165, 169, 171, 175, 177, 181, 183, 187, 189, 193, 195, 199, 201, 205, 207, 211, 213];
+                    
 
-                    let lockIds = _.find(lockItems, ['no', event.extendedProps.no]).itemId;
-
-                    if (!_.get(_.find(lockSetting, lock => { return lockIds[0] == lock.itemDailyID }), getAtr, true)) {
-                        return true;
-                    }
-
-                    if (!_.get(_.find(lockSetting, lock => { return lockIds[1] == lock.itemDailyID }), getAtr, true)) {
-                        return true;
-                    }
-
-                    return false;
+                    return !_.get(_.find(lockSetting, lock => { return lockItems.indexOf(lock.itemDailyID) != -1 }), getAtr, true);
                 }
                
                 let getEditable = (date, isTimeBreak, event) => {
