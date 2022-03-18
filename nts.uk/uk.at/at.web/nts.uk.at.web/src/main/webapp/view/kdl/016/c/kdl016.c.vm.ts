@@ -69,6 +69,11 @@ module nts.uk.at.view.kdl016.c {
             vm.startDate.subscribe((value: any) => {
                 vm.validateStartDate(value);
             });
+
+            vm.selectedEmployees.subscribe((value) => {
+                if(!_.isEmpty(value))
+                    vm.$errors("clear", "#employee-list")
+            });
         }
 
         created(params: IParameter) {
@@ -241,6 +246,10 @@ module nts.uk.at.view.kdl016.c {
 
         register() {
             const vm = this;
+            if (_.isEmpty(vm.selectedEmployees())) {
+                $('#employee-list').ntsError('set', {messageId:'MsgB_2',messageParams:[nts.uk.resource.getText('KDL016_21')]});
+                return;
+            }
             vm.$validate(".nts-input:not(:disabled)").then((valid: boolean) => {
                 if (valid) {
                     let empIdSelected: string[] = vm.employeeList().filter((i) => {

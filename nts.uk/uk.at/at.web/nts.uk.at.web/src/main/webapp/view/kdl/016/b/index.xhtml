@@ -91,17 +91,15 @@
                     <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL016_27')}</div>
                     <div id="startDate" data-bind="ntsDatePicker: {name: '#[KDL016_28]', value: startDate, dateFormat: 'date', valueFormat: 'YYYY/MM/DD', required: true, enable: true}"
                          tabindex="5"/>
-                    <!--<com:ko-if bind="enableEndDate">-->
                     <span class="label">～</span>
                     <div id="endDate" data-bind="ntsDatePicker: {name: '#[KDL016_29]', value: endDate, dateFormat: 'date', valueFormat: 'YYYY/MM/DD', required: true, enable: enableEndDate}"
                          tabindex="5"/>
-                    <!--</com:ko-if>-->
                 </div>
             </div>
         </div>
         <div id="functions-area-bottom">
             <button id="register"
-                    data-bind="click: $vm.register, enable: selectedEmployees().length > 0"
+                    data-bind="click: $vm.register, enable: $root.errors.isEmpty()"
                     class="proceed x-large" tabindex="6">#{i18n.getText('KDL016_30')}</button>
             <button data-bind="click: $vm.closeDialog"
                     class="normal" tabindex="7">#{i18n.getText('KDL016_31')}</button>
