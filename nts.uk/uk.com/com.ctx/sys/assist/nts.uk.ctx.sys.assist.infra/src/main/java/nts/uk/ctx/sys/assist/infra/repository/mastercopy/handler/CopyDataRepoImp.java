@@ -2,6 +2,8 @@ package nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler;
 
 import nts.uk.ctx.sys.assist.dom.mastercopy.*;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.CopyDataRepository;
+import nts.uk.ctx.sys.assist.dom.mastercopy.handler.KeyValueHolder;
+import nts.uk.shr.com.company.CompanyId;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.ejb.Stateless;
@@ -29,7 +31,7 @@ public class CopyDataRepoImp implements CopyDataRepository {
     ErAlWorkRecordCopyAdapter erAlWorkRecordCopyAdapter;
 
     @Override
-    public void copy(String contractCode, String companyId, TargetTableInfo targetTableInfo, Integer copyMethod) {
+    public void copy(String contractCode, String companyId, TargetTableInfo targetTableInfo, Integer copyMethod, KeyValueHolder keyValueHolder) {
         String tableName = targetTableInfo.getTableName().v().trim();
         KeyInformation keyInformation = targetTableInfo.getKey();
         List<String> keys = new ArrayList<>();
@@ -45,10 +47,8 @@ public class CopyDataRepoImp implements CopyDataRepository {
 
         switch (targetTableInfo.getCopyAttribute()) {
             case COPY_WITH_COMPANY_ID:
-                repository.doCopy(tableName, keys, CopyMethod.valueOf(copyMethod), contractCode, companyId, true);
-                break;
             case COPY_MORE_COMPANY_ID:
-                repository.doCopy(tableName, keys, CopyMethod.valueOf(copyMethod), contractCode, companyId, false);
+                repository.doCopy(tableName, keys, CopyMethod.valueOf(copyMethod), new CompanyId(companyId), keyValueHolder);
                 break;
             case COPY_OTHER:
                 //using adapter

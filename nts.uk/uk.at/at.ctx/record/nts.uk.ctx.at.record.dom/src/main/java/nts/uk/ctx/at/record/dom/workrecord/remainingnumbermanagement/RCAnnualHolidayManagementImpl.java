@@ -135,9 +135,9 @@ public class RCAnnualHolidayManagementImpl implements RCAnnualHolidayManagement 
 		Double attendanceDays = 0.0;
 		Double predeterminedDays = 0.0;
 		if (attendanceRateOpt.isPresent()) {
-			attendanceRate = attendanceRateOpt.get().getAttendanceRate();
-			attendanceDays = attendanceRateOpt.get().getWorkingDays();
-			predeterminedDays = attendanceRateOpt.get().getPrescribedDays();
+			attendanceRate = attendanceRateOpt.get().getAttendanceRate().v().doubleValue();
+			attendanceDays = attendanceRateOpt.get().getWorkingDays().v();
+			predeterminedDays = attendanceRateOpt.get().getPrescribedDays().v();
 		}
 
 		// 年休社員基本情報から年間所定日数をセット

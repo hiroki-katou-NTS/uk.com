@@ -36,6 +36,10 @@ public class JpaTempPublicHolidayManagementRepository  extends JpaRepository imp
 			+ " WHERE a.pk.sid = :employeeId"
 			+ " AND a.pk.ymd = :ymd ";
 	
+	private static final String DELETE_BY_SID_BEFORETHEYMD = "DELETE FROM KshdtInterimHdpub a"
+			+ " WHERE a.pk.sid = :sid"
+			+ " AND a.pk.ymd <= :ymd ";
+	
 	/** 検索 */
 	@Override
 	public List<TempPublicHolidayManagement> find(String employeeId, GeneralDate ymd){
@@ -92,6 +96,15 @@ public class JpaTempPublicHolidayManagementRepository  extends JpaRepository imp
 
 		this.getEntityManager().flush();
 
+	}
+
+	@Override
+	public void deleteBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+			this.getEntityManager().createQuery(DELETE_BY_SID_BEFORETHEYMD)
+			.setParameter("sid", sid)
+			.setParameter("ymd", ymd)
+			.executeUpdate();
+		
 	}
 	
 	

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +11,9 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate;
 
 /**
  * 年休付与テーブル設定
@@ -64,39 +68,23 @@ public class GrantHdTblSet extends AggregateRoot implements Serializable{
 
 		for (int i = 0; i < this.grantConditions.size(); i++) {
 			GrantCondition currentCondition = this.grantConditions.get(i);
-
-			// 付与日数の計算対象」が「出勤率」の場合、条件値<=100
-			if (CalculationMethod.ATTENDENCE_RATE.equals(this.calculationMethod)) {
-				if (currentCondition.getConditionValue() != null && currentCondition.getConditionValue().v() > 100) {
-					throw new BusinessException("Msg_262");
-				}
-			}
 			
-			// 付与日数の計算対象」が「労働日数」の場合、条件値<=366
-			if (CalculationMethod.WORKING_DAY.equals(this.calculationMethod)) {
-				if (currentCondition.getConditionValue() != null && currentCondition.getConditionValue().v() > 366) {
-					throw new BusinessException("Msg_263");
-				}
-			}
+			//まず、「付与条件」のvalidate()チェック。OKだったら、複数の「付与条件」の関係性をチェックする処理へ
+			currentCondition.validate(this.getCalculationMethod());
 
 			if (i == 0) {
+				if(!currentCondition.isUse())
+					throw new RuntimeException();
+				
 				continue;
 			}
 
-			// 利用区分がTRUEの付与条件は、選択されている計算方法の条件値が入力されていること
-			if (currentCondition.getUseConditionAtr() == UseConditionAtr.USE
-					&& currentCondition.getConditionValue() == null) {
-				throw new BusinessException("Msg_271");
-			}
-
 			// 条件NO：1、条件値 > 条件NO：2、条件値 > 条件NO：3、条件値 > 条件NO：4、条件値 > 条件NO：5、条件値
-			if(this.grantConditions.get(i - 1).getConditionValue() != null) {
-				Double firstValue = this.grantConditions.get(i - 1).getConditionValue().v();
+			if(this.grantConditions.get(i - 1).isUse()) {
+				Double firstValue = this.grantConditions.get(i - 1).getConditionValueToDouble();
 				
-				if(currentCondition.getConditionValue() != null) {
-					Double secondValue = currentCondition.getConditionValue().v();
-					
-					if (firstValue <= secondValue && currentCondition.getUseConditionAtr() == UseConditionAtr.USE) {
+				if(currentCondition.isUse()) {
+					if (firstValue <= currentCondition.getConditionValueToDouble()) {
 						throw new BusinessException("Msg_264");
 					}
 				}				
@@ -140,26 +128,26 @@ public class GrantHdTblSet extends AggregateRoot implements Serializable{
 	 */
 	// 2018.7.27 add shuichi_ishida
 	public Optional<GrantCondition> getGrantCondition(
-			Double attendanceRate,
-			Double prescribedDays,
-			Double workingDays,
-			Double deductedDays){
+			AttendanceRate attendanceRate,
+			YearlyDays prescribedDays,
+			YearlyDays workingDays,
+			YearlyDays deductedDays,
+			Optional<DatePeriod> period){
 	
 		// 計算方法をチェックする
-		double criteria = attendanceRate;
+		double criteria = attendanceRate.v().doubleValue();
 		if (this.calculationMethod == CalculationMethod.WORKING_DAY){
-			criteria = workingDays + deductedDays;
+			criteria = workingDays.v() + deductedDays.v();
 		}
 		
 		// 付与条件を取得
 		GrantCondition target = null;
 		this.grantConditions.sort((a, b) -> a.getConditionNo() - b.getConditionNo());
-		for (val grantCondition : this.grantConditions){
-			if (grantCondition.getUseConditionAtr() != UseConditionAtr.USE) continue;
-			if (grantCondition.getConditionValue() == null) break;
-			
+		
+		List<GrantCondition> forSerch=this.getConditionsForSerch(period);
+		for (val grantCondition : forSerch){		
 			// 基準値と付与条件．条件値を比較
-			if (criteria >= grantCondition.getConditionValue().v().doubleValue()) {
+			if (grantCondition.isLessThanEqual(criteria)) {
 				target = grantCondition;
 				break;
 			}
@@ -167,5 +155,21 @@ public class GrantHdTblSet extends AggregateRoot implements Serializable{
 		
 		// 付与条件を返す
 		return Optional.ofNullable(target);
+	}
+	
+	/**
+	 * サーチするための条件一覧を作成する。
+	 * 労働日数で判断する場合は、按分した条件にする。
+	 * @param period
+	 * @return
+	 */
+	private List<GrantCondition> getConditionsForSerch(Optional<DatePeriod> period) {
+		return this.grantConditions.stream().filter(c -> c.isUse()).map(c -> {
+			if (this.getCalculationMethod().equals(CalculationMethod.ATTENDENCE_RATE))
+				return c;
+			if (this.getCalculationMethod().equals(CalculationMethod.WORKING_DAY))
+				return c.toDivideProportionately(period);
+			throw new RuntimeException();
+		}).collect(Collectors.toList());
 	}
 }

@@ -4,6 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.sys.assist.dom.mastercopy;
 
+import nts.uk.ctx.sys.assist.dom.mastercopy.handler.KeyValueHolder;
+import nts.uk.shr.com.company.CompanyId;
+import nts.uk.shr.com.tenant.TenantCode;
+
 import java.util.List;
 
 public interface MasterCopyDataRepository {
@@ -31,9 +35,13 @@ public interface MasterCopyDataRepository {
      * @param keys
      * @param copyMethod the copy method
      * @param companyId the company id
-     * @param isOnlyCid
      */
-	void doCopy(String tableName, List<String> keys, CopyMethod copyMethod, String cotnractCode, String companyId, boolean isOnlyCid);
+	void doCopy(
+			String tableName,
+			List<String> keys,
+			CopyMethod copyMethod,
+			CompanyId companyId,
+			KeyValueHolder keyValueHolder);
 
 	/**
 	 *

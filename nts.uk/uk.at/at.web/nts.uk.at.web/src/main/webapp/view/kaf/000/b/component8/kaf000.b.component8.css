@@ -5,3 +5,10 @@
 #kaf000-b-component8 .limited-label {
 	width: 100%;
 }
+
+.approver-block {
+	display: inline-block;
+	margin-right: 10px;
+	text-align: left;
+	max-width: 85px;
+}

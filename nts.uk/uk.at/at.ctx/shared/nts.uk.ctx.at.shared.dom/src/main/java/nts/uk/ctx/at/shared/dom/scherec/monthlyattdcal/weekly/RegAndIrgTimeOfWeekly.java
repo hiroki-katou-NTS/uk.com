@@ -207,9 +207,9 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 				premiumTimeOfPrevMonLast);
 		val targetPremiumTimeWeek = targetPremiumTimeWeekOfIrg.getPremiumTimeWeek();
 
-		// （実績）所定労働時間を取得する
+		// （計画）所定労働時間を取得する
 		val prescribedWorkingTime = aggregateTotalWorkingTime.getPrescribedWorkingTime();
-		val recordPresctibedWorkingTime = prescribedWorkingTime.getTotalRecordPrescribedWorkingTime(weekPeriod);
+		val recordPresctibedWorkingTime = prescribedWorkingTime.getTotalSchedulePrescribedWorkingTime(weekPeriod);
 
 		// 法定労働時間を按分するか確認する　（期間が7日未満　の時、按分する）
 		AttendanceTimeMonth targetStatutoryWorkingTime = distributeStatutoryWorkTime(require, employeeId, workingSystem,

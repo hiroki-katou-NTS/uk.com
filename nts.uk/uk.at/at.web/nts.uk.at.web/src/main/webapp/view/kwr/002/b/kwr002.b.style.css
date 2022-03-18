@@ -25,3 +25,7 @@
 #B10_2 {
   width: 100px;
 }
+
+.switchbox-wrappers {
+  display: flex;
+}

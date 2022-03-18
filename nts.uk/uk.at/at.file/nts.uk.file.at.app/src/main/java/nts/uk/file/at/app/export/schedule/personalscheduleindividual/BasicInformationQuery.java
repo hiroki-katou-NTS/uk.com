@@ -168,9 +168,9 @@ public class BasicInformationQuery {
      * @param period
      * @return BasicInformationDto
      */
-    public <T> BasicInformationDto<T> get(boolean isTotalDisplay, DatePeriod period) {
+    public <T> BasicInformationDto<T> get(boolean isTotalDisplay, DatePeriod period, String sid) {
         String companyId = AppContexts.user().companyId();
-        String employeeId = AppContexts.user().employeeId();
+        String employeeId = sid;
         // 基本情報取得
         // [RQ622]会社IDから会社情報を取得する
         String companyName = company.getCurrentCompany().orElseGet(() -> {

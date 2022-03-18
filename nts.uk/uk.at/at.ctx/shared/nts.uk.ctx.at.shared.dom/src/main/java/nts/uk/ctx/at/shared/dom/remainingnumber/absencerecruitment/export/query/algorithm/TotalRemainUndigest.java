@@ -32,6 +32,11 @@ public class TotalRemainUndigest {
 					outData.setUnDigestedDays(outData.getUnDigestedDays() + dataCast.getUnbalanceNumber().getDay().v());
 				} else {
 					outData.setRemainDays(outData.getRemainDays() + dataCast.getUnbalanceNumber().getDay().v());
+					
+					if (!isMode && dataCast.getDeadline().equals(date)) {
+						outData.setUnDigestedDays(
+								outData.getUnDigestedDays() + dataCast.getUnbalanceNumber().getDay().v());
+					}
 				}
 			} else {
 

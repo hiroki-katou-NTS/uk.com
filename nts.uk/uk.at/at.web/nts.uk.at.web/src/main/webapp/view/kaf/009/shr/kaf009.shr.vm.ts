@@ -45,9 +45,6 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
 			<div class="cell valign-center" style="padding-left: 5px">
 				<div class="valign-center control-group"
 					data-bind="ntsFormLabel:{ required: true, text: $i18n('KAF009_22') }"></div>
-				<BR />
-				<div class="valign-center control-group" style="padding-top: 5px"
-					data-bind="ntsFormLabel:{ required: true, text: $i18n('KAF009_23')}"></div>
 			</div>
 			<div class="cell valign-center">
 				<button id="workSelectKAF009"
@@ -57,13 +54,11 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
 				<label class="lblWorkTypeCd required"
 					data-bind="text: model.workTypeCode"></label> <label
 					data-bind="text: model.workTypeName"></label>
-					<div>
-						<label
-						class="lblSiftCd"
-						data-bind="text: model.workTimeCode, required: true"></label> <label
-						 data-bind="text: model.workTimeName "></label>
-					
-					</div>
+
+                    <label
+                    class="lblSiftCd"
+                    data-bind="text: model.workTimeCode, required: true"></label> <label
+                        data-bind="text: model.workTimeName "></label>
 			</div>
 		</div>
 	</div>

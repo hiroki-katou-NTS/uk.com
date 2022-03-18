@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.yearholidaygrant;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Value;
@@ -50,8 +51,9 @@ public class YearHolidayGrantCommand {
 		String companyId = AppContexts.user().companyId();
 		
 		List<GrantCondition> grantConditionList = this.grantConditions.stream().map(x-> {
-			return new GrantCondition(companyId, new YearHolidayCode(yearHolidayCode), x.getConditionNo(), x.getConditionValue() != null ? new ConditionValue(x.getConditionValue()) : null, 
-					EnumAdaptor.valueOf(x.getUseConditionAtr(), UseConditionAtr.class), false);
+			return new GrantCondition(companyId, new YearHolidayCode(yearHolidayCode), x.getConditionNo(),
+					x.getConditionValue() != null ? Optional.of(new ConditionValue(x.getConditionValue())) : Optional.empty(), 
+					EnumAdaptor.valueOf(x.getUseConditionAtr(), UseConditionAtr.class));
 		}).collect(Collectors.toList());
 		
 		return  GrantHdTblSet.createFromJavaType(companyId, yearHolidayCode, yearHolidayName, calculationMethod, standardCalculation,

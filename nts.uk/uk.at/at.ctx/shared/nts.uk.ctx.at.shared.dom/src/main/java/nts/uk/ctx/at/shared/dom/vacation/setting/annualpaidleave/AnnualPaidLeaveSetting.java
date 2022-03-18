@@ -12,7 +12,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.MonthVacationGrantDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdDays;
@@ -151,5 +154,37 @@ public class AnnualPaidLeaveSetting extends AggregateRoot implements Serializabl
 		return Optional.of(new LimitedTimeHdTime(limitedTimeHdDays.get().v() * laborContractTimeOpt.get().v()));
 
 	}
+	
+	/**
+	 * [9] 時間年休を管理するか
+	 * @return
+	 */
+	public boolean isManageTimeAnnualLeave(TimeVacationDigestUnit.Require require) {
+		return this.timeSetting.isManageTimeAnnualLeave(require, this.yearManageType);
+	}
 
+	/**
+	 * 積立年休の付与数を取得する
+	 */
+	public MonthVacationGrantDay getAnnualLeavGrant(Double dayRemains) {
+		return this.getManageAnnualSetting().getHalfDayManage()
+				.getAnnualLeavGrant(this.yearManageType, dayRemains);
+	}
+	
+	/**
+	 * 積立年休の付与数を取得する
+	 */
+	public Optional<MonthVacationGrantDay> getAnnualLeavGrant(int timeRemain, int timeAnnualLeavOneDay) {
+		return this.getTimeSetting().getAnnualLeavGrant(this.yearManageType, timeRemain, timeAnnualLeavOneDay);
+	}
+
+	/*
+	 * [10] 利用する休暇時間の消化単位をチェックする
+	 * @param time 休暇使用時間
+	 * @return
+	 */
+	public boolean checkVacationTimeUnitUsed(TimeVacationDigestUnit.Require require, AttendanceTime time) {
+		return this.timeSetting.checkDigestUnits(require, time, this.yearManageType);
+	}
+	
 }

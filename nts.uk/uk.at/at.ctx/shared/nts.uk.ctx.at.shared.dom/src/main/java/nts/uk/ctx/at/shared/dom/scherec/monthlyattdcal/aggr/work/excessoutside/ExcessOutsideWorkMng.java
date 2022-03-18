@@ -421,6 +421,11 @@ public class ExcessOutsideWorkMng {
 		// 「時間外超過設定」を確認する　（計算方法が「時系列」以外なら割り当てない）
 		if (this.companySets.getOutsideOverTimeSet().getCalculationMethod() != OutsideOTCalMed.TIME_SERIES) return;
 		
+		/** ○内訳項目一覧に週増合計時間が設定されているか確認する */
+		boolean isHaveWeekPremiumItem = this.companySets.getOutsideOverTimeSet().getBreakdownItems().stream().map(c -> c.getAttendanceItemIds())
+				.flatMap(List::stream).anyMatch(c -> c == AttendanceItemOfMonthly.WEEKLY_TOTAL_PREMIUM_TIME.value);
+		if (!isHaveWeekPremiumItem) return;
+		
 		// 「週単位の週割増時間」を「逆時系列割り当て用の週割増時間」にコピーする
 		AttendanceTimeMonthWithMinus weeklyPTForAssign = new AttendanceTimeMonthWithMinus(weekPremiumTime.v());
 		
@@ -786,7 +791,7 @@ public class ExcessOutsideWorkMng {
 		boolean isExistWeekTotalPT = false;
 		for (val outsideOTBDItem : outsideOTSet.getBreakdownItems()){
 			for (val attendanceItemId : outsideOTBDItem.getAttendanceItemIds()){
-				if (attendanceItemId == AttendanceItemOfMonthly.WEEKLY_TOTAL_PREMIUM_TIME.value){
+				if (attendanceItemId == AttendanceItemOfMonthly.MONTHLY_TOTAL_PREMIUM_TIME.value){
 					isExistWeekTotalPT = true;
 					break;
 				}

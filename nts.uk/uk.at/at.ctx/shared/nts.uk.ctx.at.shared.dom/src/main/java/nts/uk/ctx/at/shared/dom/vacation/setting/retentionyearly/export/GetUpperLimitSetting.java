@@ -1,9 +1,7 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.export;
 
-import java.util.Map;
 import java.util.Optional;
 
-import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
@@ -25,7 +23,7 @@ public class GetUpperLimitSetting {
 	 * @param criteriaDate 基準日
 	 * @return 上限設定
 	 */
-	public static UpperLimitSetting algorithm(RequireM1 require, CacheCarrier cacheCarrier, String companyId) {
+	public static Optional<UpperLimitSetting> algorithm(RequireM1 require, CacheCarrier cacheCarrier, String companyId) {
 		return algorithm(require, cacheCarrier, companyId, Optional.empty());
 	}
 
@@ -40,7 +38,7 @@ public class GetUpperLimitSetting {
 	 * @return 上限設定
 	 */
 	/** 社員の保持年数を取得 */
-	public static UpperLimitSetting algorithm(RequireM1 require, CacheCarrier cacheCarrier, String companyId,
+	public static Optional<UpperLimitSetting> algorithm(RequireM1 require, CacheCarrier cacheCarrier, String companyId,
 			Optional<RetentionYearlySetting> retentionYearlySet) {
 
 		// 「積立年休設定」を取得
@@ -51,15 +49,16 @@ public class GetUpperLimitSetting {
 		else {
 			retentionYearlySetOpt = require.retentionYearlySetting(companyId);
 		}
-		if (retentionYearlySetOpt.isPresent()){
-
-			// 管理区分を確認
-			if (retentionYearlySetOpt.get().getManagementCategory() == ManageDistinct.NO){
-				return new UpperLimitSetting(new UpperLimitSetCreateMemento(0, 0));
-			}
-			return retentionYearlySetOpt.get().getUpperLimitSetting();
+		if (!retentionYearlySetOpt.isPresent()){
+			throw new RuntimeException();
 		}
-		return new UpperLimitSetting(new UpperLimitSetCreateMemento(0, 0));
+
+		// 管理区分を確認
+		if (retentionYearlySetOpt.get().getManagementCategory() == ManageDistinct.NO){
+			return Optional.empty();
+		}
+		return Optional.of(retentionYearlySetOpt.get().getUpperLimitSetting());
+		
 	}
 
 	public static interface RequireM1 {
