@@ -5469,12 +5469,66 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     id: userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId, // 対象組織識別情報.組織ID
                     code: userInfor.code, // 対象組織識別情報.組織コード
                     name: userInfor.workPlaceName, // 対象組織識別情報.組織名称
-                }, 
+                },
                 startDate: moment(self.dtPrev()).format('YYYY/MM/DD'), // 基準期間.開始日
                 endDate: moment(self.dtAft()).format('YYYY/MM/DD'),  // 基準期間.終了日
                 employeeIds: self.listSidByOrg, // List<社員ID>
             });
-            nts.uk.ui.windows.sub.modal("/view/kdl/016/a/index.xhtml").onClosed(() => { });
+            nts.uk.ui.windows.sub.modal("/view/kdl/016/a/index.xhtml").onClosed(() => {
+                let result = getShared('status-result');
+                if ( _.isNil(result) && result == true ) {
+                    self.updateScreenAfterSettingSupport();
+
+                }
+            });
+        }
+        
+        updateScreenAfterSettingSupport(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            nts.uk.ui.block.grayout();
+            let userInfor: IUserInfor = self.userInfor;
+            let param = {
+                viewMode: userInfor.disPlayFormat,
+                startDate: self.dateTimePrev(),
+                endDate: self.dateTimeAfter(),
+                shiftPalletUnit: userInfor.shiftPalletUnit, // 1: company , 2 : workPlace 
+                pageNumberCom: userInfor.shiftPalettePageNumberCom,
+                pageNumberOrg: userInfor.shiftPalettePageNumberOrg,
+                getActualData: userInfor.achievementDisplaySelected,
+                listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, // List of shifts không cần lấy mới
+                unit: userInfor.unit,
+                wkpId: userInfor.unit == WorkPlaceUnit.WORKPLACE ? userInfor.workplaceId : userInfor.workplaceGroupId,
+                day: self.closeDate.day,
+                isLastDay: self.closeDate.lastDay,
+                personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
+                workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
+            };
+
+            service.getDataGrid(param).done((data: IDataStartScreen) => {
+
+                self.saveDataGrid(data);
+
+                let dataBindGrid = self.convertDataToGrid(data, self.selectedModeDisplayInBody());
+                // updatelaiA1112
+                // remove va tao lai grid
+                self.destroyAndCreateGrid(dataBindGrid, self.selectedModeDisplayInBody());
+
+                self.mode() == UpdateMode.DETERMINE ? self.confirmModeAct(false) : self.editModeAct(false);
+
+                self.setPositionButonA13A14A15();
+
+                if (!self.canOpenKsu003) {
+                    self.disableLinkDetailHeader();
+                }
+
+                nts.uk.ui.block.clear();
+
+            }).fail(function(error) {
+                nts.uk.ui.block.clear();
+                nts.uk.ui.dialog.alertError(error);
+                dfd.reject();
+            });
+            return dfd.promise();
         }
 
         // A2_1
@@ -5520,7 +5574,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
             };
             
-            service.changeWokPlace(param).done((data: IDataStartScreen) => {
+            service.getDataGrid(param).done((data: IDataStartScreen) => {
                 
                 self.targetOrganizationName(input.unit == WorkPlaceUnit.WORKPLACE ? input.workplaceName : input.workplaceGroupName);
                 
