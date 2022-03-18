@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.reservation.bento;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 
@@ -55,4 +56,10 @@ public interface BentoReservationRepository {
 	List<BentoReservation> getAllReservationOfBento(int frameNo,
 			List<ReservationRegisterInfo> inforLst, DatePeriod period,ReservationClosingTimeFrame closingTimeFrame,
 			List<WorkLocationCode> workLocationCode);
+	
+	/**
+	 * 予約を削除する
+	 */
+	void removeWithCardNumberDate(String cardNumber, GeneralDate date);
+	
 }

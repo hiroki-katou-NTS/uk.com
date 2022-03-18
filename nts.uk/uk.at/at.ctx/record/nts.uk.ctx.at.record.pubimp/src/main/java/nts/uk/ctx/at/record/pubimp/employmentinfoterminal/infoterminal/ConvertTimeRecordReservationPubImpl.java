@@ -136,6 +136,11 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 			return bentoMenuRepository.getBentoMenu(companyId, reservationDate.getDate(), workLocationCode);
 
 		}
+
+		@Override
+		public void removeBentoReserve(String reservationCardNo, GeneralDate date) {
+			bentoReservationRepository.removeWithCardNumberDate(reservationCardNo, date);
+		}
 	}
 
 }

@@ -11,7 +11,6 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log.TopPageAlarmEmpInfoTer;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.ReservationReceptionData;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReserveService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
@@ -97,7 +96,7 @@ public class ConvertTimeRecordReservationService {
 //
 //	}
 
-	public static interface Require extends BentoReserveService.Require {
+	public static interface Require extends EmpInfoTerminal.Require {
 
 		// [R-1]就業情報端末を取得する
 		public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode,
