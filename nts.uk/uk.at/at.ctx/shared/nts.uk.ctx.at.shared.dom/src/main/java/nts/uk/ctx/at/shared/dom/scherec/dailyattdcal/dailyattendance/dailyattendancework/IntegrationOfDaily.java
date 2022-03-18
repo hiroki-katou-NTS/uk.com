@@ -416,7 +416,7 @@ public class IntegrationOfDaily {
 	 */
 	public SupportInfoOfEmployee getSupportInfoOfEmployee() {
 		
-		if ( this.ouenTime.isEmpty() ) {
+		if ( this.ouenTimeSheet.isEmpty() ) {
 			
 			return SupportInfoOfEmployee.createWithoutSupport(
 					new EmployeeId(this.employeeId), 
