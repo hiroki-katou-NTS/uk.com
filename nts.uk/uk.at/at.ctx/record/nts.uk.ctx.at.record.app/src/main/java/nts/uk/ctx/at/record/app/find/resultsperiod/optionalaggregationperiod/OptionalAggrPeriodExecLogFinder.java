@@ -106,7 +106,7 @@ public class OptionalAggrPeriodExecLogFinder {
 		excutionDto.setStartDateTime(excution.getStartDateTime());
 		excutionDto.setEndDateTime(excution.getEndDateTime());
 		excutionDto.setExecutionAtr(excution.getExecutionAtr().value);
-		excutionDto.setExecutionStatus(excution.getExecutionAtr().value);
+		excutionDto.setExecutionStatus(excution.getExecutionStatus().map(v->v.value).orElse(null));
 		excutionDto.setPresenceOfError(excution.getPresenceOfError().value);
 		return excutionDto;
 	}

@@ -453,7 +453,47 @@ module nts.uk.at.view.kfp001.b {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_3" });
                 } else {
                     if (self.status() == model.ExecutionStatus.Processing) {
-                        nts.uk.ui.windows.sub.modal('/view/kfp/001/e/index.xhtml');
+                        let executionDto = {
+                            aggrFrameCode: self.currentItem().aggrFrameCode(),
+                            executionAtr: 1,
+                            executionStatus: 0,
+                            presenceOfError: 1,
+                            startDateTime: moment(self.currentItem().startDate()).utc(),
+                            endDateTime: moment(self.currentItem().endDate()).utc(),
+                        };
+                        let aggrPeriodDto = {
+                            aggrFrameCode: self.currentItem().aggrFrameCode(),
+                            optionalAggrName: self.currentItem().optionalAggrName(),
+                            startDate: moment(self.currentItem().startDate()).utc(),
+                            endDate: moment(self.currentItem().endDate()).utc(),
+                            peopleNo: self.peopleNo()
+
+                        }
+                        let targetDto = {
+                            executionEmpId: ko.observable(''),
+                            employeeId: [],
+                            state: 0
+                        }
+                        let addAggrPeriodCommand = {
+                            reintegration:self.reintegration(),//EA4209
+                            mode: self.mode(),
+                            aggrPeriodCommand: aggrPeriodDto,
+                            targetCommand: targetDto,
+                            executionCommand: executionDto
+                        }
+
+                        nts.uk.ui.windows.setShared("KFP001_DATAE", addAggrPeriodCommand);
+
+                        let period = {
+                            startDate: self.currentItem().startDate(),
+                            endDate: self.currentItem().endDate()
+                        }
+                        nts.uk.ui.windows.setShared("KFP001_PERIOD", period);
+                        let data  = {anyPeriodAggrLogId: self.aggrId , startDateTime: self.currentItem().startDate(), endDateTime:self.currentItem().endDate()}
+                        nts.uk.ui.windows.setShared("KFP001_DATAD", data);
+                        nts.uk.ui.windows.sub.modal('/view/kfp/001/e/index.xhtml').onClosed(() => {
+                            self.start();
+                        });
                     } else {
                         $("#wizard").ntsWizard("next").done(function() {
                             self.cScreenmodel.start();
