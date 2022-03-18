@@ -168,9 +168,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.modeScreen(1);
                     //monthly
                     self.listEnumRoleType = ko.observableArray(__viewContext.enums.TypeMonCheckItem);
-                    // Update ticket #122513, #122544
+                    // Update ticket #122513
                     _.remove(self.listEnumRoleType(), function (n) {
-                        return _.isEqual(n.value, 3) || _.isEqual(n.value, 6) || _.isEqual(n.value, 8);
+                        return _.isEqual(n.value, 6) || _.isEqual(n.value, 8);
                     });
 //                    self.listTypeCheckVacation = ko.observableArray(__viewContext.enums.TypeCheckVacation);
                     self.listTypeCheckVacation = ko.observableArray([
@@ -607,9 +607,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         listRangeCompareType: Array<model.EnumModel>,
                         listSpecialCode) => {
                 self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listMonCheckItemType));
-                // Update ticket #122513 , #122544
+                // Update ticket #122513
                 _.remove(self.listTypeCheckWorkRecords(), function (n) {
-                    return _.isEqual(n.value, 0) || _.isEqual(n.value, 3);
+                    return _.isEqual(n.value, 0);
                 });
                 self.listCheckTimeType(self.getLocalizedNameForEnum(listTypeOfContrast));
                 self.listTypeOfContrast(self.getLocalizedNameForEnum(listTypeOfContrast));
