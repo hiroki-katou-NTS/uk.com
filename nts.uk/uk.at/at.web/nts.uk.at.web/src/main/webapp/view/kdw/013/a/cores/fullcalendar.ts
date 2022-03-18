@@ -654,10 +654,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 $settings: $component.params.$settings,
                 screenA:$component.params.screenA
             "></div>
-        <div data-bind="
-                fc-setting: $component.popupData.setting,
-                position: $component.popupPosition.setting
-            "></div>
+        
         <div class="fc-sidebar" data-bind="css: {
                     'edit-mode': ko.unwrap($component.params.editable),
                     'view-mode': !ko.unwrap($component.params.editable)
@@ -691,6 +688,10 @@ module nts.uk.ui.at.kdw013.calendar {
                 "></div>
         </div>
         <div class="fc-calendar"></div>
+        <div data-bind="
+                fc-setting: $component.popupData.setting,
+                position: $component.popupPosition.setting
+            "></div>
         <style>${DEFAULT_STYLES}</style>
         <style data-bind="html: $component.$style"></style>`
     })
