@@ -23,6 +23,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.NextRe
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveLapsedWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.RsvLeaAggrPeriodWork;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.RsvLeaAggrPeriodWorkList;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
@@ -120,8 +121,6 @@ public class GetRsvLeaRemNumWithinPeriod {
 		param.setAggrPeriod(aggrPeriod.get());
 		
 
-		AggrResultOfReserveLeave aggrResult = new AggrResultOfReserveLeave();
-
 		// 積立年休付与残数データ 取得
 		List<ReserveLeaveGrantRemainingData> rsvGrantRemainingDatas = new ArrayList<>();
 		rsvGrantRemainingDatas = require.reserveLeaveGrantRemainingData(employeeId);
@@ -135,21 +134,15 @@ public class GetRsvLeaRemNumWithinPeriod {
 				param.getCriteriaDate(), param.getLapsedAnnualLeaveInfos(), annualLeaveSet, param.getAggrPeriod());
 
 		// 積立年休集計期間の作成
-		List<RsvLeaAggrPeriodWork> aggrPeriodWorks = createAggregatePeriod(param.getAggrPeriod(), calcGrant,
+		RsvLeaAggrPeriodWorkList periodWorkList = createAggregatePeriod(param.getAggrPeriod(), calcGrant,
 				rsvGrantRemainingDatas);
 
 		// 暫定積立年休管理データを取得する
 		List<TmpResereLeaveMng> tmpReserveLeaveMngs = getTmpReserveLeaveMngs(require, param);
 
-		
-		
-		for (val aggrPeriodWork : aggrPeriodWorks) {
-
-			// 積立年休の消滅・付与・消化
-			aggrResult = reserveLeaveInfo.lapsedGrantDigest(require, cacheCarrier, companyId, employeeId,
-					aggrPeriodWork, tmpReserveLeaveMngs, aggrResult, annualLeaveSet, retentionYearlySet,
-					emptYearlyRetentionSetMap, limit.get());
-		}
+		//残数処理
+		AggrResultOfReserveLeave aggrResult = periodWorkList.remainNumberProcess(require, cacheCarrier, companyId,
+				employeeId, tmpReserveLeaveMngs, annualLeaveSet, limit.get(), reserveLeaveInfo);
 
 		// 【渡すパラメータ】 積休情報 ← 積休の集計結果．積休情報（期間終了日時点）
 		ReserveLeaveInfo reserveLeaveInfoEnd = aggrResult.getAsOfPeriodEnd();
@@ -446,7 +439,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 	 *            付与残数データリスト
 	 * @return 積立年休集計期間WORKリスト
 	 */
-	private static List<RsvLeaAggrPeriodWork> createAggregatePeriod(DatePeriod period,
+	private static RsvLeaAggrPeriodWorkList createAggregatePeriod(DatePeriod period,
 			List<GrantWork> nextReserveLeaveGrantList, List<ReserveLeaveGrantRemainingData> grantRemainingDataList) {
 
 		List<RsvLeaAggrPeriodWork> results = new ArrayList<>();
@@ -553,7 +546,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 		}
 
 		// 積立年休集計期間WORKリストを返す
-		return results;
+		return new RsvLeaAggrPeriodWorkList(results);
 	}
 
 	/**
