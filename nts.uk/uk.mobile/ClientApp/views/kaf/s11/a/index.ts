@@ -817,7 +817,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
             return false;
         }
         if (workType.workAtr == 0) {
-            return false;
+            return true;
         }
         if (workType.morningCls == 8 || workType.afternoonCls == 8) {
             return true;
@@ -1274,7 +1274,6 @@ export class KafS11AComponent extends KafS00ShrComponent {
             if (result) {
                 // đăng kí 
                 return vm.$http.post('at', API.submit, command).then((data: any) => {
-                    vm.$http.post('at', API.reflectApp, data.data.reflectAppIdLst);
 
                     return data;
                 });
@@ -1504,8 +1503,7 @@ const API = {
     getWorkTimeByCDLst: 'at/shared/worktimesetting/get_worktime_by_codes',
     checkBeforeSubmit: 'at/request/application/holidayshipment/mobile/checkBeforeSubmit',
     submit: 'at/request/application/holidayshipment/mobile/submit',
-    getTimeZoneValue: 'at/request/application/holidayshipment/mobile/getTimeZoneValue',
-    reflectApp: 'at/request/application/reflect-app'
+    getTimeZoneValue: 'at/request/application/holidayshipment/mobile/getTimeZoneValue'
 };
 
 export interface KAFS11Params {

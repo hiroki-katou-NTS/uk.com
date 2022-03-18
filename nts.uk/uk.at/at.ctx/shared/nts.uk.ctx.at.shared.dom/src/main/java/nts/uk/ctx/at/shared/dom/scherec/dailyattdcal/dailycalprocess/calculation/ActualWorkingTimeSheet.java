@@ -15,11 +15,9 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.GetCalcAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.BonusPayAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.SpecBonusPayTimesheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BPTimeItemSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
@@ -34,9 +32,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -131,34 +129,27 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 	 * 加給時間の計算
 	 * アルゴリズム：時間の計算
 	 * @param actualWorkAtr 実働区分
-	 * @param raisingAutoCalcSet 加給の自動計算設定
-	 * @param bonusPayAutoCalcSet 加給自動計算設定
+	 * @param bpTimeItemSets 加給自動計算設定
 	 * @param calcAtrOfDaily 日別実績の計算区分
 	 * @return 加給時間(List)
 	 */
-	public List<BonusPayTime> calcBonusPay(
-			ActualWorkTimeSheetAtr actualWorkAtr,
-			AutoCalRaisingSalarySetting raisingAutoCalcSet,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet,
-			CalAttrOfDailyAttd calcAtrOfDaily,
-			BonusPayAtr bonusPayAtr) {
-		
+	public List<BonusPayTime> calcBonusPay(ActualWorkTimeSheetAtr actualWorkAtr, List<BPTimeItemSetting> bpTimeItemSets, CalAttrOfDailyAttd calcAtrOfDaily) {
 		List<BonusPayTime> bonusPayTimeList = new ArrayList<>();
 		for(BonusPayTimeSheetForCalc bonusPaySheet : this.bonusPayTimeSheet){
+			//加給時間帯計算設定の取得
+			Optional<BPTimeItemSetting> set = bpTimeItemSets.stream()
+					.filter(b -> b.getTimeItemNo() == bonusPaySheet.getRaiseSalaryTimeItemNo().v().intValue() && b.getTimeItemTypeAtr().isNomalType())
+					.findFirst();
 			//加給時間の計算
-			AttendanceTime calcTime = raisingAutoCalcSet.isRaisingSalaryCalcAtr()?bonusPaySheet.calcTotalTime(): new AttendanceTime(0);
-			AttendanceTime time = raisingAutoCalcSet.isRaisingSalaryCalcAtr()?bonusPaySheet.calcTotalTime(): new AttendanceTime(0);
-			
+			AttendanceTime calcTime = bonusPaySheet.calcTotalTime();
+			AttendanceTime time = set.map(s -> s.isCalc(actualWorkAtr, calcAtrOfDaily)).orElse(false)
+					? bonusPaySheet.calcTotalTime()
+					: AttendanceTime.ZERO;
 			bonusPayTimeList.add(new BonusPayTime(
 					bonusPaySheet.getRaiseSalaryTimeItemNo().v().intValue(),
-					calcTime,
+					time,
 					TimeWithCalculation.createTimeWithCalculation(actualWorkAtr.isWithinWorkTime()?time:new AttendanceTime(0),actualWorkAtr.isWithinWorkTime()?calcTime:new AttendanceTime(0)),
 					TimeWithCalculation.createTimeWithCalculation(actualWorkAtr.isWithinWorkTime()?new AttendanceTime(0):time,actualWorkAtr.isWithinWorkTime()?new AttendanceTime(0):calcTime)));
-		}
-		//加給時間帯計算設定の取得
-		if(!GetCalcAtr.isCalc(calcAtrOfDaily.getRasingSalarySetting().isRaisingSalaryCalcAtr(), calcAtrOfDaily, bonusPayAutoCalcSet, actualWorkAtr)) {
-			bonusPayTimeList.forEach(tc ->{tc.getWithinBonusPay().setTime(new AttendanceTime(0));
-										tc.getExcessBonusPayTime().setTime(new AttendanceTime(0));});
 		}
 		return bonusPayTimeList;
 	}
@@ -167,31 +158,26 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 	 * 特定加給時間の計算
 	 * アルゴリズム：時間の計算
 	 * @param actualWorkAtr 実働区分
-	 * @param raisingAutoCalcSet 加給の自動計算設定
-	 * @param bonusPayAutoCalcSet 加給自動計算設定
+	 * @param bpTimeItemSets 加給自動計算設定
 	 * @param calcAtrOfDaily 日別実績の計算区分
 	 * @return 特定加給時間クラス(List)
 	 */
-	public List<BonusPayTime> calcSpacifiedBonusPay(
-			ActualWorkTimeSheetAtr actualWorkAtr,
-			AutoCalRaisingSalarySetting raisingAutoCalcSet,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet,
-			CalAttrOfDailyAttd calcAtrOfDaily,
-			BonusPayAtr bonusPayAtr){
-		
+	public List<BonusPayTime> calcSpacifiedBonusPay(ActualWorkTimeSheetAtr actualWorkAtr, List<BPTimeItemSetting> bpTimeItemSets, CalAttrOfDailyAttd calcAtrOfDaily){
 		List<BonusPayTime> bonusPayTimeList = new ArrayList<>();
 		for(SpecBonusPayTimeSheetForCalc bonusPaySheet : this.specBonusPayTimesheet){
-			AttendanceTime calcTime = raisingAutoCalcSet.isSpecificRaisingSalaryCalcAtr()?bonusPaySheet.calcTotalTime():new AttendanceTime(0);
-			AttendanceTime time = raisingAutoCalcSet.isSpecificRaisingSalaryCalcAtr()?bonusPaySheet.calcTotalTime():new AttendanceTime(0);
+			//加給時間帯計算設定の取得
+			Optional<BPTimeItemSetting> set = bpTimeItemSets.stream()
+					.filter(b -> b.getTimeItemNo() == bonusPaySheet.getSpecBonusPayNumber().v().intValue() && b.getTimeItemTypeAtr().isSpecialType())
+					.findFirst();
+			AttendanceTime calcTime = bonusPaySheet.calcTotalTime();
+			AttendanceTime time = set.map(s -> s.isCalc(actualWorkAtr, calcAtrOfDaily)).orElse(false)
+					? bonusPaySheet.calcTotalTime()
+					: AttendanceTime.ZERO;
 			bonusPayTimeList.add(
 					new BonusPayTime(bonusPaySheet.getSpecBonusPayNumber().v().intValue(),
-					calcTime,
+					time,
 					TimeWithCalculation.createTimeWithCalculation(actualWorkAtr.isWithinWorkTime()?time:new AttendanceTime(0),actualWorkAtr.isWithinWorkTime()?calcTime:new AttendanceTime(0)),
 					TimeWithCalculation.createTimeWithCalculation(actualWorkAtr.isWithinWorkTime()?new AttendanceTime(0):time,actualWorkAtr.isWithinWorkTime()?new AttendanceTime(0):calcTime)));
-		}
-		if(!GetCalcAtr.isCalc(calcAtrOfDaily.getRasingSalarySetting().isSpecificRaisingSalaryCalcAtr(), calcAtrOfDaily, bonusPayAutoCalcSet, actualWorkAtr)) {
-			bonusPayTimeList.forEach(tc ->{tc.getWithinBonusPay().setTime(new AttendanceTime(0));
-										tc.getExcessBonusPayTime().setTime(new AttendanceTime(0));});
 		}
 		return bonusPayTimeList;
 	}
@@ -460,15 +446,15 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 	public AttendanceTime calcDeductionTime(ActualWorkTimeSheetAtr actualAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
 		AttendanceTime result = new AttendanceTime(0);
 		//休憩
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(actualAtr, DeductionAtr.Deduction,ConditionAtr.BREAK, goOutSet).valueAsMinutes());
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(actualAtr, DeductionAtr.Deduction,ConditionAtr.BREAK, goOutSet, NotUseAtr.USE).valueAsMinutes());
 		//外出(私用)
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(actualAtr, DeductionAtr.Deduction,ConditionAtr.PrivateGoOut, goOutSet).valueAsMinutes());
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(actualAtr, DeductionAtr.Deduction,ConditionAtr.PrivateGoOut, goOutSet, NotUseAtr.USE).valueAsMinutes());
 		//外出(組合)
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(actualAtr, DeductionAtr.Deduction,ConditionAtr.UnionGoOut, goOutSet).valueAsMinutes());
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(actualAtr, DeductionAtr.Deduction,ConditionAtr.UnionGoOut, goOutSet, NotUseAtr.USE).valueAsMinutes());
 		//育児
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(actualAtr, DeductionAtr.Deduction,ConditionAtr.Child, goOutSet).valueAsMinutes());
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(actualAtr, DeductionAtr.Deduction,ConditionAtr.Child, goOutSet, NotUseAtr.USE).valueAsMinutes());
 		//介護
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(actualAtr, DeductionAtr.Deduction,ConditionAtr.Care, goOutSet).valueAsMinutes());
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(actualAtr, DeductionAtr.Deduction,ConditionAtr.Care, goOutSet, NotUseAtr.USE).valueAsMinutes());
 		return result;
 	}
 	
@@ -482,23 +468,23 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 	public AttendanceTime calcDeductionTime(HolidayCalcMethodSet holidayCalcMethodSet, PremiumAtr premiumAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
 		AttendanceTime result = new AttendanceTime(0);
 		//休憩
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.BREAK, goOutSet).valueAsMinutes());
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.BREAK, goOutSet, NotUseAtr.USE).valueAsMinutes());
 		//外出(私用)
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.PrivateGoOut, goOutSet).valueAsMinutes());
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.PrivateGoOut, goOutSet, NotUseAtr.USE).valueAsMinutes());
 		//外出(組合)
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.UnionGoOut, goOutSet).valueAsMinutes());
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.UnionGoOut, goOutSet, NotUseAtr.USE).valueAsMinutes());
 		//短時間
 		AttendanceTime shortTime = new AttendanceTime(0);
 		//介護
 		AttendanceTime careTime = new AttendanceTime(0);
 		//短時間勤務を控除するか判断
 		if(premiumAtr.isRegularWork() && !holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().isCalculateIncludCareTime()) {
-			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.Child, goOutSet);
-			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.Care, goOutSet);
+			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.Child, goOutSet, NotUseAtr.USE);
+			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.Care, goOutSet, NotUseAtr.USE);
 		}
 		if(premiumAtr.isPremium() && !holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().isCalculateIncludCareTime()) {
-			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.Child, goOutSet);
-			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.Care, goOutSet);
+			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.Child, goOutSet, NotUseAtr.USE);
+			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.Care, goOutSet, NotUseAtr.USE);
 		}
 		result = result.addMinutes(shortTime.valueAsMinutes());
 		result = result.addMinutes(careTime.valueAsMinutes());

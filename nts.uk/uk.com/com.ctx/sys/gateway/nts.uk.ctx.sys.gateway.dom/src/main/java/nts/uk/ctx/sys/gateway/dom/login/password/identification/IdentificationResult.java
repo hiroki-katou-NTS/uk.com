@@ -25,8 +25,8 @@ public class IdentificationResult {
 
 	/**
 	 * 識別成功
-	 * @param EmployeeDataMngInfoImport
-	 * @param User
+	 * @param employee
+	 * @param user
 	 * @return IdentificationResult
 	 */
 	public static IdentificationResult success(EmployeeDataMngInfoImport employee, User user) {
@@ -38,7 +38,7 @@ public class IdentificationResult {
 	
 	/**
 	 * 識別失敗
-	 * @param AtomTask
+	 * @param failureLog
 	 * @return IdentificationResult
 	 */
 	public static IdentificationResult failure(AtomTask failureLog) {

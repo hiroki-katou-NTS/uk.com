@@ -8,19 +8,8 @@ label.form-label {
 	padding-right: 8px;
 
 	& > span.text {
-		color: #808080;
 		line-height: 32px;
 		display: inline-block;
-		font-size: 11px;
-		font-weight: 500;
-
-		&::after {
-			content: "*";
-			top: -3px;
-			color: #f00;
-			display: none;
-			position: absolute;
-		}
 	}
 
 	& > svg {
@@ -33,14 +22,17 @@ label.form-label {
 			position: relative;
 
 			&::after {
-				display: inline;
+				content: "（必須）";
+				color: #DB4F51;
+				font-size: 9px;
+				font-weight: 200;
 			}
 		}
 	}
 
 	&.has-constraint {
 		& > svg {
-			display: inline;
+			display: none; /* UI見直しで一旦非表示 */
 		}
 	}
 }

@@ -21,12 +21,16 @@
 						<label class="navigation-label">#{i18n.getText('CMF001_26')}</label>
 						<div>
 							<div class="image-left">
-								<button id="buttonImport" class="import-creation" 
-								data-bind="click : importScreen" tabindex="1"></button>
+								<button id="buttonImport" class="import-creation x-large"
+								data-bind="click : importScreen" tabindex="1">外部受入実行</button>
 							</div>
 							<div class="image-left">
-								<button id="buttonSetting" class="setting-creation" 
-								data-bind="click : settingScreen" tabindex="2"></button>
+								<button id="buttonSettingB" class="setting-creation x-large"
+								data-bind="click : settingScreenB" tabindex="2">外部受入設定<br />（受入ドメイン別）</button>
+							</div>
+							<div class="image-left">
+								<button id="buttonSettingE" class="setting-creation x-large"
+										data-bind="click : settingScreenE" tabindex="3">外部受入設定<br/>（CSVレイアウト別）</button>
 							</div>
 							<div class="clear"></div>
 						</div>	

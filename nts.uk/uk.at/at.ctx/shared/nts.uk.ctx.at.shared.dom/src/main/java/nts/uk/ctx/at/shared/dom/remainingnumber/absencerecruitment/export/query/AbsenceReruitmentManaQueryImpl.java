@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.InterimRemainAggregateOutputData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.MngHistDataAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.export.ClosureRemainPeriodOutputData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.export.RemainManagementExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
@@ -443,7 +444,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		return outData;
 	}
 	@Override
-	public double useDays(String sid) {
+	public LeaveRemainingDayNumber useDays(String sid) {
 		//ドメインモデル「振出管理データ」を取得
 		List<PayoutManagementData> lstComfirmData = confirmRecMngRepo.getByStateAtr(sid, DigestionAtr.UNUSED);
 		//取得した「振出管理データ」の未使用日数を合計
@@ -459,7 +460,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 			remainDays += absComfirmDay.getRemainDays().v();
 		}
 		//振休発生数合計－振休使用数合計を返す		
-		return unUseDays - remainDays;
+		return new LeaveRemainingDayNumber(unUseDays - remainDays);
 	}
 	@Override
 	public double getMonthExtinctionDays(String sid, DatePeriod dateData) {

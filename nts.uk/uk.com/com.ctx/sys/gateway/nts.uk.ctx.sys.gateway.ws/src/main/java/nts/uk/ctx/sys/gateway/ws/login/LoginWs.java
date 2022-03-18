@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.ws.login;
 
-import java.io.File;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -21,11 +19,12 @@ import javax.ws.rs.core.Context;
 import lombok.val;
 import nts.arc.layer.ws.WebService;
 import nts.arc.security.csrf.CsrfToken;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.app.command.login.password.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.app.command.login.password.MobileLoginCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.password.PasswordAuthenticateCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.password.PasswordAuthenticateCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.login.url.UrlLoginCommand;
+import nts.uk.ctx.sys.gateway.app.command.login.url.UrlLoginCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.tenantlogin.TenantAuthenticateCommand;
 import nts.uk.ctx.sys.gateway.app.command.tenantlogin.TenantAuthenticateCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.tenantlogin.TenantCheckCommandHandler;
@@ -33,6 +32,9 @@ import nts.uk.ctx.sys.gateway.app.find.login.CompanyInformationFinder;
 import nts.uk.ctx.sys.gateway.app.find.login.EmployeeLoginSettingFinder;
 import nts.uk.ctx.sys.gateway.app.find.login.dto.CheckContractDto;
 import nts.uk.ctx.sys.gateway.app.find.login.dto.EmployeeLoginSettingDto;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.InspectionResultDto;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.QrVerifyEmployeeCodeAndPassword;
+import nts.uk.ctx.sys.gateway.app.command.login.url.UrlResult;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInformationImport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.application.auth.WindowsAccount;
@@ -60,6 +62,12 @@ public class LoginWs extends WebService {
 	/** The employee login setting finder. */
 	@Inject
 	private EmployeeLoginSettingFinder employeeLoginSettingFinder;
+	
+	@Inject
+	private QrVerifyEmployeeCodeAndPassword qrVerifyEmployeeCodeAndPassword;
+	
+	@Inject
+	private UrlLoginCommandHandler urlLoginCommandHandler;
 	
 	/** The Constant SIGN_ON. */
 	private static final String SIGN_ON = "on";
@@ -185,12 +193,8 @@ public class LoginWs extends WebService {
 	@POST
 	@Path("build_info_time")
 	public VerDto getBuildTime(@Context ServletContext context) {
-		File file = new File(context.getRealPath("/view/ccg/007/a/ccg007.a.start.js"));
-		if (!file.exists()) {
-			return VerDto.builder().ver("Please build js file!").build();
-		}
-		return VerDto.builder().ver(GeneralDateTime.legacyDateTime(new Date(file.lastModified()))
-				.toString("yyyy/MM/dd HH:mm")).build();
+		// リリースまで時間が無いのでとりあえずハードコーディング
+		return VerDto.builder().ver("Ver.1.1.1-5").build();
 	}
 	
 	/**
@@ -203,5 +207,23 @@ public class LoginWs extends WebService {
 	@Path("emlogsettingform3/{contractCode}")
 	public EmployeeLoginSettingDto getEmployeeLoginSettingForm3(@PathParam("contractCode") String contractCode) {
 		return this.employeeLoginSettingFinder.findByContractCodeForm3(contractCode);
+	}
+	
+	@POST
+	@Path("verify_employeecode_and_password")
+	public InspectionResultDto verifiLogin(VerifyEmployeeCodeAndPasswordInput param) {
+		return this.qrVerifyEmployeeCodeAndPassword.verifyEmployeeCodeAndPassword(param.getCid(), param.getEmployeeCode(), param.getPassword());
+	}
+	
+	/**
+	 * URLログイン
+	 * @param urlID
+	 * @return
+	 */
+	@POST
+	@Path("url/{tenantCode}/{urlID}")
+	@Produces("application/json")
+	public UrlResult loginByUrl(@Context HttpServletRequest request, @PathParam("tenantCode") String tenantCode, @PathParam("urlID") String urlID) {
+		return urlLoginCommandHandler.handle(new UrlLoginCommand(urlID, tenantCode, "", request));
 	}
 }

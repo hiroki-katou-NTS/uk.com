@@ -83,29 +83,8 @@ module nts.uk.pr.view.ccg007.h {
                     var submitData = <SubmitData>{};
                     
                     nts.uk.characteristics.restore("contractInfo").done(function(loginInfo:any) {
-                        //Set SubmitData
-                        if (loginInfo) {
-                            submitData.contractPassword = _.escape(loginInfo.contractPassword);
-                        }
-                        
-                        submitData.loginId = nts.uk.text.padRight(_.escape(self.loginId()), " ", 12);
-                        submitData.password = _.escape(self.passwordNew());
-                        submitData.contractCode = _.escape(self.contractCode());
-                        
-                        //login
-                        service.submitLogin(submitData).done(function(messError: any) {
-                            //Remove LoginInfo
-                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
-                            blockUI.clear();
-                        }).fail(function(res:any) {
-                            //Return Dialog Error
-                            if (!nts.uk.util.isNullOrEmpty(res.parameterIds)){
-                                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                            } else {
-                               nts.uk.ui.dialog.alertError(res.messageId);
-                            }
-                            blockUI.clear();
-                        });
+                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                        blockUI.clear();
                     });
                 }).fail(function(res: any) {
                     //Return Dialog Error

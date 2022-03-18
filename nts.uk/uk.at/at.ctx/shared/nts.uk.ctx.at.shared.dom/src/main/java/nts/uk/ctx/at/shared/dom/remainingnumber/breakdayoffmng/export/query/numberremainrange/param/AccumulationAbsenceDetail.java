@@ -150,6 +150,62 @@ public class AccumulationAbsenceDetail implements Cloneable{
 						Collectors.summingDouble(x -> x.getAssocialInfo().getDayNumberUsed().v()),
 						x -> new LeaveRemainingDayNumber(x)));
 	}
+	
+	//未相殺数を更新する
+	public void updateUsedDay(double day) {
+		this.unbalanceNumber.day = new ManagementDataRemainUnit(this.unbalanceNumber.day.v() - day);
+	}
+	
+	// 確定の未相殺数を更新する
+	private void updateOffsetDayFixed(double day) {
+		updateUsedDay(day);
+	}
+	
+	// 発生確定の未相殺数を調整する
+	public void correctUnoffsetOfOccrFixed(SeqVacationAssociationInfoList seqVacAssociInfo, DatePeriod period) {
+		val linkData = seqVacAssociInfo.getWithOccrDay(this.getDateOccur().getDayoffDate().get()).stream()
+				.filter(y -> period.contains(y.getDateOfUse())).collect(Collectors.toList());
+		if (!linkData.isEmpty()) {
+			this.updateOffsetDayFixed(new SeqVacationAssociationInfoList(linkData).sumUsed());
+		}
+	}
+	
+	// 消化確定の未相殺数を調整する
+	public void correctUnoffsetOfDigestFixed(SeqVacationAssociationInfoList seqVacAssociInfo, DatePeriod period) {
+		val linkData = seqVacAssociInfo.getWithDigestDay(this.getDateOccur().getDayoffDate().get()).stream()
+				.filter(y -> period.contains(y.getOutbreakDay())).collect(Collectors.toList());
+		if (!linkData.isEmpty()) {
+			this.updateOffsetDayFixed(new SeqVacationAssociationInfoList(linkData).sumUsed());
+		}
+	}
+	
+	// 暫定の未相殺数を更新する
+	private void updateOffsetDayTemp(double day) {
+		this.unbalanceNumber.day = new ManagementDataRemainUnit(this.numberOccurren.day.v() - day);
+	}
+	
+	//消化暫定の未相殺数を調整する
+	public void correctUnoffsetOfDigestTemp(SeqVacationAssociationInfoList seqVacAssociInfo, DatePeriod period) {
+		val linkData = seqVacAssociInfo.getWithDigestDay(this.getDateOccur().getDayoffDate().get()).stream()
+				.filter(y -> y.getOutbreakDay().beforeOrEquals(period.end())).collect(Collectors.toList());
+		if (!linkData.isEmpty()) {
+			this.updateOffsetDayTemp(new SeqVacationAssociationInfoList(linkData).sumUsed());
+		}else {
+			this.updateOffsetDayTemp(0);
+		}
+	}
+	
+	//発生暫定の未相殺数を調整する
+	public void correctUnoffsetOfOccrTemp(SeqVacationAssociationInfoList seqVacAssociInfo, DatePeriod period) {
+		val linkData = seqVacAssociInfo.getWithOccrDay(this.getDateOccur().getDayoffDate().get()).stream()
+				.filter(y -> y.getDateOfUse().beforeOrEquals(period.end())).collect(Collectors.toList());
+		if (!linkData.isEmpty()) {
+			this.updateOffsetDayTemp(new SeqVacationAssociationInfoList(linkData).sumUsed());
+		}else {
+			this.updateOffsetDayTemp(0);
+		}
+	}
+	
 	public static interface Require {
 
 		/**

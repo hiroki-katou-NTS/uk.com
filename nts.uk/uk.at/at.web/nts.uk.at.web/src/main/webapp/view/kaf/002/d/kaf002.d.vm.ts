@@ -11,10 +11,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 		<div class="two-panel" style="height: 100%; width: 1260px">
 			<div class="left-panel"
 				style="padding-bottom: 5px; width: calc(1260px - 388px); height: inherit;">
-				<div
-					style="border: 1px solid #CCC; height: inherit; overflow-y: auto; overflow-x: hidden; background-color: #fff; padding: 0 10px;">
-					<div class="table"
-						style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
+					<div class="table form-header">
 						<div class="cell" style="vertical-align: middle;">
 							<div
 								data-bind="component: { name: 'kaf000-b-component4',
@@ -81,7 +78,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 					}"></div>
 						</div>
 
-						<div class="blockSecond">
+						<div class="blockSecond" style="padding-bottom: 5px">
 							<input class="inputBlockSecond" id="inputTimeKAF002"
 								data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: {	name: $i18n('KAF002_79'), value: time, required: true, inputFormat: 'time', constraint: 'SampleTimeDuration', mode: 'time'
 													}" />
@@ -115,12 +112,9 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                                                 } }"></div>
 
 					<div style="padding-top: 30px;"></div>
-				</div>
 			</div>
 			<div class="right-panel"
 				style="width: 388px; padding-bottom: 5px; height: inherit; overflow-y: hidden; padding-right: 0px">
-				<div
-					style="border: 1px solid #CCC; height: inherit; background-color: #fff;">
 					<div 
 						data-bind="component: { name: 'kaf000-b-component1', 
                             params: {
@@ -134,7 +128,6 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                                 application: application,
                                 appDispInfoStartupOutput: appDispInfoStartupOutput
                             } }"></div>
-				</div>
 			</div>
 
 		</div>

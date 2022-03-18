@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.specialholiday;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +56,7 @@ public class SpecialHolidayProcess {
 														specialHoliday.getSpecialHolidayCode().v(), specialHoliday.getAutoGrant().value))
 					/** 特別休暇暫定データ削除 */
 							.then(deleteTemp(
-									require, empId, specialHoliday.getSpecialHolidayCode().v(), period.getPeriod()));
+									require, empId, specialHoliday.getSpecialHolidayCode().v(), period.getPeriod().end()));
 		}).collect(Collectors.toList());
 
 		return AtomTask.bundle(atomTask);
@@ -74,24 +73,19 @@ public class SpecialHolidayProcess {
 	private static AtomTask updateRemainSpecialHoliday(RequireM2 require, InPeriodOfSpecialLeaveResultInfor output,
 			String empId, DatePeriod period, int specialLeaveCode, int autoGrant) {
 
-		List<AtomTask> atomTask = new ArrayList<>();
-
 		Map<GeneralDate, String> existDataMap = new HashMap<>();
 
-		/** 当月以降の特別休暇付与残数データを削除 */
-		atomTask.add(deleteAfterCurrentMonth(require, empId, period, specialLeaveCode, autoGrant));
+		return AtomTask.of(() -> {
 
-		/** ドメインモデル「特別休暇付与残数データ」を取得 */
-		val specialGrantRemainData = require.specialLeaveGrantRemainingData(empId, specialLeaveCode);
+					/** ドメインモデル「特別休暇付与残数データ」を取得 */
+					val specialGrantRemainData = require.specialLeaveGrantRemainingData(empId, specialLeaveCode);
 
-		specialGrantRemainData.stream().forEach(c -> {
+					specialGrantRemainData.stream().forEach(c -> {
 
-			/** TODO: ドメインモデル「特別休暇付与残数履歴データ」を追加する */
-		});
-
-		return AtomTask.bundle(atomTask)
-				/** 特別休暇付与残数データ更新処理 */
-				.then(update(require, output.getAsOfStartNextDayOfPeriodEnd(), empId, specialLeaveCode, existDataMap, specialGrantRemainData));
+						/** TODO: ドメインモデル「特別休暇付与残数履歴データ」を追加する */
+					}); 
+					update(require, output.getAsOfStartNextDayOfPeriodEnd(), empId, specialLeaveCode, existDataMap, specialGrantRemainData).run();
+				});
 	}
 
 	/** 特別休暇付与残数データ更新処理 */
@@ -112,11 +106,13 @@ public class SpecialHolidayProcess {
 						/** ドメインモデル「特別休暇付与残数データ」を更新する */
 						c.setExpirationStatus(detail.getExpirationStatus());
 						c.setRegisterType(GrantRemainRegisterType.MONTH_CLOSE);
+						c.setDetails(detail.getDetails());
 						return AtomTask.of(() -> require.updateSpecialLeaveGrantRemainingData(c));
 					})
 					.orElseGet(() -> {
 
 						/** ドメインモデル「特別休暇付与残数データ」を追加する */
+
 						val data = SpecialLeaveGrantRemainingData.of(detail, specialLeaveCode);
 						data.setRegisterType(GrantRemainRegisterType.MONTH_CLOSE);
 						return AtomTask.of(() -> require.addSpecialLeaveGrantRemainingData(data));
@@ -127,19 +123,6 @@ public class SpecialHolidayProcess {
 		return AtomTask.bundle(atomTasks);
 	}
 
-	/** 当月以降の特別休暇付与残数データを削除 */
-	private static AtomTask deleteAfterCurrentMonth(RequireM3 require, String empId, DatePeriod period, int specialLeaveCode, int autoGrant) {
-
-		/** パラメータ「自動付与区分」をチェックする */
-		if (autoGrant == 0) {
-			return AtomTask.none();
-		}
-
-		/** ドメインモデル「特別休暇付与残数データ」を削除 */
-		return AtomTask.of(() -> require.deleteSpecialLeaveGrantRemainAfter(empId, specialLeaveCode, period.start()))
-				/** TODO: ドメインモデル「特別休暇付与残数履歴データ」を削除 */
-				;
-	}
 
 	private static List<InterimSpecialHolidayMng> getSpecialRemain(List<DailyInterimRemainMngData> interimRemainMngMap) {
 
@@ -184,9 +167,9 @@ public class SpecialHolidayProcess {
 	 * @return
 	 */
 	public static AtomTask deleteTemp(
-			RequireM4 require, String employeeId, int specialLeaveCode,  DatePeriod period){
+			RequireM4 require, String employeeId, int specialLeaveCode,  GeneralDate ymd){
 		
-		return AtomTask.of(() -> require.deleteTempSpecialSidPeriod(employeeId, specialLeaveCode, period));
+		return AtomTask.of(() -> require.deleteTempSpecialBySidBeforeTheYmd(employeeId, specialLeaveCode, ymd));
 	}
 
 	public static interface RequireM1 extends SpecialLeaveManagementService.RequireM5 {
@@ -213,6 +196,6 @@ public class SpecialHolidayProcess {
 	}
 	
 	public static interface RequireM4{
-		void deleteTempSpecialSidPeriod(String sid, int specialCode, DatePeriod period);
+		void deleteTempSpecialBySidBeforeTheYmd(String sid ,int specialCd, GeneralDate ymd);
 	}
 }

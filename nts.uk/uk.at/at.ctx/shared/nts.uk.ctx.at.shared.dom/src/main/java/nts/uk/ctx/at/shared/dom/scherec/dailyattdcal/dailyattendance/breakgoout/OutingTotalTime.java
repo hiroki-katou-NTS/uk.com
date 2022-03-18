@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.OutingCalcWithinCoreTime;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 外出合計時間
@@ -57,12 +58,13 @@ public class OutingTotalTime {
 			DeductionAtr dedAtr,
 			GoingOutReason reason,
 			Optional<OutingCalcWithinCoreTime> outingCalcSet,
-			Optional<WorkTimezoneGoOutSet> goOutSet) {
+			Optional<WorkTimezoneGoOutSet> goOutSet,
+			NotUseAtr canOffset) {
 		
 		// 外出合計時間の計算
 		DeductionTotalTime outingTotal = CalcDeductionTimeService.calcTotalTime(oneDay,
 				ConditionAtr.convertFromGoOutReason(reason),
-				dedAtr, goOutSet);
+				dedAtr, goOutSet, canOffset);
 		
 		OutingTotalTime result = OutingTotalTime.of(
 				outingTotal.getTotalTime(),
@@ -82,12 +84,12 @@ public class OutingTotalTime {
 		if (isSeparate){
 			// 所定内外出をコア内と外で分けて計算
 			result.withinTotalTime = WithinOutingTotalTime.calcCoreTimeSeparate(
-					oneDay, dedAtr, goOutSet, reason);
+					oneDay, dedAtr, goOutSet, reason, canOffset);
 		}
 		else{
 			// 所定内外出をコア内と外で分けずに計算
 			result.withinTotalTime = WithinOutingTotalTime.calcCoreTimeNotSeparate(
-					oneDay, dedAtr, goOutSet, reason);
+					oneDay, dedAtr, goOutSet, reason, canOffset);
 		}
 		// 外出合計時間を返す
 		return result;

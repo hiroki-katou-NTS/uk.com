@@ -22,9 +22,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 <div class="two-panel" style="height: 100%; width: 1260px">
                     <div class="left-panel"
                         style="padding-bottom: 5px; width: calc(1260px - 388px); height: inherit;">
-                        <div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding: 0 10px;overflow-x: hidden;">
-                            <div class="table"
-                                style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
+                            <div class="table form-header">
                                 <div class="cell" style="vertical-align: middle;">
                                     <div
                                         data-bind="component: { name: 'kaf000-b-component4',
@@ -116,10 +114,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                                                         <div style="padding-top: 30px;">
                                         
                             </div>  
-                        </div>
                     </div>
                     <div class="right-panel" style="width: 388px; padding-bottom: 5px; height: inherit; padding-right: 0px">
-                        <div style="border: 1px solid #CCC; height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden">
                             <div 
                                 data-bind="component: { name: 'kaf000-b-component1', 
                                     params: {
@@ -133,7 +129,6 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                                         application: application,
                                         appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
                                     } }"></div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -184,6 +179,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
       data: any;
       mode: KnockoutObservable<number> = ko.observable(1); // 0 ->a, 1->b, 2->b(view)
       reasonList: Array<GoOutTypeDispControl> = [];
+      errorList: KnockoutObservableArray<any> = ko.observableArray([])
     
     
         bindComment(data: any) {
@@ -218,6 +214,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     self.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 0 ? self.mode(2) : self.mode(1);
                     self.checkExistData();
                     self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
+                    self.errorList(res.errorListOptional);
                     self.bindActualData();                        
                     self.bindTabM(self.data);
                     self.bindComment(self.data);
@@ -273,6 +270,13 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                             let dataTab0 = _.filter(data.appStampOptional.listTimeStampApp, (item: any) => item.destinationTimeApp.timeStampAppEnum === 0 || item.destinationTimeApp.timeStampAppEnum === 1);
                             let dataTab1 = _.filter(data.appStampOptional.listTimeStampApp, (item: any) => item.destinationTimeApp.timeStampAppEnum === 2);
 
+                            if (dataTab0.length === 0) {
+                                dataTab0 = _.filter(self.data.appStampOptional.listDestinationTimeApp, (item: any) => item.timeStampAppEnum === 0 || item.timeStampAppEnum === 1);
+                            }
+                            if (dataTab1.length === 0) {
+                                dataTab1 = _.filter(self.data.appStampOptional.listDestinationTimeApp, (item: any) => item.timeStampAppEnum === 2);
+                            }
+
                             if (self.tabs()[0].visible()) self.tabs()[0].visible(dataTab0.length > 0); self.tabMs()[0].visible(dataTab0.length > 0);
                             if (self.tabs()[1].visible()) self.tabs()[1].visible(dataTab1.length > 0); self.tabMs()[1].visible(dataTab1.length > 0);
                         }
@@ -280,6 +284,16 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                             let dataTab2 = _.filter(data.appStampOptional.listTimeStampAppOther, (item: any) => item.destinationTimeZoneApp.timeZoneStampClassification === 2);
                             let dataTab3 = _.filter(data.appStampOptional.listTimeStampAppOther, (item: any) => item.destinationTimeZoneApp.timeZoneStampClassification === 0);
                             let dataTab4 = _.filter(data.appStampOptional.listTimeStampAppOther, (item: any) => item.destinationTimeZoneApp.timeZoneStampClassification === 1);
+
+                            if (dataTab2.length === 0) {
+                                dataTab2 = _.filter(self.data.appStampOptional.listDestinationTimeZoneApp, (item: any) => item.timeZoneStampClassification === 2);
+                            }
+                            if (dataTab3.length === 0) {
+                                dataTab3 = _.filter(self.data.appStampOptional.listDestinationTimeZoneApp, (item: any) => item.timeZoneStampClassification === 0);
+                            }
+                            if (dataTab4.length === 0) {
+                                dataTab4 = _.filter(self.data.appStampOptional.listDestinationTimeZoneApp, (item: any) => item.timeZoneStampClassification === 1);
+                            }
 
                             if (self.tabs()[2].visible()) self.tabs()[2].visible(dataTab2.length > 0); self.tabMs()[2].visible(dataTab2.length > 0);
                             if (self.tabs()[3].visible()) self.tabs()[3].visible(dataTab3.length > 0); self.tabMs()[3].visible(dataTab3.length > 0);
@@ -429,6 +443,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             let timePlaceList = stampRecord ? stampRecord.workingTime : null;
             for (let i = 1; i < 3; i++) {
                 let dataObject = new TimePlaceOutput(i);
+                let errStartFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 0, 'stampFrameNo': i, 'startEndClassification': 0 });
+                let errEndFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 0, 'stampFrameNo': i, 'startEndClassification': 1 });
                 if (!self.isPreAtr()) {
                     _.forEach(timePlaceList, item => {
                         if (item.frameNo == i) {
@@ -436,6 +452,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                             dataObject.opEndTime = item.opEndTime;
                             dataObject.opWorkLocationCD = item.opWorkLocationCD;
                             dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                            dataObject.errorStart = errStartFilter.length > 0;
+                            dataObject.errorEnd = errEndFilter.length > 0;
                         }
                     });
                     
@@ -451,6 +469,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             let extraordinaryTime = stampRecord ? stampRecord.extraordinaryTime : null;
             for (let i = 3; i < 6; i++) {
                 let dataObject = new TimePlaceOutput(i);
+                let errStartFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 1, 'stampFrameNo': i - 2, 'startEndClassification': 0 });
+                let errEndFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 1, 'stampFrameNo': i - 2, 'startEndClassification': 1 });
                 if (!self.isPreAtr()) {
                     _.forEach(extraordinaryTime, item => {
                         if (item.frameNo +2  == i) {
@@ -458,6 +478,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                             dataObject.opEndTime = item.opEndTime;
                             dataObject.opWorkLocationCD = item.opWorkLocationCD;
                             dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                            dataObject.errorStart = errStartFilter.length > 0;
+                            dataObject.errorEnd = errEndFilter.length > 0;
                         }
                     });
                     
@@ -476,6 +498,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             let outingTime = stampRecord ? stampRecord.outingTime : null;
             for ( let i = 1; i < 11; i++ ) {
                 let dataObject = new TimePlaceOutput( i );
+                let errStartFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 2, 'stampFrameNo': i, 'startEndClassification': 0 });
+                let errEndFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 2, 'stampFrameNo': i, 'startEndClassification': 1 });
                 if (!self.isPreAtr()) {
                     _.forEach(outingTime, item => {
                         if (item.frameNo == i) {
@@ -483,6 +507,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                             dataObject.opEndTime = item.opEndTime;
                             dataObject.opWorkLocationCD = item.opWorkLocationCD;
                             dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                            dataObject.errorStart = errStartFilter.length > 0;
+                            dataObject.errorEnd = errEndFilter.length > 0;
                         }
                     });
                     
@@ -601,6 +627,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             let timePlaceList = stampRecord ? stampRecord.workingTime : null;
             for (let i = 1; i < 3; i++) {
                 let dataObject = new TimePlaceOutput(i);
+                let errStartFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 0, 'stampFrameNo': i, 'startEndClassification': 0 });
+                let errEndFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 0, 'stampFrameNo': i, 'startEndClassification': 1 });
                 if (!self.isPreAtr()) {
                     _.forEach(timePlaceList, item => {
                         if (item.frameNo == i) {
@@ -608,6 +636,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                             dataObject.opEndTime = item.opEndTime;
                             dataObject.opWorkLocationCD = item.opWorkLocationCD;
                             dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                            dataObject.errorStart = errStartFilter.length > 0;
+                            dataObject.errorEnd = errEndFilter.length > 0;
                         }
                     });
                     
@@ -623,6 +653,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             let extraordinaryTime = stampRecord ? stampRecord.extraordinaryTime : null;
             for (let i = 3; i < 6; i++) {
                 let dataObject = new TimePlaceOutput(i);
+                let errStartFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 1, 'stampFrameNo': i - 2, 'startEndClassification': 0 });
+                let errEndFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 1, 'stampFrameNo': i - 2, 'startEndClassification': 1 });
                 if (!self.isPreAtr()) {
                     _.forEach(extraordinaryTime, item => {
                         if (item.frameNo + 2 == i) {
@@ -630,6 +662,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                             dataObject.opEndTime = item.opEndTime;
                             dataObject.opWorkLocationCD = item.opWorkLocationCD;
                             dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                            dataObject.errorStart = errStartFilter.length > 0;
+                            dataObject.errorEnd = errEndFilter.length > 0;
                         }
                     });
                     
@@ -648,6 +682,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             let outingTime = stampRecord ? stampRecord.outingTime : null;
             for ( let i = 1; i < 11; i++ ) {
                 let dataObject = new TimePlaceOutput( i );
+                let errStartFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 2, 'stampFrameNo': i, 'startEndClassification': 0 });
+                let errEndFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 2, 'stampFrameNo': i, 'startEndClassification': 1 });
                 if (!self.isPreAtr()) {
                     _.forEach(outingTime, item => {
                         if (item.frameNo == i) {
@@ -655,6 +691,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                             dataObject.opEndTime = item.opEndTime;
                             dataObject.opWorkLocationCD = item.opWorkLocationCD;
                             dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                            dataObject.errorStart = errStartFilter.length > 0;
+                            dataObject.errorEnd = errEndFilter.length > 0;
                         }
                     });
                     
@@ -832,6 +870,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     self.isNurseTime = false;
                     self.checkExistData();
                     self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
+                    self.errorList(res.errorListOptional);
                     let dataSources = self.bindReload()
                     let reflect = self.data.appStampReflectOptional;
                     let attendenceCommon = self.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles as boolean;
@@ -869,6 +908,13 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                             let dataTab0 = _.filter(self.data.appStampOptional.listTimeStampApp, (item: any) => item.destinationTimeApp.timeStampAppEnum === 0 || item.destinationTimeApp.timeStampAppEnum === 1);
                             let dataTab1 = _.filter(self.data.appStampOptional.listTimeStampApp, (item: any) => item.destinationTimeApp.timeStampAppEnum === 2);
 
+                            if (dataTab0.length === 0) {
+                                dataTab0 = _.filter(self.data.appStampOptional.listDestinationTimeApp, (item: any) => item.timeStampAppEnum === 0 || item.timeStampAppEnum === 1);
+                            }
+                            if (dataTab1.length === 0) {
+                                dataTab1 = _.filter(self.data.appStampOptional.listDestinationTimeApp, (item: any) => item.timeStampAppEnum === 2);
+                            }
+
                             if (self.tabs()[0].visible()) self.tabs()[0].visible(dataTab0.length > 0); self.tabMs()[0].visible(dataTab0.length > 0);
                             if (self.tabs()[1].visible()) self.tabs()[1].visible(dataTab1.length > 0); self.tabMs()[1].visible(dataTab1.length > 0);
                         }
@@ -876,6 +922,16 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                             let dataTab2 = _.filter(self.data.appStampOptional.listTimeStampAppOther, (item: any) => item.destinationTimeZoneApp.timeZoneStampClassification === 2);
                             let dataTab3 = _.filter(self.data.appStampOptional.listTimeStampAppOther, (item: any) => item.destinationTimeZoneApp.timeZoneStampClassification === 0);
                             let dataTab4 = _.filter(self.data.appStampOptional.listTimeStampAppOther, (item: any) => item.destinationTimeZoneApp.timeZoneStampClassification === 1);
+
+                            if (dataTab2.length === 0) {
+                                dataTab2 = _.filter(self.data.appStampOptional.listDestinationTimeZoneApp, (item: any) => item.timeZoneStampClassification === 2);
+                            }
+                            if (dataTab3.length === 0) {
+                                dataTab3 = _.filter(self.data.appStampOptional.listDestinationTimeZoneApp, (item: any) => item.timeZoneStampClassification === 0);
+                            }
+                            if (dataTab4.length === 0) {
+                                dataTab4 = _.filter(self.data.appStampOptional.listDestinationTimeZoneApp, (item: any) => item.timeZoneStampClassification === 1);
+                            }
 
                             if (self.tabs()[2].visible()) self.tabs()[2].visible(dataTab2.length > 0); self.tabMs()[2].visible(dataTab2.length > 0);
                             if (self.tabs()[3].visible()) self.tabs()[3].visible(dataTab3.length > 0); self.tabMs()[3].visible(dataTab3.length > 0);

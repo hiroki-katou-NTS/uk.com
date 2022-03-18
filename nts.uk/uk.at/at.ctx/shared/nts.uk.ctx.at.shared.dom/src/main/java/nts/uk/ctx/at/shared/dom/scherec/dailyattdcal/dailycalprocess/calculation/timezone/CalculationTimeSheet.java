@@ -129,9 +129,9 @@ public abstract class CalculationTimeSheet {
 	 * @param goOutSet 就業時間帯の外出設定
 	 * @return 控除時間
 	 */
-	public AttendanceTime calcDedTimeByAtr(ActualWorkTimeSheetAtr actualAtr, DeductionAtr dedAtr, ConditionAtr conditionAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
+	public AttendanceTime calcDedTimeByAtr(ActualWorkTimeSheetAtr actualAtr, DeductionAtr dedAtr, ConditionAtr conditionAtr, Optional<WorkTimezoneGoOutSet> goOutSet, NotUseAtr canOffset) {
 		val forCalcList = getDedTimeSheetByAtr(dedAtr,conditionAtr);
-		int total = forCalcList.stream().map(tc -> tc.calcTotalTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc));
+		int total = forCalcList.stream().map(tc -> tc.calcTotalTime(canOffset, NotUseAtr.USE).valueAsMinutes()).collect(Collectors.summingInt(tc -> tc));
 		Optional<TimeRoundingSetting> roundSet = goOutSet.flatMap(g -> g.getAfterTotalInFrame(actualAtr, conditionAtr, dedAtr, this.rounding));
 		if(roundSet.isPresent()) {
 			return new AttendanceTime(roundSet.get().round(total));
@@ -231,7 +231,8 @@ public abstract class CalculationTimeSheet {
 	public AttendanceTime calcDeductionTime(
 			ConditionAtr conditionAtr,
 			DeductionAtr dedAtr,
-			TimeSheetRoundingAtr roundAtr){
+			TimeSheetRoundingAtr roundAtr,
+			NotUseAtr canOffset){
 		
 		// 保持している控除時間帯を取得
 		List<TimeSheetOfDeductionItem> itemList = this.getDedTimeSheetByAtr(dedAtr, conditionAtr);
@@ -240,7 +241,7 @@ public abstract class CalculationTimeSheet {
 		NotUseAtr unitRound = roundAtr == TimeSheetRoundingAtr.PerTimeSheet ? NotUseAtr.USE : NotUseAtr.NOT_USE;
 		int totalMinutes = 0;
 		for (TimeSheetOfDeductionItem item : itemList){
-			totalMinutes += item.calcTotalTime(NotUseAtr.USE, unitRound).valueAsMinutes();
+			totalMinutes += item.calcTotalTime(canOffset, unitRound).valueAsMinutes();
 		}
 		// 丸め区分を取得
 		if (roundAtr == TimeSheetRoundingAtr.PerTimeFrame){

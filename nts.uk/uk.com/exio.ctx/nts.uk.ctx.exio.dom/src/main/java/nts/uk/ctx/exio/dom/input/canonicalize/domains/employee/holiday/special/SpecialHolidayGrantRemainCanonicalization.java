@@ -5,22 +5,25 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import lombok.val;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.annualleave.AnnualLeaveRemainingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeIndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
+import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
@@ -69,26 +72,26 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 			for(val interm : interms) {
 				val keyValue = getPrimaryKeys(interm);
 				if (importingKeys.contains(keyValue)) {
-					require.add(context, ExternalImportError.record(interm.getRowNo(), "受入データの中にキーの重複があります。"));
+					require.add(ExternalImportError.record(interm.getRowNo(), context.getDomainId(), "受入データの中にキーの重複があります。"));
 					return; // 次のレコードへ
 				}
 				importingKeys.add(keyValue);
 				val addedInterm = interm.addCanonicalized(getFixedItems());
-				super.canonicalize(require, context, addedInterm, keyValue);
+				super.canonicalize(require, context, addedInterm);
 			}
 		});
 	}
 	
 	@Override
-	protected IntermediateResult canonicalizeExtends(
+	protected Optional<IntermediateResult> canonicalizeExtends(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context, IntermediateResult interm) {
-		return interm;
+		return Optional.of(interm);
 	}
 	
 	private static CanonicalItemList getFixedItems() {
 		return new CanonicalItemList()
-			.add(Items.SID, IdentifierUtil.randomUniqueId().toString())
+			.add(Items.ID, IdentifierUtil.randomUniqueId().toString())
 			.add(Items.登録種別, 0)
 			.add(Items.積み崩し日数, new BigDecimal(0.0))
 			.add(Items.上限超過消滅日数, new BigDecimal(0.0))
@@ -103,11 +106,6 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 	}
 	
 	@Override
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace){
-		return Arrays.asList(Items.SID);
-	}
-	
-	@Override
 	protected String getParentTableName() {
 		return "KRCDT_HD_SP_REMAIN";
 	}
@@ -119,7 +117,7 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 	
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(DomainDataColumn.SID);
+		return Arrays.asList(new DomainDataColumn(Items.SID, "SID", DataType.STRING));
 	}
 	
 	@Override

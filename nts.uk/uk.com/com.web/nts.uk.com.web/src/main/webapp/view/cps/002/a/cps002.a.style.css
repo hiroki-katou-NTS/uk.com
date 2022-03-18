@@ -1,7 +1,7 @@
 @import url("base.css");
 
 .licenseCheck{
-	margin-left: 640px;
+	/* margin-left: 640px; */
     margin-right: 70px;
     min-width: 179px;
     display: inline-block;
@@ -145,7 +145,7 @@
 
 /* step 2 */
 #ccgcomponent {
-	margin-left: -30px;
+	margin-left: -28px;
 }
 
 #step2_content {
@@ -321,7 +321,7 @@
 }
 
 #step1_content_top .form-group .form-label {
-	min-width: 100px;
+	min-width: 120px;
 }
 
 #step1_content_bottom #init_select {
@@ -363,6 +363,7 @@
 	border-radius: 5px;
 	padding: 10px 20px 15px 20px;
 	margin-top: 25px;
+	height: 305px;
 }
 
 #emp_reg_info_wizard #employeeAvatar,
@@ -378,13 +379,15 @@ body {
 }
 
 #value_item .form-label {
-	width: 100px;
+	width: 130px;
 }
 
 #search_box .form-group {
 	margin-bottom: 0px !important;
 }
-
-#step2_content .ntsSearchBox {
-	width: 182.52px !important;
+#ccg001-btn-search-drawer {
+	left: 300px !important;
+}
+#component-ccg001 {
+	margin-left: 43px;
 }

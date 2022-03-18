@@ -11,7 +11,9 @@
 }
 
 .licenseCheck{
-	margin: 0 140px;
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-right: 140px;
     min-width: 160px;
     display: inline-block;
 }
@@ -29,7 +31,7 @@
 #contents-area>.left-area,
 #contents-area>*>.left-area {
 	width: 280px;
-	margin-left: 85px;
+	margin-left: 30px;
 }
 
 #contents-area>.right-area,
@@ -39,7 +41,7 @@
 }
 
 #contents-area>.right-area {
-	margin-top: -110px;
+	margin-top: -165px;
 }
 
 #contents-area>.left-area #lefttabs,
@@ -133,4 +135,7 @@
 
 #lefttabs .tabs-list:empty {
 	padding: 0px !important;
+}
+#component-ccg001 {
+	margin-left: 23px;
 }

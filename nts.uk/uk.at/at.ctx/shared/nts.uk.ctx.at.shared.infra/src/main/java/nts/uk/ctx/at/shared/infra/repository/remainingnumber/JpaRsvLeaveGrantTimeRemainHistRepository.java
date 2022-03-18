@@ -5,7 +5,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantTimeRemainHistoryData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RsvLeaveGrantTimeRemainHistRepository;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.resvlea.empinfo.grantremainingdata.KrcdtReserveLeaveTimeRemainHist;
@@ -40,12 +39,6 @@ public class JpaRsvLeaveGrantTimeRemainHistRepository extends JpaRepository impl
 		} else {
 			this.commandProxy().insert(KrcdtReserveLeaveTimeRemainHist.fromDomain(domain));
 		}
-	}
-
-	@Override
-	public void deleteAfterDate(String employeeId, GeneralDate date) {
-		String sql = "DELETE FROM KrcdtReserveLeaveTimeRemainHist a WHERE a.krcdtReserveLeaveTimeRemainHist.sid = :employeeId and a.krcdtReserveLeaveTimeRemainHist.grantProcessDate > :startDate";
-		this.getEntityManager().createQuery(sql).setParameter("employeeId", employeeId).setParameter("startDate", date);
 	}
 
 }

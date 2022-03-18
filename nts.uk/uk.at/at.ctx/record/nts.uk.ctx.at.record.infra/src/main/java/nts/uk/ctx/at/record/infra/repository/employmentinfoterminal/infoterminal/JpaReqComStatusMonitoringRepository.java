@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.record.infra.repository.employmentinfoterminal.infoterminal;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ReqComStatusMonitoring;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.ReqComStatusMonitoringRepository;
@@ -27,7 +29,7 @@ public class JpaReqComStatusMonitoringRepository extends JpaRepository implement
 	public void update(ReqComStatusMonitoring reqComStatusMonitoring) {
 		KrcdtTrRqStMonitorPK key = new KrcdtTrRqStMonitorPK(reqComStatusMonitoring.getContractCode().v(), reqComStatusMonitoring.getTerminalCode().v());
 		KrcdtTrRqStMonitor entity = this.queryProxy().find(key, KrcdtTrRqStMonitor.class).get();
-		entity.connecting = reqComStatusMonitoring.isConnecting() ? 1 : 0;
+		entity.connecting = reqComStatusMonitoring.isConnecting();
 		this.commandProxy().update(entity);
 	}
 
@@ -40,11 +42,17 @@ public class JpaReqComStatusMonitoringRepository extends JpaRepository implement
 	@Override
 	public List<ReqComStatusMonitoring> get(ContractCode contractCode, List<EmpInfoTerminalCode> listTerminalCode,
 			boolean connecting) {
-//		List<Integer> listCode = listTerminalCode.stream().map(e -> Integer.parseInt(e.v())).collect(Collectors.toList());
+		List<String> listCode = listTerminalCode.stream().map(e -> e.v()).collect(Collectors.toList());
+		
+		if (CollectionUtil.isEmpty(listCode)) return Collections.emptyList();
+		
 		return this.queryProxy().query(FIND_CONTRACTCD_CODE_CONNECTING, KrcdtTrRqStMonitor.class)
 					.setParameter("contractCode", contractCode.v())
-					.setParameter("listCode", listTerminalCode.stream().map(e -> e.v()).collect(Collectors.toList()))
-					.setParameter("connecting", connecting ? 1 : 0).getList().stream().map(e -> e.toDomain()).collect(Collectors.toList());
+					.setParameter("listCode", listCode)
+					.setParameter("connecting", connecting)
+					.getList()
+					.stream()
+					.map(e -> e.toDomain()).collect(Collectors.toList());
 	}
 
 }

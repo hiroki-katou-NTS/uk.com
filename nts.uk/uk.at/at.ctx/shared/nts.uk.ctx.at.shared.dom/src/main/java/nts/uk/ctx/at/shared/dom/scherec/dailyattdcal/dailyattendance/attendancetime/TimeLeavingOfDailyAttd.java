@@ -149,6 +149,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	 */
 	public Optional<TimeWithDayAttr> getLastLeaveTime() {
 		Optional<TimeLeavingWork> last = this.timeLeavingWorks.stream()
+				.filter(c->c.getLeaveTime().isPresent())
 				.sorted((f, s) -> s.getWorkNo().compareTo(f.getWorkNo()))
 				.findFirst();
 		return last.flatMap(l -> l.getLeaveTime());
@@ -166,7 +167,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 			return this;
 		List<TimeLeavingWork> newAttendanceLeave = new ArrayList<>();
 		for (TimeLeavingWork attendanceLeave : this.timeLeavingWorks) {
-			newAttendanceLeave.add(attendanceLeave.correctJustTime(isJustTimeLateAttendance, isJustEarlyLeave));
+			newAttendanceLeave.add(attendanceLeave.correctJustTimeCalcStamp(isJustTimeLateAttendance, isJustEarlyLeave));
 		}
 
 		return new TimeLeavingOfDailyAttd(newAttendanceLeave, this.workTimes);

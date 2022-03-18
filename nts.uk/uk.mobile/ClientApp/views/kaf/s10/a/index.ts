@@ -150,6 +150,7 @@ export class KafS10Component extends KafS00ShrComponent {
                 }
                 let step1 = vm.$refs.step1 as KafS10Step1Component;
                 step1.loadData(vm.model.appHdWorkDispInfo);
+                step1.createHoursWorkTime();
             }
         }).catch((error: any) => {
             vm.handleErrorCustom(error).then((result) => {
@@ -619,7 +620,6 @@ export class KafS10Component extends KafS00ShrComponent {
                     appTypeSetting: vm.model.appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0],
                     appHdWorkDispInfo: vm.model.appHdWorkDispInfo
                 }).then((result: any) => {
-                    vm.$http.post('at', API.reflectApp, result.data.reflectAppIdLst);
                     vm.appId = result.data.appIDLst[0];
                     vm.toStep(3);
                 });
@@ -1079,7 +1079,6 @@ const API = {
     calculate: 'at/request/application/holidaywork/mobile/calculate',
     checkBeforeRegister: 'at/request/application/holidaywork/mobile/checkBeforeRegister',
     register: 'at/request/application/holidaywork/mobile/register',
-    sendMailAfterRegisterSample: '',
-    reflectApp: 'at/request/application/reflect-app'
+    sendMailAfterRegisterSample: ''
 };
 

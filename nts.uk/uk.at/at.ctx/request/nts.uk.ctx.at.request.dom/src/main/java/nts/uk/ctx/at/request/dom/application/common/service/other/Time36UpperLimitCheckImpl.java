@@ -15,6 +15,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.OvertimeHoursDetails;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
@@ -363,15 +364,13 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 				applicationRepository,
 				getApplicationReflectionResultAdapter);
 		if (opAppOverTime.isPresent()) {
-			final val applicationTemp = application;
 			application = (Application)opAppOverTime.map(x -> {
-				x.setApplication(applicationTemp);
+			    x.setPrePostAtr(PrePostAtr.POSTERIOR);
 				return x;
 			}).orElse(null);
 		} else if (opAppHolidayWork.isPresent()) {
-			final val applicationTemp = application;
 			application = (Application)opAppHolidayWork.map(x -> {
-				x.setApplication(applicationTemp);
+			    x.setPrePostAtr(PrePostAtr.POSTERIOR);
 				return x;
 			}).orElse(null);
 		}

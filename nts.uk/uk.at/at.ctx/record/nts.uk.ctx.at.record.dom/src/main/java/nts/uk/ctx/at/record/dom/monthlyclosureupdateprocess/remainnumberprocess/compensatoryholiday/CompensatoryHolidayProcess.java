@@ -9,7 +9,6 @@ import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
@@ -53,7 +52,7 @@ public class CompensatoryHolidayProcess {
 				/** 代休逐次休暇の紐付け情報を追加する */
 				.then(addSeaCompensatory(require, empId, output.getLstSeqVacation()))
 				/** 代休暫定データ削除 */
-				.then(deleteTemp(require, empId, period.getPeriod()));
+				.then(deleteTemp(require, empId, period.getPeriod().end()));
 	}
 
 	/** 代休逐次休暇の紐付け情報を追加する */
@@ -80,12 +79,8 @@ public class CompensatoryHolidayProcess {
 		String companyId = AppContexts.user().companyId();
 
 		return AtomTask.of(() -> {})
-				/** アルゴリズム「当月以降の休出管理データを削除」を実行する */
-				.then(() -> require.deleteLeaveManagementDataAfter(empId, false, period.getPeriod().start()))
 				/** アルゴリズム「休出管理データの更新」を実行する */
 				.then(updateLeaveMngData(require, companyId, vacationDetails.getLstAcctAbsenDetail()))
-				/** アルゴリズム「当月以降の代休管理データを削除」を実行する */
-				.then(() -> require.deleteCompensatoryDayOffManaDataAfter(empId, false, period.getPeriod().start()))
 				/** アルゴリズム「代休管理データの更新」を実行する */
 				.then(updateCompensatoryDayData(require, companyId, vacationDetails.getLstAcctAbsenDetail()));
 	}
@@ -184,11 +179,11 @@ public class CompensatoryHolidayProcess {
 	 * @param period
 	 * @return
 	 */
-	public static AtomTask deleteTemp(Require require, String employeeId, DatePeriod period){
+	public static AtomTask deleteTemp(Require require, String employeeId, GeneralDate ymd){
 		//暫定休出管理データの削除
-		return AtomTask.of(() -> require.deleteInterimBreakMngBySidDatePeriod(employeeId, period))
+		return AtomTask.of(() -> require.deleteInterimBreakoffBySidBeforeTheYmd(employeeId, ymd))
 				//暫定代休管理データの削除
-				.then(AtomTask.of(() -> require.deleteInterimDayOffMngBySidDatePeriod(employeeId, period)));
+				.then(AtomTask.of(() -> require.deleteInterimDayoffBySidBeforeTheYmd(employeeId, ymd)));
 	}
 	
 
@@ -198,9 +193,6 @@ public class CompensatoryHolidayProcess {
 
 	public static interface RequireM5 extends RequireM2, RequireM4 {
 
-		void deleteLeaveManagementDataAfter(String sid, boolean unknownDateFlag, GeneralDate target);
-
-		void deleteCompensatoryDayOffManaDataAfter(String sid, boolean unknownDateFlag, GeneralDate target);
 	}
 
 	public static interface RequireM2 {
@@ -222,10 +214,10 @@ public class CompensatoryHolidayProcess {
 	}
 
 	public static interface RequireM3 {
-		void deleteInterimDayOffMngBySidDatePeriod(String sid, DatePeriod period);
-		void deleteInterimBreakMngBySidDatePeriod(String sid, DatePeriod period);
+		void deleteInterimDayoffBySidBeforeTheYmd(String sid, GeneralDate ymd);
+		void deleteInterimBreakoffBySidBeforeTheYmd(String sid, GeneralDate ymd);
 	}
-
+	
 	public static interface Require1 {
 
 		void addLeaveComDayOffManagement(LeaveComDayOffManagement domain);

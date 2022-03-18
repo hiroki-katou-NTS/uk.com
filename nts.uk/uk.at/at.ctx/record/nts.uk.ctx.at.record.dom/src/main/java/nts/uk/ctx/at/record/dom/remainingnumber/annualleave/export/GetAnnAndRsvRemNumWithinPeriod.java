@@ -37,8 +37,8 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 	 * @param aggrPeriod 集計期間
 	 * @param mode モード
 	 * @param criteriaDate 基準日
-	 * @param isGetNextMonthData 翌月管理データ取得フラグ
-	 * @param isCalcAttendanceRate 出勤率計算フラグ
+	 * @param isGetNextMonthData 翌月管理データ取得フラグ　※現在未使用
+	 * @param isCalcAttendanceRate 出勤率計算フラグ　※現在未使用
 	 * @param isOverWrite 上書きフラグ
 	 * @param tempAnnDataforOverWriteList 上書き用の暫定年休管理データ
 	 * @param tempRsvDataforOverWriteList 上書き用の暫定積休管理データ
@@ -72,8 +72,8 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 	 * @param aggrPeriod 集計期間
 	 * @param mode モード
 	 * @param criteriaDate 基準日
-	 * @param isGetNextMonthData 翌月管理データ取得フラグ
-	 * @param isCalcAttendanceRate 出勤率計算フラグ
+	 * @param isGetNextMonthData 翌月管理データ取得フラグ　※現在未使用
+	 * @param isCalcAttendanceRate 出勤率計算フラグ　※現在未使用
 	 * @param isOverWrite 上書きフラグ
 	 * @param tempAnnDataforOverWriteList 上書き用の暫定年休管理データ
 	 * @param tempRsvDataforOverWriteList 上書き用の暫定積休管理データ
@@ -186,8 +186,7 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 		if (noCheckStartDate.isPresent())
 			noCheckStartDate.get();
 
-		Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualOpt
-			= GetAnnLeaRemNumWithinPeriodProc.algorithm(
+		Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualOpt = GetAnnLeaRemNumWithinPeriodProc.algorithm(
 				require, cacheCarrier, companyId, employeeId, aggrPeriod,
 				mode, criteriaDate, isCalcAttendanceRate, isOverWrite,
 				tempAnnDataforOverWriteList, prevAnnualLeave,

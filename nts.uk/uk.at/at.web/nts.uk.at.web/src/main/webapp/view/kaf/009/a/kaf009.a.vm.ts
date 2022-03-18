@@ -61,11 +61,15 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 			}
 			
 			let empLst: Array<string> = [],
-				dateLst: Array<string> = [];
+				dateLst: Array<string> = [],
+				screenCode: number = null;
             vm.isSendMail = ko.observable(false);
             vm.application = ko.observable(new Application(vm.appType()));
             vm.model = new Model(true, true, true, '', '', '', '');
 			if (!_.isEmpty(params)) {
+				if (!nts.uk.util.isNullOrUndefined(params.screenCode)) {
+					screenCode = params.screenCode;
+				}
 				if (!_.isEmpty(params.employeeIds)) {
 					empLst = params.employeeIds;
 				}
@@ -80,7 +84,13 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 					vm.isAgentMode(params.isAgentMode);
 				}
 			}
-            vm.loadData(empLst, dateLst, vm.appType())
+			let paramKAF000 = {
+				empLst, 
+				dateLst, 
+				appType: vm.appType(),
+				screenCode
+			};
+            vm.loadData(paramKAF000)
             .then((loadDataFlag: any) => {
                 vm.application().appDate.subscribe(value => {
                     console.log(value);
@@ -260,7 +270,6 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 }).done(result => {
                     if (result != undefined) {
                         vm.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-							nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
                        		CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
                         });                
                     }
@@ -413,8 +422,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         startNew: "at/request/application/gobackdirectly/getGoBackCommonSettingNew",
         checkRegister: "at/request/application/gobackdirectly/checkBeforeRegisterNew",
         register: "at/request/application/gobackdirectly/registerNewKAF009",
-        changeDate: "at/request/application/gobackdirectly/getAppDataByDate",
-		reflectApp: "at/request/application/reflect-app"
+        changeDate: "at/request/application/gobackdirectly/getAppDataByDate"
     }
 
     export class ApplicationStatus {

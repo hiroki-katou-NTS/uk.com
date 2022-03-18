@@ -6,15 +6,16 @@ import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import lombok.val;
-import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
+import nts.gul.util.Either;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.employeebasic.EmployeeIdIdentifier;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.errors.RecordError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
-import nts.uk.ctx.exio.dom.input.util.Either;
 
 /**
  * 社員コードを社員IDに正準化する
@@ -42,11 +43,12 @@ public class EmployeeCodeCanonicalization {
 	 */
 	public Either<ErrorMessage, IntermediateResult> canonicalize(
 			CanonicalizationMethodRequire require,
+			ExecutionContext context,
 			RevisedDataRecord revisedData) {
 		
 		String employeeCode = revisedData.getItemByNo(itemNoEmployeeCode).get().getString();
 
-		return getEmployeeId(require, employeeCode)
+		return getEmployeeId(require, context, employeeCode)
 				.map(employeeId -> canonicalize(revisedData, employeeId));
 	}
 
@@ -67,33 +69,28 @@ public class EmployeeCodeCanonicalization {
 				itemNoEmployeeCode,
 				employeeCode);
 		
-		return getEmployeeId(require, employeeCode)
+		return getEmployeeId(require, context, employeeCode)
 				.map(employeeId -> revisedDataRecords.stream()
 							.map(r -> canonicalize(r, employeeId)))
 				.mapLeft(error -> revisedDataRecords.stream()
 							.map(r -> new RecordError(r.getRowNo(), error.getText())));
 	}
 
-	private static Either<ErrorMessage, String> getEmployeeId(CanonicalizationMethodRequire require, String employeeCode) {
+	private static Either<ErrorMessage, String> getEmployeeId(CanonicalizationMethodRequire require, 	ExecutionContext context, String employeeCode) {
 		
-		val employee = require.getEmployeeDataMngInfoByEmployeeCode(employeeCode);
+		Optional<String> employeeId = EmployeeIdIdentifier.getEmployeeId(require, context, employeeCode); 
 		
 		return Either.rightOptional(
-				employee.map(e -> e.getEmployeeId()),
+				employeeId,
 				() -> new ErrorMessage("未登録の社員コードです。"));
 	}
 
 	private IntermediateResult canonicalize(RevisedDataRecord revisedData, String employeeId) {
-		
-		return IntermediateResult.create(
-				revisedData,
-				new CanonicalItem(itemNoEmployeeId, employeeId),
-				itemNoEmployeeCode);
+		return IntermediateResult.create(revisedData)
+				.addCanonicalized(CanonicalItem.of(itemNoEmployeeId, employeeId));
 	}
 	
-	public static interface Require {
-		
-		Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeCode(String employeeCode);
+	public static interface Require extends EmployeeIdIdentifier.GetEmployeeIdRequire{
 	}
 
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {

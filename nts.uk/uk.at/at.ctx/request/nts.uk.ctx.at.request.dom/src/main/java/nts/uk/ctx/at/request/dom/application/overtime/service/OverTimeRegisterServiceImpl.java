@@ -5,11 +5,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import org.apache.logging.log4j.util.Strings;
 
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -17,8 +17,9 @@ import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
+import nts.uk.ctx.at.request.dom.application.common.service.application.ApproveAppProcedure;
+import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApproveAppProcedureOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -43,14 +44,14 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 	@Inject
 	AppOverTimeRepository appOverTimeRepository;
 	
-	@Inject
-	private RegisterAtApproveReflectionInfoService registerService;
-	
 	@Inject 
 	NewAfterRegister newAfterRegister;
 	
 	@Inject
     private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	
+	@Inject
+	private ApproveAppProcedure approveAppProcedure;
 	
 	@Override
 	public ProcessResult register(
@@ -64,8 +65,23 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 		// 登録処理を実行
 		appRepository.insertApp(application,
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().orElse(Collections.emptyList()));
-		String reflectAppId = registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
 		appOverTimeRepository.add(appOverTime);
+		// 申請承認する時の手続き
+		List<String> autoSuccessMail = new ArrayList<>();
+		List<String> autoFailMail = new ArrayList<>();
+		List<String> autoFailServer = new ArrayList<>();
+		ApproveAppProcedureOutput approveAppProcedureOutput = approveAppProcedure.approveAppProcedure(
+        		AppContexts.user().companyId(), 
+        		Arrays.asList(application), 
+        		Collections.emptyList(), 
+        		AppContexts.user().employeeId(), 
+        		Optional.empty(), 
+        		appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings(), 
+        		false,
+        		true);
+		autoSuccessMail.addAll(approveAppProcedureOutput.getSuccessList().stream().distinct().collect(Collectors.toList()));
+		autoFailMail.addAll(approveAppProcedureOutput.getFailList().stream().distinct().collect(Collectors.toList()));
+		autoFailServer.addAll(approveAppProcedureOutput.getFailServerList().stream().distinct().collect(Collectors.toList()));
 		
 		// 暫定データの登録(pendding)
 		this.interimRemainDataMngRegisterDateChange.registerDateChange(
@@ -80,9 +96,12 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 				appTypeSetting,
 				mailServerSet,
 				false);
-		if(Strings.isNotBlank(reflectAppId)) {
-			processResult.setReflectAppIdLst(Arrays.asList(reflectAppId));
-		}
+		processResult.getAutoSuccessMail().addAll(autoSuccessMail);
+		processResult.getAutoFailMail().addAll(autoFailMail);
+		processResult.getAutoFailServer().addAll(autoFailServer);
+		processResult.setAutoSuccessMail(processResult.getAutoSuccessMail().stream().distinct().collect(Collectors.toList()));
+		processResult.setAutoFailMail(processResult.getAutoFailMail().stream().distinct().collect(Collectors.toList()));
+		processResult.setAutoFailServer(processResult.getAutoFailServer().stream().distinct().collect(Collectors.toList()));
 		return processResult;
 	}
 
@@ -92,7 +111,7 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 			AppOverTime appOverTime,
 			AppDispInfoStartupOutput appDispInfoStartupOutput
 			) {
-		Application application = (Application) appOverTime;
+		Application application = appOverTime.getApplication();
 		// ドメインモデル「残業申請」を更新する
 		appUpdateRepository.update(application);
 		appOverTimeRepository.update(appOverTime);
@@ -144,6 +163,9 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 			AppTypeSetting appTypeSetting,
 			Map<String, ApprovalRootContentImport_New> approvalRootContentMap
 			) {
+		List<String> autoSuccessMail = new ArrayList<>();
+		List<String> autoFailMail = new ArrayList<>();
+		List<String> autoFailServer = new ArrayList<>();
 		List<String> guidS = new ArrayList<>();
 		List<String> reflectAppIdLst = new ArrayList<>();
 		for (EmployeeInfoImport el : appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst()) {
@@ -163,11 +185,20 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 					approvalRootContentMap.get(sid)
 										  .getApprovalRootState()
 										  .getListApprovalPhaseState());
-			String reflectAppId = registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
-			if(Strings.isNotBlank(reflectAppId)) {
-				reflectAppIdLst.add(reflectAppId);
-			}
 			appOverTimeRepository.add(appOverTime);
+			// 申請承認する時の手続き
+			ApproveAppProcedureOutput approveAppProcedureOutput = approveAppProcedure.approveAppProcedure(
+	        		AppContexts.user().companyId(), 
+	        		Arrays.asList(application), 
+	        		Collections.emptyList(), 
+	        		AppContexts.user().employeeId(), 
+	        		Optional.empty(), 
+	        		appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings(), 
+	        		false,
+	        		true);
+			autoSuccessMail.addAll(approveAppProcedureOutput.getSuccessList().stream().distinct().collect(Collectors.toList()));
+			autoFailMail.addAll(approveAppProcedureOutput.getFailList().stream().distinct().collect(Collectors.toList()));
+			autoFailServer.addAll(approveAppProcedureOutput.getFailServerList().stream().distinct().collect(Collectors.toList()));
 			
 			// 暫定データの登録(pendding)
 			this.interimRemainDataMngRegisterDateChange.registerDateChange(
@@ -183,6 +214,12 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 			appTypeSetting,
 			mailServerSet,
 			true);
+		processResult.getAutoSuccessMail().addAll(autoSuccessMail);
+		processResult.getAutoFailMail().addAll(autoFailMail);
+		processResult.getAutoFailServer().addAll(autoFailServer);
+		processResult.setAutoSuccessMail(processResult.getAutoSuccessMail().stream().distinct().collect(Collectors.toList()));
+		processResult.setAutoFailMail(processResult.getAutoFailMail().stream().distinct().collect(Collectors.toList()));
+		processResult.setAutoFailServer(processResult.getAutoFailServer().stream().distinct().collect(Collectors.toList()));
 		processResult.setReflectAppIdLst(reflectAppIdLst);
 		return processResult;
 	}

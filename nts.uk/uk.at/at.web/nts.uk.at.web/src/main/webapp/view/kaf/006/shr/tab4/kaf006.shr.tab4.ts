@@ -16,7 +16,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
             <div class="table mv-13" data-bind="visible: $parent.condition11">
                 <div class="cell col-1"></div>
                 <div class="cell">
-                    <div>
+                    <div style="padding-bottom: 13px;">
                         <div class="cell col-1">
                             <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_19')"></div>
                         </div>
@@ -25,7 +25,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                         </div>
                         <div class="cell valign-center" data-bind="text: $parent.selectedWorkTimeDisp"></div>
                     </div>
-                    <div style="padding-top: 10px;">
+                    <div style="padding-bottom: 13px;">
                         <div class="cell col-1">
                             <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_22')"></div>
                         </div>
@@ -38,7 +38,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                                     timeWithDay: true,
                                     width: '120',
                                     textalign: 'center'
-                                })), enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
+                                })), enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode() && $parent.flowWorkFlag()
                             }" />
                             <span data-bind="text: $i18n('KAF006_47')"></span>
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
@@ -49,11 +49,11 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                                     timeWithDay: true,
                                     width: '120',
                                     textalign: 'center'
-                                })), enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
+                                })), enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode() && $parent.flowWorkFlag()
                             }" />
                         </div>
                     </div>
-                    <div style="padding-top: 10px;" data-bind="visible: $parent.condition12">
+                    <div style="padding-bottom: 13px;" data-bind="visible: $parent.condition12">
                         <div class="cell col-1">
                             <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_23')"></div>
                         </div>
@@ -66,7 +66,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                                     timeWithDay: true,
                                     width: '120',
                                     textalign: 'center'
-                                })), enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
+                                })), enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode() && $parent.flowWorkFlag()
                             }" />
                             <span data-bind="text: $i18n('KAF006_47')"></span>
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
@@ -77,13 +77,13 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                                     timeWithDay: true,
                                     width: '120',
                                     textalign: 'center'
-                                })), enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
+                                })), enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode() && $parent.flowWorkFlag()
                             }" />
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="table mv-13" data-bind="visible: $parent.condition15">
+            <div class="table mv-13" style="margin-bottom: 12px;" data-bind="visible: $parent.condition15">
                 <div class="cell col-1">
                     <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_88')"></div>
                 </div>
@@ -96,29 +96,29 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                     </div>
                 </div>
             </div>
-            <div class="table mv-13" data-bind="visible: $parent.condition15() && $parent.leaveComDayOffManas().length > 0">
+            <div class="table mv-13" style="margin-bottom: 12px;" data-bind="visible: $parent.condition15() && $parent.leaveComDayOffManas().length > 0">
                 <div class="cell col-1"></div>
                 <div class="cell valign-center">
                     <table data-bind="visible: $parent.leaveComDayOffManas().length > 0">
                         <thead>
-                            <tr class="text-center bg-green">
-                                <th style="width: 120px;" class="py-10 table-border text-center" data-bind="text: $i18n('KAF006_53')"></th>
-                                <th style="width: 120px;" class="py-10 table-border text-center" data-bind="text: $i18n('KAF006_87')"></th>
-                                <th style="width: 120px;" class="py-10 table-border text-center" data-bind="text: $i18n('KAF006_55')"></th>
+                            <tr class="text-center bg-gray">
+                                <th style="width: 120px;" class="py-10 small-height table-border text-center" data-bind="text: $i18n('KAF006_53')"></th>
+                                <th style="width: 120px;" class="py-10 small-height table-border text-center" data-bind="text: $i18n('KAF006_87')"></th>
+                                <th style="width: 120px;" class="py-10 small-height table-border text-center" data-bind="text: $i18n('KAF006_55')"></th>
                             </tr>
                         </thead>
                         <tbody data-bind="foreach: ko.toJS($parent.leaveComDayOffManas)">
                             <tr>
-                                <td class="py-10 table-border text-center" data-bind="text: nts.uk.time.formatDate(new Date(outbreakDay), 'yyyy/MM/ddD')"></td>
-                                <td class="py-10 table-border text-center" data-bind="text: nts.uk.time.formatDate(new Date(dateOfUse), 'yyyy/MM/ddD')"></td>
-                                <td class="py-10 table-border text-center" data-bind="text: nts.uk.resource.getText('KAF006_46', [dayNumberUsed])"></td>
+                                <td class="py-10 small-height table-border text-center" data-bind="text: nts.uk.time.formatDate(new Date(outbreakDay), 'yyyy/MM/ddD')"></td>
+                                <td class="py-10 small-height table-border text-center" data-bind="text: nts.uk.time.formatDate(new Date(dateOfUse), 'yyyy/MM/ddD')"></td>
+                                <td class="py-10 small-height table-border text-center" data-bind="text: nts.uk.resource.getText('KAF006_46', [dayNumberUsed])"></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <div class="table mv-13" data-bind="visible: $parent.condition14">
+            <div class="table mv-13" style="margin-bottom: 12px;" data-bind="visible: $parent.condition14">
                 <div class="cell col-1">
                     <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_48')"></div>
                 </div>
@@ -131,22 +131,22 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                     </div>
                 </div>
             </div>
-            <div class="table mv-13" data-bind="visible: $parent.condition14() && $parent.payoutSubofHDManagements().length > 0">
+            <div class="table mv-13" style="margin-bottom: 12px;" data-bind="visible: $parent.condition14() && $parent.payoutSubofHDManagements().length > 0">
                 <div class="cell col-1"></div>
                 <div class="cell valign-center">
                     <table data-bind="visible: $parent.payoutSubofHDManagements().length > 0" >
                         <thead>
-                            <tr class="bg-green">
-                                <th style="width: 120px;" class="py-10 table-border text-center" data-bind="text: $i18n('KAF006_52')"></th>
-                                <th style="width: 120px;" class="py-10 table-border text-center" data-bind="text: $i18n('KAF006_95')"></th>
-                                <th style="width: 120px;" class="py-10 table-border text-center" data-bind="text: $i18n('KAF006_55')"></th>
+                            <tr class="bg-gray">
+                                <th style="width: 120px;" class="py-10 small-height table-border text-center" data-bind="text: $i18n('KAF006_52')"></th>
+                                <th style="width: 120px;" class="py-10 small-height table-border text-center" data-bind="text: $i18n('KAF006_95')"></th>
+                                <th style="width: 120px;" class="py-10 small-height table-border text-center" data-bind="text: $i18n('KAF006_55')"></th>
                             </tr>
                         </thead>
                         <tbody data-bind="foreach: ko.toJS($parent.payoutSubofHDManagements)">
                             <tr>
-                                <td class="py-10 table-border text-center" data-bind="text: nts.uk.time.formatDate(new Date(outbreakDay), 'yyyy/MM/ddD')"></td>
-                                <td class="py-10 table-border text-center" data-bind="text: nts.uk.time.formatDate(new Date(dateOfUse), 'yyyy/MM/ddD')"></td>
-                                <td class="py-10 table-border text-center" data-bind="text: nts.uk.resource.getText('KAF006_46', [dayNumberUsed])"></td>
+                                <td class="py-10 small-height table-border text-center" data-bind="text: nts.uk.time.formatDate(new Date(outbreakDay), 'yyyy/MM/ddD')"></td>
+                                <td class="py-10 small-height table-border text-center" data-bind="text: nts.uk.time.formatDate(new Date(dateOfUse), 'yyyy/MM/ddD')"></td>
+                                <td class="py-10 small-height table-border text-center" data-bind="text: nts.uk.resource.getText('KAF006_46', [dayNumberUsed])"></td>
                             </tr>
                         </tbody>
                     </table>

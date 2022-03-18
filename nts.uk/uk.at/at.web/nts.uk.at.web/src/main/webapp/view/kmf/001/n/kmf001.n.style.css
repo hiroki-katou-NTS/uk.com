@@ -1,0 +1,17 @@
+.setting-label {
+  width: 165px;
+}
+
+.flex.valign-center {
+  align-items: center;
+  padding-top: 10px !important;
+  padding-bottom: 15px !important
+}
+
+.ui-igcombo-wrapper {
+  position: relative;
+  display: inline-block;
+  overflow: visible;
+  width: 100px;
+  height: 32px;
+}

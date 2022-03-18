@@ -92,7 +92,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public application: Application = super.createApplicationInsert(AppType.EARLY_LEAVE_CANCEL_APPLICATION);
     public infoOutPut: IInfoOutput = initInfoOutput();
     public paramsAComponent: IParams;
-    public cancelAtr: number;
+    public cancelAtr: number = 0;
     public check: ICheck = {
         cbCancelLate: {
             value: null
@@ -262,13 +262,10 @@ export class KafS04AComponent extends KafS00ShrComponent {
         }
     }
 
-    get showCheckBox() {
+    public get showCheckBox() {
         const vm = this;
-        if (vm.application.prePostAtr == 1 && (vm.cancelAtr == 1 || vm.cancelAtr == 2)) {
-            return true;
-        } else {
-            return false;
-        }
+
+        return vm.application.prePostAtr == 1 && (vm.cancelAtr == 1 || vm.cancelAtr == 2);
     }
 
     public initComponentP1() {
@@ -475,7 +472,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 mode: vm.mode,
                 res: null,
             };
-            vm.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
             vm.$goto('kafs04a1', vm.paramsAComponent);
             vm.$mask('hide');
         });
@@ -632,8 +628,7 @@ const API = {
     changeAppDate: 'at/request/application/lateorleaveearly/changeAppDate',
     register: 'at/request/application/lateorleaveearly/register',
     getMsgList: 'at/request/application/lateorleaveearly/getMsgList',
-    updateApp: 'at/request/application/lateorleaveearly/updateInfoApp',
-    reflectApp: 'at/request/application/reflect-app'
+    updateApp: 'at/request/application/lateorleaveearly/updateInfoApp'
 };
 
 const initInfoOutput = (): IInfoOutput => ({

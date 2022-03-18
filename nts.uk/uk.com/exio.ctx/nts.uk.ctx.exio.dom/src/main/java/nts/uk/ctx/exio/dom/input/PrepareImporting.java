@@ -8,6 +8,7 @@ import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrorsRequire;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
+import nts.uk.ctx.exio.dom.input.setting.DomainImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 
 /**
@@ -17,16 +18,21 @@ public class PrepareImporting {
 
 	public static void prepare(
 			Require require,
-			ExternalImportSetting setting,
+			ExternalImportSetting externalImportSetting,
+			DomainImportSetting setting,
 			InputStream csvFileStream) {
 
-		val context = ExecutionContext.create(setting);
-		
-		require.setupWorkspace(context);
-		
+		val context = setting.executionContext(externalImportSetting.getCompanyId(), externalImportSetting.getCode());
+
+		require.setupWorkspaceForEachDomain(context);//削除も一緒に
+
 		// 受入データの組み立て
-		setting.assemble(require, context, csvFileStream);
-		
+		val assembledCount = setting.assemble(require, context, externalImportSetting.getCsvFileInfo(), csvFileStream);
+
+		if(assembledCount == 0) {
+			// 編集できたレコード数が0件の場合、正準化は行わない。
+			return;
+		}
 		// 編集済みデータの正準化
 		val meta = ImportingDataMeta.create(require, context, setting.getAssembly().getAllItemNo());
 		CanonicalizeRevisedData.canonicalize(require, context, meta);
@@ -37,7 +43,9 @@ public class PrepareImporting {
 			ExternalImportSetting.RequireAssemble,
 			CanonicalizeRevisedData.Require {
 		
-		void setupWorkspace(ExecutionContext context);
+		void setupWorkspace();
+
+		void setupWorkspaceForEachDomain(ExecutionContext context);
 		
 		ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo);
 	}

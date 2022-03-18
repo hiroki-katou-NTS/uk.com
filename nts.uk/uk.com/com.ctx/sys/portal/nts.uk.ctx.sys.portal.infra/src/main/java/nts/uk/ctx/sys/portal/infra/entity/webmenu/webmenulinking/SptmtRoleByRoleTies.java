@@ -2,13 +2,11 @@ package nts.uk.ctx.sys.portal.infra.entity.webmenu.webmenulinking;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.val;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTies;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -19,19 +17,18 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 public class SptmtRoleByRoleTies extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-	@Id
-	@Column(name = "ROLE_ID")
-	public String roleId;
+	@EmbeddedId
+	public SptmtRoleByRoleTiesPK pk;
 	
 	@Column(name = "WEB_MENU_CD")
 	public String webMenuCd;
-	
-	@Column(name = "CID")
-	public String companyId;
+
+	@Column(name = "IS_SYSTEM_MENU")
+	public boolean isSystemMenu;
 	
 	@Override
 	protected Object getKey() {
-		return this.roleId;
+		return this.pk;
 	}
 
 	
@@ -39,23 +36,26 @@ public class SptmtRoleByRoleTies extends ContractUkJpaEntity implements Serializ
 		return new SptmtRoleByRoleTies(
 				domain.getRoleId(),
 				domain.getWebMenuCd().v(),
-				domain.getCompanyId()
+				domain.getCompanyId(),
+				domain.isSystemMenu()
 				);
 	}
 	
 	public RoleByRoleTies toDomain() {
 		return new RoleByRoleTies(
-				this.roleId,
+				this.pk.roleId,
+				this.pk.companyId,
 				new WebMenuCode(this.webMenuCd),
-				this.companyId
+				this.isSystemMenu
 				);
 	}
 
 
-	public SptmtRoleByRoleTies(String roleId,String webMenuCd, String companyId) {
+	public SptmtRoleByRoleTies(String roleId, String webMenuCd, String companyId, boolean isSystemMenu) {
 		super();
-		this.roleId = roleId;
+		val pk = new SptmtRoleByRoleTiesPK(roleId,companyId);
+		this.pk = pk;
 		this.webMenuCd = webMenuCd;
-		this.companyId = companyId;
+		this.isSystemMenu = isSystemMenu;
 	}
 }

@@ -14,6 +14,10 @@ module nts.uk.at.view.kmk002.a {
 
     export module viewmodel {
 
+        import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+        import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+        import alertError = nts.uk.ui.dialog.alertError;
+
         export class ScreenModel {
             optionalItemHeader: OptionalItemHeader;
             langId: KnockoutObservable<string> = ko.observable('ja');
@@ -27,6 +31,7 @@ module nts.uk.at.view.kmk002.a {
                     self.changeLanguage();
                     self.langJP((value == "ja") ? true : false);
                 });
+
 
             }
 
@@ -130,7 +135,7 @@ module nts.uk.at.view.kmk002.a {
                     dfd.reject();
                 });
                 return dfd.promise();
-        }
+            }
 
         }
 
@@ -167,8 +172,8 @@ module nts.uk.at.view.kmk002.a {
             selectedClac: KnockoutObservable<any> = ko.observable(0);
             note: KnockoutObservable<string>;
             description: KnockoutObservable<string>;
-            dailyUnit: KnockoutObservable<string>;
-            monthlyUnit: KnockoutObservable<string>;
+            // dailyUnit: KnockoutObservable<string>;
+            // monthlyUnit: KnockoutObservable<string>;
 
             // function
             getExcludedOptItems: () => Array<number>;
@@ -180,7 +185,7 @@ module nts.uk.at.view.kmk002.a {
             isTimeSelected: KnockoutObservable<boolean>;
             isNumberSelected: KnockoutObservable<boolean>;
             isAmountSelected: KnockoutObservable<boolean>;
-            enableUnit: KnockoutComputed<boolean>;
+            enableUnit: KnockoutObservable<boolean>;
             isCheckedFromChild = false;
 
             isUpperRequiredDay: KnockoutComputed<boolean>;
@@ -213,8 +218,8 @@ module nts.uk.at.view.kmk002.a {
                 this.unit = ko.observable('');
                 this.note = ko.observable('');
                 this.description = ko.observable('');
-                this.dailyUnit = ko.observable('');
-                this.monthlyUnit = ko.observable('');
+                // this.dailyUnit = ko.observable('');
+                // this.monthlyUnit = ko.observable('');
 
                 // flags
                 this.hasChanged = false;
@@ -223,9 +228,7 @@ module nts.uk.at.view.kmk002.a {
                 this.isTimeSelected = ko.observable(false);
                 this.isAmountSelected = ko.observable(false);
                 this.isNumberSelected = ko.observable(false);
-                this.enableUnit = ko.computed(() => {
-                    return this.isNumberSelected() || this.isAmountSelected();
-                });
+                this.enableUnit = ko.observable(false);
 
                 this.isUpperRequiredDay = ko.computed(() => {
                     return this.usageAtr() === 1 && this.calcResultRange.upperCheck() && this.performanceAtr() === 1 && this.calcResultRange.upperRequired();
@@ -258,36 +261,6 @@ module nts.uk.at.view.kmk002.a {
 
                 // init subscribe
                 this.initSubscribe();
-
-                // this.selectedClac.subscribe((vl) => {
-                //     if (vl) {
-                //         if($('#inp-upper-amount-day').is(':enabled')){
-                //             $('#inp-upper-amount-day').ntsEditor('validate');
-                //         }
-                //         if($('#inp-upper-number-day').is(':enabled')){
-                //             $('#inp-upper-number-day').ntsEditor('validate');
-                //         }
-                //         if($('#inp-upper-time-day').is(':enabled')){
-                //             $('#inp-upper-time-day').ntsEditor('validate');
-                //         }
-                //         if($('#inp-upper-amount-month').is(':enabled')){
-                //             $('#inp-upper-amount-month').ntsEditor('validate');
-                //         }
-                //         if($('#inp-upper-number-month').is(':enabled')){
-                //             $('#inp-upper-number-month').ntsEditor('validate');
-                //         }
-                //         if($('#inp-upper-time-month').is(':enabled')){
-                //             $('#inp-upper-time-month').ntsEditor('validate');
-                //         }
-                //     } else {
-                //         $('#inp-upper-amount-day').ntsError('clear');
-                //         $('#inp-upper-number-day').ntsError('clear');
-                //         $('#inp-upper-time-day').ntsError('clear');
-                //         $('#inp-upper-amount-month').ntsError('clear');
-                //         $('#inp-upper-number-month').ntsError('clear');
-                //         $('#inp-upper-time-month').ntsError('clear');
-                //     }
-                // })
             }
 
             /**
@@ -345,7 +318,48 @@ module nts.uk.at.view.kmk002.a {
             private initSubscribe(): void {
                 let self = this;
 
-                
+                self.selectedClac.subscribe((vl) => {
+                    if (vl == 1) self.enableUnit(false);
+                    //     if (vl) {
+                    //         if($('#inp-upper-amount-day').is(':enabled')){
+                    //             $('#inp-upper-amount-day').ntsEditor('validate');
+                    //         }
+                    //         if($('#inp-upper-number-day').is(':enabled')){
+                    //             $('#inp-upper-number-day').ntsEditor('validate');
+                    //         }
+                    //         if($('#inp-upper-time-day').is(':enabled')){
+                    //             $('#inp-upper-time-day').ntsEditor('validate');
+                    //         }
+                    //         if($('#inp-upper-amount-month').is(':enabled')){
+                    //             $('#inp-upper-amount-month').ntsEditor('validate');
+                    //         }
+                    //         if($('#inp-upper-number-month').is(':enabled')){
+                    //             $('#inp-upper-number-month').ntsEditor('validate');
+                    //         }
+                    //         if($('#inp-upper-time-month').is(':enabled')){
+                    //             $('#inp-upper-time-month').ntsEditor('validate');
+                    //         }
+                    //     } else {
+                    //         $('#inp-upper-amount-day').ntsError('clear');
+                    //         $('#inp-upper-number-day').ntsError('clear');
+                    //         $('#inp-upper-time-day').ntsError('clear');
+                    //         $('#inp-upper-amount-month').ntsError('clear');
+                    //         $('#inp-upper-number-month').ntsError('clear');
+                    //         $('#inp-upper-time-month').ntsError('clear');
+                    //     }
+                });
+
+                self.enableUnit.subscribe(value => {
+                    if (value) {
+                        self.calcResultRange.upperCheck(false);
+                        self.calcResultRange.lowerCheck(false);
+                        self.unit("");
+                    } else {
+                        // self.calcResultRange.upperCheck(self.optionalItemDtoStash.calcResultRange.upperCheck);
+                        // self.calcResultRange.lowerCheck(self.optionalItemDtoStash.calcResultRange.lowerCheck);
+                        self.unit(self.optionalItemDtoStash.unit);
+                    }
+                });
 
                 // Event on click checkAll checkbox
                 self.checkedAllFormula.subscribe(vl => {
@@ -434,6 +448,8 @@ module nts.uk.at.view.kmk002.a {
                         return;
                     }
 
+                    if (value == 0) self.enableUnit(false);
+
                     $('#inp-upper-amount-day').ntsError('clear');
                     $('#inp-upper-number-day').ntsError('clear');
                     $('#inp-upper-time-day').ntsError('clear');
@@ -479,8 +495,13 @@ module nts.uk.at.view.kmk002.a {
                         return;
                     }
 
-                    self.dailyUnit('1');
-                    self.monthlyUnit('1');
+                    self.enableUnit(false);
+                    self.calcResultRange.timeInputUnit(0);
+                    self.calcResultRange.amountInputUnit(0);
+                    self.calcResultRange.numberInputUnit(3);
+
+                    // self.dailyUnit('1');
+                    // self.monthlyUnit('1');
 
                     // Check whether has formula or calculation result range is set.
                     if (self.isFormulaSet() || self.calcResultRange.isSet()) {
@@ -972,11 +993,13 @@ module nts.uk.at.view.kmk002.a {
                     dto.usageAtr = self.usageAtr();
                     dto.optionalItemName = self.optionalItemName();
                     dto.optionalItemAtr = self.optionalItemAtr();
-                    dto.unit = self.unit();
+                    dto.unit = self.optionalItemAtr() == 0 ? null : self.unit();
                     dto.calAtr = self.selectedClac();
                     dto.note = self.note();
                     dto.description = self.description();
                     dto.formulas = self.calcFormulas().map(item => item.toDto());
+                    dto.inputCheck = false;
+                    dto.calcResultRange = self.calcResultRange.toDto(self.optionalItemDtoStash.calcResultRange, self.optionalItemAtr());
 
                     // return dto
                     return dto;
@@ -1004,13 +1027,34 @@ module nts.uk.at.view.kmk002.a {
                 dto.usageAtr = self.usageAtr();
                 dto.empConditionAtr = self.empConditionAtr();
                 dto.performanceAtr = self.performanceAtr();
-                dto.calcResultRange = self.calcResultRange.toDto(self.optionalItemDtoStash.calcResultRange);
-                dto.unit = self.unit();
+                dto.calcResultRange = self.calcResultRange.toDto(self.optionalItemDtoStash.calcResultRange, self.optionalItemAtr());
+                dto.unit = self.optionalItemAtr() == 0 ? null : self.unit();
                 dto.formulas = self.calcFormulas().map(item => item.toDto());
                 dto.calAtr = self.selectedClac();
                 dto.note = self.note();
                 dto.description = self.description();
-
+                dto.inputCheck = self.selectedClac() == 0 && self.performanceAtr() == 1 && self.optionalItemAtr() == 1 && self.enableUnit();
+                if (dto.inputCheck) {
+                    dto.calcResultRange.upperCheck = true;
+                    dto.calcResultRange.lowerCheck = true;
+                    dto.calcResultRange.numberRange.dailyNumberRange.lowerLimit = 0;
+                    dto.calcResultRange.numberRange.dailyNumberRange.upperLimit = 1;
+                    dto.calcResultRange.numberRange.monthlyNumberRange.lowerLimit = null;
+                    dto.calcResultRange.numberRange.monthlyNumberRange.upperLimit = null;
+                }
+                switch(self.optionalItemAtr()) {
+                    case 0:
+                        if (self.selectedClac() == 1) dto.calcResultRange.timeInputUnit = 0;
+                        break;
+                    case 1:
+                        if (dto.inputCheck) dto.calcResultRange.numberInputUnit = 3;
+                        break;
+                    case 2:
+                        if (self.selectedClac() == 1) dto.calcResultRange.amountInputUnit = 0;
+                        break;
+                    default:
+                        break;
+                }
                 return dto;
             }
 
@@ -1031,10 +1075,11 @@ module nts.uk.at.view.kmk002.a {
                 self.empConditionAtr(dto.empConditionAtr);
                 self.performanceAtr(dto.performanceAtr);
                 self.unit(dto.unit);
-                self.calcResultRange.fromDto(dto.calcResultRange);
+                self.calcResultRange.fromDto(dto.calcResultRange, dto.inputCheck);
                 self.selectedClac(dto.calAtr);
                 self.note(dto.note);
                 self.description(dto.description);
+                self.enableUnit(dto.inputCheck);
 
                 // reset apply formula
                 self.applyFormula('');
@@ -1218,6 +1263,10 @@ module nts.uk.at.view.kmk002.a {
             upperRequired: KnockoutObservable<boolean>;
             lowerRequired: KnockoutObservable<boolean>;
 
+            timeInputUnit: KnockoutObservable<number>;
+            numberInputUnit: KnockoutObservable<number>;
+            amountInputUnit: KnockoutObservable<number>;
+
             constructor() {
                 this.upperCheck = ko.observable(false);
                 this.lowerCheck = ko.observable(false);
@@ -1238,7 +1287,11 @@ module nts.uk.at.view.kmk002.a {
 
                 this.upperRequired = ko.observable(false);
                 this.lowerRequired = ko.observable(false);
-                
+
+                this.timeInputUnit = ko.observable(null);
+                this.numberInputUnit = ko.observable(null);
+                this.amountInputUnit = ko.observable(null);
+
                 this.upperCheck.subscribe(vl => {
                     if (vl) {
                         if($('#inp-upper-amount-day').is(':enabled')){
@@ -1259,7 +1312,6 @@ module nts.uk.at.view.kmk002.a {
                         if($('#inp-upper-time-month').is(':enabled')){
                             $('#inp-upper-time-month').ntsEditor('validate');
                         }
-
                         this.upperRequired(true);
                     } else {
                         if ($('#inp-upper-amount-day').ntsError("hasError")) {
@@ -1280,7 +1332,6 @@ module nts.uk.at.view.kmk002.a {
                         if ($('#inp-upper-time-month').ntsError("hasError")) {
                             $('#inp-upper-time-month').ntsError('clear');
                         }
-
                         this.upperRequired(false);
                     }
                 });
@@ -1325,13 +1376,115 @@ module nts.uk.at.view.kmk002.a {
                         if ($('#inp-lower-time-month').ntsError("hasError")) {
                             $('#inp-lower-time-month').ntsError('clear');
                         }
-
                         this.lowerRequired(false);
                     }
                 });
-                
-            }
+                // TIME DAY
+                this.timeUpperDay.subscribe((e)=>{
+                    if(this.lowerCheck()){
+                        if(!isNullOrUndefined(this.timeLowerDay())){
+                                $('#inp-lower-time-day').ntsError('clear');
+                        }
+                    }
+                });
+                this.timeLowerDay.subscribe((e)=>{
+                    if(this.upperCheck()){
+                        if(!isNullOrUndefined(this.timeUpperDay())){
+                                $('#inp-upper-time-day').ntsError('clear');
+                        }
+                    }
+                });
 
+                //TIME MONTH
+                this.timeUpperMonth.subscribe((e)=>{
+                    if(this.lowerCheck())
+                    {
+                        if(!isNullOrUndefined(this.timeLowerMonth())){
+                                $('#inp-lower-time-month').ntsError('clear');
+                        }
+                    }
+                });
+                this.timeLowerMonth.subscribe((e)=>{
+                    if(this.upperCheck())
+                    {
+                        if(!isNullOrUndefined(this.timeUpperMonth())){
+                                $('#inp-upper-time-month').ntsError('clear');
+
+                        }
+                    }
+                });
+
+                // AMOUNT DAY
+                this.amountUpperDay.subscribe((e)=>{
+                    if(this.lowerCheck())
+                    {
+                        if(!isNullOrUndefined(this.amountLowerDay())){
+                                $('#inp-lower-amount-day').ntsError('clear');
+                        }
+                    }
+                });
+                this.amountLowerDay.subscribe((e)=>{
+                    if(this.upperCheck())
+                    {
+                        if(!isNullOrUndefined(this.amountUpperDay())){
+                                $('#inp-upper-amount-day').ntsError('clear');
+                        }
+                    }
+                });
+
+                // AMOUNT MONTH
+                this.amountUpperMonth.subscribe((e)=>{
+                    if(this.lowerCheck())
+                    {
+                        if(!isNullOrUndefined(this.amountLowerMonth())){
+                                $('#inp-lower-amount-month').ntsError('clear');
+                        }
+                    }
+                });
+                this.amountLowerMonth.subscribe((e)=>{
+                    if(this.upperCheck())
+                    {
+                        if(!isNullOrUndefined(this.amountUpperMonth())){
+                                $('#inp-upper-amount-month').ntsError('clear');
+                        }
+                    }
+                });
+
+                // NUMBER DAY
+                this.numberUpperDay.subscribe((e)=>{
+                    if(this.lowerCheck())
+                    {
+                        if(!isNullOrUndefined(this.numberLowerDay())){
+                                $('#inp-lower-number-day').ntsError('clear');
+                        }
+                    }
+                });
+                this.numberLowerDay.subscribe((e)=>{
+                    if(this.upperCheck())
+                    {
+                        if(!isNullOrUndefined(this.numberUpperDay())){
+                                $('#inp-upper-number-day').ntsError('clear');
+                        }
+                    }
+                });
+
+                // NUMBER MONTH
+                this.numberUpperMonth.subscribe((e)=>{
+                    if(this.lowerCheck())
+                    {
+                        if(!isNullOrUndefined(this.numberLowerMonth())){
+                                $('#inp-lower-number-month').ntsError('clear');
+                        }
+                    }
+                });
+
+                this.numberLowerMonth.subscribe((e)=>{
+                    if(this.upperCheck())
+                        if(!isNullOrUndefined(this.numberUpperMonth())){
+                            $('#inp-upper-number-month').ntsError('clear');
+                        }
+                });
+            }
             /**
              * Check if limit range is set.
              */
@@ -1399,7 +1552,49 @@ module nts.uk.at.view.kmk002.a {
                     }
                 }
             }
+            validateDomain(){
+                // TIME DAY
+                let self = this;
+                    if(self.lowerCheck() && self.upperCheck()){
+                        if(!isNullOrUndefined(self.timeLowerDay()) && !isNullOrUndefined(self.timeUpperDay())){
+                            if(parseInt(self.timeUpperDay().toString()) < parseInt(self.timeLowerDay().toString())){
+                            $('#inp-upper-time-day').ntsError('set', { messageId: "Msg_574" });
+                            $('#inp-lower-time-day').ntsError('set', { messageId: "Msg_574" });
+                            }
+                        }
+                        if(!isNullOrUndefined(self.timeLowerMonth()) && !isNullOrUndefined(self.timeUpperMonth()) ){
+                            if(parseInt(self.timeUpperMonth().toString()) < parseInt(self.timeLowerMonth().toString())){
+                                    $('#inp-upper-time-month').ntsError('set', { messageId: "Msg_574" });
+                                    $('#inp-lower-time-month').ntsError('set', { messageId: "Msg_574" });
+                            }
+                        }
+                        if(!isNullOrUndefined(self.amountLowerDay()) && !isNullOrUndefined(self.amountUpperDay())){
+                            if(parseInt(self.amountUpperDay().toString()) < parseInt(self.amountLowerDay().toString())){
+                                    $('#inp-upper-amount-day').ntsError('set', { messageId: "Msg_574" });
+                                    $('#inp-lower-amount-day').ntsError('set', { messageId: "Msg_574" });
+                            }
+                        }
+                        if(!isNullOrUndefined(self.amountLowerMonth()) && !isNullOrUndefined(self.amountUpperMonth())){
+                            if(parseInt(self.amountUpperMonth().toString()) < parseInt(self.amountLowerMonth().toString())){
+                               $('#inp-upper-amount-month').ntsError('set', { messageId: "Msg_574" });
+                               $('#inp-lower-amount-month').ntsError('set', { messageId: "Msg_574" });
+                            }
+                        }
+                        if(!isNullOrUndefined(self.numberLowerDay()) &&!isNullOrUndefined(self.numberUpperDay())){
+                            if(parseInt(self.numberUpperDay().toString()) < parseInt(self.numberLowerDay().toString())){
+                                    $('#inp-upper-number-day').ntsError('set', { messageId: "Msg_574" });
+                                    $('#inp-lower-number-day').ntsError('set', { messageId: "Msg_574" });
+                            }
+                        }
+                        if(!isNullOrUndefined(self.numberLowerMonth()) && !isNullOrUndefined(self.numberUpperMonth())){
+                            if(parseInt(self.numberUpperMonth().toString()) < parseInt(self.numberLowerMonth().toString())){
+                                    $('#inp-upper-number-month').ntsError('set', { messageId: "Msg_574" });
+                                    $('#inp-lower-number-month').ntsError('set', { messageId: "Msg_574" });
+                            }
+                        }
+                    }
 
+            }
             /**
              * Reset to default value
              */
@@ -1448,13 +1643,13 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Convert dto to view model
              */
-            public fromDto(dto: any): void {
+            public fromDto(dto: any, inputCheck: boolean): void {
                 let self = this;
-                self.upperCheck(dto.upperCheck);
-                self.lowerCheck(dto.lowerCheck);
+                self.upperCheck(inputCheck ? false : dto.upperCheck);
+                self.lowerCheck(inputCheck ? false : dto.lowerCheck);
 
-                self.numberUpperDay(dto.numberRange.dailyNumberRange.upperLimit);
-                self.numberLowerDay(dto.numberRange.dailyNumberRange.lowerLimit);
+                self.numberUpperDay(inputCheck ? null : dto.numberRange.dailyNumberRange.upperLimit);
+                self.numberLowerDay(inputCheck ? null : dto.numberRange.dailyNumberRange.lowerLimit);
                 self.timeUpperDay(dto.timeRange.dailyTimeRange.upperLimit);
                 self.timeLowerDay(dto.timeRange.dailyTimeRange.lowerLimit);
                 self.amountUpperDay(dto.amountRange.dailyAmountRange.upperLimit);
@@ -1466,12 +1661,16 @@ module nts.uk.at.view.kmk002.a {
                 self.timeLowerMonth(dto.timeRange.monthlyTimeRange.lowerLimit);
                 self.amountUpperMonth(dto.amountRange.monthlyAmountRange.upperLimit);
                 self.amountLowerMonth(dto.amountRange.monthlyAmountRange.lowerLimit);
+
+                self.timeInputUnit(dto.timeInputUnit);
+                self.numberInputUnit(dto.numberInputUnit);
+                self.amountInputUnit(dto.amountInputUnit);
             }
 
             /**
              * Convert view model to dto
              */
-            public toDto(calcResultRangeStash: CalcResultRangeDto) {
+            public toDto(calcResultRangeStash: CalcResultRangeDto, optionalItemAtr: number) {
                 let self = this;
                 let dto = <CalcResultRangeDto>{};
                 dto.upperCheck = self.upperCheck();
@@ -1520,34 +1719,37 @@ module nts.uk.at.view.kmk002.a {
                     lowerCheck: dto.lowerCheck,
                     numberRange: {
                         dailyNumberRange: {
-                            upperLimit: dto.numberUpperDay,
-                            lowerLimit: dto.numberLowerDay
+                            upperLimit: optionalItemAtr == 1 ? dto.numberUpperDay : null,
+                            lowerLimit: optionalItemAtr == 1 ? dto.numberLowerDay : null
                         },
                         monthlyNumberRange: {
-                            upperLimit: dto.numberUpperMonth,
-                            lowerLimit: dto.numberLowerMonth
+                            upperLimit: optionalItemAtr == 1 ? dto.numberUpperMonth : null,
+                            lowerLimit: optionalItemAtr == 1 ? dto.numberLowerMonth : null
                         }
                     },
                     timeRange: {
                         dailyTimeRange: {
-                            upperLimit: dto.timeUpperDay,
-                            lowerLimit: dto.timeLowerDay
+                            upperLimit: optionalItemAtr == 0 ? dto.timeUpperDay : null,
+                            lowerLimit: optionalItemAtr == 0 ? dto.timeLowerDay : null
                         },
                         monthlyTimeRange: {
-                            upperLimit: dto.timeUpperMonth,
-                            lowerLimit: dto.timeLowerMonth
+                            upperLimit: optionalItemAtr == 0 ? dto.timeUpperMonth : null,
+                            lowerLimit: optionalItemAtr == 0 ? dto.timeLowerMonth : null
                         }
                     },
                     amountRange: {
                         dailyAmountRange: {
-                            upperLimit: dto.amountUpperDay,
-                            lowerLimit: dto.amountLowerDay
+                            upperLimit: optionalItemAtr == 2 ? dto.amountUpperDay : null,
+                            lowerLimit: optionalItemAtr == 2 ? dto.amountLowerDay : null
                         },
                         monthlyAmountRange: {
-                            upperLimit: dto.amountUpperMonth,
-                            lowerLimit: dto.amountLowerMonth
+                            upperLimit: optionalItemAtr == 2 ? dto.amountUpperMonth : null,
+                            lowerLimit: optionalItemAtr == 2 ? dto.amountLowerMonth : null
                         }
-                    }
+                    },
+                    timeInputUnit: optionalItemAtr == 0 ? self.timeInputUnit() : null,
+                    numberInputUnit: optionalItemAtr == 1 ? self.numberInputUnit() : null,
+                    amountInputUnit: optionalItemAtr == 2 ? self.amountInputUnit() : null
                 };
                 
                 return output;
@@ -1608,7 +1810,7 @@ module nts.uk.at.view.kmk002.a {
                 let dfd = $.Deferred<void>();
 
                 // Select first item
-                // if (self.optionalItemHeaders().length > 0) {
+                if (self.optionalItemHeaders().length > 0) {
                     let itemNo = self.optionalItemHeaders()[0].itemNo;
                     self.isInit = true;
                     self.selectedCode(itemNo);
@@ -1621,6 +1823,9 @@ module nts.uk.at.view.kmk002.a {
                                 self.optionalItem.isUsed(true);
                             } else {
                                 self.optionalItem.isUsed(false);
+                                self.optionalItem.calcResultRange.timeInputUnit(0);
+                                self.optionalItem.calcResultRange.numberInputUnit(3);
+                                self.optionalItem.calcResultRange.amountInputUnit(0);
                             }
                             if (!vl && !self.optionalItem.hasChanged && !self.isInit) {
                                 if (self.optionalItem.calcFormulas().length > 0) {
@@ -1737,8 +1942,8 @@ module nts.uk.at.view.kmk002.a {
                         self.selectedCode.subscribe(itemNo => {
                             if (itemNo && itemNo != 0) {
                                 self.hasSelected(true);
-                                self.optionalItem.dailyUnit();
-                                self.optionalItem.monthlyUnit();
+                                // self.optionalItem.dailyUnit();
+                                // self.optionalItem.monthlyUnit();
                                 self.optionalItem.calcResultRange.resetValue();
                                 self.loadOptionalItemDetail(itemNo);
                                 // clear error.
@@ -1753,7 +1958,7 @@ module nts.uk.at.view.kmk002.a {
     
                         dfd.resolve();
                     });
-                // }
+                } else dfd.resolve();
                 // resolve
 
                 return dfd.promise();
@@ -1788,7 +1993,7 @@ module nts.uk.at.view.kmk002.a {
 
                         // show message save successful
                         nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
-
+                        self.selectedCode.valueHasMutated();
                         dfd.resolve();
                     })
                     .fail(res => nts.uk.ui.dialog.bundledErrors(res))
@@ -1872,6 +2077,7 @@ module nts.uk.at.view.kmk002.a {
 
                 // validate calculation result range input
                 self.optionalItem.calcResultRange.validateInput();
+                self.optionalItem.calcResultRange.validateDomain();
 
                 // check has error.
                 if ($('.nts-editor').ntsError('hasError')) {
@@ -1938,19 +2144,19 @@ module nts.uk.at.view.kmk002.a {
                         // convert dto to view model.
                         self.optionalItem.fromDto(res.optionalItem);
 
-                        if (res.controlUnit) {
-                            if (res.optionalItem.performanceAtr === 0) {
-                                self.optionalItem.monthlyUnit(res.controlUnit.inputUnitOfTimeItem);
-                            } else {
-                                self.optionalItem.dailyUnit(res.controlUnit.inputUnitOfTimeItem);
-                            }
-                        } else {
-                            if (res.optionalItem.performanceAtr === 0) {
-                                self.optionalItem.monthlyUnit(null);
-                            } else {
-                                self.optionalItem.dailyUnit(null);
-                            }
-                        }
+                        // if (res.controlUnit) {
+                        //     if (res.optionalItem.performanceAtr === 0) {
+                        //         self.optionalItem.monthlyUnit(res.controlUnit.inputUnitOfTimeItem);
+                        //     } else {
+                        //         self.optionalItem.dailyUnit(res.controlUnit.inputUnitOfTimeItem);
+                        //     }
+                        // } else {
+                        //     if (res.optionalItem.performanceAtr === 0) {
+                        //         self.optionalItem.monthlyUnit(null);
+                        //     } else {
+                        //         self.optionalItem.dailyUnit(null);
+                        //     }
+                        // }
 
                         // focus optional item name input
                         $('#inpName').focus();
@@ -2355,6 +2561,19 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 return self.formulaAtr() == EnumAdaptor.valueOf('TIME', Enums.ENUM_OPT_ITEM.formulaAtr);
             }
+            public formatTime(numbeMminutes:number):string {
+                if(numbeMminutes == 0){
+                    return "0:00";
+                }
+                let time = Math.abs(numbeMminutes);
+                let hours : number =Math.floor( time/ 60);
+                let minutes :number  = time % 60;
+                if(numbeMminutes < 0){
+                    return   "(-" + hours.toString()+ ":" + (minutes == 0 ? "00" : minutes.toString()) +")";
+                }else {
+                    return hours.toString()+ ":" + (minutes == 0 ? "00" : minutes.toString());
+                }
+            }
 
             /**
              * Check whether number atr is selected
@@ -2371,7 +2590,6 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 return self.formulaAtr() == EnumAdaptor.valueOf('AMOUNT', Enums.ENUM_OPT_ITEM.formulaAtr);
             }
-
             /**
             * Open dialog C: Item selection
             */
@@ -2414,10 +2632,12 @@ module nts.uk.at.view.kmk002.a {
                 let param = <ParamToD>{};
                 param.formulaId = dto.formulaId;
                 param.formulaAtr = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_OPT_ITEM.formulaAtr);
+                param.formulaNumber = dto.formulaAtr;
                 param.formulaName = dto.formulaName;
                 param.formulaSetting = dto.formulaSetting;
                 param.selectableFormulas = self.getSelectableFormulas(self.orderNo());
                 param.operatorDatasource = Enums.ENUM_OPT_ITEM.operatorAtr;
+                param.enums =  Enums.ENUM_OPT_ITEM;
 
                 nts.uk.ui.windows.setShared('paramToD', param);
 
@@ -2438,19 +2658,47 @@ module nts.uk.at.view.kmk002.a {
              * Display the setting of formula setting
              */
             public setFormulaSettingResult(dto: FormulaSettingDto): void {
+
+
                 let self = this;
                 let result;
                 let leftItem;
+                let right;
+                let left;
                 let rightItem;
+                let item = self.toDto();
+                let fomularAtr =  item.formulaAtr;
+                let isTimeSelected = fomularAtr == EnumAdaptor.valueOf('TIME', Enums.ENUM_OPT_ITEM.formulaAtr);
+                let isNumberSelected = fomularAtr == EnumAdaptor.valueOf('NUMBER', Enums.ENUM_OPT_ITEM.formulaAtr);
 
                 // get item selection enum value.
                 let operator: string = EnumAdaptor.localizedNameOf(dto.operator, Enums.ENUM_OPT_ITEM.operatorAtr);
+                let selectableFormulas = self.getSelectableFormulas(self.orderNo());
+                left = _.find(selectableFormulas, item => item.formulaId == dto.leftItem.formulaItemId);
+                right = _.find(selectableFormulas, item => item.formulaId == dto.rightItem.formulaItemId);
 
+                let isTimeLeft = false;
+                let isNumberLeft = false;
+                let isTimeRight = false;
+                let isNumberRight = false;
+                if(!isNullOrUndefined(left)){
+                    isTimeLeft = left.formulaAtr == EnumAdaptor.valueOf('TIME', Enums.ENUM_OPT_ITEM.formulaAtr);
+                    isNumberLeft = left.formulaAtr == EnumAdaptor.valueOf('NUMBER', Enums.ENUM_OPT_ITEM.formulaAtr);
+                }
+                if(!isNullOrUndefined(right)) {
+                    isTimeRight =  right.formulaAtr == EnumAdaptor.valueOf('TIME', Enums.ENUM_OPT_ITEM.formulaAtr);
+                    isNumberRight =   right.formulaAtr == EnumAdaptor.valueOf('NUMBER', Enums.ENUM_OPT_ITEM.formulaAtr);
+                }
                 // set left item
                 if (self.isSettingMethodOfItemSelection(dto.leftItem)) {
                     leftItem = self.getSymbolById(dto.leftItem.formulaItemId);
                 } else {
                     leftItem = dto.leftItem.inputValue;
+                    if((isTimeSelected && isTimeRight && (dto.operator == 0 ||dto.operator ==1))
+                        ||(isTimeSelected && isNumberRight && (dto.operator == 2 ))
+                        ||(isNumberSelected && isTimeRight && (dto.operator == 3))){
+                        leftItem  = this.formatTime(dto.leftItem.inputValue)
+                    }
                 }
 
                 // set right item
@@ -2458,15 +2706,25 @@ module nts.uk.at.view.kmk002.a {
                     rightItem = self.getSymbolById(dto.rightItem.formulaItemId);
                 } else {
                     rightItem = dto.rightItem.inputValue;
-                }
+                    if((isTimeSelected && isTimeLeft && (dto.operator == 0 ||dto.operator ==1))
+                        ||(isTimeSelected && isNumberLeft && (dto.operator == 2 ))
+                        ||(isNumberSelected && isTimeLeft&& (dto.operator == 3))){
+                        rightItem  = this.formatTime(dto.rightItem.inputValue)
+                    }
 
+                }
                 // set result
                 result = leftItem + ' ' + operator + ' ' + rightItem;
                 self.settingResult(result);
 
                 // clear error
                 $('#settingResult' + self.orderNo()).ntsEditor('validate');
+
+
+
+
             }
+
 
             /**
              * Display the setting of formula setting
@@ -2660,11 +2918,13 @@ module nts.uk.at.view.kmk002.a {
         }
         export interface ParamToD {
             formulaId: string;
+            formulaNumber:number;
             formulaName: string;
             formulaAtr: string;
             formulaSetting: FormulaSettingDto;
             operatorDatasource: Array<EnumConstantDto>;
             selectableFormulas: Array<FormulaDto>;
+            enums: any;
         }
     }
 }

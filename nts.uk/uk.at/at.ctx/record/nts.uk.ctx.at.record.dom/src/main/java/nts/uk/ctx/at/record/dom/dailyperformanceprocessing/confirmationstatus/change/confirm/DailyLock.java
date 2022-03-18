@@ -52,7 +52,7 @@ public class DailyLock {
 	private StatusLock lockConfirmDay;
 
 	/**
-	 * 日別実績のロック
+	 * 過去実績のロック
 	 */
 	private StatusLock lockPast;
 
@@ -61,6 +61,12 @@ public class DailyLock {
 				|| lockApprovalMontｈ.value == StatusLock.LOCK.value || lockConfirmMonth.value == StatusLock.LOCK.value
 				|| lockApprovalDay.value == StatusLock.LOCK.value || lockConfirmDay.value == StatusLock.LOCK.value
 				|| lockPast.value == StatusLock.LOCK.value;
+	}
+	
+	public static DailyLock createLockData(String employeeId, GeneralDate date) {
+		return new DailyLock(employeeId, date, StatusLock.LOCK, StatusLock.LOCK, StatusLock.LOCK, StatusLock.LOCK,
+				StatusLock.LOCK, StatusLock.LOCK, StatusLock.LOCK);
+
 	}
 
 }

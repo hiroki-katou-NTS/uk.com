@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -20,8 +21,8 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.BonusPayAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BPTimeItemSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
@@ -62,11 +63,11 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FixedChangeAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowCalculateSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTSet;
@@ -75,6 +76,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.PrePlanWorkTimeCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -83,6 +85,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author keisuke_hoshina
  *
  */
+@AllArgsConstructor
 @Getter
 public class CalculationRangeOfOneDay {
 
@@ -298,32 +301,25 @@ public class CalculationRangeOfOneDay {
 	/**
 	 * 加給時間を計算する(就内・残業・休出時間帯)
 	 * アルゴリズム：加給時間の計算
-	 * @param raisingAutoCalcSet 加給の自動計算設定
-	 * @param bonusPayAutoCalcSet 加給自動計算設定
+	 * @param bpTimeItemSets 加給自動計算設定
 	 * @param calcAtrOfDaily 日別実績の計算区分
-	 * @param bonusPayAtr 加給区分
 	 * @return 加給時間(List)
 	 */
-	public List<BonusPayTime> calcBonusPayTime(
-			AutoCalRaisingSalarySetting raisingAutoCalcSet,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet,
-			CalAttrOfDailyAttd calcAtrOfDaily,
-			BonusPayAtr bonusPayAtr) {
-		
+	public List<BonusPayTime> calcBonusPayTime(List<BPTimeItemSetting> bpTimeItemSets, CalAttrOfDailyAttd calcAtrOfDaily) {
 		List<BonusPayTime> overTimeBonusPay = new ArrayList<>();
 		List<BonusPayTime> holidayWorkBonusPay = new ArrayList<>();
 		List<BonusPayTime> withinBonusPay = new ArrayList<>();
 		if(this.withinWorkingTimeSheet != null && withinWorkingTimeSheet.isPresent())
-			withinBonusPay = withinWorkingTimeSheet.get().calcBonusPayTimeInWithinWorkTime(raisingAutoCalcSet,bonusPayAutoCalcSet, bonusPayAtr,calcAtrOfDaily);
+			withinBonusPay = withinWorkingTimeSheet.get().calcBonusPayTimeInWithinWorkTime(bpTimeItemSets, calcAtrOfDaily);
 		
 		if(this.outsideWorkTimeSheet != null && this.outsideWorkTimeSheet.isPresent())
 		{
 			if(this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
-				overTimeBonusPay = outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().calcBonusPayTimeInOverWorkTime(raisingAutoCalcSet, bonusPayAutoCalcSet, bonusPayAtr, calcAtrOfDaily);
+				overTimeBonusPay = outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().calcBonusPayTimeInOverWorkTime(bpTimeItemSets, calcAtrOfDaily);
 			}
 			
 			if(this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
-				holidayWorkBonusPay = outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().calcBonusPayTimeInHolidayWorkTime(raisingAutoCalcSet, bonusPayAutoCalcSet, bonusPayAtr, calcAtrOfDaily);
+				holidayWorkBonusPay = outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().calcBonusPayTimeInHolidayWorkTime(bpTimeItemSets, calcAtrOfDaily);
 			}
 		}
 		return calcBonusPayTime(withinBonusPay,overTimeBonusPay,holidayWorkBonusPay);
@@ -332,33 +328,26 @@ public class CalculationRangeOfOneDay {
 	/**
 	 * 特定加給時間を計算する(就内・残業・休出時間帯)
 	 * アルゴリズム：加給時間の計算
-	 * @param raisingAutoCalcSet 加給の自動計算設定
-	 * @param bonusPayAutoCalcSet 加給自動計算設定
+	 * @param bpTimeItemSets 加給自動計算設定
 	 * @param calcAtrOfDaily 日別実績の計算区分
-	 * @param bonusPayAtr 加給区分
 	 * @return 特定加給時間(List)
 	 */
-	public List<BonusPayTime> calcSpecBonusPayTime(
-			AutoCalRaisingSalarySetting raisingAutoCalcSet,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet,
-			CalAttrOfDailyAttd calcAtrOfDaily,
-			BonusPayAtr bonusPayAtr){
-		
+	public List<BonusPayTime> calcSpecBonusPayTime(List<BPTimeItemSetting> bpTimeItemSets, CalAttrOfDailyAttd calcAtrOfDaily){
 		List<BonusPayTime> overTimeBonusPay = new ArrayList<>();
 		List<BonusPayTime> holidayWorkBonusPay = new ArrayList<>();
 		List<BonusPayTime> withinBonusPay = new ArrayList<>();
 		
 		if(withinWorkingTimeSheet.isPresent())
-			 withinBonusPay = withinWorkingTimeSheet.get().calcSpecifiedBonusPayTimeInWithinWorkTime(raisingAutoCalcSet,bonusPayAutoCalcSet, bonusPayAtr,calcAtrOfDaily);
+			 withinBonusPay = withinWorkingTimeSheet.get().calcSpecifiedBonusPayTimeInWithinWorkTime(bpTimeItemSets, calcAtrOfDaily);
 
 		if(outsideWorkTimeSheet.isPresent())
 		{
 			if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
-				overTimeBonusPay = outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().calcSpecBonusPayTimeInOverWorkTime(raisingAutoCalcSet, bonusPayAutoCalcSet, bonusPayAtr, calcAtrOfDaily);
+				overTimeBonusPay = outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().calcSpecBonusPayTimeInOverWorkTime(bpTimeItemSets, calcAtrOfDaily);
 			}
 			
 			if(outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
-				holidayWorkBonusPay = outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().calcSpecBonusPayTimeInHolidayWorkTime(raisingAutoCalcSet, bonusPayAutoCalcSet, bonusPayAtr, calcAtrOfDaily);
+				holidayWorkBonusPay = outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().calcSpecBonusPayTimeInHolidayWorkTime(bpTimeItemSets, calcAtrOfDaily);
 			}
 		}
 		return calcBonusPayTime(withinBonusPay,overTimeBonusPay,holidayWorkBonusPay);
@@ -445,7 +434,8 @@ public class CalculationRangeOfOneDay {
 			ConditionAtr conditionAtr,
 			DeductionAtr dedAtr,
 			StatutoryAtr statutoryAtr,
-			Optional<WorkTimezoneGoOutSet> goOutSet) {
+			Optional<WorkTimezoneGoOutSet> goOutSet,
+			NotUseAtr canOffset) {
 		
 		AttendanceTime withinDeduct = AttendanceTime.ZERO;
 		AttendanceTime overTimeDeduct = AttendanceTime.ZERO;
@@ -454,7 +444,7 @@ public class CalculationRangeOfOneDay {
 		if (statutoryAtr.isStatutory()) {
 			if (this.withinWorkingTimeSheet.isPresent()) {
 				// 就業時間帯から控除時間を取得
-				withinDeduct = this.withinWorkingTimeSheet.get().getDeductionTime(conditionAtr, dedAtr, goOutSet);
+				withinDeduct = this.withinWorkingTimeSheet.get().getDeductionTime(conditionAtr, dedAtr, goOutSet, canOffset);
 			}
 		}
 		// 法定外
@@ -462,10 +452,10 @@ public class CalculationRangeOfOneDay {
 			if (this.outsideWorkTimeSheet.isPresent()) {
 				// 残業時間帯から控除時間を取得
 				overTimeDeduct = this.outsideWorkTimeSheet.get()
-						.getDeductionTimeFromOverTime(conditionAtr, dedAtr, goOutSet);
+						.getDeductionTimeFromOverTime(conditionAtr, dedAtr, goOutSet, canOffset);
 				// 休出時間帯から控除時間を取得
 				holidayWorkDeduct = this.outsideWorkTimeSheet.get()
-						.getDeductionTimeFromHolidayWork(conditionAtr, dedAtr, goOutSet);
+						.getDeductionTimeFromHolidayWork(conditionAtr, dedAtr, goOutSet, canOffset);
 			}
 		}
 		if(withinDeduct.greaterThan(AttendanceTime.ZERO) && goOutSet.isPresent()) {
@@ -679,6 +669,8 @@ public class CalculationRangeOfOneDay {
 				integrationOfWorkTime,
 				integrationOfDaily,
 				creatingWithinWorkTimeSheet);
+		//現状integrationOfDailyの出退勤を使用している箇所がある為、自身が持つ出退勤で上書き。いずれ統一させる必要がある。
+		integrationOfDaily.setAttendanceLeave(Optional.of(this.attendanceLeavingWork));
 		
 		if(todayWorkType.isWeekDayAttendance()) {
 			
@@ -706,7 +698,8 @@ public class CalculationRangeOfOneDay {
 					this.predetermineTimeSetForCalc,
 					deductTimeSheet,
 					creatingWithinWorkTimeSheet,
-					timeVacationWork));
+					timeVacationWork,
+					this.attendanceLeavingWork));
 			
 			if(this.withinWorkingTimeSheet.get().getWithinWorkTimeFrame().isEmpty())
 				return;
@@ -722,12 +715,13 @@ public class CalculationRangeOfOneDay {
 							this.predetermineTimeSetForCalc,
 							deductTimeSheet,
 							this.withinWorkingTimeSheet.get(),
-							previousAndNextDaily));
+							previousAndNextDaily,
+							this.attendanceLeavingWork));
 		} else {
 			//休出の場合でも就業時間内時間帯を作成する必要がある為、空で作成
 			this.withinWorkingTimeSheet = Finally.of(WithinWorkTimeSheet.createEmpty());
 			
-			if(!creatingWithinWorkTimeSheet.getStartEndToWithinWorkTimeFrame().isPresent())
+			if(!creatingWithinWorkTimeSheet.getFirstStartAndLastEnd().isPresent())
 				return;
 				
 			//流動勤務(休日出勤)
@@ -739,7 +733,7 @@ public class CalculationRangeOfOneDay {
 							integrationOfWorkTime,
 							integrationOfDaily,
 							deductTimeSheet,
-							creatingWithinWorkTimeSheet.getStartEndToWithinWorkTimeFrame().get(),
+							creatingWithinWorkTimeSheet.getFirstStartAndLastEnd().get(),
 							this.oneDayOfRange,
 							previousAndNextDaily));
 		}
@@ -832,7 +826,6 @@ public class CalculationRangeOfOneDay {
 							timeLeavingWork,
 							creatingWithinWorkTimeSheet));
 		}
-		
 		return deductionTimeSheetCalcAfter;
 	}
 	
@@ -1345,6 +1338,40 @@ public class CalculationRangeOfOneDay {
 		return true;
 	}
 	
+	/**
+	 * 重複する時間帯で作り直す
+	 * @param timeSpan 変更する時間
+	 * @param commonSet 就業時間帯の共通設定
+	 * @return 1日の計算範囲
+	 */
+	public Optional<CalculationRangeOfOneDay> recreateWithDuplicate(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
+		Optional<TimeSpanForDailyCalc> duplicate = this.oneDayOfRange.getDuplicatedWith(timeSpan);
+		if(!duplicate.isPresent()) {
+			return Optional.empty();
+		}
+		Finally<WithinWorkTimeSheet> within = Finally.empty();
+		if(this.withinWorkingTimeSheet.isPresent()) {
+			//就業時間内時間帯を重複する時間帯で作り直す
+			within = Finally.of(this.withinWorkingTimeSheet.get().recreateWithDuplicate(duplicate.get(), commonSet));
+		}
+		Finally<OutsideWorkTimeSheet> outside = Finally.empty();
+		if(this.outsideWorkTimeSheet.isPresent()) {
+			//就業時間外時間帯を重複する時間帯で作り直す
+			outside = Finally.of(this.outsideWorkTimeSheet.get().recreateWithDuplicate(duplicate.get(), commonSet));
+		}
+		return Optional.of(new CalculationRangeOfOneDay(
+				duplicate.get(),
+				this.workInformationOfDaily,
+				this.attendanceLeavingWork,
+				this.predetermineTimeSetForCalc,
+				this.nonWorkingTimeSheet,
+				this.shortTimeWSWithoutWork,
+				within,
+				outside,
+				this.beforeAttendance,
+				this.afterLeaving));
+	}
+
 	/**
 	 * 勤務実績と勤務予定の勤務情報を比較
 	 * @param workNo

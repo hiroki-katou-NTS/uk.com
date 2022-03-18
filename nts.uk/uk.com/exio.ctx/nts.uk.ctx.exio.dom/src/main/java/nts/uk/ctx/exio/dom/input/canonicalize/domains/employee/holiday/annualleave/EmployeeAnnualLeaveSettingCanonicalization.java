@@ -8,7 +8,6 @@ import java.util.Set;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
@@ -16,9 +15,11 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
+import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
@@ -58,7 +59,7 @@ public class EmployeeAnnualLeaveSettingCanonicalization extends IndependentCanon
 
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(DomainDataColumn.SID);
+		return Arrays.asList(new DomainDataColumn(Items.SID, "SID", DataType.STRING));
 	}
 	
 	@Override
@@ -71,12 +72,12 @@ public class EmployeeAnnualLeaveSettingCanonicalization extends IndependentCanon
 			for(val interm : interms) {
 				val keyValue = getPrimaryKeys(interm);
 				if (importingKeys.contains(keyValue)) {
-					require.add(context, ExternalImportError.record(interm.getRowNo(), "社員コードが重複しています。"));
+					require.add(ExternalImportError.record(interm.getRowNo(), context.getDomainId(), "社員コードが重複しています。"));
 					return; // 次のレコードへ
 				}
 				importingKeys.add(keyValue);
 				
-				super.canonicalize(require, context, interm, keyValue);
+				super.canonicalize(require, context, interm);
 			}
 		});
 	}
@@ -84,15 +85,10 @@ public class EmployeeAnnualLeaveSettingCanonicalization extends IndependentCanon
 	private KeyValues getPrimaryKeys(IntermediateResult interm) {
 		return new KeyValues(Arrays.asList(interm.getItemByNo(Items.SID).get().getString()));
 	}
-
-	@Override
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
-		return Arrays.asList(Items.SID);
-	}
 	
 	/**
 	 * 追加の正準化処理が必要ならoverrideすること
-	 * @param targetContainers
+	 * @param targertResult
 	 */
 	protected IntermediateResult canonicalizeExtends(IntermediateResult targertResult) {
 		return addFixedItems(targertResult);
@@ -102,8 +98,9 @@ public class EmployeeAnnualLeaveSettingCanonicalization extends IndependentCanon
 	 *  受入時に固定の値を入れる物たち
 	 */
 	private IntermediateResult addFixedItems(IntermediateResult interm) {
-	    return interm.addCanonicalized(CanonicalItem.nullValue(100), 100)
-	    		    		   .optionalItem(CanonicalItem.of(2, 0));
+	    return interm
+	    		.addCanonicalized(CanonicalItem.nullValue(100))
+	    		.optionalItem(CanonicalItem.of(2, 0));
 	}
 	
 	@Override

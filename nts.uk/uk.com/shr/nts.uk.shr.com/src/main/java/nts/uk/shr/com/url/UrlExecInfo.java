@@ -73,5 +73,4 @@ public class UrlExecInfo extends AggregateRoot
         UrlExecInfo  urlExecInfo =  new UrlExecInfo(embeddedId, cid, programId, loginId, contractCd, expiredDate, issueDate, screenId, sid,  scd, taskIncre);
         return urlExecInfo;
     }
-    
 }

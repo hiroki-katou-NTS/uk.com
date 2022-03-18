@@ -19,9 +19,11 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
+import nts.uk.ctx.exio.dom.input.errors.RecordError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
+import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
@@ -64,7 +66,7 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization 
 
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(DomainDataColumn.SID);
+		return Arrays.asList(new DomainDataColumn(Items.SID, "SID", DataType.STRING));
 	}
 
 	@Override
@@ -76,17 +78,17 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization 
 			for(val interm : interms) {
 					val error = FixedItem.getLackItemError(interm);
 					if(error.isPresent()) {
-						require.add(context, error.get());
+						require.add(ExternalImportError.of(context.getDomainId(), error.get()));
 						continue;
 					}
 					val keyValue = getPrimaryKeys(interm);
 					if (importingKeys.contains(keyValue)) {
-						require.add(context, ExternalImportError.record(interm.getRowNo(), "社員コードが重複しています。"));
+						require.add(ExternalImportError.record(interm.getRowNo(), context.getDomainId(), "社員コードが重複しています。"));
 						return; // 次のレコードへ
 					}
 
 					//既存データのチェックと保存は継承先に任せる
-					super.canonicalize(require, context, interm, getPrimaryKeys(interm));
+					super.canonicalize(require, context, interm);
 					importingKeys.add(keyValue);
 				}
 		});
@@ -95,11 +97,6 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization 
 	private KeyValues getPrimaryKeys(IntermediateResult interm) {
 		//このドメインのKeyはSIDなので、Stringで取り出す。
 		return new KeyValues(Arrays.asList(interm.getItemByNo(Items.SID).get().getString()));
-	}
-	
-	@Override
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
-		return Arrays.asList(Items.SID);
 	}
 
 	private static class FixedItem{
@@ -121,15 +118,15 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization 
 		 * 項目を歯抜けで受入れようとしている
 		 * @param interm 
 		 */
-		public static Optional<ExternalImportError> getLackItemError(IntermediateResult interm) {
+		private static Optional<RecordError> getLackItemError(IntermediateResult interm) {
 			if(!hasTimeAllItemNoOrAllNothing(interm, timesNumbers.keySet())) {
-				return Optional.of(ExternalImportError.record(interm.getRowNo(),
+				return Optional.of(RecordError.record(interm.getRowNo(),
 							timesNumbers.values().stream().collect(Collectors.joining("、")) 
 							+ "は同時に受入れなければなりません。"
 						));
 			}
 			else if(!hasTimeAllItemNoOrAllNothing(interm, timeNumbers.keySet())) {
-				return Optional.of(ExternalImportError.record(interm.getRowNo(),
+				return Optional.of(RecordError.record(interm.getRowNo(),
 						timeNumbers.values().stream().collect(Collectors.joining("、")) 
 						+ "は同時に受入れなければなりません。"
 					));

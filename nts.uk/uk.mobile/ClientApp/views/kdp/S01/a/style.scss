@@ -1,9 +1,10 @@
 .btn-stamp,
 .div-btn-stamp {
-  height: 134px;
-}
-#date {
-  font-size: 0.75rem;
+
+  button {
+    height: 100px;
+    margin-bottom: 20px !important;
+  }
 }
 
 #time {
@@ -16,37 +17,25 @@
 
 .blue-link {
   cursor: pointer;
-	color: rgb(37, 37, 238) !important;
-	text-decoration: underline;
+	color: #8d7565 !important;
   text-align: right;
   padding-right: 10px;
   padding-bottom: 20px;
-}
-
-.blue-link:hover {
-	cursor: pointer;
-	color: rgb(0, 0, 255) !important;
 }
 
 .row {
   margin: 0 !important;
 }
 
-.btn {
+.btn-kdps01a {
   border-radius: 7px;
-  padding: 0;
-  box-shadow: 1px 1px 2px 1px #808080;
-  border: 0;
-  font-size: 20px
-}
-
-.btn div {
-  margin-top: 15px;
+  border: #01956A 2px solid !important;
 }
 
 .px-2 {
-  padding-right: 5px !important;
-  padding-left: 5px !important;
+  padding-right: 10px !important;
+  padding-left: 10px !important;
+  margin-bottom: 20px !important;
 }
 
 .pt-2, .py-2 {
@@ -59,15 +48,6 @@
 
 .lh-1 {
   line-height: 1
-}
-
-.text-time {
-  position: absolute;
-  font-size: 55px;
-  color: rgb(229, 247, 249);
-  top: 7px;
-  left: 160px;
-  z-index: -1;
 }
 
 #textComment{

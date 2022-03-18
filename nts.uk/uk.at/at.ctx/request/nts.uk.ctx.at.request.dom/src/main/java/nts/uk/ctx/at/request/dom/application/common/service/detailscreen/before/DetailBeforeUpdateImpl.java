@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -31,7 +33,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInpu
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ScheRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeUseInfor;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 @Stateless
 public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
@@ -87,9 +89,9 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
         
         if (!flag) {
             // 登録時の残数チェック
-            List<VacationTimeInforNew> vacationTimeInforNews = timeDigestionUsageInfor.isPresent() ? 
+            List<VacationTimeUseInfor> vacationTimeInforNews = timeDigestionUsageInfor.isPresent() ? 
                     timeDigestionUsageInfor.get().getTimeLeaveApplicationDetails().stream().map(x -> 
-                    new VacationTimeInforNew(
+                    new VacationTimeUseInfor(
                             x.getAppTimeType(), 
                             x.getTimeDigestApplication().getTimeAnnualLeave(), 
                             x.getTimeDigestApplication().getTimeOff(), 
@@ -98,7 +100,7 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
                             x.getTimeDigestApplication().getChildTime(), 
                             x.getTimeDigestApplication().getNursingTime(), 
                             x.getTimeDigestApplication().getSpecialVacationFrameNO().map(y -> new SpecialHdFrameNo(y))))
-                    .collect(Collectors.toList()) : new ArrayList<VacationTimeInforNew>();
+                    .collect(Collectors.toList()) : new ArrayList<VacationTimeUseInfor>();
             AppRemainCreateInfor appRemainCreateInfor = new AppRemainCreateInfor(
                     application.getEmployeeID(), 
                     application.getAppID(), 
@@ -116,7 +118,7 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
                     application.getOpAppStartDate().map(ApplicationDate::getApplicationDate), 
                     application.getOpAppEndDate().map(ApplicationDate::getApplicationDate), 
                     holidays, 
-                    timeDigestionUsageInfor.map(TimeDigestionParam::toTimeDigestionUsageInfor));
+                    timeDigestionUsageInfor.map(TimeDigestionParam::toTimeDigestionUsageInfor), Optional.empty());
             InterimRemainCheckInputParam param = new InterimRemainCheckInputParam(
                     companyID, 
                     application.getEmployeeID(), 
@@ -202,13 +204,21 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 	 * 1.排他チェック
 	 */
 	public void exclusiveCheck(String companyID, String appID, int version) {
+		String exclusiveCheckResult = exclusiveCheckLogic(companyID, appID, version);
+		if(Strings.isNotBlank(exclusiveCheckResult)) {
+			throw new BusinessException(exclusiveCheckResult);
+		}
+	}
+	
+	public String exclusiveCheckLogic(String companyID, String appID, int version) {
 		if (applicationRepository.findByID(companyID, appID).isPresent()) {
 			Application application = applicationRepository.findByID(companyID, appID).get();
 			if (application.getVersion() != version) {
-				throw new BusinessException("Msg_197");
+				return "Msg_197";
 			}
+			return "";
 		} else {
-			throw new BusinessException("Msg_198");
+			return "Msg_198";
 		}
 	}
 

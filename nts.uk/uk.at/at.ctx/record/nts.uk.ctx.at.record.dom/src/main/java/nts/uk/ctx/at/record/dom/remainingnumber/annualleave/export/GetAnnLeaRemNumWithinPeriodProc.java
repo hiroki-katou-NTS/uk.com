@@ -19,14 +19,13 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveLapsedWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.DividedDayEachProcess;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainingHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxHistoryData;
@@ -35,22 +34,21 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterim
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.CalYearOffWorkAttendRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.ConfirmLeavePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
+import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureIdHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
@@ -229,9 +227,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		grantHdTblSetOpt = require.grantHdTblSet(companyId, grantTableCode);
 		lengthServiceTblsOpt = Optional.ofNullable(require.lengthServiceTbl(companyId, grantTableCode));
 
-		// 年休付与残数データ　取得
-		List<AnnualLeaveGrantRemainingData> grantRemainingDatas;
-		grantRemainingDatas = require.annualLeaveGrantRemainingData(employeeId);
+
 
 		// 日別実績の運用開始設定　取得
 		Optional<OperationStartSetDailyPerform> operationStartSetOpt = Optional.empty();
@@ -245,84 +241,88 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 		// 次回年休付与日を計算
 		List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList = new ArrayList<>();
-		{
-			// 次回年休付与を計算
-			nextAnnualLeaveGrantList = CalcNextAnnualLeaveGrantDate.algorithm(
-					require, cacheCarrier,
-					companyId, employeeId, Optional.of(period.get()),
-					Optional.ofNullable(employee), annualLeaveEmpBasicInfoOpt,
-					grantHdTblSetOpt, lengthServiceTblsOpt);
+		nextAnnualLeaveGrantList = CalcNextAnnualLeaveGrantDate.algorithm(
+				require, cacheCarrier,
+				companyId, employeeId, Optional.of(period.get()),
+				Optional.ofNullable(employee), annualLeaveEmpBasicInfoOpt,
+				grantHdTblSetOpt, lengthServiceTblsOpt);
+		
+		// １日に相当する契約時間を取得する
+		Optional<LaborContractTime> laborContractTimeOpt
+			= LeaveRemainingNumber.getContractTime(require, companyId, employeeId, criteriaDate);
 
-//			// 「出勤率計算フラグ」をチェック
-//			if (isCalcAttendanceRate){
+		// 勤務実績によって次回年休付与を更新
+		for (val nextAnnualGrantList : nextAnnualLeaveGrantList){
+			if (!grantHdTblSetOpt.isPresent()) continue;
+			if (!lengthServiceTblsOpt.isPresent()) continue;
 
-				// 勤務実績によって次回年休付与を更新
-				for (val nextAnnualGrantList : nextAnnualLeaveGrantList){
-					if (!grantHdTblSetOpt.isPresent()) continue;
-					if (!lengthServiceTblsOpt.isPresent()) continue;
+			// 次回年休付与の付与日数を条件によって更新する
+			Optional<CalYearOffWorkAttendRate> resultRateOpt = Optional.of(new CalYearOffWorkAttendRate());
+			if(mode == InterimRemainMngMode.MONTHLY){
+			// 年休出勤率を計算する
+				resultRateOpt = CalcAnnLeaAttendanceRate.algorithm(require, cacheCarrier,
+					companyId, employeeId,
+					nextAnnualGrantList.getGrantDate(),
+					Optional.of(nextAnnualGrantList.getTimes().v()),
+					Optional.of(annualLeaveSet), Optional.of(employee), annualLeaveEmpBasicInfoOpt,
+					grantHdTblSetOpt, lengthServiceTblsOpt, operationStartSetOpt);
+			}else{
+				resultRateOpt = Optional.of(new CalYearOffWorkAttendRate(100.0, 0.0, 365.0, 0.0,
+						Optional.of(new DatePeriod(nextAnnualGrantList.getGrantDate().addYears(-1),
+								nextAnnualGrantList.getGrantDate().addDays(-1)))));
+			}
 
-					// 次回年休付与の付与日数を条件によって更新する
-					{
-						Optional<CalYearOffWorkAttendRate> resultRateOpt = Optional.of(new CalYearOffWorkAttendRate());
-						if(mode == InterimRemainMngMode.MONTHLY){
-						// 年休出勤率を計算する
-							resultRateOpt = CalcAnnLeaAttendanceRate.algorithm(require, cacheCarrier,
-								companyId, employeeId,
-								nextAnnualGrantList.getGrantDate(),
-								Optional.of(nextAnnualGrantList.getTimes().v()),
-								Optional.of(annualLeaveSet), Optional.of(employee), annualLeaveEmpBasicInfoOpt,
-								grantHdTblSetOpt, lengthServiceTblsOpt, operationStartSetOpt);
-						}else{
-							resultRateOpt = Optional.of(new CalYearOffWorkAttendRate(100.0,0.0,365.0,0.0));
-						}
+			if (!resultRateOpt.isPresent())
+				continue;
+			
+			val resultRate = resultRateOpt.get();
+			nextAnnualGrantList.setAttendanceRate(Optional.of(
+						resultRate.getAttendanceRate()));
+			nextAnnualGrantList.setPrescribedDays(Optional.of(
+						resultRate.getPrescribedDays()));
+			nextAnnualGrantList.setWorkingDays(Optional.of(
+						resultRate.getWorkingDays()));
+			nextAnnualGrantList.setDeductedDays(Optional.of(
+						resultRate.getDeductedDays()));
 
-						if (resultRateOpt.isPresent()){
-							val resultRate = resultRateOpt.get();
-							nextAnnualGrantList.setAttendanceRate(Optional.of(
-									new AttendanceRate(resultRate.getAttendanceRate())));
-							nextAnnualGrantList.setPrescribedDays(Optional.of(
-									new YearDayNumber(resultRate.getPrescribedDays())));
-							nextAnnualGrantList.setWorkingDays(Optional.of(
-									new YearDayNumber(resultRate.getWorkingDays())));
-							nextAnnualGrantList.setDeductedDays(Optional.of(
-									new YearDayNumber(resultRate.getDeductedDays())));
+			// 日数と出勤率から年休付与テーブルを取得する
+			val grantConditionOpt = grantHdTblSetOpt.get().getGrantCondition(
+					resultRate.getAttendanceRate(),
+					resultRate.getPrescribedDays(),
+					resultRate.getWorkingDays(),
+					resultRate.getDeductedDays(),
+					resultRate.getPeriod());
 
-							// 日数と出勤率から年休付与テーブルを取得する
-							val grantConditionOpt = grantHdTblSetOpt.get().getGrantCondition(
-									resultRate.getAttendanceRate(),
-									resultRate.getPrescribedDays(),
-									resultRate.getWorkingDays(),
-									resultRate.getDeductedDays());
+			if (!grantConditionOpt.isPresent()){
+				// 出勤率に応じたテーブルがない場合（出勤率が足りなくて年休が付与されないケース）
+				nextAnnualGrantList.setGrantDays(Finally.of(new LeaveGrantDayNumber(0.0)));
+				//出勤率が足りない場合は、条件NO=1のテーブルの時間年休上限、半日年休上限の情報を使用する。
+				//その為、CalcNextAnnualLeaveGrantDateにて計算した値をそのまま使用する。（ここでは何も更新しない）
+				continue;
+			}
+			
+			// 付与日数を計算
+			val grantHdTblOpt = require.grantHdTbl(companyId, grantConditionOpt.get().getConditionNo(),
+												grantTableCode, nextAnnualGrantList.getTimes().v());
 
-							if (grantConditionOpt.isPresent()){
-								val grantCondition = grantConditionOpt.get();
-								val conditionNo = grantCondition.getConditionNo();
-
-								// 付与日数を計算
-								val grantHdTblOpt = require.grantHdTbl(companyId, conditionNo,
-																	grantTableCode, nextAnnualGrantList.getTimes().v());
-
-								if (grantHdTblOpt.isPresent()){
-									val grantHdTbl = grantHdTblOpt.get();
-									nextAnnualGrantList.setGrantDays(Finally.of(grantHdTbl.getGrantDays()));
-									nextAnnualGrantList.setHalfDayAnnualLeaveMaxTimes(grantHdTbl.getLimitDayYear());
-									nextAnnualGrantList.setTimeAnnualLeaveMaxDays(grantHdTbl.getLimitTimeHd());
-								}
-							}
-							else {
-
-								// 次回年休付与．付与日数　←　0
-								nextAnnualGrantList.setGrantDays(Finally.of(new GrantDays(0.0)));
-							}
-						}
-					}
-				}
-//			}
+			if (grantHdTblOpt.isPresent()){
+				val grantHdTbl = grantHdTblOpt.get();
+				nextAnnualGrantList
+						.setGrantDays(Finally.of(grantHdTbl.getGrantDays().toLeaveGrantDayNumber()));
+				nextAnnualGrantList.setHalfDayAnnualLeaveMaxTimes(
+						annualLeaveSet.getLimitedHalfCount(grantHdTbl.getLimitDayYear()));
+				nextAnnualGrantList.setTimeAnnualLeaveMaxDays(
+						annualLeaveSet.getLimitedTimeHdDays(grantHdTbl.getLimitTimeHd()));
+				nextAnnualGrantList.setTimeAnnualLeaveMaxTime(annualLeaveSet
+						.getLimitedTimeHdTime(grantHdTbl.getLimitTimeHd(), laborContractTimeOpt));
+				
+			}
 		}
+
 
 		// 年休集計期間を作成
 		List<AggregatePeriodWork> aggregateWork = createAggregatePeriod(
-				nextAnnualLeaveGrantList, period.get(), grantRemainingDatas);
+				nextAnnualLeaveGrantList, period.get(), annualLeaveInfo.getGrantRemainingDataList());
 
 		// 暫定年休管理データを取得する
 		val tempAnnualLeaveMngs = getTempAnnualLeaveMngs(
@@ -656,7 +656,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		}
 
 		// 年休情報残数を更新
-		returnInfo.updateRemainingNumber(false);
+		returnInfo.updateRemainingNumber(GrantBeforeAfterAtr.BEFORE_GRANT, aggrPeriod.end());
 
 		// 年休情報を返す
 		return returnInfo;
@@ -704,7 +704,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		// 「次回年休付与リスト」をすべて「処理単位分割日リスト」に追加
 		for (val nextAnnualLeaveGrant : nextAnnualLeaveGrantList){
 			val grantDate = nextAnnualLeaveGrant.getGrantDate();
-			if (grantDate.beforeOrEquals(aggrPeriod.start().addDays(1))) continue;
+			if (grantDate.before(aggrPeriod.start().addDays(1))) continue;
 			if (grantDate.after(nextDayOfPeriodEnd)) continue;
 
 			dividedDayMap.putIfAbsent(grantDate, new DividedDayEachProcess(grantDate));
@@ -723,30 +723,45 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 		// 「年休集計期間WORK」を作成
 		AggregatePeriodWork startWork = new AggregatePeriodWork();
-		val startWorkEnd = dividedDayList.get(0).getYmd().addDays(-1);
-		startWork.setPeriod(new DatePeriod(aggrPeriod.start(), startWorkEnd));
+		
+		if ( 0 < dividedDayList.size() ){
+			val startWorkEnd = dividedDayList.get(0).getYmd().addDays(-1);
+			startWork.setPeriod(new DatePeriod(aggrPeriod.start(), startWorkEnd));
+			// 消滅　←最初の「処理単位分割日．消滅情報WORK」
+			startWork.setLapsedAtr(dividedDayList.get(0).getLapsedWork());
+		}
 		aggregatePeriodWorks.add(startWork);
 
 		// 付与後フラグ
 		/**付与前か付与後か */
-		GrantPeriodAtr grantPeriodAtr = GrantPeriodAtr.BEFORE_GRANT;
+		GrantBeforeAfterAtr grantPeriodAtr = GrantBeforeAfterAtr.BEFORE_GRANT;
 
 		for (int index = 0; index < dividedDayList.size(); index++){
 			val nowDividedDay = dividedDayList.get(index);
-			DividedDayEachProcess nextDividedDay = null;
-			if (index + 1 < dividedDayList.size()) nextDividedDay = dividedDayList.get(index + 1);
+			Optional<DividedDayEachProcess> nextDividedDay = Optional.empty();
+			if (index + 1 < dividedDayList.size()) nextDividedDay = Optional.of(dividedDayList.get(index + 1));
 
 			// 付与フラグをチェック
 			if (nowDividedDay.getGrantWork().isGrantAtr()) {
-				grantPeriodAtr = GrantPeriodAtr.AFTER_GRANT;
+				grantPeriodAtr = GrantBeforeAfterAtr.AFTER_GRANT;
 			}
 
 			// 年休集計期間WORKを作成し、Listに追加
+			
+			// 期間．終了日←次の「処理単位分割日．年月日」の前日
+			// 　※次の処理単位分割日がない場合、パラメータ「終了日」の翌日
 			GeneralDate workPeriodEnd = nextDayOfPeriodEnd;
-			if (nextDividedDay != null) workPeriodEnd = nextDividedDay.getYmd().addDays(-1);
+			if (nextDividedDay.isPresent()) workPeriodEnd = nextDividedDay.get().getYmd().addDays(-1);
+			
+			// 消滅←次の「処理単位分割日.消滅情報WORK」
+			//　　※次の処理単位分割日がない場合、「期間の開始日に消滅するかどうか」をfalseで消滅情報WORKを作成
+			AnnualLeaveLapsedWork lapsedWork = new AnnualLeaveLapsedWork(false);
+			if ( nextDividedDay.isPresent() ){
+				lapsedWork = nextDividedDay.get().getLapsedWork();
+			}
 
 			AggregatePeriodWork nowWork = new AggregatePeriodWork(new DatePeriod(nowDividedDay.getYmd(), workPeriodEnd),
-					nowDividedDay.getLapsedWork(),
+					lapsedWork,
 					nowDividedDay.getGrantWork(),
 					nowDividedDay.getEndDay(),
 					grantPeriodAtr);
@@ -823,26 +838,13 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			if (isOverWriteOpt.get()){
 				if(isOverWritePeriod.isPresent()){
 
-					//上書き対象期間内の暫定年休管理データを削除(日数単位のデータ)
-					results.removeIf(x -> isOverWritePeriod.get().contains(x.getYmd()) && x.getUsedNumber().isUseDay());
+					//上書き対象期間内の暫定年休管理データを削除
+					results.removeIf(x -> isOverWritePeriod.get().contains(x.getYmd()));
 
 					// 上書き用データがある時、追加する
 					if (forOverWriteListOpt.isPresent()){
 						val overWrites = forOverWriteListOpt.get();
 						for (val overWrite : overWrites){
-
-							// 時間休暇の場合は、addする前に、時間休暇の種類を参照し、同じ種類がすでに存在する場合は削除してから上書きする。
-							if (!overWrite.getUsedNumber().isUseDay() && overWrite.getAppTimeTypeEnum().isPresent()) {
-								val sameDatas = results.stream()
-										.filter(x -> x.getYmd().equals(overWrite.getYmd())
-												&& x.getAppTimeTypeEnum().isPresent())
-										.collect(java.util.stream.Collectors.toList());
-								for (val sameData : sameDatas) {
-									if (sameData.getAppTimeTypeEnum().get()
-											.equals(overWrite.getAppTimeTypeEnum().get()))
-										results.removeIf(x -> x.getRemainManaID().equals(sameData.getRemainManaID()));
-								}
-							}
 
 							// 上書き用データを追加
 							results.add(overWrite);
@@ -856,126 +858,6 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		return results;
 	}
 
-	/**
-	 * 年休不足分を付与残数データとして作成する 　　→　未使用
-	 * @param result 年休の集計結果
-	 * @param isOutShortRemainOpt 不足分付与残数データ出力区分
-	 * @return 年休の集計結果
-	 */
-	private static AggrResultOfAnnualLeave createShortRemainingDatas(
-			String employeeId, String companyId,
-			AggrResultOfAnnualLeave result){
-
-//		// 「不足分付与残数データ出力区分」をチェック
-//		if (!isOutShortRemainOpt.isPresent()) return result;
-//		if (isOutShortRemainOpt.get() == false) return result;
-
-		// 「年休情報」を取得
-		val annualLeaveInfo = result.getAsOfPeriodEnd();
-
-		// 合計使用数・残数
-		Double useDays = 0.0;
-		Integer useTime = null;
-		Double remainDays = 0.0;
-		Integer remainTime = null;
-		Optional<GeneralDate> dummyDateOpt = Optional.empty();
-
-		// ダミーとして作成した「年休付与残数(List)」を取得
-		val itrRemainDatas = annualLeaveInfo.getGrantRemainingDataList().listIterator();
-		while (itrRemainDatas.hasNext()){
-			val remainData = itrRemainDatas.next();
-			if (remainData.isDummyData() == false) continue;
-
-			// 取得した年休付与残数の「年休使用数」、「年休残数」をそれぞれ合計
-			AnnualLeaveNumberInfo detail = (AnnualLeaveNumberInfo) remainData.getDetails();
-			useDays += detail.getUsedNumber().getDays().v();
-			if (detail.getUsedNumber().getMinutes().isPresent()) {
-				if (useTime == null) useTime = 0;
-				useTime += detail.getUsedNumber().getMinutes().get().v();
-			}
-			remainDays += detail.getRemainingNumber().getDays().v();
-			if (detail.getRemainingNumber().getMinutes().isPresent()) {
-				if (remainTime == null) remainTime = 0;
-				remainTime += detail.getRemainingNumber().getMinutes().get().v();
-			}
-
-			// 不足分合計データの付与日・期限日には、不足分の最終日を入れる
-			dummyDateOpt = Optional.of(remainData.getGrantDate());
-		}
-
-		if (dummyDateOpt.isPresent()) {
-
-			// 合計した「年休使用数」「年休残数」から年休付与残数を作成
-			val newRemainData = AnnualLeaveGrantRemainingData.createFromJavaType(
-					"",employeeId, dummyDateOpt.get(), dummyDateOpt.get(),
-					LeaveExpirationStatus.AVAILABLE.value, GrantRemainRegisterType.MONTH_CLOSE.value,
-					0.0, null,
-					useDays, useTime, null,
-					remainDays, remainTime,
-					0.0,
-					null, null, null);
-
-			// 年休情報．付与残数データに作成した年休付与残数を追加
-			annualLeaveInfo.getGrantRemainingDataList().add(newRemainData);
-
-//			// 年休不足分として作成した年休付与データを削除する
-//			val itrRemainDatasTmp
-//				= annualLeaveInfo.getGrantRemainingList().stream().filter(
-//						c->c.isDummyAtr() == false
-//						).collect(Collectors.toList());
-//			annualLeaveInfo.setGrantRemainingList(itrRemainDatasTmp);
-		}
-
-		// 年休の集計結果を返す
-		return result;
-	}
-
-	/**
-	 * 年休不足分として作成した年休付与データを削除する
-	 * @param result 年休の集計結果
-	 * @return 年休の集計結果
-	 */
-	private static AggrResultOfAnnualLeave deleteDummyRemainingDatas(AggrResultOfAnnualLeave result){
-
-		// 期間終了日時点の不足分付与残数データを削除する
-		val itrAsOfPeriodEndData = result.getAsOfPeriodEnd().getGrantRemainingDataList().listIterator();
-		while (itrAsOfPeriodEndData.hasNext()){
-			val remainData = itrAsOfPeriodEndData.next();
-			if (remainData.isDummyData()) itrAsOfPeriodEndData.remove();
-		}
-
-		// 期間終了日の翌日開始時点の不足分付与残数データを削除する
-		val itrAsOfEndNextData = result.getAsOfStartNextDayOfPeriodEnd().getGrantRemainingDataList().listIterator();
-		while (itrAsOfEndNextData.hasNext()){
-			val remainData = itrAsOfEndNextData.next();
-			if (remainData.isDummyData()) itrAsOfEndNextData.remove();
-		}
-
-		// 付与時点の不足分付与残数データを削除する
-		if (result.getAsOfGrant().isPresent()){
-			for (val asOfGrant : result.getAsOfGrant().get()){
-				val itrAsOfGrant = asOfGrant.getGrantRemainingDataList().listIterator();
-				while (itrAsOfGrant.hasNext()){
-					val remainData = itrAsOfGrant.next();
-					if (remainData.isDummyData()) itrAsOfGrant.remove();
-				}
-			}
-		}
-
-		// 消滅時点の不足分付与残数データを削除する
-		if (result.getLapsed().isPresent()){
-			for (val lapsed : result.getLapsed().get()){
-				val itrLapsed = lapsed.getGrantRemainingDataList().listIterator();
-				while (itrLapsed.hasNext()){
-					val remainData = itrLapsed.next();
-					if (remainData.isDummyData()) itrLapsed.remove();
-				}
-			}
-		}
-
-		// 年休の集計結果を返す
-		return result;
-	}
 
 	public static interface RequireM2 {
 

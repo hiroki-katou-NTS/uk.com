@@ -99,6 +99,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.param.PAttendanceItem;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQueryProcessor;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
@@ -400,7 +401,7 @@ public class MonthlyPerformanceReload {
 			List<String> listCss = new ArrayList<>();
 			listCss.add("daily-confirm-color");
 			if (monthlyPerformaceLockStatus != null) {
-				if (monthlyPerformaceLockStatus.getMonthlyResultConfirm() == LockStatus.LOCK) {
+				if (monthlyPerformaceLockStatus.getMonthlyResultConfirm() == LockStatus.LOCK.value) {
 					dailyConfirm = "未";
 					// mau cua kiban chua dap ung duoc nen dang tu set mau
 					// set color for cell dailyConfirm
@@ -449,7 +450,7 @@ public class MonthlyPerformanceReload {
 					}
 					
 					if (!disabled) {
-						performanceLockStatus.stream().filter(p -> p.getEmployeeId().equals(employee.getId()) && (p.getPastPerformaceLock() == LockStatus.LOCK || p.getMonthlyResultLock() == LockStatus.LOCK)).forEach(p -> {
+						performanceLockStatus.stream().filter(p -> p.getEmployeeId().equals(employee.getId()) && (p.getPastPerformaceLock() == LockStatus.LOCK.value || p.getMonthlyResultLock() == LockStatus.LOCK.value)).forEach(p -> {
 							lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
 						});
 					}
@@ -512,7 +513,7 @@ public class MonthlyPerformanceReload {
 					}
 					
 					if (!disabled) {
-						performanceLockStatus.stream().filter(p -> p.getEmployeeId().equals(employee.getId()) && (p.getPastPerformaceLock() == LockStatus.LOCK || p.getMonthlyResultLock() == LockStatus.LOCK)).forEach(p -> {
+						performanceLockStatus.stream().filter(p -> p.getEmployeeId().equals(employee.getId()) && (p.getPastPerformaceLock() == LockStatus.LOCK.value || p.getMonthlyResultLock() == LockStatus.LOCK.value)).forEach(p -> {
 							lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
 						});
 					}
@@ -545,7 +546,12 @@ public class MonthlyPerformanceReload {
 							// neu item la thoi gian thi format lai theo dinh dang
 							int minute = 0;
 							if (item.getValue() != null) {
-								minute = Integer.parseInt(item.getValue());
+								if ((item.getValue() instanceof  String) && item.getValue().contains(".")) {
+									minute = Integer.parseInt(item.getValue().substring(0, item.getValue().indexOf(".")));
+								} else {
+									minute = Integer.parseInt(item.getValue());
+								}
+								
 							}
 							int hours = Math.abs(minute) / 60;
 							int minutes = Math.abs(minute) % 60;
@@ -724,11 +730,11 @@ public class MonthlyPerformanceReload {
 					for(CheckEmpEralOuput checkEmpEralOuput: listCheckEmpEralOuput) {
 						if(x.getEmployeeId().equals(checkEmpEralOuput.getEmployId())) {
 							if(checkEmpEralOuput.getTypeAtr() == TypeErrorAlarm.ERROR) {
-								x.setError("ER");
+								x.setError(TextResource.localize("KMW003_47"));							
 							}else if(checkEmpEralOuput.getTypeAtr() == TypeErrorAlarm.ALARM) {
-								x.setError("AL");
+								x.setError(TextResource.localize("KMW003_48"));
 							}else if(checkEmpEralOuput.getTypeAtr() == TypeErrorAlarm.ERROR_ALARM) {
-								x.setError("ER/AL");
+								x.setError(TextResource.localize("KMW003_46"));
 							}else {
 								x.setError("");
 							}
@@ -825,24 +831,24 @@ public class MonthlyPerformanceReload {
 			monthlyLockStatus = new MonthlyPerformaceLockStatus(
 					monthlymonthlyActualStatusOutput.getEmployeeClosingInfo().getEmployeeId(),
 					// TODO
-					LockStatus.UNLOCK,
+					LockStatus.UNLOCK.value,
 					// 職場の就業確定状態
 					monthlymonthlyActualStatusOutput.getEmploymentFixedStatus().equals(EmploymentFixedStatus.CONFIRM)
-							? LockStatus.LOCK : LockStatus.UNLOCK,
+							? LockStatus.LOCK.value : LockStatus.UNLOCK.value,
 					// 月の承認状況
 					monthlymonthlyActualStatusOutput.getApprovalStatus().equals(ApprovalStatus.APPROVAL)
-							? LockStatus.LOCK : LockStatus.UNLOCK,
+							? LockStatus.LOCK.value : LockStatus.UNLOCK.value,
 					// 月別実績のロック状態
-					monthlymonthlyActualStatusOutput.getMonthlyLockStatus(),
+					monthlymonthlyActualStatusOutput.getMonthlyLockStatus().value,
 					// 本人確認が完了している
 					monthlymonthlyActualStatusOutput.getDailyActualSituation().isIdentificationCompleted()
-							? LockStatus.UNLOCK : LockStatus.LOCK,
+							? LockStatus.UNLOCK.value : LockStatus.LOCK.value,
 					// 日の実績が存在する
 					monthlymonthlyActualStatusOutput.getDailyActualSituation().isDailyAchievementsExist()
-							? LockStatus.UNLOCK : LockStatus.LOCK,
+							? LockStatus.UNLOCK.value : LockStatus.LOCK.value,
 					// エラーが0件である
-					monthlymonthlyActualStatusOutput.getDailyActualSituation().isDailyRecordError() ? LockStatus.LOCK
-							: LockStatus.UNLOCK);
+					monthlymonthlyActualStatusOutput.getDailyActualSituation().isDailyRecordError() ? LockStatus.LOCK.value
+							: LockStatus.UNLOCK.value);
 			monthlyLockStatusLst.add(monthlyLockStatus);
 		}
 		// 過去実績の修正ロック
@@ -850,7 +856,7 @@ public class MonthlyPerformanceReload {
 				new ActualTime(closureTime.start(), closureTime.end()));
 		// Output「ロック状態」を「ロック状態一覧.過去実績のロック」にセットする
 		monthlyLockStatusLst = monthlyLockStatusLst.stream().map(item -> {
-			item.setPastPerformaceLock(pastLockStatus);
+			item.setPastPerformaceLock(pastLockStatus.value);
 			return item;
 		}).collect(Collectors.toList());
 

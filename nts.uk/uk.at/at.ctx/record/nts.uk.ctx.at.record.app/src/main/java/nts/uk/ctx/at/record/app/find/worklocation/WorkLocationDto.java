@@ -37,20 +37,17 @@ public class WorkLocationDto {
 	private List<Ipv4AddressDto>  listIPAddress;
 	
 	/** 職場*/
-	private List<WorkplacePossibleCmd>  listWorkplace;
+	private WorkplacePossibleCmd  listWorkplace;
 	
 	public static WorkLocationDto fromDomain (WorkLocation domain) {
 		return new WorkLocationDto (
 				domain.getContractCode().v(),
 				domain.getWorkLocationCD().v(),
 				domain.getWorkLocationName().v(),
-				domain.getStampRange().getRadius().value,
-				domain.getStampRange().getGeoCoordinate().getLatitude(),
-				domain.getStampRange().getGeoCoordinate().getLongitude(),
+				domain.getStampRange().map(s -> s.getRadius().value).orElse(null),
+				domain.getStampRange().map(s -> s.getGeoCoordinate().getLatitude()).orElse(null),
+				domain.getStampRange().map(s -> s.getGeoCoordinate().getLongitude()).orElse(null),
 				domain.getListIPAddress().stream().map(c->new Ipv4AddressDto(c)).collect(Collectors.toList()),
-				domain.getListWorkplace().stream().map(c->WorkplacePossibleCmd.toDto(c)).collect(Collectors.toList())
-				);
+				domain.getWorkplace().map(c->WorkplacePossibleCmd.toDto(c)).orElse(null));
 	}
-	
-
 }

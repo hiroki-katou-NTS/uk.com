@@ -15,9 +15,11 @@ import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.CareManagementDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
@@ -51,7 +53,7 @@ public class NursingLeaveSetting extends AggregateRoot {
 	private Optional<Integer> workAbsence;
 
 	/** 時間介護看護設定 */
-	private TimeCareNursingSet timeCareNursingSetting;
+	private TimeVacationDigestUnit timeVacationDigestUnit;
 
 	/**
 	 * Checks if is managed.
@@ -76,7 +78,7 @@ public class NursingLeaveSetting extends AggregateRoot {
 		this.maxPersonSetting = memento.getMaxPersonSetting();
 		this.specialHolidayFrame = memento.getHdspFrameNo();
 		this.workAbsence = memento.getAbsenceFrameNo();
-		this.timeCareNursingSetting = memento.getTimeCareNursingSet();
+		this.timeVacationDigestUnit = memento.getTimeVacationDigestUnit();
 	}
 
 	/**
@@ -93,7 +95,7 @@ public class NursingLeaveSetting extends AggregateRoot {
 		memento.setMaxPersonSetting(this.maxPersonSetting);
 		memento.setHdspFrameNo(this.specialHolidayFrame);
 		memento.setAbsenceFrameNo(this.workAbsence);
-		memento.setTimeCareNursingSet(this.timeCareNursingSetting);
+		memento.setTimeVacationDigestUnit(this.timeVacationDigestUnit);
 		memento.setNumPer1(1);
 		memento.setNumPer2(2);	
 	}
@@ -130,7 +132,8 @@ public class NursingLeaveSetting extends AggregateRoot {
 			MonthDay startMonthDay,
 			List<MaxPersonSetting> maxPersonSetting,
 			Optional<Integer> specialHolidayFrame,
-			Optional<Integer> workAbsence){
+			Optional<Integer> workAbsence,
+			TimeVacationDigestUnit timeVacationDigestUnit){
 
 		NursingLeaveSetting domain = new NursingLeaveSetting();
 	domain.companyId = companyId;
@@ -140,6 +143,7 @@ public class NursingLeaveSetting extends AggregateRoot {
 	domain.maxPersonSetting = maxPersonSetting;
 	domain.specialHolidayFrame = specialHolidayFrame;
 	domain.workAbsence = workAbsence;
+	domain.timeVacationDigestUnit = timeVacationDigestUnit;
 	return domain;
 	}
 
@@ -447,7 +451,32 @@ public class NursingLeaveSetting extends AggregateRoot {
         
         return new DatePeriod(starDate, endDate);
     }
-
+    
+    /**
+     * 管理期間を計算する
+     * @param criteriaDate 基準日
+     * @return　期間
+     */
+    public DatePeriod calcManagementPeriod(GeneralDate criteriaDate){
+    	
+    	return new DatePeriod(getThisYearStartMonthDay(criteriaDate), getNextStartMonthDay(criteriaDate).addDays(-1));
+    }
+    
+    /**
+     * [8]利用する休暇時間の消化単位をチェックする
+     * @param require
+     * @param time
+     */
+    public boolean checkVacationTimeUnitUsed(TimeVacationDigestUnit.Require require, AttendanceTime time) {
+    	return this.timeVacationDigestUnit.checkDigestUnit(require, time, this.manageType);
+    }
+    
+    /**
+     * [13] 時間休暇を管理するか
+     */
+    public boolean isManageTimeVacation(TimeVacationDigestUnit.Require require) {
+    	return this.timeVacationDigestUnit.isVacationTimeManage(require, this.manageType);
+    }
 
 	// Require
 	public static interface RequireM8 {

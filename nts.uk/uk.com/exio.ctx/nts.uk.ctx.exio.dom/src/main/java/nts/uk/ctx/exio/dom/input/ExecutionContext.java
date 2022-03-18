@@ -4,13 +4,9 @@ import lombok.Value;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
-import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 
-/**
- * 外部受入の実行コンテキスト
- */
 @Value
-public class ExecutionContext {
+public class ExecutionContext{
 
 	/** 会社ID */
 	String companyId;
@@ -24,16 +20,11 @@ public class ExecutionContext {
 	/** 受入モード */
 	ImportingMode mode;
 	
-	public static ExecutionContext create(ExternalImportSetting source) {
-		return new ExecutionContext(
-				source.getCompanyId(),
-				source.getCode().v(),
-				source.getExternalImportDomainId(),
-				source.getImportingMode());
-	}
-	
 	public ExternalImportCode getExternalImportCode() {
 		return new ExternalImportCode(settingCode);
 	}
 	
+	public static ExecutionContext createForErrorTableName(String companyId) {
+		return new ExecutionContext(companyId, "", null, null); 
+	}
 }

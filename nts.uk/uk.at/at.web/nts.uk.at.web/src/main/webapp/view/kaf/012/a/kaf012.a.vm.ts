@@ -13,8 +13,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
         startNew: "at/request/application/timeLeave/init",
         changeAppDate: "at/request/application/timeLeave/changeAppDate",
         checkRegister: "at/request/application/timeLeave/checkBeforeRegister",
-        register: "at/request/application/timeLeave/register",
-		reflectApp: "at/request/application/reflect-app"
+        register: "at/request/application/timeLeave/register"
     };
 
     @bean()
@@ -43,10 +42,14 @@ module nts.uk.at.view.kaf012.a.viewmodel {
 				}
 			}
 			let empLst: Array<string> = [],
-				dateLst: Array<string> = [];
+				dateLst: Array<string> = [],
+				screenCode: number = null;
             vm.isSendMail = ko.observable(false);
             vm.application = ko.observable(new Application(vm.appType()));
 			if (!_.isEmpty(params)) {
+				if (!nts.uk.util.isNullOrUndefined(params.screenCode)) {
+					screenCode = params.screenCode;
+				}
 				if (!_.isEmpty(params.employeeIds)) {
 					empLst = params.employeeIds;
 				}
@@ -66,8 +69,14 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 vm.applyTimeData.push(new DataModel(i, vm.reflectSetting, vm.appDispInfoStartupOutput, vm.application));
             }
             vm.specialLeaveFrame = ko.observable(null);
+			let paramKAF000 = {
+				empLst, 
+				dateLst, 
+				appType: vm.appType(),
+				screenCode	
+			};
             vm.$blockui("show");
-            vm.loadData(empLst, dateLst, vm.appType())
+            vm.loadData(paramKAF000)
             .then((loadDataFlag: any) => {
                 if(loadDataFlag) {
 					vm.application().employeeIDLst(empLst);
@@ -154,7 +163,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 vm.applyTimeData()[4].timeZones.forEach(tz => {
                     tz.startTime(null);
                     tz.endTime(null);
-                    tz.appTimeType(GoingOutReason.PRIVATE);
+                    // tz.appTimeType(GoingOutReason.PRIVATE);
                 });
                 let maxWorkNoHasData = 3;
                 const outingTimes = value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
@@ -411,7 +420,6 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                     }).done(result => {
                         if (result != undefined) {
                             vm.$dialog.info({messageId: "Msg_15"}).then(() => {
-								nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
                             	CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, vm.isAgentMode());
                             });
                         }

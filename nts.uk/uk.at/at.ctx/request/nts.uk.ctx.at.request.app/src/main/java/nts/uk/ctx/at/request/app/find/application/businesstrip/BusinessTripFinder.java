@@ -163,7 +163,8 @@ public class BusinessTripFinder {
             Map<String, WorkType> mapWorkCds = wkTypeRepo.getPossibleWorkType(cid, cds).stream().collect(Collectors.toMap(i -> i.getWorkTypeCode().v(), i -> i));
             businessTripWorkTypes = opActualContentDisplayLst.get().stream().map(i -> new BusinessTripWorkTypes(
                     i.getDate(),
-                    i.getOpAchievementDetail().isPresent() ? mapWorkCds.get(i.getOpAchievementDetail().get().getWorkTypeCD()) : null))
+                    i.getOpAchievementDetail().isPresent() ? mapWorkCds.get(i.getOpAchievementDetail().get().getWorkTypeCD()) : null, 
+                    null))
                     .collect(Collectors.toList());
         }
         // 取得した情報をOUTPUT「出張申請の表示情報」にセットしてを返す
@@ -293,7 +294,8 @@ public class BusinessTripFinder {
             Map<String, WorkType> mapWorkCds = wkTypeRepo.getPossibleWorkType(cid, cds).stream().collect(Collectors.toMap(i -> i.getWorkTypeCode().v(), i -> i));
             businessTripWorkTypes = opActualContentDisplayLst.get().stream().map(i -> new BusinessTripWorkTypes(
                     i.getDate(),
-                    i.getOpAchievementDetail().isPresent() ? mapWorkCds.get(i.getOpAchievementDetail().get().getWorkTypeCD()) : null
+                    i.getOpAchievementDetail().isPresent() ? mapWorkCds.get(i.getOpAchievementDetail().get().getWorkTypeCD()) : null, 
+                    null
             )).collect(Collectors.toList());
         }
 
@@ -594,13 +596,9 @@ public class BusinessTripFinder {
                     businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
                     Collections.emptyList(),
                     businessTripInfoOutput.getAppDispInfoStartup(),
-                    param.getBusinessTrip() != null ? 
-                            param.getBusinessTrip().getTripInfos().stream().map(x -> x.getWkTypeCd()).collect(Collectors.toList()) : 
-                            new ArrayList<String>(),
-                    Optional.empty(), 
-                    param.getBusinessTrip() != null ? 
-                            param.getBusinessTrip().getTripInfos().stream().map(x -> x.getWkTimeCd()).findFirst() : 
-                            Optional.empty(), 
+                    new ArrayList<>(), // in new mode, businessTrip = null
+                    Optional.empty(),
+                    Optional.empty(), // in new mode, businessTrip = null
                     false
             );
 
@@ -634,7 +632,8 @@ public class BusinessTripFinder {
                     Map<String, WorkType> mapWorkCds = wkTypeRepo.getPossibleWorkType(cid, cds).stream().collect(Collectors.toMap(i -> i.getWorkTypeCode().v(), i -> i));
                     businessTripWorkTypes = opActualContentDisplayLst.get().stream().map(i -> new BusinessTripWorkTypes(
                             i.getDate(),
-                            i.getOpAchievementDetail().isPresent() ? mapWorkCds.get(i.getOpAchievementDetail().get().getWorkTypeCD()) : null
+                            i.getOpAchievementDetail().isPresent() ? mapWorkCds.get(i.getOpAchievementDetail().get().getWorkTypeCD()) : null, 
+                            null
                     )).collect(Collectors.toList());
                 }
 

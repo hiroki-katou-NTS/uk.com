@@ -62,7 +62,13 @@ module nts.uk.at.view.kdp010.e {
             save(){
                 let self = this;
                 block.grayout();
-                ajax("at", paths.save, ko.toJS(self.portalStampSettings)).done(function() {
+                var param = ko.toJS(self.portalStampSettings);
+
+                param.buttonSettings = _.remove(param.buttonSettings, ((value) => {
+                    return value.usrArt == 1;
+                }));
+                
+                ajax("at", paths.save, param).done(function() {
                     info({ messageId: "Msg_15"});
                 }).fail(function (res: any) {
                     error({ messageId: res.messageId });
@@ -95,7 +101,7 @@ module nts.uk.at.view.kdp010.e {
         }
         
         class ButtonDisSet{
-            backGroundColor: KnockoutObservable<string> = ko.observable("#127D09");
+            backGroundColor: KnockoutObservable<string> = ko.observable("#01956A");
             buttonNameSet: ButtonNameSet;
             constructor(buttonPositionNo: number){
                 let self = this;

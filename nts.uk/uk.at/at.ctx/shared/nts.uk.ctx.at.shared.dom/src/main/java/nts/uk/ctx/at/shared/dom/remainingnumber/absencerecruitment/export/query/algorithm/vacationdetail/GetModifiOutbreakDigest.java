@@ -41,16 +41,19 @@ public class GetModifiOutbreakDigest {
 	// 変更要求に従って変更する
 	private static AfterChangeHolidayInfoResult changeAccordChangeRequest(Require require, String sid, DatePeriod dateData,
 			RequestChangeDigestOccr changeDigest, RequestChangeDigestOccr changeOccr) {
-		// $消化一覧 = 上書き変更を加えた消化一覧を取得する.取得する(require, 社員ID, 期間, 消化の変更要求)
-		VacationDetails digest = GetDigestListOverwriteChange.get(require, sid, dateData, changeDigest);
-		// $発生一覧 = 上書き変更を加えた発生一覧を取得する.取得する(require, 社員ID, 期間, 発生の変更要求)
-		VacationDetails occr = GetOccListOverwriteChange.get(require, sid, dateData, changeOccr);
-
+		
 		// $紐付け一覧 = require.振出振休紐付け管理を取得する(社員ID, 期間)
 		List<PayoutSubofHDManagement> lstPayoutSubofHD = require.getOccDigetByListSid(sid, dateData);
 
 		SeqVacationAssociationInfoList seqVacAssociInfo = new SeqVacationAssociationInfoList(
 				lstPayoutSubofHD.stream().map(x -> x.getAssocialInfo()).collect(Collectors.toList()));
+		// $消化一覧 = 上書き変更を加えた消化一覧を取得する.取得する(require, 社員ID, 期間, 消化の変更要求)
+		VacationDetails digest = GetDigestListOverwriteChange.get(require, sid, dateData, changeDigest);
+		digest.correctUnoffset(seqVacAssociInfo, dateData);
+		// $発生一覧 = 上書き変更を加えた発生一覧を取得する.取得する(require, 社員ID, 期間, 発生の変更要求)
+		VacationDetails occr = GetOccListOverwriteChange.get(require, sid, dateData, changeOccr);
+		occr.correctUnoffset(seqVacAssociInfo, dateData);
+
 
 		// $補正後の紐付け一覧
 		val assocAfterCorr = seqVacAssociInfo.matchAssocStateOccAndDigest(occr, digest);
@@ -61,12 +64,6 @@ public class GetModifiOutbreakDigest {
 		digestOcc.addDetail(occr.getLstAcctAbsenDetail());
 
 		val afterChangeResult = new AfterChangeHolidayInfoResult(digestOcc, assocAfterCorr);
-
-		// ＄変更後．紐付けされている振出の未相殺数を更新する（）
-		afterChangeResult.getOffsetNotAssoci();
-
-		// ＄変更後．紐付けされている振休の未相殺数を更新する（
-		afterChangeResult.getVactionNotAssoci();
 
 		return afterChangeResult;
 	}

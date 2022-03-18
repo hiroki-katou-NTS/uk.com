@@ -276,8 +276,8 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 																										&& a.getYearMonthPeriod().end().greaterThanOrEqualTo(ym)).collect(Collectors.toList()).isEmpty())
 							.collect(Collectors.toList());
 					if(affiliationStatus.isEmpty()) continue;
-					
-					GeneralDate enDate = GeneralDate.ymd(mPeriod.end().year(), mPeriod.end().month() + 1, 1).addDays(-1);
+					YearMonth endMonthTemp = mPeriod.end().addMonths(1);
+					GeneralDate enDate = GeneralDate.ymd(endMonthTemp.year(), endMonthTemp.month(), 1).addDays(-1);
 					GeneralDate startDate = GeneralDate.ymd(mPeriod.start().year(), mPeriod.start().month(), 1);
 					String checkValue = "";
 					String alarmContent = "";

@@ -1,3 +1,4 @@
+﻿
 module nts.uk.at.view.kmk003.a {
 
     import SimpleWorkTimeSettingDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.SimpleWorkTimeSettingDto;
@@ -20,6 +21,8 @@ module nts.uk.at.view.kmk003.a {
     import FlowWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flowset.FlowWorkSettingModel;
     import DiffTimeWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.difftimeset.DiffTimeWorkSettingModel;
     import FlexWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flexset.FlexWorkSettingModel;
+    import FlStampReflectTzDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlStampReflectTzDto;
+    import StampReflectTimezoneDto = nts.uk.at.view.kmk003.a.service.model.common.StampReflectTimezoneDto;
     
     import FixedWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FixedWorkSettingSaveCommand;
     import FlowWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FlowWorkSettingSaveCommand;
@@ -73,7 +76,6 @@ module nts.uk.at.view.kmk003.a {
             isSimpleMode: KnockoutComputed<boolean>;
             isDetailMode: KnockoutComputed<boolean>;
             isLoading: KnockoutObservable<boolean>;
-            
             flexWorkManaging: boolean;
             workMultiple: KnockoutObservable<boolean>;
             overTimeWorkFrameOptions: KnockoutObservableArray<any>;
@@ -95,7 +97,6 @@ module nts.uk.at.view.kmk003.a {
 
                 // initial screen mode
                 self.screenMode = ko.observable(ScreenMode.NEW);
-
                 //initial otsuka mode
                 self.otsukaMode = ko.observable(false);
 
@@ -111,9 +112,7 @@ module nts.uk.at.view.kmk003.a {
                 self.useHalfDayWorking = ko.observable(false); // A19_1_2 initial value = false
                 self.useHalfDayOvertime = ko.observable(false); // A19_2_2 initial value = false
                 self.useHalfDayBreak = ko.observable(false); // A19_3_2 initial value = false
-
-
-                self.mainSettingModel = new MainSettingModel(self.tabMode, self.isNewOrCopyMode, self.useHalfDayOptions, self.useHalfDayWorking, self.useHalfDayOvertime, self.useHalfDayBreak, self.isNewMode);
+                self.mainSettingModel = new MainSettingModel(self.tabMode, self.isNewOrCopyMode, self.useHalfDayOptions, self.useHalfDayWorking, self.useHalfDayOvertime, self.useHalfDayBreak, self.isNewMode, ko.observable(1));
                 self.selectedWorkTimeCode = ko.observable('');
                 self.workTimeSettingLoader = new WorkTimeSettingLoader(self.mainSettingModel.workTimeSetting.worktimeCode);
                 self.workTimeSettings = ko.observableArray([]);
@@ -587,7 +586,7 @@ module nts.uk.at.view.kmk003.a {
                         // search workTimeLanguage
                         let workTimeLanguage = _.find(self.lstWorkTimeLanguage(), ["workTimeCode", self.selectedWorkTimeCode()]); 
                         // update mainSettingModel data
-                        self.mainSettingModel.updateData(worktimeSettingInfo, self.langId(), workTimeLanguage).done(()=>{
+                        self.mainSettingModel.updateData(worktimeSettingInfo, worktimeCode, self.langId(), workTimeLanguage).done(()=>{
                             self.isLoading(false);
                             self.isLoading(true);
                             //convert 
@@ -960,6 +959,22 @@ module nts.uk.at.view.kmk003.a {
                     self.mainSettingModel.isInterlockDialogJ(true);
                     self.mainSettingModel.updateStampValue();
                 }
+                
+                // set FlowStampReflectTzModel
+                const stampReflectTimezones: StampReflectTimezoneDto[] = [];
+                self.mainSettingModel.fixedWorkSetting.lstStampReflectTimezone.forEach(item => {
+                    stampReflectTimezones.push({
+                        workNo: item.workNo(),
+                        classification: item.classification(),
+                        endTime: item.endTime(),
+                        startTime: item.startTime()
+                    });
+                });
+                const flStampReflectTzDto: FlStampReflectTzDto = {
+                    twoTimesWorkReflectBasicTime: 0,
+                    stampReflectTimezones: stampReflectTimezones
+                }
+                self.mainSettingModel.flowWorkSetting.stampReflectTimezone.updateData(flStampReflectTzDto);
                 self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
                 self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
                 self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
@@ -1014,7 +1029,16 @@ module nts.uk.at.view.kmk003.a {
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
                     }).always(() => _.defer(() => nts.uk.ui.block.clear()));
-                });
+					
+					let param = {
+						action : 0,
+						workingTimesheetCode: selectedCode,
+						bonusPaySettingCode: ""
+					}
+					service.saveBonusPaySetting(param) 
+						.done(() => dfd.resolve())
+	                    .fail(err => dfd.reject(err));
+                	});
                 return dfd.promise();
             }
            
@@ -1107,7 +1131,7 @@ module nts.uk.at.view.kmk003.a {
             tabMode: KnockoutObservable<number>;
             addMode: KnockoutComputed<boolean>;
             isNewMode: KnockoutObservable<boolean>;
-            
+            isManageByTime: KnockoutObservable<number>;
             // Interlock dialog J
             isInterlockDialogJ: KnockoutObservable<boolean>;
             
@@ -1116,7 +1140,7 @@ module nts.uk.at.view.kmk003.a {
                         halfDayWorking: KnockoutObservable<boolean>,
                         halfDayOverTime: KnockoutObservable<boolean>,
                         halfDayBreak: KnockoutObservable<boolean>,
-                        isNewMode: KnockoutObservable<boolean>) {
+                        isNewMode: KnockoutObservable<boolean>,) {
                 let self = this;
                 self.isChangeItemTable = ko.observable(false);
                 self.useHalfDayOptions = useHalfDayOptions;
@@ -1125,7 +1149,6 @@ module nts.uk.at.view.kmk003.a {
                 self.useHalfDayBreak = halfDayBreak;
                 self.isInterlockDialogJ = ko.observable(true);
                 self.tabMode = tabMode;
-                
                 self.addMode = isNewOrCopyMode;
                 self.isNewMode = isNewMode;
                 
@@ -1176,23 +1199,35 @@ module nts.uk.at.view.kmk003.a {
                     self.updateStampValue();
                 }
 
+				let param = {
+					action : 1,
+					workingTimesheetCode: "",
+					bonusPaySettingCode: ""
+				}
+
                 if (self.workTimeSetting.isFlex()) {
                     service.saveFlexWorkSetting(self.toFlexCommand())
                         .done(() => self.onSaveSuccess(dfd))
                         .fail(err => dfd.reject(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
+					param.workingTimesheetCode = self.toFlexCommand().worktimeSetting.worktimeCode;
+					param.bonusPaySettingCode = self.toFlexCommand().flexWorkSetting.commonSetting.raisingSalarySet;
                 }
                 if (self.workTimeSetting.isFixed()) {
                     service.saveFixedWorkSetting(self.toFixedCommand())
                         .done(() => self.onSaveSuccess(dfd))
                         .fail(err => dfd.reject(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
+					param.workingTimesheetCode = self.toFixedCommand().worktimeSetting.worktimeCode;
+					param.bonusPaySettingCode = self.toFixedCommand().fixedWorkSetting.commonSetting.raisingSalarySet;
                 }                
                 if (self.workTimeSetting.isFlow()) {
                     service.saveFlowWorkSetting(self.toFlowCommand())
                         .done(() => self.onSaveSuccess(dfd))
                         .fail(err => dfd.reject(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
+					param.workingTimesheetCode = self.toFlowCommand().worktimeSetting.worktimeCode;
+					param.bonusPaySettingCode = self.toFlowCommand().flowWorkSetting.commonSetting.raisingSalarySet;
                 }
 
                 if (self.workTimeSetting.isDiffTime()) {
@@ -1200,9 +1235,14 @@ module nts.uk.at.view.kmk003.a {
                         .done(() => self.onSaveSuccess(dfd))
                         .fail(err => dfd.reject(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
+					param.workingTimesheetCode = self.toDiffTimeCommand().worktimeSetting.worktimeCode;
+					param.bonusPaySettingCode = self.toDiffTimeCommand().diffTimeWorkSetting.commonSet.raisingSalarySet;
                 }
+                service.saveBonusPaySetting(param) 
+						.done(() => dfd.resolve())
+	                    .fail(err => dfd.reject(err));
                 
-                return dfd.promise();
+				return dfd.promise();
             }
 
             //auto generate data
@@ -1230,14 +1270,14 @@ module nts.uk.at.view.kmk003.a {
                             dto.employmentTimeFrameNo = morningNo++;
                             morningTimes.push(dto);
                         } else { //split time zone
-                            if (w.timezone.start() < morningEnd) {
+                            if (w.timezone.start() <= morningEnd) {
                                 let dto = w.toDto();
                                 dto.employmentTimeFrameNo = morningNo++;
                                 dto.timezone.end = morningEnd;
                                 morningTimes.push(dto);
                             }
 
-                            if (w.timezone.end() > afterStart) {
+                            if (w.timezone.end() >= afterStart) {
                                 let dto = w.toDto();
                                 dto.employmentTimeFrameNo = afternoonNo++;
                                 dto.timezone.start = afterStart;
@@ -1248,11 +1288,14 @@ module nts.uk.at.view.kmk003.a {
 
                 //afternoon
                 workTimezones
-                    .filter(w => w.timezone.start() >= afterStart)
+                    .filter(w => w.timezone.end() >= afterStart)
                     .map(w => {
                         let dto = w.toDto();
+                        dto.timezone.start = afterStart;
                         dto.employmentTimeFrameNo = afternoonNo++;
-                        afternoonTimes.push(dto);
+                        if (_.filter(afternoonTimes, (time: any) => {return time.timezone.start === dto.timezone.start && time.timezone.end === dto.timezone.end;}).length == 0) {
+                            afternoonTimes.push(dto);
+                        }
                     })
 
                 return {
@@ -1290,12 +1333,12 @@ module nts.uk.at.view.kmk003.a {
                                 dto.timezone.end = morningEnd;
                                 morningTimes.push(dto);
                             }
-                            if (w.timezone.end() > afterStart) {
-                                let dto = w.toDto();
-                                dto.workTimezoneNo = afternoonNo++;
-                                dto.timezone.start = afterStart;
-                                afternoonTimes.push(dto);
-                            }
+                            // if (w.timezone.end() > afterStart) {
+                            //     let dto = w.toDto();
+                            //     dto.workTimezoneNo = afternoonNo++;
+                            //     dto.timezone.start = afterStart;
+                            //     afternoonTimes.push(dto);
+                            // }
                         }
                     })
 
@@ -1443,12 +1486,31 @@ module nts.uk.at.view.kmk003.a {
                     command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstOTTimezone = OTTimes.afternoon;
                 }
 
-                if (_self.isNewMode() && !_self.useHalfDayBreak()) {
+                /*if (_self.isNewMode() && !_self.useHalfDayBreak()) {
                     let restTimes = _self.autoCreateHalfDayBreak(_self.fixedWorkSetting.getHDWtzOneday().restTimezone.timezones());
 
                     command.fixedWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.timezones = restTimes.morning;
                     command.fixedWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.timezones = restTimes.afternoon;
-                }
+                }*/
+
+				if (!_self.useHalfDayBreak()){
+					let amTimes : any = [], pmTimes : any = [];
+					
+					_.forEach(command.fixedWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.timezones, (z : any) => {
+							amTimes.push({
+								start: z.start, 
+								end: z.end
+							})
+						
+							pmTimes.push({
+								start: z.start, 
+								end: z.end
+							})
+					});
+					
+                    command.fixedWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.timezones = amTimes;
+                    command.fixedWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.timezones = pmTimes;
+				}
 
                 return command;
             }
@@ -1503,10 +1565,71 @@ module nts.uk.at.view.kmk003.a {
                     command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.fixedRestTimezone.timezones = breakTimes.morning;
                     command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.fixedRestTimezone.timezones = breakTimes.afternoon;
 
-                    let restTimeFlex = self.autoCreateHalfDayRestFlex();
+                    /*let restTimeFlex = self.autoCreateHalfDayRestFlex();
                     command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.flowRestSets = restTimeFlex.morning;
-                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.flowRestSets = restTimeFlex.afternoon;
+                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.flowRestSets = restTimeFlex.afternoon;*/
                 }
+				// ver24.2 start
+				// A22_23 休憩時間を固定にする (休憩時間帯を固定にする)
+				let fixRestTime = command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.fixRestTime;
+				// A19_3_2 半日勤務の時間帯の設定＝するの場合
+				if (self.useHalfDayBreak()) {
+					if (fixRestTime == false) {
+						command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.fixedRestTimezone.timezones = [];
+						command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.fixedRestTimezone.timezones = [];
+					}
+				}
+				// A19_3_2 半日勤務の時間帯の設定＝しないの場合
+				if (!self.useHalfDayBreak()) {
+					let amTimes : any = [], pmTimes : any = [];
+					let workTimes = self.autoCreateHalfDayWT(self.flexWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezone());
+					let useHereAfterRestSet = command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.flowRestTimezone.useHereAfterRestSet;
+					if (fixRestTime == false) {
+						_.forEach(command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.flowRestTimezone.flowRestSets, (z : any) => {
+							amTimes.push({
+								flowPassageTime: z.flowPassageTime, 
+								flowRestTime: z.flowRestTime
+							})
+						
+							pmTimes.push({
+								flowPassageTime: z.flowPassageTime, 
+								flowRestTime: z.flowRestTime
+							})
+						});
+						command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.flowRestSets = amTimes;
+						command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.useHereAfterRestSet = useHereAfterRestSet;
+						
+						command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.flowRestSets = pmTimes;
+						command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.useHereAfterRestSet = useHereAfterRestSet;
+						
+						if (useHereAfterRestSet == true) {
+							let z = command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.flowRestTimezone.hereAfterRestSet
+							
+							command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.hereAfterRestSet = z;
+							command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.hereAfterRestSet = z;
+						} else {
+							command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.hereAfterRestSet = { flowPassageTime: 0 ,flowRestTime: 0}
+							command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.hereAfterRestSet = { flowPassageTime: 0 ,flowRestTime: 0}
+						}
+						command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.fixedRestTimezone.timezones = [];
+						command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.fixedRestTimezone.timezones = [];
+					} else {
+						_.forEach(command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.fixedRestTimezone.timezones, (z : any) => {
+							amTimes.push({
+								start: z.start, 
+								end: z.end
+							})
+						
+							pmTimes.push({
+								start: z.start, 
+								end: z.end
+							})
+						})
+						
+						command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.fixedRestTimezone.timezones = amTimes;
+						command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.fixedRestTimezone.timezones = pmTimes;
+					}
+				}
 
                 return command;
             }
@@ -1527,7 +1650,7 @@ module nts.uk.at.view.kmk003.a {
                 return command;
             }
 
-            updateData(worktimeSettingInfo: WorkTimeSettingInfoDto, langId?: string, workTimeLanguage?: any): JQueryPromise<void> {
+            updateData(worktimeSettingInfo: WorkTimeSettingInfoDto, worktimeCode : any, langId?: string, workTimeLanguage?: any): JQueryPromise<void> {
                 let self = this, dfd = $.Deferred<void>();
                 
                 if(langId != 'ja'){
@@ -1541,62 +1664,82 @@ module nts.uk.at.view.kmk003.a {
                 self.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);    
                 self.manageEntryExit.updateData(worktimeSettingInfo.manageEntryExit);                          
                 self.tabMode(worktimeSettingInfo.displayMode.displayMode);
-                if (self.workTimeSetting.isFlex()) {
-                    self.flexWorkSetting.updateData(worktimeSettingInfo.flexWorkSetting);
-                    self.commonSetting.updateData(worktimeSettingInfo.flexWorkSetting.commonSetting);
+				nts.uk.at.view.kmk003.a10.service.getWTBPSetting(worktimeCode).done((data : any) => {
+	                if (self.workTimeSetting.isFlex()) {
+	                    self.flexWorkSetting.updateData(worktimeSettingInfo.flexWorkSetting);
+						
+						if (worktimeSettingInfo.flexWorkSetting != null && worktimeSettingInfo.flexWorkSetting.commonSetting != null)
+						worktimeSettingInfo.flexWorkSetting.commonSetting.raisingSalarySet = _.isNil(data) ? "000" : data.bonusPaySettingCode;
+						
+	                    self.commonSetting.updateData(worktimeSettingInfo.flexWorkSetting.commonSetting);
+	
+	                    // set useHalfDay to mainScreen model
+	                    self.useHalfDayWorking(worktimeSettingInfo.flexWorkSetting.useHalfDayShift.workingTimes);
+	                    self.useHalfDayOverTime(worktimeSettingInfo.flexWorkSetting.useHalfDayShift.overTime);
+	                    self.useHalfDayBreak(worktimeSettingInfo.flexWorkSetting.useHalfDayShift.breakTime);
+	
+	                    // reset data of other mode
+	                    self.flowWorkSetting.resetData();
+	                    self.diffWorkSetting.resetData();
+	                    self.fixedWorkSetting.resetData();
+	                }
+	                if (self.workTimeSetting.isFlow()) {
+	                    self.flowWorkSetting.updateData(worktimeSettingInfo.flowWorkSetting);
+						
+						if (worktimeSettingInfo.flowWorkSetting != null && worktimeSettingInfo.flowWorkSetting.commonSetting != null)
+						worktimeSettingInfo.flowWorkSetting.commonSetting.raisingSalarySet = _.isNil(data) ? "000" : data.bonusPaySettingCode;
+						
+	                    self.commonSetting.updateData(worktimeSettingInfo.flowWorkSetting.commonSetting);
+	
+	                    // reset data of other mode
+	                    self.flexWorkSetting.resetData();
+	                    self.diffWorkSetting.resetData();
+	                    self.fixedWorkSetting.resetData();
+	                }
+	                if (self.workTimeSetting.isFixed()) {
+	                    self.fixedWorkSetting.updateData(worktimeSettingInfo.fixedWorkSetting);
 
-                    // set useHalfDay to mainScreen model
-                    self.useHalfDayWorking(worktimeSettingInfo.flexWorkSetting.useHalfDayShift.workingTimes);
-                    self.useHalfDayOverTime(worktimeSettingInfo.flexWorkSetting.useHalfDayShift.overTime);
-                    self.useHalfDayBreak(worktimeSettingInfo.flexWorkSetting.useHalfDayShift.breakTime);
+						if (worktimeSettingInfo.fixedWorkSetting != null && worktimeSettingInfo.fixedWorkSetting.commonSetting != null)
+						worktimeSettingInfo.fixedWorkSetting.commonSetting.raisingSalarySet = _.isNil(data) ? "000" : data.bonusPaySettingCode;
+						
+	                    self.commonSetting.updateData(worktimeSettingInfo.fixedWorkSetting.commonSetting);
+	
+	                    // set useHalfDay to mainScreen model
+	                    self.useHalfDayWorking(worktimeSettingInfo.fixedWorkSetting.useHalfDayShift.workingTimes);
+	                    self.useHalfDayOverTime(worktimeSettingInfo.fixedWorkSetting.useHalfDayShift.overTime);
+	                    self.useHalfDayBreak(worktimeSettingInfo.fixedWorkSetting.useHalfDayShift.breakTime);
+	
+	                    // reset data of other mode
+	                    self.flowWorkSetting.resetData();
+	                    self.diffWorkSetting.resetData();
+	                    self.flexWorkSetting.resetData();
+	                }
+	                
+	                if (self.workTimeSetting.isDiffTime()) {
+	                    self.diffWorkSetting.updateData(worktimeSettingInfo.diffTimeWorkSetting);
 
-                    // reset data of other mode
-                    self.flowWorkSetting.resetData();
-                    self.diffWorkSetting.resetData();
-                    self.fixedWorkSetting.resetData();
-                }
-                if (self.workTimeSetting.isFlow()) {
-                    self.flowWorkSetting.updateData(worktimeSettingInfo.flowWorkSetting);
-                    self.commonSetting.updateData(worktimeSettingInfo.flowWorkSetting.commonSetting);
-
-                    // reset data of other mode
-                    self.flexWorkSetting.resetData();
-                    self.diffWorkSetting.resetData();
-                    self.fixedWorkSetting.resetData();
-                }
-                if (self.workTimeSetting.isFixed()) {
-                    self.fixedWorkSetting.updateData(worktimeSettingInfo.fixedWorkSetting);
-                    self.commonSetting.updateData(worktimeSettingInfo.fixedWorkSetting.commonSetting);
-
-                    // set useHalfDay to mainScreen model
-                    self.useHalfDayWorking(worktimeSettingInfo.fixedWorkSetting.useHalfDayShift.workingTimes);
-                    self.useHalfDayOverTime(worktimeSettingInfo.fixedWorkSetting.useHalfDayShift.overTime);
-                    self.useHalfDayBreak(worktimeSettingInfo.fixedWorkSetting.useHalfDayShift.breakTime);
-
-                    // reset data of other mode
-                    self.flowWorkSetting.resetData();
-                    self.diffWorkSetting.resetData();
-                    self.flexWorkSetting.resetData();
-                }
-                
-                if (self.workTimeSetting.isDiffTime()) {
-                    self.diffWorkSetting.updateData(worktimeSettingInfo.diffTimeWorkSetting);
-                    self.commonSetting.updateData(worktimeSettingInfo.diffTimeWorkSetting.commonSet);
-
-                    // set useHalfDay to mainScreen model
-                    self.useHalfDayWorking(worktimeSettingInfo.diffTimeWorkSetting.useHalfDayShift.workingTimes);
-                    self.useHalfDayOverTime(worktimeSettingInfo.diffTimeWorkSetting.useHalfDayShift.overTime);
-                    self.useHalfDayBreak(worktimeSettingInfo.diffTimeWorkSetting.useHalfDayShift.breakTime);
-
-                    // reset data of other mode
-                    self.flowWorkSetting.resetData();
-                    self.flexWorkSetting.resetData();
-                    self.fixedWorkSetting.resetData();
-                }      
-                
-                self.updateInterlockDialogJ();
-                self.updateStampValue();
-                return dfd.resolve();
+						if (worktimeSettingInfo.diffTimeWorkSetting != null && worktimeSettingInfo.diffTimeWorkSetting.commonSet != null)
+						worktimeSettingInfo.diffTimeWorkSetting.commonSet.raisingSalarySet = _.isNil(data) ? "000" : data.bonusPaySettingCode;
+						
+	                    self.commonSetting.updateData(worktimeSettingInfo.diffTimeWorkSetting.commonSet);
+	
+	                    // set useHalfDay to mainScreen model
+	                    self.useHalfDayWorking(worktimeSettingInfo.diffTimeWorkSetting.useHalfDayShift.workingTimes);
+	                    self.useHalfDayOverTime(worktimeSettingInfo.diffTimeWorkSetting.useHalfDayShift.overTime);
+	                    self.useHalfDayBreak(worktimeSettingInfo.diffTimeWorkSetting.useHalfDayShift.breakTime);
+	
+	                    // reset data of other mode
+	                    self.flowWorkSetting.resetData();
+	                    self.flexWorkSetting.resetData();
+	                    self.fixedWorkSetting.resetData();
+	                }      
+	                
+	                self.updateInterlockDialogJ();
+	                self.updateStampValue();
+	                dfd.resolve();
+				});
+              
+				return dfd.promise();
             }
             
             resetData(isNewMode?: boolean) {
@@ -1758,7 +1901,7 @@ module nts.uk.at.view.kmk003.a {
               const vm = this;
               if (vm.addMode()) {
                 const model = vm.fixedWorkSetting.offdayWorkTimezone.lstWorkTimezone();
-                if (model.length > 1) return;
+                if (model.length < 1) return;
                 const timezone = model[0].timezone;
                 timezone.start(startDateClock);
                 timezone.end(startDateClock + rangeTimeDay);

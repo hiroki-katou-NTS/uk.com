@@ -148,6 +148,10 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 
 	@Override
 	public Optional<DateHistoryItem> getItemByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate) {
+		if (standardDate == null) {
+			return Optional.empty();
+		}
+
 		Optional<BsymtTempAbsHist> optionData = this.queryProxy().query(GET_BY_SID_DATE, BsymtTempAbsHist.class)
 				.setParameter("sid", employeeId).setParameter("standardDate", standardDate).getSingle();
 		if (optionData.isPresent()) {
@@ -709,7 +713,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 					.filter(predicate -> predicate.getHistoryId().equals(item.identifier())).findFirst();
 
 			// if $履歴項目.isEmpty()
-			TimeoffLeaveRecordWithPeriod recordWithPeriod = new TimeoffLeaveRecordWithPeriod(datePeriod,
+			TimeoffLeaveRecordWithPeriod recordWithPeriod = new TimeoffLeaveRecordWithPeriod(item.span(),
 						tempAbsenceHis.isPresent() ? tempAbsenceHis.get() : null);
 			result.add(recordWithPeriod);
 		}

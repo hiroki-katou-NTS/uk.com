@@ -52,7 +52,11 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             vm.managementMultipleWorkCycles = ko.observable(false);
             vm.isSendMail = ko.observable(false);
 
+			let screenCode: number = null;
 			if (!_.isEmpty(params)) {
+				if (!nts.uk.util.isNullOrUndefined(params.screenCode)) {
+					screenCode = params.screenCode;
+				}
 				if (!_.isEmpty(params.employeeIds)) {
 					empLst = params.employeeIds;
 				}
@@ -72,7 +76,13 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             if (ko.toJS(vm.application().appDate)) {
                 dates.push(ko.toJS(vm.application().appDate));
             }
-            vm.loadData(empLst, dateLst, vm.appType())
+			let paramKAF000 = {
+				empLst, 
+				dateLst, 
+				appType: vm.appType(),
+				screenCode
+			};
+            vm.loadData(paramKAF000)
                 .then((loadDataFlag: any) => {
                     if (loadDataFlag) {
                         vm.application().employeeIDLst(empLst);
@@ -423,7 +433,6 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                 }).then((success: any) => {
                     if (success) {
                         vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-							nts.uk.request.ajax("at", API.reflectApp, success.reflectAppIdLst);
 							CommonProcess.handleAfterRegister(success, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
                         });
                     }
@@ -476,8 +485,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         initPage: "at/request/application/lateorleaveearly/initPage",
         changeAppDate: "at/request/application/lateorleaveearly/changeAppDate",
         getMsgList: "at/request/application/lateorleaveearly/getMsgList",
-        register: "at/request/application/lateorleaveearly/register",
-		reflectApp: "at/request/application/reflect-app"
+        register: "at/request/application/lateorleaveearly/register"
     };
 
     export class IdItem {

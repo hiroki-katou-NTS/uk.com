@@ -6,9 +6,12 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.annualpaidleave;
 
 import java.util.Optional;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ContractTimeRound;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DayTimeAnnualLeave;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
@@ -106,7 +109,7 @@ public class JpaTimeAnnualSettingGetMemento implements TimeAnnualSettingGetMemen
 
 	@Override
 	public TimeAnnualRoundProcesCla GetRoundProcessClassific() {
-		return TimeAnnualRoundProcesCla.valueOf(this.entity.getRoundProcessCla());
+		return TimeAnnualRoundProcesCla.valueOf(BooleanUtils.toInteger(this.entity.isRoundProcessCla()));
 	}
 
 	@Override
@@ -119,5 +122,11 @@ public class JpaTimeAnnualSettingGetMemento implements TimeAnnualSettingGetMemen
 				Optional.ofNullable(this.entity.getContractTimeRound() == null ? null :  ContractTimeRound.valueOf(this.entity.getContractTimeRound())));
 		return data
 				;
+	}
+
+	@Override
+	public TimeVacationDigestUnit getTimeVacationDigestUnit() {
+		return new TimeVacationDigestUnit(ManageDistinct.valueOf(this.entity.getTimeManageAtr()),
+				TimeDigestiveUnit.valueOf(this.entity.getTimeUnit()));
 	}
 }

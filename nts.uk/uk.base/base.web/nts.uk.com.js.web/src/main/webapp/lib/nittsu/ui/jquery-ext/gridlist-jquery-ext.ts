@@ -205,8 +205,8 @@ module nts.uk.ui.jqueryExtentions {
             
             if(baseID.length >= 500){
                 let oldSelectedID = _.map(getSelected($grid), "id"), 
-                    shouldRemove: Array<string> = _.difference(oldSelectedID, selectedId), 
-                    shouldSelect: Array<string> = _.difference(selectedId, oldSelectedID);
+                    shouldRemove: Array<string> = _.difference(_.isArray(oldSelectedID) ? oldSelectedID : [ oldSelectedID ], selectedId), 
+                    shouldSelect: Array<string> = _.difference(_.isArray(selectedId) ? selectedId : [ selectedId ], oldSelectedID);
                 /** When data source large (data source > 500 (?)):
                         if new value for select = half of data source
                             or removed selected value = 1/3 of data source, 
@@ -445,11 +445,10 @@ module nts.uk.ui.jqueryExtentions {
                 return delegateMethod($grid, options, arguments[1]);
             }
             
-            let HEADER_HEIGHT = 27;
-            let ROW_HEIGHT = 23;
+            let HEADER_HEIGHT = 30;
+            let ROW_HEIGHT = 30;
             let DIFF_NUMBER = 2;
             
-            $grid.addClass("nts-gridlist");
             let gridId = $grid.attr('id');
             if (nts.uk.util.isNullOrUndefined(gridId)) {
                 throw new Error('the element NtsGridList must have id attribute.');
@@ -471,7 +470,7 @@ module nts.uk.ui.jqueryExtentions {
             $grid.data("initValue", value); 
             
             if (options.multiple) {
-                ROW_HEIGHT = 24;
+                ROW_HEIGHT = 30;
                 // Internet Explorer 6-11
                 let _document: any = document;
                 let isIE = /*@cc_on!@*/false || !!_document.documentMode;
@@ -491,7 +490,7 @@ module nts.uk.ui.jqueryExtentions {
                     name: 'RowSelectors',
                     enableCheckBoxes: options.multiple,
                     enableRowNumbering: false,
-                    rowSelectorColumnWidth: 25
+                    rowSelectorColumnWidth: 40
                 });    
             }
             

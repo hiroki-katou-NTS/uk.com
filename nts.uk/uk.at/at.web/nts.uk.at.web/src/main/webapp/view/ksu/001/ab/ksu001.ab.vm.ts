@@ -4,6 +4,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
     import formatById = nts.uk.time.format.byId;
     import alertError = nts.uk.ui.dialog.alertError;
     import getText = nts.uk.resource.getText;
+    import characteristics = nts.uk.characteristics;
 
     export class ScreenModel {
 
@@ -17,7 +18,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
         enableWorkTime : KnockoutObservable<boolean> = ko.observable(true);
         workTimeCode:KnockoutObservable<string>;
         enableListWorkType: KnockoutObservable<boolean> = ko.observable(true);
-        KEY: string = 'nts.uk.characteristics.ksu001Data';
+        KEY: string = 'ksu001Data';
         width: KnockoutObservable<number>;
         tabIndex: KnockoutObservable<number | string>;
         filter: KnockoutObservable<boolean> = ko.observable(false);
@@ -28,17 +29,11 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
         showMode: KnockoutObservable<SHOW_MODE>;
         check: KnockoutObservable<boolean>;
 
-        constructor(id, listWorkType) { //id : workplaceId || workplaceGroupId; 
+        constructor(data) {
             let self = this;
             
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = {};
-            if (item.isPresent()) {
-                userInfor = JSON.parse(item.get());
-            }
-            
-            let workTypeCodeSave = item.isPresent() ? userInfor.workTypeCodeSelected : '';
-            let workTimeCodeSave = item.isPresent() ? userInfor.workTimeCodeSelected : '';
+            let workTypeCodeSave = !_.isNil(data)  ? data.workTypeCodeSelected : '';
+            let workTimeCodeSave = !_.isNil(data)  ? data.workTimeCodeSelected : '';
             
             let workTimeCode = '';
             if (workTimeCodeSave != '') {
@@ -67,10 +62,8 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             self.selectedWorkTypeCode.subscribe((newValue) => {
                 if (newValue == null || newValue == undefined)
                     return;
-                let item = uk.localStorage.getItem(self.KEY);
-                let userInfor: IUserInfor = JSON.parse(item.get());
-                userInfor.workTypeCodeSelected = newValue;
-                uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                __viewContext.viewModel.viewA.userInfor.workTypeCodeSelected = newValue;
+                characteristics.save(self.KEY, __viewContext.viewModel.viewA.userInfor);
                 
                 let workType = _.filter(self.listWorkType(), function(o) { return o.workTypeCode == newValue; });
                 if (workType.length > 0) {
@@ -88,10 +81,8 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                 if(_.isNil(wkpTimeCd) || wkpTimeCd == '')
                     return;
                 
-                let item = uk.localStorage.getItem(self.KEY);
-                let userInfor: IUserInfor = JSON.parse(item.get());
-                userInfor.workTimeCodeSelected = wkpTimeCd;
-                uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                __viewContext.viewModel.viewA.userInfor.workTimeCodeSelected = wkpTimeCd;
+                characteristics.save(self.KEY, __viewContext.viewModel.viewA.userInfor);
                 
                 let ds = ko.unwrap(self.dataSources);
                 self.listWorkTime2 = ds;
@@ -139,8 +130,8 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTypeName: objWorkType[0].abbName,
                         workTimeCode: null,
                         workTimeName: null,
-                        startTime   : '',
-                        endTime     : '',
+                        startTime   : null,
+                        endTime     : null,
                         achievements: false,
                         workHolidayCls: objWorkType[0].workStyle
                     });
@@ -152,8 +143,8 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTypeName: objWorkType[0].abbName,
                         workTimeCode: null,
                         workTimeName: null,
-                        startTime   : '',
-                        endTime     : '',
+                        startTime   : null,
+                        endTime     : null,
                         achievements: false,
                         workHolidayCls: objWorkType[0].workStyle
                     });
@@ -167,8 +158,8 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                             workTypeName: objWorkType[0].abbName,
                             workTimeCode: null,
                             workTimeName: null,
-                            startTime: '',
-                            endTime: '',
+                            startTime   : null,
+                            endTime     : null,
                             achievements: false,
                             workHolidayCls: objWorkType[0].workStyle
                         });
@@ -180,8 +171,8 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                             workTypeName: objWorkType[0].abbName,
                             workTimeCode: null,
                             workTimeName: null,
-                            startTime: '',
-                            endTime: '',
+                            startTime   : null,
+                            endTime     : null,
                             achievements: false,
                             workHolidayCls: objWorkType[0].workStyle
                         });
@@ -194,24 +185,24 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTypeName: objWorkType[0].abbName,
                         workTimeCode: (objWorkTime != null) ? (objWorkTime.code) : null,
                         workTimeName: (objWorkTime != null && objWorkTime.code != '') ? (objWorkTime.nameAb) : null,
-                        startTime: '',
-                        endTime: '',
+                        startTime   : null,
+                        endTime     : null,
                         achievements: false,
                         workHolidayCls: objWorkType[0].workStyle
                     });
                 } else {
                     $("#extable").exTable("stickFields", ["workTypeName","workTimeName", "startTime", "endTime"]);
 
-                    let startTime = objWorkTime.tzStart1 == null ? '' : formatById("Clock_Short_HM", objWorkTime.tzStart1);
-                    let endTime   = objWorkTime.tzEnd1   == null ? '' : formatById("Clock_Short_HM", objWorkTime.tzEnd1);
+                    let startTime = objWorkTime.tzStart1 == null ? null : formatById("Clock_Short_HM", objWorkTime.tzStart1);
+                    let endTime   = objWorkTime.tzEnd1   == null ? null : formatById("Clock_Short_HM", objWorkTime.tzEnd1);
                     
                     $("#extable").exTable("stickData", {
                         workTypeCode: objWorkType[0].workTypeCode,
                         workTypeName: objWorkType[0].abbName,
                         workTimeCode: (objWorkTime != null)    ? (objWorkTime.code) : null,
                         workTimeName: (objWorkTime != null     && objWorkTime.code != '') ? (objWorkTime.nameAb) : null,
-                        startTime   : (objWorkTime != null > 0 && objWorkTime.code != '') ? (startTime) : '',
-                        endTime     : (objWorkTime != null > 0 && objWorkTime.code != '') ? (endTime) : '',
+                        startTime   : (objWorkTime != null > 0 && objWorkTime.code != '') ? (startTime) : null,
+                        endTime     : (objWorkTime != null > 0 && objWorkTime.code != '') ? (endTime) : null,
                         achievements: false,
                         workHolidayCls: objWorkType[0].workStyle
                     });
@@ -226,8 +217,8 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTypeName: objWorkType[0].abbName,
                         workTimeCode: null,
                         workTimeName: null,
-                        startTime   : '',
-                        endTime     : '',
+                        startTime   : null,
+                        endTime     : null,
                         achievements: false,
                         workHolidayCls: objWorkType[0].workStyle
                     });
@@ -239,8 +230,8 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTypeName: objWorkType[0].abbName,
                         workTimeCode: null,
                         workTimeName: null,
-                        startTime   : '',
-                        endTime     : '',
+                        startTime   : null,
+                        endTime     : null,
                         achievements: false,
                         workHolidayCls: objWorkType[0].workStyle
                     });
@@ -252,8 +243,8 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTypeName: objWorkType[0].abbName,
                         workTimeCode: null,
                         workTimeName: null,
-                        startTime   : '',
-                        endTime     : '',
+                        startTime   : null,
+                        endTime     : null,
                         achievements: false,
                         workHolidayCls: objWorkType[0].workStyle
                     });

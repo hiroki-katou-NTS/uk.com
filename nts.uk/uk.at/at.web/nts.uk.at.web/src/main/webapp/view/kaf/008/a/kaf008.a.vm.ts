@@ -41,9 +41,13 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 				}
 			}
 			let empLst: Array<string> = [],
-				dateLst: Array<string> = [];
+				dateLst: Array<string> = [],
+				screenCode: number = null;
             vm.isSendMail = ko.observable(false);
 			if (!_.isEmpty(params)) {
+				if (!nts.uk.util.isNullOrUndefined(params.screenCode)) {
+					screenCode = params.screenCode;
+				}
 				if (!_.isEmpty(params.employeeIds)) {
 					empLst = params.employeeIds;
 				}
@@ -59,8 +63,14 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 				}
 			}
             // 起動する
+			let paramKAF000 = {
+				empLst, 
+				dateLst, 
+				appType: vm.appType(),
+				screenCode
+			};
             vm.$blockui("show");
-            vm.loadData(empLst, dateLst, vm.appType())
+            vm.loadData(paramKAF000)
                 .then((loadDataFlag: boolean) => {
                     if (loadDataFlag) {
 						vm.application().employeeIDLst(empLst);
@@ -226,7 +236,6 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 if (data) {
                     vm.$dialog.info({messageId: "Msg_15"})
                         .then(() => {
-							nts.uk.request.ajax("at", API.reflectApp, data.reflectAppIdLst);
    							CommonProcess.handleAfterRegister(data, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
                         });
                 }
@@ -264,51 +273,72 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 
         handleError(err: any) {
             const vm = this;
-
-            if (err && err.messageId) {
-                // 年月日＋#Msg_ID
-                if ( _.includes(["Msg_23","Msg_24","Msg_1913","Msg_457","Msg_1685"], err.messageId)) {
-                    err.message = err.parameterIds[0] + err.message;
-                }
-
-                switch (err.messageId) {
-                    case "Msg_23":
-                    case "Msg_24":
-                    case "Msg_457": {
-                        let id = '#' + err.parameterIds[0].replace(/\//g, "") + '-wkCode';
-                        vm.$errors({
-                            [id]: err
-                        });
-                        break;
-                    }
-                    case "Msg_1715": {
-                        let id = '#' + err.parameterIds[1].replace(/\//g, "") + '-wkCode';
-                        vm.$errors({
-                            [id]: err
-                        });
-                        break;
-                    }
-                    case "Msg_1685":
-                    case "Msg_1913": {
-                        let id = '#' + err.parameterIds[0].replace(/\//g, "") + '-tmCode';
-                        vm.$errors({
-                            [id]: err
-                        });
-                        break;
-                    }
-                    default: {
-						if (err.messageId == 'Msg_277') {
-                        	vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst = [];
-							vm.appDispInfoStartupOutput.valueHasMutated();
-                        }
-                        vm.$dialog.error(err).then(() => {
-                            if (err.messageId == 'Msg_197') {
-                                location.reload();
+            if (err.businessException && err.errors && err.errors.length > 0) {
+                _.forEach(err.errors, (error: any) => {
+                    switch (error.messageId) {
+                        case "Msg_2301":
+                        case "Msg_2302":
+                            if (error.parameterIds[1] === vm.$i18n("KAF008_29")) {
+                                let idStart = '#' + error.parameterIds[0].replace(/\//g, "") + '-start';
+                                vm.$errors({
+                                    [idStart]: {messageId: error.messageId, messageParams: error.parameterIds}, 
+                                });
                             }
-                        });
+                            if (error.parameterIds[1] === vm.$i18n("KAF008_30")) {
+                                let idEnd = '#' + error.parameterIds[0].replace(/\//g, "") + '-end';
+                                vm.$errors({
+                                    [idEnd]: {messageId: error.messageId, messageParams: error.parameterIds}, 
+                                });
+                            }
+                            break;
                     }
+                });
+            } else {
+                if (err && err.messageId) {
+                    // 年月日＋#Msg_ID
+                    if ( _.includes(["Msg_23","Msg_24","Msg_1913","Msg_457","Msg_1685"], err.messageId)) {
+                        err.message = err.parameterIds[0] + err.message;
+                    }
+    
+                    switch (err.messageId) {
+                        case "Msg_23":
+                        case "Msg_24":
+                        case "Msg_457": {
+                            let id = '#' + err.parameterIds[0].replace(/\//g, "") + '-wkCode';
+                            vm.$errors({
+                                [id]: err
+                            });
+                            break;
+                        }
+                        case "Msg_1715": {
+                            let id = '#' + err.parameterIds[1].replace(/\//g, "") + '-wkCode';
+                            vm.$errors({
+                                [id]: err
+                            });
+                            break;
+                        }
+                        case "Msg_1685":
+                        case "Msg_1913": {
+                            let id = '#' + err.parameterIds[0].replace(/\//g, "") + '-tmCode';
+                            vm.$errors({
+                                [id]: err
+                            });
+                            break;
+                        }
+                        default: {
+                            if (err.messageId == 'Msg_277') {
+                                vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst = [];
+                                vm.appDispInfoStartupOutput.valueHasMutated();
+                            }
+                            vm.$dialog.error(err).then(() => {
+                                if (err.messageId == 'Msg_197') {
+                                    location.reload();
+                                }
+                            });
+                        }
+                    }
+    
                 }
-
             }
         }
     }
@@ -355,8 +385,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
         startNew: "at/request/application/businesstrip/start",
         checkBeforeRegister: "at/request/application/businesstrip/checkBeforeRegister",
         register: "at/request/application/businesstrip/register",
-        changeAppDate: "at/request/application/businesstrip/changeAppDate",
-		reflectApp: "at/request/application/reflect-app"
+        changeAppDate: "at/request/application/businesstrip/changeAppDate"
     };
 
 }

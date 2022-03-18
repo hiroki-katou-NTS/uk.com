@@ -38,6 +38,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.EmployeeUnitPriceHistoryItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.EmployeeUnitPriceHistoryRepositoly;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.FactoryManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.DailyStatutoryLaborTime;
@@ -49,7 +51,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveE
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -64,6 +65,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 /**
  * @author kazuki_watanabe
@@ -90,6 +92,10 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 	/* 休暇加算設定 */
 	@Inject
 	private HolidayAddtionRepository hollidayAdditonRepository;
+
+	/* 社員単価履歴 */
+	@Inject
+	private EmployeeUnitPriceHistoryRepositoly employeeUnitPriceHistoryRepositoly;
 	
 	@Inject
 	private RecordDomRequireService requireService;
@@ -174,12 +180,14 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			}
 			
 			/**　勤務種類 */
-			val workType = require.workType(companyId, nowWorkingItem.getWorkCategory().getWorkType().getWeekdayTimeWTypeCode().v())
-					.orElseThrow(() -> new RuntimeException("No WorkType"));
+			val workType = require.workType(companyId, nowWorkingItem.getWorkCategory().getWorkType().getWeekdayTimeWTypeCode().v());
+			if(!workType.isPresent()) {
+				return Optional.empty();
+			}
 		
 			/*平日時*/
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay = this.getPredByPersonInfo(
-					nowWorkingItem.getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().get(), shareContainer, workType);
+					nowWorkingItem.getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().get(), shareContainer, workType.get());
 			
 			/** 残業時間帯Require */
 			OverTimeSheet.TransProcRequire overTimeSheetRequire = new TransProcRequireImpl(
@@ -188,10 +196,13 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 					this.sysEmploymentHisAdapter,
 					this.compensLeaveComSetRepo,
 					this.compensLeaveEmSetRepo);
+
+			/*社員単価履歴*/
+			Optional<EmployeeUnitPriceHistoryItem> unitPrice = this.employeeUnitPriceHistoryRepositoly.get(daily.getEmployeeId(), daily.getYmd());
 			
 			return Optional.of(new ManagePerPersonDailySet(nowWorkingItem, dailyUnit,
 								addSetting, bonusPaySetting, predetermineTimeSetByPersonWeekDay,
-								overTimeSheetRequire));
+								overTimeSheetRequire, unitPrice));
 		}
 		catch(RuntimeException e) {
 			return Optional.empty();
@@ -343,7 +354,7 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 		
 		private String cid;
 		/** 代休を管理する年月日かどうかを判断する */
-		private CheckDateForManageCmpLeaveService checkDateForManageCmpLeaveService;
+		//private CheckDateForManageCmpLeaveService checkDateForManageCmpLeaveService;
 		
 		public TransProcRequireImpl(
 				String cid, 
@@ -353,14 +364,14 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 				CompensLeaveEmSetRepository compensLeaveEmSetRepo){
 			
 			super(sysEmploymentHisAdapter, compensLeaveComSetRepo, compensLeaveEmSetRepo);
-			this.checkDateForManageCmpLeaveService = checkDateForManageCmpLeaveService;
+			//this.checkDateForManageCmpLeaveService = checkDateForManageCmpLeaveService;
 			this.cid = cid;
 		}
 
 		@Override
 		public boolean checkDateForManageCmpLeave(
 				Require require, String companyId, String employeeId, GeneralDate ymd) {
-			return this.checkDateForManageCmpLeaveService.check(require, companyId, employeeId, ymd);
+			return CheckDateForManageCmpLeaveService.check(require, companyId, employeeId, ymd);
 		}
 
 		@Override
@@ -374,7 +385,7 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
+		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
 			return workTimeSettingRepository.findByCode(cid, workTimeCode);
 		}
 
@@ -395,5 +406,11 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			Optional<FlexWorkSetting> workSetting = flexWorkSet.find(cid, code.v());
 			return workSetting.isPresent() ? workSetting.get() : null;
 		}
+
+		@Override
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
+		}
+
 	}
 }

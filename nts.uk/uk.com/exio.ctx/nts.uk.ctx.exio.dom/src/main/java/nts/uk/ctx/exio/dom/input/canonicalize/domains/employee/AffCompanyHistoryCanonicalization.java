@@ -3,22 +3,19 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
-import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.employeebasic.PersonIdIdentifier;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
-import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 
 /**
  * 入社退職履歴の正準化
@@ -54,11 +51,6 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 	}
 	
 	@Override
-	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(new DomainDataColumn("HIST_ID", DataType.STRING));
-	}
-	
-	@Override
 	protected List<String> getChildTableNames() {
 		return Arrays.asList("BSYMT_AFF_COM_HIST_ITEM");
 	}
@@ -71,9 +63,8 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 			List<Container> targetContainers) {
 
 		List<Container> results = new ArrayList<>();
-		
-		val employee = require.getEmployeeDataMngInfoByEmployeeId(employeeId).get();
-		String personId = employee.getPersonId();
+
+		String personId = PersonIdIdentifier.getPersonId(require, context, employeeId);
 		
 		for (val container : targetContainers) {
 			
@@ -91,6 +82,9 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 		return results;
 	}
 	
+	public static interface RequireCanonicalizeExtends extends PersonIdIdentifier.GetPersonIdRequire{
+	}
+
 	@Override
 	protected List<IntermediateResult> canonicalizeHistory(
 			DomainCanonicalization.RequireCanonicalize require,
@@ -103,7 +97,5 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 		return super.canonicalizeHistory(require, context, addedRetireDay);
 	}
 	
-	public static interface RequireCanonicalizeExtends {
-		Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeId(String employeeId);
-	}
+
 }

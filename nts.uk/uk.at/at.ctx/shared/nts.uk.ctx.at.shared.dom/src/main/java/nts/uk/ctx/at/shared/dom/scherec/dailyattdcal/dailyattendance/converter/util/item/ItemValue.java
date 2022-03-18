@@ -35,6 +35,7 @@ public class ItemValue implements Cloneable {
 	@Getter
 	private String pathLink;
 	
+	@Getter
 	private boolean isFixed;
 	
 	private ItemValue(int itemId, String path){
@@ -60,7 +61,7 @@ public class ItemValue implements Cloneable {
 		this(value, valueType, layoutCode, itemId, path, false);
 	}
 	
-	private ItemValue(Object value, ValueType valueType, String layoutCode, int itemId, String pathLink, boolean isFixed){
+	public ItemValue(Object value, ValueType valueType, String layoutCode, int itemId, String pathLink, boolean isFixed){
 		this.valueType = valueType;
 		this.layoutCode = layoutCode;
 		this.itemId = itemId;
@@ -78,31 +79,19 @@ public class ItemValue implements Cloneable {
 		return this.valueType;
 	}
 
-	@SuppressWarnings("unchecked")
 	public <T> T value() {
 		if(!isHaveValue()){
 			return null;
 		}
-		if (this.valueType.isInteger()) {
-			return (T) new Integer(this.value);
-		}
-		if (this.valueType.isBoolean()) {
-			return (T) new Boolean(this.value);
-		}
-		if (this.valueType.isDate()) {
-			return (T) GeneralDate.fromString(this.value, DATE_FORMAT);
-		}
-		if (this.valueType.isDouble()) {
-			return (T) new Double(this.value);
-		}
-		if (this.valueType.isString()) {
-			return (T) this.value;
-		}
-		throw new RuntimeException("invalid type: " + this.valueType);
+		
+		return valueOrDefault();
 	}
 	
 	@SuppressWarnings("unchecked")
 	public <T> T valueOrDefault() {
+		if (this.valueType.isLong()) {
+			return (T) longOrDefault();
+		}
 		if (this.valueType.isInteger()) {
 			return (T) intOrDefault();
 		}
@@ -119,6 +108,10 @@ public class ItemValue implements Cloneable {
 			return (T) stringOrDefault();
 		}
 		throw new RuntimeException("invalid type: " + this.valueType);
+	}
+	
+	public Long longOrDefault() {
+		return isHaveValue() ? new Long(this.value) : 0;
 	}
 	
 	public Integer intOrDefault() {

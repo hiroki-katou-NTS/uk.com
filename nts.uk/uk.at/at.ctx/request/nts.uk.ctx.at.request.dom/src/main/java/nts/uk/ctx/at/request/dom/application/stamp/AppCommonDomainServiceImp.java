@@ -243,8 +243,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		if (!CollectionUtil.isEmpty(list)) {
 			list.stream().forEach(item -> {
 //				「勤怠時間帯」Listに勤務時間１が存在するのをチェックする
-				if(item.getFrameNo().v() == 1 && stampAtr.value == 0) {
-				    if(!item.getOpStartTime().isPresent() && workTypeCd.isPresent()) {
+				if(item.getFrameNo().v() == 1 && stampAtr.value == 0 && workTypeCd.isPresent()) {
 				        // 「勤務種類」を取得する
 				        Optional<WorkType> workTypeOpt = workTypeRepository.findNoAbolishByPK(AppContexts.user().companyId(), workTypeCd.get());
 				        if (workTypeOpt.isPresent()) {
@@ -252,16 +251,17 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 				            if ((dailyWork.getWorkTypeUnit().equals(WorkTypeUnit.OneDay) && checkWorkTypeWork(dailyWork.getOneDay())
 				                    || (dailyWork.getWorkTypeUnit().equals(WorkTypeUnit.MonringAndAfternoon) && 
 				                            (checkWorkTypeWork(dailyWork.getMorning()) || checkWorkTypeWork(dailyWork.getAfternoon()))))) {
-				                // 「打刻エラー情報」に「打刻エラー情報」を追加する
-				                ErrorStampInfo start = new ErrorStampInfo(stampAtr, item.getFrameNo().v(), StartEndClassification.START);
-				                errorStampInfos.add(start);
+				                if(!item.getOpStartTime().isPresent()) {
+    				                // 「打刻エラー情報」に「打刻エラー情報」を追加する
+    				                ErrorStampInfo start = new ErrorStampInfo(stampAtr, item.getFrameNo().v(), StartEndClassification.START);
+    				                errorStampInfos.add(start);
+				                }
+				                if(!item.getOpEndTime().isPresent()) {
+				                    ErrorStampInfo end = new ErrorStampInfo(stampAtr, item.getFrameNo().v(), StartEndClassification.END);
+				                    errorStampInfos.add(end);
+				                }
 				            }
 				        }
-				    }
-				    if(!item.getOpEndTime().isPresent()) {
-				        ErrorStampInfo end = new ErrorStampInfo(stampAtr, item.getFrameNo().v(), StartEndClassification.END);
-				        errorStampInfos.add(end);
-				    }
 				} else {
 //				「時刻場所」に時刻開始と時刻終了をチェックする。
 				    if(!item.getOpStartTime().isPresent() && item.getOpEndTime().isPresent()) {

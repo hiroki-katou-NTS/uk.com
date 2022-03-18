@@ -20,6 +20,8 @@ public class StringifiedValue {
 	
 	private static final String DATE_FORMAT = "yyyyMMdd";
 	
+	private static final String DATE_FORMAT_SRASH = "yyyy/MM/dd";
+	
 	private static final String DATETIME_FORMAT = "yyyyMMdd HHmmss";
 	
 	public static StringifiedValue nullValue() {
@@ -129,6 +131,9 @@ public class StringifiedValue {
 	
 	public GeneralDate asGeneralDate() {
 		if (value == null) return null;
+		if(value.contains("/")) {
+			return GeneralDate.fromString(value, DATE_FORMAT_SRASH);
+		}
 		return GeneralDate.fromString(value, DATE_FORMAT);
 	}
 	

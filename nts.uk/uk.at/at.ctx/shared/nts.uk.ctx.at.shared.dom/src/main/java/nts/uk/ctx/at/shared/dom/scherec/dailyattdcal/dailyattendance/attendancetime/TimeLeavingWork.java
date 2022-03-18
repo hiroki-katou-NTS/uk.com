@@ -120,11 +120,12 @@ public class TimeLeavingWork extends DomainObject{
 	
 	/**
 	 * ジャスト遅刻・早退の設定を見て時刻を調整する
+	 * 計算処理で時刻を1分内側にずらす処理
 	 * @param isJustTimeLateAttendance ジャスト遅刻とする
 	 * @param isJustEarlyLeave ジャスト早退とする
 	 * @return 調整後の処理
 	 */
-	public TimeLeavingWork correctJustTime(boolean isJustTimeLateAttendance,boolean isJustEarlyLeave) {
+	public TimeLeavingWork correctJustTimeCalcStamp(boolean isJustTimeLateAttendance,boolean isJustEarlyLeave) {
 		
 		TimeActualStamp newAttendance = attendanceStamp
 				.map(at -> isJustTimeLateAttendance ? at.moveAheadStampTime(1) : at)
@@ -137,6 +138,24 @@ public class TimeLeavingWork extends DomainObject{
 		return new TimeLeavingWork(this.workNo, newAttendance , newLeave);
 	}
 
+	
+	/**
+	 * ジャスト遅刻・早退の設定を見てジャスト遅刻補正をする
+	 * 自動打刻セットの場合に、1分外側にずらす処理
+	 * @param isJustTimeLateAttendance
+	 * @param isJustEarlyLeave
+	 * @return
+	 */
+	public TimeLeavingWork correctJustTimeAutoStamp(boolean isJustTimeLateAttendance, boolean isJustEarlyLeave) {
+
+		TimeActualStamp newAttendance = attendanceStamp
+				.map(at -> isJustTimeLateAttendance ? at.moveBackStampTime(1) : at).orElse(null);
+
+		TimeActualStamp newLeave = leaveStamp.map(le -> isJustEarlyLeave ? le.moveAheadStampTime(1) : le).orElse(null);
+
+		return new TimeLeavingWork(this.workNo, newAttendance, newLeave);
+	}
+	
 	public void setTimeLeavingWork(WorkNo workNo, Optional<TimeActualStamp> attendanceStamp, Optional<TimeActualStamp> leaveStamp){
 		this.workNo = workNo;
 		this.attendanceStamp = attendanceStamp;
@@ -218,6 +237,7 @@ public class TimeLeavingWork extends DomainObject{
 	 * @return 退勤時刻（丸め無し）
 	 */
 	public Optional<TimeWithDayAttr> getLeaveTime() {
+		Optional<TimeWithDayAttr> result = getStampOfLeave().flatMap(c -> c.getTimeDay().getTimeWithDay());
 		return getStampOfLeave().flatMap(c -> c.getTimeDay().getTimeWithDay());
 	}
 	

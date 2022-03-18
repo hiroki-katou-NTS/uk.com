@@ -43,6 +43,10 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 			+ " AND a.pk.ymd >= :startYmd "
 			+ " AND a.pk.ymd <= :endYmd ";
 	
+	private static final String DELETE_BY_SID_BEFORETHEYMD = "DELETE FROM KshdtInterimChildCare a"
+			+ " WHERE a.pk.sID = :sid "
+			+ " AND a.pk.ymd <= :ymd ";
+	
 	/** 検索 */
 	@Override
 	public List<TempChildCareManagement> find(String employeeId, GeneralDate ymd){
@@ -116,6 +120,16 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 		this.getEntityManager().createQuery(REMOVE_BY_SID_PERIOD)
 		.setParameter("sid", sid)
 		.setParameter("startYmd", period.start())
-		.setParameter("endYmd", period.end());
+		.setParameter("endYmd", period.end())
+		.executeUpdate();
+	}
+
+	@Override
+	public void deleteBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+		this.getEntityManager().createQuery(DELETE_BY_SID_BEFORETHEYMD)
+		.setParameter("sid", sid)
+		.setParameter("ymd", ymd)
+		.executeUpdate();
+		
 	}
 }
