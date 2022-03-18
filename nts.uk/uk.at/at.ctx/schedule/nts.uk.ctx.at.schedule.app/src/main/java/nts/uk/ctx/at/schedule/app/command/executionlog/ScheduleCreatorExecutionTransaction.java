@@ -28,7 +28,6 @@ import nts.uk.ctx.at.schedule.app.command.executionlog.internal.BasicWorkSetting
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.BasicWorkSettingByWorkplaceGetterCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.CalculationCache;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicWorkSettingHandler;
-import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeErrorLogHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheduleErrorLogGeterCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.WorkdayAttrByClassGetterCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.WorkdayAttrByWorkplaceGeterCommand;
@@ -131,7 +130,9 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -520,13 +521,13 @@ public class ScheduleCreatorExecutionTransaction {
 
 				// 正常の場合
 				if (checkErrorCondition.value == ErrorStatusWorkInfo.NORMAL.value) {
+					// getWorkType from WorkInformation
+					Optional<WorkType> workTypeOpt = workTypeRepo.findByPK(AppContexts.user().companyId(),
+							information.getWorkTypeCode().v());
+					//call: 勤務種類から出勤系の勤務種類設定を取得する（勤務種類）： 勤務種類設定（Optional））
+					Optional<WorkTypeSet> workTypeSet = workTypeOpt.isPresent()? this.getWorkTimeSet(workTypeOpt.get()):Optional.empty();
+					
 					// 取得した情報をもとに「勤務予定」を入れる (TKT-TQP)
-					Optional<WorkTypeSet> workTypeSet = prepareWorkOutput.getWorkType().isPresent()
-							? prepareWorkOutput.getWorkType().get().getWorkTypeSetList().stream()
-									.filter(x -> x.getCompanyId().equals(command.getCompanyId()) && x.getWorkTypeCd()
-											.equals(prepareWorkOutput.getInformation().getWorkTypeCode()))
-									.findFirst()
-							: Optional.empty();
 					// 勤務情報。勤務実績の勤務情報。勤務種類 = 処理中の勤務種類コード & 勤務情報。勤務実績の勤務情報。就業時間帯 =処理中の 就業時間帯コード
 					integrationOfDaily.getWorkInformation().setRecordInfo(prepareWorkOutput.getInformation().clone());
 					// 出勤打刻自動セット ~ 出勤時刻を直行とする (勤務情報。直行区分＝勤務種類。出勤打刻自動セット)
@@ -1612,6 +1613,31 @@ public class ScheduleCreatorExecutionTransaction {
 				masterCache.getListBusTypeOfEmpHis());
 		return generalInfoImport;
 
+	}
+	
+	// 勤務種類から出勤系の勤務種類設定を取得する（勤務種類）： 勤務種類設定（Optional））: 115638
+	private Optional<WorkTypeSet>  getWorkTimeSet(WorkType workType) {
+		Optional<WorkTypeSet> workTypeSet = Optional.empty();
+			Optional<WorkAtr> workAtrOpt = workType.getWorkAtrForAbsenceDay();
+			if (workAtrOpt.isPresent()) {
+				WorkAtr workAtr = workAtrOpt.get();
+				// 1日半日出勤・1日休日系の判定（休出判定あり）
+				AttendanceDayAttr attDayAttr = workType.chechAttendanceDay();
+				switch(attDayAttr) {
+				/** １日休日系 */
+				case HOLIDAY:
+					break;
+				/** 半日出勤系(午後) */
+				case HALF_TIME_PM:
+					workTypeSet = workType.getWorkTypeSetByAtr(workAtr);
+					break;
+					/** １日出勤系 OR 休出*/
+				default:
+					workTypeSet = workType.getWorkTypeSetByAtr(workAtr);
+					break;
+				}
+			}
+			return workTypeSet;
 	}
 
 	@AllArgsConstructor
