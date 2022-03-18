@@ -74,7 +74,7 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 		List<KshmtHdpaidCondition> grantCoditionList = yearHoliday.getGrantConditions().stream()
 				.map(x -> {
 					KshstGrantConditionPK conditionKey = new KshstGrantConditionPK(yearHoliday.getCompanyId(), yearHoliday.getYearHolidayCode().v(), x.getConditionNo());
-					return new KshmtHdpaidCondition(conditionKey, x.getConditionValue() != null ? x.getConditionValue().v() : null, x.getUseConditionAtr().value);
+					return new KshmtHdpaidCondition(conditionKey, x.getConditionValueToDouble() , x.getUseConditionAtr().value);
 				}).collect(Collectors.toList());
 		
 		kshstYearHoliday.grantConditions = grantCoditionList;
@@ -114,9 +114,8 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 			return new 	GrantCondition(t.kshstGrantConditionPK.companyId, 
 					new YearHolidayCode(t.kshstGrantConditionPK.yearHolidayCode), 
 					t.kshstGrantConditionPK.conditionNo, 
-					t.conditionValue != null ? new ConditionValue(t.conditionValue) : null, 
-					EnumAdaptor.valueOf(t.useConditionAtr, UseConditionAtr.class),
-					!CollectionUtil.isEmpty(t.yearHolidayGrants));
+					t.conditionValue != null ? Optional.of(new ConditionValue(t.conditionValue)) : Optional.empty(), 
+					EnumAdaptor.valueOf(t.useConditionAtr, UseConditionAtr.class));
 		}).collect(Collectors.toList());
 		
 		return GrantHdTblSet.createFromJavaType(x.kshstGrantHdTblSetPK.companyId, 
@@ -139,7 +138,7 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 		List<KshmtHdpaidCondition> grantCoditionList = yearHoliday.getGrantConditions().stream()
 				.map(x -> {
 					KshstGrantConditionPK key = new KshstGrantConditionPK(yearHoliday.getCompanyId(), yearHoliday.getYearHolidayCode().v(), x.getConditionNo());
-					return new KshmtHdpaidCondition(key, x.getConditionValue() != null ? x.getConditionValue().v() : null, x.getUseConditionAtr().value);
+					return new KshmtHdpaidCondition(key, x.getConditionValueToDouble(), x.getUseConditionAtr().value);
 				}).collect(Collectors.toList());
 		
 		return new KshmtHdpaidTblSet(

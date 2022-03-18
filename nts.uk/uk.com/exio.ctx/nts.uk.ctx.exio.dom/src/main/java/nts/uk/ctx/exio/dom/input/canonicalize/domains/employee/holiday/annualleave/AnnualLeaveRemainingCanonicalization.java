@@ -94,7 +94,7 @@ public class AnnualLeaveRemainingCanonicalization extends IndependentCanonicaliz
 				}
 				importingKeys.add(keyValue);
 				
-				super.canonicalize(require, context, interm, keyValue);
+				super.canonicalize(require, context, interm);
 			}
 		});
 	}
@@ -124,11 +124,6 @@ public class AnnualLeaveRemainingCanonicalization extends IndependentCanonicaliz
 				  .addCanonicalized(CanonicalItem.of(Items.所定日数, 0))
 				  .addCanonicalized(CanonicalItem.of(Items.控除日数, 0))
 				  .addCanonicalized(CanonicalItem.of(Items.労働日数, 0));
-	}
-	
-	@Override
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
-		return Arrays.asList(Items.SID);
 	}
 	
 	@Override
