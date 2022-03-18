@@ -89,6 +89,7 @@ module nts.uk.at.view.kfp001.b {
                         $('#NEW_BTN_B1_2').hide();
                         $('#DELETE_BTN_B1_3').hide();
                     }
+                    self.currentCode.valueHasMutated();
                 })
 
                 //
