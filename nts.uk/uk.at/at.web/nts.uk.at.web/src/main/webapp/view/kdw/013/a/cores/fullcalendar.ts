@@ -1237,7 +1237,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     let el = $(".fc-times[data-date='"+ date + "']");
                                         
                     if (el && el.html()) {
-                            let icon = isHasWarning(date) ? `<i class='warningIcon ` + className + `'> </i>` : '';
+                            let icon = isHasWarning(date) ? `<i tabindex="0" class='warningIcon ` + className + `'> </i>` : '';
                             setTimeout(() => {
                                 ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '16px', width: 16, height: 16 , extension: "png" }, click: () => { OpenIDialog(date); } });
                                 $('.' + className).on('mousedown', () => { regisPopup(date); });
