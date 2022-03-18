@@ -168,17 +168,17 @@ public class DeleteSupportInfoCommandHandler extends CommandHandlerWithResult<De
         // 4.社員IDリスト = List<応援可能な社員からの登録結果> ：
         //　filter $.エラーがあるか == true
         //　map $.エラー情報.応援可能な社員.社員ID
-        val empErrors = lstCannotDelete.stream().map(x -> x.getSupportableEmployee().getId()).collect(Collectors.toList());
+        val empErrors = lstCannotDelete.stream().map(x -> x.getSupportableEmployee().getEmployeeId().v()).collect(Collectors.toList());
         List<EmployeeCodeAndDisplayNameImport> employeeErrorInfors = employeeAdapter.getEmployeeCodeAndDisplayNameImportByEmployeeIds(empErrors);
 
         List<EmployeeErrorResult> employeeErrorResults = new ArrayList<>();
         for (RegisterResultFromSupportableEmployee.ErrorInformation empErr : lstCannotDelete) {
             val empInfoOpt = employeeErrorInfors.stream().filter(e -> e.getEmployeeId().equals(empErr.getSupportableEmployee().getEmployeeId().v())).findFirst();
             employeeErrorResults.add(new EmployeeErrorResult(
-                    empInfoOpt.map(EmployeeCodeAndDisplayNameImport::getEmployeeCode).orElse(null),
-                    empInfoOpt.map(EmployeeCodeAndDisplayNameImport::getBusinessName).orElse(null),
-                    empErr.getSupportableEmployee().getPeriod().start().toString("yyyyMMdd"),
-                    empErr.getSupportableEmployee().getPeriod().end().toString("yyyyMMdd"),
+                    empInfoOpt.map(EmployeeCodeAndDisplayNameImport::getEmployeeCode).orElse(""),
+                    empInfoOpt.map(EmployeeCodeAndDisplayNameImport::getBusinessName).orElse(""),
+                    empErr.getSupportableEmployee().getPeriod().start().toString("yyyy/MM/dd"),
+                    empErr.getSupportableEmployee().getPeriod().end().toString("yyyy/MM/dd"),
                     empErr.getErrorMessage()
             ));
         }
