@@ -1966,26 +1966,26 @@ module nts.uk.ui.at.kdw013.calendar {
                     return false;
                 }
 
-                let islockBySetting = (event, lockSetting, getAtr) => {
+                let islockBySetting = (lockSetting, getAtr) => {
 
                     let lockItems = [157, 159, 163, 165, 169, 171, 175, 177, 181, 183, 187, 189, 193, 195, 199, 201, 205, 207, 211, 213];
                     
 
-                    return !_.get(_.find(lockSetting, lock => { return lockItems.indexOf(lock.itemDailyID) != -1 }), getAtr, true);
+                    return !!_.find(lockSetting, function(lock) { return lockItems.indexOf(lock.itemDailyID) != -1 && _.get(lock, getAtr) == false });
                 }
                
-                let getEditable = (date, isTimeBreak, event) => {
+                let getEditable = (date, isTimeBreak, getAtr) => {
                     let startDate = moment(_.get(data, 'workStartDate'));
                     let lockStatus = _.find(_.get(data, 'lockInfos'), li => { return moment(li.date).isSame(moment(date), 'days'); });
                     let lockSetting = _.get(setting, 'dailyAttendanceItemAuthority.displayAndInput');
-                    return startDate.isAfter(date) ? false : !((isTimeBreak && isLock(lockStatus)) || (isTimeBreak && islockBySetting(event, lockSetting , getAtr)));
+                    return startDate.isAfter(date) ? false : !((isTimeBreak && isLock(lockStatus)) || (isTimeBreak && islockBySetting(lockSetting , getAtr)));
                 };
                 let events = ko.unwrap<EventRaw[]>(params.events);
                 
                 let getAtr = (vm.params.employee() == '' || vm.params.employee() == vm.$user.employeeId) ? 'youCanChangeIt' : 'canBeChangedByOthers';
                 //set editable
                 _.forEach(events, e => {
-                    e.editable = getEditable(formatDate(_.get(e, 'start')), e.extendedProps.isTimeBreak , e , getAtr);
+                    e.editable = getEditable(formatDate(_.get(e, 'start')), e.extendedProps.isTimeBreak, getAtr);
                 });
                 
                 
