@@ -713,7 +713,7 @@ public class WorkSchedule implements DomainAggregate {
 	 * 応援予定の整合性をチェックする
 	 * @param require
 	 */
-	private void checkConsistencyOfSupportSchedule(Require require) {
+	public void checkConsistencyOfSupportSchedule(Require require) {
 		
 		val supportType = this.supportSchedule.getSupportType();
 		if ( !supportType.isPresent() || supportType.get() == SupportType.ALLDAY ) {

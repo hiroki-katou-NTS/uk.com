@@ -55,6 +55,7 @@ public class CreateWorkSchedule {
 		if ( isNewRegister || ! registedWorkSchedule.get().getWorkInfo().getRecordInfo().isSame(workInformation) ) {
 			try {
 				workSchedule = WorkSchedule.createByHandCorrectionWithWorkInformation(require, employeeId, date, workInformation);
+				workSchedule.createSupportSchedule(require, supportTicketList);
 			} catch (BusinessException e) {
 				return ResultOfRegisteringWorkSchedule.createWithError( employeeId, date, e.getMessage() );
 			}
@@ -79,7 +80,7 @@ public class CreateWorkSchedule {
 		
 		// update support schedule
 		try {
-			workSchedule.createSupportSchedule(require, supportTicketList);
+			workSchedule.checkConsistencyOfSupportSchedule(require);
 		} catch ( BusinessException e ) {
 			return ResultOfRegisteringWorkSchedule.createWithError( employeeId, date, e.getMessage() );
 		}
