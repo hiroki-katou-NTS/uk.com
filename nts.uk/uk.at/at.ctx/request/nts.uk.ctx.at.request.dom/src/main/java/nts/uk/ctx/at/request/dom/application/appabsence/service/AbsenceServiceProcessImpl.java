@@ -385,6 +385,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 	
 	@Inject
 	private SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepository;
+
+	@Inject
 	private ApproveAppProcedure approveAppProcedure;
 
 	private final String FORMAT_DATE = "yyyy/MM/dd";
