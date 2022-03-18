@@ -88,9 +88,9 @@ module cps001.c.vm {
             service.getData().done((data: Array<IEmployee>) => {
 
                 unblock();
-
+                emps(data);
                 if (data && data.length) {
-                    emps(data);
+                    
                     $('#code').focus();
                     if (!sid) {
                         emp.id(data[0].id);
