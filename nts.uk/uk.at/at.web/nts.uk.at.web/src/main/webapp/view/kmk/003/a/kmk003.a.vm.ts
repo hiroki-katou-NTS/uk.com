@@ -1473,27 +1473,7 @@ module nts.uk.at.view.kmk003.a {
                     temp.timezone.rounding.roundingTime(_self.fixedWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezoneSimpleMode()[0].roundingTime());
                     _self.fixedWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezone([temp]);
                 }
-
-                let workTimes = _self.autoCreateHalfDayWT(_self.fixedWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezone());
-
-                command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = workTimes.morning;
-                command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone = workTimes.afternoon;
-
-                if (!_self.useHalfDayOverTime()) {
-                    let OTTimes = _self.autoCreateHalfDayOT(_self.fixedWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone());
-
-                    command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstOTTimezone = OTTimes.morning;
-                    command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstOTTimezone = OTTimes.afternoon;
-                }
-
-                /*if (_self.isNewMode() && !_self.useHalfDayBreak()) {
-                    let restTimes = _self.autoCreateHalfDayBreak(_self.fixedWorkSetting.getHDWtzOneday().restTimezone.timezones());
-
-                    command.fixedWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.timezones = restTimes.morning;
-                    command.fixedWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.timezones = restTimes.afternoon;
-                }*/
-
-				if (!_self.useHalfDayBreak()){
+				if (command.screenMode == 1){
 					let amTimes : any = [], pmTimes : any = [];
 					_.forEach(command.fixedWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.timezones, (z : any) => {
 							amTimes.push({
