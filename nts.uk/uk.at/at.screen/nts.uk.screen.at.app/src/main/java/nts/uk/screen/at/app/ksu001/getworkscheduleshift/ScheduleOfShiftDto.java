@@ -87,6 +87,10 @@ public class ScheduleOfShiftDto {
 		// step 1 勤務予定が必要か()
 		boolean needCreateWorkSchedule = employeeWorkingStatus.getWorkingStatus().needCreateWorkSchedule();
 		if (needCreateWorkSchedule && workScheduleInput.isPresent()) {
+			
+			this.employeeId = employeeWorkingStatus.getEmployeeID();
+			this.date = employeeWorkingStatus.getDate();
+			
 			// step3.1 勤務予定.勤務情報
 			WorkSchedule workSchedule = workScheduleInput.get();
 			WorkInformation workInformation = workSchedule.getWorkInfo().getRecordInfo();
@@ -115,14 +119,12 @@ public class ScheduleOfShiftDto {
 			
 			// step3.3 call DomainService 社員の応援情報を取得する
 			// 実績の情報を取得する(Require, 社員ID, 年月日)
-			SupportInfoOfEmployee supportInfoOfEmp = GetSupportInfoOfEmployee.getScheduleInfo(requireGetSupportInfo, new EmployeeId(employeeId), date);
+			SupportInfoOfEmployee supportInfoOfEmp = GetSupportInfoOfEmployee.getScheduleInfo(requireGetSupportInfo, new EmployeeId(this.employeeId), this.date);
 			
 			// step3.3.1 応援状況を取得する(対象組織識別情報)
 			this.supportStatus = supportInfoOfEmp.getSupportStatus(targetOrg).getValue();
 
 			// step 3.4  create
-			this.employeeId = employeeWorkingStatus.getEmployeeID();
-			this.date = employeeWorkingStatus.getDate();
 			this.haveData = true;
 			this.achievements = false;
 			this.confirmed = workSchedule.getConfirmedATR().value == ConfirmedATR.CONFIRMED.value;
@@ -135,7 +137,6 @@ public class ScheduleOfShiftDto {
 			this.isActive = true;
 			this.conditionAa1 = true;
 			this.conditionAa2 = true;
-			this.supportStatus = SupportStatus.DO_NOT_GO.getValue();
 			
 			/**※Aa1
 			勤務予定（シフト）dto．実績か == true	           achievements	            ×	
@@ -170,7 +171,66 @@ public class ScheduleOfShiftDto {
 				this.setConditionAa2(false);
 			}
 			
-		} else {
+		} else if (needCreateWorkSchedule && !workScheduleInput.isPresent()) {
+
+			this.employeeId = employeeWorkingStatus.getEmployeeID();
+			this.date = employeeWorkingStatus.getDate();
+			
+			// step3.3 call DomainService 社員の応援情報を取得する
+			// 実績の情報を取得する(Require, 社員ID, 年月日)
+			SupportInfoOfEmployee supportInfoOfEmp = GetSupportInfoOfEmployee.getScheduleInfo(requireGetSupportInfo, new EmployeeId(this.employeeId), this.date);
+			
+			// step3.3.1 応援状況を取得する(対象組織識別情報)
+			this.supportStatus = supportInfoOfEmp.getSupportStatus(targetOrg).getValue();
+
+			// step 3.4  create
+			this.haveData = false;
+			this.achievements = false;
+			this.confirmed = false;
+			this.needToWork = needCreateWorkSchedule;
+			this.shiftCode = null;
+			this.shiftName = null;
+			this.shiftEditState = null;
+			this.workHolidayCls = null;
+			this.isEdit = true;
+			this.isActive = true;
+			this.conditionAa1 = true;
+			this.conditionAa2 = true;
+			
+			/**※Aa1
+			勤務予定（シフト）dto．実績か == true	           achievements	            ×	
+			勤務予定（シフト）dto．確定済みか == true          confirmed		            ×	
+			勤務予定（シフト）dto．勤務予定が必要か == false	   needToWork		        ×	
+			勤務予定（シフト）dto．応援状況 == 応援に来ない　or　応援に来る(時間帯)supportStatus	×	
+			対象の日 < A画面パラメータ. 修正可能開始日　の場合    targetDate		            ×	=> check dưới UI
+			上記以外									   other                    ○	
+			*/
+			if (       this.achievements == true 
+					|| this.confirmed == true 
+					|| this.needToWork == false 
+					|| this.supportStatus == SupportStatus.DO_NOT_COME.getValue() 
+					|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue() ) 
+			{	
+				this.setEdit(false);
+				this.setConditionAa1(false);
+			}
+
+			/**
+			 * ※Aa2			シフト確定																					
+			勤務予定（シフト）dto．実績か == true                                    achievements	×	
+			勤務予定（シフト）dto．勤務予定が必要か == false                           needToWork	 	×	
+			勤務予定（勤務情報）dto．応援状況 == 応援に来る(時間帯)　or　応援に行く(終日)  supportStatus		×	
+			対象の日 < A画面パラメータ. 修正可能開始日　の場合	                      targetDate		×	=> check dưới UI
+			上記以外										                      other			○	
+			 */
+			if (  this.achievements == true || this.needToWork == false
+				|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()
+				|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()) 
+			{	this.setActive(false);
+				this.setConditionAa2(false);
+			}
+			
+		} else if (!needCreateWorkSchedule){
 			// step2 create
 			this.employeeId = employeeWorkingStatus.getEmployeeID();
 			this.date = employeeWorkingStatus.getDate();
@@ -182,8 +242,8 @@ public class ScheduleOfShiftDto {
 			this.shiftName = null;
 			this.shiftEditState = null;
 			this.workHolidayCls = null;
-			this.isEdit = true;
-			this.isActive = true;
+			this.isEdit = false;
+			this.isActive = false;
 			this.conditionAa1 = true;
 			this.conditionAa2 = true;
 			this.supportStatus = SupportStatus.DO_NOT_COME.getValue();
@@ -225,6 +285,10 @@ public class ScheduleOfShiftDto {
 		// step3 勤務予定が必要か == true && 日別勤怠.isPresent
 		if (needCreateWorkSchedule && workRecord.isPresent()) {
 			if (workRecord.get().getWorkInformation() != null) {
+				
+				this.employeeId = employeeWorkingStatus.getEmployeeID();
+				this.date = employeeWorkingStatus.getDate();
+				
 				WorkInformation workInformation = workRecord.get().getWorkInformation().getRecordInfo();
 
 				String workTypeCode = workInformation.getWorkTypeCode() == null ? null: workInformation.getWorkTypeCode().toString().toString();
@@ -242,13 +306,11 @@ public class ScheduleOfShiftDto {
 				
 				// step2 call DomainService 社員の応援情報を取得する
 				// 実績の情報を取得する(Require, 社員ID, 年月日)
-				SupportInfoOfEmployee supportInfoOfEmp = GetSupportInfoOfEmployee.getRecordInfo(requireGetSupportInfo, new EmployeeId(employeeId), date);
+				SupportInfoOfEmployee supportInfoOfEmp = GetSupportInfoOfEmployee.getRecordInfo(requireGetSupportInfo, new EmployeeId(this.employeeId), this.date);
 				
 				// step2.1 応援状況を取得する(対象組織識別情報)
 				this.supportStatus = supportInfoOfEmp.getSupportStatus(targetOrg).getValue();
 
-				this.employeeId = employeeWorkingStatus.getEmployeeID();
-				this.date = employeeWorkingStatus.getDate();
 				this.haveData = true;
 				this.achievements = true;
 				this.confirmed = true;

@@ -242,12 +242,12 @@ public class TargetOrgIdenInforTest {
 	@Test
 	public void testCreateByAutoDeterminingUnit_case_workplaceGroup() {
 		//act
-		val result = TargetOrgIdenInfor.createByAutoDeterminingUnit("", Optional.of( String.valueOf("workplaceGroup")));
+		val result = TargetOrgIdenInfor.createByAutoDeterminingUnit("workplaceId", Optional.of( String.valueOf("workplaceGroupId")));
 		
 		//assert
 		assertThat( result.getUnit() ).isEqualTo( TargetOrganizationUnit.WORKPLACE_GROUP );
 		assertThat( result.getWorkplaceId() ).isEmpty();
-		assertThat( result.getWorkplaceGroupId().get() ).isEqualTo( "workplaceGroup" );
+		assertThat( result.getWorkplaceGroupId().get() ).isEqualTo( "workplaceGroupId" );
 		
 	}
 
