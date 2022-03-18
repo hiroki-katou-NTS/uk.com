@@ -688,10 +688,6 @@ module nts.uk.ui.at.kdw013.calendar {
                 "></div>
         </div>
         <div class="fc-calendar"></div>
-        <div data-bind="
-                fc-setting: $component.popupData.setting,
-                position: $component.popupPosition.setting
-            "></div>
         <style>${DEFAULT_STYLES}</style>
         <style data-bind="html: $component.$style"></style>`
     })
@@ -2478,6 +2474,12 @@ module nts.uk.ui.at.kdw013.calendar {
                                         
                                         ko.applyBindingsToNode(checkBtn, { ntsCheckBox: { checked: isShowBreakTime, text: vm.$i18n('KDW013_66') } });
                                         
+                                    }
+                                    
+                                    let fcSetting =  $('<div data-bind="fc-setting: $component.popupData.setting,position: $component.popupPosition.setting"></div>').insertAfter('.fc-settings-button').get(0);
+                                    
+                                    if(fcSetting){
+                                        ko.applyBindings(vm, fcSetting);
                                     }
 
                                     let setting = $('.fc-settings-button').get(0);
