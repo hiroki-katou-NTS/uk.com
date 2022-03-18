@@ -1239,7 +1239,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     if (el && el.html()) {
                             let icon = isHasWarning(date) ? `<i class='warningIcon ` + className + `'> </i>` : '';
                             setTimeout(() => {
-                                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '16px', width: 16, height: 16 }, click: () => { OpenIDialog(date); } });
+                                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '16px', width: 16, height: 16 , extension: "png" }, click: () => { OpenIDialog(date); } });
                                 $('.' + className).on('mousedown', () => { regisPopup(date); });
                             }, 300);
                             el.html(vm.$i18n('KDW013_98') + icon);
