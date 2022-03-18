@@ -93,6 +93,7 @@ public class GetRefWorkplaceAndEmployee {
 
 		List<WorkplaceInfo> workplaceInfos = serviceAdapter
 				.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, refDate).stream()
+				.filter(wk -> !wk.getWorkplaceName().equals("コード削除済") && !wk.getWorkplaceName().equals("マスタ未登録"))
 				.map(mapper -> new WorkplaceInfo(companyId, 
 						null,
 						mapper.getWorkplaceId(),
