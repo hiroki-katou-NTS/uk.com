@@ -192,7 +192,7 @@ module nts.uk.at.kdp003.q {
 			if (vm.destination() === DestinationClassification.WORKPLACE && _.isEmpty(vm.workPlaceIdList())) {
 				return 'Msg_1813';
 			}
-			if (moment.utc(vm.dateValue().startDate).isBefore(moment.utc().format('YYYY/MM/DD'))) {
+			if (moment.utc(vm.dateValue().startDate).isBefore(moment.utc().add(vm.regionalTime, 'm').format('YYYY/MM/DD'))) {
 				if (vm.isNewMode()) {
 					return 'Msg_1834';
 				} else if (!moment.utc(vm.startDateOfMsgUpdate, 'YYYY/MM/DD').isSame(moment.utc(vm.dateValue().startDate, 'YYYY/MM/DD'))) {
