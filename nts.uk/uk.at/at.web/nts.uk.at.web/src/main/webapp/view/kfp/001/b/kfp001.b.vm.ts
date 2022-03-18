@@ -33,7 +33,7 @@ module nts.uk.at.view.kfp001.b {
 
             mode: KnockoutObservable<number>;
 
-            enableText: KnockoutObservable<boolean>;
+            enableText: KnockoutObservable<boolean> = ko.observable(false);
 
             dateValue: KnockoutObservable<any>;
             dateCurrentValue: KnockoutObservable<any>;
@@ -76,6 +76,7 @@ module nts.uk.at.view.kfp001.b {
                 self.activeStep = ko.observable(0);
                 self.mode = ko.observable(0);
                 self.activeStep.subscribe(newVal => {
+                    self.enableText(false);
                     if (newVal == 0) {
                         $('#hor-scroll-button-hide').hide();
                         _.defer(() => {
@@ -89,7 +90,6 @@ module nts.uk.at.view.kfp001.b {
                         $('#NEW_BTN_B1_2').hide();
                         $('#DELETE_BTN_B1_3').hide();
                     }
-                    self.currentCode.valueHasMutated();
                 })
 
                 //
@@ -150,8 +150,6 @@ module nts.uk.at.view.kfp001.b {
                 //
                 self.enableNEW = ko.observable(true);
                 self.enableDEL = ko.observable(true);
-                self.enableText = ko.observable(true);
-
                 //                self.aggrFrameCode = ko.observable("D01");
                 //                self.optionalAggrName = ko.observable("THANH DEP ZAI");
                 //                self.startDate = ko.observable('15062018');
@@ -166,7 +164,6 @@ module nts.uk.at.view.kfp001.b {
                     if (self.items().length > 0) {
                         self.currentCode(self.items()[0].aggrFrameCode());
                         self.mode(1);
-                        self.enableText(false);
                         self.getPeriod();
                         self.dateValue({
                             startDate: self.currentItem().startDate(),
@@ -244,7 +241,7 @@ module nts.uk.at.view.kfp001.b {
                         self.mode(!!isItemExist ? 1 : 0);
                         self.enableNEW(!!isItemExist);
                         self.enableDEL(!!isItemExist);
-                        self.enableText(!!isItemExist);
+                        // self.enableText(!!isItemExist);
                         self.getPeriod();
                         $('#update-mode').show();
                         $('#update-mode').focus();
@@ -381,6 +378,7 @@ module nts.uk.at.view.kfp001.b {
                 if (self.items().length >= 100) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1151" });
                 } else {
+                    self.enableText(true);
                     self.currentItem(new model.OptionalAggrPeriodDto(emptyObject))
                     self.currentCode("");
                     self.peopleNo(0);
@@ -393,7 +391,6 @@ module nts.uk.at.view.kfp001.b {
                         endDate: new Date()
                     });
                     self.mode(0);
-                    self.enableText(true);
                 }
                 self.isFocus(true)
             }
