@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  */
 @Getter
 public class ExternalImportSetting implements DomainAggregate {
-	
+
 	/**設定ベース種類*/
 	private ImportSettingBaseType baseType;
 
@@ -61,14 +61,15 @@ public class ExternalImportSetting implements DomainAggregate {
 	 * @param newCode
 	 * @param baseCsvFileId
 	 */
-	public void changeForCopy(ExternalImportCode newCode, String baseCsvFileId) {
+	public void changeForCopy(String newCompanyId, ExternalImportCode newCode, String baseCsvFileId) {
+		companyId = newCompanyId;
 		code = newCode;
 		csvFileInfo = new ExternalImportCsvFileInfo(
 				csvFileInfo.getItemNameRowNumber(),
 				csvFileInfo.getImportStartRowNumber(),
 				Optional.of(baseCsvFileId));
 	}
-	
+
 	public List<DomainImportSetting> getDomainSettings() {
 		return this.domainSettings.values().stream()
 				.sorted((ds1, ds2) -> ds1.getDomainId().compareTo(ds2.getDomainId()))
@@ -80,7 +81,7 @@ public class ExternalImportSetting implements DomainAggregate {
 			setting.assemble(require, context, csvFileInfo, csvFileStream);
 		});
 	}
-	
+
 	public static interface RequireMerge extends DomainImportSetting.RequireMerge {
 	}
 	public static interface RequireAssemble extends DomainImportSetting.RequireAssemble {
@@ -89,7 +90,7 @@ public class ExternalImportSetting implements DomainAggregate {
 	public ExternalImportAssemblyMethod getAssembly(ImportingDomainId domainId) {
 		return getDomainSetting(domainId).get().getAssembly();
 	}
-	
+
 	public Optional<DomainImportSetting> getDomainSetting(ImportingDomainId domain) {
 		if (baseType == ImportSettingBaseType.DOMAIN_BASE)  return this.domainSettings.entrySet().stream().findFirst().map(es-> es.getValue());
 
@@ -101,9 +102,9 @@ public class ExternalImportSetting implements DomainAggregate {
 	public void putDomainSettings(ImportingDomainId domainId, DomainImportSetting domainImportSetting) {
 		this.domainSettings.put(domainId, domainImportSetting);
 	}
-	
+
 	/**
-	 *個人基本情報を受入れようとしている 
+	 *個人基本情報を受入れようとしている
 	 */
 	public boolean containEmployeeBasic() {
 		return this.domainSettings.containsKey(ImportingDomainId.EMPLOYEE_BASIC);

@@ -32,7 +32,7 @@ public class GenerateExternalImportDefaultData {
 
             String fileId = generatingTargetItem.storeBaseCsvFile(require);
 
-            setting.changeForCopy(generatingCode, fileId);
+            setting.changeForCopy(companyId, generatingCode, fileId);
 
             require.add(setting);
 
