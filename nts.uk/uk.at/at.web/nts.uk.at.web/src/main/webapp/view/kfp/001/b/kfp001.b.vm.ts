@@ -456,7 +456,7 @@ module nts.uk.at.view.kfp001.b {
                         let executionDto = {
                             aggrFrameCode: self.currentItem().aggrFrameCode(),
                             executionAtr: 1,
-                            executionStatus: 0,
+                            executionStatus: 2,
                             presenceOfError: 1,
                             startDateTime: moment(self.currentItem().startDate()).utc(),
                             endDateTime: moment(self.currentItem().endDate()).utc(),
