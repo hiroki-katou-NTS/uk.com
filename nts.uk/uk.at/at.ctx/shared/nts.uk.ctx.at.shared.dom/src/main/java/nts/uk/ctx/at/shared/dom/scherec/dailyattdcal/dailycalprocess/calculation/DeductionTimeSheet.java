@@ -38,7 +38,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.childcareset.ShortTimeWorkGetRange;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
@@ -180,7 +179,7 @@ public class DeductionTimeSheet {
 			ManagePerPersonDailySet personCommonSetting) {
 
 		//控除時間帯の取得
-		List<TimeSheetOfDeductionItem> deductionTimeSheet = collectDeductionTimesForCalc(
+		return collectDeductionTimesForCalc(
 				DeductionAtr.Appropriate,
 				workType,
 				integrationOfWorkTime,
@@ -190,18 +189,6 @@ public class DeductionTimeSheet {
 				betweenWorkTimeSheets,
 				companyCommonSetting,
 				personCommonSetting);
-		
-		if(integrationOfWorkTime.getCommonSetting().getGoOutSet().getTotalRoundingSet().getFrameStraddRoundingSet().isTotalAndRounding()) {
-			// 丸め処理（未完成）
-			deductionTimeSheet = rounding(
-					DeductionAtr.Appropriate,
-					deductionTimeSheet,
-					integrationOfWorkTime.getCommonSetting().getGoOutSet().getTotalRoundingSet(),
-					new TimeWithDayAttr(480), //仮で固定値を渡している。丸め処理見直し時に要修正。
-					new TimeWithDayAttr(1020), //仮で固定値を渡している。丸め処理見直し時に要修正。
-					oneDayOfRange);
-		}
-		return deductionTimeSheet;
 	}
 	
 	/**
@@ -953,21 +940,6 @@ public class DeductionTimeSheet {
 		return ShortTimeSheetAtr.WORKING_TIME;
 	}
 
-	/**
-	 * 丸め処理
-	 * @return
-	 */
-	public static List<TimeSheetOfDeductionItem> rounding(DeductionAtr dedAtr,List<TimeSheetOfDeductionItem> timeSheetOfDeductionItemList,TotalRoundingSet goOutSet,
-														 TimeWithDayAttr mostFastWithinFrameOclock,TimeWithDayAttr mostLateWithinFrameOclock,
-														 TimeSpanForDailyCalc oneDayRange){
-		//if(goOutSet.ge){
-//		if(false) {
-//			val correctList = perRounding(timeSheetOfDeductionItemList,mostFastWithinFrameOclock,mostLateWithinFrameOclock,oneDayRange);
-//			return correctList;
-//		}
-		return timeSheetOfDeductionItemList;
-	}
-	
 	/**
 	 * 計上時間の丸め設定.丸め方法 = 個別丸め　の分岐後処理は
 	 * ここで行う。

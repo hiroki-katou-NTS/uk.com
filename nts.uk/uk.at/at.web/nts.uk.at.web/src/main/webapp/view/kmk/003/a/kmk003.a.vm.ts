@@ -1,4 +1,4 @@
-
+﻿
 module nts.uk.at.view.kmk003.a {
 
     import SimpleWorkTimeSettingDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.SimpleWorkTimeSettingDto;
@@ -87,7 +87,8 @@ module nts.uk.at.view.kmk003.a {
             lstWorkTimeLanguage: KnockoutObservableArray<IWorkTimeLanguage> = ko.observableArray([]);
 
             tabA2Text : KnockoutObservable<string> = ko.observable("");
-            
+            checkMsg1485: KnockoutComputed<boolean>;
+
             constructor() {
                 let self = this;
                 // initial tab mode
@@ -130,6 +131,28 @@ module nts.uk.at.view.kmk003.a {
                 self.overTimeWorkFrameOptions = ko.observableArray([]);
 
                 self.backupCommonSetting = null;
+
+                self.checkMsg1485 = ko.computed(() => {
+                  const goOutSet = self.mainSettingModel.commonSetting.goOutSet;
+                  if (goOutSet.roundingMethod() !== 2) {
+                    return false;
+                  }
+                  return goOutSet.diffTimezoneSetting.ottimezone.privateUnionGoOut.approTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.pubHolWorkTimezone.privateUnionGoOut.approTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.workTimezone.privateUnionGoOut.approTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.ottimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.pubHolWorkTimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.workTimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.ottimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.pubHolWorkTimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.workTimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingMethod() === 0;
+                });
+
+                self.checkMsg1485.subscribe(value => {
+                  if (!value) {
+                    $("#A33_41").ntsError("clear");
+                  }
+                });
 
                 self.langId.subscribe(() => {
                     let lang: string = ko.toJS(self.langId);
@@ -649,6 +672,8 @@ module nts.uk.at.view.kmk003.a {
                 
                 //validate disabled item tab 7
                 self.validatetab7();
+
+                self.validateTab8();
                 
                 //validate disabled item tab 11
                 if (!nts.uk.util.isNullOrEmpty(self.backupCommonSetting)) {
@@ -693,6 +718,14 @@ module nts.uk.at.view.kmk003.a {
                     $('#nts-fix-table-a7-flex-notuse-2').find('.nts-input').ntsError('clear');
                 }
             }
+
+            private validateTab8() {
+              const self = this;
+              if (self.checkMsg1485()) {
+                $('#A33_41').ntsError('set', { messageId: 'Msg_1485' });
+              }
+            }
+
             private validateTab11(commonDayoff: SubHolTransferSetDto,commonOvertime: SubHolTransferSetDto) {
                 let self = this;
                 if (self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.useDivision()) {
@@ -752,7 +785,7 @@ module nts.uk.at.view.kmk003.a {
                 self.validateInput();
 
                 // stop function if has error.
-                if ($('.nts-editor').ntsError('hasError') || $('.time-range-editor').ntsError('hasError')) {
+                if ($('.nts-editor').ntsError('hasError') || $('.time-range-editor').ntsError('hasError') || nts.uk.ui.errors.hasError()) {
                     return;
                 }
                 

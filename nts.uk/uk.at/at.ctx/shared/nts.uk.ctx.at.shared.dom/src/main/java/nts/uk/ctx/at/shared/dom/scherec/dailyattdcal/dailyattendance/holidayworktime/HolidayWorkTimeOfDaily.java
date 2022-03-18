@@ -35,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareFrameSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -101,7 +102,8 @@ public class HolidayWorkTimeOfDaily implements Cloneable{
 				workType,
 				workTimeCode,
 				integrationOfDaily,
-				true);
+				true,
+				recordReGet.getWorkTimezoneCommonSet().map(c -> c.getGoOutSet()));
 		//休出時間の計算
 		val holidayWorkFrameTime = holidayWorkTimeSheet.collectHolidayWorkTime(
 				recordReGet.getPersonDailySetting().getOverTimeSheetReq(),
@@ -111,7 +113,8 @@ public class HolidayWorkTimeOfDaily implements Cloneable{
 				workTimeCode,
 				integrationOfDaily,
 				declareResult,
-				true);
+				true,
+				recordReGet.getWorkTimezoneCommonSet().map(c -> c.getGoOutSet()));
 		
 		//休日出勤深夜時間の計算
 		val holidayMidnightWork = Finally.of(calcMidNightTimeIncludeHolidayWorkTime(

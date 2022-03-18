@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -83,14 +84,6 @@ public abstract class CalculationTimeSheet {
 	}
 	
 	/**
-	 * 指定時間を終了とする時間帯作成
-	 * @return
-	 */
-	public Optional<TimeSpanForDailyCalc> reCreateTreatAsSiteiTimeEnd(AttendanceTime transTime,OverTimeFrameTimeSheetForCalc overTimeWork) {
-		return overTimeWork.contractTimeSheet(new TimeWithDayAttr(this.calcTotalTime().valueAsMinutes() - transTime.valueAsMinutes()));
-	}
-	
-	/**
 	 * 指定時間に従って時間帯の縮小
 	 * @return 縮小後の時間帯
 	 */
@@ -130,13 +123,20 @@ public abstract class CalculationTimeSheet {
 	
 	/**
 	 * 控除時間の合計を算出する
+	 * @param actualAtr 実働時間帯区分
 	 * @param dedAtr 控除区分
 	 * @param conditionAtr 条件
+	 * @param goOutSet 就業時間帯の外出設定
 	 * @return 控除時間
 	 */
-	public AttendanceTime calcDedTimeByAtr(DeductionAtr dedAtr,ConditionAtr conditionAtr) {
+	public AttendanceTime calcDedTimeByAtr(ActualWorkTimeSheetAtr actualAtr, DeductionAtr dedAtr, ConditionAtr conditionAtr, Optional<WorkTimezoneGoOutSet> goOutSet, NotUseAtr canOffset) {
 		val forCalcList = getDedTimeSheetByAtr(dedAtr,conditionAtr);
-		return new AttendanceTime(forCalcList.stream().map(tc -> tc.calcTotalTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+		int total = forCalcList.stream().map(tc -> tc.calcTotalTime(canOffset, NotUseAtr.USE).valueAsMinutes()).collect(Collectors.summingInt(tc -> tc));
+		Optional<TimeRoundingSetting> roundSet = goOutSet.flatMap(g -> g.getAfterTotalInFrame(actualAtr, conditionAtr, dedAtr, this.rounding));
+		if(roundSet.isPresent()) {
+			return new AttendanceTime(roundSet.get().round(total));
+		}
+		return new AttendanceTime(total);
 	}
 		
 	/**
