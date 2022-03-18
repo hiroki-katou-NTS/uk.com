@@ -17,6 +17,10 @@
         nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.PaymentCategory
         nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.LinkedMonthSettingClassification
       </com:EnumScript>
+      <com:ValidatorScript>
+		nts.uk.ctx.exio.dom.input.setting.ExternalImportCode
+		nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionCode
+      </com:ValidatorScript>
     </ui:define>
 
     <ui:define name="content">
@@ -56,12 +60,15 @@
                 ]}">
               </div>
               <!--A4_1-->
-              <input tabindex="6" class="init-data-text" data-bind="ntsTextEditor: {
-              value: initDataText1, 
-              readonly: true,
-              enable: checkedOrganizationInformation}" />
+              <input tabindex="6" class="init-data-text init-text1" data-bind="ntsTextEditor: {
+	              value: initDataText1, 
+	              constraint: ['ExternalImportCode'],
+	              enable: checkedOrganizationInformation,
+	              name: '#[SMM001_19]'}" />
               <!--A4_2-->
-              <button tabindex="7" class= "large init-data-button" data-bind="enable: checkedOrganizationInformation">
+              <button tabindex="7" class= "large init-data-button" 
+              						data-bind="enable: checkedOrganizationInformation,
+              									click: createOrganization">
               	#{i18n.getText('SMM001_18')}
               </button>
             </div>
@@ -86,12 +93,15 @@
                 ]}">
               </div>
               <!--A4_3-->
-              <input tabindex="10" class="init-data-text" data-bind="ntsTextEditor: {
+              <input tabindex="10" class="init-data-text init-text2" data-bind="ntsTextEditor: {
               value: initDataText2, 
-              readonly: true,
-              enable: checkedBasicPersonnelInformation}" />
+              constraint: ['ExternalImportCode'],
+              enable: checkedBasicPersonnelInformation,
+              name: '#[SMM001_19]'}" />
               <!--A4_4-->
-              <button tabindex="11" class= "large init-data-button" data-bind="enable: checkedBasicPersonnelInformation">
+              <button tabindex="11" class= "large init-data-button" 
+             								data-bind = "enable: checkedBasicPersonnelInformation,
+             												click: createHuman">
               	#{i18n.getText('SMM001_18')}
               </button>              
             </div>
@@ -116,12 +126,15 @@
                 ]}">
               </div>
               <!--A4_5-->
-              <input tabindex="14" class="init-data-text" data-bind="ntsTextEditor: {
+              <input tabindex="14" class="init-data-text init-text3" data-bind="ntsTextEditor: {
               value: initDataText3, 
-              readonly: true,
-              enable: checkedJobStructureInformation}" />
+              enable: checkedJobStructureInformation,
+              constraint: ['ExternalImportCode'],
+              name: '#[SMM001_19]'}" />
               <!--A4_6-->
-              <button tabindex="15" class= "large init-data-button" data-bind="enable: checkedJobStructureInformation">
+              <button tabindex="15" class= "large init-data-button" 
+              						data-bind="enable: checkedJobStructureInformation,
+              									click: jobSystem">
               	#{i18n.getText('SMM001_18')}
               </button>                
             </div>
@@ -146,12 +159,15 @@
                 ]}">
               </div>
               <!--A4_7-->
-              <input tabindex="18" class="init-data-text" data-bind="ntsTextEditor: {
+              <input tabindex="18" class="init-data-text init-text4" data-bind="ntsTextEditor: {
               value: initDataText4, 
-              readonly: true,
-              enable: checkedAddressInformation}" />
+              enable: checkedAddressInformation,
+              constraint: ['ExternalImportCode'],
+              name: '#[SMM001_19]'}" />
               <!--A4_8-->
-              <button tabindex="19" class= "large init-data-button" data-bind="enable: checkedAddressInformation">
+              <button tabindex="19" class= "large init-data-button"
+              						 data-bind="enable: checkedAddressInformation,
+              						 			click: address">
               	#{i18n.getText('SMM001_18')}
               </button>                 
             </div>
@@ -176,12 +192,15 @@
                 ]}">
               </div>
               <!--A4_9-->
-              <input tabindex="22" class="init-data-text" data-bind="ntsTextEditor: {
+              <input tabindex="22" class="init-data-text init-text5" data-bind="ntsTextEditor: {
               value: initDataText5, 
-              readonly: true,
-              enable: checkedLeaveInformation}" />
+              enable: checkedLeaveInformation,
+              constraint: ['ExternalImportCode'],
+              name: '#[SMM001_19]'}" />
               <!--A4_10-->
-              <button tabindex="23" class= "large init-data-button" data-bind="enable: checkedLeaveInformation">
+              <button tabindex="23" class= "large init-data-button"
+              						 data-bind="enable: checkedLeaveInformation,
+              						 			click: leaveWork">
               	#{i18n.getText('SMM001_18')}
               </button>                
             </div>
@@ -206,12 +225,15 @@
                 ]}">
               </div>
               <!--A4_11-->
-              <input tabindex="26" class="init-data-text" data-bind="ntsTextEditor: {
+              <input tabindex="26" class="init-data-text init-text6" data-bind="ntsTextEditor: {
               value: initDataText6, 
-              readonly: true,
-              enable: checkedAffiliatedMaster}" />
+              enable: checkedAffiliatedMaster,
+              constraint: ['ExternalImportCode'],
+              name: '#[SMM001_19]'}" />
               <!--A4_12-->
-              <button tabindex="27" class= "large init-data-button" data-bind="enable: checkedAffiliatedMaster">
+              <button tabindex="27" class= "large init-data-button" 
+              								data-bind="enable: checkedAffiliatedMaster,
+              											click: belongs">
               	#{i18n.getText('SMM001_18')}
               </button>               
             </div>
@@ -236,12 +258,15 @@
                 ]}">
               </div>
               <!--A4_13-->
-              <input tabindex="30" class="init-data-text" data-bind="ntsTextEditor: {
+              <input tabindex="30" class="init-data-text init-text7" data-bind="ntsTextEditor: {
               value: initDataText7, 
-              readonly: true,
-              enable: checkedEmployeeMaster}" />
+              constraint: ['ExternalImportCode'],
+              enable: checkedEmployeeMaster,
+              name: '#[SMM001_19]'}" />
               <!--A4_14-->
-              <button tabindex="31" class= "large init-data-button" data-bind="enable: checkedEmployeeMaster">
+              <button tabindex="31" class= "large init-data-button" 
+              							data-bind="enable: checkedEmployeeMaster,
+              										click: employee">
               	#{i18n.getText('SMM001_18')}
               </button>                  
             </div>
