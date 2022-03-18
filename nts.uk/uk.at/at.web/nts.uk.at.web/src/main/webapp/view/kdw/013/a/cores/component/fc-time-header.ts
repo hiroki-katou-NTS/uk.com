@@ -103,8 +103,9 @@ module nts.uk.ui.at.kdw013.timeheader {
                 return '&nbsp;' + icon;
             }
             
-            setTimeout(()=> { 
-                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '16px', width: 16, height: 16 , extension: "png"}, click: () => { vm.OpenIDialog(vm, time); } }); 
+            setTimeout(()=> {
+                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '16px', width: 16, height: 16 , extension: "png"}, click: () => { vm.OpenIDialog(vm, time); } });
+                $('.' + className).attr('tabindex', 0); 
                 $('.' + className).on('mousedown', () => { vm.regisPopup(time); });
             }, 300);
             
