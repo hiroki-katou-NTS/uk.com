@@ -164,7 +164,7 @@ public class InfomationInitScreenProcess {
 				? lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList())
 	                    : CollectionUtil.isEmpty(objectShare.getLstExtractedEmployee()) ?  objectShare.getLstEmployeeShare() : objectShare.getLstExtractedEmployee();
 		
-		// 初期表示社員を取得する
+		// 初期表示社員を取得する - EA修正履歴：No4280 & No4291
 		initDto = processor.changeListEmployeeId(employeeIds, rangeInit, mode,
 				objectShare != null, screenDto.getClosureId(), screenDto);
 		DPCorrectionStateParam stateParam = processor.getDailySupportWorkers(initDto.getParam());
@@ -174,7 +174,7 @@ public class InfomationInitScreenProcess {
 			if (employeeIds.isEmpty())
 				needSortEmp = true;
 			
-			changeEmployeeIds = initDto.getLstEmpId();
+			changeEmployeeIds = initDto.getParam().getEmployeeIds();
 		} else {
 			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 		}
