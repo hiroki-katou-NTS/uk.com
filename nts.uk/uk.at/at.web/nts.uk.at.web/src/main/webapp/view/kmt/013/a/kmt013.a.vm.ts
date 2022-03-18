@@ -310,7 +310,7 @@ module nts.uk.at.view.kmt013.a {
                 let workplaceInfor = getShared('workplaceInfor');
                 let baseDate = getShared('baseDateCDL008');
                 if (data) {
-                    vm.supportableList(_.sortBy(workplaceInfor,(item)=>{return item.hierarchyCode;}));
+                    vm.supportableList(_.sortBy(workplaceInfor,(item)=>{return item.code;}));
                 }
             });
         }
