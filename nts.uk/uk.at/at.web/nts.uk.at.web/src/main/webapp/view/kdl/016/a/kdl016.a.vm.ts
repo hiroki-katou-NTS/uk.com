@@ -169,13 +169,19 @@ module nts.uk.at.view.kdl016.a {
                         width: '175px',
                         template: '<div style="float:left">${periodDisplay} </div>'
                     },
-                    {headerText: orgHeader, key: "supportOrgName", width: '115px', dataType: "string"},
+                    {
+                        headerText: orgHeader,
+                        key: "supportOrgName",
+                        dataType: "string",
+                        width: "115px",
+                        template: '<div class="limited-label">${supportOrgName} </div>'
+                    },
                     {
                         headerText: vm.$i18n('KDL016_16'),
                         key: "employeeDisplay",
                         dataType: "string",
                         width: "260px",
-                        template: '<div class="limited-label" style="float:left">${employeeDisplay} </div>'
+                        template: '<div class="limited-label">${employeeDisplay} </div>'
                     },
                     {headerText: vm.$i18n('KDL016_17'), key: "supportTypeName", width: '95px', dataType: "string"},
                     {headerText: vm.$i18n('KDL016_18'), key: "timeSpanDisplay", width: "120px", dataType: "string"}
