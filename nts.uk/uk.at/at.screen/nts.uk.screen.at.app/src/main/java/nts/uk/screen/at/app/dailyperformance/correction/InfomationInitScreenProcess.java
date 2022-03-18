@@ -174,7 +174,7 @@ public class InfomationInitScreenProcess {
 			if (employeeIds.isEmpty())
 				needSortEmp = true;
 			
-			changeEmployeeIds = initDto.getParam().getEmployeeIds();
+			changeEmployeeIds = initDto.getParam().getEmployeeIds().isEmpty() ? initDto.getLstEmpId() : initDto.getParam().getEmployeeIds();
 		} else {
 			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 		}
