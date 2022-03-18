@@ -144,6 +144,7 @@ module nts.uk.at.view.kdl016.a {
                     {id: '終日', Name: vm.$i18n('KDL016_37')},
                     {id: '時間帯', Name: vm.$i18n('KDL016_38')},
                 ];
+            let orgHeader = vm.selectedMode() === DISPLAY_MODE.GO_TO_SUPPORT ?  vm.$i18n('KDL016_15') : vm.$i18n('KDL016_20');
 
             $("#grid").igGrid({
                 // width: "929px",
@@ -168,7 +169,7 @@ module nts.uk.at.view.kdl016.a {
                         width: '175px',
                         template: '<div style="float:left">${periodDisplay} </div>'
                     },
-                    {headerText: vm.$i18n('KDL016_15'), key: "supportOrgName", width: '115px', dataType: "string"},
+                    {headerText: orgHeader, key: "supportOrgName", width: '115px', dataType: "string"},
                     {
                         headerText: vm.$i18n('KDL016_16'),
                         key: "employeeDisplay",
