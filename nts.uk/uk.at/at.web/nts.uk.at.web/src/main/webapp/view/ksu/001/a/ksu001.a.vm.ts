@@ -5476,7 +5476,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
             nts.uk.ui.windows.sub.modal("/view/kdl/016/a/index.xhtml").onClosed(() => {
                 let result = getShared('status-result');
-                if ( _.isNil(result) && result == true ) {
+                if (! _.isNil(result) && result == true ) {
                     self.updateScreenAfterSettingSupport();
 
                 }
