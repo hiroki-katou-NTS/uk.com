@@ -1821,12 +1821,24 @@ public class DailyPerformanceCorrectionProcessor {
 		String companyId = AppContexts.user().companyId();
 		String employeeIdLogin = AppContexts.user().employeeId();
 		List<String> lstEmployeeId = new ArrayList<>();
-		List<String> lstWplId = new ArrayList<>();
-		List<ResultRequest597Export> lstInfoEmp = new ArrayList<>();
+		 // [No.598]社員が所属している職場を取得する
 		DatePeriod period = new DatePeriod(range.getStartDate(), range.getEndDate());
+		List<String> lstWplId = workplacePub.getLstWorkplaceIdBySidAndPeriod(employeeIdLogin, period);
+		// [No.597]職場の所属社員を取得する
+		List<ResultRequest597Export> lstInfoEmp =  workplacePub.getLstEmpByWorkplaceIdsAndPeriod(lstWplId, period);
+		
 		InitialDisplayEmployeeDto result = screenDto.getStateParam() != null ? new InitialDisplayEmployeeDto(lstEmployeeId, screenDto.getStateParam()) :
 			new InitialDisplayEmployeeDto(lstEmployeeId, new DPCorrectionStateParam(period, employeeIds, mode, 
 					new ArrayList<>(), null, null, isTranfer, new ArrayList<>(), new ArrayList<>()));
+		
+		if(mode == ScreenMode.APPROVAL.value || mode == ScreenMode.NORMAL.value) {
+			// 応援者の情報をOutputにセットする - No4281
+			result.getParam().setLstWrkplaceId(lstWplId);
+			
+			List<String> lstEmp597 = lstInfoEmp.stream().map(x -> x.getSid()).collect(Collectors.toList());
+			result.getParam().setEmployeeIds(lstEmp597);
+		}
+		
 		// 「自分のみ」以外の場合
 		if (mode == ScreenMode.NORMAL.value) {
 			
@@ -1841,12 +1853,6 @@ public class DailyPerformanceCorrectionProcessor {
 				result.setLstEmpId(Arrays.asList(employeeIdLogin));
 				return result;
 			}
-			
-			// [No.598]社員が所属している職場を取得する
-			lstWplId = workplacePub.getLstWorkplaceIdBySidAndPeriod(employeeIdLogin, period);
-			// [No.597]職場の所属社員を取得する
-			lstInfoEmp =  workplacePub.getLstEmpByWorkplaceIdsAndPeriod(lstWplId, period);
-			
 			
 //			List<RegulationInfoEmployeeQueryR> regulationRs = regulationInfoEmployeePub.search(
 //					createQueryEmployee(new ArrayList<>(), range.getStartDate(), range.getEndDate()));
@@ -1904,11 +1910,6 @@ public class DailyPerformanceCorrectionProcessor {
 		// Code
 		if(mode == ScreenMode.APPROVAL.value || mode == ScreenMode.NORMAL.value) {
 			// 応援者の情報をOutputにセットする - No4281
-			result.getParam().setLstWrkplaceId(lstWplId);
-			
-			List<String> lstEmp597 = lstInfoEmp.stream().map(x -> x.getSid()).collect(Collectors.toList());
-			result.getParam().setEmployeeIds(lstEmp597);
-			
 			result.setLstEmpId(lstEmployeeId);
 		}
 		
