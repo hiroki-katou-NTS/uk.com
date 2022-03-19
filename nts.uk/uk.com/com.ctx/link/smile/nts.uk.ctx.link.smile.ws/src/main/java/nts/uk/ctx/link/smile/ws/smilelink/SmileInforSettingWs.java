@@ -19,11 +19,26 @@ import nts.uk.ctx.exio.app.command.exo.charegister.SettingDataCharRegisterServic
 import nts.uk.ctx.exio.app.command.exo.condset.RegisterStdOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.StdOutItemOrderCommand;
 import nts.uk.ctx.exio.app.command.exo.condset.StdOutputCondSetCommand;
+import nts.uk.ctx.exio.app.command.exo.dataformat.AddPerformSettingByInTimeCommand;
+import nts.uk.ctx.exio.app.command.exo.dataformat.AddPerformSettingByInTimeCommandHandler;
+import nts.uk.ctx.exio.app.command.exo.dataformat.AddPerformSettingByTimeCommand;
+import nts.uk.ctx.exio.app.command.exo.dataformat.AddPerformSettingByTimeCommandHandler;
+import nts.uk.ctx.exio.app.command.exo.dataformat.DateFormatSettingCommand;
+import nts.uk.ctx.exio.app.command.exo.dataformat.DateFormatSettingCommandHandler;
+import nts.uk.ctx.exio.app.command.exo.dataformat.NumberDataFormatSettingCommand;
+import nts.uk.ctx.exio.app.command.exo.dataformat.NumberDataFormatSettingCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting.NumberDfsCommand;
 import nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting.TimeDfsCommand;
 import nts.uk.ctx.exio.app.command.exo.outputitem.CategoryItemCommand;
 import nts.uk.ctx.exio.app.command.exo.outputitem.RegisterStdOutItemCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.outputitem.StdOutItemCommand;
+import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvertRepository;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatSettingRepository;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DateFormatSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.InTimeDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.NumberDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSet;
 import nts.uk.ctx.link.smile.app.smilelink.SmileAcceptLinkDto;
 import nts.uk.ctx.link.smile.app.smilelink.SmileAcceptLinkFinder;
 import nts.uk.ctx.link.smile.app.smilelink.SmileOutLinkSetDto;
@@ -49,13 +64,31 @@ public class SmileInforSettingWs {
 	private RegisterStdOutItemCommandHandler addStdOutItemCommandHandler;
 	
 	@Inject
-	SettingDataCharRegisterService settingDataCharRegisterService;
+	private SettingDataCharRegisterService settingDataCharRegisterService;
 	
 	@Inject
 	private AddOutputCodeConvertCommandHandler addHandler;
 	
 	@Inject
 	private SmileLinkageOutputSettingRepository linkOutSetRep;
+	
+	@Inject
+	private OutputCodeConvertRepository convertRep;
+	
+	@Inject
+	private DataFormatSettingRepository formatRep;
+	
+	@Inject
+	private DateFormatSettingCommandHandler dateCmdHdl;
+	
+	@Inject
+	private NumberDataFormatSettingCommandHandler numberCmdHdl;
+	
+	@Inject
+	private AddPerformSettingByTimeCommandHandler performCmdHdl;
+	
+	@Inject
+	private AddPerformSettingByInTimeCommandHandler performInCmdHdl;
 	
 	@POST
 	@Path("get-accept-setting")
@@ -111,7 +144,7 @@ public class SmileInforSettingWs {
 																		overWrite, newMode, destinationName, standType, listStandardOutputItem);
 		this.registerStdOutputCondSetCommandHandler.handle(command);
 		
-		// C, J
+		// C
 		boolean isNewMode = true;
         
         List<CategoryItemCommand> empCatItem = new ArrayList<>();
@@ -171,7 +204,28 @@ public class SmileInforSettingWs {
 				8);
 		this.addStdOutItemCommandHandler.handle(outItemOtTimeCatItem);
 		
+		// J
+		this.formatRep.remove(new ChacDataFmSet(0, companyId, 0, null, 0, 0, 0, null, null, 0, 0, null, null, null));
+		this.settingDataCharRegisterService.handle(new ChacDataFmSetCommand(companyId, 0, null, 0, 0, 0, null, null, 0, 0, null, null, null, version));
+		
+		// K
+		this.formatRep.remove(new DateFormatSet(0, companyId, 0, 0, null, null, 0));
+		this.dateCmdHdl.handle(new DateFormatSettingCommand(companyId, 0, 0, null, null, 0));
+		
+		// I
+		this.formatRep.remove(new NumberDataFmSet(0, companyId, 0, null, 0, 0, null, 0, null, 0, 0, null, 0, null, 0, 0, 0));
+		this.numberCmdHdl.handle(new NumberDataFormatSettingCommand(companyId, 0, null, 0, 0, null, 0, null, 0, 0, null, 0, null, 1, 1, 0));
+		
+		// L
+		this.formatRep.remove(new TimeDataFmSet(0, companyId, 0, 0, 0, null, 0, null, 0, 0, 0, null, 0, 0, 0, null, null, 0));
+		this.performCmdHdl.handle(new AddPerformSettingByTimeCommand(companyId, 0, 0, 0, null, 0, null, 0, 2, 0, null, 0, 0, 0, null, null, 1));
+		
+		// M
+		this.formatRep.remove(new InTimeDataFmSet(0, companyId, 0, null, 0, 0, null, 0, 0, null, 0, 0, 0, 0, null, 0, 0));
+		this.performInCmdHdl.handle(new AddPerformSettingByInTimeCommand(companyId, 0, null, 0, 0, null, 0, 0, null, 0, 2, 0, 0, null, 0, 1));
+		
 		// G
+		this.convertRep.removeByCom(companyId);
 		List<CdConvertDetailCommand> convertDetailList = new ArrayList<>();
 		CdConvertDetailCommand detail = new CdConvertDetailCommand("00001", "1", "テスト１", "1", null);
 		convertDetailList.add(detail);

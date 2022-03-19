@@ -88,4 +88,30 @@ public class AddPerformSettingByTimeCommand {
 	 * 分/小数処理端数区分
 	 */
 	private int minuteFractionDigitProcessCls;
+
+	public AddPerformSettingByTimeCommand(String cid, int nullValueSubs, int outputMinusAsZero, int fixedValue,
+			String valueOfFixedValue, int fixedLengthOutput, Integer fixedLongIntegerDigit,
+			int fixedLengthEditingMethod, int delimiterSetting, int selectHourMinute, Integer minuteFractionDigit,
+			int decimalSelection, int fixedValueOperationSymbol, int fixedValueOperation, Double fixedCalculationValue,
+			String valueOfNullValueSubs, int minuteFractionDigitProcessCls) {
+		super();
+		this.cid = cid;
+		this.nullValueSubs = nullValueSubs;
+		this.outputMinusAsZero = outputMinusAsZero;
+		this.fixedValue = fixedValue;
+		this.valueOfFixedValue = valueOfFixedValue;
+		this.fixedLengthOutput = fixedLengthOutput;
+		this.fixedLongIntegerDigit = fixedLongIntegerDigit;
+		this.fixedLengthEditingMethod = fixedLengthEditingMethod;
+		this.delimiterSetting = delimiterSetting;
+		this.selectHourMinute = selectHourMinute;
+		this.minuteFractionDigit = minuteFractionDigit;
+		this.decimalSelection = decimalSelection;
+		this.fixedValueOperationSymbol = fixedValueOperationSymbol;
+		this.fixedValueOperation = fixedValueOperation;
+		this.fixedCalculationValue = fixedCalculationValue;
+		this.valueOfNullValueSubs = valueOfNullValueSubs;
+		this.minuteFractionDigitProcessCls = minuteFractionDigitProcessCls;
+	}
+	
 }

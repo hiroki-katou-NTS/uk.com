@@ -22,6 +22,8 @@ public class JpaOutputCodeConvertRepository extends JpaRepository implements Out
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtOutputCodeConvert f";
 	private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE f.outputCodeConvertPk.cid = :cid";
 	private static final String SELECT_BY_ID = SELECT_BY_CID + " AND f.outputCodeConvertPk.convertCd = :convertCode";
+	private static final String DELETE_BY_CID = "DELETE from OiomtOutputCodeConvert f "
+			+ " WHERE f.outputCodeConvertPk.cid =:cid ";
 
 	@Override
 	public List<OutputCodeConvert> getAllOutputCodeConvert() {
@@ -79,5 +81,13 @@ public class JpaOutputCodeConvertRepository extends JpaRepository implements Out
 							itemDetail.getOutputItem().isPresent() ? itemDetail.getOutputItem().get().v() : null,
 							itemDetail.getSystemCd().v(),null);
 				}).collect(Collectors.toList()));
+	}
+
+
+	@Override
+	public void removeByCom(String cid) {
+		this.getEntityManager().createQuery(DELETE_BY_CID).setParameter("cid", cid)
+				.executeUpdate();
+		this.getEntityManager().flush();
 	}
 }
