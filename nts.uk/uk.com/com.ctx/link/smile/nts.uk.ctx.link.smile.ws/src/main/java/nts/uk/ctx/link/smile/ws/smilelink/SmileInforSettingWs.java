@@ -226,6 +226,7 @@ public class SmileInforSettingWs {
 		
 		// G
 		this.convertRep.removeByCom(companyId);
+		this.convertRep.removeDetailByCom(companyId, "00001");
 		List<CdConvertDetailCommand> convertDetailList = new ArrayList<>();
 		CdConvertDetailCommand detail = new CdConvertDetailCommand("00001", "1", "テスト１", "1", null);
 		convertDetailList.add(detail);
