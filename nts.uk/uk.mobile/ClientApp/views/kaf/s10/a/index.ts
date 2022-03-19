@@ -177,6 +177,12 @@ export class KafS10Component extends KafS00ShrComponent {
             API.changeDate,
             command
         ).then((res: any) => {
+            let errorMsgLst = res.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorMsgLst;
+            if (!_.isEmpty(errorMsgLst)) {
+                self.$modal.error({ messageId: errorMsgLst[0] }).then(() => {
+                    
+                });
+            }
             self.model.appHdWorkDispInfo = res.data;
             let step1 = self.$refs.step1 as KafS10Step1Component;
             step1.loadData(self.model.appHdWorkDispInfo);

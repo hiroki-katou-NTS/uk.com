@@ -167,6 +167,7 @@ public class BusinessTripFinder {
 
         Optional<List<ActualContentDisplay>> opActualContentDisplayLst = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
         
+        String msgError = null;
         List<ActualContentDisplay> actualContentDisplayLst = opActualContentDisplayLst.orElse(new ArrayList<>());
     	// 申請対象日リスト全ての日付に対し「表示する実績内容」が存在する
         List<ActualContentDisplay> dateNotHaveContentLst = actualContentDisplayLst.stream().filter(i -> !i.getOpAchievementDetail().isPresent() || i.getOpAchievementDetail() == null).collect(Collectors.toList());
@@ -182,7 +183,8 @@ public class BusinessTripFinder {
         				loopDate);
         		if(!opWorkingConditionItem.isPresent()) {
         			// エラーメッセージ（Msg_3267）を表示する
-        			throw new BusinessException("Msg_3267");
+        			msgError = "Msg_3267";
+        			continue;
         		}
         		// 実績データに労働条件を追加する
         		WorkInformation workInformation = opWorkingConditionItem.get().getWorkCategory().getWorkInformationWorkDay();
@@ -209,6 +211,9 @@ public class BusinessTripFinder {
         }
         opActualContentDisplayLst = Optional.of(actualContentDisplayLst);
         appDispInfoStartupOutput.getAppDispInfoWithDateOutput().setOpActualContentDisplayLst(opActualContentDisplayLst);
+        if(Strings.isNotBlank(msgError)) {
+        	appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getErrorMsgLst().add(msgError);
+        }
         
         // アルゴリズム「出張申請未承認申請を取得」を実行する
         businessTripService.getBusinessTripNotApproved(sid, appDate, opActualContentDisplayLst);
@@ -337,6 +342,7 @@ public class BusinessTripFinder {
         // エラーメッセージとして「#Msg_1695」を返す({0}＝年月日)
         Optional<List<ActualContentDisplay>> opActualContentDisplayLst = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
         
+        String msgError = null;
         List<ActualContentDisplay> actualContentDisplayLst = opActualContentDisplayLst.orElse(new ArrayList<>());
         List<ActualContentDisplay> dateNotHaveContentLst = opActualContentDisplayLst.get().stream().filter(i -> !i.getOpAchievementDetail().isPresent() || i.getOpAchievementDetail() == null).collect(Collectors.toList());
         actualContentDisplayLst.removeAll(dateNotHaveContentLst);
@@ -351,7 +357,8 @@ public class BusinessTripFinder {
         				loopDate);
         		if(!opWorkingConditionItem.isPresent()) {
         			// エラーメッセージ（Msg_3267）を表示する
-        			throw new BusinessException("Msg_3267");
+        			msgError = "Msg_3267";
+        			continue;
         		}
         		// 実績データに労働条件を追加する
         		WorkInformation workInformation = opWorkingConditionItem.get().getWorkCategory().getWorkInformationWorkDay();
@@ -378,6 +385,9 @@ public class BusinessTripFinder {
         }
         opActualContentDisplayLst = Optional.of(actualContentDisplayLst);
         appDispInfoStartupOutput.getAppDispInfoWithDateOutput().setOpActualContentDisplayLst(opActualContentDisplayLst);
+        if(Strings.isNotBlank(msgError)) {
+        	appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getErrorMsgLst().add(msgError);
+        }
         
 
         businessTripService.getBusinessTripNotApproved(loginSid, inputDates, opActualContentDisplayLst);
@@ -704,7 +714,9 @@ public class BusinessTripFinder {
             AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(cid, dates,
                     ApplicationType.BUSINESS_TRIP_APPLICATION, businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput(),
                     businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput(), Optional.empty());
+            businessTripInfoOutput.getAppDispInfoStartup().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
 
+            String msgError = null;
             Optional<List<ActualContentDisplay>> opActualContentDisplayLst = appDispInfoWithDateOutput.getOpActualContentDisplayLst();
             List<ActualContentDisplay> actualContentDisplayLst = opActualContentDisplayLst.orElse(new ArrayList<>());
         	// 申請対象日リスト全ての日付に対し「表示する実績内容」が存在する
@@ -721,7 +733,8 @@ public class BusinessTripFinder {
             				loopDate);
             		if(!opWorkingConditionItem.isPresent()) {
             			// エラーメッセージ（Msg_3267）を表示する
-            			throw new BusinessException("Msg_3267");
+            			msgError = "Msg_3267";
+            			continue;
             		}
             		// 実績データに労働条件を追加する
             		WorkInformation workInformation = opWorkingConditionItem.get().getWorkCategory().getWorkInformationWorkDay();
@@ -748,6 +761,9 @@ public class BusinessTripFinder {
             }
             opActualContentDisplayLst = Optional.of(actualContentDisplayLst);
             businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().setOpActualContentDisplayLst(opActualContentDisplayLst);
+            if(Strings.isNotBlank(msgError)) {
+            	businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getErrorMsgLst().add(msgError);
+            }
 
             businessTripService.getBusinessTripNotApproved(sid, dates, opActualContentDisplayLst);
 

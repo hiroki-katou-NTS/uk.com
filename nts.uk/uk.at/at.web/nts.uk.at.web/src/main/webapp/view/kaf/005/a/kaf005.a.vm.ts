@@ -575,6 +575,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					}
 				}).then((successData: any) => {
 					if (successData) {
+						let errorMsgLst = successData.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
+						if(!_.isEmpty(errorMsgLst)) {
+							vm.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
+		 							
+							});
+						}
 						vm.dataSource = successData;
 						vm.createVisibleModel(vm.dataSource);
                         vm.bindOverTimeWorks(vm.dataSource);
@@ -1048,6 +1054,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			
 				.done((res: DisplayInfoOverTime) => {
 					if (res) {
+						let errorMsgLst = res.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
+						if(!_.isEmpty(errorMsgLst)) {
+							self.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
+		 							
+							});
+						}
 						self.dataSource = res;
 						self.createVisibleModel(self.dataSource);
                         self.bindOverTimeWorks(self.dataSource);

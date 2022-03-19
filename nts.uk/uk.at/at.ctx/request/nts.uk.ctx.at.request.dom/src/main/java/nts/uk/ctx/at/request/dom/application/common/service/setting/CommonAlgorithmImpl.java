@@ -578,7 +578,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 					String resultWorkType = achievementDetail.getWorkTypeCD();
 					String resultWorkTime = achievementDetail.getWorkTimeCD();
 
-					return new InitWkTypeWkTimeOutput(resultWorkType, resultWorkTime);		
+					return new InitWkTypeWkTimeOutput(resultWorkType, resultWorkTime, Optional.empty());		
 				}
 			}
 		}
@@ -586,12 +586,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		GeneralDate paramDate = date == null ? GeneralDate.today() : date;
 		Optional<WorkingConditionItem> opWorkingConditionItem = WorkingConditionService.findWorkConditionByEmployee(createRequireM1(), employeeID, paramDate);
 		String processWorkType = null;
-		String processWorkTime = null; 
-		
-		if(!opWorkingConditionItem.isPresent()) {
-			// エラーメッセージ（Msg_3267）を表示する
-			throw new BusinessException("Msg_3267");
-		}
+		String processWorkTime = null;
+		Optional<String> opErrorMsg = Optional.empty();
 		
 		if(opWorkingConditionItem.isPresent()) {
 			
@@ -639,6 +635,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			
 			
 		} else {
+			// エラーメッセージ(Msg_3267)をエラーリストに追加する
+			opErrorMsg = Optional.of("Msg_3267");
 			// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
 			processWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
 			// Input．就業時間帯リストをチェック(Check Input. worktimeList)
@@ -648,7 +646,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			}
 		}
 		
-		return new InitWkTypeWkTimeOutput(processWorkType, processWorkTime);
+		return new InitWkTypeWkTimeOutput(processWorkType, processWorkTime, opErrorMsg);
 	}
 
 	@Override

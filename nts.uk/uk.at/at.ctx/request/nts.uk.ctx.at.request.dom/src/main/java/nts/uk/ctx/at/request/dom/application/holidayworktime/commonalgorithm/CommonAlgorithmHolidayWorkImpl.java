@@ -190,7 +190,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		
 		//1-3.起動時勤務種類・就業時間帯の初期選択		
 		InitWorkTypeWorkTime initWork = this.initWork(companyId, employeeId, baseDate, workTypeList, workTimeList, actualContentDisplayList);
-		
+		hdWorkDispInfoWithDateOutput.setOpErrorMsg(initWork.getOpErrorMsg());
 		hdWorkDispInfoWithDateOutput.setInitWorkType(initWork.getInitWorkTypeCd());
 		hdWorkDispInfoWithDateOutput.setInitWorkTime(initWork.getInitWorkTimeCd());
 		hdWorkDispInfoWithDateOutput.setInitWorkTypeName(Optional.ofNullable(initWork.getInitWorkType().isPresent() ? initWork.getInitWorkType().get().getName() : null));
@@ -907,44 +907,48 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		// 社員の労働条件を取得する
 		Optional<WorkingConditionItem> workingConditionItem =
 				workingConditionItemRepository.getBySidAndStandardDate(employeeId, baseDate);
-		if(!workingConditionItem.isPresent()) {
-			// エラーメッセージ（Msg_3267）を表示する
-			throw new BusinessException("Msg_3267");
-		}
 		Optional<WorkTypeCode> initWorkTypeCd = Optional.empty();
 		Optional<WorkTimeCode> initWorkTimeCd = Optional.empty();
-		
-		boolean isArchivement = !CollectionUtil.isEmpty(actualContentDisplayList) ? 
-				actualContentDisplayList.get(0).getOpAchievementDetail().isPresent()
-				: false;
-		
-		if(isArchivement) { // Input．表示する実績内容をチェックする
-			//	休出の法定区分を取得
-			Optional<HolidayAtr> holidayAtr = 
-					judgmentOneDayHoliday.getHolidayAtr(
-							companyId,
-							actualContentDisplayList.get(0).getOpAchievementDetail().map(x -> x.getWorkTypeCD()).orElse(null)
-					);
-			//	休日日の勤務種類・就業時間帯の初期選択
-			WorkHolidayInfo workHolidayInfo = this.initWorkHoliday(
-					companyId,
-					employeeId,
-					workTypeList,
-					workTimeList,
-					holidayAtr,
-					workingConditionItem);
-			// Output．初期選択勤務種類=取得した初期選択勤務種類、Output．初期選択就業時間帯=取得した初期選択就業時間帯
-			initWorkTypeCd = workHolidayInfo.getInitWorkTypeCd();
-			initWorkTimeCd = workHolidayInfo.getInitWorkTimeCd();
-			
+		Optional<String> opErrorMsg = Optional.empty();
+		if(!workingConditionItem.isPresent()) {
+			// エラーメッセージ(Msg_3267)をエラーリストに追加する
+			opErrorMsg = Optional.of("Msg_3267");
+			// Output．初期選択勤務種類=勤務種類リストの先頭、Output．初期選択就業時間帯=就業時間帯リスの先頭
+			initWorkTypeCd = workTypeList.stream().findFirst().map(x -> x.getWorkTypeCode());
+			initWorkTimeCd = workTimeList.stream().findFirst().map(x -> x.getWorktimeCode());
 		} else {
-			// Output.初期選択勤務種類=「労働条件項目.区分別勤務」．勤務種類.休日出勤時．勤務種類コード
-			initWorkTypeCd = workingConditionItem.isPresent() ? 
-					Optional.of(workingConditionItem.get().getWorkCategory().getWorkType().getHolidayWorkWTypeCode()) : Optional.empty();
+			boolean isArchivement = !CollectionUtil.isEmpty(actualContentDisplayList) ? 
+					actualContentDisplayList.get(0).getOpAchievementDetail().isPresent()
+					: false;
 			
-			// Output.初期選択就業時間帯=「労働条件項目.区分別勤務」.勤務時間帯．休日出勤時．就業時間帯コード
-			initWorkTimeCd = workingConditionItem.isPresent() ? 
-					workingConditionItem.get().getWorkCategory().getWorkTime().getHolidayWork().getWorkTimeCode() : Optional.empty();
+			if(isArchivement) { // Input．表示する実績内容をチェックする
+				//	休出の法定区分を取得
+				Optional<HolidayAtr> holidayAtr = 
+						judgmentOneDayHoliday.getHolidayAtr(
+								companyId,
+								actualContentDisplayList.get(0).getOpAchievementDetail().map(x -> x.getWorkTypeCD()).orElse(null)
+						);
+				//	休日日の勤務種類・就業時間帯の初期選択
+				WorkHolidayInfo workHolidayInfo = this.initWorkHoliday(
+						companyId,
+						employeeId,
+						workTypeList,
+						workTimeList,
+						holidayAtr,
+						workingConditionItem);
+				// Output．初期選択勤務種類=取得した初期選択勤務種類、Output．初期選択就業時間帯=取得した初期選択就業時間帯
+				initWorkTypeCd = workHolidayInfo.getInitWorkTypeCd();
+				initWorkTimeCd = workHolidayInfo.getInitWorkTimeCd();
+				
+			} else {
+				// Output.初期選択勤務種類=「労働条件項目.区分別勤務」．勤務種類.休日出勤時．勤務種類コード
+				initWorkTypeCd = workingConditionItem.isPresent() ? 
+						Optional.of(workingConditionItem.get().getWorkCategory().getWorkType().getHolidayWorkWTypeCode()) : Optional.empty();
+				
+				// Output.初期選択就業時間帯=「労働条件項目.区分別勤務」.勤務時間帯．休日出勤時．就業時間帯コード
+				initWorkTimeCd = workingConditionItem.isPresent() ? 
+						workingConditionItem.get().getWorkCategory().getWorkTime().getHolidayWork().getWorkTimeCode() : Optional.empty();
+			}
 		}
 		
 		// ドメインモデル「勤務種類」を取得
@@ -957,7 +961,8 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 				initWorkTypeCd,
 				initWorkTimeCd,
 				initWorkType,
-				initWorkTime);
+				initWorkTime,
+				opErrorMsg);
 		
 		return initWork;
 	}

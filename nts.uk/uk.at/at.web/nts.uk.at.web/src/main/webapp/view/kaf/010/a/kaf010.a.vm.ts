@@ -194,6 +194,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					
 				}).then((successData: any) => {
 					if (successData) {
+						let errorMsgLst = successData.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorMsgLst;
+						if(!_.isEmpty(errorMsgLst)) {
+							vm.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
+		 							
+							});
+						}
 						vm.dataSource = successData;
 						vm.itemControlHandler();
 						vm.bindOverTimeWorks(vm.dataSource);
@@ -1628,6 +1634,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			self.$blockui('show');
 			self.$ajax(API.changeAppDate, param)
 				.done((res: AppHdWorkDispInfo) => { 
+					let errorMsgLst = res.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorMsgLst;
+					if(!_.isEmpty(errorMsgLst)) {
+						self.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
+	 							
+						});
+					}
 					self.dataSource = res;
 					self.itemControlHandler();
 					self.bindOverTimeWorks(self.dataSource);

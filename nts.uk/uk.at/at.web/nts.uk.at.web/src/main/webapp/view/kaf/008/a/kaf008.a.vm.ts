@@ -158,6 +158,12 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 }
             }).done((res: any) => {
                 if (res.result) {
+					let errorMsgLst = res.businessTripInfoOutputDto.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
+					if(!_.isEmpty(errorMsgLst)) {
+						vm.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
+	 							
+						});
+					}
                     let output = res.businessTripInfoOutputDto;
 
                     vm.dataFetch().businessTripOutput = output;

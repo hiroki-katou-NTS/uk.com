@@ -109,6 +109,12 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 }
             }).then((res: any) => {
                 if(res) {
+					let errorMsgLst = res.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
+					if(!_.isEmpty(errorMsgLst)) {
+						vm.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
+	 							
+						});
+					}
                     vm.dataFetch({
                         workType: ko.observable(res.workType),
                         workTime: ko.observable(res.workTime),
@@ -317,10 +323,16 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 				vm.$ajax(API.changeDate, commandChangeDate)
 				.done(res => {
 					if (res) {
+						let errorMsgLst = res.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
+						if(!_.isEmpty(errorMsgLst)) {
+							vm.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
+		 							
+							});
+						}
 						dataClone.lstWorkType(res.lstWorkType);
 						dataClone.workType(res.workType);
 						dataClone.workTime(res.workTime);
-	                	dataClone.appDispInfoStartup = vm.appDispInfoStartupOutput;
+	                	dataClone.appDispInfoStartup = res.appDispInfoStartup;
 						vm.dataFetch(dataClone);						
 					}
 				}).fail(res => {

@@ -390,6 +390,12 @@ export class KafS09AComponent extends KafS00ShrComponent {
         };
         self.$http.post('at', API.updateAppWorkChange, params)
             .then((res: any) => {
+                let errorMsgLst = res.data.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
+                if (!_.isEmpty(errorMsgLst)) {
+                    self.$modal.error({ messageId: errorMsgLst[0] }).then(() => {
+
+                    });
+                }
                 self.isChangeDate = true;
                 self.dataOutput = res.data;
                 self.appDispInfoStartupOutput = self.dataOutput.appDispInfoStartup;
