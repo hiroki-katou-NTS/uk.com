@@ -5071,6 +5071,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 						dataSessionDto : self.dataSessionDto
 					}
                     service.calcTime(dcTimeParam).done((res : any) => {
+						self.dataSessionDto = res.dataSessionDto;
                         // workType, workTime not found
 						let value = res.dcCalcTime;
                         if (value.errorFindMaster28 || value.errorFindMaster29) {
