@@ -328,7 +328,7 @@ export class Kdws03AComponent extends Vue {
                     dateRange: dateR,
                     cellDataLst: self.displayDataLst,
                     headerLst: self.displayHeaderLst,
-                    timePeriodAllInfo: _.assign({}, self.timePeriodAllInfo, { closureId: ClosureId[self.timePeriodAllInfo.closureId] }),
+                    timePeriodAllInfo: _.assign({}, self.timePeriodAllInfo, { closureId: self.timePeriodAllInfo.closureId }),
                     autBussCode: self.autBussCode,
                     paramData: self.paramData,
                     dPCorrectionMenuDto: self.dPCorrectionMenuDto,
