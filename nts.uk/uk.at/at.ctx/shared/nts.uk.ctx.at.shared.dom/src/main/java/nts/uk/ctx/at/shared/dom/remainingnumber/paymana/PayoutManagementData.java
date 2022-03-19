@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
+import nts.arc.error.I18NErrorMessage;
+import nts.arc.i18n.I18NText;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
@@ -138,5 +141,14 @@ public class PayoutManagementData extends AggregateRoot {
 	// 2] 残数が残っている
 	public boolean isRemaing() {
 		return this.stateAtr == DigestionAtr.UNUSED;
+	}
+	
+	@Override
+	public void validate() {
+		if (this.payoutDate.getDayoffDate().map(date -> date.afterOrEquals(this.expiredDate)).orElse(false)) {
+			I18NErrorMessage err = new I18NErrorMessage(I18NText.main("Msg_3318")
+					.addRaw(this.expiredDate.toString("yyyy/MM/dd")).build());
+			throw new BusinessException(err);
+		}
 	}
 }
