@@ -2160,6 +2160,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 					loadVerDataDto.dataSessionDto.dpStateParam = self.dpStateParam;
 					loadVerDataDto.dataSessionDto.paramCommonAsync = self.paramCommonAsync;
                     service.loadVerRow(loadVerDataDto).done((data : any) => {
+						self.dataSessionDto = data.dataSessionDto;
                         self.indentityMonth(data.loadVerDataResult.indentityMonthResult);
                         self.flagCalculation = false;
                         dfd.resolve();
