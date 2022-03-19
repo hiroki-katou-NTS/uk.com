@@ -958,6 +958,8 @@ public class DailyPerformanceCorrectionProcessor {
 							cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 					} else if(attendanceAtr == DailyAttendanceAtr.NumbericValue.value){
 						cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
+					}else if(attendanceAtr == DailyAttendanceAtr.Application.value){
+						cellDatas.add(new DPCellDataDto(anyChar, appNameLst, attendanceAtrAsString, DPText.TYPE_LABEL));
 					} else {
 						cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 					}
