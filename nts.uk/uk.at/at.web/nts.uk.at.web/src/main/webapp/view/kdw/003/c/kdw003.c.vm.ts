@@ -34,6 +34,10 @@ module nts.uk.at.view.kdw003.c.viewmodel {
                     if (!_.isEmpty(lstData)) {
                         let sortedData = _.orderBy(lstData, ['dailyPerformanceFormatCode'], ['asc']);
                         self.lstFormatCodes(sortedData);
+						if(self.lstFormatCodes().length >0 && self.formatParam.selectedItem == ""){
+							self.formatParam.selectedItem = self.lstFormatCodes()[0].dailyPerformanceFormatCode;
+							self.selectedFormatCode(self.lstFormatCodes()[0].dailyPerformanceFormatCode);
+						}
                         dfd.resolve();
                     } else {
                          nts.uk.ui.dialog.error({messageId: "Msg_1402"}).then(() => {
@@ -50,6 +54,10 @@ module nts.uk.at.view.kdw003.c.viewmodel {
                     if (!_.isEmpty(lstData)) {
                         let sortedData = _.orderBy(lstData, ['dailyPerformanceFormatCode'], ['asc']);
                         self.lstFormatCodes(sortedData);
+						if(self.lstFormatCodes().length > 0 && self.formatParam.selectedItem == ""){
+							self.formatParam.selectedItem = self.lstFormatCodes()[0].dailyPerformanceFormatCode;
+							self.selectedFormatCode(self.lstFormatCodes()[0].dailyPerformanceFormatCode);
+						}
                         dfd.resolve();
                     } else {
                         nts.uk.ui.dialog.error({messageId: "Msg_1402"}).then(() => {
