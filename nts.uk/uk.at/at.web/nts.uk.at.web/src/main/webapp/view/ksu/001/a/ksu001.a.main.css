@@ -35,18 +35,6 @@
 	height: 525px;
 }
 
-#A6_1{
-	background-color : #007fff ; color : #ffffff;
-}
-
-#A6_2{
-	background-color : #ffffff ; color : #000000;
-}
-
-#A6_1:hover,#A6_2:hover, .A7_1:hover,.A7_2:hover, .A7_3:hover {
-	background-color : '' ; color : '';
-}
-
 .btnControlSelected{background-color : #258F7E !important; color : #ffffff !important}
 
 #functon-area-row2 *, #contain-view-right * {
@@ -273,7 +261,7 @@
 
 #contain-view-left{
 	margin-left: 0 !important;
-	margin-top: 14px;
+	margin-top: 3px;
     width: fit-content;
     height: fit-content;
     display: inline-block;
