@@ -185,13 +185,13 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 
 		if (appDate.isPresent()) {
 			if (!lateEarlyActualResults.isPresent()) {
-				errorMsg = Optional.of("Msg_1707");
+				
 			} else {
 				if (lateEarlyActualResults.get().getScheAttendanceTime1() == null
 						&& !lateEarlyActualResults.get().getScheAttendanceTime2().isPresent()
 						&& lateEarlyActualResults.get().getScheDepartureTime1() == null
 						&& !lateEarlyActualResults.get().getScheDepartureTime2().isPresent()) {
-					errorMsg = Optional.of("Msg_1707");
+					
 				}
 			}
 		}
