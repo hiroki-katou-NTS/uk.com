@@ -601,7 +601,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 isLastDay: self.closeDate.lastDay
             };
             service.getDataOfShiftMode(param).done((data: IDataStartScreen) => {
-                $('#contain-view-left').css({'margin-top': '16px'});
+                $('#contain-view-left').css({'margin-top': '18px'});
                 self.saveModeGridToLocalStorege(ViewMode.SHIFT);
                 self.calculateDisPlayFormatA4Popup(data);
                 self.visibleShiftPalette(true);
@@ -5825,7 +5825,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (funcNo2_WorkPlace == true) {
                 //$('#contain-view-left').empty();
             } else if(self.userInfor.disPlayFormat == 'shift'){
-                $('#contain-view-left').css({'margin-top': '16px'});
+                $('#contain-view-left').css({'margin-top': '18px'});
             } else if(self.userInfor.disPlayFormat != 'shift'){
                 $('#contain-view-left').css({'margin-top': '3px'});
             }
