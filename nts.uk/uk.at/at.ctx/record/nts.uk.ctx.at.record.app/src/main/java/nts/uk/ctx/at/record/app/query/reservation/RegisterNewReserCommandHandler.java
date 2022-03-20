@@ -40,7 +40,15 @@ public class RegisterNewReserCommandHandler {
         // 受付時間帯NO=Input．枠NO, 予約時刻＝システム日時, 注文日=Input．注文日
         ReservationRecTimeZone reservationRecTimeZone = setting.getReservationRecTimeZoneLst().stream()
                 .filter(x -> x.getFrameNo().value == frameNo).findFirst().get();
-        boolean canRegisterReservation = reservationRecTimeZone.canMakeReservation(EnumAdaptor.valueOf(frameNo, ReservationClosingTimeFrame.class), correctionDate, ClockHourMinute.now());
+//        boolean canRegisterReservation = reservationRecTimeZone.canMakeReservation(EnumAdaptor.valueOf(frameNo, ReservationClosingTimeFrame.class), correctionDate, ClockHourMinute.now());
+        boolean canRegisterReservation = setting.getCorrectionContent().canEmployeeChangeReservation(
+                AppContexts.user().roles().forAttendance(), 
+                GeneralDate.today(), 
+                ClockHourMinute.now(), 
+                frameNo, 
+                correctionDate, 
+                false, 
+                reservationRecTimeZone);
         
         if (canRegisterReservation) {
             // 予約できるか() == True
