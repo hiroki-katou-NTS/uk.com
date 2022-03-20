@@ -5,8 +5,10 @@ import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
 import nts.uk.shr.com.constants.DefaultSettingKeys;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -28,13 +30,24 @@ public class GenerateExternalImportDefaultData {
                 DefaultSettingKeys.COMPANY_ID,
                 generatingTargetItem.getSourceDataCode()).get();
 
+        val reviseItems = require.getReviseItems(
+        			DefaultSettingKeys.COMPANY_ID,
+        			generatingTargetItem.getSourceDataCode()
+        		);
+        
         return AtomTask.of(() -> {
 
             String fileId = generatingTargetItem.storeBaseCsvFile(require);
 
             setting.changeForCopy(companyId, generatingCode, fileId);
 
-            require.add(setting);
+            require.addSetting(setting);
+            
+            reviseItems.forEach(reviseItem ->{
+            	reviseItem.changeForCopy(companyId, generatingCode);
+            });
+            
+            require.addReviseItems(reviseItems);
 
         });
     }
@@ -45,6 +58,10 @@ public class GenerateExternalImportDefaultData {
 
         Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode code);
 
-        void add(ExternalImportSetting setting);
+        void addSetting(ExternalImportSetting setting);
+        
+        List<ReviseItem> getReviseItems(String companyId, ExternalImportCode code);
+        
+        void addReviseItems(List<ReviseItem> reviseItems);
     }
 }

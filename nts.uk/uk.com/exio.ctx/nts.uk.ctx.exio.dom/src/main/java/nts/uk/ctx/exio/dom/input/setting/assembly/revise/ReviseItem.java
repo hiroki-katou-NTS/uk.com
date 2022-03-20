@@ -55,4 +55,12 @@ public class ReviseItem implements DomainAggregate {
 	public interface Require {
 		ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo);
 	}
+	
+	/**
+	 * 変更する（設定コピー用）
+	 */
+	public void changeForCopy(String companyId, ExternalImportCode settingCode) {
+		this.companyId = companyId;
+		this.settingCode = settingCode;
+	}
 }
