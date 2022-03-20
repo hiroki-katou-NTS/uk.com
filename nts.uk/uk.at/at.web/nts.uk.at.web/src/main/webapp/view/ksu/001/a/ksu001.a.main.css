@@ -538,8 +538,14 @@ html {
 	width: 70px;
 }
 
-#A3_1 .period {
+#A3_1 .period, #A3_1 .contents {
 	margin-left: 20px;
+}
+
+#A5,#A6 {
+	min-width: 100px;
+    font-size: 13px;
+    line-height: 14px;
 }
 
 #A3_1 .period .func-content span {
