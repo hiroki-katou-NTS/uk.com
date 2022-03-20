@@ -322,7 +322,6 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		WorkScheduleTimeOfDaily scheduleTimeOfDaily = new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0)), new AttendanceTime(0));
 		
 		AttendanceTimeOfDailyAttendance attendance = null;
-//		TaskSchedule taskSchedule = TaskSchedule.createWithEmptyList();
 		// Create Task
 		List<TaskScheduleDetail> details = kscdtSchTask.stream()
 					.map(task -> new TaskScheduleDetail(new TaskCode(task.taskCode), new TimeSpanForCalc(new TimeWithDayAttr(task.startClock), new TimeWithDayAttr(task.endClock))))
@@ -337,10 +336,6 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				stayingTime, new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0), medicalCareTime);
 		}
 		
-		if(workSch != null) {
-			taskSchedule = workSch.getTaskSchedule();
-		}
-
 		optSortTimeWork = new ShortTimeOfDailyAttd(shortWorkingTimeSheets);
 
 		//#114431
