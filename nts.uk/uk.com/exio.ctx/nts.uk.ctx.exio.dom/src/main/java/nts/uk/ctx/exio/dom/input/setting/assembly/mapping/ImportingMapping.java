@@ -36,14 +36,16 @@ public class ImportingMapping {
 
 		List<ImportingItemMapping> newMappings = new ArrayList<>();
 
-		for(int itemNo : itemList) {
+		for (int i = 0; i < itemList.size(); i++) {
+			int itemNo = itemList.get(i);
 
 			val found = mappings.stream().filter(m -> m.getItemNo() == itemNo).findFirst();
 
 			if(found.isPresent()) { //値を変えないやつら
 				newMappings.add(found.get());
 			} else { //新しく追加されたやつら
-				newMappings.add(ImportingItemMapping.noSetting(itemNo));
+				int csvColumnNo = i + 1;
+				newMappings.add(ImportingItemMapping.noSetting(itemNo, csvColumnNo));
 			}
 		}
 		
@@ -75,10 +77,12 @@ public class ImportingMapping {
 
 	public static ImportingMapping defaultSet(List<Integer> items){
 
-		val list = items.stream()
-			.map(item -> ImportingItemMapping.noSetting(item))
-			.collect(Collectors.toList());
-
+		val list = new ArrayList<ImportingItemMapping>();
+		for (int i = 0; i < items.size(); i++) {
+			int csvColumnNo = i + 1;
+			val itemMapping = ImportingItemMapping.noSetting(items.get(i), csvColumnNo);
+			list.add(itemMapping);
+		}
 
 		return new ImportingMapping(list);
 	}

@@ -104,11 +104,15 @@ public class GetLayout {
 		
 		val importableItems = require.getImportableItems(query.getImportingDomainId());
 
-		return importableItems.stream()
-				.map(t -> ExternalImportLayoutDto.fromDomain(
-						t,
-						ImportingItemMapping.noSetting(t.getItemNo())))
-				.collect(Collectors.toList());
+		List<ExternalImportLayoutDto> list = new ArrayList<>();
+		for (int i = 0; i < importableItems.size(); i++) {
+			int csvColumnNo = i + 1;
+			val item = importableItems.get(i);
+			val map = ImportingItemMapping.noSetting(item.getItemNo(), csvColumnNo);
+			list.add(ExternalImportLayoutDto.fromDomain(item, map));
+		}
+
+		return list;
 	}
 	
 	private List<ExternalImportLayoutDto> getSaved(
