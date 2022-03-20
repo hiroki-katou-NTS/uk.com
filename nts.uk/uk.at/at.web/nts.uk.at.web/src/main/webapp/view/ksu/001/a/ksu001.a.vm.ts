@@ -815,7 +815,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
         
         destroyAndCreateGrid(dataBindGrid, viewMode) {
-            let self = this;
+            let self = this; 
+            $("#cacheHeightGrid").append($('#heightGrid'));
             $("#cacheDiv").append($('#vertDiv'));
             $("#cacheDiv").append($('#horzDiv'));
             $("#extable").children().remove();
@@ -2620,6 +2621,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             
             $("#extable").exTable("saveScroll");
+            
+            // append button A16
+            $("#extable").append($('#heightGrid'));
+            $('#heightGrid').css({'display':'', 'width': '30px', 'float' : 'right', 'margin-top': '1px'});
         }
 
         createVertSumData() {
