@@ -460,7 +460,7 @@ public class CreateOrderInfoFileQuery {
         	quantity = opBentoReservationDetail.get().getBentoCount().v();
         }
         return new BentoTotalDto(bento.getUnit().v(),bento.getName().v(), quantity,
-                bento.getFrameNo(),bento.getAmount1().v() + bento.getAmount2().v());
+                bento.getFrameNo(),bento.getAmount1().v());
     }
 
     /** 6. 注文合計書を作成 */
