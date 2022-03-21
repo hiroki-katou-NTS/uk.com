@@ -219,6 +219,18 @@ export class KafS12AComponent extends KafS00ShrComponent {
 
     public handleCalculateTime(lateEarlyTimeZones: Array<LateEarlyTimeZone>, outingTimeZones: Array<OutingTimeZone>) {
         const vm = this;
+        let scheAttendanceTime1 = null,
+            scheDepartureTime1 = null,
+            scheAttendanceTime2 = null,
+            scheDepartureTime2 = null;
+        if (!_.isEmpty(vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst)) {
+            if (vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail) {
+                scheAttendanceTime1 = vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime1,
+                scheDepartureTime1 = vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime1,
+                scheAttendanceTime2 = vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime2,
+                scheDepartureTime2 = vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime2;
+            }
+        }
         const params = {
             timeLeaveType: vm.timeLeaveType,
             appDate: new Date(vm.application.appDate).toISOString(),
@@ -231,13 +243,13 @@ export class KafS12AComponent extends KafS00ShrComponent {
             timeZones: [
                 {
                     workNo: 1,
-                    startTime: lateEarlyTimeZones[0].timeValue || vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime1,
-                    endTime: lateEarlyTimeZones[1].timeValue || vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime1
+                    startTime: lateEarlyTimeZones[0].timeValue || scheAttendanceTime1,
+                    endTime: lateEarlyTimeZones[1].timeValue || scheDepartureTime1
                 },
                 {
                     workNo: 2,
-                    startTime: lateEarlyTimeZones[2].timeValue || vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime2,
-                    endTime: lateEarlyTimeZones[3].timeValue || vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime2
+                    startTime: lateEarlyTimeZones[2].timeValue || scheAttendanceTime2,
+                    endTime: lateEarlyTimeZones[3].timeValue || scheDepartureTime2
                 }
             ],
             outingTimeZones: outingTimeZones.map((i: OutingTimeZone) => ({
@@ -315,6 +327,14 @@ export class KafS12AComponent extends KafS00ShrComponent {
                 || detail.applyTime.careAppTime > 0
                 || detail.applyTime.super60AppTime > 0
                 || detail.applyTime.specialAppTime > 0;
+            }).map((detail) => {
+                if (detail.appTimeType < 4) {
+                    if (_.filter(detail.timeZones, (timeZone) => timeZone.endTime && timeZone.startTime).length === 0) {
+                        detail.timeZones = [];
+                    }
+                }
+
+                return detail;
             }),
             timeLeaveAppDisplayInfo,
             agentMode: false
