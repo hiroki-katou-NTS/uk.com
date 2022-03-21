@@ -112,7 +112,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 					let errorMsgLst = res.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
 					if(!_.isEmpty(errorMsgLst)) {
 						vm.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
-	 							
+	 						$('#kaf000-a-component4-singleDate').focus();		
 						});
 					}
                     vm.dataFetch({

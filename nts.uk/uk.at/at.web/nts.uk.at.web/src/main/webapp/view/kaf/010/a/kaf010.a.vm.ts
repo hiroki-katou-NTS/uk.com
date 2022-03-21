@@ -197,7 +197,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						let errorMsgLst = successData.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorMsgLst;
 						if(!_.isEmpty(errorMsgLst)) {
 							vm.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
-		 							
+		 						$('#kaf000-a-component4-singleDate').focus();		
 							});
 						}
 						vm.dataSource = successData;

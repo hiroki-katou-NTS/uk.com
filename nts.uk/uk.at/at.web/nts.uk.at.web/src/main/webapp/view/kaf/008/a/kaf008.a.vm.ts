@@ -161,7 +161,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 					let errorMsgLst = res.businessTripInfoOutputDto.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
 					if(!_.isEmpty(errorMsgLst)) {
 						vm.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
-	 							
+	 						vm.focusDate();		
 						});
 					}
                     let output = res.businessTripInfoOutputDto;
