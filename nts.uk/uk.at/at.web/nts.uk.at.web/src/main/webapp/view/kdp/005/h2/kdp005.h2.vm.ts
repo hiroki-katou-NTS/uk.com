@@ -20,7 +20,7 @@ module nts.uk.at.view.kdp005.h2 {
 
 			html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess).then(function() {
 				navigator.mediaDevices.getUserMedia(constraints).then(function success() {
-					$('#lbl-error').css('display', 'none');
+					$('#lbl-error').removeAttribute("display");
 					$('#render-action').show();
 				});
 
