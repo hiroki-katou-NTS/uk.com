@@ -143,7 +143,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         scheduleModifyStartDate = null;
         canOpenKsu003 = true;
         
-        listTimeDisable = []; // lưu nhưng cell bí disalble do không có worktime
+        listXseal = []; // lưu nhưng cell bí disalble cả 4 cells
+        listTimeDisable = []; // lưu nhưng cell bí disalble do không có worktime (disable 2 cells starttime, endtime)
         listLockCells = [];  // lưu những cell confirm khi khởi động
         listWorkTypeInfo = [];// listWorkTypecombobox
         
@@ -997,7 +998,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.listEmpData = [];
             self.listSid([]);
             self.listSidByOrg = [];
-            self.listLockCells = [];
             
             self.detailContentDeco = [];
             self.detailContentDecoModeConfirm = [];
@@ -1011,6 +1011,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.listWorkTypeInfo = data.listWorkTypeInfo;
             
             self.listTimeDisable = [];
+            self.listLockCells = [];
+            self.listXseal = [];
 
             for (let i = 0; i < data.listEmpInfo.length; i++) {
                 let rowId = i+'';
@@ -1082,6 +1084,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // điều kiện ※Aa1 editMode - background Normal                                              
                         if (cell.conditionAa1 == false) {
                             detailContentDecoNormal.push(new CellColor('_' + ymd, rowId, "xseal", 0));
+                            self.listXseal.push({ rowIndex: rowId, columnKey: '_' + ymd });
                         } else if (cell.supportStatus == SupportStatus.GO_ALLDAY || cell.supportStatus == SupportStatus.GO_TIMEZONE ||  cell.supportStatus == SupportStatus.COME_ALLDAY) {
                             // 勤務予定（シフト）dto．応援状況 <>（応援に来ない/応援に来る(時間帯)/応援に行かない）
                             // supportStatus != (SupportStatus.DO_NOT_COME, SupportStatus.DO_NOT_GO,  SupportStatus.COME_TIMEZONE)
@@ -1235,6 +1238,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         if (cell.conditionAbc1 == false) {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 1));
+                            self.listXseal.push({ rowIndex: rowId, columnKey: '_' + ymd });
                         } else if (cell.supportStatus == SupportStatus.GO_ALLDAY || cell.supportStatus == SupportStatus.GO_TIMEZONE || cell.supportStatus == SupportStatus.COME_ALLDAY) {
                             // 勤務予定（シフト）dto．応援状況 <>（応援に来ない/応援に来る(時間帯)/応援に行かない）
                             // supportStatus != (SupportStatus.DO_NOT_COME, SupportStatus.DO_NOT_GO,  SupportStatus.COME_TIMEZONE)
@@ -1389,6 +1393,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 2));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 3));
+                            self.listXseal.push({ rowIndex: rowId, columnKey: '_' + ymd });
                             
                         }  else if (cell.supportStatus == SupportStatus.GO_ALLDAY || cell.supportStatus == SupportStatus.GO_TIMEZONE || cell.supportStatus == SupportStatus.COME_ALLDAY) {
                             // 勤務予定（シフト）dto．応援状況 <>（応援に来ない/応援に来る(時1間帯)/応援に行かない）
@@ -1556,7 +1561,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let conditionAc = cell.conditionAbc1 == true
                                           && ((!_.isNil(cell.workTimeCode) && cell.workTimeCode != '') || (cell.workHolidayCls != WorkStyle.ONE_DAY_REST))
                                           && (_.includes(self.changeableWorks, cell.workTimeForm));
-                        if (!conditionAc) {
+                        if (!conditionAc && cell.conditionAbc1 == true) {
                             self.listTimeDisable.push(new TimeDisable(rowId, '_' + ymd));
                         }
                     });
@@ -4850,12 +4855,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#extable").exTable("stickValidate", function(rowIdx, key, data) {
                 let dfd = $.Deferred();
                 let userInfor: IUserInfor = self.userInfor;
+                
+                let xsealCell = _.find(self.listXseal, function(o) { return o.rowIndex == rowIdx + '' && o.columnKey == key; });
+                if (!_.isNil(xsealCell)) 
+                    return;
+                
+                
+                let confirmCell = _.find(self.listLockCells, function(o) { return o.rowIndex == rowIdx + '' && o.columnKey == key; });
+                if (!_.isNil(confirmCell)) 
+                    return;
+                
                 if (userInfor.disPlayFormat == ViewMode.TIME || userInfor.disPlayFormat == ViewMode.SHORTNAME) {
                     let resolve = false;
-                    let obj = _.find(self.listLockCells, function(o) { return o.rowIndex == rowIdx + '' && o.columnKey == key; });
-                    if (!_.isNil(obj)) {
-                        return;
-                    }
                     
                     let cellDisableTime = _.find(self.listTimeDisable, function(o) { return o.rowId == rowIdx + '' && o.columnId == key; });
 
