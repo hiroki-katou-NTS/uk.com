@@ -535,8 +535,6 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             let nursingTime = stampRecord.nursingTime;
             for (let i = 1; i < 3; i++) {
                 let dataObject = new TimePlaceOutput(i);
-                let errStartFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 3, 'stampFrameNo': i, 'startEndClassification': 0 });
-                let errEndFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 3, 'stampFrameNo': i, 'startEndClassification': 1 });
                 
                 _.forEach(nursingTime, item => {
                     if (item.frameNo == i) {
@@ -544,8 +542,6 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                         dataObject.opEndTime = item.opEndTime;
                         dataObject.opWorkLocationCD = item.opWorkLocationCD;
                         dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
-                        dataObject.errorStart = errStartFilter.length > 0;
-                        dataObject.errorEnd = errEndFilter.length > 0;
                     }
                 });
                 list.push(new GridItem(dataObject, STAMPTYPE.NURSE));
@@ -578,8 +574,11 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         let itemsCheering = (function() {
             let list = [];
             let supportTime = stampRecord.supportTime;
+            
             for (let i = 1; i <= self.maxSupport; i++) {
                 let dataObject = new TimePlaceOutput(i);
+                let errStartFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 3, 'stampFrameNo': i, 'startEndClassification': 0 });
+                let errEndFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 3, 'stampFrameNo': i, 'startEndClassification': 1 });
                 _.forEach(supportTime, item => {
                     if (item.frameNo == i) {
                         dataObject.opStartTime = item.opStartTime;
@@ -587,6 +586,8 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                         dataObject.opWorkLocationCD = item.opWorkLocationCD;
                         dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
                         dataObject.workplaceId = item.workplaceId;
+                        dataObject.errorStart = errStartFilter.length > 0;
+                        dataObject.errorEnd = errEndFilter.length > 0;
                     }
                 });
                 list.push(new GridItem(dataObject, STAMPTYPE.CHEERING));
