@@ -78,7 +78,7 @@ public class CreateWorkSchedule {
 			workSchedule.handCorrectBreakTimeList(require, breakTimeList);
 		}
 		
-		// update support schedule
+		// check consistency of support schedule with work's start-end time, task's start-end time 
 		try {
 			workSchedule.checkConsistencyOfSupportSchedule(require);
 		} catch ( BusinessException e ) {
