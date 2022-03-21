@@ -151,43 +151,93 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                         if (lstItems && lstItems.length > 0) {
                             self.displayTargetAtdItems(lstItems[0].attendanceItemName);
                             $("#display-target-item").trigger("validate");
-                        }
+                        }else{
+							if(!_.isNil(self.currentAtdItemCondition.uncountableAtdItem())){
+								self.displayTarget(nts.uk.resource.getText("KDW007_113"));
+							}							
+						}
                     });
                 }
             } else {
                 if (self.currentAtdItemCondition.countableAddAtdItems().length > 0) {
                     service.getAttendanceItemByCodes(self.currentAtdItemCondition.countableAddAtdItems(), self.mode).done((lstItems) => {
-                        if (lstItems && lstItems.length > 0) {
-                            for (let i = 0; i < lstItems.length; i++) {
+                        //if (lstItems && lstItems.length > 0) {
+							for (let i = 0; i < self.currentAtdItemCondition.countableAddAtdItems().length; i++) {
+								let operator = (i === (self.currentAtdItemCondition.countableAddAtdItems().length - 1)) ? "" : " + ";
+								let checkExist = false;
+								for (let j = 0; j < lstItems.length; j++) {
+									if(self.currentAtdItemCondition.countableAddAtdItems()[i] == lstItems[j].attendanceItemId){
+	                                	self.displayTargetAtdItems(self.displayTargetAtdItems() + lstItems[j].attendanceItemName + operator);
+										checkExist = true;
+	                                    break;
+									}
+	                            }
+								if(checkExist == false){
+									self.displayTargetAtdItems(self.displayTargetAtdItems() +  nts.uk.resource.getText("KDW007_113") + operator);
+	                            }
+							}
+								
+                            /*for (let i = 0; i < lstItems.length; i++) {
                                 let operator = (i === (lstItems.length - 1)) ? "" : " + ";
                                 self.displayTargetAtdItems(self.displayTargetAtdItems() + lstItems[i].attendanceItemName + operator);
-                            }
+                            }*/
                             $("#display-target-item").trigger("validate");
-                        }
+                        //}
                     }).then(() => {
                         if (self.currentAtdItemCondition.countableSubAtdItems().length > 0) {
                             service.getAttendanceItemByCodes(self.currentAtdItemCondition.countableSubAtdItems(), self.mode).done((lstItems) => {
-                                if (lstItems && lstItems.length > 0) {
-                                    for (let i = 0; i < lstItems.length; i++) {
+                                //if (lstItems && lstItems.length > 0) {
+									for(let i =0;i<self.currentAtdItemCondition.countableSubAtdItems().length;i++){
+			                            let operator = (i === (self.currentAtdItemCondition.countableSubAtdItems().length - 1)) ? "" : " - ";
+			                            let beforeOperator = (i === 0) ? " - " : "";
+			                            let checkExist = false;
+			                            for (let j = 0; j < lstItems.length; j++) {
+			                                if(self.currentAtdItemCondition.countableSubAtdItems()[i] == lstItems[j].attendanceItemId ){
+												self.displayTargetAtdItems(self.displayTargetAtdItems() + beforeOperator + lstItems[i].attendanceItemName + operator);
+			                                    checkExist = true;
+			                                    break;
+			                                }
+			                            }
+			                            if(checkExist == false){
+											self.displayTargetAtdItems(self.displayTargetAtdItems() + beforeOperator + nts.uk.resource.getText("KDW007_113") + operator);
+			                            }
+			                        }
+
+                                    /*for (let i = 0; i < lstItems.length; i++) {
                                         let operator = (i === (lstItems.length - 1)) ? "" : " - ";
                                         let beforeOperator = (i === 0) ? " - " : "";
                                         self.displayTargetAtdItems(self.displayTargetAtdItems() + beforeOperator + lstItems[i].attendanceItemName + operator);
-                                    }
+                                    }*/
                                     $("#display-target-item").trigger("validate");
-                                }
+                                //}
                             })
                         }
                     });
                 } else if (self.currentAtdItemCondition.countableSubAtdItems().length > 0) {
                     service.getAttendanceItemByCodes(self.currentAtdItemCondition.countableSubAtdItems(), self.mode).done((lstItems) => {
-                        if (lstItems && lstItems.length > 0) {
-                            for (let i = 0; i < lstItems.length; i++) {
+                        //if (lstItems && lstItems.length > 0) {
+							for(let i =0;i<self.currentAtdItemCondition.countableSubAtdItems().length;i++){
+	                            let operator = (i === (self.currentAtdItemCondition.countableSubAtdItems().length - 1)) ? "" : " - ";
+	                            let beforeOperator = (i === 0) ? " - " : "";
+	                            let checkExist = false;
+	                            for (let j = 0; j < lstItems.length; j++) {
+	                                if(self.currentAtdItemCondition.countableSubAtdItems()[i] == lstItems[j].attendanceItemId ){
+										self.displayTargetAtdItems(self.displayTargetAtdItems() + beforeOperator + lstItems[i].attendanceItemName + operator);
+	                                    checkExist = true;
+	                                    break;
+	                                }
+	                            }
+	                            if(checkExist == false){
+									self.displayTargetAtdItems(self.displayTargetAtdItems() + beforeOperator + nts.uk.resource.getText("KDW007_113") + operator);
+	                            }
+	                        }
+                            /*for (let i = 0; i < lstItems.length; i++) {
                                 let operator = (i === (lstItems.length - 1)) ? "" : " - ";
                                 let beforeOperator = (i === 0) ? " - " : "";
                                 self.displayTargetAtdItems(self.displayTargetAtdItems() + beforeOperator + lstItems[i].attendanceItemName + operator);
-                            }
+                            }*/
                             $("#display-target-item").trigger("validate");
-                        }
+                        //}
                     })
                 }
 
@@ -202,7 +252,11 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                     if (lstItems && lstItems.length > 0) {
                         self.displayCompareAtdItems(lstItems[0].attendanceItemName);
                         $("#display-compare-item").trigger("validate");
-                    }
+                    }else{
+						if(!_.isNil(self.currentAtdItemCondition.uncountableAtdItem())){
+							self.displayCompareAtdItems(nts.uk.resource.getText("KDW007_113"));
+						}							
+					}
                 });
             }
         }

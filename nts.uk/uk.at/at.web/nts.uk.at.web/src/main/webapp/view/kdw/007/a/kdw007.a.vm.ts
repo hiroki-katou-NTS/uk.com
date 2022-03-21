@@ -1477,8 +1477,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             } else {
                 if (self.countableAddAtdItems().length > 0) {
                     service.getAttendanceItemByCodes(self.countableAddAtdItems(), self.screenMode).done((lstItems) => {
-                        if (lstItems && lstItems.length > 0) {
-							
+                       
 							for (let i = 0; i < self.countableAddAtdItems().length; i++) {
 								let operator = (i === (self.countableAddAtdItems().length - 1)) ? "" : " + ";
 								let checkExist = false;
@@ -1493,7 +1492,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 									self.displayTarget(self.displayTarget() + getText("KDW007_113") + operator);
 	                            }
 							}
-                        }
+                        
                     }).then(() => {
                         if (self.countableSubAtdItems().length > 0) {
                             service.getAttendanceItemByCodes(self.countableSubAtdItems(), self.screenMode).done((lstItems) => {
