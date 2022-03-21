@@ -65,7 +65,8 @@ module nts.uk.at.view.kdl016.a {
             });
 
             vm.selectedCode.subscribe((newValue: any) => {
-                vm.selectedCode().length > 0 ? vm.canDelete(true) : vm.canDelete(false);
+                let selectedRows = $("#grid").igGridSelection('selectedRows');
+                selectedRows.length > 0 ? vm.canDelete(true) : vm.canDelete(false);
             });
         }
 
@@ -288,10 +289,15 @@ module nts.uk.at.view.kdl016.a {
                     },
                     {
                         name: 'Selection',
-                        mode: 'cell',
+                        mode: 'row',
                         multipleSelection: true,
-                        // rowSelectionChanging: function() {},
-                        // rowSelectionChanged: function(event: any, ui: any) {}
+                        touchDragSelect: false,
+                        multipleCellSelectOnClick: false,
+                        activation: false,
+                        // rowSelectionChanging: function (event: any, ui: any) {},
+                        rowSelectionChanged: function(event: any, ui: any) {
+                            vm.selectedCode(_.uniq(vm.selectedCode().concat(ui.row.index)));
+                        }
                     },
                     {
                         name: "Resizing",
@@ -406,7 +412,6 @@ module nts.uk.at.view.kdl016.a {
                                 };
 
                                 vm.$window.modal("/view/kdl/016/f/index.xhtml", resultObj).then((result: any) => {
-                                    // vm.closeDialog();
                                 });
                             }
                         }).fail(error => {
