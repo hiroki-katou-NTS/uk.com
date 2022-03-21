@@ -292,7 +292,7 @@ module nts.uk.at.view.kdl016.c {
             vm.$ajax(API.register, command).then((data: any) => {
                 if (!data.error) {
                     vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
-                        vm.$window.close({closeable: false});
+                        vm.$window.close({reloadable: true});
                     });
                 } else {
                     let errorResults = data.errorResults;
@@ -318,7 +318,7 @@ module nts.uk.at.view.kdl016.c {
                 }
             }).fail(error => {
                 vm.$dialog.error(error).then(() => {
-                    vm.$window.close({closeable: true});
+                    vm.$window.close({reloadable: false});
                 });
             }).always(() => {
                 vm.$blockui("clear");
@@ -327,7 +327,7 @@ module nts.uk.at.view.kdl016.c {
 
         closeDialog(): void {
             const vm = this;
-            vm.$window.close();
+            vm.$window.close({reloadable: false});
         }
     }
 
