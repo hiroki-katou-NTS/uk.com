@@ -71,8 +71,8 @@ module nts.uk.com.view.cmm030.f {
       const vm = this;
       vm.$blockui("grayout");
       vm.getApproverHistory().always(() => {
-        $("#F2_1").focus();
         vm.$nextTick(() => {
+          $("#F3_container").focus();
           $("th#F4_approverName1").attr("colspan", 5);
           vm.$nextTick(() => $("#F4_container").removeAttr("tabindex"));
         });
@@ -93,7 +93,7 @@ module nts.uk.com.view.cmm030.f {
           vm.$blockui("grayout");
           vm.deleteLastHist().then(() => vm.getApproverHistory())
           .always(() => {
-            $("#F2_1").focus();
+            $("#F3_container").focus();
             vm.$blockui("clear");
           });
         }
