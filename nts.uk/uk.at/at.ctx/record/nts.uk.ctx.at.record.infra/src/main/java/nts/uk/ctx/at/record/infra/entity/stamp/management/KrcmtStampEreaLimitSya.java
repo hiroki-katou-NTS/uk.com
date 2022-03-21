@@ -58,7 +58,7 @@ public class KrcmtStampEreaLimitSya extends UkJpaEntity implements Serializable 
 		 NotUseAtr locationInforUse = NotUseAtr.toEnum(this.locationInforUse);
 		 StampingAreaLimit areaLimitAtr = StampingAreaLimit.toEnum(this.areaLimitAtr);
 		 StampingAreaRestriction areaRestriction = new StampingAreaRestriction(locationInforUse,areaLimitAtr);
-		 EmployeeStampingAreaRestrictionSetting areaRestrictionSetting = new EmployeeStampingAreaRestrictionSetting(cId,areaRestriction);
+		 EmployeeStampingAreaRestrictionSetting areaRestrictionSetting = new EmployeeStampingAreaRestrictionSetting(this.PK.getSId(),areaRestriction);
 		
 		return areaRestrictionSetting;
 	}

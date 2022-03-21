@@ -146,16 +146,13 @@ module nts.uk.at.view.kdp014.a {
         isLimitArea: vm.selectedId2()
       };
 
-      vm.$ajax(API.INSERT_UPDATE_STAMPING_SETTING, data).then((res: any) => {
-        if (res) {
-          nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-          vm.selectedId(res.isLimitArea);
-          vm.selectedId2(res.locationInformation);
-        }
+      vm.$ajax(API.INSERT_UPDATE_STAMPING_SETTING, data)
+      .then(() => {
+        vm.$dialog.info({ messageId: "Msg_15" });
+        vm.enabledelete(true);
+        vm.getDetail(vm.selectedEmployeeCode());
+        vm.getAll();
       });
-      vm.enabledelete(true);
-      vm.getDetail(vm.selectedEmployeeCode());
-      vm.getAll();
     }
 
     getDetail(employmentCategoryCode: string) {
@@ -307,15 +304,15 @@ module nts.uk.at.view.kdp014.a {
           if (result === 'yes') {
             vm.$blockui('grayout');
             vm.$ajax(API.REMOVESTAMP, data).then((res: any) => {
-              vm.$blockui('clear');
               vm.getAll();
               vm.$dialog.info({ messageId: "Msg_16" });
             })
               .fail((res) => {
-                vm.$blockui('clear');
-                vm.$dialog.alert({ messageId: res.messageId });
+                vm.$dialog.error({ messageId: res.messageId });
+              }).always(() => {
+                vm.$blockui("clear");
+                vm.getDetail(vm.selectedEmployeeCode());
               });
-            vm.getDetail(vm.selectedEmployeeCode());
           }
         });
     }
