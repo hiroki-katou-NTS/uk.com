@@ -76,17 +76,22 @@ export class CmmS45ShrComponentsApp8Component extends Vue {
                         });
                     }
                 });
+                let opActualContentDisplayLst = vm.params.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst;
+                let opAchievementDetail = null;
+                if (!_.isEmpty(opActualContentDisplayLst)) {
+                    opAchievementDetail = opActualContentDisplayLst[0].opAchievementDetail;
+                }
                 if (timeZones[0].startTime == null) {
-                    timeZones[0].startTime = vm.params.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime1;
+                    timeZones[0].startTime = opAchievementDetail == null ? null : opAchievementDetail.achievementEarly.scheAttendanceTime1;
                 }
                 if (timeZones[0].endTime == null) {
-                    timeZones[0].endTime = vm.params.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime1;
+                    timeZones[0].endTime = opAchievementDetail == null ? null : opAchievementDetail.achievementEarly.scheDepartureTime1;
                 }
                 if (timeZones[1].startTime == null) {
-                    timeZones[1].startTime = vm.params.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime2;
+                    timeZones[1].startTime = opAchievementDetail == null ? null : opAchievementDetail.achievementEarly.scheAttendanceTime2;
                 }
                 if (timeZones[1].endTime == null) {
-                    timeZones[1].endTime = vm.params.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime2;
+                    timeZones[1].endTime = opAchievementDetail == null ? null : opAchievementDetail.achievementEarly.scheDepartureTime2;
                 }
                 const params = {
                     timeLeaveType: 6, // COMBINATION = 6, // 組合せ利用
