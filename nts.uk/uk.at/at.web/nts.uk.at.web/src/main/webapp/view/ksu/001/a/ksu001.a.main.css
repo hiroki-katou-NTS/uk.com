@@ -625,6 +625,14 @@ html {
 	background-color: #ffc0cb !important;
 }
 
+.bg-schedule-saturday{
+	background-color: #1973b5 !important;
+}
+
+.bg-schedule-sunday{
+	background-color: #db4f51 !important;
+}
+
 .bg-schedule-sunday-color-schedule-sunday{
 	background-color: #db4f51 !important;
 	color: #ffffff !important;
