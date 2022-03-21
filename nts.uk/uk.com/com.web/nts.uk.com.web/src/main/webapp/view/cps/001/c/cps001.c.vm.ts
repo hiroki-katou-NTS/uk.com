@@ -88,7 +88,7 @@ module cps001.c.vm {
             service.getData().done((data: Array<IEmployee>) => {
 
                 unblock();
-                emps(data);
+                emps(data || []);
                 if (data && data.length) {
                     
                     $('#code').focus();
