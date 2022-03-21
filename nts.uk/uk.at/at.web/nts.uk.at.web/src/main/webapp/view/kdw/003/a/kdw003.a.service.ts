@@ -7,6 +7,7 @@ module nts.uk.at.view.kdw003.a.service {
         findCodeName: "screen/at/correctionofdailyperformance/findCodeName",
         findAllCodeName: "screen/at/correctionofdailyperformance/findAllCodeName",
         addAndUpdate: "screen/at/correctionofdailyperformance/addAndUpdate",
+        execMonthlyAggregate: "screen/at/correctionofdailyperformance/execMonthlyAggregateAsync",
         getApplication: "screen/at/correctionofdailyperformance/getApplication",
         addClosure: "screen/at/correctionofdailyperformance/insertClosure",
         releaseClosure: "screen/at/correctionofdailyperformance/releaseClosure",
@@ -22,7 +23,8 @@ module nts.uk.at.view.kdw003.a.service {
         loadMonth: "screen/at/correctionofdailyperformance/loadMonth",
         initParam: "screen/at/correctionofdailyperformance/initParam",
         genDate: "screen/at/correctionofdailyperformance/gendate", 
-        findWplIDByCode: "screen/at/correctionofdailyperformance/findWplIDByCode"
+        findWplIDByCode: "screen/at/correctionofdailyperformance/findWplIDByCode",
+		getMenu: "sys/portal/webmenu/program"
     }
 
     export function startScreen(param) {
@@ -55,6 +57,10 @@ module nts.uk.at.view.kdw003.a.service {
 
     export function addAndUpdate(param) {
         return nts.uk.request.ajax(paths.addAndUpdate, param);
+    }
+
+    export function execMonthlyAggregate(param) {
+        return nts.uk.request.ajax(paths.execMonthlyAggregate, param);
     }
 
     export function getApplication() {
@@ -116,5 +122,9 @@ module nts.uk.at.view.kdw003.a.service {
     
     export function genDate(param) {
         return nts.uk.request.ajax(paths.genDate, param);
+    }
+
+	export function getMenu(): JQueryPromise<Array<any>>{
+        return nts.uk.request.ajax("com", paths.getMenu);
     }
 }

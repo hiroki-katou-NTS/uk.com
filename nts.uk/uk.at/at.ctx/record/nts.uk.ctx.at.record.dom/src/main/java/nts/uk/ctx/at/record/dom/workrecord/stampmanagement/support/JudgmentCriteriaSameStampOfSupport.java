@@ -13,7 +13,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author laitv
  *
  */
-
 @Getter
 public class JudgmentCriteriaSameStampOfSupport implements DomainAggregate {
 

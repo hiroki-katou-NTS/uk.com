@@ -515,8 +515,30 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		});
 		
 		List<OuenWorkTimeSheetOfDaily> domains = new ArrayList<>();
-		domains.add(toDomain(timeSheets));
+		dates.forEach(date -> {
+			List<KrcdtDayOuenTimeSheet> entitisByDate = timeSheets.stream().filter(i -> i.pk.ymd.equals(date))
+					.collect(Collectors.toList());
+			if (!entitisByDate.isEmpty()) {
+				domains.add(toDomain(entitisByDate));
+			}
+		});
+		
 		
 		return domains;
+	}
+
+	@Override
+	public List<String> getListEmp(String companyId, List<String> workplaceIds, DatePeriod period) {
+		if (CollectionUtil.isEmpty(workplaceIds))
+            return new ArrayList<>();
+        List<KrcdtDayOuenTimeSheet> ouenTimeSheets = this.queryProxy()
+                .query("select o from KrcdtDayOuenTimeSheet o, KrcdtDayAffInfo i where o.pk.sid = i.krcdtDaiAffiliationInfPK.employeeId and o.pk.ymd = i.krcdtDaiAffiliationInfPK.ymd " +
+                        "and o.companyId = :companyId and o.pk.ymd >= :startDate and o.pk.ymd <= :endDate and o.workplaceId in :workplaceIds and o.workplaceId != i.workplaceID", KrcdtDayOuenTimeSheet.class)
+                .setParameter("companyId", companyId)
+                .setParameter("startDate", period.start())
+                .setParameter("endDate", period.end())
+                .setParameter("workplaceIds", workplaceIds)
+                .getList();
+        return ouenTimeSheets.stream().map(x -> x.pk.sid).collect(Collectors.toList());
 	}
 }

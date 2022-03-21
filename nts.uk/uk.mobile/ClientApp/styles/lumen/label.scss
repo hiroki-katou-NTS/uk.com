@@ -5,35 +5,7 @@
   line-height: 35px;
   white-space: nowrap;
   text-overflow: ellipsis;
-  border-left: 3px solid darken($primary, 5%);
-  &-info {
-    border-left-color: darken($info, 5%);
-  }
-  &-success {
-    border-left-color: darken($success, 5%);
-  }
-  &-warning {
-    border-left-color: darken($warning, 5%);
-  }
-  &-default,
-  &-primary {
-    border-left-color: darken($primary, 5%);
-  }
-  &-secondary {
-    border-left-color: darken($secondary, 5%);
-  }
-  &-danger {
-    border-left-color: darken($danger, 5%);
-  }
-  &-required {
-    border-left-color: $color-required;
-  }
-  &-light {
-    border-left-color: darken($light, 5%);
-  }
-  &-dark {
-    border-left-color: darken($dark, 5%);
-  }
+  
   &-flex {
     display: inline-flex;
   }

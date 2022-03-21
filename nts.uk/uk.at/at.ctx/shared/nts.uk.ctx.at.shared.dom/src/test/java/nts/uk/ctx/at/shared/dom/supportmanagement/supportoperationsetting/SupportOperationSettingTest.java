@@ -5,10 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
@@ -27,6 +25,7 @@ public class SupportOperationSettingTest {
 
 	@Injectable
 	private SupportOperationSetting.Require require;
+
 
 	@Test
 	public void getters() {

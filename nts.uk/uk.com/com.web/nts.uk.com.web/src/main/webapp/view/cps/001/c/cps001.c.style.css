@@ -28,16 +28,13 @@
 	box-sizing: border-box;
 }
 
-.nts-searchbbox-wrapper div.input-wrapper {
-	max-width: 198px;
-}
 
 #contents-area .form-group {
 	margin-bottom: 25px;
 }
 
 #contents-area .form-group .form-label {
-	min-width: 100px;
+	min-width: 120px;
 }
 
 .ui-iggrid .ui-iggrid-tablebody .ui-state-hover, .ui-iggrid .ui-iggrid-tablebody .ui-state-active,

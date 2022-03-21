@@ -1694,29 +1694,41 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                 TextResource.localize("KAF022_701")
         };
 
-        Map<String, MasterCellData> rowData1 = new HashMap<>();
-        for (int col = 0; col < 4; col++) {
-            String value;
-            if (col == 0) value = TextResource.localize("KAF022_242");
-            else if (col == 1) value = TextResource.localize("KAF022_695");
-            else if (col == 3) value = applySetting.get().getUseCancelFunction() == UseDivision.TO_USE
-                    ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
-            else value = "";
-            rowData1.put(
-                    COLUMN_NO_HEADER + col,
-                    MasterCellData.builder()
-                            .columnId(COLUMN_NO_HEADER + col)
-                            .value(value)
-                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                            .build());
+        for (int row = 0; row < 3; row++) {
+        	Map<String, MasterCellData> rowData = new HashMap<>();
+        	for (int col = 0; col < 4; col++) {
+                String value = "";
+                if (row == 0 && col == 0) value = TextResource.localize("KAF022_242");
+                if (row == 0 && col == 1) value = TextResource.localize("KAF022_695");
+                if (row == 0 && col == 3) value = applySetting.get().getUseCancelFunction() == UseDivision.TO_USE
+                        ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                
+                if (row == 1 && col == 1) value = TextResource.localize("KAF022_784");
+                if (row == 1 && col == 3) value = applySetting.get().getWkpDisAtr() == NotUseAtr.USE
+                        ? TextResource.localize("KAF022_787") : TextResource.localize("KAF022_788");
+                        
+	            if (row == 2 && col == 1) value = TextResource.localize("KAF022_785");
+	            if (row == 2 && col == 3) value = applySetting.get().getUseLocationSelection() == NotUseAtr.USE
+	                    ? TextResource.localize("KAF022_787") : TextResource.localize("KAF022_788");
+
+                rowData.put(
+                        COLUMN_NO_HEADER + col,
+                        MasterCellData.builder()
+                                .columnId(COLUMN_NO_HEADER + col)
+                                .value(value)
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
+            }
+            data.add(MasterData.builder().rowData(rowData).build());
         }
-        data.add(MasterData.builder().rowData(rowData1).build());
+        
         EnumSet.allOf(StampAtr.class).forEach(stamp -> {
             SettingForEachType settingForEachType = applySetting.get().getSettingForEachTypeLst().stream().filter(i -> i.getStampAtr() == stamp).findFirst().orElse(null);
             int rowSize;
-            if (stamp == StampAtr.ATTENDANCE_RETIREMENT || stamp == StampAtr.SUPPORT_IN_SUPPORT_OUT) rowSize = 8;
+            if (stamp == StampAtr.ATTENDANCE_RETIREMENT) rowSize = 8;
             else if (stamp == StampAtr.GOING_OUT_RETURNING) rowSize = 11;
             else if (stamp == StampAtr.RECORDER_IMAGE) rowSize = 6;
+            else if (stamp == StampAtr.SUPPORT_IN_SUPPORT_OUT) rowSize = 7;
             else rowSize = 7;
             for (int row = 0; row < rowSize; row++) {
                 Map<String, MasterCellData> rowData = new HashMap<>();
@@ -1736,7 +1748,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                             else value = "";
                         } else if (stamp == StampAtr.SUPPORT_IN_SUPPORT_OUT) {
                             if (row == 0) value = TextResource.localize("KAF022_696");
-                            else if (row == 1) value = TextResource.localize("KAF022_243");
+//                            else if (row == 1) value = TextResource.localize("KAF022_243");
                             else value = "";
                         } else if (row == 0) value = TextResource.localize("KAF022_696");
                         else value = "";
@@ -1786,7 +1798,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                         } else if (stamp == StampAtr.SUPPORT_IN_SUPPORT_OUT) {
                             if (row == 0) value = reflectSetting.get().getSupportReflectAtr() == NotUseAtr.USE
                                     ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
-                            else if (row == 1) value = applySetting.get().getSupportFrameDispNO().v() + " " + TextResource.localize("KAF022_755");
+//                            else if (row == 1) value = applySetting.get().getSupportFrameDispNO().v() + " " + TextResource.localize("KAF022_755");
                             else value = "";
                         } else if (stamp == StampAtr.OUT_OF_CARE_RETURN_OF_CARE) {
                             if (row == 0) value = reflectSetting.get().getCareReflectAtr() == NotUseAtr.USE

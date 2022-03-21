@@ -4,12 +4,11 @@ module nts.uk.at.view.kdp.share {
 
 	const template = `
 		<div class="time">
-			<div class="text-time" data-bind="i18n: 'KDP001_5'"></div>
 			<div class="date" data-bind="clock-day: time, setting: settings"></div>
 			<div class="hour-second" >
 				<span class="hour" data-bind="date: time, format: 'HH:mm', style:{
 					'color': ko.toJS(settings).textColor}"></span>
-				<span class="second" data-bind="date: time, format: ':ss', style:{
+				<span class="second" data-bind="date: time, format: ' ss', style:{
 					'color': ko.toJS(settings).textColor}"></span>
 			</div>
 		</div>
@@ -19,20 +18,27 @@ module nts.uk.at.view.kdp.share {
 				position: relative;
 			}
 			.time-container .time {
-				width: 300px;
+				width: 270px;
 				margin: auto;
 				position: relative;
+				white-space: nowrap;
 			}
-			.time-container .time .text-time {
-				position: absolute;
-				top: -23px;
-				right: -94px;
-				font-size: 85px;
-				color: white;
-			}
+			
 			.time-container .time .date {
-				font-size: 15px;
+				text-align: center;
 			}
+			
+			.time-container .time .date .ymd {
+				font-size: 32px;
+				font-family: Quicksand !important;
+			}
+			
+			.time-container .time .date .ddd {
+				font-size: 26px;
+				font-family: Quicksand !important;
+				font-weight: bold;
+			}
+
 			.time-container .time .hour-second {
 				padding-top: 10px;
 			}
@@ -41,32 +47,25 @@ module nts.uk.at.view.kdp.share {
 				z-index: 1;
 				font-size: 80px;
 				line-height: 80px;
+				font-family: Quicksand !important;
 			}
 			.time-container .time .second {
 				font-size: 50px;
 				line-height: 50px;
 				position: relative;
+				left: 16px;
 				z-index: 1;
-			}
-			.time-container .button-group {
-				position: absolute;
-				right: 0px;
-				padding-right: 7px;
-				bottom: 0px;
-			}
-			.time-container .button-group .btn-setting {
-				display: block;
-				margin-left: 18px;
-				margin-bottom: 60px;
-				border: 0;
-				height: 38px;
-				width: 38px;
-				background-color: transparent;
-				box-shadow: none;
+				font-family: Quicksand !important;
 			}
 
-			.time-container .button-group .btn-link {
-				color: #0000EE;
+			.time-container .button-group {
+				position: absolute;
+				bottom: -55px;
+				right: 15px;
+			}
+			.time-container .button-group button {
+				width: 80px;
+				margin-left: 10px;
 			}
 		</style>
 	`;
@@ -80,7 +79,12 @@ module nts.uk.at.view.kdp.share {
 			const time = valueAccessor();
 			const setting = allBindingAccessor.get('setting');
 
-			ko.applyBindingsToNode(element, { date: time, format: 'YYYY/MM/DD(ddd)', style: { color: ko.unwrap(setting).textColor } });
+			const $elem = $(element);
+			const $ymd = $("<span>").addClass("ymd").appendTo($elem);
+			const $ddd = $("<span>").addClass("ddd").appendTo($elem);
+
+			ko.applyBindingsToNode($ymd[0], { date: time, format: `YYYY/MM/DD`, style: { color: ko.unwrap(setting).textColor } });
+			ko.applyBindingsToNode($ddd[0], { date: time, format: `（ddd）`, style: { color: ko.unwrap(setting).textColor } });
 
 			element.removeAttribute('data-bind');
 		}
@@ -117,7 +121,7 @@ module nts.uk.at.view.kdp.share {
 			if (setting) {
 				const button = $('<button>', { class: 'btn-setting' }).get(0);
 
-				ko.applyBindingsToNode(button, { icon: 5, click: setting.click });
+				ko.applyBindingsToNode(button, { text: "設定", click: setting.click });
 
 				ko.computed({
 					read: () => {
@@ -134,7 +138,7 @@ module nts.uk.at.view.kdp.share {
 			}
 
 			if (company) {
-				const button = $('<a>', { href: '#', class: 'btn-link' }).get(0);
+				const button = $('<button>', { class: 'btn-link' }).get(0);
 
 				ko.applyBindingsToNode(button, { i18n: 'KDP003_2', click: company.click });
 

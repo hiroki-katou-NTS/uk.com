@@ -117,13 +117,14 @@ html {
 
 /* thay đổi màu check box */
 input[type="checkbox"]:checked {
-  background: blue;
+  background: #30cc40;
   color: white;
 }
 
 input[type="checkbox"]:disabled {
   background: gray;
   color: white;
+  border: none;
 }
 
 input[type="checkbox"] {
@@ -132,11 +133,11 @@ input[type="checkbox"] {
   -moz-appearance: none;
   appearance: none;
   outline: 0;
-  background: lightgray;
+  background: white;
   height: 16px;
   width: 16px;
-  border: 1px solid white;
   color: white;
+  border: 1px solid #30cc40;
 }
 
 input[type="checkbox"]:after {

@@ -30,4 +30,6 @@ public class UpdateAppAbsenceMobileCommand {
 	
 	// 古いの振出振休紐付け管理<List>
 	private List<PayoutSubofHDManagementDto> payoutSubofHDManagementDto;
+	
+	private boolean holidayFlg;
 }

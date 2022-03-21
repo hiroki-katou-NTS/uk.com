@@ -778,7 +778,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                 mailServerSet: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.mailServerSet,
                 application: application,
                 approvalRoot: vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opListApprovalPhaseState,
-                apptypeSetting: qr.length > 0 ? qr[0] : null
+                apptypeSetting: qr.length > 0 ? qr[0] : null, 
+                holidayFlg: false
             };
 
 			vm.$blockui("show");
@@ -816,6 +817,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 				if (result) {
 					holidayAppDates = result.holidayDateLst;
 					commandRegister.appDates = holidayAppDates;
+                    commandRegister.holidayFlg = result.holidayFlg;
 					// xử lý confirmMsg
 					return vm.handleConfirmMessage(result.confirmMsgLst);
 				}

@@ -43,7 +43,8 @@
             commentColor: commentColor,
             click: function(btn, layout) { $vm.clickBtn1.apply($vm, [btn, layout]); },
             reCalGridWidthHeight: reCalGridWidthHeight,
-            marginBottom: 0
+            marginBottom: 0,
+            kdp002: $vm.kdp002
           }"></div> 
           <com:ko-if bind=" stampGrid().displayMethod() != 0 ">
           	<div class="pull-left" id="stamp-info" data-bind="style:{'padding-top':stampTab().tabs().length > 1 ? '42px' : '0'}">

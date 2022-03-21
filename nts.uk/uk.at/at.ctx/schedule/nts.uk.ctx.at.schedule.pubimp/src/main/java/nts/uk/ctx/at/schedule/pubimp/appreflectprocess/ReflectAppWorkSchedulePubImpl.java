@@ -8,7 +8,6 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
@@ -38,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflectRepository;
@@ -59,17 +59,28 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.va
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeAppRepository;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.CorrectionAttendanceRuleRequireImpl;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectSupportDataWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectatt.CorrectionAfterTimeChange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectwork.CorrectionAfterChangeWorkInfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectwork.CorrectionShortWorkingHour;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.breaktime.CreateOneDayRangeCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateDailyRecordServiceCenterNew;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
+import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.FactoryManagePerPersonDailySet;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -81,10 +92,10 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 @Stateless
 public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSchedulePub {
@@ -97,9 +108,6 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 
 	@Inject
 	private BasicScheduleService service;
-
-	@Inject
-	private WorkTimeSettingService workTimeSettingService;
 
 	@Inject
 	private WorkScheduleRepository workScheduleRepository;
@@ -115,7 +123,7 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 
 	@Inject
 	private RequestSettingAdapter requestSettingAdapter;
-	
+
 	@Inject
 	private DailySnapshotWorkRepository snapshotRepo;
 
@@ -142,46 +150,93 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 
 	@Inject
 	private ReflectWorkChangeAppRepository reflectWorkChangeAppRepository;
-	
+
 	@Inject
 	private TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
-	
+
 	@Inject
 	private AppReflectOtHdWorkRepository appReflectOtHdWorkRepository;
-	
+
 	@Inject
 	private VacationApplicationReflectRepository vacationApplicationReflectRepository;
-	
+
 	@Inject
 	private SubLeaveAppReflectRepository subLeaveAppReflectRepository;
-	
+
 	@Inject
 	private SubstituteWorkAppReflectRepository substituteWorkAppReflectRepository;
-	
+
 	@Inject
 	private ApplicationReflectHistoryRepo applicationReflectHistoryRepo;
 
 	@Inject
 	private StampReflectionManagementRepository timePriorityRepository;
-	
+
 	@Inject
 	private CompensLeaveComSetRepository compensLeaveComSetRepository;
 
+	/** 勤怠ルール補正処理 */
+	@Inject
+	private AttendanceItemConvertFactory attendanceItemConvertFactory;
+
+	@Inject
+	private OptionalItemRepository optionalItem;
+
+	@Inject
+	private CorrectionAfterTimeChange correctionAfterTimeChange;
+
+	@Inject
+	private CorrectionAfterChangeWorkInfo correctionAfterChangeWorkInfo;
+
+	@Inject
+	private CommonCompanySettingForCalc companyCommonSettingRepo;
+
+	@Inject
+	private FactoryManagePerPersonDailySet personDailySetFactory;
+
+	@Inject
+	private FixedWorkSettingRepository fixWorkSetRepo;
+
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSetRepo;
+
+	@Inject
+	private CreateOneDayRangeCalc createOneDayRangeCalc;
+
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepo;
+
+	@Inject
+	private FlowWorkSettingRepository flowWorkSettingRepo;
+
+	@Inject
+	private FlexWorkSettingRepository flexWorkSettingRepo;
+
+	@Inject
+	private ICorrectSupportDataWork iCorrectSupportDataWork;
+
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepo;
+
+	@Inject
+	private WorkingConditionRepository workingConditionRepo;
+
+	@Inject
+	private CorrectionShortWorkingHour correctShortWorkingHour;
+
 	@Override
-	public Pair<SCReflectStatusResultExport, AtomTask> process(Object application, GeneralDate date, SCReflectStatusResultExport reflectStatus, int preAppWorkScheReflectAttr, String execId) {
+	public Pair<SCReflectStatusResultExport, AtomTask> process(Object application, GeneralDate date,
+			SCReflectStatusResultExport reflectStatus, int preAppWorkScheReflectAttr, String execId) {
 		String companyId = AppContexts.user().companyId();
-		
-		RequireImpl impl = new RequireImpl(companyId, workTypeRepo, workTimeSettingRepository, service,
-				workTimeSettingService, workScheduleRepository, convertDailyRecordToAd, correctionAttendanceRule,
-				calculateDailyRecordServiceCenterNew, requestSettingAdapter, snapshotRepo, flexWorkSettingRepository,
-				predetemineTimeSettingRepository, fixedWorkSettingRepository, flowWorkSettingRepository,
-				goBackReflectRepository, stampAppReflectRepository, lateEarlyCancelReflectRepository,
-				reflectWorkChangeAppRepository, timeLeaveAppReflectRepository, appReflectOtHdWorkRepository,
-				vacationApplicationReflectRepository, timePriorityRepository, subLeaveAppReflectRepository, substituteWorkAppReflectRepository,
-				applicationReflectHistoryRepo, compensLeaveComSetRepository);
+		ApplicationShare applicationShare = (ApplicationShare) application;
+
+		RequireImpl impl = new RequireImpl(companyId, applicationShare, attendanceItemConvertFactory, optionalItem,
+				correctionAfterTimeChange, correctionAfterChangeWorkInfo, companyCommonSettingRepo,
+				personDailySetFactory, fixWorkSetRepo, predetemineTimeSetRepo, createOneDayRangeCalc, workTypeRepo,
+				workTimeSettingRepo, flowWorkSettingRepo, flexWorkSettingRepo, iCorrectSupportDataWork,
+				workingConditionItemRepo, workingConditionRepo, correctShortWorkingHour);
 		Pair<SCReflectStatusResult, AtomTask> result = ReflectApplicationWorkSchedule.process(impl, companyId,
-				(ApplicationShare) application, date, convertToDom(reflectStatus),
-				preAppWorkScheReflectAttr, execId);
+				(ApplicationShare) application, date, convertToDom(reflectStatus), preAppWorkScheReflectAttr, execId);
 		return Pair.of(convertToExport(result.getLeft()), result.getRight());
 	}
 
@@ -205,63 +260,33 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 						: EnumAdaptor.valueOf(dom.getReasonNotReflectWorkSchedule().value,
 								SCReasonNotReflectExport.class));
 	}
-	
-	@AllArgsConstructor
-	public class RequireImpl implements ReflectApplicationWorkSchedule.Require {
+
+	public class RequireImpl extends CorrectionAttendanceRuleRequireImpl
+			implements ReflectApplicationWorkSchedule.Require {
 
 		private final String companyId;
 
-		private final WorkTypeRepository workTypeRepo;
+		private final ApplicationShare applicationShare;
 
-		private final WorkTimeSettingRepository workTimeSettingRepository;
-
-		private final BasicScheduleService service;
-
-		private final WorkTimeSettingService workTimeSettingService;
-
-		private final WorkScheduleRepository workScheduleRepository;
-
-		private final DailyRecordConverter convertDailyRecordToAd;
-
-		private final ICorrectionAttendanceRule correctionAttendanceRule;
-
-		private final CalculateDailyRecordServiceCenterNew calculateDailyRecordServiceCenterNew;
-
-		private final RequestSettingAdapter requestSettingAdapter;
-		
-		private DailySnapshotWorkRepository snapshotRepo;
-
-		private final FlexWorkSettingRepository flexWorkSettingRepository;
-
-		private final PredetemineTimeSettingRepository predetemineTimeSettingRepository;
-
-		private final FixedWorkSettingRepository fixedWorkSettingRepository;
-
-		private final FlowWorkSettingRepository flowWorkSettingRepository;
-
-		private final GoBackReflectRepository goBackReflectRepository;
-
-		private final StampAppReflectRepository stampAppReflectRepository;
-
-		private final LateEarlyCancelReflectRepository lateEarlyCancelReflectRepository;
-
-		private final ReflectWorkChangeAppRepository reflectWorkChangeAppRepository;
-		
-		private final TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
-		
-		private final AppReflectOtHdWorkRepository appReflectOtHdWorkRepository;
-		
-		private final VacationApplicationReflectRepository vacationApplicationReflectRepository;
-		
-		private final StampReflectionManagementRepository timePriorityRepository;
-		
-	    private final SubLeaveAppReflectRepository subLeaveAppReflectRepository;
-    	
-    	private final SubstituteWorkAppReflectRepository substituteWorkAppReflectRepository;
-    	
-    	private final ApplicationReflectHistoryRepo applicationReflectHistoryRepo;
-    	
-    	private CompensLeaveComSetRepository compensLeaveComSetRepository;
+		public RequireImpl(String companyId, ApplicationShare applicationShare,
+				AttendanceItemConvertFactory attendanceItemConvertFactory, OptionalItemRepository optionalItem,
+				CorrectionAfterTimeChange correctionAfterTimeChange,
+				CorrectionAfterChangeWorkInfo correctionAfterChangeWorkInfo,
+				CommonCompanySettingForCalc companyCommonSettingRepo,
+				FactoryManagePerPersonDailySet personDailySetFactory, FixedWorkSettingRepository fixWorkSetRepo,
+				PredetemineTimeSettingRepository predetemineTimeSetRepo, CreateOneDayRangeCalc createOneDayRangeCalc,
+				WorkTypeRepository workTypeRepo, WorkTimeSettingRepository workTimeSettingRepo,
+				FlowWorkSettingRepository flowWorkSettingRepo, FlexWorkSettingRepository flexWorkSettingRepo,
+				ICorrectSupportDataWork iCorrectSupportDataWork,
+				WorkingConditionItemRepository workingConditionItemRepo,
+				WorkingConditionRepository workingConditionRepo, CorrectionShortWorkingHour correctShortWorkingHour) {
+			super(attendanceItemConvertFactory, optionalItem, correctionAfterTimeChange, correctionAfterChangeWorkInfo,
+					companyCommonSettingRepo, personDailySetFactory, fixWorkSetRepo, predetemineTimeSetRepo,
+					createOneDayRangeCalc, workTypeRepo, workTimeSettingRepo, flowWorkSettingRepo, flexWorkSettingRepo,
+					iCorrectSupportDataWork, workingConditionItemRepo, workingConditionRepo, correctShortWorkingHour);
+			this.companyId = companyId;
+			this.applicationShare = applicationShare;
+		}
 
 		@Override
 		public Optional<WorkType> getWorkType(String workTypeCd) {
@@ -277,7 +302,7 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
-		
+
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 			return service.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -316,10 +341,9 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		}
 
 		@Override
-		public List<IntegrationOfDaily> calculateForSchedule(ExecutionType type, CalculateOption calcOption,
+		public List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,
 				List<IntegrationOfDaily> integrationOfDaily) {
-			return calculateDailyRecordServiceCenterNew.calculatePassCompanySetting(calcOption, integrationOfDaily,
-					type);
+			return calculateDailyRecordServiceCenterNew.calculateForSchedule(calcOption, integrationOfDaily);
 		}
 
 		@Override
@@ -361,10 +385,10 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 
 		@Override
 		public Optional<DailySnapshotWork> snapshot(String sid, GeneralDate ymd) {
-			
+
 			return snapshotRepo.find(sid, ymd);
 		}
-		
+
 		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
 			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, wktmCd.v()).get();
 		}
@@ -430,10 +454,9 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		}
 
 		@Override
-		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
-				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
-				ExecutionType reCalcAtr) {
-			return calculateForSchedule(reCalcAtr, calcOption, integrationOfDaily);
+		public List<IntegrationOfDaily> calculateForRecordSchedule(CalculateOption calcOption,
+				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet) {
+			return calculateForSchedule(calcOption, integrationOfDaily);
 		}
 
 		@Override
@@ -441,5 +464,16 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 			return compensLeaveComSetRepository.find(companyId);
 		}
 
+		@Override
+		public Optional<AppStampShare> appStamp() {
+			if (applicationShare instanceof AppStampShare) {
+				return Optional.of((AppStampShare) applicationShare);
+			}
+			return Optional.empty();
+		}
+
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
+		}
 	}
 }

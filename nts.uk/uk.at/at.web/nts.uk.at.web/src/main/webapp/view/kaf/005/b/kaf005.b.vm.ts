@@ -18,113 +18,98 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		<div id="kaf005-b">
 			<div id="contents-area"
 				style="background-color: inherit; height: calc(100vh - 137px);">
-				<div class="two-panel" style="height: 100%;" data-bind="style: {width: opOvertimeAppAtr() == 3 &amp;&amp; appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason &amp;&amp; appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason ? '1344px' : '1260px'}">
-					<div class="left-panel"
-						style="width: calc(100% - 388px); height: inherit; padding-bottom: 5px;">
-						<div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px;"> 
-							<div class="table"
-								style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
-								<div class="cell" style="vertical-align: middle;">
-									<div
-										data-bind="component: { name: 'kaf000-b-component4',
-														params: {
-															appType: appType,
-															application: application,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-								</div>
-								<div class="cell"
-									style="text-align: right; vertical-align: middle;">
-									<div
-										data-bind="component: { name: 'kaf000-b-component8', 
-														params: {
-															appType: appType,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-								</div>
+				<div class="two-panel" style="width: 1260px;">
+					<div class="left-panel" style="width: calc(1260px - 388px);">
+						<div class="form-header table">
+							<div class="cell" style="vertical-align: middle;">
+								<div
+									data-bind="component: { name: 'kaf000-b-component4',
+													params: {
+														appType: appType,
+														application: application,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"></div>
 							</div>
-							<div data-bind="component: { name: 'kaf000-b-component2', 
-														params: {
-															appType: appType,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-							<div
-								data-bind="component: { name: 'kaf000-b-component5', 
-														params: {
-															appType: appType,
-															application: application,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-							<div
-								data-bind="component: { name: 'kaf000-b-component6', 
-														params: {
-															appType: appType,
-															application: application,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"
-								style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: -15px"></div>
+							<div class="cell"
+								style="text-align: right; vertical-align: middle;">
+								<div
+									data-bind="component: { name: 'kaf000-b-component8', 
+													params: {
+														appType: appType,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"></div>
+							</div>
+						</div>
+						<div data-bind="component: { name: 'kaf000-b-component2', 
+													params: {
+														appType: appType,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"></div>
+						<div
+							data-bind="component: { name: 'kaf000-b-component5', 
+													params: {
+														appType: appType,
+														application: application,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"></div>
+						<div
+							data-bind="component: { name: 'kaf000-b-component6', 
+													params: {
+														appType: appType,
+														application: application,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"
+							style="width: fit-content; display: inline-block; vertical-align: middle;"></div>
 
-
-
-							<div style="margin-top: -10px">
-
-							<div data-bind="component: { name: 'kaf005-share-work-info', 
-										params: {
-														workInfo: workInfo
-													} 
-										}"></div>
-								
-							<div data-bind="component: { name: 'kaf005-share',
-											params: {
-												restTime: restTime,
-												holidayTime: holidayTime,
-												overTime: overTime,
-												visibleModel: visibleModel,
-												agent: agentForTable
-											}
+						<div data-bind="component: { name: 'kaf005-share-work-info', 
+									params: {
+													workInfo: workInfo
+												} 
+									}"></div>
 							
-										}"></div>
-							</div>
-							<div data-bind="if: opOvertimeAppAtr() != 3">
-								<div style="margin-top: 11px"
-									data-bind="component: { name: 'kaf000-b-component7', 
-														params: {
-															appType: appType,
-															application: application,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-							</div>										
-							<div data-bind="component: { name: 'kaf005-share-footer'}"></div>
+						<div data-bind="component: { name: 'kaf005-share',
+										params: {
+											restTime: restTime,
+											holidayTime: holidayTime,
+											overTime: overTime,
+											visibleModel: visibleModel,
+											agent: agentForTable
+										}
 						
-							<div style="padding-top: 30px;">
-											
-							</div>                          
+									}"></div>
+
+						<div data-bind="if: opOvertimeAppAtr() != 3">
+							<div style="margin-top: 11px"
+								data-bind="component: { name: 'kaf000-b-component7', 
+													params: {
+														appType: appType,
+														application: application,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"></div>
+						</div>										
+						<div data-bind="component: { name: 'kaf005-share-footer'}"></div>
+					
+						<div style="padding-top: 30px;">
+										
 						</div>
 					</div>
-					<div class="right-panel" style="width: 388px; padding-bottom: 5px; height: inherit; padding-right: 0px">
-						<div style="border: 1px solid #CCC; height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden">
-							<div
-								data-bind="component: { name: 'kaf000-b-component1', 
-									params: {
-										appType: appType,
-										appDispInfoStartupOutput: appDispInfoStartupOutput	
-									} }"></div>
-<!--							<div data-bind="if: visibleModel.c6()">-->
-								<div
-									data-bind="component: { name: 'kaf005-share-header',
-													params: {
-														overTimeWork: overTimeWork
-													}
-													}"></div>   
-<!--							</div>     -->
-							<div
-								data-bind="component: { name: 'kaf000-b-component9',
-									params: {
-										appType: appType,
-										application: application,
-										appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
-									} }"></div>
-						</div>
+					<div class="right-panel" style="width: 388px;">
+						<div data-bind="component: { name: 'kaf000-b-component1', 
+								params: {
+									appType: appType,
+									appDispInfoStartupOutput: appDispInfoStartupOutput	
+								} }"></div>
+						<div data-bind="component: { name: 'kaf005-share-header',
+											params: {
+												overTimeWork: overTimeWork
+											}
+											}"></div>   
+						<div data-bind="component: { name: 'kaf000-b-component9',
+								params: {
+									appType: appType,
+									application: application,
+									appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
+								} }"></div>
 					</div>
 				</div>
 			</div>
@@ -276,6 +261,76 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						}
 				});
 			});
+
+			vm.workInfo().workHours1.start.subscribe((value) => {
+				if (vm.workInfo().workHours1.end() 
+					&& _.isNumber(value) && _.isNumber(vm.workInfo().workHours1.end())) {
+						if (vm.workInfo().workHours1.end() >= value) {
+							$("#inpEndTime1").ntsError("clear");
+						} 
+						if (value > vm.workInfo().workHours1.end() && !$("#inpEndTime1").ntsError('hasError')) {
+							vm.$errors('#inpEndTime1', 'Msg_307');
+						}
+				}
+			});
+
+			vm.workInfo().workHours1.end.subscribe((value) => {
+				if (vm.workInfo().workHours1.start() && _.isNumber(value) && _.isNumber(vm.workInfo().workHours1.start())) {
+						if (value >= vm.workInfo().workHours1.start()) {
+							$("#inpEndTime1").ntsError("clear");
+						} 
+						if (value < vm.workInfo().workHours1.start() && !$("#inpEndTime1").ntsError('hasError')) {
+							vm.$errors('#inpEndTime1', 'Msg_307');
+						}
+						if ($('#inpStartTime2') && vm.workInfo().workHours2.start() && _.isNumber(vm.workInfo().workHours2.start())) {
+							if (vm.workInfo().workHours2.start() >= value) {
+								$("#inpStartTime2").ntsError("clear");
+							}
+							if (value > vm.workInfo().workHours2.start() && !$("#inpStartTime2").ntsError('hasError')) {
+								vm.$errors('#inpStartTime2', 'Msg_581');
+							}
+						}
+				}
+				if (!_.isNumber(value)) {
+					$("#inpStartTime2").ntsError("clear");
+				}
+			});
+
+			vm.workInfo().workHours2.start.subscribe((value) => {
+				if ($('#inpStartTime2')) {
+					if (vm.workInfo().workHours2.end() && _.isNumber(value) && _.isNumber(vm.workInfo().workHours2.end())) {
+						if (value <= vm.workInfo().workHours2.end()) {
+							$("#inpEndTime2").ntsError("clear");
+						}
+						if (value > vm.workInfo().workHours2.end() && !$("#inpEndTime2").ntsError('hasError')) {
+							vm.$errors('#inpEndTime2', 'Msg_307');
+						}
+					}
+					if (_.isNumber(value) && vm.workInfo().workHours1.end() && _.isNumber(vm.workInfo().workHours1.end())) {
+						if (vm.workInfo().workHours1.end() < value) {
+							$("#inpStartTime2").ntsError("clear");
+						}
+						if (vm.workInfo().workHours1.end() > value && !$("#inpStartTime2").ntsError('hasError')) {
+							vm.$errors('#inpStartTime2', 'Msg_581');
+						}
+					}
+				}
+			});
+			vm.workInfo().workHours2.start.extend({rateLimit: 100});
+
+			vm.workInfo().workHours2.end.subscribe((value) => {
+				if ($('#inpEndTime2')) {
+					if (vm.workInfo().workHours2.start() && _.isNumber(value) && _.isNumber(vm.workInfo().workHours2.start())) {
+						if (vm.workInfo().workHours2.start() <= value) {
+							$("#inpEndTime2").ntsError("clear");
+						}
+						if (value < vm.workInfo().workHours2.start() && !$("#inpEndTime2").ntsError('hasError')) {
+							vm.$errors("#inpEndTime2", 'Msg_307');
+						}
+					}
+				}
+			});
+			vm.workInfo().workHours2.end.extend({rateLimit: 100});
 		}
 
         initAppDetail() {
@@ -323,7 +378,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                         vm.multipleOvertimeContents([]);
                         res.appOverTime.multipleOvertimeContents.forEach((i: any) => {
                         	vm.multipleOvertimeContents.push(new MultipleOvertimeContent(
-                                () => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED},
+                                () => {
+                                    vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+                                    vm.checkMultipleRow();
+                                },
                                 i.frameNo,
                                 i.startTime,
                                 i.endTime,
@@ -385,7 +443,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                 fixedReasonCode = defaultReasonTypeItem.appStandardReasonCD;
             }
             vm.multipleOvertimeContents.push(new MultipleOvertimeContent(
-                () => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED},
+                () => {
+                    vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+                    vm.checkMultipleRow();
+                },
                 1,
                 null,
                 null,
@@ -403,6 +464,21 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                 vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
             }
             vm.multipleOvertimeContents.remove(data);
+            vm.checkMultipleRow();
+        }
+
+        checkMultipleRow() {
+            const vm = this;
+            vm.multipleOvertimeContents().forEach((i, idx) => {
+                // clear error before check
+                vm.$errors('clear', '#A15_3_' + idx);
+                vm.$errors('clear', '#A15_5_' + idx);
+
+                // check value this row
+                if (_.isNumber(i.start()) && _.isNumber(i.end()) && i.start() > i.end()) {
+                    vm.$errors('#A15_5_' + idx, 'Msg_307');
+                }
+            });
         }
 
 		assignWorkHourAndRest(isChangeDate?: boolean) {
@@ -460,7 +536,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				'#kaf000-a-component3-prePost',
 			 	'#kaf000-a-component5-comboReason',
 				'#inpStartTime1',
-				'#inpEndTime1')
+				'#inpEndTime1',
+                 '.inputTime-kaf005')
             .then((isValid) => {
                 if (isValid) {
 					// validate riêng cho màn hình
@@ -480,57 +557,42 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					let end2 = vm.workInfo().workHours2.end();
 					
 					// ・開始時刻1 > 終了時刻1　の場合エラーメッセージ(Msg_307)を表示する
-					if (start1 > end1 && vm.visibleModel.c7()) {
-						vm.$errors('#inpStartTime1', 'Msg_307');
-						vm.$errors('#inpEndTime1', 'Msg_307');
-						return false;
-					}
+					// if (start1 > end1 && vm.visibleModel.c7()) {
+					// 	vm.$errors('#inpStartTime1', 'Msg_307');
+					// 	vm.$errors('#inpEndTime1', 'Msg_307');
+					// 	return false;
+					// }
 					// ・開始時刻2 > 終了時刻2　の場合エラーメッセージ(Msg_307)を表示する
-					if (inpStartTime2 && inpEndTime2 && _.isNumber(start2) && _.isNumber(end2) && vm.visibleModel.c29()) {
-						if (start2 > end2) {
-							vm.$errors('#inpStartTime2', 'Msg_307');
-							vm.$errors('#inpEndTime2', 'Msg_307');
-							return false;
-						}
-					}
+					// if (inpStartTime2 && inpEndTime2 && _.isNumber(start2) && _.isNumber(end2) && vm.visibleModel.c29()) {
+					// 	if (start2 > end2) {
+					// 		vm.$errors('#inpStartTime2', 'Msg_307');
+					// 		vm.$errors('#inpEndTime2', 'Msg_307');
+					// 		return false;
+					// 	}
+					// }
 					
 					// ・終了時刻1 > 開始時刻2　の場合エラーメッセージ(Msg_581)を表示する
-					if (_.isNumber(start2) && inpStartTime2 && vm.visibleModel.c29()) {
-						if (start2 < end1) {
-							vm.$errors('#inpEndTime1', 'Msg_581');
-							vm.$errors('#inpStartTime2', 'Msg_581');
-							return false;
-						}
-					}
+					// if (_.isNumber(start2) && inpStartTime2 && vm.visibleModel.c29()) {
+					// 	if (start2 < end1) {
+					// 		vm.$errors('#inpEndTime1', 'Msg_581');
+					// 		vm.$errors('#inpStartTime2', 'Msg_581');
+					// 		return false;
+					// 	}
+					// }
 					// ・開始時刻2、終了時刻2　の片方しか入力してない場合エラーメッセージ(Msg_307)を表示する
-					if (inpStartTime2 && inpEndTime2 && vm.visibleModel.c7()) {
-						if (!(_.isNumber(start2) && _.isNumber(end2))) {
-							if (!_.isNumber(start2) && _.isNumber(end2)) {
-								vm.$errors('#inpStartTime2', 'Msg_307');
-								return false;								
-							}
-							if (!_.isNumber(end2) && _.isNumber(start2)) {
-								vm.$errors('#inpEndTime2', 'Msg_307');
-								return false;																
-							}
+					// if (inpStartTime2 && inpEndTime2 && vm.visibleModel.c7()) {
+					// 	if (!(_.isNumber(start2) && _.isNumber(end2))) {
+					// 		if (!_.isNumber(start2) && _.isNumber(end2)) {
+					// 			vm.$errors('#inpStartTime2', 'Msg_307');
+					// 			return false;								
+					// 		}
+					// 		if (!_.isNumber(end2) && _.isNumber(start2)) {
+					// 			vm.$errors('#inpEndTime2', 'Msg_307');
+					// 			return false;																
+					// 		}
 							
-						}
-					}
-
-                    if (vm.opOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
-                        let error = false;
-                        vm.multipleOvertimeContents().forEach((i, idx) => {
-                            if (!!i.start() && !i.end()) {
-                                vm.$errors('#A15_5_' + idx, 'Msg_307');
-                                error = true;
-                            }
-                            if (!i.start() && !!i.end()) {
-                                vm.$errors('#A15_3_' + idx, 'Msg_307');
-                                error = true;
-                            }
-                        });
-                        if (error) return false;
-                    }
+					// 	}
+					// }
 					
 					// wokr type or worktime null
 					if (vm.visibleModel.c7()) {
@@ -1482,21 +1544,6 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		calculate() {
 			const self = this;
 
-            if (self.opOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
-                let error = false;
-                self.multipleOvertimeContents().forEach((i, idx) => {
-                    if (!!i.start() && !i.end()) {
-                        self.$errors('#A15_5_' + idx, 'Msg_307');
-                        error = true;
-                    }
-                    if (!i.start() && !!i.end()) {
-                        self.$errors('#A15_3_' + idx, 'Msg_307');
-                        error = true;
-                    }
-                });
-                if (error) return;
-            }
-
 			self.$blockui("show");
 			console.log('calculate');
 			let command = {} as ParamCalculationCMD;
@@ -1589,7 +1636,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                         if (!_.isEmpty(res.calculatedWorkTimes)) {
                             self.workInfo().workHours1.start(res.calculatedWorkTimes[0].timeZone.startTime);
                             self.workInfo().workHours1.end(res.calculatedWorkTimes[0].timeZone.endTime);
-                            if (res.calculatedWorkTimes.length > 1) {
+                            if (res.calculatedWorkTimes.length > 1 && self.visibleModel.c29()) {
                                 self.workInfo().workHours2.start(res.calculatedWorkTimes[1].timeZone.startTime);
                                 self.workInfo().workHours2.end(res.calculatedWorkTimes[1].timeZone.endTime);
                             } else {

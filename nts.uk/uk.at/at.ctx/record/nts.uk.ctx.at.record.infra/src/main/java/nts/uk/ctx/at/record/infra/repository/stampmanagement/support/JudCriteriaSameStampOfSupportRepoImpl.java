@@ -26,9 +26,9 @@ public class JudCriteriaSameStampOfSupportRepoImpl extends JpaRepository impleme
 		KrcmtSupportStampSet entity = queryProxy().query("SELECT o FROM KrcmtSupportStampSet o WHERE o.cid = :cid", KrcmtSupportStampSet.class)
 				.setParameter("cid", cid)
 				.getSingleOrNull();
-		if(entity == null)
+		if(entity == null) {
 			return null;
-		
+		}
 		JudgmentCriteriaSameStampOfSupport rs = toDomain(entity);
 		return rs;
 	}

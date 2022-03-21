@@ -4,6 +4,8 @@
 package nts.uk.ctx.sys.assist.infra.repository.deletedata;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -902,15 +904,23 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	
 
 	public List<String> getAllColumnName(String tableName) {
-		List<?> columns = this.getEntityManager().createNativeQuery(SELECT_COLUMN_NAME_SQL)
-				.setParameter("tableName", tableName).getResultList();
-		if (columns == null || columns.isEmpty()) {
+		Connection connection = this.getEntityManager().unwrap(Connection.class);
+		try {
+			String dbType = connection.getMetaData().getDatabaseProductName();
+			if (dbType.equals("PostgreSQL")) {
+				tableName = tableName.toLowerCase();
+			}
+			List<?> columns = this.getEntityManager().createNativeQuery(SELECT_COLUMN_NAME_SQL)
+					.setParameter("tableName", tableName).getResultList();
+			if (columns == null || columns.isEmpty()) {
+				return Collections.emptyList();
+			}
+			return columns.stream().map(item -> {
+				return String.valueOf(item).toUpperCase();
+			}).collect(Collectors.toList());
+		} catch (SQLException e) {
 			return Collections.emptyList();
 		}
-		return columns.stream().map(item -> {
-			return String.valueOf(item);
-		}).collect(Collectors.toList());
-
 	}
 
 	/**
@@ -918,16 +928,25 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	 */
 	@Override
 	public List<String> getColumnName(String nameTable) {
-		@SuppressWarnings("unchecked")
-		List<String> listTemp = this.getEntityManager().createNativeQuery(SELECT_COLUMN_NAME_SQL)
-				.setParameter("tableName", nameTable).getResultList();
-
-		if (listTemp == null || listTemp.isEmpty()) {
+		Connection connection = this.getEntityManager().unwrap(Connection.class);
+		try {
+			String dbType = connection.getMetaData().getDatabaseProductName();
+			if (dbType.equals("PostgreSQL")) {
+				nameTable = nameTable.toLowerCase();
+			}
+			@SuppressWarnings("unchecked")
+			List<String> listTemp = this.getEntityManager().createNativeQuery(SELECT_COLUMN_NAME_SQL)
+					.setParameter("tableName", nameTable).getResultList();
+	
+			if (listTemp == null || listTemp.isEmpty()) {
+				return Collections.emptyList();
+			}
+			return listTemp.stream().map(temp -> {
+				return String.valueOf(temp).toUpperCase();
+			}).collect(Collectors.toList());
+		} catch (SQLException e) {
 			return Collections.emptyList();
 		}
-		return listTemp.stream().map(temp -> {
-			return String.valueOf(temp);
-		}).collect(Collectors.toList());
 	}
 
 	/**

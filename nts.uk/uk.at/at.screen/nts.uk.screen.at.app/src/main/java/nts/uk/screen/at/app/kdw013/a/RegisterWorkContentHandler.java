@@ -16,7 +16,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.kdw013.a.deletetimezoneattendance.DeleteTimeZoneAttendanceCommand;
 import nts.uk.screen.at.app.kdw013.a.deletetimezoneattendance.DeleteTimeZoneAttendanceCommandHandler;
 import nts.uk.screen.at.app.kdw013.a.deletetimezoneattendance.RegisterDeleteTimeZoneAttendanceCommandHandler;
-import nts.uk.screen.at.app.kdw013.command.RegisterTaskTimeGroupCommand;
 import nts.uk.screen.at.app.kdw013.command.RegisterTaskTimeGroupCommandHandler;
 import nts.uk.screen.at.app.kdw013.query.CreateDpItemQuery;
 
@@ -40,9 +39,6 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 
 	@Inject
 	private RegisterTaskTimeGroupCommandHandler handler;
-	
-	@Inject
-	private GetTargetTime getTargetTime;
 
 	@Inject
 	private GetDailyPerformanceData getDailyPerformanceData;
@@ -105,12 +101,7 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 		
 		
 			
-		// 7.残業申請・休出時間申請の対象時間を取得する
-		// comment lai do update method getTargetTime.get
-
-		//List<OvertimeLeaveTimeDto> ots = this.getTargetTime.get(command.getEmployeeId(), command.getChangedDates());
-
-		//result.setLstOvertimeLeaveTime(ots);
+		// 7.残業申請・休出時間申請の対象時間を取得する bước này phải tách ra một services riêng sau khi đăng kí thành công vì xử lý RegisterTaskTimeGroupCommandHandler là bất đồng bộ
 		
 		// 8. List<残業休出時間>.isPresent check dưới client
 
