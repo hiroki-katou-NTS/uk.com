@@ -26,7 +26,7 @@ module nts.uk.at.view.kdp005.h2 {
 			}).catch(function(err: any) {
 				console.log(err);
 				if (err) {
-					$('#lbl-error').removeAttribute("display");
+					$('#lbl-error').removeAttr('display');
 					$('#btn-cancel').css('bottom', '-260px');
 					$('#btn-clear').css('visibility', 'hidden');
 					
