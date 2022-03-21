@@ -110,13 +110,6 @@ module nts.uk.at.view.kfp002.a.viewmodel {
             self.isStartScreen = ko.observable(true);
             self.isEnableRegister = ko.observable(false);
 
-            nts.uk.characteristics.restore(DATA_KEY).done((cacheData: ScreenStatus) => {
-                self.selectedFrameCode(cacheData ? cacheData.anyPeriodFrameCode : null);
-                self.cursorDirection(cacheData ? cacheData.cursorDirection : 0);
-                self.displayZero(cacheData ? cacheData.displayZero : false);
-                self.displayItemNumber(cacheData ? cacheData.displayItemNumber : false);
-            });
-
             self.selectedFrameCode.subscribe(val => {
                 if (!self.isStartScreen()) {
                     nts.uk.characteristics.save(DATA_KEY, {
@@ -139,12 +132,14 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                         $("#anpGrid").mGrid("directEnter", "right");
                     }
                 }
-                nts.uk.characteristics.save(DATA_KEY, {
-                    anyPeriodFrameCode: self.selectedFrameCode(),
-                    cursorDirection: value,
-                    displayZero: self.displayZero(),
-                    displayItemNumber: self.displayItemNumber()
-                });
+                if (!self.isStartScreen()) {
+                    nts.uk.characteristics.save(DATA_KEY, {
+                        anyPeriodFrameCode: self.selectedFrameCode(),
+                        cursorDirection: value,
+                        displayZero: self.displayZero(),
+                        displayItemNumber: self.displayItemNumber()
+                    });
+                }
             });
 
             self.displayItemNumber.subscribe((val) => {
@@ -162,12 +157,14 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                         }
                     });
                 }
-                nts.uk.characteristics.save(DATA_KEY, {
-                    anyPeriodFrameCode: self.selectedFrameCode(),
-                    cursorDirection: self.cursorDirection(),
-                    displayZero: self.displayZero(),
-                    displayItemNumber: val
-                });
+                if (!self.isStartScreen()) {
+                    nts.uk.characteristics.save(DATA_KEY, {
+                        anyPeriodFrameCode: self.selectedFrameCode(),
+                        cursorDirection: self.cursorDirection(),
+                        displayZero: self.displayZero(),
+                        displayItemNumber: val
+                    });
+                }
             });
 
             self.displayZero.subscribe(val => {
@@ -178,12 +175,14 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                         $("#anpGrid").mGrid("hideZero", true);
                     }
                 }
-                nts.uk.characteristics.save(DATA_KEY, {
-                    anyPeriodFrameCode: self.selectedFrameCode(),
-                    cursorDirection: self.cursorDirection(),
-                    displayZero: val,
-                    displayItemNumber: self.displayItemNumber()
-                });
+                if (!self.isStartScreen()) {
+                    nts.uk.characteristics.save(DATA_KEY, {
+                        anyPeriodFrameCode: self.selectedFrameCode(),
+                        cursorDirection: self.cursorDirection(),
+                        displayZero: val,
+                        displayItemNumber: self.displayItemNumber()
+                    });
+                }
             });
 
             self.lstEmployee.subscribe(val => {
@@ -204,6 +203,12 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                 });
                 $.when(self.aggregateFrames(_.sortBy(frames, ["aggrFrameCode"]))).then(() => {
                     self.isStartScreen(false);
+                    nts.uk.characteristics.restore(DATA_KEY).done((cacheData: ScreenStatus) => {
+                        self.selectedFrameCode(cacheData ? cacheData.anyPeriodFrameCode : null);
+                        self.cursorDirection(cacheData ? cacheData.cursorDirection : 0);
+                        self.displayZero(cacheData ? cacheData.displayZero : false);
+                        self.displayItemNumber(cacheData ? cacheData.displayItemNumber : false);
+                    });
                 });
                 self.getFormatSetting();
             }).fail(error => {
@@ -397,6 +402,7 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                     tmpDataSource.push(tmp);
                 });
                 self.dataSource(_.sortBy(tmpDataSource, ["code"]));
+                self.cellStates([]);
                 self.displayFormat().monthlyItems.forEach((monthlyItem: any) => {
                     tmpDataSource.forEach(row => {
                         if (monthlyItem.userCanUpdateAtr == 0) {
@@ -438,6 +444,7 @@ module nts.uk.at.view.kfp002.a.viewmodel {
             vm.$window.modal("/view/kfp/002/b/index.xhtml").then(formatCode => {
                 if (formatCode) {
                     vm.formatCode(formatCode);
+                    vm.$blockui('show');
                     vm.getFormatSetting();
                 }
             });
@@ -470,8 +477,8 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                 case 15: return "TimeWithDayAttr";
                 case 16: return "AttendanceTimeMonth";
                 case 17: return "AttendanceTimeMonthWithMinus";
-                case 18: return "AttendanceDaysMonth";
-                case 19: return "AttendanceTimesMonth";
+                case 18: //return "AttendanceDaysMonth";
+                case 19: return "AttendanceDaysMonth"; //return "AttendanceTimesMonth";
                 case 20: return "OverTime";
                 case 23: return "MonthlyDays";
                 case 26: return "AttendanceRate";
@@ -536,7 +543,12 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                     dataUpdate.items[empId] = cells.map((c: any) => {
                         const monthlyItem = _.find(self.displayFormat().monthlyItems, (mi: any) => mi.attendanceItemId == Number(c.columnKey.substring(1)));
                         let valueType = 1; // time
-                        if (monthlyItem.monthlyAttendanceAtr == 2) valueType = monthlyItem.primitive == 59 || monthlyItem.primitive == 58 ? 8 : 7; // count
+                        if (monthlyItem.monthlyAttendanceAtr == 2) {  // count
+                            if (monthlyItem.primitive == 59 || monthlyItem.primitive == 58 || monthlyItem.primitive == 18 || monthlyItem.primitive == 19)
+                                valueType = 8;
+                            else
+                                valueType = 7;
+                        }
                         if (monthlyItem.monthlyAttendanceAtr == 3) valueType = 12; // days
                         if (monthlyItem.monthlyAttendanceAtr == 4) valueType = monthlyItem.primitive == 65 ? 17 : 16; // amount
                         return {
