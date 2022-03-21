@@ -409,6 +409,7 @@ module nts.uk.at.view.kdp005.a {
                             let {regional, workLocationCD, workLocationName, workPlaceId } = workLoc;
 
                             if (workLoc && workLocationCD != null && workLocationName != null) {
+								self.worklocationCode = workLoc.workLocationCD;
 
                                 self.workLocationInfo(workLoc);
                                 vm.$window.storage("workLocationInfo", workLoc);
@@ -420,6 +421,10 @@ module nts.uk.at.view.kdp005.a {
                                 let workregionParam = { contractCode: info.contractCode, cid: loginInfo.companyId, sid: null, workPlaceId: loginInfo.selectedWP[0] };
 
                                 vm.$ajax(API.GET_REGION_TIME, workregionParam).done((workLoc: IWorkPlaceRegionalTimeDto) => {
+
+									if (workLoc.workLocationCD != null) {
+										self.worklocationCode = workLoc.workLocationCD;
+									}
 
                                     self.workLocationInfo(workLoc);
                                     vm.$window.storage("workLocationInfo", workLoc);
@@ -1140,7 +1145,7 @@ module nts.uk.at.view.kdp005.a {
 
                                         if (workLoc && workLocationCD != null && workLocationName != null) {
 
-                                            self.worklocationCode = locationCd;
+                                            self.worklocationCode = workLoc.workLocationCD;
                                             
                                             
                                             if (workPlaceId) {

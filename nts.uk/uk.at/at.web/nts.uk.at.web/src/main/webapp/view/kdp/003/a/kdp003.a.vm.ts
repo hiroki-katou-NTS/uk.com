@@ -374,6 +374,9 @@ module nts.uk.at.kdp003.a {
 							if (data) {
 								if (ko.unwrap(vm.regionalTime) == 0) {
 									vm.regionalTime(data.regional);
+									if (data.workLocationCD != null) {
+										vm.worklocationCode = data.workLocationCD;
+									}
 								}
 							}
 						})
