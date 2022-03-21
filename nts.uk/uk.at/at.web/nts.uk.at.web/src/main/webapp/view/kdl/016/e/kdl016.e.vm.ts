@@ -126,7 +126,7 @@ module nts.uk.at.view.kdl016.e {
             vm.$ajax(API.update, command).then((data: any) => {
                 if (!data.error) {
                     vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
-                        vm.closeDialog();
+                        vm.closeDialog(true);
                     });
                 } else {
                     let errorResults = data.errorResults;
@@ -152,16 +152,23 @@ module nts.uk.at.view.kdl016.e {
                 }
             }).fail(error => {
                 vm.$dialog.error(error).then(() => {
-                    vm.closeDialog();
+                    vm.closeDialog(false);
                 });
             }).always(() => {
                 vm.$blockui("clear");
             });
         }
 
-        closeDialog(): void {
+        closeDialog(reloadable: boolean): void {
             const vm = this;
+            let dataShare = {reloadable: reloadable};
+            nts.uk.ui.windows.setShared("shareKdl016D", dataShare);
             vm.$window.close();
+        }
+
+        cancel() {
+            const vm = this;
+            vm.closeDialog(false);
         }
     }
 

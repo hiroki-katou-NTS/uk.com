@@ -323,14 +323,11 @@ module nts.uk.at.view.kdl016.a {
                 };
                 vm.$blockui("invisible");
                 vm.$window.modal("/view/kdl/016/b/index.xhtml", param).then((result: any) => {
-                    // if (result && !_.isEmpty(result)) {
-                    //     if (result.closeable) {
-                    //         vm.closeDialog();
-                    //     } else {
-                    //         vm.loadSupportInfo(DISPLAY_MODE.GO_TO_SUPPORT);
-                    //     }
-                    // }
-                    vm.loadSupportInfo(DISPLAY_MODE.GO_TO_SUPPORT);
+                    if (result && !_.isEmpty(result)) {
+                        if (result.reloadable) {
+                            vm.loadSupportInfo(DISPLAY_MODE.GO_TO_SUPPORT);
+                        }
+                    }
                 });
             } else {
                 param = {
@@ -343,14 +340,13 @@ module nts.uk.at.view.kdl016.a {
                     enableSupportTimezone: vm.enableSupportTimezone()
                 };
                 vm.$window.modal("/view/kdl/016/c/index.xhtml", param).then((result: any) => {
-                    // if (result && !_.isEmpty(result)) {
-                    //     if (result.closeable) {
-                    //         vm.closeDialog();
-                    //     } else {
-                    //         vm.loadSupportInfo(DISPLAY_MODE.COME_TO_SUPPORT);
-                    //     }
-                    // }
-                    vm.loadSupportInfo(DISPLAY_MODE.COME_TO_SUPPORT);
+                    if (result && !_.isEmpty(result)) {
+                        if (result && !_.isEmpty(result)) {
+                            if (result.reloadable) {
+                                vm.loadSupportInfo(DISPLAY_MODE.COME_TO_SUPPORT);
+                            }
+                        }
+                    }
                 });
             }
         }
@@ -502,11 +498,17 @@ module nts.uk.at.view.kdl016.a {
         nts.uk.ui.windows.setShared("shareFromKdl016a", dataShare);
         if (dataShare.supportType === SUPPORT_TYPE.ALLDAY) {
             nts.uk.ui.windows.sub.modal("/view/kdl/016/d/index.xhtml").onClosed(() => {
-                vm.loadSupportInfo(vm.selectedMode());
+                let res = nts.uk.ui.windows.getShared("shareKdl016D");
+                if (!_.isNil(res) && res.reloadable) {
+                    vm.loadSupportInfo(vm.selectedMode());
+                }
             });
         } else {
             nts.uk.ui.windows.sub.modal("/view/kdl/016/e/index.xhtml").onClosed(() => {
-                vm.loadSupportInfo(vm.selectedMode());
+                let res = nts.uk.ui.windows.getShared("shareKdl016E");
+                if (!_.isNil(res) && res.reloadable) {
+                    vm.loadSupportInfo(vm.selectedMode());
+                }
             });
         }
     }
