@@ -128,10 +128,10 @@ module nts.uk.com.view.smm001.a {
       const vm = this;
       vm.$blockui('grayout');
       // Init item list with one item has code = 0
-      vm.itemList().push({
-        code: '0',
-        name: ''
-      })
+//      vm.itemList().push({
+//        code: '0',
+//        name: ''
+//      })
       // Call API at screen A
       vm.$ajax('com', API.getInitialStartupInformation).then((response: any) => {
         if (response) {
@@ -184,13 +184,13 @@ module nts.uk.com.view.smm001.a {
     validateBeforeSave() {
       const vm = this;
       // If checkbox is checked and select option set code = 0 => false
-      if (vm.checkedOrganizationInformation() && vm.selectedOrganizationInformation() === '0'
-        || vm.checkedBasicPersonnelInformation() && vm.selectedBasicPersonnelInformation() === '0'
-        || vm.checkedJobStructureInformation() && vm.selectedJobStructureInformation() === '0'
-        || vm.checkedAddressInformation() && vm.selectedAddressInformation() === '0'
-        || vm.checkedLeaveInformation() && vm.selectedLeaveInformation() === '0'
-        || vm.checkedAffiliatedMaster() && vm.selectedAffiliatedMaster() === '0'
-        || vm.checkedEmployeeMaster() && vm.selectedEmployeeMaster() === '0') {
+      if (vm.checkedOrganizationInformation() && !vm.selectedOrganizationInformation() 
+        || vm.checkedBasicPersonnelInformation() && !vm.selectedBasicPersonnelInformation()
+        || vm.checkedJobStructureInformation() && !vm.selectedJobStructureInformation()
+        || vm.checkedAddressInformation() && !vm.selectedAddressInformation()
+        || vm.checkedLeaveInformation() && !vm.selectedLeaveInformation()
+        || vm.checkedAffiliatedMaster() && !vm.selectedAffiliatedMaster()
+        || vm.checkedEmployeeMaster() && !vm.selectedEmployeeMaster()) {
         return false;
       }
       return true;
@@ -310,7 +310,7 @@ module nts.uk.com.view.smm001.a {
         const vm = this;
         nts.uk.ui.errors.clearAll()
         if(!vm.initDataText1()){
-            vm.$dialog.error("Msg_3325");
+            vm.$dialog.error({ messageId: "Msg_3325" });
             return;
         }
         $('.init-text1').ntsError('check');
@@ -322,7 +322,7 @@ module nts.uk.com.view.smm001.a {
         const vm = this;
         nts.uk.ui.errors.clearAll()
         if(!vm.initDataText2()){
-            vm.$dialog.error("Msg_3325");
+            vm.$dialog.error({ messageId: "Msg_3325" });
             return;    
         }
         $('.init-text2').ntsError('check');
@@ -334,7 +334,7 @@ module nts.uk.com.view.smm001.a {
         const vm = this;
         nts.uk.ui.errors.clearAll()
         if(!vm.initDataText3()){
-            vm.$dialog.error("Msg_3325");
+            vm.$dialog.error({ messageId: "Msg_3325" });
             return;
         }
         $('.init-text3').ntsError('check');
@@ -346,7 +346,7 @@ module nts.uk.com.view.smm001.a {
         const vm = this;
         nts.uk.ui.errors.clearAll()
         if(!vm.initDataText4()){
-            vm.$dialog.error("Msg_3325");
+            vm.$dialog.error({ messageId: "Msg_3325" });
             return;
         }            
         $('.init-text4').ntsError('check');
@@ -358,7 +358,7 @@ module nts.uk.com.view.smm001.a {
         const vm = this;
         nts.uk.ui.errors.clearAll()
         if(!vm.initDataText5()){
-            vm.$dialog.error("Msg_3325");
+            vm.$dialog.error({ messageId: "Msg_3325" });
             return;
         }            
         $('.init-text5').ntsError('check');
@@ -370,7 +370,7 @@ module nts.uk.com.view.smm001.a {
         const vm = this;
         nts.uk.ui.errors.clearAll()
         if(!vm.initDataText6()){
-            vm.$dialog.error("Msg_3325");
+            vm.$dialog.error({ messageId: "Msg_3325" });
             return;
         }            
         $('.init-text6').ntsError('check');
@@ -382,7 +382,7 @@ module nts.uk.com.view.smm001.a {
         const vm = this;
         nts.uk.ui.errors.clearAll()
         if(!vm.initDataText7()){
-            vm.$dialog.error("Msg_3325");
+            vm.$dialog.error({ messageId: "Msg_3325" });
             return;
         }            
         $('.init-text7').ntsError('check');
