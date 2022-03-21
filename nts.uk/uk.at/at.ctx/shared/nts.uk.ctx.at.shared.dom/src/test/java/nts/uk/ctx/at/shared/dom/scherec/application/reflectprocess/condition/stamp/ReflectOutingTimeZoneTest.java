@@ -46,7 +46,7 @@ public class ReflectOutingTimeZoneTest {
 
 		List<Integer> actualResult = ReflectOutingTimeZone.process(dailyApp, listTimeStampApp);
 
-		assertThat(actualResult).isEqualTo(Arrays.asList(87, 88));
+		assertThat(actualResult).isEqualTo(Arrays.asList(86, 87, 88));
 
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get()
 				.getTimeDay().getTimeWithDay().get().v()).isEqualTo(800);//時刻
@@ -83,7 +83,7 @@ public class ReflectOutingTimeZoneTest {
 
 		List<Integer> actualResult = ReflectOutingTimeZone.process(dailyApp, listTimeStampApp);
 
-		assertThat(actualResult).isEqualTo(Arrays.asList(95, 94));
+		assertThat(actualResult).isEqualTo(Arrays.asList(95, 94, 93));
 
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(1).getOutingFrameNo().v()).isEqualTo(2);//外出枠NO
 		
@@ -121,7 +121,7 @@ public class ReflectOutingTimeZoneTest {
 
 		List<Integer> actualResult = ReflectOutingTimeZone.process(dailyApp, listTimeStampApp);
 
-		assertThat(actualResult).isEqualTo(Arrays.asList(91, 90));
+		assertThat(actualResult).isEqualTo(Arrays.asList(91, 86, 90));
 
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getComeBack().get()
 				.getTimeDay().getTimeWithDay().get().v()).isEqualTo(1111);//時刻
@@ -158,7 +158,7 @@ public class ReflectOutingTimeZoneTest {
 
 		List<Integer> actualResult = ReflectOutingTimeZone.process(dailyApp, listTimeStampApp);
 
-		assertThat(actualResult).isEqualTo(Arrays.asList(98, 97));
+		assertThat(actualResult).isEqualTo(Arrays.asList(98, 97, 93));
 
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(1).getOutingFrameNo().v()).isEqualTo(2);//外出枠NO
 		

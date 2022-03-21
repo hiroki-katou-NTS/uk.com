@@ -513,7 +513,7 @@ public class WorkSchedule implements DomainAggregate {
 				.collect( Collectors.toList() );
 		notWorkingTimeSpanList.addAll( timeVacationSpanList );
 		
-		return targetTimeSpan.subtract(notWorkingTimeSpanList);
+		return targetTimeSpan.subtract(notWorkingTimeSpanList, false);
 	}
 	
 	/**

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -30,10 +29,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBef
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingNumberInfo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.export.GetUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.export.GetUpperLimitSetting;
 
 /**
  * 積立年休情報
@@ -139,8 +136,39 @@ public class ReserveLeaveInfo implements Cloneable {
 		this.remainingNumber.updateRemainingNumber(this.grantRemainingList, grantPeriodAtr);
 	}
 
+	
 	/**
-	 * 積立年休の消滅・付与・消化
+	 * 残数処理
+	 * @param require
+	 * @param cacheCarrier
+	 * @param companyId
+	 * @param employeeId
+	 * @param periodWorkList
+	 * @param aggrPeriodWork
+	 * @param tmpReserveLeaveMngs
+	 * @param aggrResult
+	 * @param annualPaidLeaveSet
+	 * @param limit
+	 * @return
+	 */
+	public AggrResultOfReserveLeave remainNumberProcess(RequireM1 require, CacheCarrier cacheCarrier, String companyId,
+			String employeeId, RsvLeaAggrPeriodWork aggrPeriodWork, GrantBeforeAfterAtr grantBeforeAfterAtr,
+			List<TmpResereLeaveMng> tmpReserveLeaveMngs, AggrResultOfReserveLeave aggrResult,
+			AnnualPaidLeaveSetting annualPaidLeaveSet, UpperLimitSetting limit) {
+		
+		// 積立年休の付与・消化
+		aggrResult = lapsedGrantDigest(require, cacheCarrier, companyId, employeeId,
+				aggrPeriodWork, tmpReserveLeaveMngs, aggrResult, annualPaidLeaveSet, limit);
+		
+		//消滅処理
+		aggrResult = lapsedProcess(aggrPeriodWork, aggrResult, grantBeforeAfterAtr);
+		
+		return aggrResult;
+	}
+	
+	
+	/**
+	 * 積立年休の付与・消化
 	 * 
 	 * @param companyId
 	 *            会社ID
@@ -156,28 +184,21 @@ public class ReserveLeaveInfo implements Cloneable {
 	 *            積立年休の集計結果
 	 * @param getUpperLimitSetting
 	 *            社員の保持年数を取得
-	 * @param calcDeadlineForGrantDate
-	 *            付与日から期限日を計算
 	 * @param annualPaidLeaveSet
 	 *            年休設定
-	 * @param retentionYearlySet
-	 *            積立年休設定
-	 * @param emptYearlyRetentionSetMap
-	 *            雇用積立年休設定マップ
 	 * @return 積立年休の集計結果
 	 */
-	public AggrResultOfReserveLeave lapsedGrantDigest(RequireM1 require, CacheCarrier cacheCarrier, String companyId,
+	private AggrResultOfReserveLeave lapsedGrantDigest(RequireM1 require, CacheCarrier cacheCarrier, String companyId,
 			String employeeId, RsvLeaAggrPeriodWork aggrPeriodWork, List<TmpResereLeaveMng> tmpReserveLeaveMngs,
 			AggrResultOfReserveLeave aggrResult, AnnualPaidLeaveSetting annualPaidLeaveSet,
-			Optional<RetentionYearlySetting> retentionYearlySet,
-			Optional<Map<String, EmptYearlyRetentionSetting>> emptYearlyRetentionSetMap, UpperLimitSetting limit) {
+			UpperLimitSetting limit) {
 
 		// 年月日を更新 ← 開始日
 		this.ymd = aggrPeriodWork.getPeriod().start();
 
 		// 付与処理
 		aggrResult = this.grantProcess(require, cacheCarrier, companyId, employeeId, aggrPeriodWork, aggrResult,
-				retentionYearlySet, emptYearlyRetentionSetMap, limit);
+				 limit);
 
 		if (!aggrPeriodWork.getEndWork().isNextPeriodEndAtr()) {
 
@@ -202,9 +223,6 @@ public class ReserveLeaveInfo implements Cloneable {
 			// 年月日を更新 ← 終了日
 			this.ymd = aggrPeriodWork.getPeriod().end();
 		}
-
-		// 消滅処理
-		aggrResult = this.lapsedProcess(aggrPeriodWork, aggrResult);
 
 		// 「積立年休の集計結果」を返す
 		return aggrResult;
@@ -232,7 +250,7 @@ public class ReserveLeaveInfo implements Cloneable {
 	 * @return 積立年休の集計結果
 	 */
 	private AggrResultOfReserveLeave lapsedProcess(RsvLeaAggrPeriodWork aggrPeriodWork,
-			AggrResultOfReserveLeave aggrResult) {
+			AggrResultOfReserveLeave aggrResult, GrantBeforeAfterAtr grantPeriodAtr) {
 
 		// 消滅フラグを取得
 		if (!aggrPeriodWork.getLapsedAtr().isLapsedAtr())
@@ -261,8 +279,6 @@ public class ReserveLeaveInfo implements Cloneable {
 			targetUndigestNumber.addDays(remainingNumber.getDays().v());
 		}
 
-		// 付与前付与後を判断する
-		GrantBeforeAfterAtr grantPeriodAtr = aggrPeriodWork.getGrantWork().judgeGrantPeriodAtr();
 
 		// 積立年休情報残数を更新
 		this.updateRemainingNumber(grantPeriodAtr);
@@ -289,18 +305,11 @@ public class ReserveLeaveInfo implements Cloneable {
 	 *            積立年休の集計結果
 	 * @param getUpperLimitSetting
 	 *            社員の保持年数を取得
-	 * @param calcDeadlineForGrantDate
-	 *            付与日から期限日を計算
-	 * @param retentionYearlySet
-	 *            積立年休設定
-	 * @param emptYearlyRetentionSetMap
-	 *            雇用積立年休設定マップ
 	 * @return 積立年休の集計結果
 	 */
 	private AggrResultOfReserveLeave grantProcess(RequireM1 require, CacheCarrier cacheCarrier, String companyId,
 			String employeeId, RsvLeaAggrPeriodWork aggrPeriodWork, AggrResultOfReserveLeave aggrResult,
-			Optional<RetentionYearlySetting> retentionYearlySet,
-			Optional<Map<String, EmptYearlyRetentionSetting>> emptYearlyRetentionSetMap, UpperLimitSetting limit) {
+			UpperLimitSetting limit) {
 
 		// 「付与フラグ」をチェック
 		if (!aggrPeriodWork.getGrantWork().isGrantAtr())

@@ -12,8 +12,6 @@ import lombok.Setter;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionTime;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ObjectPeriod;
-//import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.SetInforReflAprResult;
-//import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.SettingInforForDailyCreation;
 
 @Getter
 @Setter
@@ -57,27 +55,11 @@ public class ExecutionLogDto {
 	private ObjectPeriod objectPeriod;
 
 	/**
-	 * 計算実行設定情報ID
-	 */
-	private String calExecutionSetInfoID;
-
-	private SetInforReflAprResultDto reflectApprovalSetInfo;
-
-	/**
-	 * 日別作成の設定情報
-	 */
-
-	private SettingInforForDailyCreationDto dailyCreationSetInfo;
-	/**
-	 * 日別計算の設定情報
-	 */
-
-	private CalExeSettingInforDto dailyCalSetInfo;
-	/**
-	 * 月別集計の設定情報
-	 */
-
-	private CalExeSettingInforDto monlyAggregationSetInfo;
+     * 実行種別
+     */
+    private Integer executionType;
+    
+    private String executionTypeName;
 
 	public static ExecutionLogDto fromDomain(ExecutionLog domain) {
 		ExecutionLogDto data = new ExecutionLogDto(domain.getEmpCalAndSumExecLogID(),
@@ -86,19 +68,7 @@ public class ExecutionLogDto {
 				new ExecutionTime(domain.getExecutionTime().getStartTime(), domain.getExecutionTime().getEndTime()),
 				domain.getProcessStatus().value,
 				(domain.getObjectPeriod()!=null && domain.getObjectPeriod().isPresent())? new ObjectPeriod(domain.getObjectPeriod().get().getStartDate(), domain.getObjectPeriod().get().getEndDate()):null,
-				domain.getCalExecutionSetInfoID(),
-				domain.getReflectApprovalSetInfo().isPresent()
-						? SetInforReflAprResultDto.fromDomain(domain.getReflectApprovalSetInfo().get())
-						: null,
-				domain.getDailyCreationSetInfo().isPresent()
-						? SettingInforForDailyCreationDto.fromDomain(domain.getDailyCreationSetInfo().get())
-						: null,
-				domain.getDailyCalSetInfo().isPresent()
-						? CalExeSettingInforDto.fromDomain(domain.getDailyCalSetInfo().get())
-						: null,
-				domain.getMonlyAggregationSetInfo().isPresent()
-						? CalExeSettingInforDto.fromDomain(domain.getMonlyAggregationSetInfo().get())
-						: null);
+				domain.getExecutionType().value, domain.getExecutionType().nameId);
 		return data;
 	}
 

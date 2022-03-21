@@ -32,3 +32,8 @@
 	line-height: 40px;
 	margin-left: 20px;
 }
+
+td {
+	text-align: left !important;
+	height: 33px !important;
+}

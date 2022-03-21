@@ -239,7 +239,7 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
                                 i.getGrantInfo(),
                                 i.getUsedDays(),
                                 i.getUsedTime(),
-                                i.getAnnualPaidLeaveSet()
+                                i.getAnnualPaidLeaveSet().get()
                         )
                 ).collect(Collectors.toList());
             }
@@ -261,7 +261,7 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
                                 i.getGrantInfo(),
                                 i.getUsedDays(),
                                 i.getUsedTime(),
-                                i.getAnnualPaidLeaveSet()
+                                i.getAnnualPaidLeaveSet().get()
                         )
                 ).collect(Collectors.toList());
             }
@@ -284,7 +284,7 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
                                     e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getGrantInfo(),
                                     e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getUsedDays(),
                                     e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getUsedTime(),
-                                    e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getAnnualPaidLeaveSet()
+                                    e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getAnnualPaidLeaveSet().get()
                             ),
                             new AnnualLeaveInfoKdr(
                                     e.getAggrResultOfAnnualLeave().getAsOfStartNextDayOfPeriodEnd().getYmd(),
@@ -302,7 +302,7 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
                                     e.getAggrResultOfAnnualLeave().getAsOfStartNextDayOfPeriodEnd().getGrantInfo(),
                                     e.getAggrResultOfAnnualLeave().getAsOfStartNextDayOfPeriodEnd().getUsedDays(),
                                     e.getAggrResultOfAnnualLeave().getAsOfStartNextDayOfPeriodEnd().getUsedTime(),
-                                    e.getAggrResultOfAnnualLeave().getAsOfStartNextDayOfPeriodEnd().getAnnualPaidLeaveSet()
+                                    e.getAggrResultOfAnnualLeave().getAsOfStartNextDayOfPeriodEnd().getAnnualPaidLeaveSet().get()
 
 
                             ),
