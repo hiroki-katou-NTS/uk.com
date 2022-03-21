@@ -414,6 +414,8 @@ public class OvertimeWorkMultipleTimes {
      * @return
      */
     private TimeWithDayAttr getOvertimeEndTimeBeforeSpecifiedTime(Optional<TimeWithDayAttr> specifiedTime) {
+        if (this.overtimeHours.isEmpty()) return null;
+
         if (!specifiedTime.isPresent())
             return this.overtimeHours.get(this.overtimeHours.size() - 1).getOvertimeHours().getEnd();
 
@@ -428,6 +430,8 @@ public class OvertimeWorkMultipleTimes {
      * @return
      */
     private TimeWithDayAttr getOvertimeStartTimeAfterSpecifiedTime(Optional<TimeWithDayAttr> specifiedTime) {
+        if (this.overtimeHours.isEmpty()) return null;
+
         if (!specifiedTime.isPresent())
             return this.overtimeHours.get(0).getOvertimeHours().getStart();
 
@@ -483,10 +487,10 @@ public class OvertimeWorkMultipleTimes {
      * @return
      */
     private TimeZoneWithWorkNo setWorkTime(TimeZoneWithWorkNo timeZone, TimeWithDayAttr startTime, TimeWithDayAttr endTime) {
-        if (timeZone.getTimeZone().getStartTime().greaterThan(startTime)) {
+        if (startTime != null && timeZone.getTimeZone().getStartTime().greaterThan(startTime)) {
             timeZone.getTimeZone().setStartTime(startTime);
         }
-        if (timeZone.getTimeZone().getEndTime().lessThan(endTime)) {
+        if (endTime != null && timeZone.getTimeZone().getEndTime().lessThan(endTime)) {
             timeZone.getTimeZone().setEndTime(endTime);
         }
         return timeZone;
