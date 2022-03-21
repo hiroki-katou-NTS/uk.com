@@ -326,12 +326,6 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
 
         private final Map<String, ShiftMaster> shiftMasterCache;
         
-        private EmpAffiliationInforAdapter empAffiliationInforAdapter;
-		
-		private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
-		
-		private NurseClassificationRepository nurseClassificationRepo;
-
         public RequireImp(List<String> importCodes, List<String> employeeIds, DatePeriod period, EmpAffiliationInforAdapter empAffiliationInforAdapter,
         		EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo, NurseClassificationRepository nurseClassificationRepo) {
             List<ShiftMaster> shiftMasters = shiftMasterRepository.getByListImportCodes(AppContexts.user().companyId(), importCodes);

@@ -144,6 +144,7 @@ module nts.uk.at.view.kdl016.a {
                     {id: '終日', Name: vm.$i18n('KDL016_37')},
                     {id: '時間帯', Name: vm.$i18n('KDL016_38')},
                 ];
+            let orgHeader = vm.selectedMode() === DISPLAY_MODE.GO_TO_SUPPORT ?  vm.$i18n('KDL016_15') : vm.$i18n('KDL016_20');
 
             $("#grid").igGrid({
                 // width: "929px",
@@ -168,13 +169,19 @@ module nts.uk.at.view.kdl016.a {
                         width: '175px',
                         template: '<div style="float:left">${periodDisplay} </div>'
                     },
-                    {headerText: vm.$i18n('KDL016_15'), key: "supportOrgName", width: '115px', dataType: "string"},
+                    {
+                        headerText: orgHeader,
+                        key: "supportOrgName",
+                        dataType: "string",
+                        width: "115px",
+                        template: '<div class="limited-label">${supportOrgName} </div>'
+                    },
                     {
                         headerText: vm.$i18n('KDL016_16'),
                         key: "employeeDisplay",
                         dataType: "string",
                         width: "260px",
-                        template: '<div class="limited-label" style="float:left">${employeeDisplay} </div>'
+                        template: '<div class="limited-label">${employeeDisplay} </div>'
                     },
                     {headerText: vm.$i18n('KDL016_17'), key: "supportTypeName", width: '95px', dataType: "string"},
                     {headerText: vm.$i18n('KDL016_18'), key: "timeSpanDisplay", width: "120px", dataType: "string"}
@@ -440,7 +447,7 @@ module nts.uk.at.view.kdl016.a {
                 return parseInt(dateVale[0].split('/').join('')) == parseInt(expression.split('/').join(''));
             }
             if (dateVale.length == 2) {
-                return parseInt(dateVale[0].split('/').join('')) <= parseInt(expression.split('/').join('')) ||
+                return parseInt(dateVale[0].split('/').join('')) <= parseInt(expression.split('/').join('')) &&
                     parseInt(dateVale[1].split('/').join('')) >= parseInt(expression.split('/').join(''));
             }
         }

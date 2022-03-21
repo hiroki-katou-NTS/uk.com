@@ -165,7 +165,7 @@ public class KSU001WebService extends WebService{
 	}
 	
 	@POST
-	@Path("change-workplace") 
+	@Path("get-data-grid") 
 	public StartKSU001Result getDataWhenChangeWkp(ChangeWorkPlaceParam param) {
 		StartKSU001Result data = changeWorkPlaceFinder.getData(param);
 		return data;
