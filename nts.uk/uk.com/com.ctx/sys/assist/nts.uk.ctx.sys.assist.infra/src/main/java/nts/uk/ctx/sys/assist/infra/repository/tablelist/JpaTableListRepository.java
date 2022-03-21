@@ -2,7 +2,9 @@ package nts.uk.ctx.sys.assist.infra.repository.tablelist;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -382,9 +384,10 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 					switch (tableList.getRetentionPeriodCls()) {
 					case DAILY:
+						
 						params.put("startDate",
-								tableList.getSaveDateFrom().map(v -> v.concat(" 00:00:00")).orElse(null));
-						params.put("endDate", tableList.getSaveDateTo().map(v -> v.concat(" 23:59:59")).orElse(null));
+								tableList.getSaveDateFrom().map(this::formatToDate).orElse(null));
+						params.put("endDate", tableList.getSaveDateTo().map(this::formatToDate).orElse(null));
 						break;
 					case MONTHLY:
 						params.put("startDate", Integer
@@ -693,4 +696,12 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 				.getList(c -> c.toDomain());
 	}
 
+	private Date formatToDate(String date) {
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+		try {
+			return new Date(formatter.parse(date).getTime());
+		} catch (Exception e) {
+			return null;
+		}
+	}
 }
