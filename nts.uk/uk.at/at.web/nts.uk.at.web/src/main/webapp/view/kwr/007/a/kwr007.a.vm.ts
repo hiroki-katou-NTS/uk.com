@@ -162,7 +162,9 @@ module nts.uk.at.view.kwr007.a {
         /** Advanced search properties */
         showEmployment: true,// 雇用条件
         showDepartment: false, // 部門条件
-        showWorkplace: false,// 職場条件
+          // 2022.03.21 - 3S - chinh.hm - issues #123486    - 変更 START
+        showWorkplace: true,// 職場条件
+          // 2022.03.21 - 3S - chinh.hm - issues #123486    - 変更 END
         showClassification: true,// 分類条件
         showJobTitle: true,// 職位条件
         showWorktype: true,// 勤種条件
