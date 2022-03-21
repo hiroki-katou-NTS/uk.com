@@ -293,8 +293,10 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         for (int index = 0; index <= 35; index++) {
             setBottomBorderStyle(cells.get(countRow-1 , index));
         }
+        // 2022.03.21 - 3S - chinh.hm - issues #123527     - 削除  START
         //PageSetup pageSetup = worksheet.getPageSetup();
         //pageSetup.setPrintArea(PRINT_AREA + countRow);
+        // 2022.03.21 - 3S - chinh.hm - issues #123527     - 削除  END
     }
 
     private PrintPage checkAndBreakPage(Worksheet worksheet, int countRowItem, int numberPage) {
