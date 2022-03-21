@@ -290,8 +290,11 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
         cells.deleteRows(row, TEMPLATE_ROWS);
 
         // set print area
-        PageSetup pageSetup = sheet.getPageSetup();
-        pageSetup.setPrintArea("A1:" + (dataSource.isLinking() ? "S" : "R") + row);
+        // 2022.03.21 - 3S - chinh.hm - issues #123534        - 削除  START
+        //PageSetup pageSetup = sheet.getPageSetup();
+        //pageSetup.setPrintArea("A1:" + (dataSource.isLinking() ? "S" : "R") + row);
+        // 2022.03.21 - 3S - chinh.hm - issues #123534        - 削除  END
+
     }
 
     private void printCommonContent(Cells cells, int row, HolidayConfirmationTableContent content, boolean holidayMng) {
