@@ -447,50 +447,7 @@ tbody a.x-link:hover {
 	position: relative;
 }
 
-.bg-schedule-that-day-color-schedule-sunday{
-	background-color: #ffff00 !important;
-	color: #ff0000 !important;
-}
 
-.bg-schedule-that-day-color-schedule-sunday a{
-	color: #ff0000 !important;
-}
-
-.bg-schedule-that-day-color-schedule-saturday{
-	background-color: #ffff00 !important;
-	color: #0000ff !important;
-}
-
-.bg-schedule-that-day-color-schedule-saturday a{
-	color: #0000ff !important;
-}
-
-.bg-schedule-that-day-color-schedule-weekdays{
-	background-color: #ffff00 !important;
-	color: #404040 !important;
-}
-
-.bg-schedule-that-day-color-schedule-weekdays a{
-	color: #404040 !important;
-}
-
-.bg-schedule-specific-date-color-schedule-sunday{
-	background-color: #ffc0cb !important;
-	color: #ff0000 !important;
-}
-
-.bg-schedule-specific-date-color-schedule-sunday a{
-	color: #ff0000 !important;
-}
-
-.bg-schedule-specific-date-color-schedule-saturday{
-	background-color: #ffc0cb !important;
-	color: #0000ff !important;
-}
-
-.bg-schedule-specific-date-color-schedule-saturday a{
-	color: #0000ff !important;
-}
 
 .right-content {
 	height: calc(100% - 80px);
@@ -659,4 +616,75 @@ html {
 }
 #horzComboBox * {
 	text-align: left;
+}
+
+.bg-schedule-that-day{
+	background-color: #ffff00 !important;
+}
+.bg-schedule-specific-date{
+	background-color: #ffc0cb !important;
+}
+
+.bg-schedule-sunday-color-schedule-sunday{
+	background-color: #db4f51 !important;
+	color: #ffffff !important;
+}
+
+.bg-schedule-saturday-color-schedule-saturday{
+	background-color: #1973b5 !important;
+	color: #ffffff !important;
+}
+
+.bg-schedule-that-day-color-schedule-sunday{
+	background-color: #ffff00 !important;
+	color: #ffffff !important;
+}
+
+.bg-schedule-that-day-color-schedule-sunday a{
+	color: #ffffff !important;
+}
+
+.bg-schedule-that-day-color-schedule-saturday{
+	background-color: #ffff00 !important;
+	color: #ffffff !important;
+}
+
+.bg-schedule-that-day-color-schedule-saturday a{
+	color: #ffffff !important;
+}
+
+.bg-schedule-that-day-color-schedule-weekdays{
+	background-color: #ffff00 !important;
+	color: #404040 !important;
+}
+
+.bg-schedule-that-day-color-schedule-weekdays a{
+	color: #404040 !important;
+}
+
+.bg-schedule-specific-date-color-schedule-sunday{
+	background-color: #ffc0cb !important;
+	color: #ffffff !important;
+}
+
+.bg-schedule-specific-date-color-schedule-sunday a{
+	color: #ffffff !important;
+}
+
+.bg-schedule-specific-date-color-schedule-saturday{
+	background-color: #ffc0cb !important;
+	color: #ffffff !important;
+}
+
+.bg-schedule-specific-date-color-schedule-saturday a{
+	color: #0000ff !important;
+}
+
+.bg-schedule-specific-date-color-schedule-weekdays{
+	background-color: #ffc0cb !important;
+	color: #404040 !important;
+}
+
+.bg-schedule-specific-date-color-schedule-weekdays a{
+	color: #404040 !important;
 }
