@@ -326,6 +326,7 @@ module nts.uk.at.view.kdl016.a {
                     if (result && !_.isEmpty(result)) {
                         if (result.reloadable) {
                             vm.loadSupportInfo(DISPLAY_MODE.GO_TO_SUPPORT);
+                            vm.setResponseStatus();
                         }
                     }
                 });
@@ -344,6 +345,7 @@ module nts.uk.at.view.kdl016.a {
                         if (result && !_.isEmpty(result)) {
                             if (result.reloadable) {
                                 vm.loadSupportInfo(DISPLAY_MODE.COME_TO_SUPPORT);
+                                vm.setResponseStatus();
                             }
                         }
                     }
@@ -382,6 +384,7 @@ module nts.uk.at.view.kdl016.a {
                                     vm.canDelete(false);
                                     $("#grid").igGridSelection("clearSelection");
                                     vm.selectedCode([]);
+                                    vm.setResponseStatus();
                                 });
                             } else {
                                 let errorResults = data.errorResults;
@@ -418,6 +421,10 @@ module nts.uk.at.view.kdl016.a {
                     }
                 });
             }
+        }
+
+        setResponseStatus() {
+            nts.uk.ui.windows.setShared("status-result", true);
         }
 
         closeDialog(): void {
@@ -501,6 +508,7 @@ module nts.uk.at.view.kdl016.a {
                 let res = nts.uk.ui.windows.getShared("shareKdl016D");
                 if (!_.isNil(res) && res.reloadable) {
                     vm.loadSupportInfo(vm.selectedMode());
+                    vm.setResponseStatus();
                 }
             });
         } else {
@@ -508,6 +516,7 @@ module nts.uk.at.view.kdl016.a {
                 let res = nts.uk.ui.windows.getShared("shareKdl016E");
                 if (!_.isNil(res) && res.reloadable) {
                     vm.loadSupportInfo(vm.selectedMode());
+                    vm.setResponseStatus();
                 }
             });
         }
