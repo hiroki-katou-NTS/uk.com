@@ -71,22 +71,22 @@ public class ExportQRCodeToExcel extends AsposeCellsReportGenerator implements I
 
 		// 大 40mm×40mm
 		case 0: {
-			imageSize = 200;
-			space = "               ";
+			imageSize = 165;
+			space = "             ";
 			break;
 		}
 
 		// 中 30mm×30mm
 		case 1: {
-			imageSize = 150;
+			imageSize = 130;
 			space = "         ";
 			break;
 		}
 
 		// 小 20mm×20mm
 		case 2: {
-			imageSize = 120;
-			space = "       ";
+			imageSize = 90;
+			space = "      ";
 			break;
 		}
 
@@ -125,14 +125,15 @@ public class ExportQRCodeToExcel extends AsposeCellsReportGenerator implements I
 			PageSetup pageSetup = worksheet.getPageSetup();
 			pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
 			
-			// Set bottom, left, right and top page margins
-			pageSetup.setCenterHorizontally(true);
-			pageSetup.setCenterVertically(true);
+			pageSetup.setHeaderMargin(0.8);
+			pageSetup.setFooterMargin(0.8);
 			
-			pageSetup.setBottomMargin(0);
-			pageSetup.setLeftMargin(2);
-			pageSetup.setRightMargin(0);
-			pageSetup.setTopMargin(0);
+			pageSetup.setBottomMargin(1.9);
+			pageSetup.setTopMargin(1.9);
+			
+			pageSetup.setLeftMargin(1.8);
+			pageSetup.setRightMargin(1.8);
+			
 
 			for (int i = 0; i < stampCardDtos.size(); i++) {
 				int index;
