@@ -22,6 +22,7 @@ module nts.uk.at.view.kdp002.a {
             workGroup: KnockoutObservable<WorkGroup> = ko.observable(null);
 
             regionalTime: KnockoutObservable<number> = ko.observable(0);
+            workLocationCD: string = null;
 
             state!: KnockoutComputed<STATE>;
             constructor() {
@@ -98,6 +99,7 @@ module nts.uk.at.view.kdp002.a {
                         .then((data: GetWorkPlaceRegionalTime) => {
                             if (data.workLocationName !== null && data.workLocationName !== '') {
                                 self.regionalTime(data.regional);
+                                self.workLocationCD = data.workLocationCD;
                             } else {
                                 let inputWorkPlace = {
                                     contractCode: vm.$user.contractCode,
@@ -109,6 +111,9 @@ module nts.uk.at.view.kdp002.a {
                                     .then((data: GetWorkPlaceRegionalTime) => {
                                         if (data) {
                                             self.regionalTime(data.regional);
+                                            if (data.workLocationCD !== null && data.workLocationCD !== '') {
+                                                self.workLocationCD = data.workLocationCD;
+                                            }
                                         }
                                     });
                             }
@@ -192,7 +197,8 @@ module nts.uk.at.view.kdp002.a {
                             setPreClockArt: btn.setPreClockArt,
                             changeClockArt: btn.changeClockArt,
                             changeCalArt: btn.changeCalArt,
-                            workGroup: ko.unwrap(vm.workGroup)
+                            workGroup: ko.unwrap(vm.workGroup),
+                            workLocationCD: vm.workLocationCD
                         };
 
                         service.getSettingStampCommon().done((result: any) => {
