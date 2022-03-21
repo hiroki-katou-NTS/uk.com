@@ -297,7 +297,7 @@ public class SupportInformationFinder {
                         false, false, false));
 
         return new Kdl016ScreenBOutput(
-                employeeInfos.stream().map(e -> new EmployeeInformationDto(e.getEmployeeId(), e.getEmployeeCode(), e.getBusinessName())).collect(Collectors.toList()),
+                employeeInfos.stream().map(e -> new EmployeeInformationDto(e.getEmployeeId(), e.getEmployeeCode(), e.getBusinessName())).sorted(Comparator.comparing(x -> x.getEmployeeCode())).collect(Collectors.toList()),
                 orgDisplayInfoList.stream().sorted(Comparator.comparing(OrganizationDisplayInfoDto::getOrgCode)).collect(Collectors.toList())
         );
     }
@@ -438,7 +438,7 @@ public class SupportInformationFinder {
                 .getEmployeeInfo(new EmployeeInformationQueryDtoImport(sids, period.end(), false, false, false,
                         false, false, false));
 
-        return employeeInfos.stream().map(e -> new EmployeeInformationDto(e.getEmployeeId(), e.getEmployeeCode(), e.getBusinessName())).collect(Collectors.toList());
+        return employeeInfos.stream().map(e -> new EmployeeInformationDto(e.getEmployeeId(), e.getEmployeeCode(), e.getBusinessName())).sorted(Comparator.comparing(x -> x.getEmployeeCode())).collect(Collectors.toList());
     }
 
     @AllArgsConstructor
