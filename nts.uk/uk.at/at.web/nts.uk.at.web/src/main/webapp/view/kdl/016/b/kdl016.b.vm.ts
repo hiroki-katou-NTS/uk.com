@@ -39,7 +39,6 @@ module nts.uk.at.view.kdl016.b {
                 if (value == 1) {
                     vm.enableEditTimespan(true);
                     vm.enableEndDate(false);
-                    vm.startDate(undefined);
                     vm.endDate(undefined);
                     $('#timespanMin').focus();
                 }
