@@ -617,10 +617,12 @@ export class CmmS45BComponent extends Vue {
         let lstAppr = [];
         let lstApplicationTemp = self.data.appListInfoDto.appLst as ListOfApplication;
         let ListOfApplicationCmd = [];
-        _.forEach(lstApplicationTemp, (item) => {
-            if (_.includes(lstAppID, item.appID)) {
-                lstAppr.push({ appId: item.appID, version: item.application.version });
-                ListOfApplicationCmd.push(item);
+        let sortAppIDLst = _.chain(self.filterByAppType).map((x) => x.lstApp).flatten().map((x) => x.id).value();
+        _.forEach(sortAppIDLst, (appID) => {
+            if (_.includes(lstAppID, appID)) {
+                let app = _.find(lstApplicationTemp, (item) => item.appID == appID);
+                lstAppr.push({ appId: app.appID, version: app.application.version });
+                ListOfApplicationCmd.push(app);
             }
         });
 
