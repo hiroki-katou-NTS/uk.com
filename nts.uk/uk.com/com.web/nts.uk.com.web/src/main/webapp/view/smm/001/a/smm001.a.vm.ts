@@ -297,8 +297,8 @@ module nts.uk.com.view.smm001.a {
             acceptanceItem : acceptanceItem,
             settingCode : settingCode
         }
-        vm.$ajax('com', API.initDataRegister, initData).then(() => {
-            vm.resA("Msg_15");
+        vm.$ajax('com', API.initDataRegister, initData).done(() => {
+            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_3338", []));
         }).fail((err) => {
             vm.$dialog.error(err);
         }).always(() =>{
