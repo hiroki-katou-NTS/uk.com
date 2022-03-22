@@ -58,8 +58,9 @@ public class NRLWebService extends RequestDispatcher {
 	@POST
 	@Path("messageCollect")
 	@RequestData({ Command.MESSAGE })
-	public Frame requestMessage(InputStream is) {
+	public Response requestMessage(InputStream is) {
 		NRLResponse response = ignite(is);
-		return response.getEntity(Frame.class);
+		Frame frame = response.getEntity(Frame.class);
+		return Response.ok().type(MediaType.APPLICATION_OCTET_STREAM).entity(frame.createFormatFrom()).build();
 	}
 }

@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.function.app.nrl.crypt.Codryptofy;
 import nts.uk.ctx.at.function.app.nrl.exceptions.FrameParsingException;
 import nts.uk.ctx.at.function.app.nrl.exceptions.InvalidFrameException;
 import nts.uk.ctx.at.function.app.nrl.response.MeanCarryable;
@@ -168,7 +169,7 @@ public class Frame implements MeanCarryable {
 		byte[] byteDatas = new byte[(int)len];
 		int i = 0;
 		for (String item : items) {
-			byte[] bytes =  Element.PAYLOAD.equals(item) ? (bodyBytes != null ? bodyBytes : asciiCharToBytes(pickItem(item)) ) :
+			byte[] bytes =  Element.PAYLOAD.equals(item) ? (bodyBytes != null ? bodyBytes : Codryptofy.decode(pickItem(item))) :
 							((Element.NRL_NO.equals(item) || Element.MAC_ADDR.equals(item) ||  Element.CONTRACT_CODE.equals(item)) ?
 									asciiCharToBytes(pickItem(item)) : hexStringToBytes(pickItem(item)));
 			int arrLen = bytes.length;

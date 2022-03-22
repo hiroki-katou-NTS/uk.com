@@ -45,7 +45,7 @@ public class NRContentList {
 		List<MapItem> items = new ArrayList<>();
 		items.add(FrameItemArranger.SOH());
 		items.add(new MapItem(Element.HDR, command.Response));
-		items.add(new MapItem(Element.PADDING1, "00"));
+		items.add(new MapItem(Element.PADDING1, "0000"));
 		items.add(new MapItem(Element.LENGTH,
 				payloadLength.map(x -> StringUtils.leftPad(x, 4, "0").toUpperCase()).orElse(null)));
 		items.add(FrameItemArranger.Version());
@@ -54,7 +54,7 @@ public class NRContentList {
 		items.add(new MapItem(Element.NRL_NO, teminal.getNrlNo()));
 		items.add(new MapItem(Element.MAC_ADDR, teminal.getMacAddress()));
 		items.add(new MapItem(Element.CONTRACT_CODE, teminal.getContractCode()));
-		items.add(new MapItem(Element.PADDING2, "00"));
+		items.add(new MapItem(Element.PADDING2, "0000"));
 		return items;
 	};
 }

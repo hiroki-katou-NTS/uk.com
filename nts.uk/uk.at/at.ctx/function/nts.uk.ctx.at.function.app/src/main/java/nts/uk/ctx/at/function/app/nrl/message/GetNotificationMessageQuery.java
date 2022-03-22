@@ -51,16 +51,14 @@ public class GetNotificationMessageQuery extends NRLRequest<Frame> {
 		StringBuilder builder = new StringBuilder();
 		lstMessage.forEach(data -> {
 			builder.append(String.format("%02d", data.getDisplayOrder()));
-			builder.append(Codryptofy.paddingWithByte(data.getContent(), 1200, "0"));
+			builder.append(Codryptofy.paddingWithByte(data.getContent(), 1200, " "));
 		});
-		if (builder.toString().isEmpty()) {
-			builder.append("00");
-			builder.append(Codryptofy.paddingWithByte("", 1200, "0"));
-		}
-		int length = 36060 + 44;//payload+soh+hdr+....
+		String payload = Codryptofy.paddingWithByte(builder.toString(), 36060, " ");
+	
+		int length = 36060 + 42;//payload+soh+hdr+....
 		List<MapItem> items = NRContentList.createFieldForPadding2(Command.MESSAGE,
 				Optional.ofNullable(Integer.toHexString(length)), context.getTerminal());
-		context.collect(items, builder.toString());
+		context.collect(items, payload);
 	}
 
 	@Override

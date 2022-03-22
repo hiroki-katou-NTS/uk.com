@@ -89,6 +89,7 @@ public abstract class NRLResponse implements BCCCalculable {
 	 */
 	public <T extends MeanCarryable> NRLResponse addPayload(Class<T> clazz, String payload) {
 		T entity = getEntity(clazz);
+		entity.setBBytes(Codryptofy.decode(payload));
 		entity.payload(payload);
 		entity.bcc(DefaultValue.INIT_BCC);
 		List<String> orders = ItemSequence.enumerate(getCommand(), false).orElseThrow(IllegalCommandException::new);
