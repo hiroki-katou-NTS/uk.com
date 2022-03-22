@@ -109,12 +109,6 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 }
             }).then((res: any) => {
                 if(res) {
-					let errorMsgLst = res.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
-					if(!_.isEmpty(errorMsgLst)) {
-						vm.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
-	 						$('#kaf000-a-component4-singleDate').focus();			
-						});
-					}
                     vm.dataFetch({
                         workType: ko.observable(res.workType),
                         workTime: ko.observable(res.workTime),
@@ -330,7 +324,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 						let errorMsgLst = res.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
 						if(!_.isEmpty(errorMsgLst)) {
 							vm.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
-		 							
+		 						$('#kaf000-a-component4-singleDate').focus();		
 							});
 						}
 						dataClone.lstWorkType(res.lstWorkType);
