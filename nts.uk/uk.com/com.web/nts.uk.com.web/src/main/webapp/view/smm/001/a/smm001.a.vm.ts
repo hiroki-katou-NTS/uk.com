@@ -276,7 +276,7 @@ module nts.uk.com.view.smm001.a {
         // Start: Process send request
         vm.$ajax('com', API.registerSmileCooperationAcceptanceSetting, command)
             .done(() => {
-                nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_3338", []));
+                nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15", []));
           }).fail((err) => {
             vm.$dialog.error(err);
           }).always(() => {
