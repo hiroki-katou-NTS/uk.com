@@ -180,6 +180,11 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                     this.setDetailStyle(cells.get(startRow, 0), isEventLine, true, true, false, true, false);
 
                     int rowStartMerge = startRow;
+                    dataOfDay.getSupportWorkDetailsList().sort(Comparator.comparing(SupportWorkDetails::getEmployeeId, (s1, s2) -> {
+                        val empInfo1 = dataSource.getEmployeeInfoList().stream().filter(emp -> emp.getSid().equals(s1)).findFirst();
+                        val empInfo2 = dataSource.getEmployeeInfoList().stream().filter(emp -> emp.getSid().equals(s2)).findFirst();
+                        return StringUtils.compare(empInfo1.map(ei -> ei.getEmployeeCode()).orElse(EMPTY), empInfo2.map(ei -> ei.getEmployeeCode()).orElse(EMPTY));
+                    }));
                     for (int k = 0; k < dataOfDay.getSupportWorkDetailsList().size(); k++) {  // loop detail
                         SupportWorkDetails detail = dataOfDay.getSupportWorkDetailsList().get(k);
 
