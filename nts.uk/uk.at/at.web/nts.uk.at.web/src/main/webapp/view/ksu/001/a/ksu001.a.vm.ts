@@ -601,6 +601,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 isLastDay: self.closeDate.lastDay
             };
             service.getDataOfShiftMode(param).done((data: IDataStartScreen) => {
+                $('#contain-view-left').css({'margin-top': '18px'});
                 self.saveModeGridToLocalStorege(ViewMode.SHIFT);
                 self.calculateDisPlayFormatA4Popup(data);
                 self.visibleShiftPalette(true);
@@ -687,6 +688,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
             
             service.getDataOfShortNameMode(param).done((data: IDataStartScreen) => {
+                $('#contain-view-left').css({'margin-top': '3px'});
                 self.visibleShiftPalette(false);
                 self.visibleBtnInput(false);
                 self.saveModeGridToLocalStorege(ViewMode.SHORTNAME);
@@ -746,6 +748,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
 
             service.getDataOfTimeMode(param).done((data: IDataStartScreen) => {
+                $('#contain-view-left').css({'margin-top': '3px'});
                 self.visibleShiftPalette(false);
                 self.visibleBtnInput(true);
                 self.saveModeGridToLocalStorege(ViewMode.TIME);
@@ -815,7 +818,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
         
         destroyAndCreateGrid(dataBindGrid, viewMode) {
-            let self = this;
+            let self = this; 
+            $("#cacheHeightGrid").append($('#heightGrid'));
             $("#cacheDiv").append($('#vertDiv'));
             $("#cacheDiv").append($('#horzDiv'));
             $("#extable").children().remove();
@@ -1004,7 +1008,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             self.tooltipShare = data.listDateInfo;
             self.listWorkTypeInfo = data.listWorkTypeInfo;
-            
             self.listTimeDisable = [];
 
             for (let i = 0; i < data.listEmpInfo.length; i++) {
@@ -2588,6 +2591,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             
             $("#extable").exTable("saveScroll");
+            
+            // append button A16
+            $("#extable").append($('#heightGrid'));
+            $('#heightGrid').css({'display':'', 'width': '30px', 'float' : 'right', 'margin-top': '1px'});
         }
 
         createVertSumData() {
@@ -5753,6 +5760,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // btn A6_1, A6_2 職2    
             if (funcNo2_WorkPlace == false) {
                 $('#contain-view-left').empty();
+            } else if(self.userInfor.disPlayFormat == 'shift'){
+                $('#contain-view-left').css({'margin-top': '18px'});
+            } else if(self.userInfor.disPlayFormat != 'shift'){
+                $('#contain-view-left').css({'margin-top': '3px'});
             }
 
             // 職13

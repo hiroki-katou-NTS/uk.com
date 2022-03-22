@@ -392,7 +392,7 @@ module kcp.share.list {
             let self = this;
             const gridList = $('#' + self.componentGridId);
             const searchBox = $('#' + self.searchBoxId);
-            if (!_.isEmpty(gridList) && gridList.hasClass('nts-gridlist')) {
+            if (!_.isEmpty(gridList)) {
                 _.defer(() => {
                     // clear search box before update datasource
                     if (self.isRemoveFilterWhenReload) {
