@@ -300,9 +300,9 @@ module nts.uk.at.kdp003.a {
 					vm.$ajax('at', API.GetWorkLocationRagionalTime, param).then((data: GetWorkPlaceRegionalTime) => {
 						if (data.workLocationCD != null && data.workLocationCD !== '') {
 							vm.regionalTime(data.regional);
+							vm.worklocationCode = locationCd;
 
 							if (data.workPlaceId != null && data.workPlaceId != '') {
-								vm.worklocationCode = locationCd;
 								vm.workPlace = [];
 								vm.workPlace.push(data.workPlaceId);
 								vm.modeBasyo(true);
@@ -317,8 +317,8 @@ module nts.uk.at.kdp003.a {
 							vm.$ajax('at', API.GetWorkLocationRagionalTime, param).then((data: GetWorkPlaceRegionalTime) => {
 								if (data.workLocationCD != null && data.workLocationCD !== '') {
 									vm.regionalTime(data.regional);
+									vm.worklocationCode = locationCd;
 									if (data.workPlaceId != null && data.workPlaceId != '') {
-										vm.worklocationCode = locationCd;
 										vm.workPlace = [];
 										vm.workPlace.push(data.workPlaceId);
 										vm.modeBasyo(true);
