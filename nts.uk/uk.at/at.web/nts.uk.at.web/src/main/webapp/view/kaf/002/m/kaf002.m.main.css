@@ -90,3 +90,6 @@ input {
 	white-space: nowrap;
 }
 
+#kaf002TabPanel > div.tabs-list > label.with-text.radio-wrapper > span {
+	min-width: 0 !important;
+}
