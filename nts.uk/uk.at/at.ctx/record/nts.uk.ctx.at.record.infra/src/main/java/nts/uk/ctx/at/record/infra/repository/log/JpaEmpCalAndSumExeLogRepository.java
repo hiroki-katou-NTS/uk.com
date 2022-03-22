@@ -1,11 +1,9 @@
 package nts.uk.ctx.at.record.infra.repository.log;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,21 +14,17 @@ import javax.ejb.TransactionAttributeType;
 import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.infra.data.DbConsts;
 //import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.arc.layer.infra.data.jdbc.NtsStatement;
 //import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.CalAndAggClassification;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutedMenu;
 import nts.uk.ctx.at.record.infra.entity.log.KrcdtExec;
 import nts.uk.ctx.at.record.infra.entity.log.KrcdtExecLog;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
@@ -142,12 +136,10 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 						c.getString("EMP_EXECUTION_LOG_ID"), 
 						c.getString("CID"),
 						YearMonth.of(c.getInt("PROCESSING_MONTH")),
-						EnumAdaptor.valueOf(c.getInt("EXECUTED_MENU"), ExecutedMenu.class) ,
 						c.getGeneralDateTime("EXECUTED_DATE"),
 						c.getInt("EXECUTED_STATUS") ==null?null: EnumAdaptor.valueOf(c.getInt("EXECUTED_STATUS"),ExeStateOfCalAndSum.class),
 						c.getString("SID"),
 						c.getInt("CLOSURE_ID"),
-						c.getString("OPERATION_CASE_ID"),
 						EnumAdaptor.valueOf(c.getInt("CAL_AGG_CLASS"),CalAndAggClassification.class)
 						);
 			});

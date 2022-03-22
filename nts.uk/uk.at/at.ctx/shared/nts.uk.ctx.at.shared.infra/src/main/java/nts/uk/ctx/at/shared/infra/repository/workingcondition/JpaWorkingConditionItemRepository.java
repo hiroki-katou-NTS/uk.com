@@ -105,7 +105,8 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 			.append(" LEFT JOIN wi.listKshmtWorkcondWorkTs dw ")
 			.append(" WHERE wi.sid IN :employeeId ")
 			.append(" AND c.strD <= :endDate ")
-			.append(" AND c.endD >= :startDate ").toString();
+			.append(" AND c.endD >= :startDate ")
+			.append(" ORDER BY c.strD").toString();
 	
 	public List<WorkingConditionItem> getByListSidAndTimeApplyNotNull(List<String> employeeIds){
 		List<KshmtWorkcondHistItem> result = new ArrayList<>();

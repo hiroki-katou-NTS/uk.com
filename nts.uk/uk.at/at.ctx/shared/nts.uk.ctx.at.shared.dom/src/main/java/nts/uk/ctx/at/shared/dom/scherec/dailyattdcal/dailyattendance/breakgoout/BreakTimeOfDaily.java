@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.service.CalcDeductionTimeService;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 日別実績の休憩時間
@@ -105,7 +106,8 @@ public class BreakTimeOfDaily {
 			CalculationRangeOfOneDay oneDay,
 			DeductionAtr dedAtr) {
 		
-		return CalcDeductionTimeService.calcTotalTime(oneDay, ConditionAtr.BREAK, dedAtr, Optional.empty());
+		return CalcDeductionTimeService.calcTotalTime(
+				oneDay, ConditionAtr.BREAK, dedAtr, Optional.empty(), NotUseAtr.NOT_USE);
 	}
 	
 	/**

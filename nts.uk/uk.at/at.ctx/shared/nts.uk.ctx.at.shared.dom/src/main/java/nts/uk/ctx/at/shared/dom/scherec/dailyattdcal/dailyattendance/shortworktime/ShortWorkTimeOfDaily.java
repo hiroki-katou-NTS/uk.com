@@ -30,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 日別実績の短時間勤務時間
@@ -193,6 +194,22 @@ public class ShortWorkTimeOfDaily {
 		/** 短時間勤務時間の計算 */
 		result = calcShortTime(dedAtr, careAtr, premiumAtr, oneDay, recordClass.getHolidayCalcMethodSet());
 		
+		// 短時間勤務を控除するかどうかの設定を確認
+		if (decisionDeductChild(dedAtr, premiumAtr, recordClass.getHolidayCalcMethodSet())){
+			ConditionAtr conditionAtr = (careAtr.isChildCare() ? ConditionAtr.Child : ConditionAtr.Care);
+			// 所定内育児時間の計算
+			TimeWithCalculation withinTime = oneDay.getDeductionTime(
+					conditionAtr, dedAtr, StatutoryAtr.Statutory, Optional.empty(), NotUseAtr.NOT_USE);
+			// 所定外育児時間の計算
+			TimeWithCalculation excessTime = oneDay.getDeductionTime(
+					conditionAtr, dedAtr, StatutoryAtr.Excess, Optional.empty(), NotUseAtr.NOT_USE);
+			// 合計時間の計算
+			result = DeductionTotalTime.of(
+					withinTime.addMinutes(excessTime.getTime(), excessTime.getCalcTime()),
+					withinTime,
+					excessTime);
+		}
+		
 		if (dedAtr.isAppropriate()){
 			if (recordClass.getCalculationRangeOfOneDay().getShortTimeWSWithoutWork().isPresent()){
 				ShortTimeWorkSheetWithoutWork withoutWork =
@@ -234,11 +251,11 @@ public class ShortWorkTimeOfDaily {
 		if(decisionDeductChild(dedAtr, premiumAtr, addSet)) {
 			// 所定内育児時間の計算
 			withinTime = oneDay.getDeductionTime(
-					conditionAtr, dedAtr, StatutoryAtr.Statutory, Optional.empty());
+					conditionAtr, dedAtr, StatutoryAtr.Statutory, Optional.empty(), NotUseAtr.NOT_USE);
 		}
 		// 所定外育児時間の計算
 		TimeWithCalculation excessTime = oneDay.getDeductionTime(
-				conditionAtr, dedAtr, StatutoryAtr.Excess, Optional.empty());
+				conditionAtr, dedAtr, StatutoryAtr.Excess, Optional.empty(), NotUseAtr.NOT_USE);
 		// 合計時間の計算
 		return DeductionTotalTime.of(
 				withinTime.addMinutes(excessTime.getTime(), excessTime.getCalcTime()),

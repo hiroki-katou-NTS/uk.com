@@ -233,64 +233,45 @@ public class OverTimeOfDaily {
 		val overTimeSheet = recordReGet.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().get();
 		//残業枠時間帯の作成
 		val overTimeFrameTimeSheet = overTimeSheet.changeOverTimeFrameTimeSheet(
-				recordReGet.getPersonDailySetting().getRequire(),
-				workType.getCompanyId(), 
-				recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(),
-				workType,
-				siftCode.map(x -> x.v()),
-				recordReGet.getIntegrationOfDaily(), 
-				recordReGet.getStatutoryFrameNoList(),
-				true,
-				recordReGet.getCompanyCommonSetting().getOvertimeFrameList(),
+				recordReGet.getPersonDailySetting().getRequire(), workType.getCompanyId(),
+				recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(), workType,
+				siftCode.map(x -> x.v()), recordReGet.getIntegrationOfDaily(), recordReGet.getStatutoryFrameNoList(),
+				true, recordReGet.getCompanyCommonSetting().getOvertimeFrameList(),
 				recordReGet.getIntegrationOfWorkTime().map(i -> i.getCommonSetting().getGoOutSet()));
-		//残業時間の計算
+		// 残業時間の計算
 		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(
-				recordReGet.getPersonDailySetting().getRequire(),
-				workType.getCompanyId(), 
-				recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(),
-				workType,
-				siftCode.map(x -> x.v()),
-				recordReGet.getIntegrationOfDaily(), 
-				recordReGet.getStatutoryFrameNoList(),
-				declareResult,
-				true,
-				recordReGet.getCompanyCommonSetting().getOvertimeFrameList(),
+				recordReGet.getPersonDailySetting().getRequire(), workType.getCompanyId(),
+				recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(), workType,
+				siftCode.map(x -> x.v()), recordReGet.getIntegrationOfDaily(), recordReGet.getStatutoryFrameNoList(),
+				declareResult, true, recordReGet.getCompanyCommonSetting().getOvertimeFrameList(),
 				recordReGet.getIntegrationOfWorkTime().map(i -> i.getCommonSetting().getGoOutSet()));
-		//残業深夜時間の計算
-		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(
-				recordReGet,
-				overTimeSheet,
-				recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(),
-				beforeApplicationTime,
-				recordReGet.getIntegrationOfDaily().getCalAttr(),
-				declareResult,
-				settingOfFlex));
-		//変形法定内残業時間の計算
+		// 残業深夜時間の計算
+		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(recordReGet, overTimeSheet,
+				recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(), beforeApplicationTime,
+				recordReGet.getIntegrationOfDaily().getCalAttr(), declareResult, settingOfFlex));
+		// 変形法定内残業時間の計算
 		val irregularTime = overTimeSheet.calcIrregularTime(recordReGet.getIntegrationOfWorkTime().map(i -> i.getCommonSetting().getGoOutSet()));
-		//フレックス時間
-		FlexTime flexTime = new FlexTime(TimeDivergenceWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
-		//フレ時間の計算に挑戦
-		if(recordReGet.getWorkTimeSetting().isPresent() && recordReGet.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex() && recordReGet.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet() != null) {
-			
-			val changeVariant = ((FlexWithinWorkTimeSheet)recordReGet.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get());
-			//フレックス時間の計算
-			flexTime = changeVariant.createWithinWorkTimeSheetAsFlex(
-					recordReGet.getPersonDailySetting(),
-					recordReGet.getIntegrationOfDaily(),
-					recordReGet.getIntegrationOfWorkTime(),
+		// フレックス時間
+		FlexTime flexTime = new FlexTime(
+				TimeDivergenceWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),
+				new AttendanceTime(0));
+		// フレ時間の計算に挑戦
+		if (recordReGet.getWorkTimeSetting().isPresent()
+				&& recordReGet.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()
+				&& recordReGet.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet() != null) {
+
+			val changeVariant = ((FlexWithinWorkTimeSheet) recordReGet.getCalculationRangeOfOneDay()
+					.getWithinWorkingTimeSheet().get());
+			// フレックス時間の計算
+			flexTime = changeVariant.createWithinWorkTimeSheetAsFlex(recordReGet.getPersonDailySetting(), 
+					recordReGet.getIntegrationOfDaily(), recordReGet.getIntegrationOfWorkTime(),
 					recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getCalAtr(),
-					workType,
-					settingOfFlex.get(),
-					recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
+					workType, settingOfFlex.get(), recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 					recordReGet.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
-					recordReGet.getAddSetting(),
-					recordReGet.getHolidayAddtionSet().get(),
+					recordReGet.getAddSetting(), recordReGet.getHolidayAddtionSet().get(),
 					recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getUpLimitORtSet(),
-					flexPreAppTime,
-					recordReGet.getDailyUnit(),
-					recordReGet.getWorkTimezoneCommonSet(),
-					NotUseAtr.NOT_USE,
-					Optional.of(DeductionAtr.Appropriate));
+					flexPreAppTime, recordReGet.getDailyUnit(), recordReGet.getWorkTimezoneCommonSet(),
+					NotUseAtr.NOT_USE, Optional.of(DeductionAtr.Appropriate));
 		}
 
 		val overTimeWork = new AttendanceTime(0);

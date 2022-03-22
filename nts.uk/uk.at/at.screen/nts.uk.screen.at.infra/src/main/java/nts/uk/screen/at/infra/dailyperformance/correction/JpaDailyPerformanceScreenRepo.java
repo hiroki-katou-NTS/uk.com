@@ -278,7 +278,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private final static String FIND_PERIOD_ORDER_BY_STR_D_FOR_MULTI = "SELECT wi FROM KshmtWorkcondHist wi "
 			+ "WHERE wi.kshmtWorkingCondPK.sid = :employeeId " + "AND wi.strD <= :endDate "
 			+ "AND wi.endD >= :startDate " + "AND wi.kshmtWorkingCondItem.laborSys = "
-			+ WorkingSystem.FLEX_TIME_WORK.value;
+			+ WorkingSystem.FLEX_TIME_WORK.value
+			+ " ORDER BY wi.strD" ;
 
 	private final static String GET_LIMIT_FLEX_MON = "SELECT f FROM KshmtCalcMFlexCarMax f WHERE f.companyId = :companyId";
 

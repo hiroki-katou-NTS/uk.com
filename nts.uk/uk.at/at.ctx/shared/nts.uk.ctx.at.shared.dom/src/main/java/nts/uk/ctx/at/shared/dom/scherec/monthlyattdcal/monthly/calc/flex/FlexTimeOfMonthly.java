@@ -1903,7 +1903,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			}
 		} else {
 			
-			/** ○就業時間←就業合計時間 */
+			/** 就業時間の合計処理 */
 			aggregateTotalWorkingTime.getWorkTime().totalizeWorkTime(datePeriod);
 			val workTime = aggregateTotalWorkingTime.getWorkTime().getWorkTime();
 			

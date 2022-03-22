@@ -699,7 +699,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		//ジャスト遅刻、早退による時刻補正
 		RoundingTime roundingTimeinfo = commonSet.get().getStampSet().getRoundingTime();
-		List<TimeLeavingWork> justTimeLeavingWorks = roundingTimeinfo.justTImeCorrection(justCorrectionAtr, predTimeLeavingWorks);
+		List<TimeLeavingWork> justTimeLeavingWorks = roundingTimeinfo.justTImeCorrectionCalcStamp(justCorrectionAtr, predTimeLeavingWorks);
 		
 		//丸め処理
 		List<TimeLeavingWork> roundingTimeLeavingWorks = roundingTimeinfo.roundingttendance(justTimeLeavingWorks);

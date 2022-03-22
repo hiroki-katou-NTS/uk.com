@@ -483,10 +483,12 @@ public class OverTimeSheet {
 	 * @param roundAtr 丸め区分
 	 * @return 控除時間
 	 */
-	public AttendanceTime getDeductionTime(ConditionAtr conditionAtr, DeductionAtr dedAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
+	public AttendanceTime getDeductionTime(
+			ConditionAtr conditionAtr, DeductionAtr dedAtr, Optional<WorkTimezoneGoOutSet> goOutSet, 
+			nts.uk.shr.com.enumcommon.NotUseAtr canOffset) {
 		
-		return ActualWorkTimeSheetListService.calcDeductionTime(conditionAtr, dedAtr, goOutSet,
-				this.frameTimeSheets.stream().map(tc -> (ActualWorkingTimeSheet)tc).collect(Collectors.toList()));
+		return ActualWorkTimeSheetListService.calcDeductionTime(ActualWorkTimeSheetAtr.OverTimeWork, conditionAtr, dedAtr, goOutSet,
+				this.frameTimeSheets.stream().map(tc -> (ActualWorkingTimeSheet)tc).collect(Collectors.toList()), canOffset);
 	}
 
 	/**
@@ -693,13 +695,13 @@ public class OverTimeSheet {
 			}
 			// 控除時間から残業時間帯を作成
 			overTimeFrameTimeSheets.add(OverTimeFrameTimeSheetForCalc.createAsFlow(
+					personDailySetting,
 					integrationOfWorkTime.getFlowWorkSetting().get(),
 					processingFlowOTTimezone,
 					deductTimeSheet,
 					itemsWithinCalc,
 					overTimeStartTime,
 					calcRange.get().getEnd(),
-					personDailySetting.getBonusPaySetting(),
 					integrationOfDaily.getSpecDateAttr(),
 					companyCommonSetting.getMidNightTimeSheet()));
 			// 退勤時刻を含む残業枠時間帯が作成されているか判断する

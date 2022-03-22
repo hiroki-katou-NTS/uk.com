@@ -169,7 +169,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 			return this;
 		List<TimeLeavingWork> newAttendanceLeave = new ArrayList<>();
 		for (TimeLeavingWork attendanceLeave : this.timeLeavingWorks) {
-			newAttendanceLeave.add(attendanceLeave.correctJustTime(isJustTimeLateAttendance, isJustEarlyLeave));
+			newAttendanceLeave.add(attendanceLeave.correctJustTimeCalcStamp(isJustTimeLateAttendance, isJustEarlyLeave));
 		}
 
 		return new TimeLeavingOfDailyAttd(newAttendanceLeave, this.workTimes);

@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTime;
@@ -33,8 +32,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.OutingCalcWithinCoreTime;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 //import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 
@@ -179,9 +180,9 @@ public class OutingTimeOfDaily {
 							.map(o -> o.getTimeVacationUseOfDaily())
 							.findFirst());
 			//計上用合計時間
-			recordTotalTime = calcOutingTimeDeductAppro(oneDay, reason, commonSetting, outingCalcSet, DeductionAtr.Appropriate); 
+			recordTotalTime = calcOutingTimeDeductAppro(oneDay, reason, outingCalcSet, DeductionAtr.Appropriate, commonSetting.map(c -> c.getGoOutSet())); 
 			//控除用合計時間
-			dedTotalTime = calcOutingTimeDeductAppro(oneDay, reason, commonSetting, outingCalcSet, DeductionAtr.Deduction);
+			dedTotalTime = calcOutingTimeDeductAppro(oneDay, reason, outingCalcSet, DeductionAtr.Deduction, commonSetting.map(c -> c.getGoOutSet()));
 			//補正後時間帯 
 			
 			/** 相殺休暇使用時間を補正する */
@@ -203,16 +204,15 @@ public class OutingTimeOfDaily {
 	
 	//外出合計時間の計算
 	private static OutingTotalTime calcOutingTimeDeductAppro(CalculationRangeOfOneDay oneDay,
-			GoingOutReason reason, Optional<WorkTimezoneCommonSet> commonSetting, 
-			Optional<OutingCalcWithinCoreTime> outingCalcSet, DeductionAtr deductAtr) {
+			GoingOutReason reason,
+			Optional<OutingCalcWithinCoreTime> outingCalcSet, DeductionAtr deductAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
 		
 		//外出時間の計算
-		OutingTotalTime recordTotalTime = OutingTotalTime.calcOutingTime(oneDay, deductAtr, reason, outingCalcSet,
-				commonSetting.map(c -> c.getGoOutSet()));
+		OutingTotalTime recordTotalTime = OutingTotalTime.calcOutingTime(oneDay, deductAtr, reason, outingCalcSet, goOutSet,
+				deductAtr == DeductionAtr.Deduction ? NotUseAtr.NOT_USE : NotUseAtr.USE);
 
 		//計算外出時間の計算
-		OutingTotalTime calcTotalTime = OutingTotalTime.calcOutingTime(oneDay, deductAtr, reason, outingCalcSet, 
-				 commonSetting.map(c -> c.getGoOutSet()));
+		OutingTotalTime calcTotalTime = OutingTotalTime.calcOutingTime(oneDay, deductAtr, reason, outingCalcSet, goOutSet, NotUseAtr.NOT_USE);
 		
 		return OutingTotalTime.of(
 				TimeWithCalculation.mergeTimeAndCalcTime(recordTotalTime.getTotalTime(), calcTotalTime.getTotalTime()),

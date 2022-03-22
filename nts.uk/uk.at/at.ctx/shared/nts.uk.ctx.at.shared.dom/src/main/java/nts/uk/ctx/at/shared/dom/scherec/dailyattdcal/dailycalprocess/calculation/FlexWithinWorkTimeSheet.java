@@ -14,8 +14,9 @@ import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTime;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
@@ -43,9 +44,9 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheet;
 import nts.uk.ctx.at.shared.dom.worktype.VacationCategory;
@@ -975,14 +976,16 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 			boolean isWithin,
 			ConditionAtr conditionAtr,
 			DeductionAtr dedAtr,
-			Optional<WorkTimezoneGoOutSet> goOutSet) {
+			Optional<WorkTimezoneGoOutSet> goOutSet,
+			NotUseAtr canOffset) {
 		
 		// コアタイムとの重複を判断して時間帯を作成
 		List<WithinWorkTimeFrame> targetFrameList = this.createSpanDuplicatedWithCoreTime(isWithin);
 		// 控除時間の計算
 		AttendanceTime goOutTime = ActualWorkTimeSheetListService.calcDeductionTime(
-				conditionAtr, dedAtr, goOutSet,
-				targetFrameList.stream().map(t -> (ActualWorkingTimeSheet)t).collect(Collectors.toList()));
+				ActualWorkTimeSheetAtr.WithinWorkTime, conditionAtr, dedAtr, goOutSet,
+				targetFrameList.stream().map(t -> (ActualWorkingTimeSheet)t).collect(Collectors.toList()),
+				canOffset);
 		// 外出時間を返す
 		return goOutTime;
 	}
