@@ -7,10 +7,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.val;
-import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
-import nts.uk.ctx.exio.dom.input.errors.ItemError;
-import nts.uk.ctx.exio.dom.input.errors.RecordError;
 import nts.gul.util.Either;
+import nts.uk.ctx.exio.dom.input.errors.RecordError;
 
 /**
  * 同一履歴内でのコードの重複をチェックし、正常レコードとエラーレコードに仕分ける

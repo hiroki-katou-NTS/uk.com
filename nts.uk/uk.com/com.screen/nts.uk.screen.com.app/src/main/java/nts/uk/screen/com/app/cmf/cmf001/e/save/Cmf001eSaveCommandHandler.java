@@ -13,9 +13,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.file.storage.FileStorage;
 import nts.arc.task.tran.TransactionService;
-import nts.uk.ctx.exio.app.input.setting.FromCsvBaseSettingToDomainRequireImpl;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
-import nts.uk.ctx.exio.dom.input.setting.FromCsvBaseSettingToDomainRequire;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -24,9 +22,6 @@ public class Cmf001eSaveCommandHandler extends CommandHandler<Cmf001eSaveCommand
 
 	@Inject
 	private ExternalImportSettingRepository externalImportSettingRepo;
-	
-	@Inject
-	private FileStorage fileStorage;
 	
 	@Inject
 	private TransactionService transaction;
@@ -50,10 +45,8 @@ public class Cmf001eSaveCommandHandler extends CommandHandler<Cmf001eSaveCommand
 			});
 			
 		} else {
-			val csvRequire = new FromCsvBaseSettingToDomainRequireImpl(fileStorage);
-			
 			transaction.execute(() -> {
-				val old = externalImportSettingRepo.get(Optional.of(csvRequire), companyId, command.getCode());
+				val old = externalImportSettingRepo.get(companyId, command.getCode());
 				val domain = command.toDomain(old);
 				externalImportSettingRepo.update(domain);
 			});

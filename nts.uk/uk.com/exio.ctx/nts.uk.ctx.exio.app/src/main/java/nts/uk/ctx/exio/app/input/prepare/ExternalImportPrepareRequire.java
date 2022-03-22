@@ -195,7 +195,7 @@ public class ExternalImportPrepareRequire {
 				return importingUserConditionRepo.get(companyId, key.getLeft(), key.getRight());
 			});
 			this.cacheImportSetting = MapCache.incremental(key -> {
-				return settingRepo.get(null, companyId, key);
+				return settingRepo.get(companyId, key);
 			});
 			this.cacheEmployeeCESetting = MapCache.incremental(key->{
 				return iEmployeeCESettingRepo.getByComId(companyId);

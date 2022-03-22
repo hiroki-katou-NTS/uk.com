@@ -1,7 +1,6 @@
 package nts.uk.screen.com.app.cmf.cmf001.f.get;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -63,7 +62,7 @@ public class GetCsvBasedImportSetting {
 		
 		RequireImpl(String companyId, ExternalImportCode settingCode) {
 			this.csvRequire = new FromCsvBaseSettingToDomainRequireImpl(fileStorage);
-			this.setting = settingRepo.get(Optional.of(csvRequire), companyId, settingCode).get();
+			this.setting = settingRepo.get(companyId, settingCode).get();
 		}
 
 		@Override
