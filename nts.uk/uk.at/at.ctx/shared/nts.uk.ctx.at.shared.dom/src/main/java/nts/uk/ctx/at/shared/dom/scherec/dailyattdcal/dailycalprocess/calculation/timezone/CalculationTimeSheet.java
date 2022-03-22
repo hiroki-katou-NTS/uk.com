@@ -20,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
@@ -131,7 +130,8 @@ public abstract class CalculationTimeSheet {
 	 * @param goOutSet 就業時間帯の外出設定
 	 * @return 控除時間
 	 */
-	public AttendanceTime calcDedTimeByAtr(ActualWorkTimeSheetAtr actualAtr, DeductionAtr dedAtr, ConditionAtr conditionAtr, Optional<WorkTimezoneGoOutSet> goOutSet, NotUseAtr canOffset) {
+	public AttendanceTime calcDedTimeByAtr(ActualWorkTimeSheetAtr actualAtr, DeductionAtr dedAtr, ConditionAtr conditionAtr, 
+			Optional<WorkTimezoneGoOutSet> goOutSet, NotUseAtr canOffset) {
 		val forCalcList = getDedTimeSheetByAtr(dedAtr,conditionAtr);
 		int total = forCalcList.stream().map(tc -> tc.calcTotalTime(canOffset, NotUseAtr.USE).valueAsMinutes()).collect(Collectors.summingInt(tc -> tc));
 		Optional<TimeRoundingSetting> roundSet = goOutSet.flatMap(g -> g.getAfterTotalInFrame(actualAtr, conditionAtr, dedAtr, this.rounding));

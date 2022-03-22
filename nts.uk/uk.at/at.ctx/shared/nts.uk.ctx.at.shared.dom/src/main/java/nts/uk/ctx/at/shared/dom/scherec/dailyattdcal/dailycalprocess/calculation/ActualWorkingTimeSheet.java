@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
@@ -29,7 +29,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -465,7 +464,7 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet {
 	 * @param goOutSet
 	 * @return 控除時間
 	 */
-	public AttendanceTime calcDeductionTime(HolidayCalcMethodSet holidayCalcMethodSet, PremiumAtr premiumAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
+	public AttendanceTime calcDeductionTime(AddSettingOfWorkingTime holidayCalcMethodSet, PremiumAtr premiumAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
 		AttendanceTime result = new AttendanceTime(0);
 		//休憩
 		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.BREAK, goOutSet, NotUseAtr.USE).valueAsMinutes());
@@ -478,11 +477,11 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet {
 		//介護
 		AttendanceTime careTime = new AttendanceTime(0);
 		//短時間勤務を控除するか判断
-		if(premiumAtr.isRegularWork() && !holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().isCalculateIncludCareTime()) {
+		if(premiumAtr.isRegularWork() && !holidayCalcMethodSet.getAddSetOfWorkTime().isCalculateIncludCareTime()) {
 			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.Child, goOutSet, NotUseAtr.USE);
 			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.Care, goOutSet, NotUseAtr.USE);
 		}
-		if(premiumAtr.isPremium() && !holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().isCalculateIncludCareTime()) {
+		if(premiumAtr.isPremium() && !holidayCalcMethodSet.getAddSetOfPremium().isCalculateIncludCareTime()) {
 			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.Child, goOutSet, NotUseAtr.USE);
 			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.Care, goOutSet, NotUseAtr.USE);
 		}

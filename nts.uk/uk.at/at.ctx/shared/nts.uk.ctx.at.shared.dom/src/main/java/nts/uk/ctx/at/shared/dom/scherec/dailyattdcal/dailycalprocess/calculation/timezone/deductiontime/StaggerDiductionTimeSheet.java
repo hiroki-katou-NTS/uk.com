@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ActualWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
@@ -35,7 +35,7 @@ public class StaggerDiductionTimeSheet extends ActualWorkingTimeSheet {
 	 * @param holidaySet
 	 * @return 終了時刻
 	 */
-	public TimeWithDayAttr getForwardEnd(ActualWorkTimeSheetAtr atr, WorkTimezoneCommonSet commonSet, HolidayCalcMethodSet holidaySet) {
+	public TimeWithDayAttr getForwardEnd(ActualWorkTimeSheetAtr atr, WorkTimezoneCommonSet commonSet, AddSettingOfWorkingTime holidaySet) {
 		List<TimeSheetOfDeductionItem> orderByAsc = this.deductionTimeSheet.stream()
 				.sorted((x , y) -> x.start().compareTo(y.start()))
 				.collect(Collectors.toList());
@@ -58,7 +58,7 @@ public class StaggerDiductionTimeSheet extends ActualWorkingTimeSheet {
 	 * @param holidaySet
 	 * @return 終了時刻
 	 */
-	private TimeWithDayAttr forwardByAllDeductionTime(ActualWorkTimeSheetAtr atr, WorkTimezoneCommonSet commonSet, HolidayCalcMethodSet holidaySet) {
+	private TimeWithDayAttr forwardByAllDeductionTime(ActualWorkTimeSheetAtr atr, WorkTimezoneCommonSet commonSet, AddSettingOfWorkingTime holidaySet) {
 		this.grantRoundingToDeductionTimeSheet(atr, commonSet);
 		if(atr.isWithinWorkTime()) {
 			AttendanceTime within = this.calcDeductionTime(holidaySet, PremiumAtr.RegularWork, Optional.of(commonSet.getGoOutSet()));
