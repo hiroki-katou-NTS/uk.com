@@ -346,6 +346,7 @@ module nts.uk.at.kdp003.a {
 					vm.$ajax('at', API.GetWorkLocationRagionalTime, param).done((data: GetWorkPlaceRegionalTime) => {
 						if (data.workLocationCD != null && data.workLocationCD !== '') {
 							vm.regionalTime(data.regional);
+							vm.worklocationCode = locationCd;
 						}
 						
 						vm.getWorkPlaceAndTimeZone();
@@ -374,6 +375,9 @@ module nts.uk.at.kdp003.a {
 							if (data) {
 								if (ko.unwrap(vm.regionalTime) == 0) {
 									vm.regionalTime(data.regional);
+								}
+								if (data.workLocationCD != null) {
+									vm.worklocationCode = data.workLocationCD;
 								}
 							}
 						})

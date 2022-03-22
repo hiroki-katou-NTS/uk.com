@@ -827,6 +827,7 @@ module nts.uk.ui.kdp001.a {
                                             vm.workplaceId(data.workPlaceId)
                                             vm.workLocationName(data.workLocationName);
                                             vm.regionalTime(data.regional);
+                                            vm.workpalceCD = data.workLocationCD;
                                             vm.modeBasyo(true)
                                         } else {
                                             vm.getTimeZone();
@@ -862,6 +863,7 @@ module nts.uk.ui.kdp001.a {
                         vm.workplaceId(data.workPlaceId)
                         vm.workLocationName(data.workLocationName);
                         vm.regionalTime(data.regional);
+                        vm.workpalceCD = data.workLocationCD;
                     } else {
                         let inputWorkPlace = {
                             contractCode: vm.$user.contractCode,
@@ -874,6 +876,7 @@ module nts.uk.ui.kdp001.a {
                                 vm.workplaceId(data.workPlaceId)
                                 vm.workLocationName(data.workLocationName);
                                 vm.regionalTime(data.regional);
+                                vm.workpalceCD = data.workLocationCD;
                             }
                         })
                     }

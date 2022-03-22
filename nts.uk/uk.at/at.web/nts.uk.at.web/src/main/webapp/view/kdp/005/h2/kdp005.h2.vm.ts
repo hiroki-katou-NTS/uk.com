@@ -20,13 +20,13 @@ module nts.uk.at.view.kdp005.h2 {
 
 			html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess).then(function() {
 				navigator.mediaDevices.getUserMedia(constraints).then(function success() {
-					$('#lbl-error').css('display', 'none');
 					$('#render-action').show();
 				});
 
 			}).catch(function(err: any) {
 				console.log(err);
 				if (err) {
+					$('#lbl-error').css('display', 'unset');
 					$('#btn-cancel').css('bottom', '-260px');
 					$('#btn-clear').css('visibility', 'hidden');
 					
