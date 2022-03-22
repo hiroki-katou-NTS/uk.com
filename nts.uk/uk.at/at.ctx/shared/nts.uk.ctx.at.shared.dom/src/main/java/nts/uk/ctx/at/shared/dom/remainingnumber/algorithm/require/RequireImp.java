@@ -738,9 +738,9 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	public Optional<LengthServiceTbl> lengthServiceTbl(String companyId, String yearHolidayCode) {
 		if (!cache.getLengthServiceTblMap().containsKey(yearHolidayCode)) {
 			cache.getLengthServiceTblMap().put(yearHolidayCode,
-					lengthServiceRepo.findByCode(companyId, yearHolidayCode).get());
+					lengthServiceRepo.findByCode(companyId, yearHolidayCode));
 		}
-		return Optional.of(cache.getLengthServiceTblMap().get(yearHolidayCode));
+			return cache.getLengthServiceTblMap().get(yearHolidayCode);
 	}
 
 	@Override
