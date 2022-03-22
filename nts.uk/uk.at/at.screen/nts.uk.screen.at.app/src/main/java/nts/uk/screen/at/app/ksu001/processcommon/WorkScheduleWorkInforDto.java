@@ -171,14 +171,15 @@ public class WorkScheduleWorkInforDto {
 			/* ※Abc2
 			 勤務予定（勤務情報）dto．実績か == true	Achievement						           ×	
 			勤務予定（勤務情報）dto．勤務予定が必要か == false	need a work				           ×	
-			勤務予定（勤務情報）dto．応援状況 == 応援に来る(時間帯)　or　応援に行く(終日)	 supportStatus ×	
+			勤務予定（勤務情報）dto．応援状況 == 応援に来る(時間帯)　or　応援に行く(終日)　or 応援に来ない  × supportStatus	
 			対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				           × => check ở dưới UI
 			上記以外																       ○	
 			 */
 			if (this.achievements == true 
 					|| this.needToWork == false
 					|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()
-					|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()) {
+					|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()
+					|| this.supportStatus == SupportStatus.DO_NOT_COME.getValue()) {
 				this.conditionAbc2 = false;
 			}
 			
@@ -307,14 +308,15 @@ public class WorkScheduleWorkInforDto {
 			/* ※Abc2
 			 勤務予定（勤務情報）dto．実績か == true	Achievement						           ×	
 			勤務予定（勤務情報）dto．勤務予定が必要か == false	need a work				           ×	
-			勤務予定（勤務情報）dto．応援状況 == 応援に来る(時間帯)　or　応援に行く(終日)	 supportStatus ×	
+			勤務予定（勤務情報）dto．応援状況 == 応援に来る(時間帯)　or　応援に行く(終日)　or 応援に来ない  × supportStatus	
 			対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				           × => check ở dưới UI
 			上記以外																           ○	
 			 */
 			if (this.achievements == true 
 					|| this.needToWork == false
 					|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()
-					|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()) {
+					|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()
+					|| this.supportStatus == SupportStatus.DO_NOT_COME.getValue()) {
 				this.conditionAbc2 = false;
 			}
 		} else if (needCreateWorkSchedule && !workScheduleInput.isPresent()) {
@@ -372,14 +374,15 @@ public class WorkScheduleWorkInforDto {
 			/* ※Abc2
 			 勤務予定（勤務情報）dto．実績か == true	Achievement						           ×	
 			勤務予定（勤務情報）dto．勤務予定が必要か == false	need a work				           ×	
-			勤務予定（勤務情報）dto．応援状況 == 応援に来る(時間帯)　or　応援に行く(終日)	 supportStatus ×	
+			勤務予定（勤務情報）dto．応援状況 == 応援に来る(時間帯)　or　応援に行く(終日)　or 応援に来ない  × supportStatus	
 			対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				           × => check ở dưới UI
 			上記以外																           ○	
 			 */
 			if (this.achievements == true 
 					|| this.needToWork == false
 					|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()
-					|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()) {
+					|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()
+					|| this.supportStatus == SupportStatus.DO_NOT_COME.getValue()) {
 				this.conditionAbc2 = false;
 			}
 		}
