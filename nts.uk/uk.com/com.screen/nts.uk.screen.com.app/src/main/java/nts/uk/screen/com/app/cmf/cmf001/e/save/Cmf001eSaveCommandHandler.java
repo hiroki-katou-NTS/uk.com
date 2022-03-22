@@ -15,7 +15,6 @@ import nts.arc.layer.app.file.storage.FileStorage;
 import nts.arc.task.tran.TransactionService;
 import nts.uk.ctx.exio.app.input.setting.FromCsvBaseSettingToDomainRequireImpl;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
-import nts.uk.ctx.exio.dom.input.setting.FromCsvBaseSettingToDomainRequire;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
