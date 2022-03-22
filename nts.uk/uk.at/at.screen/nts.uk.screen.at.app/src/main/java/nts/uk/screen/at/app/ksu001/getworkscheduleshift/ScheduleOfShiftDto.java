@@ -159,14 +159,15 @@ public class ScheduleOfShiftDto {
 			/**
 			 * ※Aa2			シフト確定																					
 			勤務予定（シフト）dto．実績か == true                                    achievements	×	
-			勤務予定（シフト）dto．勤務予定が必要か == false                           needToWork	 	×	
-			勤務予定（勤務情報）dto．応援状況 == 応援に来る(時間帯)　or　応援に行く(終日)  supportStatus		×	
-			対象の日 < A画面パラメータ. 修正可能開始日　の場合	                      targetDate		×	=> check dưới UI
+			勤務予定（シフト）dto．勤務予定が必要か == false                           needToWork	×	
+			勤務予定（シフト）dto．応援状況 == 応援に来る(時間帯)　or　応援に行く(終日)　or 応援に来ない	    x
+			対象の日 < A画面パラメータ. 修正可能開始日　の場合	                      targetDate	×	=> check dưới UI
 			上記以外										                      other			○	
 			 */
 			if (  this.achievements == true || this.needToWork == false
 				|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()
-				|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()) 
+				|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()
+				|| this.supportStatus == SupportStatus.DO_NOT_COME.getValue()) 
 			{	this.setActive(false);
 				this.setConditionAa2(false);
 			}
@@ -218,14 +219,15 @@ public class ScheduleOfShiftDto {
 			/**
 			 * ※Aa2			シフト確定																					
 			勤務予定（シフト）dto．実績か == true                                    achievements	×	
-			勤務予定（シフト）dto．勤務予定が必要か == false                           needToWork	 	×	
-			勤務予定（勤務情報）dto．応援状況 == 応援に来る(時間帯)　or　応援に行く(終日)  supportStatus		×	
-			対象の日 < A画面パラメータ. 修正可能開始日　の場合	                      targetDate		×	=> check dưới UI
+			勤務予定（シフト）dto．勤務予定が必要か == false                           needToWork	×	
+			勤務予定（シフト）dto．応援状況 == 応援に来る(時間帯)　or　応援に行く(終日)　or 応援に来ない            ×
+			対象の日 < A画面パラメータ. 修正可能開始日　の場合	                      targetDate	×	=> check dưới UI
 			上記以外										                      other			○	
 			 */
 			if (  this.achievements == true || this.needToWork == false
 				|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()
-				|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()) 
+				|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()
+				|| this.supportStatus == SupportStatus.DO_NOT_COME.getValue()) 
 			{	this.setActive(false);
 				this.setConditionAa2(false);
 			}
@@ -261,7 +263,8 @@ public class ScheduleOfShiftDto {
 			if (      this.achievements == true 
 					|| this.needToWork == false
 					|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()
-					|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()) 
+					|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()
+					|| this.supportStatus == SupportStatus.DO_NOT_COME.getValue()) 
 			{
 				this.setActive(false);
 				this.setConditionAa2(false);
