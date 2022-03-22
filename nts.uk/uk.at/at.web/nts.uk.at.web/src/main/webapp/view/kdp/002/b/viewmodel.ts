@@ -496,7 +496,7 @@ class KDP002BViewModel extends ko.ViewModel {
         const input = {
             sid: vm.infoEmpFromScreenA.employeeId,
             emoji: param.valueOf(),
-            date: moment(vm.$date.now()).add(vm.regionalTime, 'm').utc().toDate()
+            date: moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate()
         }
 
         vm.$ajax(kDP002RequestUrl.SEND_EMOJI, input)
