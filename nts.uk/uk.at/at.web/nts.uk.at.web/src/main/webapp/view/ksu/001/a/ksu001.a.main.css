@@ -666,3 +666,26 @@ html {
 #horzComboBox * {
 	text-align: left;
 }
+
+.bg-schedule-that-day{
+	background-color: #ffff00 !important;
+}
+
+.bg-schedule-specific-date{
+	background-color: #ffc0cb !important;
+}
+
+.bg-schedule-sunday{
+	background-color: #db4f51 !important;
+}
+.color-schedule-sunday{
+	color: #ffffff !important;
+}
+
+.bg-schedule-saturday{
+	background-color: #1973b5 !important;
+}
+
+.color-schedule-saturday{
+	color: #ffffff !important;
+}
