@@ -67,6 +67,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
         alreadySettingWorkplaceGroups: KnockoutObservableArray<any>;
         selectedIds: KnockoutObservable<any> | KnockoutObservableArray<any>;
         selectedGroupIds: KnockoutObservable<any> | KnockoutObservableArray<any>;
+        restrictionOfReferenceRange: KnockoutObservable<boolean> = ko.observable(true);
 
         kcp011Options: any;
         kcp004Options: any;
@@ -88,6 +89,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 vm.multipleUsage = ko.observable(_.isNil(params.multipleUsage) ? false : params.multipleUsage);
                 vm.isShowSelectButton = ko.observable(_.isNil(params.isShowSelectButton) ? true : params.isShowSelectButton);
                 vm.showEmptyItem = ko.observable(_.isNil(params.showEmptyItem) ? false : params.showEmptyItem);
+                vm.restrictionOfReferenceRange(_.isNil(params.restrictionOfReferenceRange) ? true : params.restrictionOfReferenceRange);
             } else {
                 vm.selectedUnit = ko.observable(0);
                 vm.baseDate = ko.observable(new Date());
@@ -103,6 +105,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 vm.multipleUsage = ko.observable(false);
                 vm.isShowSelectButton = ko.observable(true);
                 vm.showEmptyItem = ko.observable(false);
+                vm.restrictionOfReferenceRange(true);
             }
             vm.selectMode = ko.computed(() => {
                 if (vm.selectType() == SelectType.SELECT_FIRST_ITEM) return SELECTED_MODE.FIRST;
@@ -125,7 +128,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 maxRows: vm.rows(),
                 alreadySettingList: vm.alreadySettingWorkplaces,
                 selectedId: vm.selectedIds,
-                restrictionOfReferenceRange: true
+                restrictionOfReferenceRange: vm.restrictionOfReferenceRange()
             };
             vm.kcp011Options = {
                 currentIds: vm.selectedGroupIds,
@@ -167,6 +170,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
         alreadySettingWorkplaceGroups?: KnockoutObservableArray<string>;
         selectedWorkplaces: KnockoutObservableArray<any> | KnockoutObservable<any>;
         selectedWorkplaceGroups: KnockoutObservableArray<any> | KnockoutObservable<any>;
+        restrictionOfReferenceRange: boolean; // 職場の参照範囲の絞込
     }
 
     enum SelectType {
