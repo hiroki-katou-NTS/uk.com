@@ -69,4 +69,11 @@ public enum RoundingGoOutTimeSheet {
 		// Not found.
 		return null;
 	}
+
+	/**
+	 * 個別の丸めか
+	 */
+	public boolean isIndividualRounding() {
+		return INDIVIDUAL_ROUNDING.equals(this);
+	}
 }

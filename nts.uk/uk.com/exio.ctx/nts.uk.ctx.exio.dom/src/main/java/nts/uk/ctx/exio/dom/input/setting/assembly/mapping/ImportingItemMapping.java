@@ -35,8 +35,8 @@ public class ImportingItemMapping {
 	/** 固定値 */
 	private Optional<StringifiedValue> fixedValue;
 
-	public static ImportingItemMapping noSetting(int itemNo) {
-		return new ImportingItemMapping(itemNo, true, Optional.empty(), Optional.empty());
+	public static ImportingItemMapping noSetting(int itemNo, int csvColumn) {
+		return new ImportingItemMapping(itemNo, false, Optional.of(csvColumn), Optional.empty());
 	}
 
 	public ImportingItemMapping(int itemNo, boolean isFixedValue, Optional<Integer> csvColumnNo, Optional<StringifiedValue> fixedValue) {

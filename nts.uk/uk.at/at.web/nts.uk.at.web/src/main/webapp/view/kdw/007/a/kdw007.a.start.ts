@@ -13,7 +13,7 @@ module nts.uk.at.view.kdw007.a {
 				} else {
 					$("#errorAlarmWorkRecordCode").focus();
 				}
-            }, 1);
+            }, 100);
         });
     });
 }

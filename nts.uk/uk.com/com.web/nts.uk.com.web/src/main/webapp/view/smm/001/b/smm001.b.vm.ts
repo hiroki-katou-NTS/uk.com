@@ -5,7 +5,9 @@ module nts.uk.com.view.smm001.b {
     getInformationOnExternal: 'com/screen/smm001/get-information-on-external',
     registerSmileLinkageExternalOutput: 'com/screen/smm001/register-smile-linkage-external-output',
     selectListPaymentDate: 'com/screen/smm001/select-list-payment-date',
-    selectAPaymentDate: 'com/screen/smm001/select-a-payment-date'
+    selectAPaymentDate: 'com/screen/smm001/select-a-payment-date',
+    initDataOutPut: 'ctx/link/smile/smilelink/init-ouput-data-register',
+    initDataSmileLinkSet: 'ctx/link/smile/smilelink/init-link-out-set'
   };
 
   class GridItem {
@@ -66,7 +68,7 @@ module nts.uk.com.view.smm001.b {
     salaryCooperationClassification: KnockoutObservable<boolean> = ko.observable(false);
     monthlyLockClassification: KnockoutObservable<number> = ko.observable(0);
     monthlyApprovalCategory: KnockoutObservable<number> = ko.observable(0);
-    salaryCooperationConditions: KnockoutObservable<string> = ko.observable('0');
+    salaryCooperationConditions: KnockoutObservable<string> = ko.observable(null);
     tempEmploymentDtos: GridItem[] = [];
     employmentDtos: KnockoutObservableArray<GridItem> = ko.observableArray([]);
     rightEmployments: KnockoutObservableArray<GridItem> = ko.observableArray([]);
@@ -91,6 +93,7 @@ module nts.uk.com.view.smm001.b {
     resB: KnockoutObservable<string> = ko.observable("");
     // End: Init b screen
 
+    initDataText8:   KnockoutObservableArray<string> = ko.observable("");
     constructor() {
       super();
       const vm = this;
@@ -139,6 +142,41 @@ module nts.uk.com.view.smm001.b {
       });
     }
 
+    /**
+     * event when click init data create button 
+     */
+    createInitialData(settingCode: String){
+        const vm = this;
+        vm.$blockui('grayout');
+        vm.$ajax('com', API.initDataOutPut, settingCode).then(() => {
+            vm.$ajax('com', API.initDataSmileLinkSet, settingCode).then(() => {
+                vm.$dialog.info({ messageId: "Msg_3337" }).then(() =>{
+                 vm.getInformationOnExternal();
+                });
+                
+            }).fail((err) =>{
+                vm.$dialog.error(err);
+            })
+            
+        }).fail((err) => {
+            vm.$dialog.error(err);
+        }).always(() =>{
+            vm.$blockui('clear');
+        })
+    }      
+      
+    salary(){
+        const vm = this;
+        nts.uk.ui.errors.clearAll()
+        if(!vm.initDataText8()){
+            vm.$dialog.error({ messageId: "Msg_3325" });
+            return;
+        }            
+        $('.init-text7').ntsError('check');
+        if(!nts.uk.ui.errors.hasError())
+            vm.createInitialData(vm.initDataText8());          
+    }        
+      
     setDefault() {
       const vm = this;
       // Init Do Or DoNot Enum
@@ -177,10 +215,7 @@ module nts.uk.com.view.smm001.b {
     getInformationOnExternal() {
       const vm = this;
       vm.$blockui('grayout');
-      let finalArray = [{
-        code: '0',
-        name: ''
-      }];
+      let finalArray = [];
       vm.$ajax('com', API.getInformationOnExternal).then((response: any) => {
         if (response) {
           // After has response - Process for setting behind
@@ -262,7 +297,7 @@ module nts.uk.com.view.smm001.b {
 
     validateBeforeSave() {
       const vm = this;
-      if (vm.salaryCooperationClassification() && vm.salaryCooperationConditions() === '0') {
+      if (vm.salaryCooperationClassification() && !vm.salaryCooperationConditions()) {
         return false;
       }
       return true;

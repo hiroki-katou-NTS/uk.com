@@ -10,6 +10,8 @@ import nts.arc.task.tran.TransactionService;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItemRepository;
 import nts.uk.ctx.link.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceItem;
 import nts.uk.ctx.link.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceSetting;
 import nts.uk.ctx.link.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceSettingRepository;
@@ -21,6 +23,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -60,6 +63,9 @@ public class GenerateSmileAcceptDefaultDataCommandHandler extends CommandHandler
 
     @Inject
     private FileStorage fileStorage;
+    
+    @Inject
+    private ReviseItemRepository reviseItemRepo;
 
     private class RequireImpl implements Require {
 
@@ -87,14 +93,24 @@ public class GenerateSmileAcceptDefaultDataCommandHandler extends CommandHandler
         }
 
         @Override
-        public void add(ExternalImportSetting setting) {
+        public void addSetting(ExternalImportSetting setting) {
             externalImportSettingRepo.insert(setting);
         }
-
+        
         @Override
         public String storeFileThenGetFileId(InputStream fileInputStream, String fileName, String fileType) {
             val info = fileStorage.store(fileInputStream, fileName, fileType);
             return info.getId();
         }
+
+		@Override
+		public List<ReviseItem> getReviseItems(String companyId, ExternalImportCode code) {
+			return reviseItemRepo.get(companyId, code);
+		}
+
+		@Override
+		public void addReviseItems(List<ReviseItem> reviseItems) {
+			reviseItemRepo.persist(reviseItems);
+		}
     }
 }

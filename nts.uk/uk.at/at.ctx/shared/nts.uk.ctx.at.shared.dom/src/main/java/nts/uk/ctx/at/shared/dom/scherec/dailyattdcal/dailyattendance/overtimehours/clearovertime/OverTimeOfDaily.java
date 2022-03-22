@@ -239,20 +239,22 @@ public class OverTimeOfDaily {
 				recordReGet.getPersonDailySetting().getOverTimeSheetReq(), workType.getCompanyId(),
 				recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(), workType,
 				siftCode.map(x -> x.v()), recordReGet.getIntegrationOfDaily(), recordReGet.getStatutoryFrameNoList(),
-				true, recordReGet.getCompanyCommonSetting().getOvertimeFrameList());
+				true, recordReGet.getCompanyCommonSetting().getOvertimeFrameList(),
+				recordReGet.getIntegrationOfWorkTime().map(i -> i.getCommonSetting().getGoOutSet()));
 		// 残業時間の計算
 		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(
 				recordReGet.getPersonDailySetting().getOverTimeSheetReq(), workType.getCompanyId(),
 				recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(), workType,
 				siftCode.map(x -> x.v()), recordReGet.getIntegrationOfDaily(), recordReGet.getStatutoryFrameNoList(),
-				declareResult, true, recordReGet.getCompanyCommonSetting().getOvertimeFrameList());
+				declareResult, true, recordReGet.getCompanyCommonSetting().getOvertimeFrameList(),
+				recordReGet.getIntegrationOfWorkTime().map(i -> i.getCommonSetting().getGoOutSet()));
 		// 残業深夜時間の計算
 		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(overTimeSheet,
 				recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(), beforeApplicationTime,
 				recordReGet.getIntegrationOfDaily().getCalAttr(), declareResult, conditionItem, recordReGet, workType,
 				vacationClass, flexCalcMethod, predetermineTimeSetByPersonInfo));
 		// 変形法定内残業時間の計算
-		val irregularTime = overTimeSheet.calcIrregularTime();
+		val irregularTime = overTimeSheet.calcIrregularTime(recordReGet.getIntegrationOfWorkTime().map(i -> i.getCommonSetting().getGoOutSet()));
 		// フレックス時間
 		FlexTime flexTime = new FlexTime(
 				TimeDivergenceWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),
