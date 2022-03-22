@@ -300,7 +300,7 @@ module nts.uk.at.kdp003.a {
 					vm.$ajax('at', API.GetWorkLocationRagionalTime, param).then((data: GetWorkPlaceRegionalTime) => {
 						if (data.workLocationCD != null && data.workLocationCD !== '') {
 							vm.regionalTime(data.regional);
-							vm.worklocationCode = locationCd;
+							vm.worklocationCode = data.workLocationCD;
 
 							if (data.workPlaceId != null && data.workPlaceId != '') {
 								vm.workPlace = [];
@@ -317,7 +317,7 @@ module nts.uk.at.kdp003.a {
 							vm.$ajax('at', API.GetWorkLocationRagionalTime, param).then((data: GetWorkPlaceRegionalTime) => {
 								if (data.workLocationCD != null && data.workLocationCD !== '') {
 									vm.regionalTime(data.regional);
-									vm.worklocationCode = locationCd;
+									vm.worklocationCode = data.workLocationCD;
 									if (data.workPlaceId != null && data.workPlaceId != '') {
 										vm.workPlace = [];
 										vm.workPlace.push(data.workPlaceId);
@@ -346,7 +346,7 @@ module nts.uk.at.kdp003.a {
 					vm.$ajax('at', API.GetWorkLocationRagionalTime, param).done((data: GetWorkPlaceRegionalTime) => {
 						if (data.workLocationCD != null && data.workLocationCD !== '') {
 							vm.regionalTime(data.regional);
-							vm.worklocationCode = locationCd;
+							vm.worklocationCode = data.workLocationCD;
 						}
 						
 						vm.getWorkPlaceAndTimeZone();
