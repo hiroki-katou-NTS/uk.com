@@ -258,6 +258,9 @@ module nts.uk.at.kmr003.b {
                     cellStates.push({ rowId: empId, columnKey: 'employeeCode', state: ['disable-cell'] });
                     cellStates.push({ rowId: empId, columnKey: 'employeeName', state: ['disable-cell', 'limited-label', 'padding-3'] });
                     cellStates.push({ rowId: empId, columnKey: 'time', state: ['disable-cell'] });
+                }
+                
+                if (!param.roleFlag) {
                     cellStates.push({ rowId: empId, columnKey: 'ordered', state: ['mgrid-disable'] });
                 }
                 

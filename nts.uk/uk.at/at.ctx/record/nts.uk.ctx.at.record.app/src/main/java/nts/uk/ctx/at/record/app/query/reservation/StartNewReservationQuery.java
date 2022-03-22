@@ -109,7 +109,8 @@ public class StartNewReservationQuery {
                 listEmpOutput.stream().map(x -> PersonEmpBasicInfoImportDto.fromDomain(x)).collect(Collectors.toList()), 
                 new HashMap<String, BentoReservationWithFlag>(), 
                 stampCards.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, x -> x.getValue().v())), 
-                listErrors);
+                listErrors, 
+                true);
     }
 
 }
