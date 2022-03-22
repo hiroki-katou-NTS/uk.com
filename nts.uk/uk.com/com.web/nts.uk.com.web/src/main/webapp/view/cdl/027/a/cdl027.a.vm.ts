@@ -9,8 +9,8 @@ module nts.uk.com.view.cdl027.a.viewmodel {
     export class ScreenModel {
         items: KnockoutObservableArray<DataCorrectionLog>;
         columnsByDate: Array<any> = [
-            { headerText: getText('CDL027_7'), key: 'targetDate', dataType: 'string', width: '120px' },
             { headerText: getText('CDL027_4'), key: 'targetUser', dataType: 'string', width: '120px' },
+			{ headerText: getText('CDL027_7'), key: 'targetDate', dataType: 'string', width: '120px' },
             { headerText: getText('CDL027_8'), key: 'item', dataType: 'string', width: '120px' },
             { headerText: getText('CDL027_9'), key: 'valueBefore', dataType: 'string', width: '120px' },
             { headerText: getText('CDL027_10'), key: 'arrow', dataType: 'string', width: '20px' },
@@ -20,8 +20,8 @@ module nts.uk.com.view.cdl027.a.viewmodel {
             { headerText: getText('CDL027_14'), key: 'correctionAttr', dataType: 'string', width: '70px' }
         ];
         columnsByIndividual: Array<any> = [
+			{ headerText: getText('CDL027_7'), key: 'targetDate', dataType: 'string', width: '120px' },
             { headerText: getText('CDL027_4'), key: 'targetUser', dataType: 'string', width: '120px' },
-            { headerText: getText('CDL027_7'), key: 'targetDate', dataType: 'string', width: '120px' },
             { headerText: getText('CDL027_8'), key: 'item', dataType: 'string', width: '120px' },
             { headerText: getText('CDL027_9'), key: 'valueBefore', dataType: 'string', width: '120px' },
             { headerText: getText('CDL027_10'), key: 'arrow', dataType: 'string', width: '20px' },
