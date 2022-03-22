@@ -242,16 +242,16 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	protected LeaveComDayOffManaRepository leaveComDayOffManaRepo;
 
 	protected RemainCreateInforByRecordData remainCreateInforByRecordData;
-	
+
 	protected ElapseYearRepository elapseYearRepository;
-	
+
 	private EmpComHisAdapter empComHisAdapter;
-	
+
 	private ClosureStatusManagementRepository closureStatusManagementRepo;
 	private CheckCareService checkCareService;
 
 	private WorkingConditionItemService workingConditionItemService;
-	
+
 	private SysEmploymentHisAdapter sysEmploymentHisAdapter;
 
 	public RequireImp(ComSubstVacationRepository comSubstVacationRepo,
@@ -348,7 +348,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		this.empComHisAdapter = empComHisAdapter;
 		this.closureStatusManagementRepo = closureStatusManagementRepo;
 	}
-	
+
 	RequireImpCache cache = new RequireImpCache();
 
 	@Override
@@ -574,7 +574,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		}
 		return cache.getClosureCache();
 	}
-	
+
 	@Override
 	public List<Closure> closureActive(String companyId, UseClassification useAtr) {
 		if (!cache.getClosurebyUseClassificationMap().containsKey(useAtr)) {
@@ -739,10 +739,8 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		if (!cache.getLengthServiceTblMap().containsKey(yearHolidayCode)) {
 			cache.getLengthServiceTblMap().put(yearHolidayCode,
 					lengthServiceRepo.findByCode(companyId, yearHolidayCode).get());
-			return Optional.of(cache.getLengthServiceTblMap().get(yearHolidayCode));
-		}else {
-			return Optional.empty();
 		}
+		return Optional.of(cache.getLengthServiceTblMap().get(yearHolidayCode));
 	}
 
 	@Override
@@ -754,7 +752,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		}
 		return cache.getGrantHdTblMap().get(key);
 	}
-	
+
 	@Override
 	public List<PayoutSubofHDManagement> getOccDigetByListSid(String sid, DatePeriod date) {
 		return payoutSubofHDManaRepo.getOccDigetByListSid(sid, date);
@@ -888,7 +886,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 			GeneralDate baseDate) {
 		return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
 	}
-	
+
     @Override
     public Optional<WorkInformation> getHolidayWorkScheduleNew(String companyId, String employeeId,
             GeneralDate baseDate, String workTypeCode, WorkingDayCategory workingDayCategory) {
@@ -944,7 +942,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode) {
 		return Optional.ofNullable(this.compensatoryLeaveEmSetting(companyId, employmentCode));
 	}
-	
+
 	@Override
 	public Optional<ElapseYear> elapseYear(String companyId, int specialHolidayCode) {
 		return this.elapseYearRepository.findByCode(new CompanyId(companyId), new SpecialHolidayCode(specialHolidayCode));
@@ -970,12 +968,12 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	public Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode, String grantDateCode) {
 		return this.grantDateTblRepo.findByCode(companyId, specialHolidayCode, grantDateCode);
 	}
-	
+
 	@Override
 	public List<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode) {
 		return this.grantDateTblRepo.findBySphdCd(companyId, specialHolidayCode);
 	}
-	
+
 	@Override
 	public Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId) {
 		return closureStatusManagementRepo.getLatestByEmpId(employeeId);

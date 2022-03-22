@@ -128,6 +128,10 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 			Optional<Integer> simultaneousGrantMDOpt, List<LengthOfService> lengthOfServices, DatePeriod period,
 			boolean isSingleDay, List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList) {
 
+		if(lengthOfServices.isEmpty()) {
+			return;
+		}
+
 		GeneralDate previousDate = null;
 
 		for (LengthOfService lengthServiceTbl : lengthOfServices) {
@@ -214,11 +218,10 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 					previousDate = nextAnnualLeaveGrant.getGrantDate();
 				}
 			}
-		}
 
 			// 処理中の年数を+1して再度ループ
 			calcYears++;
-
+		}
 	}
 
 	/**
