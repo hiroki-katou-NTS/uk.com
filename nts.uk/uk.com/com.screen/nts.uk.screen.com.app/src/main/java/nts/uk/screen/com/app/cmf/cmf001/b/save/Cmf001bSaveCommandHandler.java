@@ -47,7 +47,7 @@ public class Cmf001bSaveCommandHandler extends CommandHandler<Cmf001bSaveCommand
 				externalImportSettingRepo.insert(setting);
 			});
 		} else {
-			val oldSetting = externalImportSettingRepo.get(Optional.empty(), companyId, command.getCode());
+			val oldSetting = externalImportSettingRepo.get(companyId, command.getCode());
 			val setting = settingDto.toDomainAsDomainBase(require, oldSetting);
 			
 			transaction.execute(() -> {
