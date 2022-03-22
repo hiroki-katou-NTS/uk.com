@@ -1,12 +1,14 @@
 package nts.uk.screen.com.app.cmf.cmf001.b.get;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Value;
+import lombok.val;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
@@ -63,22 +65,74 @@ public class ExternalImportSettingDto {
 				domains,
 				items);
 	}
-
-	public ExternalImportSetting toDomain(ImportSettingBaseType baseType) {
+	
+	public ExternalImportSetting toDomainAsCsvBase() {
 		Map<ImportingDomainId, DomainImportSetting> domainSettings = this.domains.stream()
-			.map(d -> new DomainImportSetting(
-				ImportingDomainId.valueOf(d.getDomainId()),
-				ImportingMode.DELETE_RECORD_BEFOREHAND,
-				ExternalImportAssemblyMethod.create(d.getItemNoList())))
-			.collect(Collectors.toMap(DomainImportSetting::getDomainId, d -> d));
+				.map(d -> new DomainImportSetting(
+					ImportingDomainId.valueOf(d.getDomainId()),
+					ImportingMode.DELETE_RECORD_BEFOREHAND,
+					ExternalImportAssemblyMethod.create(d.getItemNoList())))
+				.collect(Collectors.toMap(DomainImportSetting::getDomainId, d -> d));
+			
+			return new ExternalImportSetting(
+					ImportSettingBaseType.CSV_BASE,
+					AppContexts.user().companyId(),
+					new ExternalImportCode(code),
+					new ExternalImportName(name),
+					toCsvFileInfo(),
+					domainSettings);
+	}
+
+	public ExternalImportSetting toDomainAsDomainBase(RequireToDomain require, Optional<ExternalImportSetting> oldSetting) {
+		
+		val settingCode = new ExternalImportCode(code);
 		
 		return new ExternalImportSetting(
-				baseType,
+				ImportSettingBaseType.DOMAIN_BASE,
 				AppContexts.user().companyId(),
-				new ExternalImportCode(code),
+				settingCode,
 				new ExternalImportName(name),
 				toCsvFileInfo(),
-				domainSettings);
+				merge(require, settingCode, domains, oldSetting));
+	}
+	
+	public interface RequireToDomain extends DomainImportSetting.RequireMerge {
+	}
+	
+	private static Map<ImportingDomainId, DomainImportSetting> merge(
+			RequireToDomain require,
+			ExternalImportCode settingCode,
+			List<ImportDomainDto> domains,
+			Optional<ExternalImportSetting> oldSetting) {
+		
+		val results = new HashMap<ImportingDomainId, DomainImportSetting>();
+		
+		for (val domainDto : domains) {
+			val oldDomain = oldSetting.flatMap(s -> s.getDomainSetting(domainDto.getImportingDomainId()));
+			val merged = merge(require, settingCode, domainDto, oldDomain);
+			results.put(merged.getDomainId(), merged);
+		}
+		
+		return results;
+	}
+	
+	private static DomainImportSetting merge(
+			RequireToDomain require,
+			ExternalImportCode settingCode,
+			ImportDomainDto dto,
+			Optional<DomainImportSetting> oldOpt) {
+		
+		if (!oldOpt.isPresent()) {
+			return new DomainImportSetting(
+					dto.getImportingDomainId(),
+					ImportingMode.DELETE_RECORD_BEFOREHAND,
+					ExternalImportAssemblyMethod.create(dto.getItemNoList()));
+		}
+		
+		val old = oldOpt.get();
+		old.merge(require, dto.getItemNoList(), settingCode, dto.getImportingDomainId());
+		
+		return old;
 	}
 
 	public ExternalImportCsvFileInfo toCsvFileInfo() {

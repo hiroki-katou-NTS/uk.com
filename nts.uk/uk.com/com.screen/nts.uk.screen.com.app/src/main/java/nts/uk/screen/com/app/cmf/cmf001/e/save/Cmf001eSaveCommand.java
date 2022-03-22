@@ -11,7 +11,6 @@ import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportName;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
-import nts.uk.ctx.exio.dom.input.setting.ImportSettingBaseType;
 import nts.uk.screen.com.app.cmf.cmf001.b.get.ExternalImportSettingDto;
 
 @Getter
@@ -38,7 +37,7 @@ public class Cmf001eSaveCommand {
 		}
 		
 		if (!oldOpt.isPresent()) {
-			return this.getSetting().toDomain(ImportSettingBaseType.CSV_BASE);
+			return this.getSetting().toDomainAsCsvBase();
 		}
 		
 		

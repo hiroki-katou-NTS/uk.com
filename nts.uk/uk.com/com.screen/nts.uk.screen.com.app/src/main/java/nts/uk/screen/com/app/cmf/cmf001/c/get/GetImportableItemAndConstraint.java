@@ -15,8 +15,8 @@ public class GetImportableItemAndConstraint {
 	
 	@Inject
 	private ImportableItemsRepository itemRepo;
-
 	public ImportableItemDto get(String settingCode, ImportingDomainId domainId, int itemNo) {
+		
 		val item = itemRepo.get(domainId, itemNo).get();
 		
 		return ImportableItemDto.of(item);
