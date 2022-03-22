@@ -12,6 +12,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
  * Enterpriseでは、EMPTYを"0000"として保持しているため
  *
  */
+@SuppressWarnings("serial")
 @StringMaxLength(4)
 @StringCharType(CharType.ALPHA_NUMERIC)
 @ZeroPaddedCode

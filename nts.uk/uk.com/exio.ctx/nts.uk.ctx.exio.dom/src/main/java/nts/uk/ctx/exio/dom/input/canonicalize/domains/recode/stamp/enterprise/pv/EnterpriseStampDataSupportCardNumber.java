@@ -11,6 +11,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * Enterprise仕様のデータ型
  * Enterpriseでは、EMPTYを"      "(半角スペース6桁)として保持しているため
  */
+@SuppressWarnings("serial")
 @StringMaxLength(6)
 @StringCharType(CharType.NUMERIC)
 public class EnterpriseStampDataSupportCardNumber extends StringPrimitiveValue<EnterpriseStampDataSupportCardNumber> {

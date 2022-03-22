@@ -1,5 +1,10 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
@@ -18,10 +23,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.errors.RecordError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
-
-import java.util.*;
-
-import static java.util.stream.Collectors.toList;
 
 public class StampCanonicalization implements DomainCanonicalization {
 

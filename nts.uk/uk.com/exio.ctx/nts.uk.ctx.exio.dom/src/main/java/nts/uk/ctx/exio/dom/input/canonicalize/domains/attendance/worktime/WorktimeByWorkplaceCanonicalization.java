@@ -1,6 +1,10 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains.attendance.worktime;
 
-import lombok.val;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
@@ -12,7 +16,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
-import java.util.*;
 
 /**
  * 職場別就業時間帯の正準化
