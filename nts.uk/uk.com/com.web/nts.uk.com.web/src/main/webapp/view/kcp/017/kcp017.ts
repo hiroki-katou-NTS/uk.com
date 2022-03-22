@@ -67,7 +67,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
         alreadySettingWorkplaceGroups: KnockoutObservableArray<any>;
         selectedIds: KnockoutObservable<any> | KnockoutObservableArray<any>;
         selectedGroupIds: KnockoutObservable<any> | KnockoutObservableArray<any>;
-        restrictionOfReferenceRange: KnockoutObservable<boolean>;
+        restrictionOfReferenceRange: KnockoutObservable<boolean> = ko.observable(true);
 
         kcp011Options: any;
         kcp004Options: any;
