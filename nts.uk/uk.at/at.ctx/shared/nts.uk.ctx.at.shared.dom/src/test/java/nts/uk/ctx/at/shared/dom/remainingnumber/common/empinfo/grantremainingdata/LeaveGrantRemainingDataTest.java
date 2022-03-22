@@ -22,6 +22,11 @@ public class LeaveGrantRemainingDataTest {
 	@Injectable
 	private LeaveRemainingNumber.RequireM3 require;
 	
+	/**
+	 * 残数10日
+	 * 1件目使用数1日　2件目4時間
+	 * 消化できる
+	 */
 	@Test
 	public void test1() {
 		
@@ -65,6 +70,11 @@ public class LeaveGrantRemainingDataTest {
 		
 	}
 	
+	/**
+	 * 1件目残数0日5時間　2件目10日
+	 * 1件目使用数1日　2件目4時間
+	 * 1件目で消化できず、5時間が繰り越されて消化される
+	 */
 	@Test
 	public void test2() {
 		
@@ -107,7 +117,7 @@ public class LeaveGrantRemainingDataTest {
 		assertThat(remainingDatas.get(0).getDetails().getRemainingNumber().getDays()).isEqualTo(expected1.getDetails().getRemainingNumber().getDays());
 		assertThat(remainingDatas.get(0).getDetails().getRemainingNumber().getMinutes()).isEqualTo(expected1.getDetails().getRemainingNumber().getMinutes());
 		
-		LeaveGrantRemainingData expected2 = leaveGrantRemainingData(employeeId, GeneralDate.ymd(2022, 4, 1), 10.0, 0, 1.0,240, 8.0, 540);
+		LeaveGrantRemainingData expected2 = leaveGrantRemainingData(employeeId, GeneralDate.ymd(2022, 4, 1), 10.0, 0, 1.0,240, 9.0, 60);
 		
 		assertThat(remainingDatas.get(1).getDetails().getGrantNumber().getDays()).isEqualTo(expected2.getDetails().getGrantNumber().getDays());
 		assertThat(remainingDatas.get(1).getDetails().getGrantNumber().getMinutes()).isEqualTo(expected2.getDetails().getGrantNumber().getMinutes());
@@ -118,7 +128,11 @@ public class LeaveGrantRemainingDataTest {
 
 	}
 
-	
+	/**
+	 * 1件目残数0日5時間
+	 * 1件目使用数1日　2件目4時間
+	 * 2件とも消化できず、ダミーデータが2件作成される
+	 */
 	@Test
 	public void test3() {
 		
@@ -175,7 +189,11 @@ public class LeaveGrantRemainingDataTest {
 		assertThat(dummyList.get(1).getDetails().getRemainingNumber().getMinutes()).isEqualTo(expectedDummy2.getDetails().getRemainingNumber().getMinutes());
 
 	}
-	
+	/**
+	 * 1件目残数0日5時間　2件目10日
+	 * 1件目4時間　2件目使用数1日
+	 * 2件目が消化できず、ダミーデータが1件目作成される
+	 */
 	@Test
 	public void test4() {
 		
@@ -190,12 +208,6 @@ public class LeaveGrantRemainingDataTest {
 		remainingDatas.add(leaveGrantRemainingData(employeeId,GeneralDate.ymd(2022, 4, 1), 10.0, 0, 0.0,0,0.0, 300));
 		List<LeaveGrantRemainingData> dummyList = new ArrayList<>();
 		
-		new Expectations() {
-			{
-				require.annualPaidLeaveSetting(companyId);
-				result = annualPaidLeaveSetting(companyId);
-			}
-		};
 		
 		for(LeaveUsedNumber usedNumber :usedNumberList){
 			RemNumShiftListWork remNumShiftListWork = new RemNumShiftListWork();

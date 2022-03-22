@@ -74,12 +74,7 @@ public class LeaveRemainingNumberTest {
 		LeaveRemainingNumber remainingNumber = new LeaveRemainingNumber(0.0, 60);
 		LeaveUsedNumber usedNumber = new LeaveUsedNumber(0.0,60);
 		
-		new Expectations() {
-			{
-				require.annualPaidLeaveSetting(companyId);
-				result = annualPaidLeaveSetting(companyId);
-			}
-		};
+
 		
 		val expect = remainingNumber.needStacking(require, companyId, employeeId, baseDate, usedNumber);
 		assertThat(expect).isEqualTo(false);
@@ -156,13 +151,7 @@ public class LeaveRemainingNumberTest {
 		LeaveRemainingNumber remainingNumber = new LeaveRemainingNumber(0.0, 60);
 		LeaveUsedNumber usedNumber = new LeaveUsedNumber(0.0,60);
 		
-		new Expectations() {
-			{
-				require.annualPaidLeaveSetting(companyId);
-				result = annualPaidLeaveSetting(companyId);
-			}
-		};
-		
+
 		val expect = remainingNumber.canDigest(require, companyId, employeeId, baseDate, usedNumber);
 		assertThat(expect).isEqualTo(true);
 	}

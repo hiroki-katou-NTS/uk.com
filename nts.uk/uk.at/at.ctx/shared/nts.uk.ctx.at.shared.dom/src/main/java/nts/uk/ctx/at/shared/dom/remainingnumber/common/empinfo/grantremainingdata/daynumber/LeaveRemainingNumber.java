@@ -335,7 +335,7 @@ public class LeaveRemainingNumber {
 	 */
 	public boolean needStacking(LeaveRemainingNumber.RequireM3 require, String companyId,
 			String employeeId, GeneralDate baseDate, LeaveUsedNumber usedNumber){
-		if(!usedNumber.isUseTime() && canDigesWtithRemainingTime(usedNumber.getMinutes())){
+		if(!usedNumber.isUseTime() || (usedNumber.isUseTime() && canDigesWtithRemainingTime(usedNumber.getMinutes()))){
 			return false;
 		}
 		
@@ -452,9 +452,9 @@ public class LeaveRemainingNumber {
 		if(needStacking(require, companyId, employeeId, baseDate, usedNumber)){
 			LeaveRemainingNumber stackRemaingNumber = calcStack(require, companyId, employeeId, baseDate);
 			remainingNumber =  stackRemaingNumber.digest(usedNumber);
+		}else{
+			remainingNumber = this.digest(usedNumber);
 		}
-		
-		remainingNumber = this.digest(usedNumber);
 		
 		if(remainingNumber.days.v() < 0){
 			return new LeaveRemainingNumber(0, remainingNumber.minutes.map(x->x.v()).orElse(null));
@@ -530,7 +530,7 @@ public class LeaveRemainingNumber {
 	}
 
 	/**
-	 * 	[prv-4] 残時間で消化できるか
+	 * [prv-4] 残時間で消化できるか
 	 * @param usedTime
 	 * @return
 	 */

@@ -224,12 +224,10 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 		return this.details.canDigest(require, companyId, this.employeeId, baseDate, usedNumber);
 	}
 	
-	public void updateDetails(LeaveNumberInfo updateDetails){
-		this.details = updateDetails;
-	}
+
 	
 	/**
-	 * [5] 消化できず残った数を取得
+	 * [3] 消化できず残った数を取得
 	 * @param require
 	 * @param companyId
 	 * @param baseDate
@@ -243,4 +241,11 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 				this.details.getUndigestedNumber(require, companyId, this.employeeId, baseDate, usedNumber));
 	}
 	
+	/**
+	 * [4]明細更新
+	 * @param updateDetails
+	 */
+	public void updateDetails(LeaveNumberInfo updateDetails){
+		this.details = updateDetails;
+	}
 }

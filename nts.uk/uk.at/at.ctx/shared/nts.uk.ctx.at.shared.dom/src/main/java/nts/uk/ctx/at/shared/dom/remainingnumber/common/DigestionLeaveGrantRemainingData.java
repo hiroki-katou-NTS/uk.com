@@ -16,7 +16,15 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
  */
 public class DigestionLeaveGrantRemainingData {
 
-	
+	/**
+	 * [1]消化する
+	 * @param companyId
+	 * @param remNumShiftWork
+	 * @param leaveUsedNumber
+	 * @param baseDate
+	 * @param require
+	 * @return
+	 */
 	public static RemNumShiftListWork digest(String companyId, List<LeaveGrantRemainingData> remNumShiftWork,
 			LeaveUsedNumber leaveUsedNumber, GeneralDate baseDate, LeaveRemainingNumber.RequireM3 require) {
 
@@ -30,7 +38,7 @@ public class DigestionLeaveGrantRemainingData {
 			if(!digestGrantRemainingData.getUsedNumber().isLargerThanZero()){
 				
 				digestGrantRemainingData.getGrantRemainingData().getDetails().getRemainingNumber()
-						.add(getRemainingNumberCarriedForward(companyId, remNumShiftWork, usedNumber,
+						.add(getRemainingNumberCarriedForward(companyId, remNumShiftWork, leaveUsedNumber,
 								baseDate, require));
 
 				remNumShiftList.add(new RemNumShiftWork(digestGrantRemainingData.getGrantRemainingData()));

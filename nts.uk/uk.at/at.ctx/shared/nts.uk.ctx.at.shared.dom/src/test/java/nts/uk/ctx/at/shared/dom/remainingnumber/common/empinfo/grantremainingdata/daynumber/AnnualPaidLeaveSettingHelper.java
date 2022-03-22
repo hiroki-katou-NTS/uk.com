@@ -36,7 +36,7 @@ public class AnnualPaidLeaveSettingHelper {
 					new YearLyOfNumberDays(200.0)),
 			new TimeAnnualSetting(
 					new TimeAnnualMaxDay(ManageDistinct.NO, MaxDayReference.CompanyUniform, new MaxTimeDay(10)),
-					TimeAnnualRoundProcesCla.RoundUpToTheDay,
+					TimeAnnualRoundProcesCla.RoundUpToOneDay,
 					new TimeAnnualLeaveTimeDay(
 							DayTimeAnnualLeave.Company_wide_Uniform, 
 							Optional.of(new LaborContractTime(480)),
