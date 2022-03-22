@@ -57,13 +57,13 @@ export class CmmS45ShrComponentsApp8Component extends Vue {
                 res.data.details.forEach((i) => {
                     if (i.appTimeType < 4) {
                         if (i.appTimeType == 0) {
-                            timeZones[0].startTime = i.timeZones[0].endTime;
+                            timeZones[0].startTime = _.isEmpty(i.timeZones) ? null : i.timeZones[0].endTime;
                         } else if (i.appTimeType == 1) {
-                            timeZones[0].endTime = i.timeZones[0].startTime;
+                            timeZones[0].endTime = _.isEmpty(i.timeZones) ? null : i.timeZones[0].startTime;
                         } else if (i.appTimeType == 2) {
-                            timeZones[1].startTime = i.timeZones[0].endTime;
+                            timeZones[1].startTime = _.isEmpty(i.timeZones) ? null : i.timeZones[0].endTime;
                         } else if (i.appTimeType == 3) {
-                            timeZones[1].endTime = i.timeZones[0].startTime;
+                            timeZones[1].endTime = _.isEmpty(i.timeZones) ? null : i.timeZones[0].startTime;
                         }
                     } else {
                         i.timeZones.forEach((j) => {
