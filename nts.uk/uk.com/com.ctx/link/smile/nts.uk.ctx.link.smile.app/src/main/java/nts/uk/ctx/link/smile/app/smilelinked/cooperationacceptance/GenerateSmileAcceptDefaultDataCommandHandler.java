@@ -89,7 +89,7 @@ public class GenerateSmileAcceptDefaultDataCommandHandler extends CommandHandler
 
         @Override
         public Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode code) {
-            return externalImportSettingRepo.get(Optional.empty(), companyId, code);
+            return externalImportSettingRepo.get(companyId, code);
         }
 
         @Override

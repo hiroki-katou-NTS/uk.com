@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
-import nts.arc.layer.app.file.storage.FileStorage;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
@@ -22,9 +21,6 @@ import nts.uk.shr.com.context.AppContexts;
 public class FindExternalImportSetting {
 	@Inject
 	public ExternalImportSettingRepository externalImportSettingRepo;
-	
-	@Inject
-	private FileStorage fileStorage;
 	
 	public List<ExternalImportSettingListItemDto> findAll() {
 		val settings = externalImportSettingRepo.getAll(AppContexts.user().companyId());
@@ -59,8 +55,7 @@ public class FindExternalImportSetting {
 		
 		@Override
 		public Optional<ExternalImportSetting> getSetting(String companyId, ExternalImportCode settingCode) {
-			val require = new FromCsvBaseSettingToDomainRequireImpl(fileStorage);
-			return externalImportSettingRepo.get(Optional.of(require), companyId, settingCode);
+			return externalImportSettingRepo.get(companyId, settingCode);
 		}
 	}
 }
