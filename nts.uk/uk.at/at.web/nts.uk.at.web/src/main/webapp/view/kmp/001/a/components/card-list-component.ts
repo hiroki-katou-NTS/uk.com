@@ -172,7 +172,7 @@ module nts.uk.at.view.kmp001.a {
 				.then((data: IStampCardEdit) => {
 					const ck = ko.toJS(vm.constraint);
 					vm.stampCardEdit.update(data);
-					if(data.ic_card && !data.isQRCode) {
+					if(data.ic_card && !data.qrcode) {
 						vm.ic_card(true);
 					} else {
 						vm.ic_card(false);
