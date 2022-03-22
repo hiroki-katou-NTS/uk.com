@@ -336,7 +336,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 						dataClone.lstWorkType(res.lstWorkType);
 						dataClone.workType(res.workType);
 						dataClone.workTime(res.workTime);
-	                	dataClone.appDispInfoStartup = res.appDispInfoStartup;
+	                	dataClone.appDispInfoStartup(res.appDispInfoStartup);
 						vm.dataFetch(dataClone);						
 					}
 				}).fail(res => {
