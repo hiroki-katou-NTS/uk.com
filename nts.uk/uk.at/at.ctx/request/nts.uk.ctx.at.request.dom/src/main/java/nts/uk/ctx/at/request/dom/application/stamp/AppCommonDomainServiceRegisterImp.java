@@ -73,9 +73,9 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 							if (t.size() > 0 && t.get(0).getOpAchievementDetail().isPresent()) {
 								return t.get(0).getOpAchievementDetail().get().getAchievementEarly();
 							}
-							return null;
+							return new AchievementEarly(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 						}
-						).orElse(null)
+						).orElse(new AchievementEarly(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()))
 				);
 				appAprrovalRepository.insertApp(application, 
 						appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().isPresent() ? appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().get() : null
