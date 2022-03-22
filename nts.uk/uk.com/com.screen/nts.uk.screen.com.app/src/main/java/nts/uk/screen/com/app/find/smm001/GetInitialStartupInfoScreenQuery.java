@@ -44,7 +44,9 @@ public class GetInitialStartupInfoScreenQuery {
 		
 		// システム区分から受入条件設定（定型）を取得
 		List<ExternalImportSettingDto> externalImportSettings = this.externalImportSettingRepository
-				.getDomainBase(companyId).stream().map(e -> new ExternalImportSettingDto(companyId, e.getCode().v(), e.getName().v()))
+				.getCsvBase(companyId)
+				.stream()
+				.map(e -> new ExternalImportSettingDto(companyId, e.getCode().v(), e.getName().v()))
 				.collect(Collectors.toList());
 		
 		// return SM linkage acceptance setting list, acceptance condition setting list
