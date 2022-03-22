@@ -297,6 +297,8 @@ module nts.uk.com.view.smm001.a {
             settingCode : settingCode
         }
         vm.$ajax('com', API.initDataRegister, initData).done(() => {
+            // 登録内容のリロード
+            vm.getInitialStartupInformation();
             nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_3339", []));
         }).fail((err) => {
             vm.$dialog.error(err);
