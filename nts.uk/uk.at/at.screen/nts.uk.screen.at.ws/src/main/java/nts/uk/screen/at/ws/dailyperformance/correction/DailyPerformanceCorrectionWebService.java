@@ -326,9 +326,10 @@ public class DailyPerformanceCorrectionWebService {
 
 	@POST
 	@Path("execMonthlyAggregateAsync")
-	public AsyncTaskInfo execMonthlyAggregateAsync(DPItemParentDto dataParentDto){
+	public ExecMonthlyAggregateOutput execMonthlyAggregateAsync(DPItemParentDto dataParentDto){
 		setDataParent(dataParentDto);
-		return execMonthlyAggregateHandler.handle(dataParentDto.getDataParent());
+		AsyncTaskInfo asyncTaskInfo = execMonthlyAggregateHandler.handle(dataParentDto.getDataParent());
+		return new ExecMonthlyAggregateOutput(asyncTaskInfo, dataParentDto.getDataSessionDto());
 	}
 
 	private void setDataParent(DPItemParentDto dataParentDto) {

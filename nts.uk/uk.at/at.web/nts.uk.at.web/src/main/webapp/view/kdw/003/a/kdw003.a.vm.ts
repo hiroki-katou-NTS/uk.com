@@ -1578,7 +1578,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 					dataParent : dataParent,
 					dataSessionDto : self.dataSessionDto
 				}
-                service.execMonthlyAggregate(dataParentDto).done((task) => {
+                service.execMonthlyAggregate(dataParentDto).done((data) => {
+					self.dataSessionDto = data.dataSessionDto;
+					let task = data.asyncTaskInfo;
                     $('#miGrid').block({message:"",fadeIn:200,css:{ width: '220px', 'line-height': '32px' }});
                     $('#agree-table').block({message:"",fadeIn:200,css:{ width: '220px', 'line-height': '32px' }});
                     self.observeExecution(task);
