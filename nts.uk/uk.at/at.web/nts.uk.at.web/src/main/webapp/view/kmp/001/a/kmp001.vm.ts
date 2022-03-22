@@ -22,6 +22,7 @@ module nts.uk.at.view.kmp001 {
 		stampCardDigitNumber: number;
 		stampCardEditMethod: number;
 		ic_card: boolean;
+		isQRCode: boolean;
 	}
 	
 	export class StampCardEdit {
