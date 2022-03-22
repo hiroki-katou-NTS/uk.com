@@ -66,6 +66,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekStart;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -216,6 +217,16 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		
 		List<AttendanceTimeOfWeekly> resultWeeks = new ArrayList<>();
 		
+		// 週開始を取得する
+		val workTimeSetOpt = require.weekRuleManagement(companyId);
+		if (!workTimeSetOpt.isPresent()){
+			this.errorInfos.add(new MonthlyAggregationErrorInfo(
+					"005", new ErrMessageContent(TextResource.localize("Msg_1171"))));
+			return AggregateMonthlyValue.of(aggregateTotalWorkingTime, excessOutsideWorkMng, resultWeeks);
+		}
+		
+		WeekStart weekStart = workTimeSetOpt.get().getWeekStart();
+		
 		// 「月次法定内のみ加算」を確認する
 		this.addMonthlyWithinStatutory = false;
 		if (this.holidayAdditionMap.containsKey("flexWork")){
@@ -305,7 +316,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			}
 
 			// 週の集計をする日か確認する
-			if (MonthlyCalculation.isAggregateWeek(procDate, WeekStart.TighteningStartDate, datePeriod, closureOpt)){
+			if (MonthlyCalculation.isAggregateWeek(procDate, weekStart, datePeriod, closureOpt)){
 			
 				// 週の期間を計算
 				DatePeriod weekAggrPeriod = new DatePeriod(procWeekStartDate, procDate);
@@ -325,10 +336,8 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 					// 週の計算
 					val weekCalc = newWeek.getWeeklyCalculation();
 					weekCalc.aggregate(require, companyId, employeeId, yearMonth, weekAggrPeriod,
-							datePeriod, workingSystem, aggregateAtr,
-							null, null, aggregateTotalWorkingTime,
-							WeekStart.TighteningStartDate, new AttendanceTimeMonth(0),
-							attendanceTimeOfDailyMap, companySets);
+							datePeriod, workingSystem, aggregateAtr, null, null, aggregateTotalWorkingTime,
+							weekStart, new AttendanceTimeMonth(0), attendanceTimeOfDailyMap, companySets);
 					resultWeeks.add(newWeek);
 					if (weekCalc.getErrorInfos().size() > 0) this.errorInfos.addAll(weekCalc.getErrorInfos());
 
@@ -2309,6 +2318,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 	
 	public static interface RequireM6 extends AggregateTotalWorkingTime.RequireM1, 
 		ExcessOutsideWorkMng.RequireM1, ExcessOutsideWorkMng.RequireM7, WeeklyCalculation.Require {
-		
+
+		Optional<WeekRuleManagement> weekRuleManagement(String cid);
 	}
 }
