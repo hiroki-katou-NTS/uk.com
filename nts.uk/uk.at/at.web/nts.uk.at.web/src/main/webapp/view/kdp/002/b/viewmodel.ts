@@ -82,13 +82,13 @@ class KDP002BViewModel extends ko.ViewModel {
         const vm = this;
         vm.stampTime(params.stampTime);
         vm.regionalTime = params.regionalTime;
-        
-            vm.time.now = ko.observable(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate());
-            vm.currentDate(moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm')).add(-3, 'days').format("YYYY/MM/DD")
-                + " ～ "
-                + moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm')).format("YYYY/MM/DD"));
-        
-       
+
+        vm.time.now = ko.observable(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate());
+        vm.currentDate(moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm')).add(-3, 'days').format("YYYY/MM/DD")
+            + " ～ "
+            + moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm')).format("YYYY/MM/DD"));
+
+
 
         vm.$window.shared("resultDisplayTime").done(displayTime => {
             vm.resultDisplayTime(displayTime);
@@ -493,16 +493,14 @@ class KDP002BViewModel extends ko.ViewModel {
 
     sendStatusEmojs(param: Emoji) {
         const vm = this;
-        const input = {
+
+        vm.$ajax(kDP002RequestUrl.SEND_EMOJI, {
             sid: vm.infoEmpFromScreenA.employeeId,
             emoji: param.valueOf(),
             date: moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate()
-        }
-
-        vm.$ajax(kDP002RequestUrl.SEND_EMOJI, input)
-            .always(() => {
-                vm.$window.close();
-            });
+        }).always(() => {
+            vm.$window.close();
+        });
     }
 
 }
