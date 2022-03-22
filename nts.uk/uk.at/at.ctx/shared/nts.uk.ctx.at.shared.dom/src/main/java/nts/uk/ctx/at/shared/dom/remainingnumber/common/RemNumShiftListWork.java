@@ -3,8 +3,11 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.common;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
@@ -19,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
  * @author masaaki_jinno
  */
 @Getter
+@AllArgsConstructor
 public class RemNumShiftListWork {
 
 	/**
@@ -182,7 +186,8 @@ public class RemNumShiftListWork {
 		// 付与残数ダミーデータ.残数.時間
 		// ← 付与残数ダミーデータ.使用数.時間＊ー１
 		LeaveRemainingNumber leaveRemainingNumberTmp = new LeaveRemainingNumber();
-		leaveRemainingNumberTmp.setDays(new LeaveRemainingDayNumber(getUnusedNumber().getDays().v() * -1));
+		leaveRemainingNumberTmp.setDays(new LeaveRemainingDayNumber(
+				getUnusedNumber().getDays().v().equals(0.0) ? 0.0 : getUnusedNumber().getDays().v() * -1));
 		if (getUnusedNumber().getMinutes().isPresent()) {
 			leaveRemainingNumberTmp
 					.setMinutes(Optional.of(new LeaveRemainingTime(getUnusedNumber().getMinutes().get().v() * -1)));
@@ -190,5 +195,23 @@ public class RemNumShiftListWork {
 		leaveNumberInfo.setRemainingNumber(leaveRemainingNumberTmp);
 
 		return leaveNumberInfo;
+	}
+	
+	/**
+	 * 休暇付与残数データの明細を更新する
+	 * @param targetRemainingDatas
+	 */
+	public void updateDetails(List<LeaveGrantRemainingData> targetRemainingDatas){
+		targetRemainingDatas.stream().map(x ->{
+			val updateValue = this.remNumShiftWorkListOpt.stream().map(y -> {
+				return y.getRefLeaveGrantRemainingData();
+			}).filter(y -> y.getGrantDate().equals(x.getGrantDate())).findFirst();
+			if(!updateValue.isPresent()){
+				return x;
+			}
+			x.updateDetails(updateValue.get().getDetails());
+			return x;
+		}).collect(Collectors.toList());
+		
 	}
 }

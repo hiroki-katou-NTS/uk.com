@@ -90,21 +90,11 @@ public class LeaveUsedNumber{
 	}
 
 	/**
-	 * 日数＞０または時間＞０のときはTrue,それ以外はfalseを返す
+	 *  [3]使用しているか
 	 * @return
 	 */
 	public boolean isLargerThanZero(){
-		if ( days.v() > 0.0 ){
-			return true;
-		}
-		if ( !minutes.isPresent() ){
-			return false;
-		}
-		if ( minutes.get().v() > 0 ){
-			return true;
-		} else {
-			return false;
-		}
+		return isUseDay() || isUseTime();
 	}
 
 	/**
@@ -196,13 +186,24 @@ public class LeaveUsedNumber{
 	}
 
 	/**
-	 * 日数単位で使用しているかどうかを確認する
+	 * [1] 日数使用しているか
 	 * @return
 	 */
 	public boolean isUseDay() {
 		return this.getDays().greaterThan(0.0);
 	}
 	
+	
+	/**
+	 * 	[2] 時間使用しているか
+	 * @return
+	 */
+	public boolean isUseTime(){
+		if ( !minutes.isPresent() ){
+			return false;
+		}
+		return minutes.get().v() > 0;
+	}
 	
 	public LeaveUsedNumber(TempAnnualLeaveMngs tempAnnualLeaveMng) {
 
@@ -216,6 +217,30 @@ public class LeaveUsedNumber{
 	
 	public boolean isLimitOver(){
 		return this.getLeaveOverLimitNumber().isPresent();
+	}
+	
+	/**
+	 * [4] 積み崩し日数を加算する
+	 * @param days
+	 * @return
+	 */
+	public LeaveUsedNumber addStowageDays(LeaveUsedDayNumber days){
+		return LeaveUsedNumber.of(this.days, this.minutes,
+				Optional.of(new LeaveUsedDayNumber(this.stowageDays.map(x->x.v()).orElse(0.0) + days.v())),
+				leaveOverLimitNumber);
+	}
+	
+	/**
+	 * 減算する
+	 * @param useNumbr
+	 * @return
+	 */
+	public LeaveUsedNumber subtract(LeaveUsedNumber useNumbr){
+		LeaveUsedDayNumber days = new LeaveUsedDayNumber(this.days.v() - useNumbr.days.v());
+		
+		LeaveUsedTime useTime = new LeaveUsedTime(this.minutes.map(x->x.v()).orElse(0) - useNumbr.minutes.map(x->x.v()).orElse(0));
+		
+		return LeaveUsedNumber.of(days, Optional.of(useTime), this.stowageDays, this.leaveOverLimitNumber);
 	}
 
 }

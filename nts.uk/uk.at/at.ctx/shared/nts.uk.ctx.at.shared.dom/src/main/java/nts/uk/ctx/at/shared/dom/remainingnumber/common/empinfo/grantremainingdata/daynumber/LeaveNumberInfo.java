@@ -59,6 +59,20 @@ public class LeaveNumberInfo implements Cloneable {
 	}
 
 	/**
+	 * [C-1] 作成
+	 * @param grantNumber
+	 * @param usedNumber
+	 * @param remainingNumber
+	 */
+	public LeaveNumberInfo(LeaveGrantNumber grantNumber, LeaveUsedNumber usedNumber,LeaveRemainingNumber remainingNumber){
+		this.grantNumber = grantNumber;
+		this.usedNumber = usedNumber;
+		this.remainingNumber = remainingNumber; 
+		this.usedPercent = findLeaveUsedPercent(grantNumber, usedNumber);
+	}
+	
+	
+	/**
 	 * ファクトリー
 	 * 
 	 * @param grantNumber
@@ -173,4 +187,101 @@ public class LeaveNumberInfo implements Cloneable {
 	public boolean isDummyData() {
 		return this.getGrantNumber().isZero();
 	}
+	
+	
+	/**
+	 * [2] 消化しきれるか
+	 * @param usedNumber
+	 * @return
+	 */
+	public boolean canDigest(LeaveRemainingNumber.RequireM3 require, String companyId,
+			String employeeId, GeneralDate baseDate, LeaveUsedNumber usedNumber){
+		return this.remainingNumber.canDigest(require, companyId, employeeId, baseDate, usedNumber);
+	}
+	
+	
+	/**
+	 * 	[3] 消化する
+	 * @param require
+	 * @param companyId
+	 * @param employeeId
+	 * @param baseDate
+	 * @param usedNumber
+	 * @return
+	 */
+	public LeaveNumberInfoAfterDigestion digest(LeaveRemainingNumber.RequireM3 require, String companyId,
+			String employeeId, GeneralDate baseDate, LeaveUsedNumber leaveusedNumber) {		
+		
+		LeaveUsedNumber usedNumber = leaveusedNumber.clone();
+		if (this.remainingNumber.needStacking(require, companyId, employeeId, baseDate, leaveusedNumber)) {
+			usedNumber = this.usedNumber.addStowageDays(new LeaveUsedDayNumber(1.0));
+		}
+
+		LeaveRemainingNumber remainingNumber = this.remainingNumber.digest(require, companyId, employeeId, baseDate,
+				leaveusedNumber);
+
+		LeaveUsedNumber digestedUsedNumber = this.remainingNumber.digestUsedNumber(require, leaveusedNumber,
+				remainingNumber, companyId, employeeId, baseDate);
+
+		digestedUsedNumber.add(this.usedNumber);
+		
+		LeaveUsedNumber notDigestedUsedNumber = findUsedNumberThatCouldNotDigested(require, companyId, employeeId,
+				baseDate, leaveusedNumber, remainingNumber);
+
+		return new LeaveNumberInfoAfterDigestion(new LeaveNumberInfo(this.grantNumber,
+				LeaveUsedNumber.of(digestedUsedNumber.days, digestedUsedNumber.minutes, usedNumber.stowageDays,
+						usedNumber.leaveOverLimitNumber),
+				remainingNumber), notDigestedUsedNumber);
+	}
+	
+	/**
+	 * [4] 消化できなかった使用数を求める
+	 * @param require
+	 * @param companyId
+	 * @param employeeId
+	 * @param baseDate
+	 * @param leaveusedNumber
+	 * @param remainingNumber
+	 * @return
+	 */
+	public LeaveUsedNumber findUsedNumberThatCouldNotDigested(LeaveRemainingNumber.RequireM3 require, String companyId,
+			String employeeId, GeneralDate baseDate, LeaveUsedNumber leaveusedNumber,
+			LeaveRemainingNumber remainingNumber) {
+		return this.remainingNumber.findUsedNumberThatCouldNotDigested(require, leaveusedNumber, remainingNumber,
+				companyId, employeeId, baseDate);
+	}
+	
+	
+	
+	/**
+	 * [5] 消化できず残った数を取得
+	 * @param require
+	 * @param companyId
+	 * @param employeeId
+	 * @param baseDate
+	 * @param usedNumber
+	 * @return
+	 */
+	public LeaveNumberInfo getUndigestedNumber(LeaveRemainingNumber.RequireM3 require, String companyId,
+			String employeeId, GeneralDate baseDate, LeaveUsedNumber usedNumber){
+		
+		LeaveRemainingNumber remainingNumber = this.remainingNumber.getUndigestedNumber(require, companyId, employeeId, baseDate,
+				usedNumber);
+		
+		return new LeaveNumberInfo(this.grantNumber, this.usedNumber, remainingNumber,this.usedPercent);
+	}
+	
+	/**
+	 * [prv-1] 使用率を求める
+	 * @param grantNumber
+	 * @param usedNumber
+	 * @return
+	 */
+	private LeaveUsedPercent findLeaveUsedPercent(LeaveGrantNumber grantNumber, LeaveUsedNumber usedNumber){
+		if(grantNumber.days.v().equals(0.0)){
+			return new LeaveUsedPercent(new BigDecimal(0));
+		}
+		return new LeaveUsedPercent(new BigDecimal(new DecimalFormat("#.#").format((usedNumber.days.v() / grantNumber.days.v())*100.0)));
+	}
+
 }
