@@ -25,6 +25,7 @@ public class SmileCooperationAcceptanceSetting extends AggregateRoot {
 	/**
 	 * Name: Smile連携受入区分 Type: Smile連携受入区分
 	 */
+	@Setter
 	private SmileCooperationAcceptanceClassification cooperationAcceptanceClassification;
 
 	/**

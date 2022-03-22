@@ -115,6 +115,7 @@ public enum SmileCooperationAcceptanceItem {
 		}
 
 		smileSetting.setCooperationAcceptanceConditions(Optional.of(settingCode));
+		smileSetting.setCooperationAcceptanceClassification(SmileCooperationAcceptanceClassification.DO);
 
 		return AtomTask.of(() -> {
 			require.save(smileSetting);
