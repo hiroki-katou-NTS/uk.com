@@ -83,7 +83,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				}
 			}
 			let paramKAF000 = {
-				empLst: vm.params?vm.params.employeeIds:[], 
+				empLst: vm.params?vm.params.employeeIDs:[], 
 				dateLst: paramDate?[paramDate]:[], 
 				appType: vm.appType(),
 				screenCode
