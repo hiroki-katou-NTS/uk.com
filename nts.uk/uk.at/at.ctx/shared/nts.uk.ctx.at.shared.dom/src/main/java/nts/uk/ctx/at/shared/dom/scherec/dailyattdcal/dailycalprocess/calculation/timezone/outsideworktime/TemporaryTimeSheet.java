@@ -29,6 +29,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSheetRoundingAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.service.ActualWorkTimeSheetListService;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
@@ -48,20 +49,20 @@ public class TemporaryTimeSheet {
 
 	/** 臨時枠時間帯 */
 	private List<TemporaryFrameTimeSheet> frameTimeSheets;
-	/** 臨時回数 */
-	private TemporaryTimes temporaryTimes;
+	/** 振替前臨時枠時間帯 */
+	private List<TemporaryFrameTimeSheet> beforeTransTimeSheets;
 	
 	/**
 	 * Constractor
 	 * @param frameTimeSheets 臨時枠時間帯List
-	 * @param temporaryTimes 臨時回数
+	 * @param beforeTransTimeSheets 振替前臨時枠時間帯List
 	 */
 	private TemporaryTimeSheet(
 			List<TemporaryFrameTimeSheet> frameTimeSheets,
-			TemporaryTimes temporaryTimes) {
+			List<TemporaryFrameTimeSheet> beforeTransTimeSheets) {
 		
 		this.frameTimeSheets = frameTimeSheets;
-		this.temporaryTimes = temporaryTimes;
+		this.beforeTransTimeSheets = beforeTransTimeSheets;
 	}
 	
 	/**
@@ -92,15 +93,10 @@ public class TemporaryTimeSheet {
 		List<TemporaryFrameTimeSheet> temporaryFrameList = TemporaryTimeSheet.createTemporaryFrameTimeSheet(
 				companySet, personDailySet, integrationOfWorkTime, integrationOfDaily,
 				workType, oneDayOfRange, correctedTempTimeLeavingList);
-		// 臨時時間帯を仮作成する
-		TemporaryTimeSheet interimTimeSheet = new TemporaryTimeSheet(temporaryFrameList, new TemporaryTimes(0));
-		// 臨時枠時間の計算
-		List<TemporaryFrameTimeOfDaily> frameTimeList = interimTimeSheet.calcTemporaryFrameTime();
 		// 臨時時間帯を作成する
 		return Optional.of(new TemporaryTimeSheet(
-				interimTimeSheet.frameTimeSheets,
-				new TemporaryTimes((int)frameTimeList.stream()
-						.filter(c -> c.getTemporaryTime().valueAsMinutes() > 0).count())));
+				new ArrayList<>(temporaryFrameList),
+				new ArrayList<>(temporaryFrameList)));
 	}
 	
 	/**
@@ -156,6 +152,20 @@ public class TemporaryTimeSheet {
 				companySet,
 				personDailySet);
 		
+		// 時間帯リストから休憩を削除する
+		DeductionTimeSheet deductExceptedBreak = new DeductionTimeSheet(
+				deductionTimeSheet.getForDeductionTimeZoneList().stream()
+					.filter(c -> !(c.getDeductionAtr().isBreak()) &&
+							c.getBreakAtr().isPresent() && c.getBreakAtr().get().isBreak())
+					.collect(Collectors.toList()),
+				deductionTimeSheet.getForRecordTimeZoneList().stream()
+					.filter(c -> !(c.getDeductionAtr().isBreak()) &&
+							c.getBreakAtr().isPresent() && c.getBreakAtr().get().isBreak())
+					.collect(Collectors.toList()),
+				deductionTimeSheet.getBreakTimeOfDailyList(),
+				deductionTimeSheet.getDailyGoOutSheet(),
+				deductionTimeSheet.getShortTimeSheets());
+		
 		List<TemporaryFrameTimeSheet> result = new ArrayList<>();
 		for (TimeLeavingWork timeLeavingWork : correctedTempTimeLeavingList) {
 			// 枠ごとの作成処理
@@ -165,7 +175,7 @@ public class TemporaryTimeSheet {
 					integrationOfWorkTime,
 					integrationOfDaily,
 					timeLeavingWork,
-					deductionTimeSheet);
+					deductExceptedBreak);
 			if (temporaryFrameTimeSheet.isPresent()) result.add(temporaryFrameTimeSheet.get());
 		}
 		// 臨時枠時間帯を返す
@@ -204,40 +214,21 @@ public class TemporaryTimeSheet {
 			List<BPTimeItemSetting> bpTimeItemSets,
 			CalAttrOfDailyAttd calcAtrOfDaily) {
 		
-		Map<Integer, BonusPayTime> temporaryBonusPayMap = new HashMap<>();
-		
 		// 臨時枠時間帯の取得
+		List<BonusPayTime> bonusPayTimeList = new ArrayList<>();
 		for (TemporaryFrameTimeSheet frameTimeSheet : this.frameTimeSheets) {
 			// 加給時間の計算
-			List<BonusPayTime> bonusPayList = new ArrayList<>();
 			if (!isSpec) {
-				bonusPayList.addAll(frameTimeSheet.calcBonusPay(
+				bonusPayTimeList.addAll(frameTimeSheet.calcBonusPay(
 						ActualWorkTimeSheetAtr.OverTimeWork, bpTimeItemSets, calcAtrOfDaily));
 			}
 			else {
-				bonusPayList.addAll(frameTimeSheet.calcSpacifiedBonusPay(
+				bonusPayTimeList.addAll(frameTimeSheet.calcSpacifiedBonusPay(
 						ActualWorkTimeSheetAtr.OverTimeWork, bpTimeItemSets, calcAtrOfDaily));
 			}
-			for (BonusPayTime bonusPay : bonusPayList) {
-				int itemNo = bonusPay.getBonusPayTimeItemNo();
-				if (temporaryBonusPayMap.containsKey(itemNo)) {
-					BonusPayTime source = temporaryBonusPayMap.get(itemNo);
-					BonusPayTime sum = new BonusPayTime(
-							itemNo,
-							source.getBonusPayTime().addMinutes(bonusPay.getBonusPayTime().valueAsMinutes()),
-							source.getWithinBonusPay().addMinutes(
-									bonusPay.getWithinBonusPay().getTime(), bonusPay.getWithinBonusPay().getCalcTime()),
-							source.getExcessBonusPayTime().addMinutes(
-									bonusPay.getExcessBonusPayTime().getTime(), bonusPay.getExcessBonusPayTime().getCalcTime()));
-					temporaryBonusPayMap.replace(itemNo, sum);
-				}
-				else {
-					temporaryBonusPayMap.put(bonusPay.getBonusPayTimeItemNo(), bonusPay);
-				}
-			}
 		}
-		// 臨時加給時間を返す
-		return temporaryBonusPayMap.values().stream().collect(Collectors.toList());
+		// 加給時間Listの累計　～　臨時加給時間を返す
+		return BonusPayTime.sumBonusPayTimeList(bonusPayTimeList);
 	}
 	
 	/**
@@ -246,8 +237,11 @@ public class TemporaryTimeSheet {
 	 */
 	public TemporaryTimes calcTemporaryTimes() {
 		
+		// 臨時枠時間の計算
+		List<TemporaryFrameTimeOfDaily> frameTimeList = this.calcTemporaryFrameTime(this.beforeTransTimeSheets);
 		// 臨時回数を返す
-		return this.temporaryTimes;
+		return new TemporaryTimes(
+				(int)frameTimeList.stream().filter(c -> c.getTemporaryTime().valueAsMinutes() > 0).count());
 	}
 	
 	/**
@@ -257,7 +251,7 @@ public class TemporaryTimeSheet {
 	public AttendanceTime calcTemporaryTime() {
 	
 		// 臨時枠時間の計算
-		List<TemporaryFrameTimeOfDaily> frameTimeList = this.calcTemporaryFrameTime();
+		List<TemporaryFrameTimeOfDaily> frameTimeList = this.calcTemporaryFrameTime(this.frameTimeSheets);
 		// 臨時時間を合計する
 		int temporaryMinutes = frameTimeList.stream().mapToInt(c -> c.getTemporaryTime().valueAsMinutes()).sum();
 		// 臨時時間を返す
@@ -266,14 +260,16 @@ public class TemporaryTimeSheet {
 	
 	/**
 	 * 臨時枠時間の計算
+	 * @param frameTimeSheetList 臨時枠時間帯List
 	 * @return 臨時枠時間List
 	 */
-	public List<TemporaryFrameTimeOfDaily> calcTemporaryFrameTime() {
+	public List<TemporaryFrameTimeOfDaily> calcTemporaryFrameTime(
+			List<TemporaryFrameTimeSheet> frameTimeSheetList) {
 		
 		List<TemporaryFrameTimeOfDaily> temporaryFrameTimeList = new ArrayList<>();
 		
 		// 臨時枠時間帯を確認
-		for (TemporaryFrameTimeSheet frameTimeSheet : this.frameTimeSheets) {
+		for (TemporaryFrameTimeSheet frameTimeSheet : frameTimeSheetList) {
 			// 時間の計算
 			AttendanceTime temporaryTime = frameTimeSheet.calcTotalTime();
 			// 深夜時間の計算
@@ -288,13 +284,51 @@ public class TemporaryTimeSheet {
 	}
 	
 	/**
+	 * 臨時枠時間の取得
+	 * @return 臨時枠時間List
+	 */
+	public List<TemporaryFrameTimeOfDaily> getTemporaryFrameTime() {
+		
+		// 臨時枠時間の計算（振替後）
+		List<TemporaryFrameTimeOfDaily> afterTransList = this.calcTemporaryFrameTime(this.frameTimeSheets);
+		// 臨時枠時間の計算（振替前）
+		List<TemporaryFrameTimeOfDaily> beforeTransList = this.calcTemporaryFrameTime(this.beforeTransTimeSheets);
+		// 振替前と振替後のリストをマージする
+		Map<Integer, TemporaryFrameTimeOfDaily> resultMap = new HashMap<>();
+		for (TemporaryFrameTimeOfDaily afterTrans : afterTransList) {
+			resultMap.putIfAbsent(afterTrans.getWorkNo().v(),
+					new TemporaryFrameTimeOfDaily(
+							afterTrans.getWorkNo(),
+							afterTrans.getTemporaryTime(),
+							AttendanceTime.ZERO));
+		}
+		for (TemporaryFrameTimeOfDaily beforeTrans : beforeTransList) {
+			resultMap.merge(beforeTrans.getWorkNo().v(),
+					new TemporaryFrameTimeOfDaily(
+							beforeTrans.getWorkNo(),
+							AttendanceTime.ZERO,
+							beforeTrans.getTemporaryLateNightTime()),
+					(oldValue, newValue) -> {
+						return new TemporaryFrameTimeOfDaily(
+								oldValue.getWorkNo(),
+								oldValue.getTemporaryTime(),
+								beforeTrans.getTemporaryLateNightTime());
+					});
+		}
+		// マージ結果を返す
+		return resultMap.values().stream()
+				.sorted((a, b) -> a.getWorkNo().compareTo(b.getWorkNo()))
+				.collect(Collectors.toList());
+	}
+	
+	/**
 	 * 臨時深夜時間の計算
 	 * @return 臨時深夜時間
 	 */
 	public AttendanceTime calcTemporaryMidnightTime() {
 		
 		// 臨時枠時間の計算
-		List<TemporaryFrameTimeOfDaily> frameTimeList = this.calcTemporaryFrameTime();
+		List<TemporaryFrameTimeOfDaily> frameTimeList = this.calcTemporaryFrameTime(this.beforeTransTimeSheets);
 		// 臨時深夜時間を合計する
 		int midnightMinutes = frameTimeList.stream().mapToInt(c -> c.getTemporaryLateNightTime().valueAsMinutes()).sum();
 		// 臨時深夜時間を返す
@@ -346,7 +380,7 @@ public class TemporaryTimeSheet {
 		WorkTimezoneExtraordTimeSet extraordTimeSet = integrationOfWorkTime.getCommonSetting().getExtraordTimeSet();
 		if (extraordTimeSet.getCalculateMethod() == ExtraordTimeCalculateMethod.OVERTIME_RESTTIME_RECORD) {
 			// 臨時枠時間帯を空にして返す
-			return Optional.of(new TemporaryTimeSheet(new ArrayList<>(), myclass.get().getTemporaryTimes()));
+			return Optional.of(new TemporaryTimeSheet(new ArrayList<>(), myclass.get().getBeforeTransTimeSheets()));
 		}
 		// 臨時時間帯をそのまま返す
 		return myclass;

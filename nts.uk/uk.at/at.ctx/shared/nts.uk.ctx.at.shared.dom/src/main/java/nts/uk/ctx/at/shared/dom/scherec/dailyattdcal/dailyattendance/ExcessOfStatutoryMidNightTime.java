@@ -9,7 +9,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.Time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.OutsideWorkTimeSheet;
 
 /**
  * 法定外深夜時間
@@ -54,15 +53,6 @@ public class ExcessOfStatutoryMidNightTime {
 		if(holidayDaily.isPresent() && holidayDaily.get().getHolidayMidNightWork().isPresent())
 			holidayTime = holidayDaily.get().getHolidayMidNightWork().get().calcTotalTime();
 		TimeDivergenceWithCalculation totalTime = overTime.addMinutes(holidayTime.getTime(), holidayTime.getCalcTime());
-		// 臨時深夜時間の計算
-		if (recordReGet.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().isPresent()){
-			OutsideWorkTimeSheet outsideWorkTimeSheet = recordReGet.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get();
-			if (outsideWorkTimeSheet.getTemporaryTimeSheet().isPresent()){
-				AttendanceTime temporaryMidnightTime = outsideWorkTimeSheet.getTemporaryTimeSheet().get()
-						.calcTemporaryMidnightTime();
-				totalTime = totalTime.addMinutes(temporaryMidnightTime, temporaryMidnightTime);
-			}
-		}
 		// 法定外深夜時間を返す
 		return new ExcessOfStatutoryMidNightTime(totalTime, new AttendanceTime(0));
 	}

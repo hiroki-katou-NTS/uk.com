@@ -18,7 +18,6 @@ import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.Attendance
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.enu.DailyDomainGroup;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.enu.MonthlyDomainGroup;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 
 public class AttendanceItemIdContainer implements ItemConst {
 
@@ -200,7 +199,6 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(48, join(DAILY_ATTENDACE_LEAVE_NAME, TIME_ZONE, LEAVE, ACTUAL, joinNS(PLACE, NUMBER_2)));
 		temp.put(49, join(DAILY_ATTENDACE_LEAVE_NAME, TIME_ZONE, LEAVE, ACTUAL, joinNS(CLOCK, NUMBER_2)));
 
-		temp.put(616, join(DAILY_TEMPORARY_TIME_NAME, COUNT));
 		temp.put(50, join(DAILY_TEMPORARY_TIME_NAME, TIME_ZONE, ATTENDANCE, STAMP, joinNS(PLACE, NUMBER_1)));
 		temp.put(51, join(DAILY_TEMPORARY_TIME_NAME, TIME_ZONE, ATTENDANCE, STAMP, joinNS(CLOCK, NUMBER_1)));
 		temp.put(52, join(DAILY_TEMPORARY_TIME_NAME, TIME_ZONE, LEAVE, STAMP, joinNS(PLACE, NUMBER_1)));
@@ -668,6 +666,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(590, join(totalLabol, SHORT_WORK, DEDUCTION, EXCESS_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_CARE)));
 		temp.put(591, join(totalLabol, SHORT_WORK, joinNS(COUNT, DEFAULT_ENUM_SEPERATOR, E_CARE)));
 		String excess = join(totalLabol, EXCESS_STATUTORY);
+		temp.put(616, join(excess, TEMPORARY, COUNT));
 		temp.put(617, join(excess, TEMPORARY, FRAMES, joinNS(TIME, NUMBER_1)));
 		temp.put(618, join(excess, TEMPORARY, FRAMES, joinNS(LATE_NIGHT, NUMBER_1)));
 		temp.put(619, join(excess, TEMPORARY, FRAMES, joinNS(TIME, NUMBER_2)));

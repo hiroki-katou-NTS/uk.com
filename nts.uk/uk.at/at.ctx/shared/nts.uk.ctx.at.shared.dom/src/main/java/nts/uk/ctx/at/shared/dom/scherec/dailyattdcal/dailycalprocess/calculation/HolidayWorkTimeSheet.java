@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BPTimeIte
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTimeSheet;
@@ -25,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.Bon
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
@@ -579,7 +579,7 @@ public class HolidayWorkTimeSheet{
 			bonusPayList.addAll(timeFrame.calcBonusPay(ActualWorkTimeSheetAtr.HolidayWork, bpTimeItemSets, calcAtrOfDaily));
 		}
 		//同じNo同士はここで加算し、Listのサイズを減らす
-		return sumBonusPayTime(bonusPayList);
+		return BonusPayTime.sumBonusPayTimeList(bonusPayList);
 	}
 	
 	/**
@@ -595,42 +595,8 @@ public class HolidayWorkTimeSheet{
 			bonusPayList.addAll(timeFrame.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.HolidayWork, bpTimeItemSets, calcAtrOfDaily));
 		}
 		//同じNo同士はここで加算し、Listのサイズを減らす
-		return sumBonusPayTime(bonusPayList);
+		return BonusPayTime.sumBonusPayTimeList(bonusPayList);
 	}
-	
-	/**
-	 * 同じ加給時間Ｎｏを持つものを１つにまとめる
-	 * @param bonusPayTime　加給時間
-	 * @return　Noでユニークにした加給時間List
-	 */
-	private List<BonusPayTime> sumBonusPayTime(List<BonusPayTime> bonusPayTime){
-		List<BonusPayTime> returnList = new ArrayList<>();
-		List<BonusPayTime> refineList = new ArrayList<>();
-		for(int bonusPayNo = 1 ; bonusPayNo <= 10 ; bonusPayNo++) {
-			refineList = getByBonusPayNo(bonusPayTime, bonusPayNo);
-			if(refineList.size()>0) {
-				returnList.add(new BonusPayTime(bonusPayNo,
-												new AttendanceTime(refineList.stream().map(tc -> tc.getBonusPayTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
-												TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(refineList.stream().map(tc -> tc.getWithinBonusPay().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
-																							  new AttendanceTime(refineList.stream().map(tc -> tc.getWithinBonusPay().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)))),
-												TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(refineList.stream().map(tc -> tc.getExcessBonusPayTime().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
-																							  new AttendanceTime(refineList.stream().map(tc -> tc.getExcessBonusPayTime().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))))
-												));
-			}
-		}
-		return returnList;
-	}
-	
-	/**
-	 * 受け取った加給時間Ｎｏを持つ加給時間を取得
-	 * @param bonusPayTime 加給時間
-	 * @param bonusPayNo　加給時間Ｎｏ
-	 * @return　加給時間リスト
-	 */
-	private List<BonusPayTime> getByBonusPayNo(List<BonusPayTime> bonusPayTime,int bonusPayNo){
-		return bonusPayTime.stream().filter(tc -> tc.getBonusPayTimeItemNo() == bonusPayNo).collect(Collectors.toList());
-	}
-
 	
 	public AttendanceTime desictionUseUppserTime(AutoCalSetting autoCalcSet, HolidayWorkFrameTime loopHolidayTimeFrame,AttendanceTime attendanceTime) {
 		switch(autoCalcSet.getUpLimitORtSet()) {
@@ -1053,7 +1019,7 @@ public class HolidayWorkTimeSheet{
 					temporaryFrame.getDeductionTimeSheet(),
 					temporaryFrame.getBonusPayTimeSheet(),
 					temporaryFrame.getSpecBonusPayTimesheet(),
-					temporaryFrame.getMidNightTimeSheet(),
+					MidNightTimeSheetForCalcList.createEmpty(),
 					new HolidayWorkFrameTime(
 							new HolidayWorkFrameNo(frameNo.v()),
 							Finally.of(TimeDivergenceWithCalculation.emptyTime()),

@@ -309,32 +309,36 @@ public class CalculationRangeOfOneDay {
 	 * @param calcAtrOfDaily 日別実績の計算区分
 	 * @return 加給時間(List)
 	 */
-	public List<BonusPayTime> calcBonusPayTime(List<BPTimeItemSetting> bpTimeItemSets, CalAttrOfDailyAttd calcAtrOfDaily) {
-		List<BonusPayTime> overTimeBonusPay = new ArrayList<>();
-		List<BonusPayTime> holidayWorkBonusPay = new ArrayList<>();
-		List<BonusPayTime> withinBonusPay = new ArrayList<>();
-		List<BonusPayTime> temporaryBonusPay = new ArrayList<>();
+	public List<BonusPayTime> calcBonusPayTime(
+			List<BPTimeItemSetting> bpTimeItemSets,
+			CalAttrOfDailyAttd calcAtrOfDaily) {
 		
-		if(this.withinWorkingTimeSheet != null && withinWorkingTimeSheet.isPresent())
-			withinBonusPay = withinWorkingTimeSheet.get().calcBonusPayTimeInWithinWorkTime(bpTimeItemSets, calcAtrOfDaily);
+		List<BonusPayTime> bonusPayTimeList = new ArrayList<>();
 		
-		if(this.outsideWorkTimeSheet != null && this.outsideWorkTimeSheet.isPresent())
-		{
+		if (this.withinWorkingTimeSheet != null && withinWorkingTimeSheet.isPresent()) {
+			// 就業時間内時間帯の加給時間を計算
+			bonusPayTimeList.addAll(this.withinWorkingTimeSheet.get()
+					.calcBonusPayTimeInWithinWorkTime(bpTimeItemSets, calcAtrOfDaily));
+		}
+		if (this.outsideWorkTimeSheet != null && this.outsideWorkTimeSheet.isPresent()) {
 			// 残業時間帯の加給時間を計算
-			if(this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
-				overTimeBonusPay = this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().calcBonusPayTimeInOverWorkTime(bpTimeItemSets, calcAtrOfDaily);
+			if (this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
+				bonusPayTimeList.addAll(this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().get()
+						.calcBonusPayTimeInOverWorkTime(bpTimeItemSets, calcAtrOfDaily));
 			}
 			// 休日出勤時間帯の加給時間を計算
-			if(this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
-				holidayWorkBonusPay = this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().calcBonusPayTimeInHolidayWorkTime(bpTimeItemSets, calcAtrOfDaily);
+			if (this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
+				bonusPayTimeList.addAll(this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get()
+						.calcBonusPayTimeInHolidayWorkTime(bpTimeItemSets, calcAtrOfDaily));
 			}
 			// 臨時加給時間の計算
-			if (this.outsideWorkTimeSheet.get().getTemporaryTimeSheet().isPresent()){
-				temporaryBonusPay = this.outsideWorkTimeSheet.get().getTemporaryTimeSheet().get().calcTemporaryBonusPayTime(
-						false, bpTimeItemSets, calcAtrOfDaily);
+			if (this.outsideWorkTimeSheet.get().getTemporaryTimeSheet().isPresent()) {
+				bonusPayTimeList.addAll(this.outsideWorkTimeSheet.get().getTemporaryTimeSheet().get()
+						.calcTemporaryBonusPayTime(false, bpTimeItemSets, calcAtrOfDaily));
 			}
 		}
-		return calcBonusPayTime(withinBonusPay, overTimeBonusPay, holidayWorkBonusPay, temporaryBonusPay);
+		// 加給時間Listの累計　～　加給時間Listを返す
+		return BonusPayTime.sumBonusPayTimeList(bonusPayTimeList);
 	}
 	
 	/**
@@ -344,111 +348,36 @@ public class CalculationRangeOfOneDay {
 	 * @param calcAtrOfDaily 日別実績の計算区分
 	 * @return 特定加給時間(List)
 	 */
-	public List<BonusPayTime> calcSpecBonusPayTime(List<BPTimeItemSetting> bpTimeItemSets, CalAttrOfDailyAttd calcAtrOfDaily){
-		List<BonusPayTime> overTimeBonusPay = new ArrayList<>();
-		List<BonusPayTime> holidayWorkBonusPay = new ArrayList<>();
-		List<BonusPayTime> withinBonusPay = new ArrayList<>();
-		List<BonusPayTime> temporaryBonusPay = new ArrayList<>();
+	public List<BonusPayTime> calcSpecBonusPayTime(
+			List<BPTimeItemSetting> bpTimeItemSets,
+			CalAttrOfDailyAttd calcAtrOfDaily) {
 		
-		if(withinWorkingTimeSheet.isPresent())
-			 withinBonusPay = withinWorkingTimeSheet.get().calcSpecifiedBonusPayTimeInWithinWorkTime(bpTimeItemSets, calcAtrOfDaily);
-
-		if(outsideWorkTimeSheet.isPresent())
-		{
+		List<BonusPayTime> bonusPayTimeList = new ArrayList<>();
+		
+		if (withinWorkingTimeSheet.isPresent()) {
+			// 就業時間内時間帯の加給時間を計算
+			 bonusPayTimeList.addAll(this.withinWorkingTimeSheet.get()
+					 .calcSpecifiedBonusPayTimeInWithinWorkTime(bpTimeItemSets, calcAtrOfDaily));
+		}
+		if (outsideWorkTimeSheet.isPresent()) {
 			// 残業時間帯の加給時間を計算
-			if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
-				overTimeBonusPay = this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().calcSpecBonusPayTimeInOverWorkTime(bpTimeItemSets, calcAtrOfDaily);
+			if (outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
+				bonusPayTimeList.addAll(this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().get()
+						.calcSpecBonusPayTimeInOverWorkTime(bpTimeItemSets, calcAtrOfDaily));
 			}
 			// 休日出勤時間帯の加給時間を計算
-			if(outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
-				holidayWorkBonusPay = this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().calcSpecBonusPayTimeInHolidayWorkTime(bpTimeItemSets, calcAtrOfDaily);
+			if (outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
+				bonusPayTimeList.addAll(this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get()
+						.calcSpecBonusPayTimeInHolidayWorkTime(bpTimeItemSets, calcAtrOfDaily));
 			}
 			// 臨時加給時間の計算
-			if (this.outsideWorkTimeSheet.get().getTemporaryTimeSheet().isPresent()){
-				temporaryBonusPay = this.outsideWorkTimeSheet.get().getTemporaryTimeSheet().get().calcTemporaryBonusPayTime(
-						true, bpTimeItemSets, calcAtrOfDaily);
+			if (this.outsideWorkTimeSheet.get().getTemporaryTimeSheet().isPresent()) {
+				bonusPayTimeList.addAll(this.outsideWorkTimeSheet.get().getTemporaryTimeSheet().get()
+						.calcTemporaryBonusPayTime(true, bpTimeItemSets, calcAtrOfDaily));
 			}
 		}
-		return calcBonusPayTime(withinBonusPay, overTimeBonusPay, holidayWorkBonusPay, temporaryBonusPay);
-	}
-	
-	/**
-	 * 加給時間を合計する
-	 * @param withinBonusPay 就業時間内加給
-	 * @param overTimeBonusPay 残業内加給
-	 * @param holidayWorkBonusPay 休出内加給
-	 * @param temporaryBonusPay 臨時内加給
-	 * @return　合計後の加給時間（加給項目Noでユニーク）
-	 */
-	private List<BonusPayTime> calcBonusPayTime(
-			List<BonusPayTime> withinBonusPay,
-			List<BonusPayTime> overTimeBonusPay,
-			List<BonusPayTime> holidayWorkBonusPay,
-			List<BonusPayTime> temporaryBonusPay){
-		
-		List<BonusPayTime> returnList = new ArrayList<>();
-		
-		List<BonusPayTime> excessBonusPay = new ArrayList<>(overTimeBonusPay);
-		excessBonusPay.addAll(holidayWorkBonusPay);
-		excessBonusPay.addAll(temporaryBonusPay);
-		
-		for(int bonusPayNo = 1 ; bonusPayNo <= 10 ; bonusPayNo++) {
-			returnList.add(addWithinAndExcessBonusTime(
-					sumBonusPayTime(getByBonusPayNo(withinBonusPay,bonusPayNo),bonusPayNo),
-					sumBonusPayTime(getByBonusPayNo(excessBonusPay,bonusPayNo),bonusPayNo),
-					bonusPayNo));
-		}
-		return returnList;
-	}
-	
-	/**
-	 * 受け取った2つの加給時間を合計する
-	 * @param within 就業時間内
-	 * @param excess 就業時間外
-	 * @param bonusPayNo 加給項目No
-	 * @return 合計した加給時間
-	 */
-	private BonusPayTime addWithinAndExcessBonusTime(BonusPayTime within,BonusPayTime excess,int bonusPayNo) {
-		return new BonusPayTime(
-				bonusPayNo,
-				within.getBonusPayTime().addMinutes(
-						excess.getBonusPayTime().valueAsMinutes()),
-				within.getWithinBonusPay().addMinutes(
-						excess.getWithinBonusPay().getTime(),
-						excess.getWithinBonusPay().getCalcTime()),
-				within.getExcessBonusPayTime().addMinutes(
-						excess.getExcessBonusPayTime().getTime(),
-						excess.getExcessBonusPayTime().getCalcTime()));
-	}
-	
-	/**
-	 * 加給時間Listを累計する
-	 * @param bonusPayList 加給時間List
-	 * @param bonusPayNo 加給項目No
-	 * @return 加給時間
-	 */
-	private BonusPayTime sumBonusPayTime(List<BonusPayTime> bonusPayList, int bonusPayNo) {
-		AttendanceTime bonusPayTime =  new AttendanceTime(bonusPayList.stream().map(tc -> tc.getBonusPayTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
-		AttendanceTime withinTime = new AttendanceTime(bonusPayList.stream().map(tc -> tc.getWithinBonusPay().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
-		AttendanceTime withinCalcTime = new AttendanceTime(bonusPayList.stream().map(tc -> tc.getWithinBonusPay().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
-		AttendanceTime excessTime = new AttendanceTime(bonusPayList.stream().map(tc -> tc.getExcessBonusPayTime().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
-		AttendanceTime excessCalcTime = new AttendanceTime(bonusPayList.stream().map(tc -> tc.getExcessBonusPayTime().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
-		
-		return new BonusPayTime(
-				bonusPayNo,
-				bonusPayTime,
-				TimeWithCalculation.createTimeWithCalculation(withinTime, withinCalcTime),
-				TimeWithCalculation.createTimeWithCalculation(excessTime, excessCalcTime));
-	}
-	
-	/**
-	 * 指定した加給項目Noの加給時間を取得する
-	 * @param bonusPayTime 加給時間List
-	 * @param bonusPayNo 加給項目No
-	 * @return 加給時間List
-	 */
-	private List<BonusPayTime> getByBonusPayNo(List<BonusPayTime> bonusPayTime, int bonusPayNo) {
-		return bonusPayTime.stream().filter(tc -> tc.getBonusPayTimeItemNo() == bonusPayNo).collect(Collectors.toList());
+		// 加給時間Listの累計　～　加給時間Listを返す
+		return BonusPayTime.sumBonusPayTimeList(bonusPayTimeList);
 	}
 	
 	/**

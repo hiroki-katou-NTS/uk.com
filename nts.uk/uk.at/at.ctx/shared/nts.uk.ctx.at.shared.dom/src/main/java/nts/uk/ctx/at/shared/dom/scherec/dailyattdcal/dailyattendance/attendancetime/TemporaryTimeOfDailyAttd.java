@@ -26,4 +26,15 @@ public class TemporaryTimeOfDailyAttd implements DomainObject {
 		this.timeLeavingWorks = timeLeavingWorks;
 	}
 
+	/**
+	 * 打刻漏れ状態チェック
+	 * @return 打刻漏れ状態
+	 */
+	public List<StampLeakStateEachWork> checkStampLeakState() {
+		List<StampLeakStateEachWork> result = new ArrayList<>();
+		for (TimeLeavingWork timeLeavingWork : this.timeLeavingWorks) {
+			result.add(new StampLeakStateEachWork(timeLeavingWork.getWorkNo(), timeLeavingWork.checkStampLeakState()));
+		}
+		return result;
+	}
 }

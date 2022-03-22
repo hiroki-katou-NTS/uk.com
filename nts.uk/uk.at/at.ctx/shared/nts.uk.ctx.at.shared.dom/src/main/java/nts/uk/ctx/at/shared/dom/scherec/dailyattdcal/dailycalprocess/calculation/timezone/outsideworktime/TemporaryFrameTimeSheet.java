@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculatio
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
@@ -20,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 /**
@@ -92,7 +90,7 @@ public class TemporaryFrameTimeSheet extends ActualWorkingTimeSheet {
 				new MidNightTimeSheetForCalcList(new ArrayList<>()),
 				timeLeavingWork.getWorkNo());
 		// 控除時間帯の登録
-		myclass.registDeductionListForTemporary(
+		myclass.registDeductionList(ActualWorkTimeSheetAtr.OverTimeWork,
 				deductionTimeSheet, Optional.of(integrationOfWorkTime.getCommonSetting()));
 		// 加給時間帯の作成
 		myclass.createBonusPayTimeSheet(
@@ -102,30 +100,5 @@ public class TemporaryFrameTimeSheet extends ActualWorkingTimeSheet {
 				Optional.of(integrationOfWorkTime.getCommonSetting()), deductionTimeSheet);
 		// 臨時枠時間帯を返す
 		return Optional.of(myclass);
-	}
-	
-	/**
-	 * 控除時間帯の登録（臨時枠時間帯）
-	 * @param deductTimeSheet 控除時間帯
-	 * @param commonSet 就業時間帯の共通設定
-	 */
-	private void registDeductionListForTemporary(
-			DeductionTimeSheet deductTimeSheet,
-			Optional<WorkTimezoneCommonSet> commonSet){
-		
-		// 控除時間帯の登録
-		this.registDeductionList(ActualWorkTimeSheetAtr.OverTimeWork, deductTimeSheet, commonSet);
-		// 休憩を除いた控除項目リストを取得
-		List<TimeSheetOfDeductionItem> deductList = this.deductionTimeSheet.stream()
-				.filter(c -> !(c.getDeductionAtr().isBreak() &&
-						c.getBreakAtr().isPresent() && c.getBreakAtr().get().isBreak()))
-				.collect(Collectors.toList());
-		List<TimeSheetOfDeductionItem> recordList = this.recordedTimeSheet.stream()
-				.filter(c -> !(c.getDeductionAtr().isBreak() &&
-						c.getBreakAtr().isPresent() && c.getBreakAtr().get().isBreak()))
-				.collect(Collectors.toList());
-		// 控除項目リストを入れ替える
-		this.deductionTimeSheet = deductList;
-		this.recordedTimeSheet = recordList;
 	}
 }

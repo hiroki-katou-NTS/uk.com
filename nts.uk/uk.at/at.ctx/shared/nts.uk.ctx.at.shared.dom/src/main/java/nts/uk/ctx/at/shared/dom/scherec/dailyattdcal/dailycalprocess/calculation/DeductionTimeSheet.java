@@ -273,7 +273,7 @@ public class DeductionTimeSheet {
 			/** 外出時間帯取得 */
 			val goOutDeduct = integrationOfDaily.getOutingTime().map(c -> c.removeUnuseItemBaseOnAtr(
 					deductionAtr,
-					integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
+					integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision(),
 					integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType),
 					integrationOfWorkTime.getFlowWorkRestSettingDetail(),
 					integrationOfWorkTime.getCommonSetting().getStampSet().getRoundingTime()))
@@ -387,7 +387,7 @@ public class DeductionTimeSheet {
 		if(integrationOfDaily.getOutingTime().isPresent()) {
 			sheetList.addAll(integrationOfDaily.getOutingTime().get().removeUnuseItemBaseOnAtr(
 					dedAtr,
-					integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
+					integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision(),
 					integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType),
 					integrationOfWorkTime.getFlowWorkRestSettingDetail(),
 					integrationOfWorkTime.getCommonSetting().getStampSet().getRoundingTime()));

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,17 +11,14 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.StampLeakStateEachWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
-import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.GetWorkTypeServiceShare;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /*
  * 打刻漏れ - (出退勤打刻漏れ)
@@ -34,92 +32,75 @@ public class LackOfStampingAlgorithm {
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
 
-	public Optional<EmployeeDailyPerError> lackOfStamping(String companyID, String employeeID, GeneralDate processingDate,
+	/**
+	 * 出退勤打刻漏れ
+	 * @param companyID 会社ID
+	 * @param employeeID 社員ID
+	 * @param processingDate 処理日
+	 * @param workInfoOfDailyPerformance 日別勤怠の勤務情報
+	 * @param timeLeavingOfDailyPerformance 日別勤怠の出退勤
+	 * @return 社員の日別実績エラー一覧
+	 */
+	public Optional<EmployeeDailyPerError> lackOfStamping(
+			String companyID,
+			String employeeID,
+			GeneralDate processingDate,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
 
 		EmployeeDailyPerError employeeDailyPerError = null;
+		
+		// 勤怠項目ID　（添字が勤務NOと対応）
+		List<Integer> attdId = Arrays.asList(0, 31, 41);
+		List<Integer> leaveId = Arrays.asList(0, 34, 44);
 
-		Optional<WorkType> workType = getWorkTypeService
-				.getWorkType(workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
-		if (!workType.isPresent())
-			return Optional.empty();
-
-		WorkStyle workStyle = workType.get().checkWorkDay();
-		if (workStyle != WorkStyle.ONE_DAY_REST) {
-
-			if (timeLeavingOfDailyPerformance != null && timeLeavingOfDailyPerformance.getAttendance()!=null
-					&& !timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
-				List<TimeLeavingWork> timeLeavingWorkList = timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks();
-				List<Integer> attendanceItemIDList = new ArrayList<>();
-				
-				//所定時間設定を取得
-				Optional<PredetemineTimeSetting> predetemineTimeSet = Optional.empty();
-				if(workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().isPresent()) {
-					predetemineTimeSet = predetemineTimeSettingRepository.findByWorkTimeCode(
-							companyID,
-							workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().get().v());
-				}
-				
-				//所定労働時間帯の件数を取得
-				int predTimeSpanCount = predetemineTimeSet.isPresent()
-						? predetemineTimeSet.get().getTimezoneByAmPmAtrForCalc(workStyle.toAmPmAtr().orElse(AmPmAtr.ONE_DAY)).size()
-						: 0;
-				//１から所定労働時間帯の件数までループする
-				for(int number = 1;number<=predTimeSpanCount;number++) { //start for 1
-					boolean checkExist = false;
-					WorkNo workNo = new WorkNo(number);
-					Optional<TimeLeavingWork> timeLeavingWork = timeLeavingWorkList.stream().filter(t -> t.getWorkNo().equals(workNo)).findFirst();
-					if(timeLeavingWork.isPresent()) {
-						Optional<TimeWithDayAttr> attendanceTimeWithDay = timeLeavingWork.get().getAttendanceTime();
-						Optional<TimeWithDayAttr> leavingTimeWithDay = timeLeavingWork.get().getLeaveTime();
-						if (leavingTimeWithDay.isPresent() && !attendanceTimeWithDay.isPresent()) {
-							if (timeLeavingWork.get().getWorkNo().v().intValue() == 1) {
-								attendanceItemIDList.add(31);
-							} else if (timeLeavingWork.get().getWorkNo().v().intValue() == 2) {
-								attendanceItemIDList.add(41);
-							}
-						} else if (!leavingTimeWithDay.isPresent() && attendanceTimeWithDay.isPresent()) {
-							if (timeLeavingWork.get().getWorkNo().v().intValue() == 1) {
-								attendanceItemIDList.add(34);
-							} else if (timeLeavingWork.get().getWorkNo().v().intValue() == 2) {
-								attendanceItemIDList.add(44);
-							}
-						} else if (!leavingTimeWithDay.isPresent() && !attendanceTimeWithDay.isPresent()) {
-							if (timeLeavingWork.get().getWorkNo().v().intValue() == 1) {
-								attendanceItemIDList.add(31);
-								attendanceItemIDList.add(34);
-							} else if (timeLeavingWork.get().getWorkNo().v().intValue() == 2) {
-								attendanceItemIDList.add(41);
-								attendanceItemIDList.add(44);
-							}
-						}
-						checkExist =true;
-					}
-					if(!checkExist) { //両方存在しない(không có cả 2)
-						if (number == 1) {
-							attendanceItemIDList.add(31);
-							attendanceItemIDList.add(34);
-						} else if (number == 2) {
-							attendanceItemIDList.add(41);
-							attendanceItemIDList.add(44);
-						}
-					}
-				}//end for 1
-				
-				if (!attendanceItemIDList.isEmpty()) {
-					employeeDailyPerError = new EmployeeDailyPerError(companyID, employeeID, processingDate,
-							new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
-				}
-			}else {
-				List<Integer> attendanceItemIDList = new ArrayList<>();
-				attendanceItemIDList.add(31);
-				attendanceItemIDList.add(34);
-				employeeDailyPerError = new EmployeeDailyPerError(companyID, employeeID, processingDate,
-						new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
-			}
+		// 勤務種類を取得する
+		Optional<WorkType> workType = this.getWorkTypeService.getWorkType(
+				workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
+		// 所定時間設定を取得する
+		Optional<PredetemineTimeSetting> predetemineTimeSet = Optional.empty();
+		Optional<WorkTimeCode> workTimeCode = workInfoOfDailyPerformance.getWorkInformation()
+				.getRecordInfo().getWorkTimeCodeNotNull();
+		if (workTimeCode.isPresent()) {
+			predetemineTimeSet = this.predetemineTimeSettingRepository.findByWorkTimeCode(
+					companyID, workTimeCode.get().v());
+		}
+		// 打刻漏れ状態チェック
+		List<StampLeakStateEachWork> stampLeakStateList = new ArrayList<>();
+		if (timeLeavingOfDailyPerformance.getAttendance() != null) {
+			stampLeakStateList =
+					timeLeavingOfDailyPerformance.getAttendance().checkStampLeakState(workType, predetemineTimeSet);
 		}
 
+		List<Integer> attendanceItemIDList = new ArrayList<>();
+		if (stampLeakStateList.size() > 0) {
+			for (StampLeakStateEachWork stampLeakState : stampLeakStateList) {
+				switch (stampLeakState.getStampLeakState()) {
+				case NO_ATTENDANCE:
+					attendanceItemIDList.add(attdId.get(stampLeakState.getWorkNo().v()));
+					break;
+				case NO_LEAVE:
+					attendanceItemIDList.add(leaveId.get(stampLeakState.getWorkNo().v()));
+					break;
+				case NOT_EXIST:
+					attendanceItemIDList.add(attdId.get(stampLeakState.getWorkNo().v()));
+					attendanceItemIDList.add(leaveId.get(stampLeakState.getWorkNo().v()));
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		else {
+			attendanceItemIDList.add(attdId.get(1));
+			attendanceItemIDList.add(leaveId.get(1));
+		}
+		
+		if (attendanceItemIDList.size() > 0) {
+			// 社員の日別実績のエラーを作成する
+			employeeDailyPerError = new EmployeeDailyPerError(companyID, employeeID, processingDate,
+					new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
+		}
 		return Optional.ofNullable(employeeDailyPerError);
 	}
 

@@ -37,5 +37,4 @@ public class TemporaryTimeOfDailyPerformance extends AggregateRoot {
 		this.ymd = ymd;
 		this.attendance = attendance;
 	}
-
 }

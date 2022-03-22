@@ -15,12 +15,16 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.worktime.TimeLeaveChangeEvent;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -262,6 +266,36 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 		return timeOfTimeLeavingList.stream().anyMatch( timeLeaving -> timeLeaving.contains(target) );
 	} 
 	
+	/**
+	 * 打刻漏れ状態チェック
+	 * @param workType 勤務種類
+	 * @param predetemineTimeSet 所定時間設定
+	 * @return 打刻漏れ状態
+	 */
+	public List<StampLeakStateEachWork> checkStampLeakState(
+			Optional<WorkType> workType,
+			Optional<PredetemineTimeSetting> predetemineTimeSet){
+		
+		List<StampLeakStateEachWork> result = new ArrayList<>();
+
+		if (!workType.isPresent()) return result;
+		WorkStyle workStyle = workType.get().checkWorkDay();	// 出勤休日区分
+		if (workStyle == WorkStyle.ONE_DAY_REST) return result;
+
+		int predWorkCount = 0;		// 所定勤務回数
+		if (predetemineTimeSet.isPresent()) {
+			predWorkCount = predetemineTimeSet.get().getTimezoneByAmPmAtrForCalc(
+					workStyle.toAmPmAtr().orElse(AmPmAtr.ONE_DAY)).size();
+		}
+		
+		for (int workNo = 1; workNo <= predWorkCount; workNo++) {
+			Optional<TimeLeavingWork> timeLeavingWork = this.getAttendanceLeavingWork(new WorkNo(workNo));
+			if (timeLeavingWork.isPresent()) {
+				result.add(new StampLeakStateEachWork(new WorkNo(workNo), timeLeavingWork.get().checkStampLeakState()));
+			}
+		}
+		return result;
+	}
 	
 	public static interface Require extends WorkInformation.Require{
 		

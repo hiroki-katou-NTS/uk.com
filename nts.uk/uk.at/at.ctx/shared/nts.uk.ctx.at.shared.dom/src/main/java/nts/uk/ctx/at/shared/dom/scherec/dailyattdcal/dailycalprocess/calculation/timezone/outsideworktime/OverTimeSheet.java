@@ -20,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.BonusPayTime;
@@ -36,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.service.ActualWorkTimeSheetListService;
@@ -556,7 +556,7 @@ public class OverTimeSheet {
 			}
 			bonusPayList.addAll(timeFrame.calcBonusPay(sheetAtr, bpTimeItemSets, calcAtrOfDaily));
 		}
-		return sumBonusPayTime(bonusPayList);
+		return BonusPayTime.sumBonusPayTimeList(bonusPayList);
 	}
 	
 	/**
@@ -582,40 +582,7 @@ public class OverTimeSheet {
 			}
 			bonusPayList.addAll(timeFrame.calcSpacifiedBonusPay(sheetAtr, bpTimeItemSets, calcAtrOfDaily));
 		}
-		return sumBonusPayTime(bonusPayList);
-	}
-	
-	/**
-	 * 同じ加給時間Ｎｏを持つものを１つにまとめる
-	 * @param bonusPayTime　加給時間
-	 * @return　Noでユニークにした加給時間List
-	 */
-	private List<BonusPayTime> sumBonusPayTime(List<BonusPayTime> bonusPayTime){
-		List<BonusPayTime> returnList = new ArrayList<>();
-		List<BonusPayTime> refineList = new ArrayList<>();
-		for(int bonusPayNo = 1 ; bonusPayNo <= 10 ; bonusPayNo++) {
-			refineList = getByBonusPayNo(bonusPayTime, bonusPayNo);
-			if(refineList.size()>0) {
-				returnList.add(new BonusPayTime(bonusPayNo,
-												new AttendanceTime(refineList.stream().map(tc -> tc.getBonusPayTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
-												TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(refineList.stream().map(tc -> tc.getWithinBonusPay().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
-																							  new AttendanceTime(refineList.stream().map(tc -> tc.getWithinBonusPay().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)))),
-												TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(refineList.stream().map(tc -> tc.getExcessBonusPayTime().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
-																							  new AttendanceTime(refineList.stream().map(tc -> tc.getExcessBonusPayTime().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))))
-												));
-			}
-		}
-		return returnList;
-	}
-	
-	/**
-	 * 受け取った加給時間Ｎｏを持つ加給時間を取得
-	 * @param bonusPayTime 加給時間
-	 * @param bonusPayNo　加給時間Ｎｏ
-	 * @return　加給時間リスト
-	 */
-	private List<BonusPayTime> getByBonusPayNo(List<BonusPayTime> bonusPayTime,int bonusPayNo){
-		return bonusPayTime.stream().filter(tc -> tc.getBonusPayTimeItemNo() == bonusPayNo).collect(Collectors.toList());
+		return BonusPayTime.sumBonusPayTimeList(bonusPayList);
 	}
 	
 	/**
@@ -938,7 +905,7 @@ public class OverTimeSheet {
 					temporaryFrame.getDeductionTimeSheet(),
 					temporaryFrame.getBonusPayTimeSheet(),
 					temporaryFrame.getSpecBonusPayTimesheet(),
-					temporaryFrame.getMidNightTimeSheet(),
+					MidNightTimeSheetForCalcList.createEmpty(),
 					new OverTimeFrameTime(
 							new OverTimeFrameNo(extraordTimeSet.getOTFrameSet().getOtFrameNo().v()),
 							TimeDivergenceWithCalculation.emptyTime(),
@@ -950,7 +917,8 @@ public class OverTimeSheet {
 					new EmTimezoneNo(1),
 					false,
 					Optional.of(extraordTimeSet.getOTFrameSet().getSettlementOrder()),
-					Optional.empty()));
+					Optional.empty(),
+					Optional.of(new OverTimeFrameNo(extraordTimeSet.getOTFrameSet().getInLegalWorkFrameNo().v()))));
 		}
 		// 変換後Listを返す
 		return after;

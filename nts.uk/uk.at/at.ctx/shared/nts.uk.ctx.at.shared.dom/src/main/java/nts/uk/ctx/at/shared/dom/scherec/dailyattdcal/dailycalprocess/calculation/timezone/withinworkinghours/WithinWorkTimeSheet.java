@@ -20,20 +20,15 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.TimeHolidayAddition
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BPTimeItemSetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.BonusPayTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ActualWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.CommonFixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
@@ -749,6 +744,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			NotUseAtr lateEarlyMinusAtr,
 			Optional<SettingOfFlexWork> flexCalcMethod){
 		
+		// 就業時間内時間枠を確認する
+		if (this.withinWorkTimeFrame.size() <= 0) return TimeWithCalculation.sameTime(AttendanceTime.ZERO);
 		//遅刻時間の計算
 		AttendanceTime lateTime = this.calcLateTime(
 				integrationOfDaily,
@@ -948,7 +945,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 					calcAtrOfDaily));
 		}
 		//同じNo同士はここで加算し、Listのサイズを減らす
-		return sumBonusPayTime(bonusPayList);
+		return BonusPayTime.sumBonusPayTimeList(bonusPayList);
 	}
 
 	/**
@@ -968,40 +965,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 					calcAtrOfDaily));
 		}
 		//同じNo同士はここで加算し、Listのサイズを減らす
-		return sumBonusPayTime(bonusPayList);
-	}
-	
-	/**
-	 * 同じ加給時間Ｎｏを持つものを１つにまとめる
-	 * @param bonusPayTime　加給時間
-	 * @return　Noでユニークにした加給時間List
-	 */
-	private List<BonusPayTime> sumBonusPayTime(List<BonusPayTime> bonusPayTime){
-		List<BonusPayTime> returnList = new ArrayList<>();
-		List<BonusPayTime> refineList = new ArrayList<>();
-		for(int bonusPayNo = 1 ; bonusPayNo <= 10 ; bonusPayNo++) {
-			refineList = getByBonusPayNo(bonusPayTime, bonusPayNo);
-			if(refineList.size()>0) {
-				returnList.add(new BonusPayTime(bonusPayNo,
-												new AttendanceTime(refineList.stream().map(tc -> tc.getBonusPayTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
-												TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(refineList.stream().map(tc -> tc.getWithinBonusPay().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
-																							  new AttendanceTime(refineList.stream().map(tc -> tc.getWithinBonusPay().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)))),
-												TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(refineList.stream().map(tc -> tc.getExcessBonusPayTime().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
-																							  new AttendanceTime(refineList.stream().map(tc -> tc.getExcessBonusPayTime().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))))
-												));
-			}
-		}
-		return returnList;
-	}
-	
-	/**
-	 * 受け取った加給時間Ｎｏを持つ加給時間を取得
-	 * @param bonusPayTime 加給時間
-	 * @param bonusPayNo　加給時間Ｎｏ
-	 * @return　加給時間リスト
-	 */
-	private List<BonusPayTime> getByBonusPayNo(List<BonusPayTime> bonusPayTime,int bonusPayNo){
-		return bonusPayTime.stream().filter(tc -> tc.getBonusPayTimeItemNo() == bonusPayNo).collect(Collectors.toList());
+		return BonusPayTime.sumBonusPayTimeList(bonusPayList);
 	}
 	
 	/**

@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.enterprise.inject.New;
-
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -86,7 +84,8 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 	//調整時間
 	private Optional<AttendanceTime> adjustTime;
 
-	
+	//臨時法内残業枠NO
+	private Optional<OverTimeFrameNo> tempLegalFrameNo = Optional.empty();
 	
 	/**
 	 * Constrcotr
@@ -119,6 +118,32 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 		this.asTreatBindTime = asTreatBindTime;
 		this.payOrder = payOrder;
 		this.adjustTime = adjustTime;
+	}
+	
+	/**
+	 * コンストラクタ（臨時用）
+	 * @param tempLegalFrameNo 臨時法内残業枠No
+	 */
+	public OverTimeFrameTimeSheetForCalc(
+			TimeSpanForDailyCalc timeSheet,
+			TimeRoundingSetting rounding,
+			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
+			List<TimeSheetOfDeductionItem> deductionTimeSheets,
+			List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
+			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,
+			MidNightTimeSheetForCalcList midNighttimeSheet,
+			OverTimeFrameTime frameTime,
+			StatutoryAtr withinStatutryAtr,
+			boolean goEarly,
+			EmTimezoneNo overTimeWorkSheetNo,
+			boolean asTreatBindTime,
+			Optional<SettlementOrder> payOrder,
+			Optional<AttendanceTime> adjustTime,
+			Optional<OverTimeFrameNo> tempLegalFrameNo) {
+		this(timeSheet, rounding, recorddeductionTimeSheets, deductionTimeSheets, bonusPayTimeSheet,
+				specifiedBonusPayTimeSheet, midNighttimeSheet, frameTime, withinStatutryAtr, goEarly,
+				overTimeWorkSheetNo, asTreatBindTime, payOrder, adjustTime);
+		this.tempLegalFrameNo = tempLegalFrameNo;
 	}
 	
 	/**
@@ -510,7 +535,8 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
     public List<OverTimeFrameTimeSheetForCalc> splitTimeSpan(TimeWithDayAttr baseTime, Map<EmTimezoneNo, OverTimeFrameNo> statutoryOverFrames, StatutoryAtr statutoryAtr){
         List<OverTimeFrameTimeSheetForCalc> returnList = new ArrayList<>();
 
-        val statutoryOverFrameNo = Optional.ofNullable(statutoryOverFrames.get(this.getOverTimeWorkSheetNo()));
+        Optional<OverTimeFrameNo> statutoryOverFrameNo = Optional.ofNullable(statutoryOverFrames.get(this.getOverTimeWorkSheetNo()));
+        if (this.tempLegalFrameNo.isPresent()) statutoryOverFrameNo = this.tempLegalFrameNo;
 		
         if(this.timeSheet.getEnd().lessThanOrEqualTo(baseTime)) {
             returnList.add(new OverTimeFrameTimeSheetForCalc(this.timeSheet

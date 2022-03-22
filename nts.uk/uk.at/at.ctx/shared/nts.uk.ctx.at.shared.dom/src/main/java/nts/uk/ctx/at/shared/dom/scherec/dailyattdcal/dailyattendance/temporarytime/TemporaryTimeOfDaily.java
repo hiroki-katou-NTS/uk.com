@@ -62,8 +62,8 @@ public class TemporaryTimeOfDaily {
 		TemporaryTimeSheet temporaryTimeSheet = outsideWorkTimeSheet.getTemporaryTimeSheet().get();
 		
 		return new TemporaryTimeOfDaily(
-				// 臨時枠時間の計算
-				temporaryTimeSheet.calcTemporaryFrameTime(),
+				// 臨時枠時間の取得
+				temporaryTimeSheet.getTemporaryFrameTime(),
 				// 臨時回数の計算
 				temporaryTimeSheet.calcTemporaryTimes());
 	}
