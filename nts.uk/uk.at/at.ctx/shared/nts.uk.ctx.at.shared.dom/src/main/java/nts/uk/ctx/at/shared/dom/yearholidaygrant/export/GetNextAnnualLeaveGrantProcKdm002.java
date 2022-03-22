@@ -251,7 +251,12 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 					previousDate, entryDate, grantDate, lengthServiceTbl, simultaneousGrantMDOpt);
 			grantDate = simulResult.getGrantDate();
 			grantNum = new GrantNum(simulResult.getTimes().v());
+			deadLine = calcDeadlineByGrantDate(
+						require,
+						companyId,
+						grantDate);
 		}
+
 
 		// 次回年休付与を返す
 		nextAnnualLeaveGrant.setGrantDate(grantDate);
