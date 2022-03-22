@@ -112,7 +112,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 					let errorMsgLst = res.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
 					if(!_.isEmpty(errorMsgLst)) {
 						vm.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
-	 						$('#kaf000-a-component4-singleDate').focus();		
+	 						$('#kaf000-a-component4-singleDate').focus();			
 						});
 					}
                     vm.dataFetch({
@@ -293,7 +293,11 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                             param = {messageId: err.messageId, messageParams: err.parameterIds};
                         }
                     }
-                    vm.$dialog.error(param);
+                    vm.$dialog.error(param).then(() => {
+						if(err.messageId == "Msg_3267") {
+							$('#kaf000-a-component4-singleDate').focus();
+						}	
+					});
                 })
                 .always(() => vm.$blockui("hide"));
 
