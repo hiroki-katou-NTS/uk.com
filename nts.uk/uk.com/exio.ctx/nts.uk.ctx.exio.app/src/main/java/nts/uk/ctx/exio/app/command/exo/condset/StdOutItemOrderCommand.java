@@ -1,8 +1,10 @@
 package nts.uk.ctx.exio.app.command.exo.condset;
 
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+@Data
+@NoArgsConstructor
 public class StdOutItemOrderCommand {
 	
 	/**

@@ -1,15 +1,17 @@
 package nts.uk.ctx.exio.app.command.exo.condset;
 
-import lombok.Data;
-import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
-
 import java.util.List;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 
 /**
  * The class Standard output condition setting command.<br>
  * Command 出力条件設定（定型）
  */
 @Data
+@NoArgsConstructor
 public class StdOutputCondSetCommand implements StdOutputCondSet.MementoGetter {
 
 	/**
