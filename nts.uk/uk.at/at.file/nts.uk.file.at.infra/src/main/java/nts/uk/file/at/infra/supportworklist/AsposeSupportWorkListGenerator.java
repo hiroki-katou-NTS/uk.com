@@ -40,13 +40,8 @@ import java.util.stream.Collectors;
 public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator implements SupportWorkListGenerator {
     private static final String CSV_EXT = ".csv";
     private static final String EXCEL_EXT = ".xlsx";
-    private static final int MAX_ROW_IN_PAGE = 27;
-    private static final int MAX_ROW_TITLE_IN_PAGE = 2;
-    private static final int MAX_ROW_HEADER_IN_PAGE = 1;
-    private static final int MAX_EMPLOYEE_PER_PAGE = 30;
     private final String SPACE = "　";
     private final String EMPTY = "";
-    private static final String PRINT_AREA = "A1:BE";
     private final String FONT_NAME = "ＭＳ ゴシック";
     private final int FONT_SIZE = 9;
     private int maxColumnInHeader = 0;
@@ -63,7 +58,6 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
             worksheet.setGridlinesVisible(false);
             this.printHeader(worksheet, dataSource);
             this.printContent(worksheet, dataSource, exportCsv);
-//            this.pageBreakSetting(worksheet, dataSource);
             reportContext.processDesigner();
             this.pageSetting(worksheet, dataSource);
 
@@ -186,6 +180,11 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                     this.setDetailStyle(cells.get(startRow, 0), isEventLine, true, true, false, true, false);
 
                     int rowStartMerge = startRow;
+                    dataOfDay.getSupportWorkDetailsList().sort(Comparator.comparing(SupportWorkDetails::getEmployeeId, (s1, s2) -> {
+                        val empInfo1 = dataSource.getEmployeeInfoList().stream().filter(emp -> emp.getSid().equals(s1)).findFirst();
+                        val empInfo2 = dataSource.getEmployeeInfoList().stream().filter(emp -> emp.getSid().equals(s2)).findFirst();
+                        return StringUtils.compare(empInfo1.map(ei -> ei.getEmployeeCode()).orElse(EMPTY), empInfo2.map(ei -> ei.getEmployeeCode()).orElse(EMPTY));
+                    }));
                     for (int k = 0; k < dataOfDay.getSupportWorkDetailsList().size(); k++) {  // loop detail
                         SupportWorkDetails detail = dataOfDay.getSupportWorkDetailsList().get(k);
 
@@ -243,7 +242,10 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                 /** Daily total */
                 if (wkpTotalDisplaySetting.getDisplayOneDayTotal() == NotUseAtr.USE) {
                     cells.get(startRow, 0).setValue(getText("KHA002_110"));
-                    cells.get(startRow, 1).setValue(dataOfDay.getDate().toString("MM/dd"));
+                    // C7_1_2
+                    if (displaySetting.getDisplayDetail() != NotUseAtr.USE) {
+                        cells.get(startRow, 1).setValue(dataOfDay.getDate().toString("MM/dd"));
+                    }
                     this.setTotalStyle(cells.get(startRow, 0), true, true, true, true,false);
                     this.setTotalStyle(cells.get(startRow, 1), true, false, true, true, false);
                     this.setTotalStyle(cells.get(startRow, 2), false, false, true, true, false);
@@ -255,18 +257,6 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                     startRow += 1; // next row
                     itemPerPage += 1;
                 }
-
-//                if (isPageBreak) {
-//                    if (itemPerPage >= 27) {
-//                        hPageBreaks.add(startRow);
-////                        for (int c = 0; c < maxColumnInHeader; c++) {
-////                            this.setBorder(cells.get(startRow - 1, c), false);
-////                        }
-//                        pageIndex += 1;
-//                        itemPerPage = 0;
-//                    }
-//                }
-
             } // end loop day
 
             if (wkpTotalDisplaySetting.getDisplayWorkplaceSupportMeter() == NotUseAtr.USE) {
