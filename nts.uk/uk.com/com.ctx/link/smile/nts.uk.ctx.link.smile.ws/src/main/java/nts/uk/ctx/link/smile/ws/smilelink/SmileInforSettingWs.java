@@ -151,7 +151,7 @@ public class SmileInforSettingWs {
         CategoryItemCommand empCd = new CategoryItemCommand(1, categoryId, null, 1);
         empCatItem.add(empCd);
 		StdOutItemCommand outItemEmp = new StdOutItemCommand(isNewMode, companyId, "0001", conditionSetCode, "社員CD", 1,
-				empCatItem, null, null, null, null, null, null, 8);
+				empCatItem, null, null, null, null, null, null, 1);
 		this.addStdOutItemCommandHandler.handle(outItemEmp);
 		
 		List<CategoryItemCommand> yearCatItem = new ArrayList<>();
@@ -160,14 +160,14 @@ public class SmileInforSettingWs {
 		StdOutItemCommand  outItemYear = new StdOutItemCommand(isNewMode, companyId, "0002", conditionSetCode, "年", 0,
 				yearCatItem, null, null, null, null, 
 				new NumberDfsCommand(conditionSetCode, "0002", companyId, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, null, null, null, 0, 0), 
-				null, 8);
+				null, 2);
 		this.addStdOutItemCommandHandler.handle(outItemYear);
 		
 		List<CategoryItemCommand> comCatItem = new ArrayList<>();
 		CategoryItemCommand comCd = new CategoryItemCommand(1, 673, null, 1);
 		comCatItem.add(comCd);
 		StdOutItemCommand  outItemCom = new StdOutItemCommand(isNewMode, companyId, "0003", conditionSetCode, "会社CD", 1, 
-				comCatItem, null, null, null, null, null, null, 8);
+				comCatItem, null, null, null, null, null, null, 3);
 		this.addStdOutItemCommandHandler.handle(outItemCom);
 		
 		List<CategoryItemCommand> monthCatItem = new ArrayList<>();
@@ -176,7 +176,7 @@ public class SmileInforSettingWs {
 		StdOutItemCommand outItemMonth = new StdOutItemCommand(isNewMode, companyId, "0004", conditionSetCode, "月", 0, 
 				monthCatItem, null, null, null, null, 
 				new NumberDfsCommand(conditionSetCode, "0004", companyId, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, null, null, null, 0, 0), 
-				null, 8);
+				null, 4);
 		this.addStdOutItemCommandHandler.handle(outItemMonth);
 		
 		List<CategoryItemCommand> numberWorkDayCatItem = new ArrayList<>();
@@ -185,14 +185,14 @@ public class SmileInforSettingWs {
 		StdOutItemCommand outItemNumberWorkDay = new StdOutItemCommand(isNewMode, companyId, "0101", conditionSetCode, "出勤日数", 0,
 				numberWorkDayCatItem, null, null, null, null, 
 				new NumberDfsCommand(conditionSetCode, "0101", companyId, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, null, null, null, 0, 0), 
-				null, 8);
+				null, 5);
 		this.addStdOutItemCommandHandler.handle(outItemNumberWorkDay);
 		
 		List<CategoryItemCommand> numberAbsenDayCatItem = new ArrayList<>();
 		CategoryItemCommand numberAbsenDay = new CategoryItemCommand(187, categoryId, null, 1);
 		numberAbsenDayCatItem.add(numberAbsenDay);
 		StdOutItemCommand outItemNumberAbsenDay = new StdOutItemCommand(isNewMode, companyId, "0102", conditionSetCode, "欠勤日数", 0, 
-				numberAbsenDayCatItem, null, null, null, null, null, null, 8);
+				numberAbsenDayCatItem, null, null, null, null, null, null, 6);
 		this.addStdOutItemCommandHandler.handle(outItemNumberAbsenDay);
 		
 		List<CategoryItemCommand> otTimeCatItem = new ArrayList<>();
@@ -201,7 +201,7 @@ public class SmileInforSettingWs {
 		StdOutItemCommand outItemOtTimeCatItem = new StdOutItemCommand(isNewMode, companyId, "0109", conditionSetCode, "残業時間", 3, 
 				otTimeCatItem, null, null, null, null, null, 
 				new TimeDfsCommand(conditionSetCode, "0109", companyId, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 1, null, 1, null, null, 0),
-				8);
+				7);
 		this.addStdOutItemCommandHandler.handle(outItemOtTimeCatItem);
 		
 		// J
