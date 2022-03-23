@@ -318,7 +318,7 @@ module nts.uk.at.kdp003.a {
 								if (data.workLocationCD != null && data.workLocationCD !== '') {
 									vm.regionalTime(data.regional);
 									vm.worklocationCode = data.workLocationCD;
-									if (data.workPlaceId != null && data.workPlaceId != '') {
+									if (data.workPlaceId != null && data.workPlaceId !== '') {
 										vm.workPlace = [];
 										vm.workPlace.push(data.workPlaceId);
 										vm.modeBasyo(true);
