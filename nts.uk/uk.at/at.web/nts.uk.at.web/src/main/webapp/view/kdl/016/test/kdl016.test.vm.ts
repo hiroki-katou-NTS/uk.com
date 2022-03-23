@@ -196,8 +196,20 @@ module nts.uk.at.view.kdl016.test {
                 employeeIds: empIds
             };
 
-            vm.$window.modal("/view/kdl/016/a/index.xhtml", request).then((result: any) => {
+            vm.$window.modal("/view/kdl/016/a/index.xhtml", request).then((rs: any) => {
+                let result = getShared('status-result');
+                if (!_.isNil(result) && result == true) {
 
+                } else {
+                    nts.uk.characteristics.restore('kdl016Status').done((data: any) => {
+                        if (!_.isNil(data)) {
+                            if (data.reloadable) {
+
+                            }
+                            nts.uk.characteristics.remove("kdl016Status");
+                        }
+                    });
+                }
             });
         }
 

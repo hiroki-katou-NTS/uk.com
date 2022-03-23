@@ -162,7 +162,7 @@ module nts.uk.at.view.kdl016.e {
         closeDialog(reloadable: boolean): void {
             const vm = this;
             let dataShare = {reloadable: reloadable};
-            nts.uk.ui.windows.setShared("shareKdl016D", dataShare);
+            nts.uk.ui.windows.setShared("shareKdl016E", dataShare);
             vm.$window.close();
         }
 

@@ -5490,6 +5490,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if (!_.isNil(result) && result == true ) {
                     self.updateScreenAfterSettingSupport();
 
+                } else {
+                    nts.uk.characteristics.restore('kdl016Status').done((data: any) => {
+                        if (!_.isNil(data)) {
+                            if (data.reloadable) {
+                                self.updateScreenAfterSettingSupport();
+                            }
+                            nts.uk.characteristics.remove("kdl016Status");
+                        }
+                    });
                 }
             });
         }

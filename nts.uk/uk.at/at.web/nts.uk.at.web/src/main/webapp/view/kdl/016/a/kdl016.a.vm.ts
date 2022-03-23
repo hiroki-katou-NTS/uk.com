@@ -22,6 +22,7 @@ module nts.uk.at.view.kdl016.a {
         enableSupportTimezone: KnockoutObservable<boolean> = ko.observable(false);
 
         canDelete: KnockoutObservable<boolean> = ko.observable(false);
+        executedStatus: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(params: IScreenParameter) {
             super();
@@ -332,9 +333,10 @@ module nts.uk.at.view.kdl016.a {
                     if (result && !_.isEmpty(result)) {
                         if (result.reloadable) {
                             vm.loadSupportInfo(DISPLAY_MODE.GO_TO_SUPPORT);
-                            vm.setResponseStatus();
+                            vm.executedStatus(true);
                         }
                     }
+                    vm.setResponseStatus(vm.executedStatus());
                 });
             } else {
                 param = {
@@ -351,10 +353,11 @@ module nts.uk.at.view.kdl016.a {
                         if (result && !_.isEmpty(result)) {
                             if (result.reloadable) {
                                 vm.loadSupportInfo(DISPLAY_MODE.COME_TO_SUPPORT);
-                                vm.setResponseStatus();
+                                vm.executedStatus(true);
                             }
                         }
                     }
+                    vm.setResponseStatus(vm.executedStatus());
                 });
             }
         }
@@ -390,7 +393,8 @@ module nts.uk.at.view.kdl016.a {
                                     vm.canDelete(false);
                                     $("#grid").igGridSelection("clearSelection");
                                     vm.selectedCode([]);
-                                    vm.setResponseStatus();
+                                    vm.executedStatus(true);
+                                    vm.setResponseStatus(vm.executedStatus());
                                 });
                             } else {
                                 let errorResults = data.errorResults;
@@ -417,6 +421,7 @@ module nts.uk.at.view.kdl016.a {
                         }).fail(error => {
                             vm.$dialog.error(error);
                         }).always(() => {
+                            vm.setResponseStatus(vm.executedStatus());
                             vm.$blockui("clear");
                         });
                     }
@@ -428,8 +433,8 @@ module nts.uk.at.view.kdl016.a {
             }
         }
 
-        setResponseStatus() {
-            nts.uk.ui.windows.setShared("status-result", true);
+        setResponseStatus(executedStatus: boolean) {
+            nts.uk.ui.windows.setShared("status-result", executedStatus);
         }
 
         closeDialog(): void {
@@ -513,15 +518,18 @@ module nts.uk.at.view.kdl016.a {
                 let res = nts.uk.ui.windows.getShared("shareKdl016D");
                 if (!_.isNil(res) && res.reloadable) {
                     vm.loadSupportInfo(vm.selectedMode());
-                    vm.setResponseStatus();
+                    vm.executedStatus(true);
+                } else {
+                    vm.executedStatus(false);
                 }
+                nts.uk.characteristics.save("kdl016Status", {reloadable: vm.executedStatus()});
+                vm.setResponseStatus(vm.executedStatus());
             });
         } else {
             nts.uk.ui.windows.sub.modal("/view/kdl/016/e/index.xhtml").onClosed(() => {
                 let res = nts.uk.ui.windows.getShared("shareKdl016E");
                 if (!_.isNil(res) && res.reloadable) {
                     vm.loadSupportInfo(vm.selectedMode());
-                    vm.setResponseStatus();
                 }
             });
         }

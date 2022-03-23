@@ -5,7 +5,7 @@ module nts.uk.at.view.kdl016.f {
         dataSource: GridItem[];
         f1Text : KnockoutObservable<string> = ko.observable("");
 
-        constructor(params: ResultExcecute) {
+        constructor(params: ResultExecute) {
             super();
             const vm = this;
 
@@ -66,7 +66,7 @@ module nts.uk.at.view.kdl016.f {
         }
     }
 
-    interface ResultExcecute {
+    interface ResultExecute {
         action: number;
         gridItems: GridItem[]
     }
