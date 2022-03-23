@@ -8,7 +8,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.find.dialog.annualholiday.InforAnnualHolidaysAccHolidayDto;
 import nts.uk.ctx.at.request.app.find.dialog.annualholiday.dto.AnnualHolidaysDto;
+import nts.uk.ctx.at.request.app.find.dialog.suspensionholiday.GetInforNumberRemainEmployees;
 import nts.uk.ctx.at.request.app.find.dialog.suspensionholiday.SuspensionHolidayFinder;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.shr.com.context.AppContexts;
@@ -22,11 +24,20 @@ public class SuspensionHolidayWebServices extends WebService {
 	
 	@Inject
 	private SuspensionHolidayFinder suspensionHolidayFinder;
+	
+	@Inject
+	private GetInforNumberRemainEmployees remain;
 
 	@POST
 	@Path("findSuspensionHoliday")
 	public AnnualHolidaysDto findAnnualHolidays(List<String> sIDs) {
 		return suspensionHolidayFinder.findSuspensionHoliday(sIDs);
+	}
+	
+	@POST
+	@Path("findOneSuspensionHoliday")
+	public InforAnnualHolidaysAccHolidayDto findOneAnnualHolidays(String sID) {
+		return remain.getInforNumberRemainEmployees(AppContexts.user().companyId(), sID);
 	}
 	
 	@POST
