@@ -527,7 +527,7 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
             }
         }
         // sort by occurence date after check
-        linkingInfors.sort(Comparator.comparing(LinkingInfo::getOccurrenceDate).thenComparing(LinkingInfo::getUseDateNumber));
+        linkingInfors.sort(Comparator.comparing(LinkingInfo::getOccurrenceDate).thenComparing(LinkingInfo::getUseDate));
     }
 
     private void prepareNoLinkingData(List<OccurrenceAcquisitionDetail> details, List<LinkingInfo> linkingInfors) {
