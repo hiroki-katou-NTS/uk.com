@@ -621,7 +621,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                     if (type === STAMPTYPE.CHEERING) {
                         if (self.kaf002Data && self.kaf002Data.maxOfCheer && self.kaf002Data.maxOfCheer > 3 && self.isLinkList[items[0].index]) {
                             const $expandRow = $('<tr id="trLinkCheer">');
-                            const $firstCol = $('<td class="titleColor" style="height: 50px; background-color: #CFF1A5">');
+                            const $firstCol = $('<td class="titleColor" style="height: 50px;">');
                             const $secondCol = $('<td colspan="5">');
                             const $secondCol__div = $('<div id="moreRow' + String(items[0].index) + '" style="display: block" align="center">');
                             const $secondCol__div__link = $(`<a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource[${items[0].index}])">${self.$i18n('KAF002_85', [self.kaf002Data.maxOfCheer])}</a>`)
@@ -661,12 +661,14 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 if (items.length >= 10 && self.isLinkList[items[0].index]) {
                     if ($('#' + id).length) {
                         const $expandRow = $('<tr id="trLink2">');
-                        const $secondCol = $('<td class="titleColor" style="height: 50px; background-color: #CFF1A5">')
+                        const $firstCol = $('<td>');
+                        const $secondCol = $('<td class="titleColor" style="height: 50px;">');
                         const $thirdCol = $('<td colspan="5">');
                         const $thirdCol__div = $('<div id="moreRow' + String(items[0].index) + '" style="display: block" align="center">')
                         $thirdCol__div.append('<a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource[' + items[0].index + ']), text: \'' + self.$i18n('KAF002_73') + '\'"></a>');
-                        
                         $thirdCol.append($thirdCol__div);
+                        
+                        $expandRow.append($firstCol);
                         $expandRow.append($secondCol);
                         $expandRow.append($thirdCol);
                         $('#' + id).append($expandRow);
@@ -674,12 +676,6 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                     
                 } else {
                     self.isLinkList[items[0].index] = false;
-                }
-            }
-            
-            if (items.length >= 10 && self.isLinkList[items[0].index]) {
-                if ($('#' + id).length) {
-                    $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #6A6A6A"><div></div></td><td colspan="4"><div id="moreRow' + String(items[0].index) + '" style="display: block" align="center"><a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource[' + items[0].index + ']) , text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
                 }
             }
             
