@@ -30,7 +30,7 @@ public class GetFixedWorkBreakTimesService {
         List<BreakTimeSheet> breakTimesWithinSchedule = getFixedWorkBreakTimeWithinSchedule(require, companyId, workTypeCode, workTimeCode);
 
         Optional<PredetemineTimeSetting> predetemineTimeSetting = require.findByWorkTimeCode(AppContexts.user().companyId(), workTimeCode);
-        if (predetemineTimeSetting.isPresent()) {
+        if (!predetemineTimeSetting.isPresent()) {
             return Collections.emptyList();
         }
 
