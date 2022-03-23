@@ -68,7 +68,16 @@ public class KrcmtMonAttendanceItem extends ContractUkJpaEntity implements Seria
 	@Basic(optional = true)
 	@Column(name = "DISPLAY_NAME")
 	public String displayName;
-	
+
+	@Basic(optional = true)
+	@Column(name = "USE_BY_MON")
+	public boolean useByMon;
+
+	@Basic(optional = true)
+	@Column(name = "USE_BY_ANP")
+	public boolean useByAnp;
+
+
 	public KrcmtMonAttendanceItem() {
 		super();
 	}

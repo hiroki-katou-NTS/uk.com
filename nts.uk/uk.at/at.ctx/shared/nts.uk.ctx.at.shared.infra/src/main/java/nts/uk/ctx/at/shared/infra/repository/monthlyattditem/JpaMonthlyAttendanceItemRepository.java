@@ -65,7 +65,7 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 				root.get(KrcmtMonAttendanceItem_.krcmtMonAttendanceItemPK).get(KrcmtMonAttendanceItemPK_.cid),
 				companyId));
 		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KrcmtMonAttendanceItem_.mAtdItemAtr), itemAtr.value));
-
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KrcmtMonAttendanceItem_.useByMon), true));
 		// set order
 		cq.orderBy(criteriaBuilder.asc(root.get(KrcmtMonAttendanceItem_.dispNo)));
 
@@ -102,6 +102,10 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(KrcmtMonAttendanceItem_.krcmtMonAttendanceItemPK).get(KrcmtMonAttendanceItemPK_.cid),
 				companyId));
+
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KrcmtMonAttendanceItem_.useByMon),
+				true));
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// Get results
@@ -129,6 +133,7 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 		builderString.append(" FROM KrcmtMonAttendanceItem b");
 		builderString.append(" WHERE b.krcmtMonAttendanceItemPK.mAtdItemId IN :attendanceItemIds");
 		builderString.append(" AND b.krcmtMonAttendanceItemPK.cid = :companyId");
+		builderString.append(" AND b.useByMon = true");
 		
 		List<MonthlyAttendanceItem> resultList = new ArrayList<>();
 		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
@@ -158,6 +163,7 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 		builderString.append(" FROM KrcmtMonAttendanceItem b");
 		builderString.append(" WHERE");
 		builderString.append(" b.krcmtMonAttendanceItemPK.cid = :companyId");
+		builderString.append(" AND b.useByMon = true");
 		if (checkAttItems) {
 			builderString.append(" AND b.krcmtMonAttendanceItemPK.mAtdItemId IN :attendanceItemIds");
 		}
@@ -181,6 +187,8 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 		});
 		return resultList;
 	}
+
+
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -240,7 +248,7 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 		builderString.append(" FROM KrcmtMonAttendanceItem b");
 		builderString.append(" WHERE b.primitiveValue IN :listAttdID");
 		builderString.append(" AND b.krcmtMonAttendanceItemPK.cid = :companyId");
-		
+		builderString.append(" AND b.useByMon = true");
 		List<MonthlyAttendanceItem> resultList = new ArrayList<>();
 		CollectionUtil.split(listAttdID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class)
@@ -274,4 +282,106 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 		KrcmtMonAttendanceItem entity = new KrcmtMonAttendanceItem(domain);
 		this.commandProxy().update(entity);
 	}
+	@Override
+	public List<MonthlyAttendanceItem> findAllAnyPeriod(String companyId) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// create query
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KrcmtMonAttendanceItem> cq = criteriaBuilder.createQuery(KrcmtMonAttendanceItem.class);
+
+		// select from table
+		Root<KrcmtMonAttendanceItem> root = cq.from(KrcmtMonAttendanceItem.class);
+		cq.select(root);
+
+		// add conditions
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KrcmtMonAttendanceItem_.krcmtMonAttendanceItemPK).get(KrcmtMonAttendanceItemPK_.cid),
+				companyId));
+
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KrcmtMonAttendanceItem_.useByAnp),
+				true));
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// Get results
+		return em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<MonthlyAttendanceItem> findByAttendancePeriodItemId(String companyId, List<Integer> attendanceItemIds) {
+		StringBuilder builderString = new StringBuilder();
+		if(CollectionUtil.isEmpty(attendanceItemIds))
+			return Collections.emptyList();
+		builderString.append("SELECT b");
+		builderString.append(" FROM KrcmtMonAttendanceItem b");
+		builderString.append(" WHERE b.krcmtMonAttendanceItemPK.mAtdItemId IN :attendanceItemIds");
+		builderString.append(" AND b.krcmtMonAttendanceItemPK.cid = :companyId");
+		builderString.append(" AND b.useByAnp = true");
+
+		List<MonthlyAttendanceItem> resultList = new ArrayList<>();
+		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class)
+					.setParameter("attendanceItemIds", subList)
+					.setParameter("companyId", companyId)
+					.getList(f -> toDomain(f)));
+		});
+		return resultList;
+	}
+
+	@Override
+	public Optional<MonthlyAttendanceItem> findByAttendancePeriodItemId(String companyId, Integer attendanceItemId) {
+		Optional<KrcmtMonAttendanceItem> entity = this.queryProxy()
+				.find(new KrcmtMonAttendanceItemPK(companyId, attendanceItemId), KrcmtMonAttendanceItem.class);
+		if (entity.isPresent()) {
+			return Optional.of(toDomain(entity.get()));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public List<MonthlyAttendanceItem> findByAttendanceItemIdAndAtrPeriod(String companyId, List<Integer> attendanceItemIds,
+																		  List<Integer> itemAtrs) {
+		List<Integer> listItemIds = new ArrayList<>(Optional.ofNullable(attendanceItemIds).orElse(Collections.emptyList()));
+		List<Integer> listAttrs = new ArrayList<>(Optional.ofNullable(itemAtrs).orElse(Collections.emptyList()));
+
+		boolean checkAttItems = !CollectionUtil.isEmpty(listItemIds);
+		boolean checkItemAtr = !CollectionUtil.isEmpty(listAttrs);
+		if (!checkAttItems) listItemIds.add(0);
+		if (!checkItemAtr) listAttrs.add(0);
+
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT b");
+		builderString.append(" FROM KrcmtMonAttendanceItem b");
+		builderString.append(" WHERE");
+		builderString.append(" b.krcmtMonAttendanceItemPK.cid = :companyId");
+		builderString.append(" AND b.useByAnp = true");
+		if (checkAttItems) {
+			builderString.append(" AND b.krcmtMonAttendanceItemPK.mAtdItemId IN :attendanceItemIds");
+		}
+		if (checkItemAtr) {
+			builderString.append(" AND b.mAtdItemAtr IN :itemAtrs");
+		}
+
+		List<MonthlyAttendanceItem> resultList = new ArrayList<>();
+		CollectionUtil.split(listItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstIds -> {
+			CollectionUtil.split(listAttrs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstAtrs -> {
+				TypedQueryWrapper<KrcmtMonAttendanceItem> query = this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class);
+				query.setParameter("companyId", companyId);
+				if (checkAttItems) {
+					query.setParameter("attendanceItemIds", lstIds);
+				}
+				if (checkItemAtr) {
+					query.setParameter("itemAtrs", lstAtrs);
+				}
+				resultList.addAll(query.getList(f -> toDomain(f)));
+			});
+		});
+		return resultList;
+	}
+
 }

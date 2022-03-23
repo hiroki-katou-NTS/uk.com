@@ -10,7 +10,7 @@ public interface CompanyMonthlyItemService {
 
 	/**
 	 * 会社の月次項目を取得する
-	 * 
+	 *
 	 * @param cid
 	 *            会社ID
 	 * @param roleId
@@ -25,5 +25,22 @@ public interface CompanyMonthlyItemService {
 			List<MonthlyAttendanceItemAtr> itemAtrs);
 	
 	List<AttItemName> getMonthlyItemsNew(String cid, Optional<String> authorityId);
+
+
+	/**
+	 * 会社の月次項目を取得する
+	 *
+	 * @param cid
+	 *            会社ID
+	 * @param roleId
+	 *            ロールID
+	 * @param attendanceItemIds
+	 *            List＜勤怠項目ID＞
+	 * @param attribute
+	 *            List＜月次勤怠項目の属性＞
+	 * @return
+	 */
+	List<AttItemName> getAnyPeriodItems(String cid, Optional<String> authorityId, List<Integer> attendanceItemIds,
+									  List<MonthlyAttendanceItemAtr> itemAtrs);
 
 }

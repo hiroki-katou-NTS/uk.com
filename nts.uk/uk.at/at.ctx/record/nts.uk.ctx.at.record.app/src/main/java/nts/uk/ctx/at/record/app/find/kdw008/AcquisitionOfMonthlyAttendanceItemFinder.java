@@ -33,7 +33,7 @@ public class AcquisitionOfMonthlyAttendanceItemFinder {
                 .map(MonthlyAttdItemSharedDto::getAttendanceItemId)
                 .collect(Collectors.toList());
         //会社の月次項目を取得する
-        return companyMonthlyItemService.getMonthlyItems(cid, Optional.empty(),attIds, Collections.emptyList());
+        return companyMonthlyItemService.getAnyPeriodItems(cid, Optional.empty(),attIds, Collections.emptyList());
 
     }
 }
