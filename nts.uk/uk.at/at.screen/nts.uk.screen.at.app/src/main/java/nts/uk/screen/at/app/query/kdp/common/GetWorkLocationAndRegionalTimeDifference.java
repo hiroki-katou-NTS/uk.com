@@ -57,8 +57,10 @@ public class GetWorkLocationAndRegionalTimeDifference {
 				result.setWorkPlaceId(p.getWorkpalceId());
 			});
 			
-			if (param.getWorkLocationCode() == null && param.getIpv4Address() != null && result.getWorkPlaceId().equals("")) {
-				result.setWorkPlaceId(workLocation.get().getWorkplace().map(m -> m.getWorkpalceId()).orElse(""));
+			if (param.getWorkLocationCode() == null && param.getIpv4Address() != null) {
+				if (result.getWorkPlaceId() == null) {
+					result.setWorkPlaceId(workLocation.get().getWorkplace().map(m -> m.getWorkpalceId()).orElse(""));
+				}
 			}
 			
 			result.setWorkLocationName(workLocation.get().getWorkLocationName().v());
