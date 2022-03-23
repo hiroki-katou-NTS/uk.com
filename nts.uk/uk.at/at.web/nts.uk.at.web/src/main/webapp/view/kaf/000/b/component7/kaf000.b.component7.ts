@@ -4,40 +4,48 @@ module nts.uk.at.view.kaf000.b.component7.viewmodel {
         name: 'kaf000-b-component7',
         template: `
 		<div id="kaf000-b-component7">
-			<div data-bind="if: appReasonCDDisp() || appReasonDisp()">
-				<div class="table item">
-			    <div class="cell cm-column valign-top">
-			      <div class="cell valign-center" data-bind="ntsFormLabel: {required: appReasonCDRequired}, text: '理由'"></div>
-					</div>
-					<div class="cell valign-top">
-						<div data-bind="if: appReasonCDDisp" class="combo-reason-wrapper">
-							<div id="combo-box" style="width: 472px" data-bind="ntsComboBox: {
-														name: $i18n('KAF000_51'),
-																				options: reasonTypeItemLst,
-																				optionsValue: 'appStandardReasonCD',
-																				optionsText: 'reasonForFixedForm',
-																				value: opAppStandardReasonCD,
-																				columns: [{ prop: 'reasonForFixedForm', length: 20 }],
-																				required: appReasonCDRequired,
-												enable: appReasonCDEnable }"></div>
-						</div>
-						<div data-bind="if: appReasonDisp" class="text-reason-wrapper">
-							<textarea style="height: 80px;" id="inpReasonTextarea"
-									data-bind="ntsMultilineEditor: {
-														name: $i18n('KAF000_52'),
-																value: opAppReason,
-																constraint: 'AppReason',
-																option: {
-																		resizeable: false,
-																		width: '450',
-																		textalign: 'left'
-																},
-																required : appReasonRequired,
-									enable: appReasonEnable }"></textarea>
-						</div>
-					</div>
+			<div class="table item" style="margin-bottom: 6px;" data-bind="if: appReasonCDDisp">
+		    	<div class="cell valign-top" style="width: 120px;">
+		        	<div class="cell valign-center" data-bind="ntsFormLabel: {required: appReasonCDRequired}, text: $i18n('KAF000_51')"></div>
+				</div>
+				<div class="cell valign-top">
+					<div id="combo-box" style="width: 472px"
+						data-bind="ntsComboBox: {
+		        						name: $i18n('KAF000_51'),
+		                                options: reasonTypeItemLst,
+		                                optionsValue: 'appStandardReasonCD',
+		                                optionsText: 'reasonForFixedForm',
+		                                value: opAppStandardReasonCD,
+		                                columns: [{ prop: 'reasonForFixedForm', length: 20 }],
+		                                required: appReasonCDRequired,
+										enable: appReasonCDEnable }">
+		             </div>
+		         </div>
+			</div>
+			<div class="table item" data-bind="if: appReasonDisp">
+				<div class="cell valign-top" style="width: 120px;">
+					<div class="cell valign-center" data-bind="ntsFormLabel: {
+										required: appReasonRequired,
+						            	constraint: 'AppReason',
+							       		text: $i18n('KAF000_52')
+						       		}"></div>
+		     	</div>
+		       	<div class="cell valign-top">
+		           	<textarea style="height: 80px;" id="inpReasonTextarea"
+		               	data-bind="ntsMultilineEditor: {
+		                  				name: $i18n('KAF000_52'),
+			                            value: opAppReason,
+			                            constraint: 'AppReason',
+			                            option: {
+			                               	resizeable: false,
+			                                width: '450',
+			                                textalign: 'left'
+			                            },
+			                            required : appReasonRequired,
+										enable: appReasonEnable }" />
 				</div>
 			</div>
+		</div>
         `
     })
     class Kaf000BComponent7ViewModel extends ko.ViewModel {
