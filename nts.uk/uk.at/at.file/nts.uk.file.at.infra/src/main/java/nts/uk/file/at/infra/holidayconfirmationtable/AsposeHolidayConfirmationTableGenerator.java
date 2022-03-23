@@ -290,8 +290,11 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
         cells.deleteRows(row, TEMPLATE_ROWS);
 
         // set print area
-        PageSetup pageSetup = sheet.getPageSetup();
-        pageSetup.setPrintArea("A1:" + (dataSource.isLinking() ? "S" : "R") + row);
+        // 2022.03.21 - 3S - chinh.hm - issues #123534        - 削除  START
+        //PageSetup pageSetup = sheet.getPageSetup();
+        //pageSetup.setPrintArea("A1:" + (dataSource.isLinking() ? "S" : "R") + row);
+        // 2022.03.21 - 3S - chinh.hm - issues #123534        - 削除  END
+
     }
 
     private void printCommonContent(Cells cells, int row, HolidayConfirmationTableContent content, boolean holidayMng) {
@@ -451,10 +454,15 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                     howToPrintDate,
                     details
             );
-            cells.get(row, col - 1).setValue(value);
-            Style style = cells.get(row, col - 1).getStyle();
-            style.setHorizontalAlignment(HorizontalAlignment.Center);
-            cells.get(row, col - 1).setStyle(style);
+            // 2022.03.18 - 3S - chinh.hm - issues #123548  - 変更 START
+            //cells.get(row, col - 1).setValue(value);
+            cells.get(row, col - 1).setValue(value.trim());
+            //Style style = cells.get(row, col - 1).getStyle();
+            //style.setHorizontalAlignment(HorizontalAlignment.Center);
+            //cells.get(row, col - 1).setStyle(style);
+            this.setCenter(cells.get(row, col-1));
+            this.setCenter(cells.get(row, col));
+            // 2022.03.18 - 3S - chinh.hm - issues #123548  - 変更 END
         } else {
             String value = this.formatDate(
                     OccurrenceDigClass.OCCURRENCE,
@@ -476,10 +484,15 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                     howToPrintDate,
                     details
             );
-            cells.get(row + 1, col - 1).setValue(value);
-            Style style = cells.get(row + 1, col - 1).getStyle();
-            style.setHorizontalAlignment(HorizontalAlignment.Center);
-            cells.get(row + 1, col - 1).setStyle(style);
+            // 2022.03.18 - 3S - chinh.hm - issues #123548  - 変更 START
+            //cells.get(row + 1, col - 1).setValue(value);
+            cells.get(row + 1, col - 1).setValue(value.trim());
+            //Style style = cells.get(row + 1, col - 1).getStyle();
+            //style.setHorizontalAlignment(HorizontalAlignment.Center);
+            //cells.get(row + 1, col - 1).setStyle(style);
+            this.setCenter(cells.get(row + 1, col-1));
+            this.setCenter(cells.get(row + 1, col));
+            // 2022.03.18 - 3S - chinh.hm - issues #123548  - 変更 END
         } else {
             String value = this.formatDate(
                     OccurrenceDigClass.DIGESTION,
@@ -543,5 +556,12 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
         }
         details.sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
     }
-
+    // 2022.03.18 - 3S - chinh.hm  - issues #123548     - 追加   START
+    private void setCenter(Cell cell) {
+        Style style = cell.getStyle();
+        style.setVerticalAlignment(TextAlignmentType.CENTER);
+        style.setHorizontalAlignment(TextAlignmentType.CENTER_ACROSS);
+        cell.setStyle(style);
+    }
+    // 2022.03.18 - 3S - chinh.hm  - issues #123548     - 追加   END
 }

@@ -331,8 +331,11 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
         // remove template rows
         cells.deleteRows(row, TEMPLATE_ROWS);
         // set print area
-        PageSetup pageSetup = sheet.getPageSetup();
-        pageSetup.setPrintArea("A1:" + (dataSource.isLinking() ? "S" : "R") + row);
+        // 2022.03.21 - 3S - chinh.hm - issues #123531       - 削除  START
+        //PageSetup pageSetup = sheet.getPageSetup();
+        //pageSetup.setPrintArea("A1:" + (dataSource.isLinking() ? "S" : "R") + row);
+        // 2022.03.21 - 3S - chinh.hm - issues #123531       - 削除  END
+
     }
 
     private void printCommonContent(Cells cells, int row, DisplayContentsOfSubLeaveConfirmationTable content, Integer mngUnit) {
