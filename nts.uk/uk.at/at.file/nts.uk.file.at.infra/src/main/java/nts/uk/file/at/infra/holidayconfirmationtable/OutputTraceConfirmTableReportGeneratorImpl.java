@@ -238,9 +238,16 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                         content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList(),
                         content.getObservationOfExitLeave().get().getListTyingInformation()
                 );
+                // 2022.03.07 - 3S - chinh.hm  - issues #122855   - 追加  START
                 if (isPresent) {
-                    content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
+                    val listItem = new ArrayList<>(content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().stream().filter(e -> e.getDate().isUnknownDate()).collect(Collectors.toList()));
+                    val listDate = content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().stream()
+                            .filter(e -> !e.getDate().isUnknownDate()).sorted(Comparator.comparing(i -> i.getDate().getDayoffDate().get()))
+                            .collect(Collectors.toList());
+                    listItem.addAll(listDate);
+                    content.getObservationOfExitLeave().get().setOccurrenceAcquisitionDetailsList(listItem);
                 }
+                // 2022.03.07 - 3S - chinh.hm  - issues #122855   - 追加  START
                 int col = 9;
                 int size = isPresent ? content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().size() : 1;
                 int loops = size > 0 && size % 10 == 0 ? (size / 10) : (size / 10 + 1);
@@ -472,6 +479,13 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
     private String formatNoLinkedDate(Integer mngUnit, OccurrenceAcquisitionDetails detail, int howToPrintDate) {
         StringBuilder formattedDate = new StringBuilder();
         int spaceLeft = 2, spaceRight = 3;
+        // 2022.03.07 - 3S - chinh.hm  - issues #122855  - 追加  START
+        if(detail.getDate().isUnknownDate()){
+            val text = (detail.getNumberConsecuVacation().getDay().v() != 1.0 && mngUnit != 2 )
+                    ? TextResource.localize("KDR003_120"): TextResource.localize("KDR003_121");
+           return formattedDate.append(text).toString();
+        }
+        // 2022.03.07 - 3S - chinh.hm  - issues #122855  - 追加  START
         if (howToPrintDate == 0) {
             formattedDate.append(detail.getDate().getDayoffDate().get().toString("MM/dd"));
         } else {
@@ -657,6 +671,9 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
             while (iterator.hasNext()) {
                 OccurrenceAcquisitionDetails detail = iterator.next();
                 double linkingUsedDays;
+                if(!detail.getDate().getDayoffDate().isPresent()){
+                    continue;
+                }
                 if (detail.getOccurrenceDigClass() == OccurrenceDigClass.OCCURRENCE) {
                     linkingUsedDays = linkingInfors
                             .stream().filter(i -> i.getOccurrenceDate().equals(detail.getDate().getDayoffDate()
@@ -673,7 +690,9 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                 }
             }
         }
-           details.sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
+        // 2022.03.07 - 3S - chinh.hm  - issues #122855   - 削除  START
+        //details.sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
+        // 2022.03.07 - 3S - chinh.hm  - issues #122855   - 削除  END
     }
     private void setForegroundRed(Cell cell) {
         Style style = cell.getStyle();
