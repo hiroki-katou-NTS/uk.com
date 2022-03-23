@@ -126,7 +126,10 @@ module nts.uk.at.ksu008.a {
             const vm = this;
             vm.workplaceGroupList(data || []);
             if (_.isEmpty(data)) vm.$dialog.alert({messageId: "Msg_1929"});
-			else if (vm.selectedWkpGroupIds().length == 0) vm.selectedWkpGroupIds([data[0].id]);
+            vm.selectedWkpGroupIds(vm.selectedWkpGroupIds().filter( (wkpId) => _.includes(vm.workplaceGroupList().map(x => x.id), wkpId)));
+			if (vm.selectedWkpGroupIds().length == 0) {
+                vm.selectedWkpGroupIds([data[0].id]);
+            }
         }
 
         getAllSetting(code?: string) {
