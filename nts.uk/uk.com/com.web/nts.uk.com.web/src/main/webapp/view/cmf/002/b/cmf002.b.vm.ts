@@ -65,6 +65,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                             } else {
                                 self.isSetPeriodText(getText('CMF002_531'));
                             }
+                        }).fail((error: any)=>{
+                            dialog.alertError(error);
                         })
                         .always(() => block.clear());
                 }
@@ -131,6 +133,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     } else {
                         self.createNewCondition();
                     }
+                }).fail((error:any)=>{
+                    dialog.alertError(error);
                 })
                 .always(() => block.clear());
         }
@@ -217,6 +221,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                             self.initScreen(null);
                         }
                     });
+                }).fail((error:any)=>{
+                    dialog.alertError(error);
                 });
              });
         }
@@ -260,6 +266,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                             self.checkFocusWhenCopy = true;
                             self.initScreen(destinationCode);
                         });
+                    }).fail((error:any)=>{
+                        dialog.alertError(error);
                     });
                 }
             });
@@ -354,6 +362,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().delimiter(1);
             self.conditionSetData().stringFormat(0);
             self.conditionSetData().itemOutputName(0);
+            self.conditionSetData().fileName(null);
+            self.conditionSetData().encodeType(1);
             self.setNewMode(true);
             self.isSetPeriodText(getText('CMF002_531'));
         }
