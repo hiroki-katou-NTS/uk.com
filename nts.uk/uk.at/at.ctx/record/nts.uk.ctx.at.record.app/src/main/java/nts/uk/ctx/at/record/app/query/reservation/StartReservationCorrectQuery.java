@@ -74,6 +74,9 @@ public class StartReservationCorrectQuery {
         // 1: get(会社ID=ログイン会社ID): 予約設定
         ReservationSetting setting = reservationSettingRepository.findByCId(AppContexts.user().companyId()).get();
         
+        // 1.1: 修正可能な権限があるか(ログイン者のロールID): boolean
+        boolean roleFlag = setting.getCorrectionContent().roleCanModifi(AppContexts.user().roles().forAttendance());
+        
         // 2: get(期間．開始日＜＝注文日＜＝期間．終了日): 弁当メニュー履歴
         Optional<BentoMenuHistory> yokakuHistOpt = bentoMenuHistoryRepository.findByCompanyDate(AppContexts.user().companyId(), correctionDate);
         
@@ -161,6 +164,7 @@ public class StartReservationCorrectQuery {
                 listPersonEmp.stream().map(x -> PersonEmpBasicInfoImportDto.fromDomain(x)).collect(Collectors.toList()), 
                 bentoReservationMap, 
                 stampCards.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, x -> x.getValue().v())), 
-                errorList);
+                errorList, 
+                roleFlag);
     }
 }

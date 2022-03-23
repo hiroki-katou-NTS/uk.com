@@ -31,4 +31,6 @@ public class StartReservationCorrectOutput {
     public Map<String, String> stampMap = new HashMap<String, String>();
     
     public List<RegisterErrorMessage> exceptions = new ArrayList<RegisterErrorMessage>();
+    
+    public boolean roleFlag;
 }
