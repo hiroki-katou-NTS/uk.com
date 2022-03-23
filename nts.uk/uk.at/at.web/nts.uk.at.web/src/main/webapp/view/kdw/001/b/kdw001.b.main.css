@@ -152,3 +152,7 @@
 .nts-wizard .steps+.contents {
   width: inherit;
 }
+
+#contents-area #ccg001-btn-search-drawer {
+	left: 245px;
+}
