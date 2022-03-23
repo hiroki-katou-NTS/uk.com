@@ -27,7 +27,7 @@ public class InitialDisplayFormatArbitraryPeriodQuery {
      * @return: 月次の勤怠項目
      */
     public List<MonthlyAttdItemSharedDto> getAll(String companyId){
-        return monthlyRepo.findAll(companyId).stream().map(this::toDto)
+        return monthlyRepo.findAllAnyPeriod(companyId).stream().map(this::toDto)
                 .collect(Collectors.toList());
     }
     private MonthlyAttdItemSharedDto toDto(MonthlyAttendanceItem dom) {
