@@ -319,6 +319,22 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 		return false;
 	}
 	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(RegAndIrgTimeOfWeekly target){
+
+		GeneralDate startDate = this.weekPremiumProcPeriod.start();
+		GeneralDate endDate = this.weekPremiumProcPeriod.end();
+		if (startDate.after(target.weekPremiumProcPeriod.start())) startDate = target.weekPremiumProcPeriod.start();
+		if (endDate.before(target.weekPremiumProcPeriod.end())) endDate = target.weekPremiumProcPeriod.end();
+		this.weekPremiumProcPeriod = new DatePeriod(startDate, endDate);
+		
+		this.weeklyTotalPremiumTime = this.weeklyTotalPremiumTime.addMinutes(target.weeklyTotalPremiumTime.v());
+		this.errorInfos.addAll(target.errorInfos);
+	}
+	
 	private int daysIn(DatePeriod weekPeriod) {
 		
 		return weekPeriod.start().daysTo(weekPeriod.end()) + 1;

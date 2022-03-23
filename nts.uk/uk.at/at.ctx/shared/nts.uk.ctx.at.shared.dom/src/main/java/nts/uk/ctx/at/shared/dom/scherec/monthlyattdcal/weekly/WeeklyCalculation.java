@@ -346,6 +346,19 @@ public class WeeklyCalculation implements Cloneable {
 		
 		return notExistTime;
 	}
+
+	/**
+	 * 合算する
+	 * 
+	 * @param target 加算対象
+	 */
+	public void sum(WeeklyCalculation target) {
+
+		this.regAndIrgTime.sum(target.regAndIrgTime);
+		this.flexTime.sum(target.flexTime);
+		this.totalWorkingTime.sum(target.totalWorkingTime);
+		this.totalSpentTime.sum(target.totalSpentTime);
+	}
 	
 	/**
 	 * エラー情報の取得
