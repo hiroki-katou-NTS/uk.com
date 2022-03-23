@@ -93,7 +93,7 @@ module nts.uk.at.view.kdp014.a {
         showClassification: true,
         showJobTitle: true,
         showWorktype: true,
-        isMutipleCheck: false,
+        isMutipleCheck: true,
 
         /**
         * vm-defined function: Return data from CCG001
