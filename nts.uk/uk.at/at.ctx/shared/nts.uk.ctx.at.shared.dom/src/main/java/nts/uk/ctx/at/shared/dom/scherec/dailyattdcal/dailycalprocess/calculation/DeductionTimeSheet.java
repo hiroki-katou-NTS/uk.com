@@ -797,6 +797,9 @@ public class DeductionTimeSheet {
 				predetermineForCalc,
 				correctedDeductionTimeSheet);
 		
+		/**　一日の開始時刻を取得する　*/
+		val dayStartTime = fluidCalc.getBreakStartTime();
+		
 		/** ○流動休憩時間帯を取得 */
 		val flowRestTimeSheet = workTime.getFlowWorkRestTimezone(workType)
 										.map(c -> c.getFlowRestTimezone().getFlowRestSet(oneDayOfRange, predetermineForCalc))
@@ -807,7 +810,7 @@ public class DeductionTimeSheet {
 			/** △流動休憩時間帯の作成 */
 			return fluidCalc.createDeductionFluidRestTime(deductionAtr, calcRange.getAttendanceLeavingWork(),
 							fluidCalc.getBreakStartTime(), ts, fluidCalc.getDeductionTotal(), 
-							correctedDeductionTimeSheet, workTime, workType, fluidCalc.getBreakStartTime(), 
+							correctedDeductionTimeSheet, workTime, workType, dayStartTime, 
 							correctWithEndTime, betweenWorkTimeSheets);
 		}).flatMap(List::stream).collect(Collectors.toList());
 		
