@@ -1141,7 +1141,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 //co can kiem tra loi flex ko
                 self.valueUpdateMonth["hasFlex"] = true && self.canFlex();
                 dfd.resolve();
-                nts.uk.ui.block.clear();
+               // nts.uk.ui.block.clear();
                 //self.flexShortage(new FlexShortage(self, self.calcFlex(),  self.breakTimeDay()));
                 // アルゴリズム「フレックス不足の相殺が実施できるかチェックする」
             } else {
@@ -1152,7 +1152,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.valueUpdateMonth = self.itemValueMonthParent;
                     self.valueUpdateMonth["hasFlex"] = false;
                 }
-                nts.uk.ui.block.clear();
+                //nts.uk.ui.block.clear();
                 dfd.resolve();
             }
             if (self.displayFormat() === 0) self.valueUpdateMonth["needCallCalc"] = (data.monthResult == null || data.monthResult == undefined) ? false : data.monthResult.needCallCalc;
@@ -1426,14 +1426,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         let onlyCalc:boolean = self.flagCalculation;
                         let onlyLoadMonth:boolean = !checkDailyChange && !self.flagCalculation;
                         self.loadRowScreen(onlyLoadMonth, onlyCalc, onlyCheckBox, errorFlex).done(() =>{
-                            nts.uk.ui.block.clear();
+                            
                             if (!_.isEmpty(dataAfter.messageAlert) && dataAfter.messageAlert == "Msg_15" && _.isEmpty(confirmMonth)) {
+								nts.uk.ui.block.clear();
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                                     if (dataAfter.showErrorDialog && dataAfter.errorMap[6] == undefined) self.showErrorDialog();
                                 });
                                 self.execMonthlyAggregate(execMontlyAggregateAsync, dataParent);
                             }
                             if (dataAfter.errorMap[6] != undefined) {
+								nts.uk.ui.block.clear();
                                 nts.uk.ui.dialog.info({ messageId: "Msg_1455" }).then(() => {
                                     if (dataAfter.showErrorDialog) self.showErrorDialog();
                                 });
@@ -1506,15 +1508,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
 
                         self.loadRowScreen(false, self.flagCalculation, onlyCheckBox, errorFlex || errorMonth).done(() => {
-                            nts.uk.ui.block.clear();
+                            //nts.uk.ui.block.clear();
                             if (!_.isEmpty(dataAfter.messageAlert) && dataAfter.messageAlert == "Msg_15" && _.isEmpty(confirmMonth)) {
                                 if (errorReleaseCheckbox) {
+									nts.uk.ui.block.clear();
                                     nts.uk.ui.dialog.info({ messageId: "Msg_1455" }).then(() => {
                                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                                             if (dataAfter.showErrorDialog) self.showErrorDialog();
                                         });
                                     });
                                 } else {
+									nts.uk.ui.block.clear();
                                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                                         if (dataAfter.showErrorDialog) self.showErrorDialog();
                                     });
@@ -1523,6 +1527,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             } else {
                                 let errorShowMessage = (errorAll || errorFlex || self.hasErrorCalc);
                                 if (errorShowMessage && errorReleaseCheckbox) {
+									nts.uk.ui.block.clear();
                                     nts.uk.ui.dialog.info({ messageId: "Msg_1455" }).then(() => {
                                         self.showErrorDialog(dataAfter.messageAlert).done(() => {
                                             if (dataAfter.showErrorDialog) self.showErrorDialog();
@@ -1530,12 +1535,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                     });
                                 } else if (errorShowMessage) {
                                     self.showErrorDialog(dataAfter.messageAlert).done(() => {
+										nts.uk.ui.block.clear();
                                         if (dataAfter.showErrorDialog) self.showErrorDialog();
                                     });
                                 } else if (errorReleaseCheckbox) {
+									nts.uk.ui.block.clear();
                                     nts.uk.ui.dialog.info({ messageId: "Msg_1455" }).then(() => {
                                     });
                                 } else {
+									nts.uk.ui.block.clear();
                                     if (dataAfter.showErrorDialog) self.showErrorDialog();
                                 }
                             }
