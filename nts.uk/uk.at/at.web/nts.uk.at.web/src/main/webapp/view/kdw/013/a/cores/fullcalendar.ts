@@ -1513,12 +1513,13 @@ module nts.uk.ui.at.kdw013.calendar {
                 });
             });
             showConfirm.subscribe(isShow => {
-
+                
                 storeSetting()
-                .then((value) => {
-                    value.showConfirm = isShow;
-                storeSetting(value);
-                });
+                    .then((value) => {
+                        value = value ? value : { showConfirm: isShow };
+                        value.showConfirm = isShow;
+                        storeSetting(value);
+                    });
             });
             // fix ie display
             if (version.match(/IE/)) {
