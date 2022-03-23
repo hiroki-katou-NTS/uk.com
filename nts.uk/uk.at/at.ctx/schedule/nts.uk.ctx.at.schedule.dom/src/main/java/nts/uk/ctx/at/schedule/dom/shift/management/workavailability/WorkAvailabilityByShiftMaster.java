@@ -52,10 +52,10 @@ public class WorkAvailabilityByShiftMaster implements WorkAvailability, DomainVa
 	}
 
 	@Override
-	public boolean isHolidayAvailability(WorkAvailability.Require require) {
+	public boolean isHolidayAvailability(WorkAvailability.Require require, String companyId) {
 		List<ShiftMaster> shiftList = require.getShiftMaster(this.workableShiftCodeList);
 		return shiftList.stream()
-				.anyMatch(c -> !c.isAttendanceRate(require));
+				.anyMatch(c -> !c.isAttendanceRate(require, companyId));
 	}
 
 	@Override
@@ -64,7 +64,10 @@ public class WorkAvailabilityByShiftMaster implements WorkAvailability, DomainVa
 	}
 
 	@Override
-	public boolean isMatchingWorkAvailability(WorkAvailability.Require require, WorkInformation workInformation,
+	public boolean isMatchingWorkAvailability(
+			WorkAvailability.Require require,
+			String companyId,
+			WorkInformation workInformation,
 			List<TimeSpanForCalc> timeZoneList) {
 		
 		Optional<ShiftMaster> shiftMaster = require.getShiftMasterByWorkInformation(

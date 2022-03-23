@@ -975,17 +975,17 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			}
 			
 			@Override
-			public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
+			public Optional<SEmpHistoryImport> getSEmpHistoryImport(String employeeId, GeneralDate baseDate) {
 				return sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, baseDate);
 			}
 			
 			@Override
-			public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode) {
+			public Optional<CompensatoryLeaveEmSetting> compensatoryLeaveEmSetting(String companyId, String employmentCode) {
 				return Optional.ofNullable(compensLeaveEmSetRepo.find(companyId, employmentCode));
 			}
 			
 			@Override
-			public Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId) {
+			public Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId) {
 				return Optional.ofNullable(compensLeaveComSetRepository.find(companyId));
 			}
 		};

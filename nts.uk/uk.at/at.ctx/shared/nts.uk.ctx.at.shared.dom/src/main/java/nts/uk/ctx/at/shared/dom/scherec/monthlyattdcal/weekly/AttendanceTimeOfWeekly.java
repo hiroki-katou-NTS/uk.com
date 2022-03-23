@@ -38,6 +38,7 @@ public class AttendanceTimeOfWeekly extends AggregateRoot {
 	/** 週別の計算 */
 	private WeeklyCalculation weeklyCalculation;
 	/** 時間外超過 */
+	@Setter
 	private ExcessOutsideByPeriod excessOutside;
 	/** 縦計 */
 	private VerticalTotalOfMonthly verticalTotal;

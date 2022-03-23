@@ -9,29 +9,45 @@ import java.util.Optional;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSetRepository;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshmtCalcCAddHdFle;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkFlexSetPK;
+import nts.uk.ctx.at.shared.infra.entity.scherec.addsettingofworktime.KsrmtCalcCAddInclude;
+import nts.uk.ctx.at.shared.infra.entity.scherec.addsettingofworktime.KsrmtCalcCAddIncludePK;
+import nts.uk.ctx.at.shared.infra.entity.scherec.addsettingofworktime.KsrmtCalcCAddPK;
+import nts.uk.ctx.at.shared.infra.entity.scherec.addsettingofworktime.KsrmtCalcCAddPremium;
+import nts.uk.ctx.at.shared.infra.entity.scherec.addsettingofworktime.KsrmtCalcCAddWorktime;
+import nts.uk.ctx.at.shared.infra.repository.scherec.addsettingofworktime.JpaAddSettingOfWorkingTimeRepository;
 
 import javax.ejb.Stateless;
 
 /**
- * The Class JpaWorkFlexAdditionSetRepository.
+ * リポジトリ実装：フレックス勤務の加算設定
  */
 @Stateless
 public class JpaWorkFlexAdditionSetRepository extends JpaRepository implements WorkFlexAdditionSetRepository{
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSetRepository#findByCid(java.lang.String)
-	 */
 	@Override
-	public Optional<WorkFlexAdditionSet> findByCid(String companyID) {
-		Optional<KshmtCalcCAddHdFle> optEntity = this.queryProxy().find(new KshstWorkFlexSetPK(companyID), KshmtCalcCAddHdFle.class);
-		if (optEntity.isPresent()) {
-			JpaHolidayAddtionRepository holidayAddtionRepository = new JpaHolidayAddtionRepository();
-			WorkFlexAdditionSet domain = holidayAddtionRepository.convertToDomainFlexWork(optEntity.get());
-			return Optional.of(domain);
+	public Optional<WorkFlexAdditionSet> findByCid(String companyId) {
+		Optional<KsrmtCalcCAddInclude> includeWorktime = this.queryProxy().find(
+				new KsrmtCalcCAddIncludePK(companyId, WorkFlexAdditionSet.LABOR_SYSTEM_ATR, 0), KsrmtCalcCAddInclude.class);
+		if (includeWorktime.isPresent()) {
+			Optional<KsrmtCalcCAddInclude> includePremium = this.queryProxy().find(
+					new KsrmtCalcCAddIncludePK(companyId, WorkFlexAdditionSet.LABOR_SYSTEM_ATR, 1), KsrmtCalcCAddInclude.class);
+			Optional<KsrmtCalcCAddWorktime> worktime = this.queryProxy().find(
+					new KsrmtCalcCAddPK(companyId, WorkFlexAdditionSet.LABOR_SYSTEM_ATR), KsrmtCalcCAddWorktime.class);
+			Optional<KsrmtCalcCAddPremium> premium = this.queryProxy().find(
+					new KsrmtCalcCAddPK(companyId, WorkFlexAdditionSet.LABOR_SYSTEM_ATR), KsrmtCalcCAddPremium.class);
+			return Optional.of(toDomain(includeWorktime.get(), includePremium, worktime, premium));
 		}
 		return Optional.empty();
 	}
+	
+	public static WorkFlexAdditionSet toDomain(
+			KsrmtCalcCAddInclude includeWorktime,
+			Optional<KsrmtCalcCAddInclude> includePremium,
+			Optional<KsrmtCalcCAddWorktime> worktime,
+			Optional<KsrmtCalcCAddPremium> premium){
+		
+		return new WorkFlexAdditionSet(
+				includeWorktime.pk.cid,
+				JpaAddSettingOfWorkingTimeRepository.toDomain(includeWorktime, includePremium, worktime, premium));
+	}
 }
-

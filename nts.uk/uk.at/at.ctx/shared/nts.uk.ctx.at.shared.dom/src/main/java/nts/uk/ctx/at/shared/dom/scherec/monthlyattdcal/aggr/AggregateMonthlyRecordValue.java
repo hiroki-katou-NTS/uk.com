@@ -9,6 +9,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
@@ -229,7 +230,11 @@ public class AggregateMonthlyRecordValue {
 	 */
 	public IntegrationOfMonthly getIntegration(){
 
-		IntegrationOfMonthly result = new IntegrationOfMonthly();
+		IntegrationOfMonthly result = new IntegrationOfMonthly(
+				this.affiliationInfo.map(c -> c.getEmployeeId()).orElse(""),
+				this.affiliationInfo.map(c -> c.getYearMonth()).orElse(GeneralDate.today().yearMonth()),
+				this.affiliationInfo.map(c -> c.getClosureId()).orElse(ClosureId.RegularEmployee),
+				this.affiliationInfo.map(c -> c.getClosureDate()).orElse(new ClosureDate(1, false)));
 		result.setAttendanceTime(this.attendanceTime);
 		result.setAffiliationInfo(this.affiliationInfo);
 		result.getAnyItemList().addAll(this.anyItemList);

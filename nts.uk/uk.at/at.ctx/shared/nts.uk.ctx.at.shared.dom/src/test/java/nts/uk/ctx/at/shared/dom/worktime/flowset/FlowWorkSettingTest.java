@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.assertj.core.groups.Tuple;
 import org.junit.Test;
@@ -185,8 +186,8 @@ public class FlowWorkSettingTest {
 		
 		new Expectations() {
 			{
-				require.getPredetermineTimeSetting((WorkTimeCode) any);
-				result = predTimeStg;
+				require.predetemineTimeSetting(anyString, (WorkTimeCode) any);
+				result = Optional.of(predTimeStg);
 			}
 		};
 		
@@ -282,8 +283,8 @@ public class FlowWorkSettingTest {
 		
 		new Expectations() {
 			{
-				require.getPredetermineTimeSetting((WorkTimeCode) any);
-				result = predTimeStg;
+				require.predetemineTimeSetting(anyString, (WorkTimeCode) any);
+				result = Optional.of(predTimeStg);
 			}
 		};
 		

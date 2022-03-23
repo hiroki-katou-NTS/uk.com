@@ -68,7 +68,8 @@ public class WorkCycleReflectionDto {
 				WorkInformation.Require require,
 				WorkTimeSettingRepository workTimeSettingRepository,
 				Map<String , String> workTypeCodeName){
-            Optional<WorkStyle> workStyle = domain.getWorkInformation().getWorkStyle(require);
+			String companyId = AppContexts.user().companyId();
+            Optional<WorkStyle> workStyle = domain.getWorkInformation().getWorkStyle(require, companyId);
 			String workTypeCode = domain.getWorkInformation().getWorkTypeCode() == null ? "" : domain.getWorkInformation().getWorkTypeCode().v();
 			String workTypeName =  workTypeCodeName.get(workTypeCode);
 			String workTimeCode = domain.getWorkInformation().getWorkTimeCode() == null ? "" : domain.getWorkInformation().getWorkTimeCode().v();

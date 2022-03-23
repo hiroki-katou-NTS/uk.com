@@ -1100,7 +1100,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 //				return workInformation.getPredeterminedTimezone(companyID, workTimeCode, workTypeCode, null);
 			    AbsenceServiceRequireImpl require = new AbsenceServiceRequireImpl(workTypeRepository, workTimeSettingRepository,
 			            basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineRepo);
-			    Optional<WorkInfoAndTimeZone> workInfoOpt =  workInformation.getWorkInfoAndTimeZone(require);
+			    Optional<WorkInfoAndTimeZone> workInfoOpt =  workInformation.getWorkInfoAndTimeZone(require, companyID);
 
 			    return workInfoOpt.isPresent() ? workInfoOpt.get().getTimeZones() : Collections.emptyList();
 			}
@@ -2549,57 +2549,52 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         private WorkTypeRepository workTypeRepo;
 
         @Inject
-        private WorkTimeSettingRepository workTimeSettingRepository;
+        private WorkTimeSettingRepository workTimeSettingRepo;
 
         @Inject
         private BasicScheduleService basicScheduleService;
 
         @Inject
-        private FixedWorkSettingRepository fixedWorkSet;
+        private FixedWorkSettingRepository fixedWorkSetRepo;
 
         @Inject
-        private FlowWorkSettingRepository flowWorkSet;
+        private FlowWorkSettingRepository flowWorkSetRepo;
 
         @Inject
-        private FlexWorkSettingRepository flexWorkSet;
+        private FlexWorkSettingRepository flexWorkSetRepo;
 
         @Inject
-        private PredetemineTimeSettingRepository predetemineTimeSet;
+        private PredetemineTimeSettingRepository predetemineTimeSetRepo;
 
-        @Override
-        public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-            Optional<FixedWorkSetting> workSetting = fixedWorkSet.findByKey(companyId, code.v());
-            return workSetting.isPresent() ? workSetting.get() : null;
-        }
-
-        @Override
-        public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-            Optional<FlowWorkSetting> workSetting = flowWorkSet.find(companyId, code.v());
-            return workSetting.isPresent() ? workSetting.get() : null;
-        }
-
-        @Override
-        public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-            Optional<FlexWorkSetting> workSetting = flexWorkSet.find(companyId, code.v());
-            return workSetting.isPresent() ? workSetting.get() : null;
-        }
-
-        @Override
-        public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-            Optional<PredetemineTimeSetting> workSetting = predetemineTimeSet.findByWorkTimeCode(companyId, wktmCd.v());
-            return workSetting.isPresent() ? workSetting.get() : null;
-        }
-
-        @Override
-        public Optional<WorkType> getWorkType(String workTypeCd) {
-            return workTypeRepo.findByPK(companyId, workTypeCd);
-
-        }
-
-        @Override
-        public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-            return workTimeSettingRepository.findByCode(companyId, workTimeCode);
-        }
+		@Override
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return fixedWorkSetRepo.findByKey(companyId, workTimeCode.v());
+		}
+		
+		@Override
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flowWorkSetRepo.find(companyId, workTimeCode.v());
+		}
+		
+		@Override
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flexWorkSetRepo.find(companyId, workTimeCode.v());
+		}
+		
+		@Override
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return predetemineTimeSetRepo.findByWorkTimeCode(companyId, workTimeCode.v());
+		}
+		
+		@Override
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeRepo.findByPK(companyId, workTypeCode.v());
+		}
+		
+		@Override
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return workTimeSettingRepo.findByCode(companyId, workTimeCode.v());
+		}
 
         @Override
         public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {

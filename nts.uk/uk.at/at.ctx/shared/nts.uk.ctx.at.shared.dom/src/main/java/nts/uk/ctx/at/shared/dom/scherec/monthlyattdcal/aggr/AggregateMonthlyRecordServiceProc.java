@@ -609,7 +609,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 			// フレックス時間を確認する
 			val flexTime = attendanceTime.getMonthlyCalculation().getFlexTime();
-			int flexMinutes = flexTime.getFlexTime().getFlexTime().getTime().v();
+			int flexMinutes = flexTime.getFlexTime().getFlexTime().getFlexTime().getTime().v();
 			if (flexMinutes < 0) {
 				this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(ErrorType.FLEX_SUPP, this.yearMonth,
 						this.employeeId, this.closureId, this.closureDate, null, null, null));

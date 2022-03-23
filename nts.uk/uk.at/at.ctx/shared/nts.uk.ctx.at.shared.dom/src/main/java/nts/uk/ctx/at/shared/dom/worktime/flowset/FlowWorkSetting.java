@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -220,6 +221,10 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		return cloned;
 	}
 
+	public static interface Require {
+		Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode);
+	}
+	
 	/**
 	 * 平日勤務時間帯.勤務時間帯.残業時間帯を取得する(就業時間帯NOの昇順）
 	 * @return 残業時間帯
@@ -281,7 +286,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	@Override
 	public ChangeableWorkingTimeZone getChangeableWorkingTimeZone(WorkSetting.Require require) {
 		
-		val predTimeStg = this.getPredetermineTimeSetting(require);
+		val predTimeStg = this.getPredetermineTimeSetting(require).get();
 		val workAbleOneDay = predTimeStg.getOneDaySpan();
 		val workAbleMorning = predTimeStg.getHalfDayOfAmSpan();
 		val workAbleEvening = predTimeStg.getHalfDayOfPmSpan();
@@ -352,8 +357,5 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	private ChangeableWorkingTimeZonePerNo createChangeableWkTzPerNo(int workNo, TimeSpanForCalc timeSpan ) {
 		return ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
 				new WorkNo(workNo) ,timeSpan);
-	}
-
-	public static interface Require {
 	}
 }
