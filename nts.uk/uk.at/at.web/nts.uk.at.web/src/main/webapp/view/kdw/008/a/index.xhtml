@@ -31,11 +31,11 @@
 					<button tabindex="2" class="normal" data-bind="click : setNewMode">#{i18n.getText('KDW008_2')}</button>
 					<button tabindex="3" class="proceed"
 						data-bind="click : addOrUpdateClick , enable: $root.errors.isEmpty">#{i18n.getText('KDW008_3')}</button>
-					<button class="normal" data-bind="click: duplicate, enable: isUpdate"> 
+					<button class="normal" data-bind="click: duplicate, enable: isUpdate  ">
 						#{i18n.getText('KDW008_37')}
 					</button>
 					<button tabindex="4" class="danger"
-						data-bind="click : remove, enable : isRemove">#{i18n.getText('KDW008_4')}</button>
+						data-bind="click : remove, enable : isRemove  &amp;&amp; !checked()">#{i18n.getText('KDW008_4')}</button>
 				</span>
 			</div>
 
