@@ -16,7 +16,7 @@ public interface WorkTimezoneLateEarlySetSetMemento {
 	 *
 	 * @param set the new common set
 	 */
-	void setCommonSet(EmTimezoneLateEarlyCommonSet set);
+	void setCommonSet(TreatLateEarlyTime set);
 
 	/**
 	 * Sets the other class set.

@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.ksu003.start;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -154,7 +153,7 @@ public class GetFixedWorkInformation {
 				// 1.7
 				TimeZoneDto startTimeRange1 = null, endTimeRange1 = null, startTimeRange2 = null, endTimeRange2 = null;
 					// 1.7.1 休憩時間帯を取得する(Require):Optional<休憩時間>
-					Optional<BreakTimeZone> brkTime = workInformation.getBreakTimeZone(impl);
+					Optional<BreakTimeZone> brkTime = workInformation.getBreakTimeZone(impl, cid);
 					List<TimeSpanForCalcDto> calcDto = brkTime.get().getBreakTimes().stream()
 							.map(y -> new TimeSpanForCalcDto(y.getStart().v(), y.getEnd().v()))
 							.collect(Collectors.toList());
@@ -162,7 +161,7 @@ public class GetFixedWorkInformation {
 					breakTime = new BreakTimeKdl045Dto(brkTime.get().isFixed(), calcDto);
 
 					// 1.7.2 変更可能な勤務時間帯を取得する(Require)
-					lstNo = workInformation.getChangeableWorkingTimezones(impl);
+					lstNo = workInformation.getChangeableWorkingTimezones(impl, cid);
 
 					// List<勤務NOごとの変更可能な勤務時間帯>.isEmpty
 //					if (lstNo.isEmpty()) {
@@ -294,13 +293,13 @@ public class GetFixedWorkInformation {
 		}
 
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeRepo.findByPK(companyId, workTypeCode.v());
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
 		}
 
 		// fix bug 113211
@@ -311,27 +310,23 @@ public class GetFixedWorkInformation {
 //		}
 
 		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			Optional<FixedWorkSetting> workSetting = fixedWorkSet.findByKey(companyId, code.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return fixedWorkSet.findByKey(companyId, workTimeCode.v());
 		}
-
+		
 		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			Optional<FlowWorkSetting> workSetting = flowWorkSet.find(companyId, code.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flowWorkSet.find(companyId, workTimeCode.v());
 		}
-
+		
 		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			Optional<FlexWorkSetting> workSetting = flexWorkSet.find(companyId, code.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flexWorkSet.find(companyId, workTimeCode.v());
 		}
-
+		
 		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			Optional<PredetemineTimeSetting> workSetting = predetemineTimeSet.findByWorkTimeCode(companyId, wktmCd.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return predetemineTimeSet.findByWorkTimeCode(companyId, workTimeCode.v());
 		}
 
 	}
@@ -351,9 +346,8 @@ public class GetFixedWorkInformation {
 		private PredetemineTimeSettingRepository predetemineTimeSet;
 
 		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			Optional<PredetemineTimeSetting> workSetting = predetemineTimeSet.findByWorkTimeCode(companyId, wktmCd.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return predetemineTimeSet.findByWorkTimeCode(companyId, workTimeCode.v());
 		}
 
 		@Override

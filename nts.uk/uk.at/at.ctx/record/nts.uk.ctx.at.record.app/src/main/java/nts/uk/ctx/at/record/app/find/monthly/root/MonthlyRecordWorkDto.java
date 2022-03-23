@@ -31,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.publicho
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 @Data
 /** 月別実績（WORK） */
@@ -254,8 +255,11 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 
 	@Override
 	public IntegrationOfMonthly toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
-		if (this.attendanceTime == null) return new IntegrationOfMonthly();
-		return new IntegrationOfMonthly(
+		if (this.attendanceTime == null) 
+			return new IntegrationOfMonthly(employeeId, ym, ClosureId.valueOf(closureID), closureDate == null ? null : closureDate.toDomain());
+		
+		return new IntegrationOfMonthly(employeeId, yearMonth, ClosureId.valueOf(closureID),
+				closureDate == null ? null : closureDate.toDomain(), 
 				Optional.ofNullable(this.attendanceTime == null ? null : this.attendanceTime.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.affiliation == null ? null : this.affiliation.toDomain(employeeId, ym, closureID, closureDate)),
 				this.anyItem == null ? new ArrayList<>() : this.anyItem.toDomain(employeeId, ym, closureID, closureDate),

@@ -94,6 +94,7 @@ public class WorkSchedule implements DomainAggregate {
 	/**
 	 * 作る
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param date 年月日
 	 * @param workinformation 勤務情報
@@ -101,30 +102,32 @@ public class WorkSchedule implements DomainAggregate {
 	 */
 	public static WorkSchedule create(
 			Require require,
+			String companyId,
 			String employeeId,
 			GeneralDate date,
 			WorkInformation workInformation
 			){
 		
-		if (! workInformation.checkNormalCondition(require) ) {
+		if (! workInformation.checkNormalCondition(require, companyId) ) {
 			throw new BusinessException("Msg_2119");
 		}
 		
 		Optional<TimeLeavingOfDailyAttd> optTimeLeaving = Optional.empty();
-		if ( workInformation.isAttendanceRate(require) ) {
+		if ( workInformation.isAttendanceRate(require, companyId) ) {
 			optTimeLeaving = Optional.of(
-					TimeLeavingOfDailyAttd.createByPredetermineZone(require, workInformation) );
+					TimeLeavingOfDailyAttd.createByPredetermineZone(require, companyId, workInformation) );
 		}
 		
-		val isBackStraight = workInformation.isBackStraight(require) ? NotUseAttribute.Use : NotUseAttribute.Not_use;
-		val isGoStraight = workInformation.isGoStraight(require) ? NotUseAttribute.Use : NotUseAttribute.Not_use;
+		val isBackStraight = workInformation.isBackStraight(require, companyId) ? NotUseAttribute.Use : NotUseAttribute.Not_use;
+		val isGoStraight = workInformation.isGoStraight(require, companyId) ? NotUseAttribute.Use : NotUseAttribute.Not_use;
 			
 		return new WorkSchedule(
 				employeeId, 
 				date, 
 				ConfirmedATR.UNSETTLED, 
 				WorkInfoOfDailyAttendance.create(
-						require, 
+						require,
+						companyId,
 						workInformation, 
 						CalculationState.No_Calculated, 
 						isBackStraight, 
@@ -143,6 +146,7 @@ public class WorkSchedule implements DomainAggregate {
 	/**
 	 * 勤務情報を指定して手修正で作る
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param date 年月日
 	 * @param workInformation 勤務情報
@@ -150,11 +154,12 @@ public class WorkSchedule implements DomainAggregate {
 	 */
 	public static WorkSchedule createByHandCorrectionWithWorkInformation(
 			Require require,
+			String companyId,
 			String employeeId,
 			GeneralDate date,
 			WorkInformation workInformation
 			) {
-		WorkSchedule workSchedule = WorkSchedule.create(require, employeeId, date, workInformation);
+		WorkSchedule workSchedule = WorkSchedule.create(require, companyId, employeeId, date, workInformation);
 		
 		List<EditStateOfDailyAttd> editStateOfDailyAttdList = 
 				Arrays.asList(
@@ -411,11 +416,12 @@ public class WorkSchedule implements DomainAggregate {
 	/**
 	 * 作業予定を入れ替える
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param newtaskSchedule 作業予定
 	 */
-	public void updateTaskSchedule(Require require, TaskSchedule newtaskSchedule ) {
+	public void updateTaskSchedule(Require require, String companyId, TaskSchedule newtaskSchedule ) {
 		
-		this.checkWhetherTaskScheduleIsCorrect(require, newtaskSchedule);
+		this.checkWhetherTaskScheduleIsCorrect(require, companyId, newtaskSchedule);
 		
 		this.taskSchedule = newtaskSchedule;
 	}
@@ -423,11 +429,12 @@ public class WorkSchedule implements DomainAggregate {
 	/**
 	 * 一日中に作業予定を作成する
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param taskCode 作業コード
 	 */
-	public void createTaskScheduleForWholeDay(Require require, TaskCode taskCode) {
+	public void createTaskScheduleForWholeDay(Require require, String companyId, TaskCode taskCode) {
 		
-		List<TimeSpanForCalc> workingTimeSpanList = this.getWorkingTimeSpan(require);
+		List<TimeSpanForCalc> workingTimeSpanList = this.getWorkingTimeSpan(require, companyId);
 		if ( workingTimeSpanList.isEmpty() ) {
 			throw new BusinessException("Msg_2103");
 		}
@@ -442,12 +449,13 @@ public class WorkSchedule implements DomainAggregate {
 	/**
 	 * 時間帯に作業予定を追加する
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param targetTimeSpan 対象時間帯
 	 * @param taskCode 作業コード
 	 */
-	public void addTaskScheduleWithTimeSpan(Require require, TimeSpanForCalc targetTimeSpan, TaskCode taskCode) {
+	public void addTaskScheduleWithTimeSpan(Require require, String companyId, TimeSpanForCalc targetTimeSpan, TaskCode taskCode) {
 		
-		List<TimeSpanForCalc> workingTimeSpanList = this.getWorkingTimeSpan(require);
+		List<TimeSpanForCalc> workingTimeSpanList = this.getWorkingTimeSpan(require, companyId);
 		if ( workingTimeSpanList.isEmpty() ) {
 			throw new BusinessException("Msg_2103");
 		}
@@ -466,11 +474,12 @@ public class WorkSchedule implements DomainAggregate {
 	/**
 	 * 労働時間帯リストを取得する
 	 * @param require
+	 * @param companyId 会社ID
 	 * @return
 	 */
-	private List<TimeSpanForCalc> getWorkingTimeSpan(Require require) {
+	private List<TimeSpanForCalc> getWorkingTimeSpan(Require require, String companyId) {
 		
-		if( !this.workInfo.isAttendanceRate(require) ) {
+		if( !this.workInfo.isAttendanceRate(require, companyId) ) {
 			return new ArrayList<>();
 		}
 		
@@ -513,18 +522,19 @@ public class WorkSchedule implements DomainAggregate {
 				.collect( Collectors.toList() );
 		notWorkingTimeSpanList.addAll( timeVacationSpanList );
 		
-		return targetTimeSpan.subtract(notWorkingTimeSpanList);
+		return targetTimeSpan.subtract(notWorkingTimeSpanList, false);
 	}
 	
 	/**
 	 * 作業予定が妥当かどうかチェックする
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param targetTaskSchedule 作業予定
 	 * @return
 	 */
-	private boolean checkWhetherTaskScheduleIsCorrect(Require require, TaskSchedule targetTaskSchedule) {
+	private boolean checkWhetherTaskScheduleIsCorrect(Require require, String companyId, TaskSchedule targetTaskSchedule) {
 		
-		if( !this.workInfo.isAttendanceRate(require) ) {
+		if( !this.workInfo.isAttendanceRate(require, companyId) ) {
 			throw new BusinessException( "Msg_2103" );
 		}
 		

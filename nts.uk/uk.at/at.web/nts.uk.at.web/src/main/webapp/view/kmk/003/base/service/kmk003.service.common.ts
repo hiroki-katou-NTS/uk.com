@@ -222,7 +222,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 export interface WorkTimezoneGoOutSetDto {
-                    totalRoundingSet: TotalRoundingSetDto;
+                    roundingMethod: number;
                     diffTimezoneSetting: GoOutTimezoneRoundingSetDto;
                 }
 
@@ -243,8 +243,8 @@ module nts.uk.at.view.kmk003.a {
 
                 export interface WorkTimezoneShortTimeWorkSetDto {
                     nursTimezoneWorkUse: boolean;
-                    employmentTimeDeduct: boolean;
                     childCareWorkUse: boolean;
+                    roundingSet: TimeRoundingSettingDto;
                 }
 
                 export interface WorkTimezoneExtraordTimeSetDto {

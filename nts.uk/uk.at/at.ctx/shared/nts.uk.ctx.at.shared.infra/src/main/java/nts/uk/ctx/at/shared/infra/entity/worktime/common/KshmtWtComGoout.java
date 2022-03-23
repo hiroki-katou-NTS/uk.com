@@ -35,13 +35,9 @@ public class KshmtWtComGoout extends ContractUkJpaEntity implements Serializable
 	@Column(name = "EXCLUS_VER")
 	private int exclusVer;
 
-	/** The rounding same frame. */
-	@Column(name = "ROUNDING_SAME_FRAME")
-	private int roundingSameFrame;
-
-	/** The rounding cross frame. */
-	@Column(name = "ROUNDING_CROSS_FRAME")
-	private int roundingCrossFrame;
+	/** The rounding method. */
+	@Column(name = "ROUNDING_METHOD")
+	private int roundingMethod;
 
 	/**
 	 * Instantiates a new kshmt worktime go out set.

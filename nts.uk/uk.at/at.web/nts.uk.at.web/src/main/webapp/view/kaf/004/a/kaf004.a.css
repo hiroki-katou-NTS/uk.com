@@ -109,3 +109,8 @@ button.nts-switch-button {
 span.text {
     font-size: 0.8rem;
 }
+
+td {
+	text-align: center !important;
+	height: 33px !important;
+}

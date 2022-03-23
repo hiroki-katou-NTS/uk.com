@@ -41,7 +41,7 @@ public class WorkAvailabilityByTimeZoneTest {
 	
 	@Test
 	public void testIsHolidayAvailability() {
-		assertThat(timezoneAvailability.isHolidayAvailability(require)).isFalse();
+		assertThat(timezoneAvailability.isHolidayAvailability(require, "cid")).isFalse();
 	}
 	
 	@Test
@@ -54,7 +54,7 @@ public class WorkAvailabilityByTimeZoneTest {
 				new TimeSpanForCalc( new TimeWithDayAttr(1320), new TimeWithDayAttr(1440)) // 22:00~24:00 not matching
 				); 
 		
-        boolean result = timezoneAvailability.isMatchingWorkAvailability(require, null, timeZoneList);
+        boolean result = timezoneAvailability.isMatchingWorkAvailability(require, "cid", null, timeZoneList);
         assertThat(result).isFalse();
 	}
 	
@@ -67,7 +67,7 @@ public class WorkAvailabilityByTimeZoneTest {
 				new TimeSpanForCalc( new TimeWithDayAttr(480), new TimeWithDayAttr(560)), // 9:00~11:00 matching
 				new TimeSpanForCalc( new TimeWithDayAttr(1320), new TimeWithDayAttr(1440))); // 22:00~24:00 not matching
 		
-        boolean result = timezoneAvailability.isMatchingWorkAvailability(require, null, timeZoneList);
+        boolean result = timezoneAvailability.isMatchingWorkAvailability(require, "cid", null, timeZoneList);
         assertThat(result).isFalse();
 	}
 	
@@ -80,7 +80,7 @@ public class WorkAvailabilityByTimeZoneTest {
 				new TimeSpanForCalc( new TimeWithDayAttr(480), new TimeWithDayAttr(560)), // 9:00~11:00 matching
 				new TimeSpanForCalc( new TimeWithDayAttr(1080), new TimeWithDayAttr(1260))); // 18:00~21:00 matching
 		
-        boolean result = timezoneAvailability.isMatchingWorkAvailability(require, null, timeZoneList);
+        boolean result = timezoneAvailability.isMatchingWorkAvailability(require, "cid", null, timeZoneList);
         assertThat(result).isTrue();
 	}
 	
@@ -93,7 +93,7 @@ public class WorkAvailabilityByTimeZoneTest {
 				new TimeSpanForCalc( new TimeWithDayAttr(360), new TimeWithDayAttr(480)), // 6:00~8:00 matching
 				new TimeSpanForCalc( new TimeWithDayAttr(560), new TimeWithDayAttr(720))); // 9:00~12:00 matching
 		
-        boolean result = timezoneAvailability.isMatchingWorkAvailability(require, null, timeZoneList);
+        boolean result = timezoneAvailability.isMatchingWorkAvailability(require, "cid", null, timeZoneList);
         assertThat(result).isTrue();
 	}
 	

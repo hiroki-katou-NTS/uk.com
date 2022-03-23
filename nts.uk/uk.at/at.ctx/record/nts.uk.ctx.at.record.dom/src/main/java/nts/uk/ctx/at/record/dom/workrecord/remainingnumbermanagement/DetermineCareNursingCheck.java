@@ -41,21 +41,21 @@ public class DetermineCareNursingCheck {
         
         // 子の看護チェック区分を判断する
         // falseの場合
-        if (childNursingLeaveSettings.getSpecialHolidayFrame().isPresent() && !specialHolidayFrame.isEmpty() 
+        if (childNursingLeaveSettings.isManaged() && childNursingLeaveSettings.getSpecialHolidayFrame().isPresent() && !specialHolidayFrame.isEmpty() 
                 && specialHolidayFrame.stream().filter(x -> x.equals(childNursingLeaveSettings.getSpecialHolidayFrame().get())).findFirst().isPresent()) {
             childCareCheck = true;
         }
-        if (childNursingLeaveSettings.getWorkAbsence().isPresent() && !absenceFrameNo.isEmpty() 
+        if (childNursingLeaveSettings.isManaged() && childNursingLeaveSettings.getWorkAbsence().isPresent() && !absenceFrameNo.isEmpty() 
                 && absenceFrameNo.stream().filter(x -> x.equals(childNursingLeaveSettings.getWorkAbsence().get())).findFirst().isPresent()) {
             childCareCheck = true;
         }
         
         // 介護チェック区分を判断する
-        if (nursingLeaveSettings.getSpecialHolidayFrame().isPresent() && !specialHolidayFrame.isEmpty() 
+        if (nursingLeaveSettings.isManaged() && nursingLeaveSettings.getSpecialHolidayFrame().isPresent() && !specialHolidayFrame.isEmpty() 
                 && specialHolidayFrame.stream().filter(x -> x.equals(nursingLeaveSettings.getSpecialHolidayFrame().get())).findFirst().isPresent()) {
                 nursingCheck = true;
         }
-        if (nursingLeaveSettings.getWorkAbsence().isPresent() && !absenceFrameNo.isEmpty() 
+        if (nursingLeaveSettings.isManaged() && nursingLeaveSettings.getWorkAbsence().isPresent() && !absenceFrameNo.isEmpty() 
                 && absenceFrameNo.stream().filter(x -> x.equals(nursingLeaveSettings.getWorkAbsence().get())).findFirst().isPresent()) {
                 nursingCheck = true;
         }

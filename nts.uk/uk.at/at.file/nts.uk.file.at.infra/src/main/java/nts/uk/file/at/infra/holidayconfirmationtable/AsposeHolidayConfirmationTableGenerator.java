@@ -2,6 +2,7 @@ package nts.uk.file.at.infra.holidayconfirmationtable;
 
 import com.aspose.cells.*;
 import com.aspose.pdf.HorizontalAlignment;
+import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
@@ -229,6 +230,21 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                         content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails(),
                         content.getHolidayAcquisitionInfo().get().getLinkingInfos()
                 );
+                // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 追加  START
+
+                if (content.getHolidayAcquisitionInfo().isPresent()) {
+                    val listItem = content.getHolidayAcquisitionInfo()
+                            .get().getOccurrenceAcquisitionDetails().stream().filter(e -> e.getDate().isUnknownDate())
+                            .collect(Collectors.toCollection(ArrayList::new));
+
+                    val listDate = content.getHolidayAcquisitionInfo()
+                            .get().getOccurrenceAcquisitionDetails().stream()
+                            .filter(e -> !e.getDate().isUnknownDate()).sorted(Comparator.comparing(i -> i.getDate().getDayoffDate().get()))
+                            .collect(Collectors.toList());
+                    listItem.addAll(listDate);
+                    content.getHolidayAcquisitionInfo().get().setOccurrenceAcquisitionDetails(listItem);
+                }
+                // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 追加  END
                 int col = 9;
                 int size = content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails().size();
                 int loops = size > 0 && size % 10 == 0 ? (size / 10) : (size / 10 + 1);
@@ -256,9 +272,23 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                             if (acquisitionDetail.getOccurrenceDigCls() == OccurrenceDigClass.OCCURRENCE) {
                                 String value = this.formatNoLinkedDate(acquisitionDetail, dataSource.getHowToPrintDate());
                                 this.setValue(cells, row, col + i, value);
+                                // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 追加  START
+                                if(acquisitionDetail.getDate().isUnknownDate()){
+                                    Style style = cells.get(row, col).getStyle();
+                                    style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+                                    cells.get(row, col + i).setStyle(style);
+                                }
+                                // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 追加  END
                             } else {
                                 String value = this.formatNoLinkedDate(acquisitionDetail, dataSource.getHowToPrintDate());
                                 this.setValue(cells, row + 1, col + i, value);
+                                // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 追加  START
+                                if(acquisitionDetail.getDate().isUnknownDate()){
+                                    Style style = cells.get(row, col).getStyle();
+                                    style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+                                    cells.get(row + 1, col + i).setStyle(style);
+                                }
+                                // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 追加  END
                             }
                         } else {
                             break;
@@ -290,8 +320,11 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
         cells.deleteRows(row, TEMPLATE_ROWS);
 
         // set print area
-        PageSetup pageSetup = sheet.getPageSetup();
-        pageSetup.setPrintArea("A1:" + (dataSource.isLinking() ? "S" : "R") + row);
+        // 2022.03.21 - 3S - chinh.hm - issues #123534        - 削除  START
+        //PageSetup pageSetup = sheet.getPageSetup();
+        //pageSetup.setPrintArea("A1:" + (dataSource.isLinking() ? "S" : "R") + row);
+        // 2022.03.21 - 3S - chinh.hm - issues #123534        - 削除  END
+
     }
 
     private void printCommonContent(Cells cells, int row, HolidayConfirmationTableContent content, boolean holidayMng) {
@@ -360,6 +393,13 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
      */
     private String formatNoLinkedDate(OccurrenceAcquisitionDetail detail, int howToPrintDate) {
         StringBuilder formattedDate = new StringBuilder();
+        // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 追加  START
+        if(detail.getDate().isUnknownDate()){
+            val text = (detail.getOccurrencesUseNumber().getDay().v() != 1.0)
+                    ? TextResource.localize("KDR004_120"): TextResource.localize("KDR004_121");
+            return formattedDate.append(text).toString();
+        }
+        // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 追加  START
         if (howToPrintDate == 0) {
             formattedDate.append(detail.getDate().getDayoffDate().get().toString("MM/dd"));
         } else {
@@ -451,10 +491,15 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                     howToPrintDate,
                     details
             );
-            cells.get(row, col - 1).setValue(value);
-            Style style = cells.get(row, col - 1).getStyle();
-            style.setHorizontalAlignment(HorizontalAlignment.Center);
-            cells.get(row, col - 1).setStyle(style);
+            // 2022.03.18 - 3S - chinh.hm - issues #123548  - 変更 START
+            //cells.get(row, col - 1).setValue(value);
+            cells.get(row, col - 1).setValue(value.trim());
+            //Style style = cells.get(row, col - 1).getStyle();
+            //style.setHorizontalAlignment(HorizontalAlignment.Center);
+            //cells.get(row, col - 1).setStyle(style);
+            this.setCenter(cells.get(row, col-1));
+            this.setCenter(cells.get(row, col));
+            // 2022.03.18 - 3S - chinh.hm - issues #123548  - 変更 END
         } else {
             String value = this.formatDate(
                     OccurrenceDigClass.OCCURRENCE,
@@ -476,10 +521,15 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                     howToPrintDate,
                     details
             );
-            cells.get(row + 1, col - 1).setValue(value);
-            Style style = cells.get(row + 1, col - 1).getStyle();
-            style.setHorizontalAlignment(HorizontalAlignment.Center);
-            cells.get(row + 1, col - 1).setStyle(style);
+            // 2022.03.18 - 3S - chinh.hm - issues #123548  - 変更 START
+            //cells.get(row + 1, col - 1).setValue(value);
+            cells.get(row + 1, col - 1).setValue(value.trim());
+            //Style style = cells.get(row + 1, col - 1).getStyle();
+            //style.setHorizontalAlignment(HorizontalAlignment.Center);
+            //cells.get(row + 1, col - 1).setStyle(style);
+            this.setCenter(cells.get(row + 1, col-1));
+            this.setCenter(cells.get(row + 1, col));
+            // 2022.03.18 - 3S - chinh.hm - issues #123548  - 変更 END
         } else {
             String value = this.formatDate(
                     OccurrenceDigClass.DIGESTION,
@@ -514,7 +564,7 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
             }
         }
         // sort by occurence date after check
-        linkingInfors.sort(Comparator.comparing(LinkingInfo::getOccurrenceDate).thenComparing(LinkingInfo::getUseDateNumber));
+        linkingInfors.sort(Comparator.comparing(LinkingInfo::getOccurrenceDate).thenComparing(LinkingInfo::getUseDate));
     }
 
     private void prepareNoLinkingData(List<OccurrenceAcquisitionDetail> details, List<LinkingInfo> linkingInfors) {
@@ -523,6 +573,8 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
             ListIterator<OccurrenceAcquisitionDetail> iterator = details.listIterator();
             while (iterator.hasNext()) {
                 OccurrenceAcquisitionDetail detail = iterator.next();
+                if(detail.getDate().isUnknownDate())
+                    continue;
                 double linkingUsedDays;
                 if (detail.getOccurrenceDigCls() == OccurrenceDigClass.OCCURRENCE) {
                     linkingUsedDays = linkingInfors
@@ -541,7 +593,16 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                 }
             }
         }
-        details.sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
+        // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 削除  START
+        //details.sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
+        // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 削除  END
     }
-
+    // 2022.03.18 - 3S - chinh.hm  - issues #123548     - 追加   START
+    private void setCenter(Cell cell) {
+        Style style = cell.getStyle();
+        style.setVerticalAlignment(TextAlignmentType.CENTER);
+        style.setHorizontalAlignment(TextAlignmentType.CENTER_ACROSS);
+        cell.setStyle(style);
+    }
+    // 2022.03.18 - 3S - chinh.hm  - issues #123548     - 追加   END
 }

@@ -17,19 +17,17 @@ import javax.inject.Inject;
 
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetManageWorkHour;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.EmploymentCalcDetailedSetIncludeVacationAmount;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.TreatVacationTimeForCalcWorkTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HourlyPaymentAdditionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.IncludeHolidaysPremiumCalcDetailSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.PremiumCalcMethodDetailOfHoliday;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.PremiumHolidayCalcMethod;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.TreatVacationTimeForCalcPremium;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.TreatDeductTimeForCalcWorkTime;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfPremiumTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkTimeCalcMethodDetailOfHoliday;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkTimeHolidayCalcMethod;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkTime;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -110,38 +108,43 @@ public class HolidayAddtionFinder {
 	 */
 	private RegularWorkDto convertToDbTypeRegularWork(WorkRegularAdditionSet regularWork) {
 		if (regularWork == null) {
-			return null;
+			return new RegularWorkDto(AppContexts.user().companyId());
 		}
-
 		RegularWorkDto regularWorkDto = new RegularWorkDto();
-			// 休暇の割増計算方法
-			PremiumHolidayCalcMethod premiumHolidayCalcMethod = regularWork.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday();
-			PremiumCalcMethodDetailOfHoliday advanceSetPre = premiumHolidayCalcMethod.getAdvanceSet().get();
-			DeductLeaveEarly deductLeaveEarly = advanceSetPre.getNotDeductLateLeaveEarly();
-			IncludeHolidaysPremiumCalcDetailSet includeHolidaysPremiumCalcDetailSet = advanceSetPre.getIncludeVacationSet();
-			// 休暇の就業時間計算方法
-			WorkTimeHolidayCalcMethod workTimeHolidayCalcMethod = regularWork.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday();
-			WorkTimeCalcMethodDetailOfHoliday advanceSetWork = workTimeHolidayCalcMethod.getAdvancedSet().get();
-			EmploymentCalcDetailedSetIncludeVacationAmount includeVacationSet = advanceSetWork.getIncludeVacationSet();
-
-			regularWorkDto.setUseAtr(regularWork.getVacationCalcMethodSet().getUseAtr().value);
-			regularWorkDto.setCalcActualOperationPre(premiumHolidayCalcMethod.getCalculateActualOperation().value);
-			regularWorkDto.setExemptTaxTimePre(advanceSetPre.getCalculateIncludIntervalExemptionTime().value);
-			regularWorkDto.setIncChildNursingCarePre(advanceSetPre.getCalculateIncludCareTime().value);
-			regularWorkDto.setAdditionTimePre(includeHolidaysPremiumCalcDetailSet.getAddition().value);
-			regularWorkDto.setNotDeductLateleavePre(deductLeaveEarly.getDeduct().isDeduct() == true ? 1 : 0);
+		regularWorkDto.setUseAtr(regularWork.getAddSetOfWorkingTime().getUseAtr().value);
+		// 割増時間の加算設定
+		AddSettingOfPremiumTime addSetOfPremium = regularWork.getAddSetOfWorkingTime().getAddSetOfPremium();
+		regularWorkDto.setCalcActualOperationPre(addSetOfPremium.getCalculateActualOperation().value);
+		if (addSetOfPremium.getTreatDeduct().isPresent()){
+			TreatDeductTimeForCalcWorkTime treatDeduct = addSetOfPremium.getTreatDeduct().get();
+			regularWorkDto.setEnableSetPerWorkHour1(treatDeduct.getTreatLateEarlyTimeSet().isEnableSetPerWorkHour() == true ? 1 : 0);
+			regularWorkDto.setNotDeductLateleavePre(treatDeduct.getTreatLateEarlyTimeSet().getTreatSet().isInclude() == true ? 1 : 0);
+			regularWorkDto.setIncChildNursingCarePre(treatDeduct.getCalculateIncludCareTime().value);
+			regularWorkDto.setExemptTaxTimePre(treatDeduct.getCalculateIncludIntervalExemptionTime().value);
+		}
+		if (addSetOfPremium.getTreatVacation().isPresent()){
+			TreatVacationTimeForCalcPremium treatVacation = addSetOfPremium.getTreatVacation().get();
+			regularWorkDto.setAdditionTimePre(treatVacation.getAddition().value);
 			regularWorkDto.setDeformatExcValuePre(
-					includeHolidaysPremiumCalcDetailSet.getDeformationExceedsPredeterminedValue().isPresent() ?
-					includeHolidaysPremiumCalcDetailSet.getDeformationExceedsPredeterminedValue().get().value : null
+					treatVacation.getDeformationExceedsPredeterminedValue().isPresent() ?
+								treatVacation.getDeformationExceedsPredeterminedValue().get().value : null
 			);
-			regularWorkDto.setExemptTaxTimeWork(advanceSetWork.getCalculateIncludIntervalExemptionTime().value);
-			regularWorkDto.setCalcActualOperationWork(workTimeHolidayCalcMethod.getCalculateActualOperation().value);
-			regularWorkDto.setIncChildNursingCareWork(advanceSetWork.getCalculateIncludCareTime().value);
-			regularWorkDto.setNotDeductLateleaveWork(advanceSetWork.getNotDeductLateLeaveEarly().getDeduct().isDeduct() == true ? 1 : 0);
-			regularWorkDto.setAdditionTimeWork(includeVacationSet.getAddition().value);
-			regularWorkDto.setEnableSetPerWorkHour1(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
+		}
+		// 就業時間の加算設定
+		AddSettingOfWorkTime addSetOfWorkTime = regularWork.getAddSetOfWorkingTime().getAddSetOfWorkTime();
+		regularWorkDto.setCalcActualOperationWork(addSetOfWorkTime.getCalculateActualOperation().value);
+		if (addSetOfWorkTime.getTreatDeduct().isPresent()){
+			TreatDeductTimeForCalcWorkTime treatDeduct = addSetOfWorkTime.getTreatDeduct().get();
 			// spec describle enable1 same enable2
-			regularWorkDto.setEnableSetPerWorkHour2(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
+			regularWorkDto.setEnableSetPerWorkHour2(treatDeduct.getTreatLateEarlyTimeSet().isEnableSetPerWorkHour() == true ? 1 : 0);
+			regularWorkDto.setNotDeductLateleaveWork(treatDeduct.getTreatLateEarlyTimeSet().getTreatSet().isInclude() == true ? 1 : 0);
+			regularWorkDto.setIncChildNursingCareWork(treatDeduct.getCalculateIncludCareTime().value);
+			regularWorkDto.setExemptTaxTimeWork(treatDeduct.getCalculateIncludIntervalExemptionTime().value);
+		}
+		if (addSetOfWorkTime.getTreatVacation().isPresent()){
+			TreatVacationTimeForCalcWorkTime treatVacation = addSetOfWorkTime.getTreatVacation().get();
+			regularWorkDto.setAdditionTimeWork(treatVacation.getAddition().value);
+		}
 		return regularWorkDto;
 	}
 
@@ -155,37 +158,41 @@ public class HolidayAddtionFinder {
 		if (flexWork == null) {
 			return null;
 		}
-
 		FlexWorkDto flexWorkDto = new FlexWorkDto();
-		// 休暇の割増計算方法
-		PremiumHolidayCalcMethod premiumHolidayCalcMethod = flexWork.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday();
-		PremiumCalcMethodDetailOfHoliday advanceSetPre = premiumHolidayCalcMethod.getAdvanceSet().get();
-		DeductLeaveEarly deductLeaveEarly = advanceSetPre.getNotDeductLateLeaveEarly();
-		IncludeHolidaysPremiumCalcDetailSet includeHolidaysPremiumCalcDetailSet = advanceSetPre.getIncludeVacationSet();
-		// 休暇の就業時間計算方法
-		WorkTimeHolidayCalcMethod workTimeHolidayCalcMethod = flexWork.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday();
-		WorkTimeCalcMethodDetailOfHoliday advanceSetWork = workTimeHolidayCalcMethod.getAdvancedSet().get();
-		EmploymentCalcDetailedSetIncludeVacationAmount includeVacationSet = advanceSetWork.getIncludeVacationSet();
-
-		flexWorkDto.setUseAtr(flexWork.getVacationCalcMethodSet().getUseAtr().value);
-		flexWorkDto.setCalcActualOperationPre(premiumHolidayCalcMethod.getCalculateActualOperation().value);
-		flexWorkDto.setExemptTaxTimePre(advanceSetPre.getCalculateIncludIntervalExemptionTime().value);
-		flexWorkDto.setIncChildNursingCarePre(advanceSetPre.getCalculateIncludCareTime().value);
-		flexWorkDto.setPredeterminedOvertimePre(includeHolidaysPremiumCalcDetailSet.getPredeterminedExcessTimeOfFlex().get().value);
-		flexWorkDto.setAdditionTimePre(includeHolidaysPremiumCalcDetailSet.getAddition().value);
-		flexWorkDto.setNotDeductLateleavePre(deductLeaveEarly.getDeduct().isDeduct() ? 1 : 0);
-		flexWorkDto.setExemptTaxTimeWork(advanceSetWork.getCalculateIncludIntervalExemptionTime().value);
-		flexWorkDto.setMinusAbsenceTimeWork(advanceSetWork.getMinusAbsenceTime().get().value);
-
-		flexWorkDto.setCalcActualOperationWork(workTimeHolidayCalcMethod.getCalculateActualOperation().value);
-		flexWorkDto.setIncChildNursingCareWork(advanceSetWork.getCalculateIncludCareTime().value);
-		flexWorkDto.setNotDeductLateleaveWork(advanceSetWork.getNotDeductLateLeaveEarly().getDeduct().isDeduct() ? 1 : 0);
-		flexWorkDto.setPredeterminDeficiencyWork(includeVacationSet.getPredeterminedDeficiencyOfFlex().get().value);
-		flexWorkDto.setAdditionTimeWork(includeVacationSet.getAddition().value);
-		flexWorkDto.setEnableSetPerWorkHour1(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
-		// spec describle enable2 same enable1
-		flexWorkDto.setEnableSetPerWorkHour2(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
-		flexWorkDto.setAdditionWithinMonthlyStatutory(includeVacationSet.getAdditionWithinMonthlyStatutory().get().value);
+		flexWorkDto.setUseAtr(flexWork.getAddSetOfWorkingTime().getUseAtr().value);
+		// 割増時間の加算設定
+		AddSettingOfPremiumTime addSetOfPremium = flexWork.getAddSetOfWorkingTime().getAddSetOfPremium();
+		flexWorkDto.setCalcActualOperationPre(addSetOfPremium.getCalculateActualOperation().value);
+		if (addSetOfPremium.getTreatDeduct().isPresent()){
+			TreatDeductTimeForCalcWorkTime treatDeduct = addSetOfPremium.getTreatDeduct().get();
+			flexWorkDto.setEnableSetPerWorkHour1(treatDeduct.getTreatLateEarlyTimeSet().isEnableSetPerWorkHour() == true ? 1 : 0);
+			flexWorkDto.setNotDeductLateleavePre(treatDeduct.getTreatLateEarlyTimeSet().getTreatSet().isInclude() ? 1 : 0);
+			flexWorkDto.setIncChildNursingCarePre(treatDeduct.getCalculateIncludCareTime().value);
+			flexWorkDto.setExemptTaxTimePre(treatDeduct.getCalculateIncludIntervalExemptionTime().value);
+		}
+		if (addSetOfPremium.getTreatVacation().isPresent()){
+			TreatVacationTimeForCalcPremium treatVacation = addSetOfPremium.getTreatVacation().get();
+			flexWorkDto.setAdditionTimePre(treatVacation.getAddition().value);
+			flexWorkDto.setPredeterminedOvertimePre(treatVacation.getPredeterminedExcessTimeOfFlex().get().value);
+		}
+		// 就業時間の加算設定
+		AddSettingOfWorkTime addSetOfWorkTime = flexWork.getAddSetOfWorkingTime().getAddSetOfWorkTime();
+		flexWorkDto.setCalcActualOperationWork(addSetOfWorkTime.getCalculateActualOperation().value);
+		if (addSetOfWorkTime.getTreatDeduct().isPresent()){
+			TreatDeductTimeForCalcWorkTime treatDeduct = addSetOfWorkTime.getTreatDeduct().get();
+			// spec describle enable2 same enable1
+			flexWorkDto.setEnableSetPerWorkHour2(treatDeduct.getTreatLateEarlyTimeSet().isEnableSetPerWorkHour() == true ? 1 : 0);
+			flexWorkDto.setNotDeductLateleaveWork(treatDeduct.getTreatLateEarlyTimeSet().getTreatSet().isInclude() ? 1 : 0);
+			flexWorkDto.setIncChildNursingCareWork(treatDeduct.getCalculateIncludCareTime().value);
+			flexWorkDto.setExemptTaxTimeWork(treatDeduct.getCalculateIncludIntervalExemptionTime().value);
+		}
+		if (addSetOfWorkTime.getTreatVacation().isPresent()){
+			TreatVacationTimeForCalcWorkTime treatVacation = addSetOfWorkTime.getTreatVacation().get();
+			flexWorkDto.setAdditionTimeWork(treatVacation.getAddition().value);
+			flexWorkDto.setPredeterminDeficiencyWork(treatVacation.getPredeterminedDeficiencyOfFlex().get().value);
+			flexWorkDto.setAdditionWithinMonthlyStatutory(treatVacation.getAdditionWithinMonthlyStatutory().get().value);
+			flexWorkDto.setMinusAbsenceTimeWork(treatVacation.getMinusAbsenceTime().get().value);
+		}
 		return flexWorkDto;
 	}
 
@@ -199,34 +206,39 @@ public class HolidayAddtionFinder {
 		if (labor == null) {
 			return null;
 		}
-
 		WorkDepLaborDto laborDto = new WorkDepLaborDto();
-			// 休暇の割増計算方法
-			PremiumHolidayCalcMethod premiumHolidayCalcMethod = labor.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday();
-			PremiumCalcMethodDetailOfHoliday advanceSetPre = premiumHolidayCalcMethod.getAdvanceSet().get();
-			DeductLeaveEarly deductLeaveEarly = advanceSetPre.getNotDeductLateLeaveEarly();
-			IncludeHolidaysPremiumCalcDetailSet includeHolidaysPremiumCalcDetailSet = advanceSetPre.getIncludeVacationSet();
-			// 休暇の就業時間計算方法
-			WorkTimeHolidayCalcMethod workTimeHolidayCalcMethod = labor.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday();
-			WorkTimeCalcMethodDetailOfHoliday advanceSetWork = workTimeHolidayCalcMethod.getAdvancedSet().get();
-			EmploymentCalcDetailedSetIncludeVacationAmount includeVacationSet = advanceSetWork.getIncludeVacationSet();
-
-			laborDto.setUseAtr(labor.getVacationCalcMethodSet().getUseAtr().value);
-			laborDto.setCalcActualOperationPre(premiumHolidayCalcMethod.getCalculateActualOperation().value);
-			laborDto.setExemptTaxTimePre(advanceSetPre.getCalculateIncludIntervalExemptionTime().value);
-			laborDto.setIncChildNursingCarePre(advanceSetPre.getCalculateIncludCareTime().value);
-			laborDto.setAdditionTimePre(includeHolidaysPremiumCalcDetailSet.getAddition().value);
-			laborDto.setNotDeductLateleavePre(deductLeaveEarly.getDeduct().isDeduct() == true ? 1 : 0);
-			laborDto.setDeformatExcValue(includeHolidaysPremiumCalcDetailSet.getDeformationExceedsPredeterminedValue().get().value);
-			laborDto.setExemptTaxTimeWork(advanceSetWork.getCalculateIncludIntervalExemptionTime().value);
-			laborDto.setMinusAbsenceTimeWork(advanceSetWork.getMinusAbsenceTime().get().value);
-			laborDto.setCalcActualOperationWork(workTimeHolidayCalcMethod.getCalculateActualOperation().value);
-			laborDto.setIncChildNursingCareWork(advanceSetWork.getCalculateIncludCareTime().value);
-			laborDto.setNotDeductLateleaveWork(advanceSetWork.getNotDeductLateLeaveEarly().getDeduct().isDeduct() == true ? 1 : 0);
-			laborDto.setAdditionTimeWork(includeVacationSet.getAddition().value);
-			laborDto.setEnableSetPerWorkHour1(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
+		laborDto.setUseAtr(labor.getAddSetOfWorkingTime().getUseAtr().value);
+		// 割増時間の加算設定
+		AddSettingOfPremiumTime addSetOfPremium = labor.getAddSetOfWorkingTime().getAddSetOfPremium();
+		laborDto.setCalcActualOperationPre(addSetOfPremium.getCalculateActualOperation().value);
+		if (addSetOfPremium.getTreatDeduct().isPresent()){
+			TreatDeductTimeForCalcWorkTime treatDeduct = addSetOfPremium.getTreatDeduct().get();
+			laborDto.setEnableSetPerWorkHour1(treatDeduct.getTreatLateEarlyTimeSet().isEnableSetPerWorkHour() == true ? 1 : 0);
+			laborDto.setNotDeductLateleavePre(treatDeduct.getTreatLateEarlyTimeSet().getTreatSet().isInclude() == true ? 1 : 0);
+			laborDto.setIncChildNursingCarePre(treatDeduct.getCalculateIncludCareTime().value);
+			laborDto.setExemptTaxTimePre(treatDeduct.getCalculateIncludIntervalExemptionTime().value);
+		}
+		if (addSetOfPremium.getTreatVacation().isPresent()){
+			TreatVacationTimeForCalcPremium treatVacation = addSetOfPremium.getTreatVacation().get();
+			laborDto.setAdditionTimePre(treatVacation.getAddition().value);
+			laborDto.setDeformatExcValue(treatVacation.getDeformationExceedsPredeterminedValue().get().value);
+		}
+		// 就業時間の加算設定
+		AddSettingOfWorkTime addSetOfWorkTime = labor.getAddSetOfWorkingTime().getAddSetOfWorkTime();
+		laborDto.setCalcActualOperationWork(addSetOfWorkTime.getCalculateActualOperation().value);
+		if (addSetOfWorkTime.getTreatDeduct().isPresent()){
+			TreatDeductTimeForCalcWorkTime treatDeduct = addSetOfWorkTime.getTreatDeduct().get();
 			// spec describle enable2 same enable1
-			laborDto.setEnableSetPerWorkHour2(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
+			laborDto.setEnableSetPerWorkHour2(treatDeduct.getTreatLateEarlyTimeSet().isEnableSetPerWorkHour() == true ? 1 : 0);
+			laborDto.setNotDeductLateleaveWork(treatDeduct.getTreatLateEarlyTimeSet().getTreatSet().isInclude() == true ? 1 : 0);
+			laborDto.setIncChildNursingCareWork(treatDeduct.getCalculateIncludCareTime().value);
+			laborDto.setExemptTaxTimeWork(treatDeduct.getCalculateIncludIntervalExemptionTime().value);
+		}
+		if (addSetOfWorkTime.getTreatVacation().isPresent()){
+			TreatVacationTimeForCalcWorkTime treatVacation = addSetOfWorkTime.getTreatVacation().get();
+			laborDto.setAdditionTimeWork(treatVacation.getAddition().value);
+			laborDto.setMinusAbsenceTimeWork(treatVacation.getMinusAbsenceTime().get().value);
+		}
 		return laborDto;
 	}
 	
@@ -234,33 +246,38 @@ public class HolidayAddtionFinder {
 		if (hourlyPaymentAdditionSet == null) {
 			return null;
 		}
-		
 		HourlyPaymentAdditionSetDto dto = new HourlyPaymentAdditionSetDto();
-		PremiumHolidayCalcMethod premiumHolidayCalcMethod = hourlyPaymentAdditionSet.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday();
-		PremiumCalcMethodDetailOfHoliday advanceSetPre = premiumHolidayCalcMethod.getAdvanceSet().get();
-		DeductLeaveEarly deductLeaveEarly = advanceSetPre.getNotDeductLateLeaveEarly();
-		IncludeHolidaysPremiumCalcDetailSet includeHolidaysPremiumCalcDetailSet = advanceSetPre.getIncludeVacationSet();
-		
-		WorkTimeHolidayCalcMethod workTimeHolidayCalcMethod = hourlyPaymentAdditionSet.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday();
-		WorkTimeCalcMethodDetailOfHoliday advanceSetWork = workTimeHolidayCalcMethod.getAdvancedSet().get();
-		EmploymentCalcDetailedSetIncludeVacationAmount includeVacationSet = advanceSetWork.getIncludeVacationSet();
-
-		dto.setUseAtr(hourlyPaymentAdditionSet.getVacationCalcMethodSet().getUseAtr().value);
-		dto.setCalcPremiumVacation(premiumHolidayCalcMethod.getCalculateActualOperation().value);
-		dto.setAddition1(includeHolidaysPremiumCalcDetailSet.getAddition().value);
-		dto.setDeformatExcValue(includeHolidaysPremiumCalcDetailSet.getDeformationExceedsPredeterminedValue().get().value);
-		dto.setIncChildNursingCare(advanceSetPre.getCalculateIncludCareTime().value);
-		dto.setDeduct(deductLeaveEarly.getDeduct().isDeduct() == true ? 1 : 0);
-		dto.setCalculateIncludeIntervalExemptionTime1(advanceSetPre.getCalculateIncludIntervalExemptionTime().value);
-
-		dto.setCalcWorkHourVacation(workTimeHolidayCalcMethod.getCalculateActualOperation().value);
-		dto.setAddition2(includeVacationSet.getAddition().value);
-		dto.setCalculateIncludCareTime(advanceSetWork.getCalculateIncludCareTime().value);
-		dto.setNotDeductLateLeaveEarly(advanceSetWork.getNotDeductLateLeaveEarly().getDeduct().isDeduct() == true ? 1 : 0);
-		dto.setCalculateIncludeIntervalExemptionTime2(advanceSetWork.getCalculateIncludIntervalExemptionTime().value);
-		dto.setEnableSetPerWorkHour1(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
-		// spec describle dto.setEnableSetPerWorkHour1 is same dto.setEnableSetPerWorkHour2 
-		dto.setEnableSetPerWorkHour2(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
+		dto.setUseAtr(hourlyPaymentAdditionSet.getAddSetOfWorkingTime().getUseAtr().value);
+		// 割増時間の加算設定
+		AddSettingOfPremiumTime addSetOfPremium = hourlyPaymentAdditionSet.getAddSetOfWorkingTime().getAddSetOfPremium();
+		dto.setCalcPremiumVacation(addSetOfPremium.getCalculateActualOperation().value);
+		if (addSetOfPremium.getTreatDeduct().isPresent()){
+			TreatDeductTimeForCalcWorkTime treatDeduct = addSetOfPremium.getTreatDeduct().get();
+			dto.setEnableSetPerWorkHour1(treatDeduct.getTreatLateEarlyTimeSet().isEnableSetPerWorkHour() == true ? 1 : 0);
+			dto.setDeduct(treatDeduct.getTreatLateEarlyTimeSet().getTreatSet().isInclude() == true ? 1 : 0);
+			dto.setIncChildNursingCare(treatDeduct.getCalculateIncludCareTime().value);
+			dto.setCalculateIncludeIntervalExemptionTime1(treatDeduct.getCalculateIncludIntervalExemptionTime().value);
+		}
+		if (addSetOfPremium.getTreatVacation().isPresent()){
+			TreatVacationTimeForCalcPremium treatVacation = addSetOfPremium.getTreatVacation().get();
+			dto.setAddition1(treatVacation.getAddition().value);
+			dto.setDeformatExcValue(treatVacation.getDeformationExceedsPredeterminedValue().get().value);
+		}
+		// 就業時間の加算設定
+		AddSettingOfWorkTime addSetOfWorkTime = hourlyPaymentAdditionSet.getAddSetOfWorkingTime().getAddSetOfWorkTime();
+		dto.setCalcWorkHourVacation(addSetOfWorkTime.getCalculateActualOperation().value);
+		if (addSetOfWorkTime.getTreatDeduct().isPresent()){
+			TreatDeductTimeForCalcWorkTime treatDeduct = addSetOfWorkTime.getTreatDeduct().get();
+			// spec describle dto.setEnableSetPerWorkHour1 is same dto.setEnableSetPerWorkHour2 
+			dto.setEnableSetPerWorkHour2(treatDeduct.getTreatLateEarlyTimeSet().isEnableSetPerWorkHour() == true ? 1 : 0);
+			dto.setNotDeductLateLeaveEarly(treatDeduct.getTreatLateEarlyTimeSet().getTreatSet().isInclude() == true ? 1 : 0);
+			dto.setCalculateIncludCareTime(treatDeduct.getCalculateIncludCareTime().value);
+			dto.setCalculateIncludeIntervalExemptionTime2(treatDeduct.getCalculateIncludIntervalExemptionTime().value);
+		}
+		if (addSetOfWorkTime.getTreatVacation().isPresent()){
+			TreatVacationTimeForCalcWorkTime treatVacation = addSetOfWorkTime.getTreatVacation().get();
+			dto.setAddition2(treatVacation.getAddition().value);
+		}
 		return dto;
 	}
 }
