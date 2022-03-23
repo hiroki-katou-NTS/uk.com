@@ -205,12 +205,6 @@ export class KAFS08A1Component extends KafS00ShrComponent {
                 businessTripInfoOutput: vm.data.businessTripInfoOutput
                 //businessTrip: vm.mode ? null : vm.data.appWorkChange
             }).then((res: any) => {
-                let errorMsgLst = res.data.businessTripInfoOutputDto.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
-                if (!_.isEmpty(errorMsgLst)) {
-                    vm.$modal.error({ messageId: errorMsgLst[0] }).then(() => {
-
-                    });
-                }
                 let response = res.data;
                 if (response.result) {
                     // this.data.businessTripInfoOutput = response.businessTripInfoOutputDto;
@@ -219,7 +213,14 @@ export class KAFS08A1Component extends KafS00ShrComponent {
                     }
                     vm.data.businessTripInfoOutput = response.businessTripInfoOutputDto;
                 }
-                vm.$emit('nextToStepTwo', vm.listDate, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason, vm.mode);
+                let errorMsgLst = res.data.businessTripInfoOutputDto.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
+                if (!_.isEmpty(errorMsgLst)) {
+                    vm.$modal.error({ messageId: errorMsgLst[0] }).then(() => {
+
+                    });
+                } else {
+                    vm.$emit('nextToStepTwo', vm.listDate, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason, vm.mode);
+                }
 
                 vm.$mask('hide');
             }).catch((err) => {

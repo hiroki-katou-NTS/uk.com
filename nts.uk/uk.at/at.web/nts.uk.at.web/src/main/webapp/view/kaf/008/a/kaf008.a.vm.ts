@@ -215,6 +215,13 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 application: applicationDto,
                 screenDetails: mapScreenContent
             };
+			let errorMsgLst = tripOutput.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
+			if(!_.isEmpty(errorMsgLst)) {
+				vm.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
+					vm.focusDate();			
+				});
+				return;
+			}
 
             vm.$blockui( "show" );
             vm.$validate([
