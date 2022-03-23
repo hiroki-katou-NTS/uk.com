@@ -11,6 +11,8 @@ import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
+import nts.uk.ctx.at.function.dom.adapter.workplace.EmployeeInfoImported;
+import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.TimeSpanForCalcDto;
 import nts.uk.ctx.at.schedule.dom.schedule.support.SupportFunctionControl;
 import nts.uk.ctx.at.schedule.dom.schedule.support.SupportFunctionControlRepository;
@@ -28,6 +30,11 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapte
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupImport;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.AffWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.WorkplaceExportServiceAdapter;
+import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
+import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.EmployeeInfoData;
+import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.GetAllEmpWhoBelongWorkplaceGroupService;
+import nts.uk.ctx.bs.employee.pub.workplace.ResultRequest597Export;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.query.pub.employee.EmployeeSearchQueryDto;
 import nts.uk.query.pub.employee.RegulationInfoEmployeeExport;
 import nts.uk.query.pub.employee.RegulationInfoEmployeePub;
@@ -77,6 +84,15 @@ public class SupportInformationFinder {
 
     @Inject
     private SupportAllowOrganizationFinder supportAllowOrganizationFinder;
+
+    @Inject
+    private WorkplaceAdapter workplaceAdapter;
+
+    @Inject
+    private AffWorkplaceGroupRespository affWorkplaceGroupRepo;
+
+    @Inject
+    private WorkplacePub workplacePub;
 
     final static String SPACE = " ";
     final static String ZEZO_TIME = "00:00";
@@ -419,26 +435,21 @@ public class SupportInformationFinder {
      * @return
      */
     public List<EmployeeInformationDto> getEmployeeInfo(String orgId, int orgUnit, DatePeriod period) {
-        GeneralDate baseDate = GeneralDate.today();
-
-        // 1. 単位＝＝職場: 対象組織識別情報
-        // 2. 単位＝＝職場グループ: 対象組織識別情報
-        TargetOrgIdenInfor targetOrgIdenInfor = orgUnit == TargetOrganizationUnit.WORKPLACE.value
-                ? TargetOrgIdenInfor.creatIdentifiWorkplace(orgId)
-                : TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(orgId);
-
-        //3.
-        RequireEmpImpl require = new RequireEmpImpl(
-                workplaceGroupAdapter,
-                regulInfoEmployeeAdap,
-                regulInfoEmpPub);
-        List<String> sids = GetEmpCanReferService.getByOrg(require, AppContexts.user().employeeId(), baseDate, period, targetOrgIdenInfor);
-
-        List<EmployeeInformationImport> employeeInfos = this.employeeInfoAdapter
-                .getEmployeeInfo(new EmployeeInformationQueryDtoImport(sids, period.end(), false, false, false,
-                        false, false, false));
-
-        return employeeInfos.stream().map(e -> new EmployeeInformationDto(e.getEmployeeId(), e.getEmployeeCode(), e.getBusinessName())).sorted(Comparator.comparing(x -> x.getEmployeeCode())).collect(Collectors.toList());
+        // 単位＝＝職場 : 職場ID,期間 : List＜社員ID、社員CD、社員名＞
+        if (orgUnit == TargetOrganizationUnit.WORKPLACE.value) {
+            // [No.597]職場の所属社員を取得する
+            List<EmployeeInfoImported> employeeInfos = workplaceAdapter.getLstEmpByWorkplaceIdsAndPeriod(Collections.singletonList(orgId), period);
+            return employeeInfos.stream().map(e -> new EmployeeInformationDto(e.getSid(), e.getEmployeeCode(), e.getEmployeeName()))
+                    .sorted(Comparator.comparing(EmployeeInformationDto::getEmployeeCode)).collect(Collectors.toList());
+        } else { // 単位＝＝職場グループ : require, 期間, 職場グループID : List<社員の所属組織>
+            val requireGetAllEmp = new RequireAllEmpWhoBelongWklGroupSv(affWorkplaceGroupRepo, workplacePub);
+            val employeeInfos = GetAllEmpWhoBelongWorkplaceGroupService.getAllEmp(requireGetAllEmp, period, orgId);
+            return employeeInfos.stream().map(e -> new EmployeeInformationDto(
+                    e.getEmployeeID(),
+                    e.getEmployeeCode().isPresent() ? e.getEmployeeCode().get().v() : "",
+                    e.getBusinessName().isPresent() ? e.getBusinessName().get() : ""))
+                    .sorted(Comparator.comparing(EmployeeInformationDto::getEmployeeCode)).collect(Collectors.toList());
+        }
     }
 
     @AllArgsConstructor
@@ -552,6 +563,30 @@ public class SupportInformationFinder {
             // don't have to implement it
             return null;
         }
+    }
+
+    @AllArgsConstructor
+    private class RequireAllEmpWhoBelongWklGroupSv implements GetAllEmpWhoBelongWorkplaceGroupService.Require {
+        private AffWorkplaceGroupRespository repo;
+
+        private WorkplacePub pub;
+
+        @Override
+        public List<String> getWorkplaceBelongsWorkplaceGroup(String workplaceGroupId) {
+            return repo.getWKPID(AppContexts.user().companyId(), workplaceGroupId);
+        }
+
+        @Override
+        public List<EmployeeInfoData> getEmployeesWhoBelongWorkplace(String workplaceId, DatePeriod datePeriod) {
+            // [No.597]職場の所属社員を取得する
+            List<ResultRequest597Export> data = pub.getLstEmpByWorkplaceIdsAndPeriod(Arrays.asList(workplaceId),
+                    datePeriod);
+            List<EmployeeInfoData> result = data.stream()
+                    .map(c -> new EmployeeInfoData(c.getSid(), c.getEmployeeCode(), c.getEmployeeName()))
+                    .collect(Collectors.toList());
+            return result;
+        }
+
     }
 
     @Getter
