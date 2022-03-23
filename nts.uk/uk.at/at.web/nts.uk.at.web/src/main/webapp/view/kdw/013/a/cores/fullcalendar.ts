@@ -1966,6 +1966,8 @@ module nts.uk.ui.at.kdw013.calendar {
                 let sltds = vm.selectedEvents;
                 let isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => (formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')) && (formatDate(_.get(e,'end')) === formatDate(_.get(m,'end')) ) ));
                 let data = ko.unwrap(params.$datas);
+                let setting = ko.unwrap(params.$settings);
+               
                 
                 let isLock = (lockStatus) => {
                     if (_.get(lockStatus, 'lockDailyResult', 1) == 0) { return true; }
@@ -1977,17 +1979,27 @@ module nts.uk.ui.at.kdw013.calendar {
                     if (_.get(lockStatus, 'lockPast', 1) == 0) { return true; }
                     return false;
                 }
+
+                let islockBySetting = (lockSetting, getAtr) => {
+
+                    let lockItems = [157, 159, 163, 165, 169, 171, 175, 177, 181, 183, 187, 189, 193, 195, 199, 201, 205, 207, 211, 213];
+                    
+
+                    return !!_.find(lockSetting, function(lock) { return lockItems.indexOf(lock.itemDailyID) != -1 && _.get(lock, getAtr) == false });
+                }
                
-                let getEditable = (date, isTimeBreak) => {
+                let getEditable = (date, isTimeBreak, getAtr) => {
                     let startDate = moment(_.get(data, 'workStartDate'));
                     let lockStatus = _.find(_.get(data, 'lockInfos'), li => { return moment(li.date).isSame(moment(date), 'days'); });
-                    return startDate.isAfter(date) ? false : !(isTimeBreak && isLock(lockStatus));
+                    let lockSetting = _.get(setting, 'dailyAttendanceItemAuthority.displayAndInput');
+                    return startDate.isAfter(date) ? false : !((isTimeBreak && isLock(lockStatus)) || (isTimeBreak && islockBySetting(lockSetting , getAtr)));
                 };
                 let events = ko.unwrap<EventRaw[]>(params.events);
                 
+                let getAtr = (vm.params.employee() == '' || vm.params.employee() == vm.$user.employeeId) ? 'youCanChangeIt' : 'canBeChangedByOthers';
                 //set editable
                 _.forEach(events, e => {
-                    e.editable = getEditable(formatDate(_.get(e, 'start')), e.extendedProps.isTimeBreak);
+                    e.editable = getEditable(formatDate(_.get(e, 'start')), e.extendedProps.isTimeBreak, getAtr);
                 });
                 
                 

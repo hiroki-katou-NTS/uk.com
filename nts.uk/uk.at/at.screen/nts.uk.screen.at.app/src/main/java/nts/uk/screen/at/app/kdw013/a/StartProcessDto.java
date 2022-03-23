@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.request.app.find.application.overtime.DivergenceReasonInputMethodDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.DivergenceTimeRootDto;
+import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.DailyAttendanceItemAuthorityDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.screen.at.app.kdw006.i.ManHrInputUsageSettingDto;
@@ -21,20 +22,20 @@ import nts.uk.screen.at.app.kdw013.query.OneDayFavoriteSetDto;
 import nts.uk.screen.at.app.kdw013.query.OneDayFavoriteTaskDisplayOrderDto;
 
 /**
- * 
+ *
  * @author tutt
  *
  */
 @Setter
 @Getter
 public class StartProcessDto {
-	
+
 	/** 作業枠利用設定 */
 	private TaskFrameUsageSettingDto taskFrameUsageSetting;
 
 	/** List<作業> */
 	private List<TaskDto> tasks;
-	
+
 	/** 工数入力表示フォーマット */
 	private ManHrInputDisplayFormatDto  manHrInputDisplayFormat;
 
@@ -76,42 +77,45 @@ public class StartProcessDto {
 
 	// お気に入り作業の表示順
 	public FavoriteTaskDisplayOrderDto favTaskDisplayOrders;
-	
-	// 工数入力の利用設定 
+
+	// 工数入力の利用設定
 	public ManHrInputUsageSettingDto manHrInputUsageSetting;
+	// Optional<権限別日次項目制御>
+	public DailyAttendanceItemAuthorityDto dailyAttendanceItemAuthority;
 
 	public void setManHourInput(StartManHourInput domain) {
-		
+
 		this.taskFrameUsageSetting = new TaskFrameUsageSettingDto(domain.getTaskFrameUsageSetting()
 				.getFrameSettingList().stream().map(x -> TaskFrameSettingDto.toDto(x)).collect(Collectors.toList()));
-		
+
 		this.tasks = domain.getTasks().stream().map(x -> TaskDto.toDto(x)).collect(Collectors.toList());
-		
+
 		this.manHrInputDisplayFormat = domain.getManHrInputDisplayFormat().map(df -> new ManHrInputDisplayFormatDto(df)).orElse(null);
-		
+
 		this.manHrInputUsageSetting = domain.getManHrInputUsageSetting();
-		
+
 	}
 
 	public void setItemMasterInfo(AttendanceItemMasterInformationDto itemMasterInfo) {
-		
+
 		this.attItemName = itemMasterInfo.getAttItemName();
 		this.dailyAttendanceItem = itemMasterInfo.getDailyAttendanceItem();
 		this.workTypes = itemMasterInfo.getWorkTypes();
 		this.workTimeSettings = itemMasterInfo.getWorkTimeSettings();
 		this.divergenceTimeRoots = itemMasterInfo.getDivergenceTimeRoots();
 		this.divergenceReasonInputMethods = itemMasterInfo.getDivergenceReasonInputMethods();
-		
+		this.dailyAttendanceItemAuthority = itemMasterInfo.getDailyAttendanceItemAuthority();
+
 	}
 
 	public void setRefWork(GetRefWorkplaceAndEmployeeDto refWork) {
-		
+
 		this.employeeInfos = refWork.getEmployeeInfos().entrySet().stream()
 				.map(x -> new EmployeeInfoDto(x.getKey(), x.getValue())).collect(Collectors.toList());
 		this.lstEmployeeInfo = refWork.getLstEmployeeInfo();
 		this.workplaceInfos = refWork.getWorkplaceInfos().stream().map(x -> WorkplaceInfoDto.fromDomain(x))
 				.collect(Collectors.toList());
-		
+
 	}
 
 	public void setFavTask(GetFavoriteTaskDto favTask) {

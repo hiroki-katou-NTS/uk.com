@@ -12,7 +12,7 @@ module nts.uk.ui.koExtentions {
             let ROW_HEIGHT = 30;
             let DIFF_NUMBER = 2;
             
-            var $grid = $(element).addClass("nts-gridlist");
+            var $grid = $(element);
             let gridId = $grid.attr('id');
             if (nts.uk.util.isNullOrUndefined(gridId)) {
                 throw new Error('the element NtsGridList must have id attribute.');
@@ -196,6 +196,8 @@ module nts.uk.ui.koExtentions {
                     }
                 }
             });
+
+            $grid.closest('.ui-iggrid').addClass('nts-gridlist');
             
             if (data.itemDraggable) {
                 new SwapHandler().setModel(new GridSwapList($grid, optionsValue)).enableDragDrop(data.dataSource);
@@ -493,7 +495,7 @@ module nts.uk.ui.koExtentions {
             
 
             $grid.data("ui-changed", false);
-            $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
+            $grid.closest('.ui-iggrid').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
         }
     }
     
