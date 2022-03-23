@@ -173,7 +173,7 @@ public class HolidayAddtionFinder {
 		if (addSetOfPremium.getTreatVacation().isPresent()){
 			TreatVacationTimeForCalcPremium treatVacation = addSetOfPremium.getTreatVacation().get();
 			flexWorkDto.setAdditionTimePre(treatVacation.getAddition().value);
-			flexWorkDto.setPredeterminedOvertimePre(treatVacation.getPredeterminedExcessTimeOfFlex().get().value);
+			flexWorkDto.setPredeterminedOvertimePre(treatVacation.getPredeterminedExcessTimeOfFlex().map(c -> c.value).orElse(0));
 		}
 		// 就業時間の加算設定
 		AddSettingOfWorkTime addSetOfWorkTime = flexWork.getAddSetOfWorkingTime().getAddSetOfWorkTime();
@@ -189,9 +189,9 @@ public class HolidayAddtionFinder {
 		if (addSetOfWorkTime.getTreatVacation().isPresent()){
 			TreatVacationTimeForCalcWorkTime treatVacation = addSetOfWorkTime.getTreatVacation().get();
 			flexWorkDto.setAdditionTimeWork(treatVacation.getAddition().value);
-			flexWorkDto.setPredeterminDeficiencyWork(treatVacation.getPredeterminedDeficiencyOfFlex().get().value);
-			flexWorkDto.setAdditionWithinMonthlyStatutory(treatVacation.getAdditionWithinMonthlyStatutory().get().value);
-			flexWorkDto.setMinusAbsenceTimeWork(treatVacation.getMinusAbsenceTime().get().value);
+			flexWorkDto.setPredeterminDeficiencyWork(treatVacation.getPredeterminedDeficiencyOfFlex().map(c -> c.value).orElse(0));
+			flexWorkDto.setAdditionWithinMonthlyStatutory(treatVacation.getAdditionWithinMonthlyStatutory().map(c -> c.value).orElse(0));
+			flexWorkDto.setMinusAbsenceTimeWork(treatVacation.getMinusAbsenceTime().map(c -> c.value).orElse(0));
 		}
 		return flexWorkDto;
 	}
@@ -221,7 +221,7 @@ public class HolidayAddtionFinder {
 		if (addSetOfPremium.getTreatVacation().isPresent()){
 			TreatVacationTimeForCalcPremium treatVacation = addSetOfPremium.getTreatVacation().get();
 			laborDto.setAdditionTimePre(treatVacation.getAddition().value);
-			laborDto.setDeformatExcValue(treatVacation.getDeformationExceedsPredeterminedValue().get().value);
+			laborDto.setDeformatExcValue(treatVacation.getDeformationExceedsPredeterminedValue().map(c -> c.value).orElse(0));
 		}
 		// 就業時間の加算設定
 		AddSettingOfWorkTime addSetOfWorkTime = labor.getAddSetOfWorkingTime().getAddSetOfWorkTime();
@@ -237,7 +237,7 @@ public class HolidayAddtionFinder {
 		if (addSetOfWorkTime.getTreatVacation().isPresent()){
 			TreatVacationTimeForCalcWorkTime treatVacation = addSetOfWorkTime.getTreatVacation().get();
 			laborDto.setAdditionTimeWork(treatVacation.getAddition().value);
-			laborDto.setMinusAbsenceTimeWork(treatVacation.getMinusAbsenceTime().get().value);
+			laborDto.setMinusAbsenceTimeWork(treatVacation.getMinusAbsenceTime().map(c -> c.value).orElse(0));
 		}
 		return laborDto;
 	}
@@ -261,7 +261,7 @@ public class HolidayAddtionFinder {
 		if (addSetOfPremium.getTreatVacation().isPresent()){
 			TreatVacationTimeForCalcPremium treatVacation = addSetOfPremium.getTreatVacation().get();
 			dto.setAddition1(treatVacation.getAddition().value);
-			dto.setDeformatExcValue(treatVacation.getDeformationExceedsPredeterminedValue().get().value);
+			dto.setDeformatExcValue(treatVacation.getDeformationExceedsPredeterminedValue().map(c -> c.value).orElse(0));
 		}
 		// 就業時間の加算設定
 		AddSettingOfWorkTime addSetOfWorkTime = hourlyPaymentAdditionSet.getAddSetOfWorkingTime().getAddSetOfWorkTime();
