@@ -655,7 +655,7 @@ module nts.uk.at.view.kdw008.a {
                 self.authorityFormatMonthlyValue.removeAll();
                 self.monthCorrectionValue.removeAll();
                 self.selectedSheetName("");
-                self.selectedSheetNo(1);
+
                 if (self.isDaily()) {
                     self.authorityFormatDailyValue.removeAll();
                     self.dailyDataSource.removeAll();
