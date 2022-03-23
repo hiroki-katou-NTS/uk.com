@@ -93,7 +93,7 @@
 													optionsValue: 'sheetNoId',
 													optionsText: 'sheetNoName',
 													value: selectedSheetNo,
-													enable: true}">
+													enable: !isNewMode()}">
 											</div>
 											<div id="label2" data-bind="ntsFormLabel: { constraint: 'DailyPerFormatSheetName', inline: true, required: true, enable: true}">#{i18n.getText('KDW008_8')}</div>
 											<input tabindex="-1" class="need-check" id ="checkSheetNameIsDaily"
@@ -172,7 +172,7 @@
 												optionsValue: 'sheetNoId',
 												optionsText: 'sheetNoName',
 												value: selectedSheetNo,
-												enable: true}">
+												enable: !isNewMode()}">
 											</div>
 											<div id="label2" data-bind="ntsFormLabel: { constraint: 'DailyPerFormatSheetName', inline: true, required: true, enable: true}">#{i18n.getText('KDW008_8')}</div>
 											<input tabindex="-1" id="selectedSheetName"  class="need-check" data-bind="ntsTextEditor: {value: selectedSheetName,
@@ -224,7 +224,7 @@
 												optionsValue: 'sheetNoId',
 												optionsText: 'sheetNoName',
 												value: selectedSheetNo,
-												enable: true}">
+												enable: !isNewMode()}">
 											</div>
 											<div id="label2" data-bind="ntsFormLabel: { constraint: 'DailyPerFormatSheetName', inline: true, required: true, enable: true}">#{i18n.getText('KDW008_8')}</div>
 											<input tabindex="-1"

@@ -12,6 +12,7 @@ module nts.uk.at.view.kdw008.a {
 
             //isDaily
             isUpdate: KnockoutObservable<boolean>;
+            isNewMode: KnockoutObservable<boolean> = ko.observable(false);
             isRemove: KnockoutObservable<boolean>;
             showCode: KnockoutObservable<boolean>;
             checked: KnockoutObservable<boolean>;
@@ -333,6 +334,7 @@ module nts.uk.at.view.kdw008.a {
                                     service.getAllByCIDAndCode(self.selectedCode()).done((res) => {
                                         self.listDailyFormSheetCommand = res.listDailyFormSheetCommand;
                                     });
+                                    self.isNewMode(false);
                                 } else {
                                     self.formatCodeItems([]);
                                     self.setNewMode();
@@ -352,6 +354,7 @@ module nts.uk.at.view.kdw008.a {
                                         self.monthCorrectionFormatList(MonPfmCorrectionFormatDto.fromApp(data));
                                         let formatCodeItem: FormatCode = self.formatCodeItems()[this.getIndex(oldIndex)];
                                         self.initSelectedCodeHasMutated(formatCodeItem.formatCode);
+                                        self.isNewMode(false);
                                     } else {
                                         self.formatCodeItems([]);
                                         self.setNewMode();
@@ -372,6 +375,7 @@ module nts.uk.at.view.kdw008.a {
                                         self.modifyAnyPeriodFormatList(data);
                                         let formatCodeItem: FormatCode = self.formatCodeItems()[this.getIndex(oldIndex)];
                                         self.initSelectedCodeHasMutated(formatCodeItem.formatCode);
+                                        self.isNewMode(false);
                                     } else {
                                         self.formatCodeItems([]);
                                         self.setNewMode();
@@ -448,7 +452,7 @@ module nts.uk.at.view.kdw008.a {
 	                    if (data) {
 	                        self.selectedSheetName(data.sheetName);
 	                        self.authorityFormatDailyValue(self.mapAttItemFormatDetail(self.dailyAttItems(), data.dailyAttendanceAuthorityDetailDtos));
-	                        
+                            self.isNewMode(false);
 	                    }
 	                    dfd.resolve();
 	                }).fail(err => {
@@ -532,7 +536,8 @@ module nts.uk.at.view.kdw008.a {
                                 let atds = listAtt[0].detailDtoList;
                                 self.selectedSheetName(listAtt[0].sheetName);
                                 self.modifyAnyPeriodValue(self.mapAttItemFormatDetail(self.modifyAnyPeriodAttItems(), atds));
-                                console.log(self.modifyAnyPeriodValue(), 'modifyAnyPeriodValue')
+                                console.log(self.modifyAnyPeriodValue(), 'modifyAnyPeriodValue');
+                                self.isNewMode(false);
                             }else {
                                 self.selectedSheetName("");
                             }
@@ -603,6 +608,7 @@ module nts.uk.at.view.kdw008.a {
                 if (sheetItem) {
                     self.selectedSheetName(sheetItem.sheetName);
                     self.monthCorrectionValue(this.mapAttItemMonthRightDetail(self.monthlyAttItems(), sheetItem.listDisplayTimeItem));
+                    self.isNewMode(false);
                 }
             }
 
@@ -636,6 +642,7 @@ module nts.uk.at.view.kdw008.a {
                 self.showCode(true);
                 self.isUpdate(false);
                 self.isRemove(false);
+                self.isNewMode(true);
                 $("#currentCode").focus();
             }
 
@@ -680,6 +687,7 @@ module nts.uk.at.view.kdw008.a {
                        self.isSetFormatToDefault(true);
                    }
                 }
+                self.isNewMode(true);
                 $("#currentCode").focus();
                 _.defer(() => { nts.uk.ui.errors.clearAll(); });
             }
