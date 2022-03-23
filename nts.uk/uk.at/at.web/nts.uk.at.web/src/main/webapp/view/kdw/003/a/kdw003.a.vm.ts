@@ -2221,7 +2221,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.flagCalculation = false;
                 if (onlyLoadMonth && errorFlex == false) {
                     self.processFlex(data, true);
-                    nts.uk.ui.block.clear();
+                    //nts.uk.ui.block.clear();
                     return dfd.resolve();
                 }else if(onlyLoadMonth && errorFlex == true){
                     return dfd.resolve();
