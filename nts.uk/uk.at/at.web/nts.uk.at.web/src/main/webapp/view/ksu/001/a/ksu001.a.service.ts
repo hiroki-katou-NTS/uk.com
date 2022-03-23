@@ -11,6 +11,7 @@ module nts.uk.at.view.ksu001.a.service {
         validWhenPaste: "screen/at/schedule/valid-when-paste",
         validWhenEditTime: "screen/at/schedule/valid-when-edit-time",
         changeWokPlace: "screen/at/schedule/change-workplace",
+        getDataGrid: "screen/at/schedule/get-data-grid",
         getEvent: "screen/at/schedule/get-event",
         regWorkSchedule: "screen/at/schedule/reg-workschedule",
         checkCorrectHalfday: "screen/at/schedule/correct-worktime-halfday",
@@ -63,6 +64,10 @@ module nts.uk.at.view.ksu001.a.service {
 
     export function changeWokPlace(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.changeWokPlace, obj);
+    }
+    
+    export function getDataGrid(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataGrid, obj);
     }
 
     export function getEvent(obj): JQueryPromise<any> {
