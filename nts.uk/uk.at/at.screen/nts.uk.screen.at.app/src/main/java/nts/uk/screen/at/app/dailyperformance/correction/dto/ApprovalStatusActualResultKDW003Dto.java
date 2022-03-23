@@ -7,7 +7,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.Ap
 
 @Getter
 @NoArgsConstructor
-public class ApprovalStatusActualResultKDW003Dto extends ConfirmStatusActualResultKDW003Dto{
+public class ApprovalStatusActualResultKDW003Dto {
 	@Setter
 	private boolean statusNormal;
 	
@@ -35,7 +35,7 @@ public class ApprovalStatusActualResultKDW003Dto extends ConfirmStatusActualResu
 	
 	@Override
 	public boolean equals(Object other) {
-          boolean check = super.equals(other) && ((ApprovalStatusActualResultKDW003Dto)other).statusNormal == this.statusNormal;
+          boolean check = this.confirmStatusActualResult.equals(((ApprovalStatusActualResultKDW003Dto)other).confirmStatusActualResult) && ((ApprovalStatusActualResultKDW003Dto)other).statusNormal == this.statusNormal;
           return check;
 	}
 }
