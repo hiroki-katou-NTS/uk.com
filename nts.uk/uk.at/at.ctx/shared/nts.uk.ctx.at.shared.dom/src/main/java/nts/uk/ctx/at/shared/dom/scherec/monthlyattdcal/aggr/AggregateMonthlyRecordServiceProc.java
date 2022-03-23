@@ -5,10 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -54,13 +50,13 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.ErrorT
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.Flex;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.aggframe.OuenAggregateFrameSetOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.GetPeriodExcluseEntryRetireTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -128,10 +124,8 @@ public class AggregateMonthlyRecordServiceProc {
 	 * @param closureId 締めID
 	 * @param closureDate 締め日付
 	 * @param datePeriod 期間
-	 * @param prevAggrResult 前回集計結果 （年休積立年休の集計結果）
 	 * @param prevAbsRecResultOpt 前回集計結果 （振休振出の集計結果）
 	 * @param prevBreakDayOffResultOpt 前回集計結果 （代休の集計結果）
-	 * @param prevSpecialLeaveResultMap 前回集計結果 （特別休暇の集計結果）
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param dailyWorksOpt 日別実績(WORK)List
@@ -376,7 +370,12 @@ public class AggregateMonthlyRecordServiceProc {
 			if (this.aggregateResult.getAttendanceTime().isPresent()) {
 				val calcedAttendanceTime = this.aggregateResult.getAttendanceTime().get();
 				attendanceTime.sum(calcedAttendanceTime);
+				
 			}
+			
+			/** 週次データを合算する　*/
+			val weekAtds = sumWeeklyAttds(require, monthPeriod, aggregateResult);
+			this.aggregateResult.setAttendanceTimeWeeks(weekAtds);
 
 			// 計算中のエラー情報の取得
 			val monthlyCalculation = attendanceTime.getMonthlyCalculation();
@@ -386,12 +385,6 @@ public class AggregateMonthlyRecordServiceProc {
 
 			// 計算結果を戻り値に蓄積
 			this.aggregateResult.setAttendanceTime(Optional.of(attendanceTime));
-			
-			/** TODO: #123164　→　一時の対応、後で同じキーの週次データを合体する　*/
-			val allWeekAtds = new ArrayList<>(this.aggregateResult.getAttendanceTimeWeeks());
-			allWeekAtds.addAll(aggregateResult.getAttendanceTimeWeeks());
-			val weekAtds = allWeekAtds.stream().distinct().collect(Collectors.toList());
-			this.aggregateResult.setAttendanceTimeWeeks(weekAtds);
 
 			ConcurrentStopwatches.stop("12200:労働条件ごと：");
 		}
@@ -410,6 +403,69 @@ public class AggregateMonthlyRecordServiceProc {
 
 		// 合算後のチェック処理
 		this.checkAfterSum(monthPeriod);
+	}
+
+	/** 週次データの合算 */
+	private List<AttendanceTimeOfWeekly> sumWeeklyAttds(RequireM13 require, DatePeriod period, 
+			AggregateAttendanceTimeValue aggregateResult) {
+		
+		/**　全ての週次データを取得する　*/
+		val allWeekAtds = new ArrayList<>(this.aggregateResult.getAttendanceTimeWeeks());
+		allWeekAtds.addAll(aggregateResult.getAttendanceTimeWeeks());
+		
+		/** 週開始を取得する */
+		val workTimeSetOpt = require.weekRuleManagement(companyId);
+		if (!workTimeSetOpt.isPresent()){
+			this.errorInfos.putIfAbsent("005", new MonthlyAggregationErrorInfo(
+					"005", new ErrMessageContent(TextResource.localize("Msg_1171"))));
+			return new ArrayList<>();
+		}
+		
+		List<AttendanceTimeOfWeekly> result = new ArrayList<>();
+		int weekNo = 1;
+
+		/** 月初の週の期間を計算する　*/
+		DatePeriod weekPeriod = getFirstWeekPeriod(workTimeSetOpt.get(), period);
+		
+		while(weekPeriod.start().beforeOrEquals(period.end())) {
+			
+			/** 週次期間内のデータを絞り込む　*/
+			val weekData = findWeekData(allWeekAtds, weekPeriod);
+			if (weekData.isEmpty()) break;
+
+			/**　週次データを合算する　*/
+			val base = weekData.get(0);
+			base.setWeekNo(weekNo);
+			if (weekData.size() >= 2) 
+				for (int i = 1; i < weekData.size(); i++) 
+					base.sum(weekData.get(i));
+			
+			result.add(base);
+			weekNo++;
+			weekPeriod = new DatePeriod(weekPeriod.end().addDays(1), weekPeriod.end().addDays(7));
+		}
+		
+		return result;
+	}
+
+	/** 週次期間内のデータを絞り込む　*/
+	private List<AttendanceTimeOfWeekly> findWeekData(List<AttendanceTimeOfWeekly> allWeekAtds, DatePeriod weekPeriod) {
+		
+		return allWeekAtds.stream().filter(a -> weekPeriod.contains(a.getPeriod().start())).collect(Collectors.toList());
+	}
+	
+	/**　月初の週の期間を計算する　*/
+	private DatePeriod getFirstWeekPeriod (WeekRuleManagement weekRule, DatePeriod period) {
+		
+		val startMonthWeekDay = period.start().dayOfWeekEnum();
+		
+		if (weekRule.getDayOfWeek() == startMonthWeekDay) {
+			
+			return new DatePeriod(period.start(), period.start().addDays(6));
+		}
+		
+		val diff = Math.abs(weekRule.getDayOfWeek().value - startMonthWeekDay.value);
+		return new DatePeriod(period.start(), period.start().addDays(6 - diff));
 	}
 
 	/**

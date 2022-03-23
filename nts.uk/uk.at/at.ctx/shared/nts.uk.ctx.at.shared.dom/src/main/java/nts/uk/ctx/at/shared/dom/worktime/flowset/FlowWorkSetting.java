@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 // 流動勤務設定
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable, WorkSetting {
 
 	/** The company id. */
@@ -265,6 +267,16 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 				.collect(Collectors.toMap(k->new EmTimezoneNo(k.getWorktimeNo()), v->new OverTimeFrameNo(v.getInLegalOTFrameNo().v().intValue())));
 	}
 
+	/**
+	 * 法定内残業枠NOを取得する
+	 * @return 法定内残業枠NO(List)
+	 */
+	public List<OverTimeFrameNo> getInLegalOverTimes() {
+		if(this.legalOTSetting.isOutsideLegal()) {
+			return new ArrayList<>();
+		}
+		return this.halfDayWorkTimezone.getInLegalOverTimes();
+	}
 
 	/**
 	 * 変更可能な勤務時間帯を取得する

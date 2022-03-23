@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
@@ -29,7 +30,8 @@ public class AttendanceTimeOfWeekly extends AggregateRoot {
 	/** 締め日付 */
 	private final ClosureDate closureDate;
 	/** 週NO */
-	private final int weekNo;
+	@Setter
+	private int weekNo;
 
 	/** 期間 */
 	private DatePeriod period;
@@ -114,6 +116,27 @@ public class AttendanceTimeOfWeekly extends AggregateRoot {
 		domain.anyItem = anyItem;
 		domain.aggregateDays = aggregateDays;
 		return domain;
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(AttendanceTimeOfWeekly target){
+
+		GeneralDate startDate = this.period.start();
+		GeneralDate endDate = this.period.end();
+		if (startDate.after(target.period.start())) startDate = target.period.start();
+		if (endDate.before(target.period.end())) endDate = target.period.end();
+		this.period = new DatePeriod(startDate, endDate);
+		
+		this.weeklyCalculation.sum(target.weeklyCalculation);
+		this.excessOutside.sum(target.excessOutside);
+		this.verticalTotal.sum(target.verticalTotal);
+		this.totalCount.sum(target.totalCount);
+		this.anyItem.sum(target.anyItem);
+		
+		this.aggregateDays = this.aggregateDays.addDays(target.aggregateDays.v());
 	}
 
 	@Override

@@ -304,14 +304,18 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	}
 
 	/**
-	 * 勤務種類から法定内残業枠Noを取得する
+	 * 法定内残業枠NOを取得する
 	 * @param workType 勤務種類
 	 * @return 法定内の残業枠No(List)
 	 */
-	public List<OverTimeFrameNo> getLegalOverTimeFrameNoList(WorkType workType) {
+	public List<OverTimeFrameNo> getInLegalOverTimes(WorkType workType) {
+		if(this.legalOTSetting.isOutsideLegal()) {
+			return new ArrayList<>();
+		}
 		return this.getOverTimeOfTimeZoneSet(workType).stream()
-				.map(overTimeOfTimeZoneSet -> overTimeOfTimeZoneSet.getLegalOTframeNo())
-				.map(oTframeNo -> new OverTimeFrameNo(oTframeNo.v())) //就業時間帯の残業枠はOTFrameNoになっている為、OverTimeFrameNoへ変換する必要がある。
+				.map(o -> new OverTimeFrameNo(o.getLegalOTframeNo().v()))
+				.distinct()
+				.sorted((f,s) -> f.compareTo(s))
 				.collect(Collectors.toList());
 	}
 

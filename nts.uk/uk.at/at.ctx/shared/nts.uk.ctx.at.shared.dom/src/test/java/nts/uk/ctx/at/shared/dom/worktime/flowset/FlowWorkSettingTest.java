@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,7 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting.Require;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
@@ -387,7 +389,19 @@ public class FlowWorkSettingTest {
 	        		);
 		}
 	
+	@Test
+	public void getInLegalOverTimesTest_LEGAL_INTERNAL_TIME() {
+		FlowWorkSetting target = Helper.FlowWorkSet.createLegalOTSetting(LegalOTSetting.LEGAL_INTERNAL_TIME);//法内残業を自動計算する
+		assertThat(target.getInLegalOverTimes())
+				.extracting(o -> o.v())
+				.containsExactly(1, 3, 5); //法内残業枠No = 1、3、5
+	}
 	
+	@Test
+	public void getInLegalOverTimesTest_OUTSIDE_LEGAL_TIME() {
+		FlowWorkSetting target = Helper.FlowWorkSet.createLegalOTSetting(LegalOTSetting.OUTSIDE_LEGAL_TIME);//法内残業を自動計算しない
+		assertThat(target.getInLegalOverTimes()).isEmpty();
+	}
 	
 	@AllArgsConstructor
 	static class FlowOffdayWtzImpl implements FlowOffdayWtzGetMemento{
@@ -549,11 +563,43 @@ public class FlowWorkSettingTest {
 			}
 		}
 		
-		
-		
-		
-		
-		
+		public static class FlowWorkSet {
+			public static FlowWorkSetting createLegalOTSetting(LegalOTSetting legalOTSet) {
+				FlowHalfDayWorkTimezone halfDayWorkTimezone = new FlowHalfDayWorkTimezone(FlowWorkTimezoneSettingHelper.createInLegal(
+						FlowOTTimezoneHelper.createInLegal(			//残業枠No									法定内残業枠No
+								new OvertimeWorkFrameNo(BigDecimal.valueOf(1)), new OvertimeWorkFrameNo(BigDecimal.valueOf(1))),
+						FlowOTTimezoneHelper.createInLegal(
+								new OvertimeWorkFrameNo(BigDecimal.valueOf(2)), new OvertimeWorkFrameNo(BigDecimal.valueOf(5))),
+						FlowOTTimezoneHelper.createInLegal(
+								new OvertimeWorkFrameNo(BigDecimal.valueOf(3)), new OvertimeWorkFrameNo(BigDecimal.valueOf(1))),
+						FlowOTTimezoneHelper.createInLegal(
+								new OvertimeWorkFrameNo(BigDecimal.valueOf(4)), new OvertimeWorkFrameNo(BigDecimal.valueOf(3))),
+						FlowOTTimezoneHelper.createInLegal(
+								new OvertimeWorkFrameNo(BigDecimal.valueOf(5)), new OvertimeWorkFrameNo(BigDecimal.valueOf(3))),
+						FlowOTTimezoneHelper.createInLegal(
+								new OvertimeWorkFrameNo(BigDecimal.valueOf(6)), new OvertimeWorkFrameNo(BigDecimal.valueOf(1))),
+						FlowOTTimezoneHelper.createInLegal(
+								new OvertimeWorkFrameNo(BigDecimal.valueOf(7)), new OvertimeWorkFrameNo(BigDecimal.valueOf(1))),
+						FlowOTTimezoneHelper.createInLegal(
+								new OvertimeWorkFrameNo(BigDecimal.valueOf(8)), new OvertimeWorkFrameNo(BigDecimal.valueOf(1))),
+						FlowOTTimezoneHelper.createInLegal(
+								new OvertimeWorkFrameNo(BigDecimal.valueOf(9)), new OvertimeWorkFrameNo(BigDecimal.valueOf(1))),
+						FlowOTTimezoneHelper.createInLegal(
+								new OvertimeWorkFrameNo(BigDecimal.valueOf(10)), new OvertimeWorkFrameNo(BigDecimal.valueOf(1)))
+						),
+						new FlowWorkRestTimezone());
+				return new FlowWorkSetting(
+						"cid",
+						new WorkTimeCode("001"),
+						halfDayWorkTimezone,
+						new FlowOffdayWorkTimezone(),
+						new FlowStampReflectTimezone(),
+						legalOTSet,
+						new FlowWorkRestSetting(),
+						new WorkTimezoneCommonSet(),
+						new FlowWorkDedicateSetting());
+			}
+		}
 	}
 	
 }

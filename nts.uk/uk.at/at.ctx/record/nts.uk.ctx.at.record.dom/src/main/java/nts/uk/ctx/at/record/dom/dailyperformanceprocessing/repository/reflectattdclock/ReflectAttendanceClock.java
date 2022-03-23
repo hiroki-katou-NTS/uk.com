@@ -37,6 +37,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.E
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.MultiStampTimePiorityAtr;
@@ -68,6 +70,10 @@ public class ReflectAttendanceClock {
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
+	
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
+	
 	
 	@Inject 
 	private RecordDomRequireService requireService;
@@ -379,8 +385,13 @@ public class ReflectAttendanceClock {
 			//日別実績の計算区分を取得する
 			CalAttrOfDailyAttd calAttr = integrationOfDaily.getCalAttr();
 			//休日出勤に変更するか
-			boolean check = stamp.getType().changeWorkOnHolidays(new RequireStampTypeImpl(),
-					calAttr.getHolidayTimeSetting(), recordWorkInformation.getWorkTypeCode().v());
+			boolean check = stamp.getType().changeWorkOnHolidays(
+					new RequireStampTypeImpl(),
+					calAttr.getHolidayTimeSetting(),
+					recordWorkInformation.getWorkTypeCode().v(),
+					integrationOfDaily.getEmployeeId(),
+					integrationOfDaily.getYmd()
+					);
 			if(check) {
 				// 勤務情報を変更する
 				this.reflectWorkInformationDomainService.changeWorkInformation(integrationOfDaily,
@@ -596,12 +607,19 @@ public class ReflectAttendanceClock {
 		
 	}
 	
-	public class RequireStampTypeImpl implements StampType.Require{
+	public class RequireStampTypeImpl implements StampType.Require {
 		
 		@Override
 		public Optional<WorkType> findByPK(String workTypeCd) {
 			String companyId = AppContexts.user().companyId();
 			return workTypeRepository.findByPK(companyId, workTypeCd);
 		}
+
+		@Override
+		public Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate ymd) {
+			 return workingConditionItemRepository
+					 	.getBySidAndStandardDate(employeeId, ymd);
+		}
+
 	}
 }
