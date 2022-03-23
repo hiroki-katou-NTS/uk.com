@@ -6,8 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.i18n.TextResource;
@@ -162,8 +167,19 @@ public class StampType implements DomainValue, Cloneable{
 	 * @param workTypeCode 勤務種類コード
 	 * @return
 	 */
-	public boolean changeWorkOnHolidays(Require require, AutoCalRestTimeSetting holidayTimeSetting,
-			String workTypeCode) {
+	public boolean changeWorkOnHolidays(
+			Require require,
+			AutoCalRestTimeSetting holidayTimeSetting,
+			String workTypeCode,
+			String employeeId, 
+			GeneralDate baseDate
+			) {
+		// 社員の労働条件を取得する
+		Optional<WorkingConditionItem> workCondOpt = require.getBySidAndStandardDate(employeeId, baseDate);
+		// スケジュール管理しないか確認
+		if (workCondOpt.map(x -> x.getScheduleManagementAtr() == ManageAtr.NOTUSE).orElse(false)) return false;
+		
+		
 		// 勤務種類を取得する
 		Optional<WorkType> workType = require.findByPK(workTypeCode);
 		if (!workType.isPresent())
@@ -187,6 +203,7 @@ public class StampType implements DomainValue, Cloneable{
 
 	public static interface Require {
 		Optional<WorkType> findByPK(String workTypeCd);
+		Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate ymd);
 	}
 
 	@Override
