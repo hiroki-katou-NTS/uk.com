@@ -49,7 +49,7 @@ module nts.uk.ui.at.kdw013.confirm {
     })
     export class FullCalendarConFirmComponent extends ko.ViewModel {
         today: string = moment().format('YYYY-MM-DD');
-        headerText: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText('KDW013_99') + '△');
+        headerText: KnockoutObservable<string> = ko.observable('');
 
         constructor(private params: ConfirmParam) {
             super();
@@ -63,6 +63,11 @@ module nts.uk.ui.at.kdw013.confirm {
             const vm = this;
             const { $el, params } = vm;
             const {confirmers} = params;
+            
+            let nameText = nts.uk.resource.getText('KDW013_99');
+            
+            let iconText = vm.params.screenA.showConfirm() ?  '△': '▽';
+            vm.headerText(nameText + iconText);
 
             ko.computed({
                 read: () => {
@@ -87,11 +92,11 @@ module nts.uk.ui.at.kdw013.confirm {
             const vm = this;
 
             let nameText = nts.uk.resource.getText('KDW013_99');
-
-            //△ ▽
-            let iconText = vm.params.screenA.showConfirm() ? '▽' : '△';
-
             vm.params.screenA.showConfirm(!vm.params.screenA.showConfirm());
+            //△ ▽
+            let iconText = vm.params.screenA.showConfirm() ? '△' : '▽';
+
+            
             vm.headerText(nameText + iconText);
 
         }

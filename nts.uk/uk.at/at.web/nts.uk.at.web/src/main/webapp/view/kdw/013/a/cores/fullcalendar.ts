@@ -1239,7 +1239,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     if (el && el.html()) {
                             let icon = isHasWarning(date) ? `<i tabindex="0" class='warningIcon ` + className + `'> </i>` : '';
                             setTimeout(() => {
-                                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '16px', width: 16, height: 16 , extension: "png" }, click: () => { OpenIDialog(date); } });
+                                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '16px', width: 16, height: 16  }, click: () => { OpenIDialog(date); } });
                                 $('.' + className).on('mousedown', () => { regisPopup(date); });
                             }, 300);
                             el.html(vm.$i18n('KDW013_98') + icon);
@@ -1879,7 +1879,7 @@ module nts.uk.ui.at.kdw013.calendar {
             let mapExProps = (ext) => {
                 return {...ext,
                     taskBlock: {
-                        caltimeSpan: { start: ext.taskBlock.caltimeSpan.start, end: ext.taskBlock.caltimeSpan.end },
+                        caltimeSpan: { start: _.get(ext.taskBlock.caltimeSpan, 'start', 0), end: _.get(ext.taskBlock.caltimeSpan, 'end', 0) },
                         taskDetails: _.map(ext.taskBlock.taskDetails, td => {
                             return {
                                 taskItemValues: _.map(td.taskItemValues, tiv => { return { itemId: tiv.itemId, value: tiv.value } }),
@@ -1967,6 +1967,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 let isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => (formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')) && (formatDate(_.get(e,'end')) === formatDate(_.get(m,'end')) ) ));
                 let data = ko.unwrap(params.$datas);
                 let setting = ko.unwrap(params.$settings);
+                let employee = vm.params.employee(), loginEmployee = vm.$user.employeeId;
                
                 
                 let isLock = (lockStatus) => {
@@ -1980,7 +1981,11 @@ module nts.uk.ui.at.kdw013.calendar {
                     return false;
                 }
 
-                let islockBySetting = (lockSetting, getAtr) => {
+                let islockBySetting = () => {
+                    
+                    let lockSetting = _.get(setting, 'dailyAttendanceItemAuthority.displayAndInput');
+                    
+                    let getAtr = (employee == '' || employee == loginEmployee) ? 'youCanChangeIt' : 'canBeChangedByOthers';
 
                     let lockItems = [157, 159, 163, 165, 169, 171, 175, 177, 181, 183, 187, 189, 193, 195, 199, 201, 205, 207, 211, 213];
                     
@@ -1988,18 +1993,17 @@ module nts.uk.ui.at.kdw013.calendar {
                     return !!_.find(lockSetting, function(lock) { return lockItems.indexOf(lock.itemDailyID) != -1 && _.get(lock, getAtr) == false });
                 }
                
-                let getEditable = (date, isTimeBreak, getAtr) => {
+                let getEditable = (date, isTimeBreak) => {
                     let startDate = moment(_.get(data, 'workStartDate'));
                     let lockStatus = _.find(_.get(data, 'lockInfos'), li => { return moment(li.date).isSame(moment(date), 'days'); });
-                    let lockSetting = _.get(setting, 'dailyAttendanceItemAuthority.displayAndInput');
-                    return startDate.isAfter(date) ? false : !((isTimeBreak && isLock(lockStatus)) || (isTimeBreak && islockBySetting(lockSetting , getAtr)));
+                    return startDate.isAfter(date) ? false : !((isTimeBreak && isLock(lockStatus)) || (isTimeBreak && islockBySetting()));
                 };
                 let events = ko.unwrap<EventRaw[]>(params.events);
                 
-                let getAtr = (vm.params.employee() == '' || vm.params.employee() == vm.$user.employeeId) ? 'youCanChangeIt' : 'canBeChangedByOthers';
+                
                 //set editable
                 _.forEach(events, e => {
-                    e.editable = getEditable(formatDate(_.get(e, 'start')), e.extendedProps.isTimeBreak, getAtr);
+                    e.editable = getEditable(formatDate(_.get(e, 'start')), e.extendedProps.isTimeBreak);
                 });
                 
                 
@@ -2171,7 +2175,6 @@ module nts.uk.ui.at.kdw013.calendar {
                 slotEventOverlap: false,
                 eventOverlap: true,
                 selectOverlap: true,
-                eventLimit: true,
                 views: {
                     timeGrid: {
                         eventLimit: 20
@@ -2206,7 +2209,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         removeNotSaveEvents();
                     }
                     let editableDay = vm.getEditableDay(info.date);
-                    if (startDate.isAfter(formatDate(info.date)) || !editableDay) {
+                    if (startDate.isAfter(formatDate(info.date)) || !editableDay ) {
                         return;
                     }
 
@@ -2351,7 +2354,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         let className = 'fav-' + $(arg.el).find('.fc-scrollgrid-sync-inner').parent().attr('data-date');
                         
                             $($(arg.el).find('.fc-scrollgrid-sync-inner')[0]).append(`<i tabindex="0" class='favIcon ` + className + `' ></i>`);
-                            setTimeout(function() { ko.applyBindingsToNode($('.favIcon'), { ntsIcon: { no: 229, size: '16px', width: 16, height: 16, extension: "png" } }); }, 300);
+                            setTimeout(function() { ko.applyBindingsToNode($('.favIcon'), { ntsIcon: { no: 229, size: '16px', width: 16, height: 16 } }); }, 300);
                     }
                 }
                 ,
@@ -3239,7 +3242,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     let editableDay =  vm.getEditableDay(start);
                     let inDayEvents = _.filter(events(), e => moment(e.start).isSame(moment(start), 'days') && !e.extendedProps.isTimeBreak);
                     let isDuplicateEvent = _.find(inDayEvents, e => (moment(e.start).isAfter(moment(start)) && moment(e.start).isBefore(moment(end))) || (moment(e.end).isAfter(moment(start)) && moment(e.end).isBefore(moment(end))) );
-                    if (startDate.isAfter(formatDate(start)) || !editableDay || isDuplicateEvent) {
+                    if (startDate.isAfter(formatDate(start)) || !editableDay || isDuplicateEvent ) {
                         vm.calendar.unselect();
                         return;
                     }
@@ -3889,8 +3892,6 @@ module nts.uk.ui.at.kdw013.calendar {
                 vm.calendar.updateSize();
             });
         }
-        
-
         
         public getEditableDay(date){
                 let vm = this;

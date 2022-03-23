@@ -25,7 +25,7 @@ module nts.uk.ui.at.kdw013.eventheadear {
                     </div>
                     <!-- ko if: $component.showHIcon(day.date) -->
                     <div style="min-height: 20px; height:20px;">     
-                        <i tabindex="0" class='openHIcon' data-bind="ntsIcon: { no: 232, width: 20, height: 20, extension: 'png' },click: function(day) { $component.openHDialog(day) } " > </i>
+                        <i tabindex="0" class='openHIcon' data-bind="ntsIcon: { no: 232, width: 20, height: 20 },click: function(day) { $component.openHDialog(day) } " > </i>
                     </div>
                     <!-- /ko -->
                 </td>
