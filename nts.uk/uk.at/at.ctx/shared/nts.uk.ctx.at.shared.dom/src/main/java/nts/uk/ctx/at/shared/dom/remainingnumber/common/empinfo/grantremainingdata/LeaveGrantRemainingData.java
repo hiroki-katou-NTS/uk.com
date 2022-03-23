@@ -215,10 +215,11 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 	public GrantRemainingDataAfterDigestion digest(LeaveRemainingNumber.RequireM3 require, String companyId,
 			GeneralDate baseDate, LeaveUsedNumber usedNumber){
 		
-		LeaveNumberInfoAfterDigestion infoAfter = this.details.digest(require, companyId, this.employeeId, baseDate, usedNumber);
+		LeaveNumberInfoAfterDigestion digestedInfo = this.details.digest(require, companyId, this.employeeId, baseDate, usedNumber);
+		
 		return new GrantRemainingDataAfterDigestion(new LeaveGrantRemainingData(this.leaveID, this.employeeId, this.grantDate,
-				this.deadline, this.expirationStatus, this.registerType, infoAfter.getLeaveNumberInfo()),
-				infoAfter.getUsedNumber());
+				this.deadline, this.expirationStatus, this.registerType, digestedInfo.getLeaveNumberInfo()),
+				digestedInfo.getUnUsedNumber());
 	}
 
 	/**

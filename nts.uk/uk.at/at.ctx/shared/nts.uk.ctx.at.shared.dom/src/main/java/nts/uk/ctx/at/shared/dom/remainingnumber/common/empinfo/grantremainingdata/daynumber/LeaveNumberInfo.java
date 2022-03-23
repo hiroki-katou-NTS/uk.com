@@ -212,7 +212,7 @@ public class LeaveNumberInfo implements Cloneable {
 	public LeaveNumberInfoAfterDigestion digest(LeaveRemainingNumber.RequireM3 require, String companyId,
 			String employeeId, GeneralDate baseDate, LeaveUsedNumber leaveusedNumber) {		
 		
-		LeaveUsedNumber stackedUsedNumber = leaveusedNumber.clone();
+		LeaveUsedNumber stackedUsedNumber = this.usedNumber.clone();
 		if (this.remainingNumber.needStacking(require, companyId, employeeId, baseDate, leaveusedNumber)) {
 			stackedUsedNumber = this.usedNumber.addStowageDays(new LeaveUsedDayNumber(1.0));
 		}
@@ -225,13 +225,13 @@ public class LeaveNumberInfo implements Cloneable {
 
 		digestedUsedNumber.add(this.usedNumber);
 		
-		LeaveUsedNumber notDigestedUsedNumber = calculateForUnDigestedNumber(require, companyId, employeeId,
+		LeaveUsedNumber unDigestedUsedNumber = calculateForUnDigestedNumber(require, companyId, employeeId,
 				baseDate, leaveusedNumber, remainingNumber);
 
 		return new LeaveNumberInfoAfterDigestion(new LeaveNumberInfo(this.grantNumber,
 				LeaveUsedNumber.of(digestedUsedNumber.days, digestedUsedNumber.minutes, stackedUsedNumber.stowageDays,
 						stackedUsedNumber.leaveOverLimitNumber),
-				remainingNumber), notDigestedUsedNumber);
+				remainingNumber), unDigestedUsedNumber);
 	}
 	
 	/**

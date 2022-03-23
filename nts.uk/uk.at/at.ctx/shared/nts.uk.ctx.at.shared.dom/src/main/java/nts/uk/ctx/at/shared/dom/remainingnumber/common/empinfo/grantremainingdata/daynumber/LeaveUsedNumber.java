@@ -250,8 +250,8 @@ public class LeaveUsedNumber{
 	public LeaveUsedNumber subtract(LeaveUsedNumber useNumbr){
 		LeaveUsedDayNumber days = new LeaveUsedDayNumber(this.days.v() - useNumbr.days.v());
 		
-		LeaveUsedTime useTime = new LeaveUsedTime(this.getMinutesOrZero().v() - useNumbr.getMinutesOrZero().v());
+		LeaveUsedTime time = new LeaveUsedTime(this.getMinutesOrZero().v() - useNumbr.getMinutesOrZero().v());
 		
-		return LeaveUsedNumber.of(days, Optional.of(useTime), this.stowageDays, this.leaveOverLimitNumber);
+		return LeaveUsedNumber.of(days, Optional.of(time), this.stowageDays, this.leaveOverLimitNumber);
 	}
 }

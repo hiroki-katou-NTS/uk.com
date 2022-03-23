@@ -16,6 +16,6 @@ public class LeaveNumberInfoAfterDigestion {
 	private LeaveNumberInfo leaveNumberInfo;
 	
 	/** 消化できなかった使用数*/
-	private LeaveUsedNumber usedNumber;
+	private LeaveUsedNumber unUsedNumber;
 	
 }

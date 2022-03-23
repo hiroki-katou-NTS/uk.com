@@ -34,21 +34,21 @@ public class DigestionLeaveGrantRemainingData {
 		LeaveUsedNumber usedNumber = leaveUsedNumber.clone();
 		
 		for (LeaveGrantRemainingData leaveGrantRemainingData : remNumShiftWork) {
-			GrantRemainingDataAfterDigestion digestGrantRemainingData = leaveGrantRemainingData.digest(require,
+			GrantRemainingDataAfterDigestion digestedGrantRemainingData = leaveGrantRemainingData.digest(require,
 					companyId, baseDate, usedNumber);
 			
-			if(!digestGrantRemainingData.getUnUsedNumber().isLargerThanZero()){
+			if(!digestedGrantRemainingData.getUnUsedNumber().isLargerThanZero()){
 				
-				digestGrantRemainingData.getGrantRemainingData().getDetails().getRemainingNumber()
+				digestedGrantRemainingData.getGrantRemainingData().getDetails().getRemainingNumber()
 						.add(getRemainingNumberCarriedForward(companyId, remNumShiftWork, leaveUsedNumber,
 								baseDate, require));
 
-				remNumShiftList.add(new RemNumShiftWork(digestGrantRemainingData.getGrantRemainingData()));
+				remNumShiftList.add(new RemNumShiftWork(digestedGrantRemainingData.getGrantRemainingData()));
 				
 				return new RemNumShiftListWork(remNumShiftList, new LeaveUsedNumber(0.0,0));
 			}
-			remNumShiftList.add(new RemNumShiftWork(digestGrantRemainingData.getGrantRemainingData()));
-			usedNumber = digestGrantRemainingData.getUnUsedNumber().clone();
+			remNumShiftList.add(new RemNumShiftWork(digestedGrantRemainingData.getGrantRemainingData()));
+			usedNumber = digestedGrantRemainingData.getUnUsedNumber().clone();
 		}
 		
 		return new RemNumShiftListWork(remNumShiftList, usedNumber);
@@ -71,15 +71,15 @@ public class DigestionLeaveGrantRemainingData {
 		LeaveUsedNumber usedNumber = leaveUsedNumber.clone();
 		
 		for (LeaveGrantRemainingData leaveGrantRemainingData : remNumShiftWork) {
-			GrantRemainingDataAfterDigestion digestGrantRemainingData = leaveGrantRemainingData.digest(require,
+			GrantRemainingDataAfterDigestion digestedGrantRemainingData = leaveGrantRemainingData.digest(require,
 					companyId, baseDate, usedNumber);
 			
-			if(!digestGrantRemainingData.getUnUsedNumber().isLargerThanZero()){
+			if(!digestedGrantRemainingData.getUnUsedNumber().isLargerThanZero()){
 				break;
 			}
 			
 			remNumShiftList.add( leaveGrantRemainingData.getUndigestedNumber(require, companyId, baseDate, usedNumber));
-			usedNumber = digestGrantRemainingData.getUnUsedNumber().clone();
+			usedNumber = digestedGrantRemainingData.getUnUsedNumber().clone();
 		}
 		return getTotalRemainingNumber(remNumShiftList);
 	}
