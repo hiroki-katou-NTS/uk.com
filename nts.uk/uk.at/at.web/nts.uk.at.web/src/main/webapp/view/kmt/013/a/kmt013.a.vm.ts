@@ -301,7 +301,7 @@ module nts.uk.at.view.kmt013.a {
                 baseDate: moment(new Date()).toDate(),
                 isMultiple: true,
                 selectedSystemType: 2,
-                isrestrictionOfReferenceRange: true,
+                isrestrictionOfReferenceRange: false,
                 showNoSelection: false,
                 isShowBaseDate: true
             });
