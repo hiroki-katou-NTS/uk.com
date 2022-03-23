@@ -620,6 +620,7 @@ html {
 
 .bg-schedule-that-day{
 	background-color: #ffff00 !important;
+	color: #404040 !important;
 }
 .bg-schedule-specific-date{
 	background-color: #ffc0cb !important;
