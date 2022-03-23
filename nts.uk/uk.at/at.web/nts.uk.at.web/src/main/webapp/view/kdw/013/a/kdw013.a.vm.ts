@@ -84,6 +84,7 @@ module nts.uk.ui.at.kdw013.a {
         workTimeSettings: Array<any>;
         workTypes: Array<any>;
         workplaceInfos: Array<any>;
+        manHrInputUsageSetting: any;
 
         constructor(data) {
             this.attItemName = data.attItemName;
@@ -102,6 +103,7 @@ module nts.uk.ui.at.kdw013.a {
             this.workTimeSettings = data.workTimeSettings;
             this.workTypes = data.workTypes;
             this.workplaceInfos = data.workplaceInfos;
+            this.manHrInputUsageSetting = data.manHrInputUsageSetting
         }
 
         updateFavTask(data) {
@@ -223,6 +225,7 @@ module nts.uk.ui.at.kdw013.a {
 		
 		reloadFlag: KnockoutObservable<Boolean> =  ko.observable(false);
         loaded: Boolean =  false;
+        equipmentInputEnable: KnockoutObservable<Boolean> =  ko.observable(false);
 
         constructor() {
             super();
@@ -565,6 +568,7 @@ module nts.uk.ui.at.kdw013.a {
 
                     
                     vm.$settings(new StartProcess(response));
+                    vm.equipmentInputEnable(_.get(response, 'manHrInputUsageSetting.equipmentUseAtr', 0) == 1);
                 })
                 .always(() => vm.$blockui('clear'));
 
@@ -737,7 +741,7 @@ module nts.uk.ui.at.kdw013.a {
                             }
                         });
         
-        
+                    vm.equipmentInputEnable(_.get(response, 'manHrInputUsageSetting.equipmentUseAtr', 0) == 1);
                     vm.$settings(new StartProcess(response));
                 })
                 .always(() => vm.$blockui('clear'));

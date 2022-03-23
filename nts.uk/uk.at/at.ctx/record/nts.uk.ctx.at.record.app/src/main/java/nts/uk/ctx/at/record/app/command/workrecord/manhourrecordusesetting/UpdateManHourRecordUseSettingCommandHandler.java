@@ -86,9 +86,9 @@ public class UpdateManHourRecordUseSettingCommandHandler extends CommandHandler<
 		Optional<ManHrInputUsageSetting> manHrInput = manHrInputUsageSettingRepository.get(cId);
 		
 		if(manHrInput.isPresent()) {
-			manHrInputUsageSettingRepository.update(new ManHrInputUsageSetting(cId, NotUseAtr.valueOf(command.usrAtr)));
+			manHrInputUsageSettingRepository.update(new ManHrInputUsageSetting(cId, NotUseAtr.valueOf(command.usrAtr), NotUseAtr.USE));
 		} else {
-			manHrInputUsageSettingRepository.insert(new ManHrInputUsageSetting(cId, NotUseAtr.valueOf(command.usrAtr)));
+			manHrInputUsageSettingRepository.insert(new ManHrInputUsageSetting(cId, NotUseAtr.valueOf(command.usrAtr), NotUseAtr.USE));
 		}
 
 	}

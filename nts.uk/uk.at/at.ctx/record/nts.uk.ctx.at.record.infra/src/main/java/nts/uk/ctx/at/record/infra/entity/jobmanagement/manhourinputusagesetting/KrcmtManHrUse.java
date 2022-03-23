@@ -26,12 +26,18 @@ public class KrcmtManHrUse extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/** 会社ID */
 	@Id
 	@Column(name = "CID")
 	public String cId;
-
+	
+	/** 使用区分*/
 	@Column(name = "USE_ATR")
 	public int useAtr;
+	
+	/** 設備入力を利用する*/
+	@Column(name = "EQUIPMENT_USE_ATR")
+	public int equipmentUseAtr;
 
 	@Override
 	protected Object getKey() {
@@ -41,10 +47,11 @@ public class KrcmtManHrUse extends ContractUkJpaEntity implements Serializable {
 	public KrcmtManHrUse(ManHrInputUsageSetting setting) {
 		this.cId = setting.getCid();
 		this.useAtr = setting.getUsrAtr().value;
+		this.equipmentUseAtr = setting.getEquipmentUseAtr().value;
 	}
 
 	public ManHrInputUsageSetting toDomain() {
-		return new ManHrInputUsageSetting(cId, NotUseAtr.valueOf(this.useAtr));
+		return new ManHrInputUsageSetting(cId, NotUseAtr.valueOf(this.useAtr), NotUseAtr.valueOf(this.equipmentUseAtr));
 	}
 
 }
