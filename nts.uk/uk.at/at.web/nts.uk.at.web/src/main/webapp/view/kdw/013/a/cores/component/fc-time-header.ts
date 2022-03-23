@@ -2,7 +2,7 @@ module nts.uk.ui.at.kdw013.timeheader {
     @component({
         name: 'fc-times',
         template:
-        `<td data-bind="i18n: 'KDW013_25'"></td>
+        `<td id="fc-time-header-text" data-bind="i18n: 'KDW013_25'"></td>
                 <!-- ko foreach: { data: $component.params.timesSet, as: 'time' } -->
                     <td class="fc-day fc-times" style='position: relative;' data-bind="html: $component.formatTime(time), attr: { 'data-date': time.date }"></td>
                 <!-- /ko -->
@@ -16,6 +16,10 @@ module nts.uk.ui.at.kdw013.timeheader {
                     .warningIcon:hover {
                          background-color: rgb(229, 242, 255);
                         }
+                    #fc-time-header-text{
+                        text-align: left;
+                        padding: 0 4px;
+                    }
                 </style>
                 `
     })

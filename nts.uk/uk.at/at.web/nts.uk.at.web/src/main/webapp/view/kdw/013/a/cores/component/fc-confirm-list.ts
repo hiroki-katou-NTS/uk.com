@@ -2,7 +2,7 @@ module nts.uk.ui.at.kdw013.confirm {
     @component({
         name: 'fc-confirm-list',
         template:
-        `<td data-bind="i18n: 'KDW013_100', visible:$component.params.screenA.showConfirm"></td>
+        `<td id='fc-confirm-list-header-text' data-bind="i18n: 'KDW013_100', visible:$component.params.screenA.showConfirm"></td>
             <!-- ko foreach: { data: $component.params.confirmers, as: 'confirmer' } -->
                 <td class="fc-day fc-confirm" style='position: relative;' data-bind="visible:$component.params.screenA.showConfirm">
                     <div style='text-align: left;flex-grow: 1;'">
@@ -16,6 +16,10 @@ module nts.uk.ui.at.kdw013.confirm {
             .fc-confirm {
                     text-align: center;
                 }
+            #fc-confirm-list-header-text{
+                        text-align: left;
+                        padding: 0 4px;
+                    }
         </style>
                 `
     })

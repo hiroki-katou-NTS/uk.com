@@ -43,6 +43,8 @@ module nts.uk.ui.at.kdw013.confirm {
             }
             #confirm-header{
                     cursor: pointer;
+                    text-align: left;
+                    padding: 0 4px;
             }
         </style>
                 `
@@ -66,7 +68,7 @@ module nts.uk.ui.at.kdw013.confirm {
             
             let nameText = nts.uk.resource.getText('KDW013_99');
             
-            let iconText = vm.params.screenA.showConfirm() ?  '△': '▽';
+            let iconText = vm.params.screenA.showConfirm() ?  ' △': ' ▽';
             vm.headerText(nameText + iconText);
 
             ko.computed({
@@ -94,7 +96,7 @@ module nts.uk.ui.at.kdw013.confirm {
             let nameText = nts.uk.resource.getText('KDW013_99');
             vm.params.screenA.showConfirm(!vm.params.screenA.showConfirm());
             //△ ▽
-            let iconText = vm.params.screenA.showConfirm() ? '△' : '▽';
+            let iconText = vm.params.screenA.showConfirm() ?  ' △': ' ▽';
 
             
             vm.headerText(nameText + iconText);

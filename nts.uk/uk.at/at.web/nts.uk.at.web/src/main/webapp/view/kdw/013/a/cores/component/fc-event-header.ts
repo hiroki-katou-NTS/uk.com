@@ -2,7 +2,7 @@ module nts.uk.ui.at.kdw013.eventheadear {
     @component({
         name: 'fc-event-header',
         template:
-        `<td data-bind="i18n: 'KDW013_20'"></td>
+        `<td id="fc-event-header-text" data-bind="i18n: 'KDW013_20'"></td>
                 <!-- ko foreach: { data: $component.params.data, as: 'day' } -->
                 <td class="fc-event-note fc-day" style='text-align: center;' data-bind="css: { 'no-data': !day.events.length }, attr: { 'data-date': day.date }">
                     <div style="display: flex;height:calc(100% - 19px);"> 
@@ -69,6 +69,10 @@ module nts.uk.ui.at.kdw013.eventheadear {
 						top: 4px;
 						left: 1px;
 					}
+                    #fc-event-header-text{
+                        text-align: left;
+                        padding: 0 4px;
+                    }
                 </style>
                 `
     })

@@ -419,7 +419,6 @@ module nts.uk.ui.at.kdw013.calendar {
         {
             background: var(--fc-non-business-color,rgba(215,215,215,.7));
         }
-        
 `;
 
     @handler({
@@ -2287,9 +2286,9 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     let min = milliseconds / 60000;
                     let hour = Math.floor(min / 60);
-                    let minite = Math.floor(min % 60);
+                    let minute = Math.floor(min % 60);
 
-                    return !minite ? `${hour}:00` : `${minite}`;
+                    return '　　'+(!minute ? `${hour}:00` : `${minute}`);
                 },
                 slotLabelClassNames: ({ time }) => {
                     let { milliseconds } = time;
