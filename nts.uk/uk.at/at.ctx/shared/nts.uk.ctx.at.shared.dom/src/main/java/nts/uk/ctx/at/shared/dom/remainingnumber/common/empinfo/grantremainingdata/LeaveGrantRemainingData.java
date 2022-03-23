@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -156,8 +157,17 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 
 		// 休暇使用数を消化する
 		remNumShiftListWork = DigestionLeaveGrantRemainingData.digest(companyId, targetRemainingDatas, leaveUsedNumber, baseDate, require);
-
-		remNumShiftListWork.updateDetails(targetRemainingDatas);
+		
+		//参照の付与残数データの明細を更新
+		for(LeaveGrantRemainingData x: targetRemainingDatas){
+			val updateValue = remNumShiftListWork.getRemNumShiftWorkListOpt().stream().map(y -> {
+				return y.getRefLeaveGrantRemainingData();
+			}).filter(y -> y.getGrantDate().equals(x.getGrantDate())).findFirst();
+			
+			if(updateValue.isPresent()){
+				x.updateDetails(updateValue.get().getDetails());
+			}
+		}
 		
 		// 残数不足で一部消化できなかったとき
 		if (remNumShiftListWork.getUnusedNumber().isLargerThanZero()) {

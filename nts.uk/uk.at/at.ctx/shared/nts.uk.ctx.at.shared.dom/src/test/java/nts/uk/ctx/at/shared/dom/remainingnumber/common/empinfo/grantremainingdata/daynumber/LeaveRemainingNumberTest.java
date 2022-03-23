@@ -422,7 +422,7 @@ public class LeaveRemainingNumberTest {
 
 		LeaveUsedNumber expected = new LeaveUsedNumber(0.0, 0);
 		
-		LeaveUsedNumber expect =  remainingNumber.findUsedNumberThatCouldNotDigested(require, usedNumber, digest, companyId, employeeId, baseDate);
+		LeaveUsedNumber expect =  remainingNumber.calculateForUnDigestedNumber(require, usedNumber, digest, companyId, employeeId, baseDate);
 		assertThat(expect.days).isEqualTo(expected.days); 
 		assertThat(expect.minutes).isEqualTo(expected.minutes);
 	}
@@ -450,7 +450,7 @@ public class LeaveRemainingNumberTest {
 		};
 		LeaveUsedNumber expected= new LeaveUsedNumber(0.0, 0);
 		
-		LeaveUsedNumber expect =  remainingNumber.findUsedNumberThatCouldNotDigested(require, usedNumber, digest, companyId, employeeId, baseDate);
+		LeaveUsedNumber expect =  remainingNumber.calculateForUnDigestedNumber(require, usedNumber, digest, companyId, employeeId, baseDate);
 		assertThat(expect.days).isEqualTo(expected.days); 
 		assertThat(expect.minutes).isEqualTo(expected.minutes);
 	}
@@ -479,7 +479,7 @@ public class LeaveRemainingNumberTest {
 		};
 		LeaveUsedNumber expected= new LeaveUsedNumber(0.0, 180);
 		
-		LeaveUsedNumber expect =  remainingNumber.findUsedNumberThatCouldNotDigested(require, usedNumber, digest, companyId, employeeId, baseDate);
+		LeaveUsedNumber expect =  remainingNumber.calculateForUnDigestedNumber(require, usedNumber, digest, companyId, employeeId, baseDate);
 		assertThat(expect.days).isEqualTo(expected.days); 
 		assertThat(expect.minutes).isEqualTo(expected.minutes);
 	}
@@ -507,7 +507,7 @@ public class LeaveRemainingNumberTest {
 		};
 		LeaveUsedNumber expected= new LeaveUsedNumber(0.0, 240);
 		
-		LeaveUsedNumber expect =  remainingNumber.findUsedNumberThatCouldNotDigested(require, usedNumber, digest, companyId, employeeId, baseDate);
+		LeaveUsedNumber expect =  remainingNumber.calculateForUnDigestedNumber(require, usedNumber, digest, companyId, employeeId, baseDate);
 		assertThat(expect.days).isEqualTo(expected.days); 
 		assertThat(expect.minutes).isEqualTo(expected.minutes);
 	}

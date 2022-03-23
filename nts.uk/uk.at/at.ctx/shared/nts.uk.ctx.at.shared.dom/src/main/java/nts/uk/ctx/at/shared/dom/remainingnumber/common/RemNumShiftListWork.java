@@ -3,11 +3,9 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.common;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
@@ -195,23 +193,5 @@ public class RemNumShiftListWork {
 		leaveNumberInfo.setRemainingNumber(leaveRemainingNumberTmp);
 
 		return leaveNumberInfo;
-	}
-	
-	/**
-	 * 休暇付与残数データの明細を更新する
-	 * @param targetRemainingDatas
-	 */
-	public void updateDetails(List<LeaveGrantRemainingData> targetRemainingDatas){
-		targetRemainingDatas.stream().map(x ->{
-			val updateValue = this.remNumShiftWorkListOpt.stream().map(y -> {
-				return y.getRefLeaveGrantRemainingData();
-			}).filter(y -> y.getGrantDate().equals(x.getGrantDate())).findFirst();
-			if(!updateValue.isPresent()){
-				return x;
-			}
-			x.updateDetails(updateValue.get().getDetails());
-			return x;
-		}).collect(Collectors.toList());
-		
 	}
 }

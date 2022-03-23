@@ -142,10 +142,22 @@ public class LeaveUsedNumber{
 	}
 
 
+	/**
+	 * [6] 使用時間を取得
+	 * @return
+	 */
 	public LeaveUsedTime getMinutesOrZero() {
-		if(!this.minutes.isPresent())return new LeaveUsedTime(0);
-		return this.minutes.get();
+		return this.minutes.orElse(new LeaveUsedTime(0));
 	}
+	
+	/**
+	 * [7] 積み崩し日数を取得
+	 * @return
+	 */
+	public LeaveUsedDayNumber getStowageDaysOrZero(){
+		return this.stowageDays.orElse(new LeaveUsedDayNumber(0.0));
+	}
+	
 
 	/**
 	 * 使用数を加算
@@ -226,21 +238,20 @@ public class LeaveUsedNumber{
 	 */
 	public LeaveUsedNumber addStowageDays(LeaveUsedDayNumber days){
 		return LeaveUsedNumber.of(this.days, this.minutes,
-				Optional.of(new LeaveUsedDayNumber(this.stowageDays.map(x->x.v()).orElse(0.0) + days.v())),
+				Optional.of(new LeaveUsedDayNumber(this.getStowageDaysOrZero().v() + days.v())),
 				leaveOverLimitNumber);
 	}
 	
 	/**
-	 * 減算する
+	 * [5]減算する
 	 * @param useNumbr
 	 * @return
 	 */
 	public LeaveUsedNumber subtract(LeaveUsedNumber useNumbr){
 		LeaveUsedDayNumber days = new LeaveUsedDayNumber(this.days.v() - useNumbr.days.v());
 		
-		LeaveUsedTime useTime = new LeaveUsedTime(this.minutes.map(x->x.v()).orElse(0) - useNumbr.minutes.map(x->x.v()).orElse(0));
+		LeaveUsedTime useTime = new LeaveUsedTime(this.getMinutesOrZero().v() - useNumbr.getMinutesOrZero().v());
 		
 		return LeaveUsedNumber.of(days, Optional.of(useTime), this.stowageDays, this.leaveOverLimitNumber);
 	}
-
 }

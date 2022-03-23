@@ -2,10 +2,12 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.GrantRemainingDataAfterDigestion;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 
@@ -35,7 +37,7 @@ public class DigestionLeaveGrantRemainingData {
 			GrantRemainingDataAfterDigestion digestGrantRemainingData = leaveGrantRemainingData.digest(require,
 					companyId, baseDate, usedNumber);
 			
-			if(!digestGrantRemainingData.getUsedNumber().isLargerThanZero()){
+			if(!digestGrantRemainingData.getUnUsedNumber().isLargerThanZero()){
 				
 				digestGrantRemainingData.getGrantRemainingData().getDetails().getRemainingNumber()
 						.add(getRemainingNumberCarriedForward(companyId, remNumShiftWork, leaveUsedNumber,
@@ -46,7 +48,7 @@ public class DigestionLeaveGrantRemainingData {
 				return new RemNumShiftListWork(remNumShiftList, new LeaveUsedNumber(0.0,0));
 			}
 			remNumShiftList.add(new RemNumShiftWork(digestGrantRemainingData.getGrantRemainingData()));
-			usedNumber = digestGrantRemainingData.getUsedNumber().clone();
+			usedNumber = digestGrantRemainingData.getUnUsedNumber().clone();
 		}
 		
 		return new RemNumShiftListWork(remNumShiftList, usedNumber);
@@ -72,12 +74,12 @@ public class DigestionLeaveGrantRemainingData {
 			GrantRemainingDataAfterDigestion digestGrantRemainingData = leaveGrantRemainingData.digest(require,
 					companyId, baseDate, usedNumber);
 			
-			if(!digestGrantRemainingData.getUsedNumber().isLargerThanZero()){
+			if(!digestGrantRemainingData.getUnUsedNumber().isLargerThanZero()){
 				break;
 			}
 			
 			remNumShiftList.add( leaveGrantRemainingData.getUndigestedNumber(require, companyId, baseDate, usedNumber));
-			usedNumber = digestGrantRemainingData.getUsedNumber().clone();
+			usedNumber = digestGrantRemainingData.getUnUsedNumber().clone();
 		}
 		return getTotalRemainingNumber(remNumShiftList);
 	}
@@ -88,7 +90,7 @@ public class DigestionLeaveGrantRemainingData {
 	 * @return
 	 */
 	private static LeaveRemainingNumber getTotalRemainingNumber(List<LeaveGrantRemainingData> remNumShiftWorkList){
-		LeaveRemainingNumber totalRemainingNumber = new LeaveRemainingNumber(0.0, 0);
+		LeaveRemainingNumber totalRemainingNumber = LeaveRemainingNumber.of(new LeaveRemainingDayNumber(0.0), Optional.empty());
 		
 		for(LeaveGrantRemainingData remNumShiftWork :remNumShiftWorkList){
 			totalRemainingNumber.add(remNumShiftWork.getDetails().getRemainingNumber());

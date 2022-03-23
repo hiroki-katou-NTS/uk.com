@@ -212,9 +212,9 @@ public class LeaveNumberInfo implements Cloneable {
 	public LeaveNumberInfoAfterDigestion digest(LeaveRemainingNumber.RequireM3 require, String companyId,
 			String employeeId, GeneralDate baseDate, LeaveUsedNumber leaveusedNumber) {		
 		
-		LeaveUsedNumber usedNumber = leaveusedNumber.clone();
+		LeaveUsedNumber stackedUsedNumber = leaveusedNumber.clone();
 		if (this.remainingNumber.needStacking(require, companyId, employeeId, baseDate, leaveusedNumber)) {
-			usedNumber = this.usedNumber.addStowageDays(new LeaveUsedDayNumber(1.0));
+			stackedUsedNumber = this.usedNumber.addStowageDays(new LeaveUsedDayNumber(1.0));
 		}
 
 		LeaveRemainingNumber remainingNumber = this.remainingNumber.digest(require, companyId, employeeId, baseDate,
@@ -225,12 +225,12 @@ public class LeaveNumberInfo implements Cloneable {
 
 		digestedUsedNumber.add(this.usedNumber);
 		
-		LeaveUsedNumber notDigestedUsedNumber = findUsedNumberThatCouldNotDigested(require, companyId, employeeId,
+		LeaveUsedNumber notDigestedUsedNumber = calculateForUnDigestedNumber(require, companyId, employeeId,
 				baseDate, leaveusedNumber, remainingNumber);
 
 		return new LeaveNumberInfoAfterDigestion(new LeaveNumberInfo(this.grantNumber,
-				LeaveUsedNumber.of(digestedUsedNumber.days, digestedUsedNumber.minutes, usedNumber.stowageDays,
-						usedNumber.leaveOverLimitNumber),
+				LeaveUsedNumber.of(digestedUsedNumber.days, digestedUsedNumber.minutes, stackedUsedNumber.stowageDays,
+						stackedUsedNumber.leaveOverLimitNumber),
 				remainingNumber), notDigestedUsedNumber);
 	}
 	
@@ -244,10 +244,10 @@ public class LeaveNumberInfo implements Cloneable {
 	 * @param remainingNumber
 	 * @return
 	 */
-	public LeaveUsedNumber findUsedNumberThatCouldNotDigested(LeaveRemainingNumber.RequireM3 require, String companyId,
+	public LeaveUsedNumber calculateForUnDigestedNumber(LeaveRemainingNumber.RequireM3 require, String companyId,
 			String employeeId, GeneralDate baseDate, LeaveUsedNumber leaveusedNumber,
 			LeaveRemainingNumber remainingNumber) {
-		return this.remainingNumber.findUsedNumberThatCouldNotDigested(require, leaveusedNumber, remainingNumber,
+		return this.remainingNumber.calculateForUnDigestedNumber(require, leaveusedNumber, remainingNumber,
 				companyId, employeeId, baseDate);
 	}
 	

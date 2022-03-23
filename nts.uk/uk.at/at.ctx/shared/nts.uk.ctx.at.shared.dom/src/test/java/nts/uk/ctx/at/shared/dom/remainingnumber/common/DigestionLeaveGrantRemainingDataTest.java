@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -14,6 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingDataHelper;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.AnnualPaidLeaveSettingHelper;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
@@ -40,7 +42,7 @@ public class DigestionLeaveGrantRemainingDataTest {
 				companyId, remainingDatas, usedNumber, baseDate, require);
 		
 		
-		LeaveRemainingNumber expected = new LeaveRemainingNumber(0.0,0);
+		LeaveRemainingNumber expected =  LeaveRemainingNumber.of(new LeaveRemainingDayNumber(0.0),Optional.empty());
 		
 		assertThat(totalRemainingNumber.getDays()).isEqualTo(expected.getDays());
 		assertThat(totalRemainingNumber.getMinutes()).isEqualTo(expected.getMinutes());
@@ -70,7 +72,7 @@ public class DigestionLeaveGrantRemainingDataTest {
 				companyId, remainingDatas, usedNumber, baseDate, require);
 		
 		
-		LeaveRemainingNumber expected = new LeaveRemainingNumber(0.0,0);
+		LeaveRemainingNumber expected = LeaveRemainingNumber.of(new LeaveRemainingDayNumber(0.0),Optional.empty());
 		
 		assertThat(totalRemainingNumber.getDays()).isEqualTo(expected.getDays());
 		assertThat(totalRemainingNumber.getMinutes()).isEqualTo(expected.getMinutes());
@@ -125,7 +127,7 @@ public class DigestionLeaveGrantRemainingDataTest {
 				companyId, remainingDatas, usedNumber, baseDate, require);
 		
 		
-		LeaveRemainingNumber expected = new LeaveRemainingNumber(0.5,0);
+		LeaveRemainingNumber expected = LeaveRemainingNumber.of(new LeaveRemainingDayNumber(0.5),Optional.empty());
 		
 		assertThat(totalRemainingNumber.getDays()).isEqualTo(expected.getDays());
 		assertThat(totalRemainingNumber.getMinutes()).isEqualTo(expected.getMinutes());
