@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.kdw013.a;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -84,10 +85,13 @@ public class GetEmployeeDisplayInfo {
 		});
 
 		// 3. call 社員ID,基準日 List＜確認者>
-
-		List<ConfirmerDto> confirms = this.getWorkConfirmationStatus.get(sid, refDate);
-
-		result.setLstComfirmerDto(confirms);
+		List<ConfirmerByDay> comfirmByDayList = new ArrayList<>();
+		period.datesBetween().forEach(date -> {
+			List<ConfirmerDto> confirmers = this.getWorkConfirmationStatus.get(sid, date);
+			comfirmByDayList.add(new ConfirmerByDay(date, confirmers));
+		});
+		
+		result.setLstComfirmerDto(comfirmByDayList);
 
 		// 4: <call>(社員ID,表示期間,対象項目リスト)
 		GetDailyPerformanceDataResult dailyPerformanceData = getDailyPerformanceData.get(sid, period,

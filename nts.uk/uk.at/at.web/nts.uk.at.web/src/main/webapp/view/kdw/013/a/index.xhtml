@@ -11,7 +11,7 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskNote
 				nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskName
-				
+
 				nts.uk.shr.com.time.AttendanceClock
 				nts.uk.ctx.at.shared.dom.common.time.AttendanceTime
                 nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus
@@ -43,7 +43,7 @@
 			<com:EnumScript>
 				nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily
 			</com:EnumScript>
-			
+
 			<com:stylefile set="FULLCALENDAR" />
 			<com:scriptfile set="FULLCALENDAR" />
 
@@ -53,18 +53,20 @@
 			<com:scriptfile path="../share/description.js" />
 			<com:scriptfile path="../share/temporary.js" />
 			<com:scriptfile path="./cores/fullcalendar.js" />
-			
+
 			<com:scriptfile path="./cores/component/one-day-favorite.js" />
 			<com:scriptfile path="./cores/component/task-favorite.js" />
-			
+
 			<com:scriptfile path="./cores/component/fc-event-header.js" />
 			<com:scriptfile path="./cores/component/fc-time-header.js" />
+			<com:scriptfile path="./cores/component/fc-confirm.js" />
+			<com:scriptfile path="./cores/component/fc-confirm-list.js" />
 			<com:scriptfile path="./cores/component/date-picker.js" />
 			<com:scriptfile path="./cores/component/approved-list.js" />
 			<com:scriptfile path="./cores/component/department.js" />
 			<com:scriptfile path="./cores/component/fc-setting.js" />
 			<com:scriptfile path="./cores/component/sb-resizer.js" />
-			
+
 
 
 			<com:stylefile path="./kdw013.a.css" />
@@ -75,11 +77,12 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id='btn_register' data-bind="i18n: 'KDW013_1', click: $vm.saveData, enable: $vm.$toggle.save, hasFocus: true" class="proceed"></button>
-				<button data-bind="i18n: 'KDW013_2', click: $vm.confirm, kdw-toggle: $vm.$toggle.confirm"></button>
-				<button data-bind="i18n: 'KDW013_3', click: $vm.removeConfirm, kdw-toggle: $vm.$toggle.remove"></button>
-				<button data-bind="i18n: 'KDW013_74', click: $vm.equipmentInput, enable: equipmentInputEnable"></button>
-				
+
+				<button tabindex="0" id='btn_register' data-bind="i18n: 'KDW013_1', click: $vm.saveData, enable: $vm.$toggle.save, hasFocus: true" class="proceed"></button>
+				<!-- <button data-bind="i18n: 'KDW013_2', click: $vm.confirm, kdw-toggle: $vm.$toggle.confirm"></button>
+				<button data-bind="i18n: 'KDW013_3', click: $vm.removeConfirm, kdw-toggle: $vm.$toggle.remove"></button> -->
+				<button tabindex="0" data-bind="i18n: 'KDW013_74', click: $vm.equipmentInput, enable: equipmentInputEnable"></button>
+
 			</div>
 			<div>
 				<div class="popup-area-f">
@@ -97,7 +100,7 @@
 						  tabindex="1"
 						  id="KDW013_71"
 						  data-bind="ntsTextEditor: {
-							value: favTaskName, 
+							value: favTaskName,
 							required: true,
 							constraint: 'FavoriteTaskName',
 							name: '#[KDW013_71]',
@@ -109,7 +112,7 @@
 					<!-- F4_1 -->
 					<button class= "proceed normal" tabindex = "2" data-bind="i18n: 'KDW013_43', click: $vm.updateFavName"></button>
 				</div>
-				
+
 				<div class="popup-area-g">
 					<!-- G1_2 -->
  					<button class="closeG" data-bind="click: closeGDialog, icon: 202, size: 12"></button>
@@ -125,7 +128,7 @@
 						  tabindex="1"
 						  id="KDW013_71"
 						  data-bind="ntsTextEditor: {
-							value: oneDayFavTaskName, 
+							value: oneDayFavTaskName,
 							required: true,
 							constraint: 'FavoriteTaskName',
 							name: '#[KDW013_71]',
@@ -143,10 +146,10 @@
 
 					<!--I2_1 -->
 					<!--I2_2 -->
-					
+
 					<div id="taskInfo" data-bind = "foreach: $vm.taskInfos()">
 						<div class="panel panel-frame panel-width">
-							
+
 							<table id="tbl-task">
 								<tr>
 									<td id ="name-i" data-bind="text: name"></td>
@@ -157,17 +160,17 @@
 									</td>
 								</tr>
 							</table>
-							
+
 							<div>
 								<!--I2_3 -->
 								<label class="" data-bind="i18n: 'KDW013_25'"></label>
-	
+
 								<!--I2_4 -->
 								<label data-bind="text: time"></label>
 							</div>
 						</div>
 					</div>
-						
+
 				</div>
 			</div>
 			<div id="contents-area">
@@ -181,6 +184,7 @@
 					scrollTime: $vm.scrollTime,
 					slotDuration: $vm.slotDuration,
 					initialDate: $vm.initialDate,
+					showConfirm: $vm.showConfirm,
 					initialView: $vm.initialView,
 					isShowBreakTime:$vm.isShowBreakTime,
 					availableView: $vm.availableView,

@@ -522,6 +522,7 @@ module nts.uk.ui.at.kdw013.calendar {
         initialDate: Date | KnockoutObservable<Date>;
         scrollTime: number | KnockoutObservable<number>;
         slotDuration: SlotDuration | KnockoutObservable<SlotDuration>;
+        showConfirm: KnockoutObservable<boolean>;
         editable: boolean | KnockoutObservable<boolean>;
         firstDay: DayOfWeek | KnockoutObservable<DayOfWeek>;
         attendanceTimes: AttendanceTime[] | KnockoutObservableArray<AttendanceTime>;
@@ -550,6 +551,7 @@ module nts.uk.ui.at.kdw013.calendar {
         firstDay: KnockoutObservable<DayOfWeek>;
         scrollTime: KnockoutObservable<number>;
         slotDuration: KnockoutObservable<SlotDuration>;
+        showConfirm: KnockoutObservable<boolean>;
     };
 
     export type DatesSet = {
@@ -561,7 +563,8 @@ module nts.uk.ui.at.kdw013.calendar {
         firstDay: DayOfWeek;
         scrollTime: number;
         slotDuration: SlotDuration;
-        InitialView:string;
+        InitialView: string;
+        showConfirm: boolean;
     };
 
     let DATE_FORMAT = 'YYYY-MM-DD';
@@ -602,7 +605,8 @@ module nts.uk.ui.at.kdw013.calendar {
             firstDay: ko.observable(1),
             scrollTime: ko.observable(420),
             slotDuration: ko.observable(30),
-            initialView : ko.observable('fullWeek')
+            initialView : ko.observable('fullWeek'),
+            showConfirm: ko.observable(false)
         },
         excludeTimes: ko.observableArray([])
     });
@@ -650,10 +654,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 $settings: $component.params.$settings,
                 screenA:$component.params.screenA
             "></div>
-        <div data-bind="
-                fc-setting: $component.popupData.setting,
-                position: $component.popupPosition.setting
-            "></div>
+        
         <div class="fc-sidebar" data-bind="css: {
                     'edit-mode': ko.unwrap($component.params.editable),
                     'view-mode': !ko.unwrap($component.params.editable)
@@ -671,13 +672,6 @@ module nts.uk.ui.at.kdw013.calendar {
                     $settings: $component.params.$settings,
                     screenA:$component.params.screenA
                 "></div>
-            <div class="fc-employees confirmer" data-bind="
-                    kdw013-approveds: 'kdw013-approveds',
-                    mode: $component.params.editable,
-                    confirmers: $component.params.confirmers,
-                    initialDate: $component.params.initialDate,
-                    $settings: $component.params.$settings
-                "></div>
             <div class="fc-task-events" data-bind="
                     kdw013-task-events: 'kdw013-task-events',
                     mode: $component.params.editable,
@@ -694,6 +688,10 @@ module nts.uk.ui.at.kdw013.calendar {
                 "></div>
         </div>
         <div class="fc-calendar"></div>
+            <div data-bind="
+                fc-setting: $component.popupData.setting,
+                position: $component.popupPosition.setting
+            "></div>
         <style>${DEFAULT_STYLES}</style>
         <style data-bind="html: $component.$style"></style>`
     })
@@ -743,6 +741,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     slotDuration: ko.observable(30),
                     editable: ko.observable(false),
                     initialView: ko.observable('fullWeek'),
+                    showConfirm: ko.observable(false),
                     availableView: ko.observableArray([]),
                     initialDate: ko.observable(new Date()),
                     events: ko.observableArray([]),
@@ -781,6 +780,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 editable,
                 firstDay,
                 slotDuration,
+                showConfirm,
                 attendanceTimes,
                 breakTime,
                 businessHours,
@@ -823,6 +823,10 @@ module nts.uk.ui.at.kdw013.calendar {
 
             if (slotDuration === undefined) {
                 this.params.slotDuration = ko.observable(30);
+            }
+            
+            if(showConfirm === undefined){
+                this.params.showConfirm = ko.observable(false);    
             }
 
             if (events === undefined) {
@@ -1104,6 +1108,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 initialDate,
                 isShowBreakTime,
                 initialView,
+                showConfirm,
                 availableView,
                 viewModel,
                 validRange,
@@ -1163,6 +1168,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
             // calculate time on header
             let timesSet: KnockoutObservable<({ date: string | null; value: number | null; })[]> = ko.observable([]);
+            let showConfirmList:  KnockoutObservable<boolean> = ko.observable(false);
 
 
             datesSet.subscribe((ds) => { calTimSet(); });
@@ -1231,9 +1237,9 @@ module nts.uk.ui.at.kdw013.calendar {
                     let el = $(".fc-times[data-date='"+ date + "']");
                                         
                     if (el && el.html()) {
-                            let icon = isHasWarning(date) ? `<i class='warningIcon ` + className + `'> </i>` : '';
+                            let icon = isHasWarning(date) ? `<i tabindex="0" class='warningIcon ` + className + `'> </i>` : '';
                             setTimeout(() => {
-                                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '16px', width: 16, height: 16 }, click: () => { OpenIDialog(date); } });
+                                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '16px', width: 16, height: 16 , extension: "png" }, click: () => { OpenIDialog(date); } });
                                 $('.' + className).on('mousedown', () => { regisPopup(date); });
                             }, 300);
                             el.html(vm.$i18n('KDW013_98') + icon);
@@ -1504,6 +1510,14 @@ module nts.uk.ui.at.kdw013.calendar {
                 .then((value) => {
                     value = value ? value : { initialView: view };
                     value.initialView = view;
+                storeSetting(value);
+                });
+            });
+            showConfirm.subscribe(isShow => {
+
+                storeSetting()
+                .then((value) => {
+                    value.showConfirm = isShow;
                 storeSetting(value);
                 });
             });
@@ -2324,7 +2338,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     if(vm.params.editable()){
                         let className = 'fav-' + $(arg.el).find('.fc-scrollgrid-sync-inner').parent().attr('data-date');
                         
-                            $($(arg.el).find('.fc-scrollgrid-sync-inner')[0]).append(`<i class='favIcon ` + className + `' ></i>`);
+                            $($(arg.el).find('.fc-scrollgrid-sync-inner')[0]).append(`<i tabindex="0" class='favIcon ` + className + `' ></i>`);
                             setTimeout(function() { ko.applyBindingsToNode($('.favIcon'), { ntsIcon: { no: 229, size: '16px', width: 16, height: 16, extension: "png" } }); }, 300);
                     }
                 }
@@ -2337,9 +2351,14 @@ module nts.uk.ui.at.kdw013.calendar {
                         if (header.length) {
                             let $days = header.find('tr:first');
                             let _events = document.createElement('tr');
+                            let __confirm = document.createElement('tr');
+                            let __confirm_list = document.createElement('tr');
                             let __times = document.createElement('tr');
+                            
 
                             header.append(_events);
+                            header.append(__confirm);
+                            header.append(__confirm_list);
                             header.append(__times);
                             $.Deferred()
                                 .resolve(true)
@@ -2427,6 +2446,10 @@ module nts.uk.ui.at.kdw013.calendar {
                                 .then(() => {
                                     // binding sum of work time within same day
                                     ko.applyBindingsToNode(__times, { component: { name: 'fc-times', params: { timesSet: timesSet, screenA: vm.params.screenA } } }, vm);
+                                    //binding confirm status 
+                                    ko.applyBindingsToNode(__confirm, { component: { name: 'fc-confirm', params: { screenA: vm.params.screenA , confirmers: vm.params.confirmers} } }, vm);
+                                    //binding comfirm list
+                                    ko.applyBindingsToNode(__confirm_list, { component: { name: 'fc-confirm-list', params: { screenA: vm.params.screenA , confirmers: vm.params.confirmers}  } }, vm);
                                     // binding note for same day
                                     ko.applyBindingsToNode(_events, { component: { name: 'fc-event-header', params: { screenA: vm.params.screenA,  data: attendancesSet, setting: $settings } } }, vm);
                                 })
@@ -3572,7 +3595,7 @@ module nts.uk.ui.at.kdw013.calendar {
             });
 
             storeSetting()
-                // update setting from domain charactorgistic
+                // update setting from domain charactergistic
                 .then((value) => {
                     if (value) {
                         let { setting } = popupData;
@@ -4486,8 +4509,9 @@ module nts.uk.ui.at.kdw013.calendar {
                     let clickOnMaster = $(tg).closest('#master-content').length > 0 ;
                     let notClickOnbreakTime = !$(tg).closest('.fc-ckb-break-time').length > 0;
                     let notClickOnEventNote = !$(tg).closest('.fc-event-note').length > 0;
+                    let notClickOnEventConfirm = !$(tg).closest('.fc-confirm').length > 0;
                     
-                    if (clickOnMaster  && notClickOnbreakTime && notClickOnEventNote)
+                    if (clickOnMaster  && notClickOnbreakTime && notClickOnEventNote && notClickOnEventConfirm)
                         evt.preventDefault();
 
                     if (tg && !!ko.unwrap(position)) {

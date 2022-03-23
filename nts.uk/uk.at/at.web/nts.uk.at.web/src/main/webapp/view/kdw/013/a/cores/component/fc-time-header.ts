@@ -97,14 +97,14 @@ module nts.uk.ui.at.kdw013.timeheader {
             }
             const className = 'wrn-' + time.date;
 
-            let icon = vm.isHasWarning(time.date) ? `<i class='warningIcon ` + className + `'> </i>` : '';
+            let icon = vm.isHasWarning(time.date) ? `<i tabindex="0" class='warningIcon ` + className + `'> </i>` : '';
             
             if (vm.isNoCvrTaskList(time.date)) {
                 return '&nbsp;' + icon;
             }
             
-            setTimeout(()=> { 
-                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '16px', width: 16, height: 16 }, click: () => { vm.OpenIDialog(vm, time); } }); 
+            setTimeout(()=> {
+                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '16px', width: 16, height: 16 , extension: "png"}, click: () => { vm.OpenIDialog(vm, time); } });
                 $('.' + className).on('mousedown', () => { vm.regisPopup(time); });
             }, 300);
             
