@@ -10,7 +10,7 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
@@ -25,13 +25,11 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
@@ -272,7 +270,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 				flowWorkSetting,
 				itemsWithinCalc,
 				holidayStartEnd,
-				personDailySetting.getAddSetting().getVacationCalcMethodSet());
+				personDailySetting.getAddSetting().getAddSetOfWorkingTime());
 		// 法定区分を取得
 		HolidayAtr holidayAtr = todayWorkType.getWorkTypeSetList().get(0).getHolidayAtr();
 		// 休出枠Noをセット
@@ -321,7 +319,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 			FlowWorkSetting flowWorkSetting,
 			List<TimeSheetOfDeductionItem> timeSheetOfDeductionItems,
 			TimeSpanForDailyCalc holidayStartEnd,
-			HolidayCalcMethodSet holidaySet) {
+			AddSettingOfWorkingTime holidaySet) {
 		
 		Optional<FlowWorkHolidayTimeZone> plusOneHolidayTimezone = flowWorkSetting.getOffdayWorkTimezone().getLstWorkTimezone().stream()
 				.filter(timezone -> timezone.getWorktimeNo().equals(processingHolidayTimeZone.getWorktimeNo()+1))

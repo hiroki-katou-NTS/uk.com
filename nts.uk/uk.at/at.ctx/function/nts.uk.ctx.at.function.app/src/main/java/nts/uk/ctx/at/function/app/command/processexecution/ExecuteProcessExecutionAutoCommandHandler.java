@@ -1854,7 +1854,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 										cacheCarrier, Optional.of(asyContext), companyId, item, date.get(), execId,
 										ExecutionType.NORMAL_EXECUTION, Optional.empty());
 								// 中断
-								transaction.allInOneTransaction(result.getAtomTasks());
+								transaction.separateForEachTask(result.getAtomTasks());
 
 								if (result.getStatus().getState().value == 0) {
 									// endStatusIsInterrupt = true;

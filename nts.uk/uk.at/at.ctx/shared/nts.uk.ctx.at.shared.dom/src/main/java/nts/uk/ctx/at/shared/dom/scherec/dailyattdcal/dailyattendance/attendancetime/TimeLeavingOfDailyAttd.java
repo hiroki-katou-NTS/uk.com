@@ -59,12 +59,14 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	/**
 	 * [C-1] 所定時間帯で作る
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param workInformation 勤務情報
 	 * @return
 	 */
-	public static TimeLeavingOfDailyAttd createByPredetermineZone(Require require, WorkInformation workInformation) {
+	public static TimeLeavingOfDailyAttd createByPredetermineZone(Require require, String companyId,
+			WorkInformation workInformation) {
 		
-		Optional<WorkInfoAndTimeZone> workInfoAndTimeZone = workInformation.getWorkInfoAndTimeZone(require);
+		Optional<WorkInfoAndTimeZone> workInfoAndTimeZone = workInformation.getWorkInfoAndTimeZone(require, companyId);
 		if (! workInfoAndTimeZone.isPresent() ) {
 			throw new RuntimeException("Invalid value!");
 		}
