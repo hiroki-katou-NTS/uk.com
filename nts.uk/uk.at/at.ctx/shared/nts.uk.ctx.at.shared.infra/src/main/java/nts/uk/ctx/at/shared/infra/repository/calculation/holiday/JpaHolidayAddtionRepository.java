@@ -144,10 +144,10 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		if (entity.isPresent()) {
 			// 通常勤務の加算設定
 			Optional<WorkRegularAdditionSet> regularWork = Optional.empty();
-			KsrmtCalcCAddIncludePK pkRegular0 = new KsrmtCalcCAddIncludePK(companyId, WorkRegularAdditionSet.LABOR_SYSTEM_ATR, 0);
+			KsrmtCalcCAddIncludePK pkRegular0 = new KsrmtCalcCAddIncludePK(companyId, WorkRegularAdditionSet.LABOR_SYSTEM_ATR, false);
 			Optional<KsrmtCalcCAddInclude> entityRegular0 = this.queryProxy().find(pkRegular0, KsrmtCalcCAddInclude.class);
 			if (entityRegular0.isPresent()){
-				KsrmtCalcCAddIncludePK pkRegular1 = new KsrmtCalcCAddIncludePK(companyId, WorkRegularAdditionSet.LABOR_SYSTEM_ATR, 1);
+				KsrmtCalcCAddIncludePK pkRegular1 = new KsrmtCalcCAddIncludePK(companyId, WorkRegularAdditionSet.LABOR_SYSTEM_ATR, true);
 				Optional<KsrmtCalcCAddInclude> entityRegular1 = this.queryProxy().find(pkRegular1, KsrmtCalcCAddInclude.class);
 				KsrmtCalcCAddPK pkRegularWrk = new KsrmtCalcCAddPK(companyId, WorkRegularAdditionSet.LABOR_SYSTEM_ATR);
 				Optional<KsrmtCalcCAddWorktime> entityRegularWrk = this.queryProxy().find(pkRegularWrk, KsrmtCalcCAddWorktime.class);
@@ -158,10 +158,10 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 			}
 			// フレックス勤務の加算設定
 			Optional<WorkFlexAdditionSet> flexWork = Optional.empty();
-			KsrmtCalcCAddIncludePK pkFlex0 = new KsrmtCalcCAddIncludePK(companyId, WorkFlexAdditionSet.LABOR_SYSTEM_ATR, 0);
+			KsrmtCalcCAddIncludePK pkFlex0 = new KsrmtCalcCAddIncludePK(companyId, WorkFlexAdditionSet.LABOR_SYSTEM_ATR, false);
 			Optional<KsrmtCalcCAddInclude> entityFlex0 = this.queryProxy().find(pkFlex0, KsrmtCalcCAddInclude.class);
 			if (entityFlex0.isPresent()){
-				KsrmtCalcCAddIncludePK pkFlex1 = new KsrmtCalcCAddIncludePK(companyId, WorkFlexAdditionSet.LABOR_SYSTEM_ATR, 1);
+				KsrmtCalcCAddIncludePK pkFlex1 = new KsrmtCalcCAddIncludePK(companyId, WorkFlexAdditionSet.LABOR_SYSTEM_ATR, true);
 				Optional<KsrmtCalcCAddInclude> entityFlex1 = this.queryProxy().find(pkFlex1, KsrmtCalcCAddInclude.class);
 				KsrmtCalcCAddPK pkFlexWrk = new KsrmtCalcCAddPK(companyId, WorkFlexAdditionSet.LABOR_SYSTEM_ATR);
 				Optional<KsrmtCalcCAddWorktime> entityFlexWrk = this.queryProxy().find(pkFlexWrk, KsrmtCalcCAddWorktime.class);
@@ -172,10 +172,10 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 			}
 			// 変形労働勤務の加算設定
 			Optional<WorkDeformedLaborAdditionSet> irregularWork = Optional.empty();
-			KsrmtCalcCAddIncludePK pkDefo0 = new KsrmtCalcCAddIncludePK(companyId, WorkDeformedLaborAdditionSet.LABOR_SYSTEM_ATR, 0);
+			KsrmtCalcCAddIncludePK pkDefo0 = new KsrmtCalcCAddIncludePK(companyId, WorkDeformedLaborAdditionSet.LABOR_SYSTEM_ATR, false);
 			Optional<KsrmtCalcCAddInclude> entityDefo0 = this.queryProxy().find(pkDefo0, KsrmtCalcCAddInclude.class);
 			if (entityDefo0.isPresent()){
-				KsrmtCalcCAddIncludePK pkDefo1 = new KsrmtCalcCAddIncludePK(companyId, WorkDeformedLaborAdditionSet.LABOR_SYSTEM_ATR, 1);
+				KsrmtCalcCAddIncludePK pkDefo1 = new KsrmtCalcCAddIncludePK(companyId, WorkDeformedLaborAdditionSet.LABOR_SYSTEM_ATR, true);
 				Optional<KsrmtCalcCAddInclude> entityDefo1 = this.queryProxy().find(pkDefo1, KsrmtCalcCAddInclude.class);
 				KsrmtCalcCAddPK pkDefoWrk = new KsrmtCalcCAddPK(companyId, WorkDeformedLaborAdditionSet.LABOR_SYSTEM_ATR);
 				Optional<KsrmtCalcCAddWorktime> entityDefoWrk = this.queryProxy().find(pkDefoWrk, KsrmtCalcCAddWorktime.class);
@@ -186,10 +186,10 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 			}
 			// 時給者の加算設定
 			Optional<HourlyPaymentAdditionSet> hourlyPaymentAdditionSet = Optional.empty();
-			KsrmtCalcCAddIncludePK pkHour0 = new KsrmtCalcCAddIncludePK(companyId, HourlyPaymentAdditionSet.LABOR_SYSTEM_ATR, 0);
+			KsrmtCalcCAddIncludePK pkHour0 = new KsrmtCalcCAddIncludePK(companyId, HourlyPaymentAdditionSet.LABOR_SYSTEM_ATR, false);
 			Optional<KsrmtCalcCAddInclude> entityHour0 = this.queryProxy().find(pkHour0, KsrmtCalcCAddInclude.class);
 			if (entityHour0.isPresent()){
-				KsrmtCalcCAddIncludePK pkHour1 = new KsrmtCalcCAddIncludePK(companyId, HourlyPaymentAdditionSet.LABOR_SYSTEM_ATR, 1);
+				KsrmtCalcCAddIncludePK pkHour1 = new KsrmtCalcCAddIncludePK(companyId, HourlyPaymentAdditionSet.LABOR_SYSTEM_ATR, true);
 				Optional<KsrmtCalcCAddInclude> entityHour1 = this.queryProxy().find(pkHour1, KsrmtCalcCAddInclude.class);
 				KsrmtCalcCAddPK pkHourWrk = new KsrmtCalcCAddPK(companyId, HourlyPaymentAdditionSet.LABOR_SYSTEM_ATR);
 				Optional<KsrmtCalcCAddWorktime> entityHourWrk = this.queryProxy().find(pkHourWrk, KsrmtCalcCAddWorktime.class);
@@ -303,7 +303,7 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		KsrmtCalcCAddWorktime worktime = JpaAddSettingOfWorkingTimeRepository.toEntityWorktime(companyId, laborSystemAtr, domain);
 		KsrmtCalcCAddPremium premium = JpaAddSettingOfWorkingTimeRepository.toEntityPremium(companyId, laborSystemAtr, domain);
 		// 労働勤務の加算設定(含める要素を指定)を追加・更新する(就業時間用)
-		KsrmtCalcCAddIncludePK keyIncludeWorktime = new KsrmtCalcCAddIncludePK(companyId, laborSystemAtr, 0);
+		KsrmtCalcCAddIncludePK keyIncludeWorktime = new KsrmtCalcCAddIncludePK(companyId, laborSystemAtr, false);
 		Optional<KsrmtCalcCAddInclude> dbIncludeWorktime = this.queryProxy().find(keyIncludeWorktime, KsrmtCalcCAddInclude.class);
 		if (dbIncludeWorktime.isPresent()){
 			JpaAddSettingOfWorkingTimeRepository.updateEntityIncludeWorktime(dbIncludeWorktime.get(), domain);
@@ -313,7 +313,7 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 			this.commandProxy().insert(includeWorktime);
 		}
 		// 労働勤務の加算設定(含める要素を指定)を追加・更新する(割増時間用)
-		KsrmtCalcCAddIncludePK keyIncludePremium = new KsrmtCalcCAddIncludePK(companyId, laborSystemAtr, 1);
+		KsrmtCalcCAddIncludePK keyIncludePremium = new KsrmtCalcCAddIncludePK(companyId, laborSystemAtr, true);
 		Optional<KsrmtCalcCAddInclude> dbIncludePremium = this.queryProxy().find(keyIncludePremium, KsrmtCalcCAddInclude.class);
 		if (dbIncludePremium.isPresent()){
 			if (includePremium.isPresent()){
