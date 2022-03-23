@@ -27,10 +27,10 @@ public class JpaWorkDeformedLaborAdditionSetRepository extends JpaRepository imp
 	@Override
 	public Optional<WorkDeformedLaborAdditionSet> findByCid(String companyId) {
 		Optional<KsrmtCalcCAddInclude> includeWorktime = this.queryProxy().find(
-				new KsrmtCalcCAddIncludePK(companyId, WorkDeformedLaborAdditionSet.LABOR_SYSTEM_ATR, 0), KsrmtCalcCAddInclude.class);
+				new KsrmtCalcCAddIncludePK(companyId, WorkDeformedLaborAdditionSet.LABOR_SYSTEM_ATR, false), KsrmtCalcCAddInclude.class);
 		if (includeWorktime.isPresent()) {
 			Optional<KsrmtCalcCAddInclude> includePremium = this.queryProxy().find(
-					new KsrmtCalcCAddIncludePK(companyId, WorkDeformedLaborAdditionSet.LABOR_SYSTEM_ATR, 1), KsrmtCalcCAddInclude.class);
+					new KsrmtCalcCAddIncludePK(companyId, WorkDeformedLaborAdditionSet.LABOR_SYSTEM_ATR, true), KsrmtCalcCAddInclude.class);
 			Optional<KsrmtCalcCAddWorktime> worktime = this.queryProxy().find(
 					new KsrmtCalcCAddPK(companyId, WorkDeformedLaborAdditionSet.LABOR_SYSTEM_ATR), KsrmtCalcCAddWorktime.class);
 			Optional<KsrmtCalcCAddPremium> premium = this.queryProxy().find(
