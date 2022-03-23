@@ -518,30 +518,35 @@ module nts.uk.at.view.kdw008.a {
             getModifyAnyPeriodDetail(code: string, sheetNo : string): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
-                service.getModifyAnyPeriodByCode(code).done(data => {
-                    $("#swap-list4-grid2").igGridSelection("clearSelection");
-                    $("#swap-list4-grid1").igGridSelection("clearSelection");
-                    self.modifyAnyPeriodValue.removeAll();
-                    self.modifyAnyPeriodDataSource.removeAll();
-                    self.modifyAnyPeriodDataSource(_.cloneDeep(self.modifyAnyPeriodAttItems()));
+                if(!isNullOrUndefined(code)){
+                    service.getModifyAnyPeriodByCode(code).done(data => {
+                        $("#swap-list4-grid2").igGridSelection("clearSelection");
+                        $("#swap-list4-grid1").igGridSelection("clearSelection");
+                        self.modifyAnyPeriodValue.removeAll();
+                        self.modifyAnyPeriodDataSource.removeAll();
+                        self.modifyAnyPeriodDataSource(_.cloneDeep(self.modifyAnyPeriodAttItems()));
 
-                    if (data) {
-                        let listAtt: any[] = data.sheetlDtos.filter((e: any) => e.sheetNo == sheetNo);
-                        if (listAtt.length > 0) {
-                            let atds = listAtt[0].detailDtoList;
-                            self.selectedSheetName(listAtt[0].sheetName);
-                            self.modifyAnyPeriodValue(self.mapAttItemFormatDetail(self.modifyAnyPeriodAttItems(), atds));
-                            console.log(self.modifyAnyPeriodValue(), 'modifyAnyPeriodValue')
-                        }else {
-                            self.selectedSheetName("");
+                        if (data) {
+                            let listAtt: any[] = data.sheetlDtos.filter((e: any) => e.sheetNo == sheetNo);
+                            if (listAtt.length > 0) {
+                                let atds = listAtt[0].detailDtoList;
+                                self.selectedSheetName(listAtt[0].sheetName);
+                                self.modifyAnyPeriodValue(self.mapAttItemFormatDetail(self.modifyAnyPeriodAttItems(), atds));
+                                console.log(self.modifyAnyPeriodValue(), 'modifyAnyPeriodValue')
+                            }else {
+                                self.selectedSheetName("");
+                            }
                         }
-                    }
-                    dfd.resolve();
-                }).fail(err => {
-                    dfd.reject(err);
-                }).always(()=>{
+                        dfd.resolve();
+                    }).fail(err => {
+                        dfd.reject(err);
+                    }).always(()=>{
                         block.clear()}
-                );
+                    );
+                }else {
+                    self.selectedSheetName("");
+                    block.clear();
+                }
                 return dfd.promise();
             }
 
