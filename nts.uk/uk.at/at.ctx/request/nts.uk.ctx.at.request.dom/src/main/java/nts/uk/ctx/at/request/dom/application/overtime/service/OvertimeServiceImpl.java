@@ -1898,6 +1898,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 						workInformation.getWorkTypeCode(),
 						workInformation.getWorkTimeCode(),
 						workTimes,
+						new ArrayList<>(),
 						opAchievementDetail.map(i -> i.getStampRecordOutput().getOutingTime().stream().map(j -> new OutingTimeSheet(
 								new OutingFrameNo(j.getFrameNo().v()),
 								Optional.of(new WorkStamp(

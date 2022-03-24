@@ -35,7 +35,7 @@ public class GetFlowWorkBreakTimesService {
         List<BreakTimeSheet> result = new ArrayList<>();
 
         result.addAll(getRegularWorkBreakTimes(require, workInfoParams));
-
+        workInfoParams.setBreakTimes(new ArrayList<>(result));
         result.addAll(getOvertimeWorkBreakTimes(require, workInfoParams, multiOvertimeContent));
 
         return CalculateBreakTimeZoneService.organizeBreakTimes(result);
@@ -101,7 +101,11 @@ public class GetFlowWorkBreakTimesService {
                 workInfoParams.getWorkTypeCode(),
                 workInfoParams.getWorkTimeCode(),
                 Arrays.asList(workTime1),
-                new ArrayList<>(),
+                workInfoParams.getBreakTimes().stream().map(i -> new TimeZoneWithWorkNo(
+                        i.getBreakFrameNo().v(),
+                        i.getStartTime() == null ? null : i.getStartTime().v(),
+                        i.getEndTime() == null ? null : i.getEndTime().v()
+                )).collect(Collectors.toList()),
                 workInfoParams.getOutTimes().stream().map(i -> new OutingTimeZoneExport(
                         i.getReasonForGoOut().value,
                         i.getGoOutWithTimeDay().map(PrimitiveValueBase::v).orElse(null),
