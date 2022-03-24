@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.va
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.ReflectWorkHourCondition;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -132,7 +133,7 @@ public class VacationAppReflectOptionTest {
 
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(WorkType.createSimpleFromJavaType("003", "", "", "", "", 0, 1, // 休日
 						0, 0));
 				;
@@ -181,7 +182,7 @@ public class VacationAppReflectOptionTest {
 				ReflectWorkHourCondition.REFLECT);
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(WorkType.createSimpleFromJavaType("003", "", "", "", "", 0, 0, // 出勤
 						0, 0));
 				;

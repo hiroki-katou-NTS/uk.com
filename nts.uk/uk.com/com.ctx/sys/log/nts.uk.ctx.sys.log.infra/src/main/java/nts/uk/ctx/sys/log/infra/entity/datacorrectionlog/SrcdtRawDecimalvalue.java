@@ -34,11 +34,11 @@ public class SrcdtRawDecimalvalue extends ContractUkJpaEntity {
 	@Basic(optional = false)
 	public BigDecimal value;
 
-	@OneToOne(mappedBy = "rawDecimalValueBefore")
-	public SrcdtDataCorrection beforeLog;
-
-	@OneToOne(mappedBy = "rawDecimalValueAfter")
-	public SrcdtDataCorrection afterLog;
+//	@OneToOne(mappedBy = "rawDecimalValueBefore")
+//	public SrcdtDataCorrection beforeLog;
+//
+//	@OneToOne(mappedBy = "rawDecimalValueAfter")
+//	public SrcdtDataCorrection afterLog;
 
 	@Override
 	protected Object getKey() {

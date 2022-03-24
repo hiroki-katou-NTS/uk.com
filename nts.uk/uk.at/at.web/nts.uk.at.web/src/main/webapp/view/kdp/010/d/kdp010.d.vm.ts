@@ -21,6 +21,7 @@ module nts.uk.at.view.kdp010.d {
                 { id: 0, name: getText("KDP010_246") }
             ]);
 			areaLimitAtrOption: KnockoutObservableArray<any> = ko.observableArray([
+                { id: 2, name: getText("KDP010_239") },
                 { id: 1, name: getText("KDP010_249") },
                 { id: 0, name: getText("KDP010_248") }
             ]);
@@ -134,8 +135,8 @@ module nts.uk.at.view.kdp010.d {
                     self.displaySettingsStampScreen.update(data.displaySettingsStampScreen);
                     self.pageLayoutSettings(data.pageLayoutSettings || []);
                     self.buttonEmphasisArt(data.buttonEmphasisArt || 0);    
-                    self.locationInfoUse(data.locationInfoUse || 0);
-					self.areaLimitAtr(data.areaLimitAtr || 0);
+                    self.locationInfoUse(_.get(data, 'stampingAreaRestriction.useLocationInformation', 0));
+					self.areaLimitAtr(_.get(data, 'stampingAreaRestriction.stampingAreaLimit', 0));
                     if(data.googleMap != undefined && data.googleMap != null){
                         self.googleMap(data.googleMap);
                     }

@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -46,6 +47,15 @@ public class KrcmtAggrPeriodExcution extends ContractUkJpaEntity implements Seri
 	
 	@Column(name = "PRESENCE_OF_ERROR")
 	public int presenceOfError;
+
+	@Column(name = "AGGR_FRAME_NAME")
+	public String aggrFrameName;
+
+	@Column(name = "TARGET_START_DATE")
+	public GeneralDate startYmd;
+
+	@Column(name = "TARGET_END_DATE")
+	public GeneralDate endYmd;
 	
 	@Override
 	protected Object getKey() {

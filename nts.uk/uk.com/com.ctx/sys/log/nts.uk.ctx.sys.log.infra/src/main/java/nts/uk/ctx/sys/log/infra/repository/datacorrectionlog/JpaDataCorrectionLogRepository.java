@@ -47,56 +47,22 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 			DatePeriod datePeriod) {
 		if (targetDataType == null || listEmployeeId.isEmpty())
 			return Collections.emptyList();
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-//		String query = "SELECT a FROM SrcdtDataCorrection a WHERE a.pk.targetDataType = :targetDataType AND a.employeeId IN :listEmpId AND a.pk.ymdKey >= :startYmd AND a.pk.ymdKey <= :endYmd";
+
 		List<DataCorrectionLog> resultList = new ArrayList<>();
+		String query = "SELECT OPERATION_ID, USER_ID, TARGET_DATA_TYPE, ITEM_ID, USER_NAME, SID, YMD_KEY, YM_KEY, Y_KEY, STRING_KEY, CORRECTION_ATTR, ITEM_NAME, RAW_VALUE_BEFORE_ID, VIEW_VALUE_BEFORE, RAW_VALUE_AFTER_ID, VIEW_VALUE_AFTER, VALUE_DATA_TYPE, SHOW_ORDER, NOTE"
+				+ " FROM SRCDT_DATA_CORRECTION "
+				+ " WHERE TARGET_DATA_TYPE = @dataType"
+				+ " AND SID IN @employeeIds"
+				+ " AND YMD_KEY >= @startYMD"
+				+ " AND YMD_KEY <= @endYMD";
 		CollectionUtil.split(listEmployeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String listEmp = "(";
-			for(int i = 0; i < subList.size(); i++){
-				listEmp += "'"+ subList.get(i) +"',";
-			}
-			// remove last , in string and add )
-			listEmp = listEmp.substring(0, listEmp.length() - 1) + ")";
-			String query = "SELECT OPERATION_ID, USER_ID, TARGET_DATA_TYPE, ITEM_ID, USER_NAME, SID, YMD_KEY, YM_KEY, Y_KEY, STRING_KEY, CORRECTION_ATTR, ITEM_NAME, RAW_VALUE_BEFORE_ID, VIEW_VALUE_BEFORE, RAW_VALUE_AFTER_ID, VIEW_VALUE_AFTER, VALUE_DATA_TYPE, SHOW_ORDER, NOTE"
-					+ " FROM SRCDT_DATA_CORRECTION "
-					+ " WHERE TARGET_DATA_TYPE = "+ "'" + targetDataType.value + "'" 
-					+ " AND SID IN " + listEmp 
-					+ " AND YMD_KEY >= " + "'" + datePeriod.start() + "'" 
-					+ " AND YMD_KEY <= " + "'" + datePeriod.end() + "'";
-			try {
-				ResultSet rs = con.createStatement().executeQuery(query);
-				while (rs.next()) {
-					String operationId = rs.getString("OPERATION_ID");
-					String userId = rs.getString("USER_ID");
-					String sId = rs.getString("SID");
-					String userName = rs.getString("USER_NAME");
-					int targetDtType = rs.getInt("TARGET_DATA_TYPE");
-					String stringKey = rs.getString("STRING_KEY");
-					int correctionAttr = rs.getInt("CORRECTION_ATTR");
-					String itemId = rs.getString("ITEM_ID");
-					String itemName = rs.getString("ITEM_NAME");
-					String viewValueBefore = rs.getString("VIEW_VALUE_BEFORE");
-					String viewValueAfter = rs.getString("VIEW_VALUE_AFTER");
-					String rawValueBefore = rs.getString("RAW_VALUE_BEFORE_ID");
-					String rawValueAfter = rs.getString("RAW_VALUE_AFTER_ID");
-					int showOrder = rs.getInt("SHOW_ORDER");
-					String note = rs.getString("NOTE");
-					GeneralDate ymdKey = GeneralDate.fromString(rs.getString("YMD_KEY"), "yyyy-MM-dd");
-					Integer ymKey = Integer.valueOf(rs.getInt("YM_KEY"));
-					Integer yKey = Integer.valueOf(rs.getInt("Y_KEY"));
-					Integer valueType = Integer.valueOf(rs.getInt("VALUE_DATA_TYPE"));
-					
-					SrcdtDataCorrectionLogPk pk = new SrcdtDataCorrectionLogPk(operationId, userId, targetDtType,
-							itemId, ymdKey);
-					SrcdtDataCorrection srcdtDataCorrectionLog = new SrcdtDataCorrection(pk, userName, sId, ymKey,
-							yKey, stringKey, correctionAttr, itemName, rawValueBefore, viewValueBefore, rawValueAfter,
-							viewValueAfter, valueType, showOrder, note);
-					
-					resultList.add(srcdtDataCorrectionLog.toDomainToView());
-				}
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
+			List<DataCorrectionLog> tmp = new NtsStatement(query, this.jdbcProxy())
+					.paramInt("dataType", targetDataType.value)
+					.paramString("employeeIds", subList)
+					.paramDate("startYMD", datePeriod.start())
+					.paramDate("endYMD", datePeriod.end())
+					.getList(this::convertRsToDomain);
+			resultList.addAll(tmp);
 		});
 		return resultList;
 	}
@@ -106,14 +72,22 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 			YearMonthPeriod ymPeriod) {
 		if (targetDataType == null || listEmployeeId.isEmpty())
 			return Collections.emptyList();
-		String query = "SELECT a FROM SrcdtDataCorrection a WHERE a.pk.targetDataType = :targetDataType AND a.employeeId IN :listEmpId "
-				+ "AND a.ymKey >= :startYm AND a.ymKey <= :endYm";
+
 		List<DataCorrectionLog> resultList = new ArrayList<>();
+		String query = "SELECT OPERATION_ID, USER_ID, TARGET_DATA_TYPE, ITEM_ID, USER_NAME, SID, YMD_KEY, YM_KEY, Y_KEY, STRING_KEY, CORRECTION_ATTR, ITEM_NAME, RAW_VALUE_BEFORE_ID, VIEW_VALUE_BEFORE, RAW_VALUE_AFTER_ID, VIEW_VALUE_AFTER, VALUE_DATA_TYPE, SHOW_ORDER, NOTE"
+				+ " FROM SRCDT_DATA_CORRECTION "
+				+ " WHERE TARGET_DATA_TYPE = @dataType"
+				+ " AND SID IN @employeeIds"
+				+ " AND YM_KEY >= @startYM"
+				+ " AND YM_KEY <= @endYM";
 		CollectionUtil.split(listEmployeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(query, SrcdtDataCorrection.class)
-					.setParameter("targetDataType", targetDataType.value).setParameter("listEmpId", subList)
-					.setParameter("startYm", ymPeriod.start().v()).setParameter("endYm", ymPeriod.end().v())
-					.getList(c -> c.toDomainToView()));
+			List<DataCorrectionLog> tmp = new NtsStatement(query, this.jdbcProxy())
+					.paramInt("dataType", targetDataType.value)
+					.paramString("employeeIds", subList)
+					.paramInt("startYM", ymPeriod.start().v())
+					.paramInt("endYM", ymPeriod.end().v())
+					.getList(this::convertRsToDomain);
+			resultList.addAll(tmp);
 		});
 		return resultList;
 	}
@@ -123,14 +97,22 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 			Year yearStart, Year yearEnd) {
 		if (targetDataType == null || listEmployeeId.isEmpty())
 			return Collections.emptyList();
-		String query = "SELECT a FROM SrcdtDataCorrection a WHERE a.pk.targetDataType = :targetDataType AND a.employeeId IN :listEmpId "
-				+ "AND a.yKey >= :startY AND a.yKey <= :endY";
+
 		List<DataCorrectionLog> resultList = new ArrayList<>();
+		String query = "SELECT OPERATION_ID, USER_ID, TARGET_DATA_TYPE, ITEM_ID, USER_NAME, SID, YMD_KEY, YM_KEY, Y_KEY, STRING_KEY, CORRECTION_ATTR, ITEM_NAME, RAW_VALUE_BEFORE_ID, VIEW_VALUE_BEFORE, RAW_VALUE_AFTER_ID, VIEW_VALUE_AFTER, VALUE_DATA_TYPE, SHOW_ORDER, NOTE"
+				+ " FROM SRCDT_DATA_CORRECTION "
+				+ " WHERE TARGET_DATA_TYPE = @dataType"
+				+ " AND SID IN @employeeIds"
+				+ " AND Y_KEY >= @startY"
+				+ " AND Y_KEY <= @endY";
 		CollectionUtil.split(listEmployeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(query, SrcdtDataCorrection.class)
-					.setParameter("targetDataType", targetDataType.value).setParameter("listEmpId", subList)
-					.setParameter("startY", yearStart.getValue()).setParameter("endY", yearEnd.getValue())
-					.getList(c -> c.toDomainToView()));
+			List<DataCorrectionLog> tmp = new NtsStatement(query, this.jdbcProxy())
+					.paramInt("dataType", targetDataType.value)
+					.paramString("employeeIds", subList)
+					.paramInt("startY", yearStart.getValue())
+					.paramInt("endY", yearEnd.getValue())
+					.getList(this::convertRsToDomain);
+			resultList.addAll(tmp);
 		});
 		return resultList;
 	}
@@ -1288,56 +1270,22 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 			YearMonth ym, GeneralDate ymd) {
 		if (targetDataType == null || listEmployeeId.isEmpty())
 			return Collections.emptyList();
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-//		String query = "SELECT a FROM SrcdtDataCorrection a WHERE a.pk.targetDataType = :targetDataType AND a.employeeId IN :listEmpId AND a.pk.ymdKey >= :startYmd AND a.pk.ymdKey <= :endYmd";
+
 		List<DataCorrectionLog> resultList = new ArrayList<>();
+		String query = "SELECT OPERATION_ID, USER_ID, TARGET_DATA_TYPE, ITEM_ID, USER_NAME, SID, YMD_KEY, YM_KEY, Y_KEY, STRING_KEY, CORRECTION_ATTR, ITEM_NAME, RAW_VALUE_BEFORE_ID, VIEW_VALUE_BEFORE, RAW_VALUE_AFTER_ID, VIEW_VALUE_AFTER, VALUE_DATA_TYPE, SHOW_ORDER, NOTE"
+				+ " FROM SRCDT_DATA_CORRECTION "
+				+ " WHERE TARGET_DATA_TYPE = @dataType"
+				+ " AND SID IN @employeeIds"
+				+ " AND YMD_KEY = @ymd"
+				+ " AND YM_KEY = @ym";
 		CollectionUtil.split(listEmployeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String listEmp = "(";
-			for(int i = 0; i < subList.size(); i++){
-				listEmp += "'"+ subList.get(i) +"',";
-			}
-			// remove last , in string and add )
-			listEmp = listEmp.substring(0, listEmp.length() - 1) + ")";
-			String query = "SELECT OPERATION_ID, USER_ID, TARGET_DATA_TYPE, ITEM_ID, USER_NAME, SID, YMD_KEY, YM_KEY, Y_KEY, STRING_KEY, CORRECTION_ATTR, ITEM_NAME, RAW_VALUE_BEFORE_ID, VIEW_VALUE_BEFORE, RAW_VALUE_AFTER_ID, VIEW_VALUE_AFTER, VALUE_DATA_TYPE, SHOW_ORDER, NOTE"
-					+ " FROM SRCDT_DATA_CORRECTION "
-					+ " WHERE TARGET_DATA_TYPE = "+ "'" + targetDataType.value + "'" 
-					+ " AND SID IN " + listEmp 
-					+ " AND YMD_KEY = " + "'" + ymd + "'" 
-					+ " AND YM_KEY = " + "'" + ym.v() + "'";
-			try {
-				ResultSet rs = con.createStatement().executeQuery(query);
-				while (rs.next()) {
-					String operationId = rs.getString("OPERATION_ID");
-					String userId = rs.getString("USER_ID");
-					String sId = rs.getString("SID");
-					String userName = rs.getString("USER_NAME");
-					int targetDtType = rs.getInt("TARGET_DATA_TYPE");
-					String stringKey = rs.getString("STRING_KEY");
-					int correctionAttr = rs.getInt("CORRECTION_ATTR");
-					String itemId = rs.getString("ITEM_ID");
-					String itemName = rs.getString("ITEM_NAME");
-					String viewValueBefore = rs.getString("VIEW_VALUE_BEFORE");
-					String viewValueAfter = rs.getString("VIEW_VALUE_AFTER");
-					String rawValueBefore = rs.getString("RAW_VALUE_BEFORE_ID");
-					String rawValueAfter = rs.getString("RAW_VALUE_AFTER_ID");
-					int showOrder = rs.getInt("SHOW_ORDER");
-					String note = rs.getString("NOTE");
-					GeneralDate ymdKey = GeneralDate.fromString(rs.getString("YMD_KEY"), "yyyy-MM-dd");
-					Integer ymKey = Integer.valueOf(rs.getInt("YM_KEY"));
-					Integer yKey = Integer.valueOf(rs.getInt("Y_KEY"));
-					Integer valueType = Integer.valueOf(rs.getInt("VALUE_DATA_TYPE"));
-					
-					SrcdtDataCorrectionLogPk pk = new SrcdtDataCorrectionLogPk(operationId, userId, targetDtType,
-							itemId, ymdKey);
-					SrcdtDataCorrection srcdtDataCorrectionLog = new SrcdtDataCorrection(pk, userName, sId, ymKey,
-							yKey, stringKey, correctionAttr, itemName, rawValueBefore, viewValueBefore, rawValueAfter,
-							viewValueAfter, valueType, showOrder, note);
-					
-					resultList.add(srcdtDataCorrectionLog.toDomainToView());
-				}
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
+			List<DataCorrectionLog> tmp = new NtsStatement(query, this.jdbcProxy())
+					.paramInt("dataType", targetDataType.value)
+					.paramString("employeeIds", subList)
+					.paramDate("ymd", ymd)
+					.paramInt("ym", ym.v())
+					.getList(this::convertRsToDomain);
+			resultList.addAll(tmp);
 		});
 		return resultList;
 	}
@@ -1346,13 +1294,13 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 			+ " FROM SRCDT_DATA_CORRECTION "
 			+ " WHERE TARGET_DATA_TYPE = @type" 
 			+ " AND SID = @sid" 
-			 +" AND YMD_KEY = @ymd"
+			+ " AND YMD_KEY = @ymd"
 			+ " AND ITEM_ID = @itemId" ;
 	
 	@Override
 	public List<DataCorrectionLog> getInfoLog(String sid, GeneralDate targetDate, Integer itemId, TargetDataType type) {
 		return new NtsStatement(GET_LOG_BASIC, this.jdbcProxy()).paramInt("type", type.value).paramString("sid", sid)
-				.paramDate("ymd", targetDate).paramInt("itemId", itemId).getList(x -> convertRsToDomain(x));
+				.paramDate("ymd", targetDate).paramString("itemId", itemId.toString()).getList(x -> convertRsToDomain(x));
 	}
 	
 	private DataCorrectionLog convertRsToDomain(NtsResultRecord rs) {
@@ -1372,9 +1320,9 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 		int showOrder = rs.getInt("SHOW_ORDER");
 		String note = rs.getString("NOTE");
 		GeneralDate ymdKey = GeneralDate.fromString(rs.getString("YMD_KEY"), "yyyy-MM-dd");
-		Integer ymKey = Integer.valueOf(rs.getInt("YM_KEY"));
-		Integer yKey = Integer.valueOf(rs.getInt("Y_KEY"));
-		Integer valueType = rs.getInt("VALUE_DATA_TYPE") == null ? null : Integer.valueOf(rs.getInt("VALUE_DATA_TYPE"));
+		Integer ymKey = rs.getInt("YM_KEY");
+		Integer yKey = rs.getInt("Y_KEY");
+		Integer valueType = rs.getInt("VALUE_DATA_TYPE");
 
 		SrcdtDataCorrectionLogPk pk = new SrcdtDataCorrectionLogPk(operationId, userId, targetDtType, itemId, ymdKey);
 		SrcdtDataCorrection srcdtDataCorrectionLog = new SrcdtDataCorrection(pk, userName, sId, ymKey, yKey, stringKey,

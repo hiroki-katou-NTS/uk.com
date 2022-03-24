@@ -38,15 +38,15 @@ public class GetCombinationrAndWorkHolidayAtrServiceTest {
 
 		new Expectations(shiftMater, shiftMater2, shiftMater3) {
 			{
-				shiftMater.getWorkStyle(require);
+				shiftMater.getWorkStyle(require, anyString);
 				result = Optional.of(WorkStyle.ONE_DAY_REST);
 			}
 			{
-				shiftMater2.getWorkStyle(require);
+				shiftMater2.getWorkStyle(require, anyString);
 				result = Optional.of(WorkStyle.MORNING_WORK);
 			}
 			{
-				shiftMater3.getWorkStyle(require);
+				shiftMater3.getWorkStyle(require, anyString);
 				// result = Optional.empty()
 			}
 		};
@@ -58,6 +58,7 @@ public class GetCombinationrAndWorkHolidayAtrServiceTest {
 				instance,
 				"setWorkHolidayClassification",
 				require,
+				"companyId",
 				listShiftMaster
 			);
 
@@ -88,15 +89,15 @@ public class GetCombinationrAndWorkHolidayAtrServiceTest {
 				result = listShiftMaster;
 			}
 			{
-				shiftMater.getWorkStyle(require);
+				shiftMater.getWorkStyle(require, anyString);
 				result = Optional.of(WorkStyle.ONE_DAY_REST);
 			}
 			{
-				shiftMater2.getWorkStyle(require);
+				shiftMater2.getWorkStyle(require, anyString);
 				result = Optional.of(WorkStyle.MORNING_WORK);
 			}
 			{
-				shiftMater3.getWorkStyle(require);
+				shiftMater3.getWorkStyle(require, anyString);
 				// result = Optional.empty()
 			}
 		};
@@ -135,15 +136,15 @@ public class GetCombinationrAndWorkHolidayAtrServiceTest {
 				result = listShiftMaster;
 			}
 			{
-				shiftMater.getWorkStyle(require);
+				shiftMater.getWorkStyle(require, anyString);
 				result = Optional.of(WorkStyle.ONE_DAY_REST);
 			}
 			{
-				shiftMater2.getWorkStyle(require);
+				shiftMater2.getWorkStyle(require, anyString);
 				result = Optional.of(WorkStyle.MORNING_WORK);
 			}
 			{
-				shiftMater3.getWorkStyle(require);
+				shiftMater3.getWorkStyle(require, anyString);
 				// result = Optional.empty()
 			}
 		};

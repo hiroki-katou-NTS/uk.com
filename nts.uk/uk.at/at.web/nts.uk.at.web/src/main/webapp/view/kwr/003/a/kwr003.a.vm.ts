@@ -90,7 +90,10 @@ module nts.uk.at.view.kwr003.a {
       vm.ccg001ComponentOption = {
         /** Common properties */
         systemType: 2,
-        showEmployeeSelection: true,
+        // 2022.03.18 - 3S - chinh.hm - issues #123475 - 変更 START
+        //showEmployeeSelection: true,
+        showEmployeeSelection: false,
+        // 2022.03.18 - 3S - chinh.hm - issues #123475 - 変更 END
         showQuickSearchTab: true,
         showAdvancedSearchTab: true,
         showBaseDate: false,

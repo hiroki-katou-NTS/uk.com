@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.aspose.cells.Cells;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.app.find.ot.frame.OvertimeWorkFrameFindDto;
 import nts.uk.ctx.at.shared.app.find.ot.frame.OvertimeWorkFrameFinder;
 import nts.uk.ctx.at.shared.app.find.workdayoff.frame.WorkdayoffFrameFindDto;
@@ -45,6 +46,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.worktime.common.FontRearSection;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.MultiStampTimePiorityAtr;
@@ -57,6 +59,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -849,15 +852,8 @@ public class WorkTimeReportService {
              * R4_162
              * 外出丸め設定.同じ枠内での丸め設定
              */
-            Integer setSameFrameRounding = data.getFixedWorkSetting().getCommonSetting().getGoOutSet().getTotalRoundingSet().getSetSameFrameRounding();
-            cells.get("CS" + (startIndex + 1)).setValue(getFrameRoundingAtr(setSameFrameRounding));
-            
-            /*
-             * R4_163
-             * 外出丸め設定.枠を跨る場合の丸め設定
-             */
-            Integer frameStraddRoundingSet = data.getFixedWorkSetting().getCommonSetting().getGoOutSet().getTotalRoundingSet().getFrameStraddRoundingSet();
-            cells.get("CT" + (startIndex + 1)).setValue(getFrameRoundingAtr(frameStraddRoundingSet));
+            Integer roundMethod = data.getFixedWorkSetting().getCommonSetting().getGoOutSet().getRoundingMethod();
+            cells.get("CS" + (startIndex + 1)).setValue(getGoOutTimeRoundMethod(roundMethod));
             
             /*
              * R4_164
@@ -865,7 +861,7 @@ public class WorkTimeReportService {
              */
             Integer roundingMethodAppro = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut().getApproTimeRoundingSetting().getRoundingMethod();
-            cells.get("CU" + (startIndex + 1)).setValue("就業" + getApproTimeRoundingAtr(roundingMethodAppro));
+            cells.get("CT" + (startIndex + 1)).setValue("就業" + getApproTimeRoundingAtr(roundingMethodAppro));
             
             /*
              * R4_165
@@ -874,7 +870,7 @@ public class WorkTimeReportService {
             Integer unitAppro = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-            cells.get("CV" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitAppro));
+            cells.get("CU" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitAppro));
             
             /*
              * R4_166
@@ -883,7 +879,7 @@ public class WorkTimeReportService {
             Integer roundingAppro = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
-            cells.get("CW" + (startIndex + 1)).setValue(getRoundingEnum(roundingAppro));
+            cells.get("CV" + (startIndex + 1)).setValue(getRoundingEnum(roundingAppro));
             
             /*
              * R4_167
@@ -891,7 +887,7 @@ public class WorkTimeReportService {
              */
             Integer roundingMethodApproOt = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut().getApproTimeRoundingSetting().getRoundingMethod();
-            cells.get("CX" + (startIndex + 1)).setValue("残業" + getApproTimeRoundingAtr(roundingMethodApproOt));
+            cells.get("CW" + (startIndex + 1)).setValue("残業" + getApproTimeRoundingAtr(roundingMethodApproOt));
             /*
              * R4_168
              * 私用・組合外出時間.丸め設定
@@ -899,7 +895,7 @@ public class WorkTimeReportService {
             Integer unitApproOt = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-            cells.get("CY" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitApproOt));
+            cells.get("CX" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitApproOt));
             
             /*
              * R4_169
@@ -908,7 +904,7 @@ public class WorkTimeReportService {
             Integer roundingApproOt = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
-            cells.get("CZ" + (startIndex + 1)).setValue(getRoundingEnum(roundingApproOt));
+            cells.get("CY" + (startIndex + 1)).setValue(getRoundingEnum(roundingApproOt));
             
             /*
              * R4_170
@@ -916,7 +912,7 @@ public class WorkTimeReportService {
              */
             Integer roundingMethodApproHol = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut().getApproTimeRoundingSetting().getRoundingMethod();
-            cells.get("DA" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodApproHol));
+            cells.get("CZ" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodApproHol));
             
             /*
              * R4_171
@@ -925,7 +921,7 @@ public class WorkTimeReportService {
             Integer unitApproHol = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-            cells.get("DB" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitApproHol));
+            cells.get("DA" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitApproHol));
             
             /*
              * R4_172
@@ -934,7 +930,7 @@ public class WorkTimeReportService {
             Integer roundingApproHol = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
-            cells.get("DC" + (startIndex + 1)).setValue(getRoundingEnum(roundingApproHol));
+            cells.get("DB" + (startIndex + 1)).setValue(getRoundingEnum(roundingApproHol));
             
             /*
              * R4_173
@@ -942,7 +938,7 @@ public class WorkTimeReportService {
              */
             Integer roundingMethodDeduct = data.getFixedWorkSetting().getCommonSetting().getGoOutSet().getDiffTimezoneSetting()
                     .getWorkTimezone().getPrivateUnionGoOut().getDeductTimeRoundingSetting().getRoundingMethod();
-            cells.get("DD" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodDeduct));
+            cells.get("DC" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodDeduct));
             
             /*
              * R4_174
@@ -951,7 +947,7 @@ public class WorkTimeReportService {
             Integer unitDeduct = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-            cells.get("DE" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDeduct));
+            cells.get("DD" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDeduct));
             
             /*
              * R4_175
@@ -960,7 +956,7 @@ public class WorkTimeReportService {
             Integer roundingDeduct = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingSetting().getRounding();
-            cells.get("DF" + (startIndex + 1)).setValue(getRoundingEnum(roundingDeduct));
+            cells.get("DE" + (startIndex + 1)).setValue(getRoundingEnum(roundingDeduct));
             
             /*
              * R4_176
@@ -969,7 +965,7 @@ public class WorkTimeReportService {
             Integer roundingMethodDeductOt = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingMethod();
-            cells.get("DG" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodDeductOt));
+            cells.get("DF" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodDeductOt));
             
             /*
              * R4_177
@@ -978,7 +974,7 @@ public class WorkTimeReportService {
             Integer unitDeductOt = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-            cells.get("DH" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDeductOt));
+            cells.get("DG" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDeductOt));
             
             /*
              * R4_178
@@ -987,7 +983,7 @@ public class WorkTimeReportService {
             Integer roundingDeductOt = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingSetting().getRounding();
-            cells.get("DI" + (startIndex + 1)).setValue(getRoundingEnum(roundingDeductOt));
+            cells.get("DH" + (startIndex + 1)).setValue(getRoundingEnum(roundingDeductOt));
             
             /*
              * R4_179
@@ -996,7 +992,7 @@ public class WorkTimeReportService {
             Integer roundingMethodDeductHol = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingMethod();
-            cells.get("DJ" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodDeductHol));
+            cells.get("DI" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodDeductHol));
             
             /*
              * R4_180
@@ -1005,7 +1001,7 @@ public class WorkTimeReportService {
             Integer unitDeductHol = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-            cells.get("DK" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDeductHol));
+            cells.get("DJ" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDeductHol));
             
             /*
              * R4_181
@@ -1014,7 +1010,7 @@ public class WorkTimeReportService {
             Integer roundingDeductHol = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingSetting().getRounding();
-            cells.get("DL" + (startIndex + 1)).setValue(getRoundingEnum(roundingDeductHol));
+            cells.get("DK" + (startIndex + 1)).setValue(getRoundingEnum(roundingDeductHol));
             
             /*
              * R4_182
@@ -1023,7 +1019,7 @@ public class WorkTimeReportService {
             Integer roundingMethodOfficalAppro = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getWorkTimezone().getOfficalUseCompenGoOut()
                     .getApproTimeRoundingSetting().getRoundingMethod();
-            cells.get("DM" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOfficalAppro));
+            cells.get("DL" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOfficalAppro));
             
             /*
              * R4_183
@@ -1032,7 +1028,7 @@ public class WorkTimeReportService {
             Integer unitOfficalAppro = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getWorkTimezone().getOfficalUseCompenGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-            cells.get("DN" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOfficalAppro));
+            cells.get("DM" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOfficalAppro));
             
             /*
              * R4_184
@@ -1041,7 +1037,7 @@ public class WorkTimeReportService {
             Integer roundingOfficalAppro = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getWorkTimezone().getOfficalUseCompenGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
-            cells.get("DO" + (startIndex + 1)).setValue(getRoundingEnum(roundingOfficalAppro));
+            cells.get("DN" + (startIndex + 1)).setValue(getRoundingEnum(roundingOfficalAppro));
             
             /*
              * R4_185
@@ -1050,7 +1046,7 @@ public class WorkTimeReportService {
             Integer roundingMethodOfficlaOt = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getOttimezone().getOfficalUseCompenGoOut()
                     .getApproTimeRoundingSetting().getRoundingMethod();
-            cells.get("DP" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOfficlaOt));
+            cells.get("DO" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOfficlaOt));
             
             /*
              * R4_186
@@ -1059,7 +1055,7 @@ public class WorkTimeReportService {
             Integer unitOfficalOt = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getOttimezone().getOfficalUseCompenGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-            cells.get("DQ" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOfficalOt));
+            cells.get("DP" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOfficalOt));
             
             /*
              * R4_187
@@ -1068,7 +1064,7 @@ public class WorkTimeReportService {
             Integer roundingOfficalOt = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getOttimezone().getOfficalUseCompenGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
-            cells.get("DR" + (startIndex + 1)).setValue(getRoundingEnum(roundingOfficalOt));
+            cells.get("DQ" + (startIndex + 1)).setValue(getRoundingEnum(roundingOfficalOt));
             
             /*
              * R4_188
@@ -1077,7 +1073,7 @@ public class WorkTimeReportService {
             Integer roundingMethodOfficalHol = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getOfficalUseCompenGoOut()
                     .getApproTimeRoundingSetting().getRoundingMethod();
-            cells.get("DS" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOfficalHol));
+            cells.get("DR" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOfficalHol));
             
             /*
              * R4_189
@@ -1086,7 +1082,7 @@ public class WorkTimeReportService {
             Integer unitOfficalHol = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getOfficalUseCompenGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-            cells.get("DT" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOfficalHol));
+            cells.get("DS" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOfficalHol));
             
             /*
              * R4_190
@@ -1095,7 +1091,7 @@ public class WorkTimeReportService {
             Integer roundingOfficalHol = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getOfficalUseCompenGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
-            cells.get("DU" + (startIndex + 1)).setValue(getRoundingEnum(roundingOfficalHol));
+            cells.get("DT" + (startIndex + 1)).setValue(getRoundingEnum(roundingOfficalHol));
         }
         
         // 9        タブグ:                遅刻早退
@@ -1112,14 +1108,14 @@ public class WorkTimeReportService {
              * 遅刻早退時間丸め.遅刻丸め
              */
             Integer unitRecordLate = otherLate.get().getRecordTimeRoundingSet().getRoundingTime();
-            cells.get("DV" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitRecordLate));
+            cells.get("DU" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitRecordLate));
             
             /*
              * R4_192
              * 遅刻早退時間丸め.遅刻端数
              */
             Integer roundingRecordLate = otherLate.get().getRecordTimeRoundingSet().getRounding();
-            cells.get("DW" + (startIndex + 1)).setValue(getRoundingEnum(roundingRecordLate));
+            cells.get("DV" + (startIndex + 1)).setValue(getRoundingEnum(roundingRecordLate));
         }
         
         if (otherEarly.isPresent()) {
@@ -1128,14 +1124,14 @@ public class WorkTimeReportService {
              * 遅刻早退時間丸め.早退丸め
              */
             Integer unitRecordEarly = otherEarly.get().getRecordTimeRoundingSet().getRoundingTime();
-            cells.get("DX" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitRecordEarly));
+            cells.get("DW" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitRecordEarly));
             
             /*
              * R4_194
              * 遅刻早退時間丸め.早退端数
              */
             Integer roundingRecordEarly = otherEarly.get().getRecordTimeRoundingSet().getRounding();
-            cells.get("DY" + (startIndex + 1)).setValue(getRoundingEnum(roundingRecordEarly));
+            cells.get("DX" + (startIndex + 1)).setValue(getRoundingEnum(roundingRecordEarly));
         }
         
         if (otherLate.isPresent()) {
@@ -1144,14 +1140,14 @@ public class WorkTimeReportService {
              * 遅刻早退控除時間丸め.遅刻丸め
              */
             Integer unitDelLate = otherLate.get().getDelTimeRoundingSet().getRoundingTime();
-            cells.get("DZ" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDelLate));
+            cells.get("DY" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDelLate));
             
             /*
              * R4_196
              * 遅刻早退控除時間丸め.遅刻端数
              */
             Integer roundingDelLate = otherLate.get().getDelTimeRoundingSet().getRounding();
-            cells.get("EA" + (startIndex + 1)).setValue(getRoundingEnum(roundingDelLate));
+            cells.get("DZ" + (startIndex + 1)).setValue(getRoundingEnum(roundingDelLate));
         }
         
         if (otherEarly.isPresent()) {
@@ -1160,14 +1156,14 @@ public class WorkTimeReportService {
              * 遅刻早退控除時間丸め.早退丸め
              */
             Integer unitDelEarly = otherEarly.get().getDelTimeRoundingSet().getRoundingTime();
-            cells.get("EB" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDelEarly));
+            cells.get("EA" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDelEarly));
             
             /*
              * R4_198
              * 遅刻早退控除時間丸め.早退端数
              */
             Integer roundingDelEarly = otherEarly.get().getDelTimeRoundingSet().getRounding();
-            cells.get("EC" + (startIndex + 1)).setValue(getRoundingEnum(roundingDelEarly));
+            cells.get("EB" + (startIndex + 1)).setValue(getRoundingEnum(roundingDelEarly));
         }
         
         if (displayMode.equals(DisplayMode.DETAIL.value)) {
@@ -1176,7 +1172,7 @@ public class WorkTimeReportService {
              * 遅刻早退詳細設定.控除時間.遅刻早退時間を就業時間から控除する
              */
             boolean isDelFromEmTime = data.getFixedWorkSetting().getCommonSetting().getLateEarlySet().getCommonSet().isDelFromEmTime();
-            cells.get("ED" + (startIndex + 1)).setValue(isDelFromEmTime ?  "○" : "-");
+            cells.get("EC" + (startIndex + 1)).setValue(isDelFromEmTime ?  "○" : "-");
             
             if (otherLate.isPresent()) {
                 /*
@@ -1184,14 +1180,14 @@ public class WorkTimeReportService {
                  * 遅刻早退詳細設定.猶予時間.遅刻猶予時間
                  */
                 Integer graceTime = otherLate.get().getGraceTimeSet().getGraceTime();
-                cells.get("EE" + (startIndex + 1)).setValue(getInDayTimeWithFormat(graceTime));
+                cells.get("ED" + (startIndex + 1)).setValue(getInDayTimeWithFormat(graceTime));
                 
                 /*
                  * R4_203
                  * 遅刻早退詳細設定.猶予時間.遅刻猶予時間を就業時間に含める
                  */
                 boolean includeWorkingHour = otherLate.get().getGraceTimeSet().isIncludeWorkingHour();
-                cells.get("EF" + (startIndex + 1)).setValue(includeWorkingHour ? "○" : "-");
+                cells.get("EE" + (startIndex + 1)).setValue(includeWorkingHour ? "○" : "-");
             }
             
             if (otherEarly.isPresent()) {
@@ -1200,14 +1196,14 @@ public class WorkTimeReportService {
                  * 遅刻早退詳細設定.猶予時間.早退猶予時間
                  */
                 Integer graceTime = otherEarly.get().getGraceTimeSet().getGraceTime();
-                cells.get("EG" + (startIndex + 1)).setValue(getInDayTimeWithFormat(graceTime));
+                cells.get("EF" + (startIndex + 1)).setValue(getInDayTimeWithFormat(graceTime));
                 
                 /*
                  * R4_205
                  * 遅刻早退詳細設定.猶予時間.早退猶予時間を就業時間に含める
                  */
                 boolean includeWorkingHour = otherEarly.get().getGraceTimeSet().isIncludeWorkingHour();
-                cells.get("EH" + (startIndex + 1)).setValue(includeWorkingHour ? "○" : "-");
+                cells.get("EG" + (startIndex + 1)).setValue(includeWorkingHour ? "○" : "-");
             }
         }
         
@@ -1218,7 +1214,7 @@ public class WorkTimeReportService {
          * コード
          */
         String raisingSalarySetCode = data.getFixedWorkSetting().getCommonSetting().getRaisingSalarySet();
-        cells.get("EI" + (startIndex + 1)).setValue(raisingSalarySetCode != null ? raisingSalarySetCode : "");
+        cells.get("EH" + (startIndex + 1)).setValue(raisingSalarySetCode != null ? raisingSalarySetCode : "");
         
         /*
          * R4_207
@@ -1229,7 +1225,7 @@ public class WorkTimeReportService {
                     .getBonusPaySetting(AppContexts.user().companyId(), new BonusPaySettingCode(raisingSalarySetCode));
             if (bonusPaySettingOpt.isPresent()) {
                 String raisingSalaryName = bonusPaySettingOpt.get().getName().v();
-                cells.get("EJ" + (startIndex + 1)).setValue(raisingSalaryName);
+                cells.get("EI" + (startIndex + 1)).setValue(raisingSalaryName);
             }
         }
         
@@ -1248,14 +1244,14 @@ public class WorkTimeReportService {
                  * 代休発生に必要な時間.休日出勤
                  */
                 boolean useDivision = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().isUseDivision();
-                cells.get("EK" + (startIndex + 1)).setValue(useDivision ? "○" : "-");
+                cells.get("EJ" + (startIndex + 1)).setValue(useDivision ? "○" : "-");
                 
                 /*
                  * R4_208
                  * 代休発生に必要な時間.時間
                  */
                 Integer subHolTransferSetAtr = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getSubHolTransferSetAtr();
-                cells.get("EL" + (startIndex + 1)).setValue(subHolTransferSetAtr == 0 ? "指定時間" : "一定時間");
+                cells.get("EK" + (startIndex + 1)).setValue(subHolTransferSetAtr == 0 ? "指定時間" : "一定時間");
             }
         }
         
@@ -1265,14 +1261,14 @@ public class WorkTimeReportService {
              * 代休発生に必要な時間.１日
              */
             Integer oneDayTime = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getDesignatedTime().getOneDayTime();
-            cells.get("EM" + (startIndex + 1)).setValue(getInDayTimeWithFormat(oneDayTime));
+            cells.get("EL" + (startIndex + 1)).setValue(getInDayTimeWithFormat(oneDayTime));
             
             /*
              * R4_210
              * 代休発生に必要な時間.半日
              */
             Integer halfDayTime = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getDesignatedTime().getHalfDayTime();
-            cells.get("EN" + (startIndex + 1)).setValue(getInDayTimeWithFormat(halfDayTime));
+            cells.get("EM" + (startIndex + 1)).setValue(getInDayTimeWithFormat(halfDayTime));
         }
         
         if (displayMode.equals(DisplayMode.DETAIL.value)) {
@@ -1282,7 +1278,7 @@ public class WorkTimeReportService {
                  * 代休発生に必要な時間.一定時間
                  */
                 Integer certainTime = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getCertainTime();
-                cells.get("EO" + (startIndex + 1)).setValue(getInDayTimeWithFormat(certainTime));
+                cells.get("EN" + (startIndex + 1)).setValue(getInDayTimeWithFormat(certainTime));
             }
             
             if (subHolTimeOverTimeOffSet.isPresent()) {
@@ -1291,35 +1287,35 @@ public class WorkTimeReportService {
                  * 代休発生に必要な時間.残業
                  */
                 boolean useDivision = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().isUseDivision();
-                cells.get("EP" + (startIndex + 1)).setValue(useDivision ? "○" : "-");
+                cells.get("EO" + (startIndex + 1)).setValue(useDivision ? "○" : "-");
                 
                 /*
                  * R4_212
                  * 代休発生に必要な時間.時間
                  */
                 Integer subHolTransferSetAtr = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getSubHolTransferSetAtr();
-                cells.get("EQ" + (startIndex + 1)).setValue(subHolTransferSetAtr == 0 ? "指定時間" : "一定時間");
+                cells.get("EP" + (startIndex + 1)).setValue(subHolTransferSetAtr == 0 ? "指定時間" : "一定時間");
                 
                 /*
                  * R4_213
                  * 代休発生に必要な時間.１日
                  */
                 Integer oneDayTime = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getDesignatedTime().getOneDayTime();
-                cells.get("ER" + (startIndex + 1)).setValue(getInDayTimeWithFormat(oneDayTime));
+                cells.get("EQ" + (startIndex + 1)).setValue(getInDayTimeWithFormat(oneDayTime));
                 
                 /*
                  * R4_214
                  * 代休発生に必要な時間.半日
                  */
                 Integer halfDayTime = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getDesignatedTime().getHalfDayTime();
-                cells.get("ES" + (startIndex + 1)).setValue(getInDayTimeWithFormat(halfDayTime));
+                cells.get("ER" + (startIndex + 1)).setValue(getInDayTimeWithFormat(halfDayTime));
                 
                 /*
                  * R4_215
                  * 代休発生に必要な時間.一定時間
                  */
                 Integer certainTime = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getCertainTime();
-                cells.get("ET" + (startIndex + 1)).setValue(getInDayTimeWithFormat(certainTime));
+                cells.get("ES" + (startIndex + 1)).setValue(getInDayTimeWithFormat(certainTime));
             }
         }
         
@@ -1330,14 +1326,14 @@ public class WorkTimeReportService {
          * 深夜.深夜時間丸め
          */
         Integer unit = data.getFixedWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRoundingTime();
-        cells.get("EU" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unit));
+        cells.get("ET" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unit));
         
         /*
          * R4_217
          * 深夜.深夜時間端数
          */
         Integer rounding = data.getFixedWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRounding();
-        cells.get("EV" + (startIndex + 1)).setValue(getRoundingEnum(rounding));
+        cells.get("EU" + (startIndex + 1)).setValue(getRoundingEnum(rounding));
         
         if (displayMode.equals(DisplayMode.DETAIL.value)) {
             // 13       タブグ:                臨時
@@ -1347,14 +1343,14 @@ public class WorkTimeReportService {
              * 臨時.臨時丸め
              */
             Integer unitExtraord = data.getFixedWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRoundingTime();
-            cells.get("EW" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitExtraord));
+            cells.get("EV" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitExtraord));
             
             /*
              * R4_219
              * 臨時.臨時端数
              */
             Integer roundingExtraord = data.getFixedWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRounding();
-            cells.get("EX" + (startIndex + 1)).setValue(getRoundingEnum(roundingExtraord));
+            cells.get("EW" + (startIndex + 1)).setValue(getRoundingEnum(roundingExtraord));
             
             // 14       タブグ:                育児
             
@@ -1363,14 +1359,14 @@ public class WorkTimeReportService {
              * 育児.育児時間帯に勤務した場合の扱い
              */
             boolean childCareWorkUse = data.getFixedWorkSetting().getCommonSetting().getShortTimeWorkSet().isChildCareWorkUse();
-            cells.get("EY" + (startIndex + 1)).setValue(childCareWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+            cells.get("EX" + (startIndex + 1)).setValue(childCareWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
             
             /*
              * R4_221
              * 育児.介護時間帯に勤務した場合の扱い
              */
             boolean nursTimezoneWorkUse = data.getFixedWorkSetting().getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse();
-            cells.get("EZ" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "介護時間を減算する" : "介護時間を減算しない");
+            cells.get("EY" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "介護時間を減算する" : "介護時間を減算しない");
             
             // 15       タブグ:                医療
             
@@ -1386,7 +1382,7 @@ public class WorkTimeReportService {
                  * 医療.日勤申し送り時間
                  */
                 Integer applicationTime = medicalDaySet.get().getApplicationTime();
-                cells.get("FA" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
+                cells.get("EZ" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
             }
             
             if (medicalNightSet.isPresent()) {
@@ -1395,7 +1391,7 @@ public class WorkTimeReportService {
                  * 医療.夜勤申し送り時間
                  */
                 Integer applicationTime = medicalNightSet.get().getApplicationTime();
-                cells.get("FB" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
+                cells.get("FA" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
             }
             
             if (medicalDaySet.isPresent()) {
@@ -1404,14 +1400,14 @@ public class WorkTimeReportService {
                  * 医療.日勤勤務時間.丸め
                  */
                 Integer unitDay = medicalDaySet.get().getRoundingSet().getRoundingTime();
-                cells.get("FC" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDay));
+                cells.get("FB" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDay));
                 
                 /*
                  * R4_225
                  * 医療.日勤勤務時間.端数
                  */
                 Integer roundingDay = medicalDaySet.get().getRoundingSet().getRounding();
-                cells.get("FD" + (startIndex + 1)).setValue(getRoundingEnum(roundingDay));
+                cells.get("FC" + (startIndex + 1)).setValue(getRoundingEnum(roundingDay));
             }
             
             if (medicalNightSet.isPresent()) {
@@ -1420,14 +1416,14 @@ public class WorkTimeReportService {
                  * 医療.夜勤勤務時間.丸め
                  */
                 Integer unitNight = medicalNightSet.get().getRoundingSet().getRoundingTime();
-                cells.get("FE" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitNight));
+                cells.get("FD" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitNight));
                 
                 /*
                  * R4_227
                  * 医療.夜勤勤務時間.端数
                  */
                 Integer roundingNight = medicalNightSet.get().getRoundingSet().getRounding();
-                cells.get("FF" + (startIndex + 1)).setValue(getRoundingEnum(roundingNight));
+                cells.get("FE" + (startIndex + 1)).setValue(getRoundingEnum(roundingNight));
             }
             
             // 16       タブグ:                0時跨ぎ
@@ -1437,7 +1433,7 @@ public class WorkTimeReportService {
              * ０時跨ぎ.0時跨ぎ計算
              */
             boolean zeroHStraddCalculateSet = data.getFixedWorkSetting().getCommonSetting().isZeroHStraddCalculateSet();
-            cells.get("FG" + (startIndex + 1)).setValue(getUseAtrByBoolean(zeroHStraddCalculateSet));
+            cells.get("FF" + (startIndex + 1)).setValue(getUseAtrByBoolean(zeroHStraddCalculateSet));
         }
         
         // 17       タブグ:                その地
@@ -1449,7 +1445,7 @@ public class WorkTimeReportService {
              * その他.勤務種類が休暇の場合に就業時間を計算するか
              */
             Integer isCalculate = data.getFixedWorkSetting().getCommonSetting().getHolidayCalculation().getIsCalculate();
-            cells.get("FH" + (startIndex + 1)).setValue(getUseAtrByInteger(isCalculate));
+            cells.get("FG" + (startIndex + 1)).setValue(getUseAtrByInteger(isCalculate));
             
             FixedWorkCalcSettingDto calculationSetting = data.getFixedWorkSetting().getCalculationSetting();
             if (calculationSetting != null) {
@@ -1458,7 +1454,7 @@ public class WorkTimeReportService {
                  * その他.休暇加算時間を加算する場合に就業時間として加算するか.しない
                  */
                 Integer calcMethod = calculationSetting.getExceededPredAddVacationCalc().getCalcMethod();
-                cells.get("FI" + (startIndex + 1)).setValue(getUseAtrByInteger(calcMethod));
+                cells.get("FH" + (startIndex + 1)).setValue(getUseAtrByInteger(calcMethod));
                 
                 /*
                  * R4_231
@@ -1467,7 +1463,7 @@ public class WorkTimeReportService {
                 Integer otFrameNo = calculationSetting.getExceededPredAddVacationCalc().getOtFrameNo();
                 Optional<WorkdayoffFrameFindDto> otFrame = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == otFrameNo).findFirst();
                 if (otFrame.isPresent()) {
-                    cells.get("FJ" + (startIndex + 1)).setValue(otFrame.get().getWorkdayoffFrName());
+                    cells.get("FI" + (startIndex + 1)).setValue(otFrame.get().getWorkdayoffFrName());
                 }
                 
                 /*
@@ -1475,7 +1471,7 @@ public class WorkTimeReportService {
                  * その他.休憩未取得時に就業時間として計算するか
                  */
                 Integer calcMethodOt = calculationSetting.getOverTimeCalcNoBreak().getCalcMethod();
-                cells.get("FK" + (startIndex + 1)).setValue(getUseAtrByInteger(calcMethodOt));
+                cells.get("FJ" + (startIndex + 1)).setValue(getUseAtrByInteger(calcMethodOt));
                 
                 /*
                  * R4_232
@@ -1484,7 +1480,7 @@ public class WorkTimeReportService {
                 Integer inLawOT = calculationSetting.getOverTimeCalcNoBreak().getInLawOT();
                 Optional<WorkdayoffFrameFindDto> otFrameInLaw = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == inLawOT).findFirst();
                 if (otFrameInLaw.isPresent()) {
-                    cells.get("FL" + (startIndex + 1)).setValue(otFrameInLaw.get().getWorkdayoffFrName());
+                    cells.get("FK" + (startIndex + 1)).setValue(otFrameInLaw.get().getWorkdayoffFrName());
                 }
                 
                 /*
@@ -1494,7 +1490,7 @@ public class WorkTimeReportService {
                 Integer notInLawOT = calculationSetting.getOverTimeCalcNoBreak().getInLawOT();
                 Optional<WorkdayoffFrameFindDto> otFrameNotInLaw = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == notInLawOT).findFirst();
                 if (otFrameNotInLaw.isPresent()) {
-                    cells.get("FM" + (startIndex + 1)).setValue(otFrameNotInLaw.get().getWorkdayoffFrName());
+                    cells.get("FL" + (startIndex + 1)).setValue(otFrameNotInLaw.get().getWorkdayoffFrName());
                 }
             }
         } else {
@@ -2102,15 +2098,8 @@ public class WorkTimeReportService {
              * R5_143
              * 外出.外出丸め設定.同じ枠内での丸め設定
              */
-            Integer setSameFrameRounding = data.getFlowWorkSetting().getCommonSetting().getGoOutSet().getTotalRoundingSet().getSetSameFrameRounding();
-            cells.get("CD" + (startIndex + 1)).setValue(getFrameRoundingAtr(setSameFrameRounding));
-            
-            /*
-             * R5_144
-             * 外出.外出丸め設定.枠を跨る場合の丸め設定
-             */
-            Integer frameStraddRoundingSet = data.getFlowWorkSetting().getCommonSetting().getGoOutSet().getTotalRoundingSet().getFrameStraddRoundingSet();
-            cells.get("CE" + (startIndex + 1)).setValue(getFrameRoundingAtr(frameStraddRoundingSet));
+        	Integer roundMethod = data.getFlowWorkSetting().getCommonSetting().getGoOutSet().getRoundingMethod();
+            cells.get("CD" + (startIndex + 1)).setValue(getGoOutTimeRoundMethod(roundMethod));
             
             /*
              * R5_145
@@ -2119,7 +2108,7 @@ public class WorkTimeReportService {
             Integer roundingMethodWorkPrivateAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
                     .getApproTimeRoundingSetting().getRoundingMethod();
-            cells.get("CF" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodWorkPrivateAppro));
+            cells.get("CE" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodWorkPrivateAppro));
             
             /*
              * R5_146
@@ -2128,7 +2117,7 @@ public class WorkTimeReportService {
             Integer unitWorkPrivateAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-            cells.get("CG" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitWorkPrivateAppro));
+            cells.get("CF" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitWorkPrivateAppro));
             
             /*
              * R5_147
@@ -2137,7 +2126,7 @@ public class WorkTimeReportService {
             Integer roundingWorkPrivateAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
-            cells.get("CH" + (startIndex + 1)).setValue(getRoundingEnum(roundingWorkPrivateAppro));
+            cells.get("CG" + (startIndex + 1)).setValue(getRoundingEnum(roundingWorkPrivateAppro));
             
             /*
              * R5_148
@@ -2146,7 +2135,7 @@ public class WorkTimeReportService {
             Integer roundingMethodOtPrivate = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
                     .getApproTimeRoundingSetting().getRoundingMethod();
-            cells.get("CI" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOtPrivate));
+            cells.get("CH" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOtPrivate));
             
             /*
              * R5_149
@@ -2155,7 +2144,7 @@ public class WorkTimeReportService {
             Integer unitOtPrivateAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-            cells.get("CJ" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOtPrivateAppro));
+            cells.get("CI" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOtPrivateAppro));
             
             /*
              * R5_150
@@ -2164,7 +2153,7 @@ public class WorkTimeReportService {
             Integer roundingOtPrivateAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
-            cells.get("CK" + (startIndex + 1)).setValue(getRoundingEnum(roundingOtPrivateAppro));
+            cells.get("CJ" + (startIndex + 1)).setValue(getRoundingEnum(roundingOtPrivateAppro));
             
             /*
              * R5_151
@@ -2173,7 +2162,7 @@ public class WorkTimeReportService {
             Integer roundingMethodHdPrivate = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                     .getApproTimeRoundingSetting().getRoundingMethod();
-            cells.get("CL" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodHdPrivate));
+            cells.get("CK" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodHdPrivate));
             
             /*
              * R5_152
@@ -2182,7 +2171,7 @@ public class WorkTimeReportService {
             Integer unitHdPrivate = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-            cells.get("CM" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitHdPrivate));
+            cells.get("CL" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitHdPrivate));
             
             /*
              * R5_153
@@ -2191,7 +2180,7 @@ public class WorkTimeReportService {
             Integer roundingHdPrivate = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
-            cells.get("CN" + (startIndex + 1)).setValue(getRoundingEnum(roundingHdPrivate));
+            cells.get("CM" + (startIndex + 1)).setValue(getRoundingEnum(roundingHdPrivate));
             
             /*
              * R5_154
@@ -2200,7 +2189,7 @@ public class WorkTimeReportService {
             Integer roundingMethodWorkPrivateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingMethod();
-            cells.get("CO" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodWorkPrivateDeduct));
+            cells.get("CN" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodWorkPrivateDeduct));
             
             /*
              * R5_155
@@ -2209,7 +2198,7 @@ public class WorkTimeReportService {
             Integer unitWorkPrivateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-            cells.get("CP" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitWorkPrivateDeduct));
+            cells.get("CO" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitWorkPrivateDeduct));
             
             /*
              * R5_156
@@ -2218,7 +2207,7 @@ public class WorkTimeReportService {
             Integer roundingWorkPrivateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingSetting().getRounding();
-            cells.get("CQ" + (startIndex + 1)).setValue(getRoundingEnum(roundingWorkPrivateDeduct));
+            cells.get("CP" + (startIndex + 1)).setValue(getRoundingEnum(roundingWorkPrivateDeduct));
             
             /*
              * R5_157
@@ -2227,7 +2216,7 @@ public class WorkTimeReportService {
             Integer roundingMethodOtPrivateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingMethod();
-            cells.get("CR" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOtPrivateDeduct));
+            cells.get("CQ" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOtPrivateDeduct));
             
             /*
              * R5_158
@@ -2236,7 +2225,7 @@ public class WorkTimeReportService {
             Integer unitOtPrivateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-            cells.get("CS" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOtPrivateDeduct));
+            cells.get("CR" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOtPrivateDeduct));
             
             /*
              * R5_159
@@ -2245,7 +2234,7 @@ public class WorkTimeReportService {
             Integer roundingOtPrivateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingSetting().getRounding();
-            cells.get("CT" + (startIndex + 1)).setValue(getRoundingEnum(roundingOtPrivateDeduct));
+            cells.get("CS" + (startIndex + 1)).setValue(getRoundingEnum(roundingOtPrivateDeduct));
             
             /*
              * R5_160
@@ -2254,7 +2243,7 @@ public class WorkTimeReportService {
             Integer roundingMethodHdPriateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingMethod();
-            cells.get("CU" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodHdPriateDeduct));
+            cells.get("CT" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodHdPriateDeduct));
             
             /*
              * R5_161
@@ -2263,7 +2252,7 @@ public class WorkTimeReportService {
             Integer unitHdPrivateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-            cells.get("CV" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitHdPrivateDeduct));
+            cells.get("CU" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitHdPrivateDeduct));
             
             /*
              * R5_162
@@ -2272,7 +2261,7 @@ public class WorkTimeReportService {
             Integer roundingHdPrivateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingSetting().getRounding();
-            cells.get("CW" + (startIndex + 1)).setValue(getRoundingEnum(roundingHdPrivateDeduct));
+            cells.get("CV" + (startIndex + 1)).setValue(getRoundingEnum(roundingHdPrivateDeduct));
             
             /*
              * R5_163
@@ -2281,7 +2270,7 @@ public class WorkTimeReportService {
             Integer roundingMethodWorkOfficalAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getWorkTimezone().getOfficalUseCompenGoOut()
                     .getApproTimeRoundingSetting().getRoundingMethod();
-            cells.get("CX" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodWorkOfficalAppro));
+            cells.get("CW" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodWorkOfficalAppro));
             
             /*
              * R5_164
@@ -2290,7 +2279,7 @@ public class WorkTimeReportService {
             Integer unitWorkOfficalAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getWorkTimezone().getOfficalUseCompenGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-            cells.get("CY" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitWorkOfficalAppro));
+            cells.get("CX" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitWorkOfficalAppro));
             
             /*
              * R5_165
@@ -2299,7 +2288,7 @@ public class WorkTimeReportService {
             Integer roundingWorkOfficalAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getWorkTimezone().getOfficalUseCompenGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
-            cells.get("CZ" + (startIndex + 1)).setValue(getRoundingEnum(roundingWorkOfficalAppro));
+            cells.get("CY" + (startIndex + 1)).setValue(getRoundingEnum(roundingWorkOfficalAppro));
             
             /*
              * R5_166
@@ -2308,7 +2297,7 @@ public class WorkTimeReportService {
             Integer roundingMethodOtOfficalAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getOttimezone().getOfficalUseCompenGoOut()
                     .getApproTimeRoundingSetting().getRoundingMethod();
-            cells.get("DA" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOtOfficalAppro));
+            cells.get("CZ" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOtOfficalAppro));
             
             /*
              * R5_167
@@ -2317,7 +2306,7 @@ public class WorkTimeReportService {
             Integer unitOtOfficalAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getOttimezone().getOfficalUseCompenGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-            cells.get("DB" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOtOfficalAppro));
+            cells.get("DA" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOtOfficalAppro));
             
             /*
              * R5_168
@@ -2326,7 +2315,7 @@ public class WorkTimeReportService {
             Integer roundingOtOfficalAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getOttimezone().getOfficalUseCompenGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
-            cells.get("DC" + (startIndex + 1)).setValue(getRoundingEnum(roundingOtOfficalAppro));
+            cells.get("DB" + (startIndex + 1)).setValue(getRoundingEnum(roundingOtOfficalAppro));
             
             /*
              * R5_169
@@ -2335,7 +2324,7 @@ public class WorkTimeReportService {
             Integer roundingMethodHdOfficalAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getOfficalUseCompenGoOut()
                     .getApproTimeRoundingSetting().getRoundingMethod();
-            cells.get("DD" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodHdOfficalAppro));
+            cells.get("DC" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodHdOfficalAppro));
             
             /*
              * R5_170
@@ -2344,7 +2333,7 @@ public class WorkTimeReportService {
             Integer unitHdOfficalAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getOfficalUseCompenGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-            cells.get("DE" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitHdOfficalAppro));
+            cells.get("DD" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitHdOfficalAppro));
             
             /*
              * R5_171
@@ -2353,7 +2342,7 @@ public class WorkTimeReportService {
             Integer roundingHdOfficalAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getOfficalUseCompenGoOut()
                     .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
-            cells.get("DF" + (startIndex + 1)).setValue(getRoundingEnum(roundingHdOfficalAppro));
+            cells.get("DE" + (startIndex + 1)).setValue(getRoundingEnum(roundingHdOfficalAppro));
         }
         
         // 9        タブグ:                遅刻早退
@@ -2370,14 +2359,14 @@ public class WorkTimeReportService {
              * 遅刻早退.遅刻早退時間丸め.遅刻丸め
              */
             Integer unitRecordLate = otherLate.get().getRecordTimeRoundingSet().getRoundingTime();
-            cells.get("DG" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitRecordLate));
+            cells.get("DF" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitRecordLate));
             
             /*
              * R5_173
              * 遅刻早退.遅刻早退時間丸め.遅刻端数
              */
             Integer roundingRecordlate = otherLate.get().getRecordTimeRoundingSet().getRounding();
-            cells.get("DH" + (startIndex + 1)).setValue(getRoundingEnum(roundingRecordlate));
+            cells.get("DG" + (startIndex + 1)).setValue(getRoundingEnum(roundingRecordlate));
         }
         
         if (otherEarly.isPresent()) {
@@ -2386,14 +2375,14 @@ public class WorkTimeReportService {
              * 遅刻早退.遅刻早退時間丸め.早退丸め
              */
             Integer unitRecordEarly = otherEarly.get().getRecordTimeRoundingSet().getRoundingTime();
-            cells.get("DI" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitRecordEarly));
+            cells.get("DH" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitRecordEarly));
             
             /*
              * R5_175
              * 遅刻早退.遅刻早退時間丸め.早退端数
              */
             Integer roundingRecordEarly = otherEarly.get().getRecordTimeRoundingSet().getRounding();
-            cells.get("DJ" + (startIndex + 1)).setValue(getRoundingEnum(roundingRecordEarly));
+            cells.get("DI" + (startIndex + 1)).setValue(getRoundingEnum(roundingRecordEarly));
         }
         
         if (otherLate.isPresent()) {
@@ -2402,14 +2391,14 @@ public class WorkTimeReportService {
              * 遅刻早退.遅刻早退控除時間丸め.遅刻丸め
              */
             Integer unitDelLate = otherLate.get().getDelTimeRoundingSet().getRoundingTime();
-            cells.get("DK" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDelLate));
+            cells.get("DJ" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDelLate));
             
             /*
              * R5_177
              * 遅刻早退.遅刻早退控除時間丸め.遅刻端数
              */
             Integer roundingDelLate = otherLate.get().getDelTimeRoundingSet().getRounding();
-            cells.get("DL" + (startIndex + 1)).setValue(getRoundingEnum(roundingDelLate));
+            cells.get("DK" + (startIndex + 1)).setValue(getRoundingEnum(roundingDelLate));
         }
         
         if (otherEarly.isPresent()) {
@@ -2418,14 +2407,14 @@ public class WorkTimeReportService {
              * 遅刻早退.遅刻早退控除時間丸め.早退丸め
              */
             Integer unitDelEarly = otherEarly.get().getDelTimeRoundingSet().getRoundingTime();
-            cells.get("DM" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDelEarly));
+            cells.get("DL" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDelEarly));
             
             /*
              * R5_179
              * 遅刻早退.遅刻早退控除時間丸め.早退端数
              */
             Integer roundingDelEarly = otherEarly.get().getDelTimeRoundingSet().getRounding();
-            cells.get("DN" + (startIndex + 1)).setValue(getRoundingEnum(roundingDelEarly));
+            cells.get("DM" + (startIndex + 1)).setValue(getRoundingEnum(roundingDelEarly));
         }
         
         if (displayMode.equals(DisplayMode.DETAIL.value)) {
@@ -2435,14 +2424,14 @@ public class WorkTimeReportService {
                  * 遅刻早退詳細設定.猶予時間.遅刻猶予時間
                  */
                 Integer graceTime = otherLate.get().getGraceTimeSet().getGraceTime();
-                cells.get("DO" + (startIndex + 1)).setValue(getInDayTimeWithFormat(graceTime));
+                cells.get("DN" + (startIndex + 1)).setValue(getInDayTimeWithFormat(graceTime));
                 
                 /*
                  * R5_183
                  * 遅刻早退詳細設定.猶予時間.遅刻猶予時間を就業時間に含める
                  */
                 boolean includeWorkHour = otherLate.get().getGraceTimeSet().isIncludeWorkingHour();
-                cells.get("DP" + (startIndex + 1)).setValue(includeWorkHour ? "○" : "-");
+                cells.get("DO" + (startIndex + 1)).setValue(includeWorkHour ? "○" : "-");
             }
             
             if (otherEarly.isPresent()) {
@@ -2451,14 +2440,14 @@ public class WorkTimeReportService {
                  * 遅刻早退詳細設定.猶予時間.遅刻猶予時間
                  */
                 Integer graceTime = otherEarly.get().getGraceTimeSet().getGraceTime();
-                cells.get("DQ" + (startIndex + 1)).setValue(getInDayTimeWithFormat(graceTime));
+                cells.get("DP" + (startIndex + 1)).setValue(getInDayTimeWithFormat(graceTime));
                 
                 /*
                  * R5_185
                  * 遅刻早退詳細設定.猶予時間.遅刻猶予時間を就業時間に含める
                  */
                 boolean includeWorkHour = otherEarly.get().getGraceTimeSet().isIncludeWorkingHour();
-                cells.get("DR" + (startIndex + 1)).setValue(includeWorkHour ? "○" : "-");
+                cells.get("DQ" + (startIndex + 1)).setValue(includeWorkHour ? "○" : "-");
             }
         }
         
@@ -2469,7 +2458,7 @@ public class WorkTimeReportService {
          * 加給.コード
          */
         String raisingSalarySetCode = data.getFlowWorkSetting().getCommonSetting().getRaisingSalarySet();
-        cells.get("DS" + (startIndex + 1)).setValue(raisingSalarySetCode != null ? raisingSalarySetCode : "");
+        cells.get("DR" + (startIndex + 1)).setValue(raisingSalarySetCode != null ? raisingSalarySetCode : "");
         
         /*
          * R5_187
@@ -2480,7 +2469,7 @@ public class WorkTimeReportService {
                     .getBonusPaySetting(AppContexts.user().companyId(), new BonusPaySettingCode(raisingSalarySetCode));
             if (bonusPaySettingOpt.isPresent()) {
                 String raisingSalaryName = bonusPaySettingOpt.get().getName().v();
-                cells.get("DT" + (startIndex + 1)).setValue(raisingSalaryName);
+                cells.get("DS" + (startIndex + 1)).setValue(raisingSalaryName);
             }
         }
         
@@ -2499,14 +2488,14 @@ public class WorkTimeReportService {
                  * 代休.代休発生に必要な時間.休日出勤
                  */
                 boolean useDivision = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().isUseDivision();
-                cells.get("DU" + (startIndex + 1)).setValue(useDivision ? "○" : "-");
+                cells.get("DT" + (startIndex + 1)).setValue(useDivision ? "○" : "-");
                 
                 /*
                  * R5_189
                  * 代休.代休発生に必要な時間.時間
                  */
                 Integer subHolTransferSetAtr = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getSubHolTransferSetAtr();
-                cells.get("DV" + (startIndex + 1)).setValue(subHolTransferSetAtr == 0 ? "指定時間" : "一定時間");
+                cells.get("DU" + (startIndex + 1)).setValue(subHolTransferSetAtr == 0 ? "指定時間" : "一定時間");
             }
         }
         
@@ -2516,14 +2505,14 @@ public class WorkTimeReportService {
              * 代休.代休発生に必要な時間.１日
              */
             Integer oneDayTime = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getDesignatedTime().getOneDayTime();
-            cells.get("DW" + (startIndex + 1)).setValue(getInDayTimeWithFormat(oneDayTime));
+            cells.get("DV" + (startIndex + 1)).setValue(getInDayTimeWithFormat(oneDayTime));
             
             /*
              * R5_191
              * 代休.代休発生に必要な時間.半日
              */
             Integer halfDayTime = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getDesignatedTime().getHalfDayTime();
-            cells.get("DX" + (startIndex + 1)).setValue(getInDayTimeWithFormat(halfDayTime));
+            cells.get("DW" + (startIndex + 1)).setValue(getInDayTimeWithFormat(halfDayTime));
             
             if (displayMode.equals(DisplayMode.DETAIL.value)) {
                 /*
@@ -2531,7 +2520,7 @@ public class WorkTimeReportService {
                  * 代休.代休発生に必要な時間.一定時間
                  */
                 Integer certainTime = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getCertainTime();
-                cells.get("DY" + (startIndex + 1)).setValue(getInDayTimeWithFormat(certainTime));
+                cells.get("DX" + (startIndex + 1)).setValue(getInDayTimeWithFormat(certainTime));
             }
         }
         
@@ -2542,35 +2531,35 @@ public class WorkTimeReportService {
                  * 代休.代休発生に必要な時間.残業
                  */
                 boolean useDivision = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().isUseDivision();
-                cells.get("DZ" + (startIndex + 1)).setValue(useDivision ? "○" : "-");
+                cells.get("DY" + (startIndex + 1)).setValue(useDivision ? "○" : "-");
                 
                 /*
                  * R5_194
                  * 代休.代休発生に必要な時間.時間
                  */
                 Integer subHolTransferSetAtr = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getSubHolTransferSetAtr();
-                cells.get("EA" + (startIndex + 1)).setValue(subHolTransferSetAtr == 0 ? "指定時間" : "一定時間");
+                cells.get("DZ" + (startIndex + 1)).setValue(subHolTransferSetAtr == 0 ? "指定時間" : "一定時間");
                 
                 /*
                  * R5_195
                  * 代休.代休発生に必要な時間.１日
                  */
                 Integer oneDayTime = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getDesignatedTime().getOneDayTime();
-                cells.get("EB" + (startIndex + 1)).setValue(getInDayTimeWithFormat(oneDayTime));
+                cells.get("EA" + (startIndex + 1)).setValue(getInDayTimeWithFormat(oneDayTime));
                 
                 /*
                  * R5_196
                  * 代休.代休発生に必要な時間.半日
                  */
                 Integer halfDayTime = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getDesignatedTime().getHalfDayTime();
-                cells.get("EC" + (startIndex + 1)).setValue(getInDayTimeWithFormat(halfDayTime));
+                cells.get("EB" + (startIndex + 1)).setValue(getInDayTimeWithFormat(halfDayTime));
                 
                 /*
                  * R5_197
                  * 代休.代休発生に必要な時間.一定時間
                  */
                 Integer certainTime = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getCertainTime();
-                cells.get("ED" + (startIndex + 1)).setValue(getInDayTimeWithFormat(certainTime));
+                cells.get("EC" + (startIndex + 1)).setValue(getInDayTimeWithFormat(certainTime));
             }
         }
         
@@ -2581,14 +2570,14 @@ public class WorkTimeReportService {
          * 深夜残業.深夜時間丸め
          */
         Integer unitLateNight = data.getFlowWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRoundingTime();
-        cells.get("EE" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitLateNight));
+        cells.get("ED" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitLateNight));
         
         /*
          * R5_199
          * 深夜残業.深夜時間端数
          */
         Integer roundingLateNight = data.getFlowWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRounding();
-        cells.get("EF" + (startIndex + 1)).setValue(getRoundingEnum(roundingLateNight));
+        cells.get("EE" + (startIndex + 1)).setValue(getRoundingEnum(roundingLateNight));
         
         if (displayMode.equals(DisplayMode.DETAIL.value)) {
             // 13       タブグ:                臨時
@@ -2598,14 +2587,14 @@ public class WorkTimeReportService {
              * 臨時.臨時丸め
              */
             Integer unitExtrao = data.getFlowWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRoundingTime();
-            cells.get("EG" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitExtrao));
+            cells.get("EF" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitExtrao));
             
             /*
              * R5_201
              * 臨時.臨時端数
              */
             Integer roundingExtrao = data.getFlowWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRounding();
-            cells.get("EH" + (startIndex + 1)).setValue(getRoundingEnum(roundingExtrao));
+            cells.get("EG" + (startIndex + 1)).setValue(getRoundingEnum(roundingExtrao));
             
             // 14       タブグ:                育児
             
@@ -2614,14 +2603,14 @@ public class WorkTimeReportService {
              * 育児.育児時間帯に勤務した場合の扱い
              */
             boolean childCareWorkUse = data.getFlowWorkSetting().getCommonSetting().getShortTimeWorkSet().isChildCareWorkUse();
-            cells.get("EI" + (startIndex + 1)).setValue(childCareWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+            cells.get("EH" + (startIndex + 1)).setValue(childCareWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
             
             /*
              * R5_203
              * 育児.介護時間帯に勤務した場合の扱い
              */
             boolean nursTimezoneWorkUse = data.getFlowWorkSetting().getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse();
-            cells.get("EJ" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "介護時間を減算する" : "介護時間を減算しない");
+            cells.get("EI" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "介護時間を減算する" : "介護時間を減算しない");
             
             // 15       タブグ:                医療
             
@@ -2636,7 +2625,7 @@ public class WorkTimeReportService {
              */
             if (medicalSetDay.isPresent()) {
                 Integer applicationTime = medicalSetDay.get().getApplicationTime();
-                cells.get("EK" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
+                cells.get("EJ" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
             }
             
             /*
@@ -2645,7 +2634,7 @@ public class WorkTimeReportService {
              */
             if (medicalSetNight.isPresent()) {
                 Integer applicationTime = medicalSetNight.get().getApplicationTime();
-                cells.get("EL" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
+                cells.get("EK" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
             }
             
             if (medicalSetDay.isPresent()) {
@@ -2654,14 +2643,14 @@ public class WorkTimeReportService {
                  * 医療.日勤勤務時間.丸め
                  */
                 Integer unitDay = medicalSetDay.get().getRoundingSet().getRoundingTime();
-                cells.get("EM" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDay));
+                cells.get("EL" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDay));
                 
                 /*
                  * R5_207
                  * 医療.日勤勤務時間.端数
                  */
                 Integer roundingDay = medicalSetDay.get().getRoundingSet().getRounding();
-                cells.get("EN" + (startIndex + 1)).setValue(getRoundingEnum(roundingDay));
+                cells.get("EM" + (startIndex + 1)).setValue(getRoundingEnum(roundingDay));
             }
             
             if (medicalSetNight.isPresent()) {
@@ -2670,14 +2659,14 @@ public class WorkTimeReportService {
                  * 医療.夜勤勤務時間.丸め
                  */
                 Integer unitNight = medicalSetNight.get().getRoundingSet().getRoundingTime();
-                cells.get("EO" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitNight));
+                cells.get("EN" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitNight));
                 
                 /*
                  * R5_209
                  * 医療.夜勤勤務時間.端数
                  */
                 Integer roundingNight = medicalSetNight.get().getRoundingSet().getRounding();
-                cells.get("EP" + (startIndex + 1)).setValue(getRoundingEnum(roundingNight));
+                cells.get("EO" + (startIndex + 1)).setValue(getRoundingEnum(roundingNight));
             }
             
             // 16       タブグ:                0時跨ぎ
@@ -2688,7 +2677,7 @@ public class WorkTimeReportService {
              */
             if (displayMode.equals(DisplayMode.DETAIL.value)) {
                 boolean zeroHStraddCalculateSet = data.getFlowWorkSetting().getCommonSetting().isZeroHStraddCalculateSet();
-                cells.get("EQ" + (startIndex + 1)).setValue(getUseAtrByBoolean(zeroHStraddCalculateSet));
+                cells.get("EP" + (startIndex + 1)).setValue(getUseAtrByBoolean(zeroHStraddCalculateSet));
             }
         }
         
@@ -2701,7 +2690,7 @@ public class WorkTimeReportService {
              * その他.勤務種類が休暇の場合に就業時間を計算するか
              */
             Integer isCalculate = data.getFlowWorkSetting().getCommonSetting().getHolidayCalculation().getIsCalculate();
-            cells.get("ER" + (startIndex + 1)).setValue(getUseAtrByInteger(isCalculate));
+            cells.get("EQ" + (startIndex + 1)).setValue(getUseAtrByInteger(isCalculate));
         } else {
         	cells.deleteColumn(147);
         }
@@ -3640,17 +3629,9 @@ public class WorkTimeReportService {
          * R6_184
          * 外出.外出丸め設定.同じ枠内での丸め設定
          */
-        Integer setSameFrameRounding = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
-                .getTotalRoundingSet().getSetSameFrameRounding();
-        cells.get("DH" + (startIndex + 1)).setValue(getFrameRoundingAtr(setSameFrameRounding));
-        
-        /*
-         * R6_185
-         * 外出.外出丸め設定.枠を跨る場合の丸め設定
-         */
-        Integer frameStraddRoundingSet = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
-                .getTotalRoundingSet().getFrameStraddRoundingSet();
-        cells.get("DI" + (startIndex + 1)).setValue(getFrameRoundingAtr(frameStraddRoundingSet));
+        Integer roundingMethod = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+        		.getRoundingMethod();
+        cells.get("DH" + (startIndex + 1)).setValue(getGoOutTimeRoundMethod(roundingMethod));
         
         /*
          * R6_186
@@ -3659,7 +3640,7 @@ public class WorkTimeReportService {
         Integer roundingMethodWorkPriAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
                 .getApproTimeRoundingSetting().getRoundingMethod();
-        cells.get("DJ" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodWorkPriAppro));
+        cells.get("DI" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodWorkPriAppro));
         
         /*
          * R6_187
@@ -3668,7 +3649,7 @@ public class WorkTimeReportService {
         Integer unitWorkPriAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
                 .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-        cells.get("DK" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitWorkPriAppro));
+        cells.get("DJ" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitWorkPriAppro));
         
         /*
          * R6_188
@@ -3677,7 +3658,7 @@ public class WorkTimeReportService {
         Integer roundingWorkPriAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
                 .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
-        cells.get("DL" + (startIndex + 1)).setValue(getRoundingEnum(roundingWorkPriAppro));
+        cells.get("DK" + (startIndex + 1)).setValue(getRoundingEnum(roundingWorkPriAppro));
         
         /*
          * R6_189
@@ -3686,7 +3667,7 @@ public class WorkTimeReportService {
         Integer roundingMethodOtPriAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
                 .getApproTimeRoundingSetting().getRoundingMethod();
-        cells.get("DM" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOtPriAppro));
+        cells.get("DL" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOtPriAppro));
         
         /*
          * R6_190
@@ -3695,7 +3676,7 @@ public class WorkTimeReportService {
         Integer unitOtPriAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
                 .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-        cells.get("DN" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOtPriAppro));
+        cells.get("DM" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOtPriAppro));
         
         /*
          * R6_191
@@ -3704,7 +3685,7 @@ public class WorkTimeReportService {
         Integer roundingOtPriAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
                 .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
-        cells.get("DO" + (startIndex + 1)).setValue(getRoundingEnum(roundingOtPriAppro));
+        cells.get("DN" + (startIndex + 1)).setValue(getRoundingEnum(roundingOtPriAppro));
         
         /*
          * R6_192
@@ -3713,7 +3694,7 @@ public class WorkTimeReportService {
         Integer roundingMethodHdPriAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                 .getApproTimeRoundingSetting().getRoundingMethod();
-        cells.get("DP" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodHdPriAppro));
+        cells.get("DO" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodHdPriAppro));
         
         /*
          * R6_193
@@ -3722,7 +3703,7 @@ public class WorkTimeReportService {
         Integer unitHdPriAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                 .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-        cells.get("DQ" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitHdPriAppro));
+        cells.get("DP" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitHdPriAppro));
         
         /*
          * R6_194
@@ -3731,7 +3712,7 @@ public class WorkTimeReportService {
         Integer roundingHdPriAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                 .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
-        cells.get("DR" + (startIndex + 1)).setValue(getRoundingEnum(roundingHdPriAppro));
+        cells.get("DQ" + (startIndex + 1)).setValue(getRoundingEnum(roundingHdPriAppro));
         
         /*
          * R6_195
@@ -3740,7 +3721,7 @@ public class WorkTimeReportService {
         Integer roundingMethodWorkPriDeduct = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
                 .getDeductTimeRoundingSetting().getRoundingMethod();
-        cells.get("DS" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodWorkPriDeduct));
+        cells.get("DR" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodWorkPriDeduct));
         
         /*
          * R6_196
@@ -3749,7 +3730,7 @@ public class WorkTimeReportService {
         Integer unitWorkPriDeduct = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
                 .getDeductTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-        cells.get("DT" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitWorkPriDeduct));
+        cells.get("DS" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitWorkPriDeduct));
         
         /*
          * R6_197
@@ -3758,7 +3739,7 @@ public class WorkTimeReportService {
         Integer roundingWorkPriDeduct = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
                 .getDeductTimeRoundingSetting().getRoundingSetting().getRounding();
-        cells.get("DU" + (startIndex + 1)).setValue(getRoundingEnum(roundingWorkPriDeduct));
+        cells.get("DT" + (startIndex + 1)).setValue(getRoundingEnum(roundingWorkPriDeduct));
         
         /*
          * R6_198
@@ -3767,7 +3748,7 @@ public class WorkTimeReportService {
         Integer roundingMethodOtPriDeduct = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
                 .getDeductTimeRoundingSetting().getRoundingMethod();
-        cells.get("DV" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOtPriDeduct));
+        cells.get("DU" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOtPriDeduct));
         
         /*
          * R6_199
@@ -3776,7 +3757,7 @@ public class WorkTimeReportService {
         Integer unitOtPriDeduct = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
                 .getDeductTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-        cells.get("DW" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOtPriDeduct));
+        cells.get("DV" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOtPriDeduct));
         
         /*
          * R6_200
@@ -3785,7 +3766,7 @@ public class WorkTimeReportService {
         Integer roundingOtPriDeduct = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
                 .getDeductTimeRoundingSetting().getRoundingSetting().getRounding();
-        cells.get("DX" + (startIndex + 1)).setValue(getRoundingEnum(roundingOtPriDeduct));
+        cells.get("DW" + (startIndex + 1)).setValue(getRoundingEnum(roundingOtPriDeduct));
         
         /*
          * R6_201
@@ -3794,7 +3775,7 @@ public class WorkTimeReportService {
         Integer roundingMethodHdPriDeduct = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                 .getDeductTimeRoundingSetting().getRoundingMethod();
-        cells.get("DY" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodHdPriDeduct));
+        cells.get("DX" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodHdPriDeduct));
         
         /*
          * R6_202
@@ -3803,7 +3784,7 @@ public class WorkTimeReportService {
         Integer unitHdPriDeduct = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                 .getDeductTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-        cells.get("DZ" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitHdPriDeduct));
+        cells.get("DY" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitHdPriDeduct));
         
         /*
          * R6_203
@@ -3812,7 +3793,7 @@ public class WorkTimeReportService {
         Integer roundingHdPriDeduct = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                 .getDeductTimeRoundingSetting().getRoundingSetting().getRounding();
-        cells.get("EA" + (startIndex + 1)).setValue(getRoundingEnum(roundingHdPriDeduct));
+        cells.get("DZ" + (startIndex + 1)).setValue(getRoundingEnum(roundingHdPriDeduct));
         
         /*
          * R6_204
@@ -3821,7 +3802,7 @@ public class WorkTimeReportService {
         Integer roundingMethodWorkOfficalAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getWorkTimezone().getOfficalUseCompenGoOut()
                 .getApproTimeRoundingSetting().getRoundingMethod();
-        cells.get("EB" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodWorkOfficalAppro));
+        cells.get("EA" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodWorkOfficalAppro));
         
         /*
          * R6_205
@@ -3830,7 +3811,7 @@ public class WorkTimeReportService {
         Integer unitWOrkOfficalApro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getWorkTimezone().getOfficalUseCompenGoOut()
                 .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-        cells.get("EC" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitWOrkOfficalApro));
+        cells.get("EB" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitWOrkOfficalApro));
         
         /*
          * R6_206
@@ -3839,7 +3820,7 @@ public class WorkTimeReportService {
         Integer roundingWorkOfficalAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getWorkTimezone().getOfficalUseCompenGoOut()
                 .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
-        cells.get("ED" + (startIndex + 1)).setValue(getRoundingEnum(roundingWorkOfficalAppro));
+        cells.get("EC" + (startIndex + 1)).setValue(getRoundingEnum(roundingWorkOfficalAppro));
         
         /*
          * R6_207
@@ -3848,7 +3829,7 @@ public class WorkTimeReportService {
         Integer roundingMethodOtOfficalAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getOttimezone().getOfficalUseCompenGoOut()
                 .getApproTimeRoundingSetting().getRoundingMethod();
-        cells.get("EE" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOtOfficalAppro));
+        cells.get("ED" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOtOfficalAppro));
         
         /*
          * R6_208
@@ -3857,7 +3838,7 @@ public class WorkTimeReportService {
         Integer unitOtOfficalAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getOttimezone().getOfficalUseCompenGoOut()
                 .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-        cells.get("EF" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOtOfficalAppro));
+        cells.get("EE" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOtOfficalAppro));
         
         /*
          * R6_209
@@ -3866,7 +3847,7 @@ public class WorkTimeReportService {
         Integer roundingOtOfficalAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getOttimezone().getOfficalUseCompenGoOut()
                 .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
-        cells.get("EG" + (startIndex + 1)).setValue(getRoundingEnum(roundingOtOfficalAppro));
+        cells.get("EF" + (startIndex + 1)).setValue(getRoundingEnum(roundingOtOfficalAppro));
         
         /*
          * R6_210
@@ -3875,7 +3856,7 @@ public class WorkTimeReportService {
         Integer roundingMethodHdOfficalAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getPubHolWorkTimezone().getOfficalUseCompenGoOut()
                 .getApproTimeRoundingSetting().getRoundingMethod();
-        cells.get("EH" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodHdOfficalAppro));
+        cells.get("EG" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodHdOfficalAppro));
         
         /*
          * R6_211
@@ -3884,7 +3865,7 @@ public class WorkTimeReportService {
         Integer unitHdOfficalAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getPubHolWorkTimezone().getOfficalUseCompenGoOut()
                 .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-        cells.get("EI" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitHdOfficalAppro));
+        cells.get("EH" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitHdOfficalAppro));
         
         /*
          * R6_212
@@ -3893,7 +3874,7 @@ public class WorkTimeReportService {
         Integer roudingHdOfficalAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getPubHolWorkTimezone().getOfficalUseCompenGoOut()
                 .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
-        cells.get("EJ" + (startIndex + 1)).setValue(getRoundingEnum(roudingHdOfficalAppro));
+        cells.get("EI" + (startIndex + 1)).setValue(getRoundingEnum(roudingHdOfficalAppro));
         
         // 9        タブグ:                遅刻早退
         
@@ -3909,14 +3890,14 @@ public class WorkTimeReportService {
              * 遅刻早退.遅刻早退時間丸め.遅刻丸め
              */
             Integer unitRecord = otherLate.get().getRecordTimeRoundingSet().getRoundingTime();
-            cells.get("EK" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitRecord));
+            cells.get("EJ" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitRecord));
             
             /*
              * R6_214
              * 遅刻早退.遅刻早退時間丸め.遅刻端数
              */
             Integer roundingRecord = otherLate.get().getRecordTimeRoundingSet().getRounding();
-            cells.get("EL" + (startIndex + 1)).setValue(getRoundingEnum(roundingRecord));
+            cells.get("EK" + (startIndex + 1)).setValue(getRoundingEnum(roundingRecord));
         }
         
         if (otherEarly.isPresent()) {
@@ -3925,14 +3906,14 @@ public class WorkTimeReportService {
              * 遅刻早退.遅刻早退時間丸め.早退丸め
              */
             Integer unitRecord = otherEarly.get().getRecordTimeRoundingSet().getRoundingTime();
-            cells.get("EM" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitRecord));
+            cells.get("EL" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitRecord));
             
             /*
              * R6_216
              * 遅刻早退.遅刻早退時間丸め.早退端数
              */
             Integer roundingRecord = otherEarly.get().getRecordTimeRoundingSet().getRounding();
-            cells.get("EN" + (startIndex + 1)).setValue(getRoundingEnum(roundingRecord));
+            cells.get("EM" + (startIndex + 1)).setValue(getRoundingEnum(roundingRecord));
         }
         
         if (otherLate.isPresent()) {
@@ -3941,14 +3922,14 @@ public class WorkTimeReportService {
              * 遅刻早退.遅刻早退控除時間丸め.遅刻丸め
              */
             Integer unitDel = otherLate.get().getDelTimeRoundingSet().getRoundingTime();
-            cells.get("EO" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDel));
+            cells.get("EN" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDel));
             
             /*
              * R6_218
              * 遅刻早退.遅刻早退控除時間丸め.遅刻端数
              */
             Integer roundingDel = otherLate.get().getDelTimeRoundingSet().getRounding();
-            cells.get("EP" + (startIndex + 1)).setValue(getRoundingEnum(roundingDel));
+            cells.get("EO" + (startIndex + 1)).setValue(getRoundingEnum(roundingDel));
         }
         
         if (otherEarly.isPresent()) {
@@ -3957,14 +3938,14 @@ public class WorkTimeReportService {
              * 遅刻早退.遅刻早退控除時間丸め.早退丸め
              */
             Integer unitDel = otherEarly.get().getDelTimeRoundingSet().getRoundingTime();
-            cells.get("EQ" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDel));
+            cells.get("EP" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDel));
             
             /*
              * R6_220
              * 遅刻早退.遅刻早退控除時間丸め.早退端数
              */
             Integer roundingDel = otherEarly.get().getDelTimeRoundingSet().getRounding();
-            cells.get("ER" + (startIndex + 1)).setValue(getRoundingEnum(roundingDel));
+            cells.get("EQ" + (startIndex + 1)).setValue(getRoundingEnum(roundingDel));
         }
         
         if (displayMode.equals(DisplayMode.DETAIL.value)) {
@@ -3973,7 +3954,7 @@ public class WorkTimeReportService {
              * 遅刻早退詳細設定.控除時間.遅刻早退時間を就業時間から控除する
              */
             boolean delFromEmTime = data.getFlexWorkSetting().getCommonSetting().getLateEarlySet().getCommonSet().isDelFromEmTime();
-            cells.get("ES" + (startIndex + 1)).setValue(delFromEmTime ? "○" : "-");
+            cells.get("ER" + (startIndex + 1)).setValue(delFromEmTime ? "○" : "-");
             
             if (otherLate.isPresent()) {
                 /*
@@ -3981,14 +3962,14 @@ public class WorkTimeReportService {
                  * 遅刻早退詳細設定.猶予時間.遅刻猶予時間
                  */
                 Integer graceTime = otherLate.get().getGraceTimeSet().getGraceTime();
-                cells.get("ET" + (startIndex + 1)).setValue(getInDayTimeWithFormat(graceTime));
+                cells.get("ES" + (startIndex + 1)).setValue(getInDayTimeWithFormat(graceTime));
                 
                 /*
                  * R6_225
                  * 遅刻早退詳細設定.猶予時間.遅刻猶予時間を就業時間に含める
                  */
                 boolean includeWorkingHour = otherLate.get().getGraceTimeSet().isIncludeWorkingHour();
-                cells.get("EU" + (startIndex + 1)).setValue(includeWorkingHour ? "○" : "-");
+                cells.get("ET" + (startIndex + 1)).setValue(includeWorkingHour ? "○" : "-");
             }
             
             if (otherEarly.isPresent()) {
@@ -3997,14 +3978,14 @@ public class WorkTimeReportService {
                  * 遅刻早退詳細設定.猶予時間.早退猶予時間
                  */
                 Integer graceTime = otherEarly.get().getGraceTimeSet().getGraceTime();
-                cells.get("EV" + (startIndex + 1)).setValue(getInDayTimeWithFormat(graceTime));
+                cells.get("EU" + (startIndex + 1)).setValue(getInDayTimeWithFormat(graceTime));
                 
                 /*
                  * R6_227
                  * 遅刻早退詳細設定.猶予時間.早退猶予時間を就業時間に含める
                  */
                 boolean includeWorkingHour = otherEarly.get().getGraceTimeSet().isIncludeWorkingHour();
-                cells.get("EW" + (startIndex + 1)).setValue(includeWorkingHour ? "○" : "-");
+                cells.get("EV" + (startIndex + 1)).setValue(includeWorkingHour ? "○" : "-");
             }
         }
         
@@ -4015,7 +3996,7 @@ public class WorkTimeReportService {
          * コード
          */
         String raisingSalarySetCode = data.getFlexWorkSetting().getCommonSetting().getRaisingSalarySet();
-        cells.get("EX" + (startIndex + 1)).setValue(raisingSalarySetCode != null ? raisingSalarySetCode : "");
+        cells.get("EW" + (startIndex + 1)).setValue(raisingSalarySetCode != null ? raisingSalarySetCode : "");
         
         /*
          * R6_229
@@ -4026,7 +4007,7 @@ public class WorkTimeReportService {
                     .getBonusPaySetting(AppContexts.user().companyId(), new BonusPaySettingCode(raisingSalarySetCode));
             if (bonusPaySettingOpt.isPresent()) {
                 String raisingSalaryName = bonusPaySettingOpt.get().getName().v();
-                cells.get("EY" + (startIndex + 1)).setValue(raisingSalaryName);
+                cells.get("EX" + (startIndex + 1)).setValue(raisingSalaryName);
             }
         }
         
@@ -4045,14 +4026,14 @@ public class WorkTimeReportService {
                  * 代休.代休発生に必要な時間.休日出勤
                  */
                 boolean useDivision = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().isUseDivision();
-                cells.get("EZ" + (startIndex + 1)).setValue(useDivision ? "○" : "-");
+                cells.get("EY" + (startIndex + 1)).setValue(useDivision ? "○" : "-");
                 
                 /*
                  * R6_231
                  * 代休.代休発生に必要な時間.時間区分
                  */
                 Integer subHolTransferSetAtr = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getSubHolTransferSetAtr();
-                cells.get("FA" + (startIndex + 1)).setValue(subHolTransferSetAtr == 0 ? "指定時間" : "一定時間");
+                cells.get("EZ" + (startIndex + 1)).setValue(subHolTransferSetAtr == 0 ? "指定時間" : "一定時間");
             }
         }
         
@@ -4062,14 +4043,14 @@ public class WorkTimeReportService {
              * 代休.代休発生に必要な時間.１日
              */
             Integer oneDayTime = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getDesignatedTime().getOneDayTime();
-            cells.get("FB" + (startIndex + 1)).setValue(getInDayTimeWithFormat(oneDayTime));
+            cells.get("FA" + (startIndex + 1)).setValue(getInDayTimeWithFormat(oneDayTime));
             
             /*
              * R6_233
              * 代休.代休発生に必要な時間.半日
              */
             Integer halfDayTime = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getDesignatedTime().getHalfDayTime();
-            cells.get("FC" + (startIndex + 1)).setValue(getInDayTimeWithFormat(halfDayTime));
+            cells.get("FB" + (startIndex + 1)).setValue(getInDayTimeWithFormat(halfDayTime));
         }
         
         if (displayMode.equals(DisplayMode.DETAIL.value)) {
@@ -4079,7 +4060,7 @@ public class WorkTimeReportService {
                  * 代休.代休発生に必要な時間.一定時間
                  */
                 Integer certainTime = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getCertainTime();
-                cells.get("FD" + (startIndex + 1)).setValue(getInDayTimeWithFormat(certainTime));
+                cells.get("FC" + (startIndex + 1)).setValue(getInDayTimeWithFormat(certainTime));
             }
             
             if (subHolTimeOverTimeOffSet.isPresent()) {
@@ -4088,35 +4069,35 @@ public class WorkTimeReportService {
                  * 代休.代休発生に必要な時間.残業
                  */
                 boolean useDivision = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().isUseDivision();
-                cells.get("FE" + (startIndex + 1)).setValue(useDivision ? "○" : "-");
+                cells.get("FD" + (startIndex + 1)).setValue(useDivision ? "○" : "-");
                 
                 /*
                  * R6_236
                  * 代休.代休発生に必要な時間.時間
                  */
                 Integer subHolTransferSetAtr = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getSubHolTransferSetAtr();
-                cells.get("FF" + (startIndex + 1)).setValue(subHolTransferSetAtr == 0 ? "指定時間" : "一定時間");
+                cells.get("FE" + (startIndex + 1)).setValue(subHolTransferSetAtr == 0 ? "指定時間" : "一定時間");
                 
                 /*
                  * R6_237
                  * 代休.代休発生に必要な時間.１日
                  */
                 Integer oneDayTime = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getDesignatedTime().getOneDayTime();
-                cells.get("FG" + (startIndex + 1)).setValue(getInDayTimeWithFormat(oneDayTime));
+                cells.get("FF" + (startIndex + 1)).setValue(getInDayTimeWithFormat(oneDayTime));
                 
                 /*
                  * R6_238
                  * 代休.代休発生に必要な時間.半日
                  */
                 Integer halfDayTime = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getDesignatedTime().getHalfDayTime();
-                cells.get("FH" + (startIndex + 1)).setValue(getInDayTimeWithFormat(halfDayTime));
+                cells.get("FG" + (startIndex + 1)).setValue(getInDayTimeWithFormat(halfDayTime));
                 
                 /*
                  * R6_239
                  * 代休.代休発生に必要な時間.一定時間
                  */
                 Integer certainTime = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getCertainTime();
-                cells.get("FI" + (startIndex + 1)).setValue(getInDayTimeWithFormat(certainTime));
+                cells.get("FH" + (startIndex + 1)).setValue(getInDayTimeWithFormat(certainTime));
             }
         }
         
@@ -4127,14 +4108,14 @@ public class WorkTimeReportService {
          * 深夜.深夜時間丸め
          */
         Integer unit = data.getFlexWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRoundingTime();
-        cells.get("FJ" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unit));
+        cells.get("FI" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unit));
         
         /*
          * R6_241
          * 深夜.深夜時間端数
          */
         Integer rounding = data.getFlexWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRounding();
-        cells.get("FK" + (startIndex + 1)).setValue(getRoundingEnum(rounding));
+        cells.get("FJ" + (startIndex + 1)).setValue(getRoundingEnum(rounding));
         
         if (displayMode.equals(DisplayMode.DETAIL.value)) {
             // 13       タブグ:                臨時
@@ -4144,14 +4125,14 @@ public class WorkTimeReportService {
              * 臨時.臨時丸め
              */
             Integer unitExtrao = data.getFlexWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRoundingTime();
-            cells.get("FL" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitExtrao));
+            cells.get("FK" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitExtrao));
             
             /*
              * R6_243
              * 臨時.臨時端数
              */
             Integer roundingExtrao = data.getFlexWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRounding();
-            cells.get("FM" + (startIndex + 1)).setValue(getRoundingEnum(roundingExtrao));
+            cells.get("FL" + (startIndex + 1)).setValue(getRoundingEnum(roundingExtrao));
             
             // 14       タブグ:                育児
             
@@ -4160,14 +4141,14 @@ public class WorkTimeReportService {
              * 育児.育児時間帯に勤務した場合の扱い
              */
             boolean childCareWorkUse = data.getFlexWorkSetting().getCommonSetting().getShortTimeWorkSet().isChildCareWorkUse();
-            cells.get("FN" + (startIndex + 1)).setValue(childCareWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+            cells.get("FM" + (startIndex + 1)).setValue(childCareWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
             
             /*
              * R6_245
              * 育児.介護時間帯に勤務した場合の扱い
              */
             boolean nursTimezoneWorkUse = data.getFlexWorkSetting().getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse();
-            cells.get("FO" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "介護時間を減算する" : "介護時間を減算しない");
+            cells.get("FN" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "介護時間を減算する" : "介護時間を減算しない");
             
             // 15       タブグ:                医療
             
@@ -4182,7 +4163,7 @@ public class WorkTimeReportService {
              * 医療.日勤申し送り時間
              */
             if (medicalDay.isPresent()) {
-                cells.get("FP" + (startIndex + 1)).setValue(getInDayTimeWithFormat(medicalDay.get().getApplicationTime()));
+                cells.get("FO" + (startIndex + 1)).setValue(getInDayTimeWithFormat(medicalDay.get().getApplicationTime()));
             }
             
             /*
@@ -4190,7 +4171,7 @@ public class WorkTimeReportService {
              * 医療.夜勤申し送り時間
              */
             if (medicalNight.isPresent()) {
-                cells.get("FQ" + (startIndex + 1)).setValue(getInDayTimeWithFormat(medicalNight.get().getApplicationTime()));
+                cells.get("FP" + (startIndex + 1)).setValue(getInDayTimeWithFormat(medicalNight.get().getApplicationTime()));
             }
             
             if (medicalDay.isPresent()) {
@@ -4198,13 +4179,13 @@ public class WorkTimeReportService {
                  * R6_248
                  * 医療.日勤勤務時間.丸め
                  */
-                cells.get("FR" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(medicalDay.get().getRoundingSet().getRoundingTime()));
+                cells.get("FQ" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(medicalDay.get().getRoundingSet().getRoundingTime()));
                 
                 /*
                  * R6_249
                  * 医療.日勤勤務時間.端数
                  */
-                cells.get("FS" + (startIndex + 1)).setValue(getRoundingEnum(medicalDay.get().getRoundingSet().getRounding()));
+                cells.get("FR" + (startIndex + 1)).setValue(getRoundingEnum(medicalDay.get().getRoundingSet().getRounding()));
             }
             
             if (medicalNight.isPresent()) {
@@ -4212,13 +4193,13 @@ public class WorkTimeReportService {
                  * R6_250
                  * 医療.夜勤勤務時間.丸め
                  */
-                cells.get("FT" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(medicalNight.get().getRoundingSet().getRoundingTime()));
+                cells.get("FS" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(medicalNight.get().getRoundingSet().getRoundingTime()));
                 
                 /*
                  * R6_251
                  * 医療.夜勤勤務時間.端数
                  */
-                cells.get("FU" + (startIndex + 1)).setValue(getRoundingEnum(medicalNight.get().getRoundingSet().getRounding()));
+                cells.get("FT" + (startIndex + 1)).setValue(getRoundingEnum(medicalNight.get().getRoundingSet().getRounding()));
             }
             
             // 16       タブグ:                0時跨ぎ
@@ -4228,7 +4209,7 @@ public class WorkTimeReportService {
              * ０時跨ぎ.0時跨ぎ計算
              */
             boolean zeroHStraddCalculateSet = data.getFlexWorkSetting().getCommonSetting().isZeroHStraddCalculateSet();
-            cells.get("FV" + (startIndex + 1)).setValue(getUseAtrByBoolean(zeroHStraddCalculateSet));
+            cells.get("FU" + (startIndex + 1)).setValue(getUseAtrByBoolean(zeroHStraddCalculateSet));
         }
         
         // 17       タブグ:                その地
@@ -4240,7 +4221,7 @@ public class WorkTimeReportService {
              * その他.勤務種類が休暇の場合に就業時間を計算するか
              */
             Integer isCalculate = data.getFlexWorkSetting().getCommonSetting().getHolidayCalculation().getIsCalculate();
-            cells.get("FW" + (startIndex + 1)).setValue(getUseAtrByInteger(isCalculate));
+            cells.get("FV" + (startIndex + 1)).setValue(getUseAtrByInteger(isCalculate));
         } else {
         	cells.deleteColumn(178);
         }
@@ -4725,26 +4706,6 @@ public class WorkTimeReportService {
     }
     
     /**
-     * 外出丸め設定.枠を跨る場合の丸め設定
-     * @param frameRoundingAtr
-     * @return
-     */
-    private static String getFrameRoundingAtr(Integer frameRoundingAtr) {
-        if (frameRoundingAtr == null) {
-            return "";
-        }
-        
-        String[] frameRoundings = {"合算した後に丸める", "休憩枠毎に丸める"};
-        for (int i = 0; i < frameRoundings.length; i++) {
-            if (frameRoundingAtr == i) {
-                return frameRoundings[i];
-            }
-        }
-        
-        return "";
-    }
-    
-    /**
      * 私用・組合外出時間.就業時間帯
      * @param approTimeRoundingAtr
      * @return
@@ -4820,5 +4781,13 @@ public class WorkTimeReportService {
         }
         
         return "";
+    }
+    
+    /**
+     * 外出時間の丸め方法
+     */
+    private static String getGoOutTimeRoundMethod(Integer roundMethod) {
+    	return TextResource.localize(EnumAdaptor
+    			.valueOf(roundMethod, GoOutTimeRoundingMethod.class).description);
     }
 }

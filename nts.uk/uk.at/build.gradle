@@ -193,6 +193,10 @@ subprojects {
 		// SAMLに使用
 		compile group: 'commons-codec', name: 'commons-codec', version: '1.15'
         compile group: 'xmlsec', name: 'xmlsec', version: '2.1.4'
+        
+        //Zxing
+		compile group: 'com.google.zxing', name: 'core', version: '3.4.1'
+		compile group: 'com.google.zxing', name: 'javase', version: '3.4.1'
 	}
 }
 
@@ -1011,6 +1015,14 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.exio', name: 'nts.uk.ctx.exio.infra', version: version)
 		runtime(group: 'com.exio', name: 'nts.uk.ctx.exio.pub', version: version)
 		runtime(group: 'com.exio', name: 'nts.uk.ctx.exio.pubimp', version: version)
+		
+		runtime(group: 'com.link.smile', name: 'nts.uk.ctx.link.smile.ac', version: version)
+		runtime(group: 'com.link.smile', name: 'nts.uk.ctx.link.smile.app', version: version)
+		runtime(group: 'com.link.smile', name: 'nts.uk.ctx.link.smile.dom', version: version)
+		runtime(group: 'com.link.smile', name: 'nts.uk.ctx.link.smile.infra', version: version)
+		runtime(group: 'com.link.smile', name: 'nts.uk.ctx.link.smile.ws', version: version)
+		runtime(group: 'com.link.smile', name: 'nts.uk.ctx.link.smile.pub', version: version)
+		runtime(group: 'com.link.smile', name: 'nts.uk.ctx.link.smile.pubimp', version: version)
 
 		runtime(group: 'com.query', name: 'nts.uk.query.ac', version: version)
 		runtime(group: 'com.query', name: 'nts.uk.query.app', version: version)

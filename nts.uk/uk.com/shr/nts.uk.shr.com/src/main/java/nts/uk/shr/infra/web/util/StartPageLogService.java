@@ -14,6 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.context.RequestInfo;
 import nts.uk.shr.com.context.ScreenIdentifier;
+import nts.uk.shr.com.context.loginuser.SessionLowLayer;
 import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
 import nts.uk.shr.com.menu.ShareStandardMenuAdapter;
 import nts.uk.shr.com.security.audittrail.UserInfoAdaptorForLog;
@@ -32,6 +33,9 @@ public class StartPageLogService {
 	
 	@Inject
 	private StartPageLogStorageRepository logFactory;
+
+	@Inject
+	private SessionLowLayer session;
 	
 	public void writeLog(String url) {
 		
@@ -44,7 +48,7 @@ public class StartPageLogService {
 		RequestInfo beforeRequseted = AppContexts.beforeRequestedWebApi();
 		WindowsAccount windowsAccount = AppContexts.windowsAccount();
 		
-		if(StringUtil.isNullOrEmpty(targetPg.getProgramId(), true) || FilterHelper.isLoginPage(targetPg)){
+		if(StringUtil.isNullOrEmpty(targetPg.getProgramId(), true) || !this.session.isLoggedIn()){
 			return;
 		}
 		

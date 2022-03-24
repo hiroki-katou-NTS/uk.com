@@ -5,9 +5,8 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.CalcurationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
@@ -40,36 +39,36 @@ public class GetAddSet {
 			holidayAddition = (HolidayAddtionSet)holidayAdditionMap.get("holidayAddtionSet");
 		}
 
-		// 休暇の計算方法の設定を確認する
-		HolidayCalcMethodSet holidayCalcMethodSet = null;
+		// 労働時間の加算設定を確認する
+		AddSettingOfWorkingTime addSetOfWorkTime = null;
 		switch (workingsystem){
 		case REGULAR_WORK:
 			resultNotExist = AddSet.of(false, false, false, Optional.of(new MonthlyAggregationErrorInfo(
 					"019", new ErrMessageContent(TextResource.localize("Msg_1413", "通常勤務")))));
 			if (!holidayAdditionMap.containsKey("regularWork")) break;
 			val setOfRegular = (WorkRegularAdditionSet)holidayAdditionMap.get("regularWork");
-			holidayCalcMethodSet = setOfRegular.getVacationCalcMethodSet();
+			addSetOfWorkTime = setOfRegular.getAddSetOfWorkingTime();
 			break;
 		case VARIABLE_WORKING_TIME_WORK:
 			resultNotExist = AddSet.of(false, false, false, Optional.of(new MonthlyAggregationErrorInfo(
 					"019", new ErrMessageContent(TextResource.localize("Msg_1413", "変形労働勤務")))));
 			if (!holidayAdditionMap.containsKey("irregularWork")) break;
 			val setOfIrregular = (WorkDeformedLaborAdditionSet)holidayAdditionMap.get("irregularWork");
-			holidayCalcMethodSet = setOfIrregular.getVacationCalcMethodSet();
+			addSetOfWorkTime = setOfIrregular.getAddSetOfWorkingTime();
 			break;
 		case FLEX_TIME_WORK:
 			resultNotExist = AddSet.of(false, false, false, Optional.of(new MonthlyAggregationErrorInfo(
 					"019", new ErrMessageContent(TextResource.localize("Msg_1413", "フレックス勤務")))));
 			if (!holidayAdditionMap.containsKey("flexWork")) break;
 			val setOfFlex = (WorkFlexAdditionSet)holidayAdditionMap.get("flexWork");
-			holidayCalcMethodSet = setOfFlex.getVacationCalcMethodSet();
+			addSetOfWorkTime = setOfFlex.getAddSetOfWorkingTime();
 			break;
 		default:
 			resultNotExist = AddSet.of(false, false, false, Optional.of(new MonthlyAggregationErrorInfo(
 					"019", new ErrMessageContent(TextResource.localize("Msg_1413", "計算対象外")))));
 			break;
 		}
-		if (holidayCalcMethodSet == null) return resultNotExist;
+		if (addSetOfWorkTime == null) return resultNotExist;
 		
 		// 休暇加算時間設定を適用するか
 		boolean isApplyHolidayAddition = false;
@@ -79,44 +78,24 @@ public class GetAddSet {
 		case PREMIUM:
 			// 割増時は、割増計算方法を確認する
 			
-			// 「実働のみで加算する」なら、加算しない
-			val premiumCalcMethod = holidayCalcMethodSet.getPremiumCalcMethodOfHoliday();
-			if (premiumCalcMethod.getCalculateActualOperation() == CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME) break;
-			if (!premiumCalcMethod.getAdvanceSet().isPresent()) break;
-			val premiumAdvanceSet = premiumCalcMethod.getAdvanceSet().get();
-			
 			// 休暇分を含め「加算する」なら、休暇加算時間設定を適用する
-			if (premiumAdvanceSet.getIncludeVacationSet().getAddition() == NotUseAtr.NOT_USE) break;
+			if (addSetOfWorkTime.isAddVacation(nts.uk.ctx.at.shared.dom.PremiumAtr.Premium).isNotUse()) break;
 			isApplyHolidayAddition = true;
 			break;
 			
 		case WHEN_SHORTAGE:
 			// 不足時は、就業時間計算方法を確認する
 			
-			// 「実働のみで加算する」なら、加算しない
-			val workTimeCalcMethod = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday();
-			if (workTimeCalcMethod.getCalculateActualOperation() == CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME) break;
-			if (!workTimeCalcMethod.getAdvancedSet().isPresent()) break;
-			val workTimeAdvanceSet = workTimeCalcMethod.getAdvancedSet().get();
-			
 			// 休暇分を含め「加算する」なら、休暇加算時間設定を適用する
-			if (workTimeAdvanceSet.getIncludeVacationSet().getAddition() == NotUseAtr.NOT_USE) break;
+			if (addSetOfWorkTime.isAddVacation(nts.uk.ctx.at.shared.dom.PremiumAtr.RegularWork).isNotUse()) break;
 			isApplyHolidayAddition = true;
 			break;
 			
 		case ONLY_LEGAL:
 			// 法定内のみ時は、就業時間計算方法．月次法定内のみ加算を確認する
 			
-			// 「実働のみで加算する」なら、加算しない
-			val legalCalcMethod = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday();
-			if (legalCalcMethod.getCalculateActualOperation() == CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME) break;
-			if (!legalCalcMethod.getAdvancedSet().isPresent()) break;
-			val legalAdvanceSet = legalCalcMethod.getAdvancedSet().get();
-			
 			// 「月次法定内のみ加算」＝「する」なら、休暇加算時間設定を適用する
-			val addWithinMonthlyStatutory = legalAdvanceSet.getIncludeVacationSet().getAdditionWithinMonthlyStatutory();
-			if (!addWithinMonthlyStatutory.isPresent()) break;
-			if (addWithinMonthlyStatutory.get() == NotUseAtr.NOT_USE) break;
+			if (addSetOfWorkTime.getAddSetOfWorkTime().isAdditionWithinMonthlyStatutory() == false) break;
 			isApplyHolidayAddition = true;
 			break;
 		}

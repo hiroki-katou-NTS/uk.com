@@ -2,7 +2,7 @@
 
 const kDP002RequestUrl = {
 
-    getAllStampingResult: "at/record/workrecord/stamp/management/getAllStampingResult/",
+    getAllStampingResult: "at/record/workrecord/stamp/management/getAllStampingResult",
     getInfo: 'ctx/sys/auth/grant/rolesetperson/getempinfo/',
     NOTIFICATION_STAMP: 'at/record/stamp/notification_by_stamp',
     SETTING_NIKONIKO: 'at/record/stamp/setting_emoji_stamp',
@@ -70,7 +70,9 @@ class KDP002BViewModel extends ko.ViewModel {
     showBtnNoti: KnockoutObservable<boolean | null> = ko.observable(null);
     activeViewU: KnockoutObservable<boolean> = ko.observable(false);
     noticeSetting: KnockoutObservable<INoticeSet> = ko.observable(null);
-	stampTime: KnockoutObservable<string> = ko.observable('');
+    stampTime: KnockoutObservable<string> = ko.observable('');
+
+    regionalTime: number = 0;
 
     constructor() {
         super();
@@ -78,10 +80,19 @@ class KDP002BViewModel extends ko.ViewModel {
 
     created(params: any) {
         const vm = this;
-		vm.stampTime(params.stampTime);
+        vm.stampTime(params.stampTime);
+        vm.regionalTime = params.regionalTime;
+
+        vm.time.now = ko.observable(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate());
+        vm.currentDate(moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm')).add(-3, 'days').format("YYYY/MM/DD")
+            + " ～ "
+            + moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm')).format("YYYY/MM/DD"));
+
+
+
         vm.$window.shared("resultDisplayTime").done(displayTime => {
             vm.resultDisplayTime(displayTime);
-	
+
             vm.$window.shared("infoEmpToScreenB").done(infoEmp => {
 
                 vm.infoEmpFromScreenA = infoEmp;
@@ -196,13 +207,13 @@ class KDP002BViewModel extends ko.ViewModel {
                 if (vm.workPlace() != "") {
                     if (ko.unwrap(vm.modeZeroTime)) {
                         vm.$window.size(555, 470);
-                    }else {
+                    } else {
                         vm.$window.size(525, 470);
                     }
                 } else {
                     if (ko.unwrap(vm.modeZeroTime)) {
                         vm.$window.size(530, 470);
-                    }else {
+                    } else {
                         vm.$window.size(500, 470);
                     }
                 }
@@ -272,7 +283,7 @@ class KDP002BViewModel extends ko.ViewModel {
         let dfd = $.Deferred();
         let sid = vm.infoEmpFromScreenA.employeeId;
 
-        vm.$ajax("at", kDP002RequestUrl.getAllStampingResult + sid).then(function (data) {
+        vm.$ajax("at", kDP002RequestUrl.getAllStampingResult, { employeeId: sid, regionalTimeDifference: vm.regionalTime }).then(function (data) {
 
             if (data && data.length > 0) {
                 if (ko.unwrap(vm.workPlace) === '') {
@@ -282,6 +293,8 @@ class KDP002BViewModel extends ko.ViewModel {
 
             _.forEach(data, (a) => {
                 let items = _.orderBy(a.stampDataOfEmployeesDto.stampRecords, ['stampTimeWithSec'], ['desc']);
+                console.log(a);
+
                 _.forEach(items, (sr) => {
                     vm.listStampRecord.push(sr);
                 });
@@ -371,8 +384,8 @@ class KDP002BViewModel extends ko.ViewModel {
     getNotification() {
         const vm = this;
         const param = {
-            startDate: vm.$date.now(),
-            endDate: vm.$date.now(),
+            startDate: moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate(),
+            endDate: moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate(),
             sid: vm.infoEmpFromScreenA.employeeId
         }
 
@@ -480,16 +493,14 @@ class KDP002BViewModel extends ko.ViewModel {
 
     sendStatusEmojs(param: Emoji) {
         const vm = this;
-        const input = {
+
+        vm.$ajax(kDP002RequestUrl.SEND_EMOJI, {
             sid: vm.infoEmpFromScreenA.employeeId,
             emoji: param.valueOf(),
-            date: new Date()
-        }
-
-        vm.$ajax(kDP002RequestUrl.SEND_EMOJI, input)
-            .always(() => {
-                vm.$window.close();
-            });
+            date: moment(vm.$date.now()).utc().add(ko.unwrap(vm.regionalTime), 'm').toDate()
+        }).always(() => {
+            vm.$window.close();
+        });
     }
 
 }

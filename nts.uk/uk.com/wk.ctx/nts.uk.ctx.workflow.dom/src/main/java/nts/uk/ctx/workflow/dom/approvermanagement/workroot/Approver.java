@@ -39,6 +39,15 @@ public class Approver extends DomainObject{
 				specWkpId);
 	}
 	
+	/**
+	 * [C-1] 一承認者で作成する
+	 * @param approverId 承認者ID
+	 * @return
+	 */
+	public static Approver createSimpleFromJavaType(String approverId) {
+		return new Approver(1, "", approverId, ConfirmPerson.NOT_CONFIRM, "");
+	}
+	
 	public boolean isConfirmer() {
 		return this.confirmPerson == ConfirmPerson.CONFIRM;
 	}

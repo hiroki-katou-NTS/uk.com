@@ -208,12 +208,12 @@ public class WorkCycleReflectionDialog {
 		private WorkTypeRepository workTypeRepository;
 
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-            return workTypeRepository.findByPK(companyId, workTypeCd);
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeRepository.findByPK(companyId, workTypeCode.v());
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
 			return Optional.empty();
 		}
 
@@ -229,25 +229,25 @@ public class WorkCycleReflectionDialog {
 //		}
 
 		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}
 
 		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}
 
 		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}
 
 		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}

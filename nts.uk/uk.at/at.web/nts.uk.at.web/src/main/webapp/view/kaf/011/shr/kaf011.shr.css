@@ -35,3 +35,8 @@
 	background-color: #6A6A6A;
 	color: #fff;
 }
+
+td {
+	text-align: left !important;
+	height: 33px !important;
+}

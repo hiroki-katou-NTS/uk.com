@@ -8,6 +8,7 @@ import nts.arc.primitive.constraint.TimeRange;
  * Enterprise仕様のデータ型
  * Enterpriseでは、EMPTYを"-1"として保持しているため
  */
+@SuppressWarnings("serial")
 @TimeRange(max = "48:00", min = "-00:01")
 public class EnterpriseStampDataAttendanceTime extends TimeDurationPrimitiveValue<EnterpriseStampDataAttendanceTime> {
 

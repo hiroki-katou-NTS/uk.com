@@ -12,6 +12,7 @@ import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
@@ -19,8 +20,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -83,14 +85,6 @@ public abstract class CalculationTimeSheet {
 	}
 	
 	/**
-	 * 指定時間を終了とする時間帯作成
-	 * @return
-	 */
-	public Optional<TimeSpanForDailyCalc> reCreateTreatAsSiteiTimeEnd(AttendanceTime transTime,OverTimeFrameTimeSheetForCalc overTimeWork) {
-		return overTimeWork.contractTimeSheet(new TimeWithDayAttr(this.calcTotalTime().valueAsMinutes() - transTime.valueAsMinutes()));
-	}
-	
-	/**
 	 * 指定時間に従って時間帯の縮小
 	 * @return 縮小後の時間帯
 	 */
@@ -130,13 +124,21 @@ public abstract class CalculationTimeSheet {
 	
 	/**
 	 * 控除時間の合計を算出する
+	 * @param actualAtr 実働時間帯区分
 	 * @param dedAtr 控除区分
 	 * @param conditionAtr 条件
+	 * @param goOutSet 就業時間帯の外出設定
 	 * @return 控除時間
 	 */
-	public AttendanceTime calcDedTimeByAtr(DeductionAtr dedAtr,ConditionAtr conditionAtr) {
+	public AttendanceTime calcDedTimeByAtr(ActualWorkTimeSheetAtr actualAtr, DeductionAtr dedAtr, ConditionAtr conditionAtr, 
+			Optional<WorkTimezoneGoOutSet> goOutSet, NotUseAtr canOffset) {
 		val forCalcList = getDedTimeSheetByAtr(dedAtr,conditionAtr);
-		return new AttendanceTime(forCalcList.stream().map(tc -> tc.calcTotalTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+		int total = forCalcList.stream().map(tc -> tc.calcTotalTime(canOffset, NotUseAtr.USE).valueAsMinutes()).collect(Collectors.summingInt(tc -> tc));
+		Optional<TimeRoundingSetting> roundSet = goOutSet.flatMap(g -> g.getAfterTotalInFrame(actualAtr, conditionAtr, dedAtr, this.rounding));
+		if(roundSet.isPresent()) {
+			return new AttendanceTime(roundSet.get().round(total));
+		}
+		return new AttendanceTime(total);
 	}
 		
 	/**
@@ -152,7 +154,7 @@ public abstract class CalculationTimeSheet {
 	/**
 	 * 指定した控除時間帯を取得
 	 * @param dedAtr 控除区分
-	 * @param conditionAtr　条件
+	 * @param conditionAtr 条件
 	 * @return　控除項目の時間帯List
 	 */
 	public List<TimeSheetOfDeductionItem> getDedTimeSheetByAtr(DeductionAtr dedAtr, ConditionAtr conditionAtr) {
@@ -251,6 +253,30 @@ public abstract class CalculationTimeSheet {
 		}
 		// 控除時間を返す
 		return new AttendanceTime(totalMinutes);
+	}
+
+	/**
+	 * 相殺時間休暇使用の合計を算出する
+	 * @param conditionAtr 控除種別区分
+	 * @param dedAtr 控除区分
+	 * @param priorityOrder 時間休暇相殺優先順位
+	 * @return 日別勤怠の時間休暇使用時間
+	 */
+	public TimevacationUseTimeOfDaily calcOffsetTimeVacationUseTime(ConditionAtr conditionAtr, DeductionAtr dedAtr,
+			CompanyHolidayPriorityOrder priorityOrder, TimevacationUseTimeOfDaily timeVacationUseOfDaily) {
+		
+		// 保持している控除時間帯を取得
+		List<TimeSheetOfDeductionItem> itemList = this.getDedTimeSheetByAtr(dedAtr, conditionAtr);
+		// 控除時間を計算
+		// ※　相殺は常に行う。「時間帯毎に丸める」時のみ、控除項目ごとに先に丸めを行う。
+		TimevacationUseTimeOfDaily offsetTime = TimevacationUseTimeOfDaily.defaultValue();
+		for (TimeSheetOfDeductionItem item : itemList) {
+			/** 相殺時間休暇使用時間の算算 */
+			offsetTime = offsetTime.add(item.calcTotalOffsetTimeVacationUseTime(priorityOrder, timeVacationUseOfDaily));
+		}
+		
+		// 控除時間を返す
+		return offsetTime;
 	}
 	
 	/**

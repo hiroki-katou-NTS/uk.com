@@ -27,12 +27,12 @@ public class StringRevise implements ReviseValue {
 	private Optional<ExternalImportCodeConvert> codeConvert;
 	
 	@Override
-	public Either<ErrorMessage, ?> revise(String target) {
+	public Either<ErrorMessage, ?> revise(ReviseValue.Require require, String target) {
 		
 		String strResult = target;
 		
-		if(usePadding) {
-			// 固定長編集をする場合
+		if(usePadding && !require.getImportableItem().isZeroPaddedCode()) {
+			// 固定長編集をする場合（ゼロ埋めコードであれば設定を無視する）
 			strResult = this.padding.get().fix(strResult);
 		}
 		

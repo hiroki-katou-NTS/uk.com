@@ -413,7 +413,7 @@ public class AppContentServiceImpl implements AppContentService {
 			List<WorkType> lstWkType, List<AttendanceNameItem> attendanceNameItemLst, ApplicationListAtr mode, ApprovalListDisplaySetting approvalListDisplaySetting,
 			ListOfApplication listOfApp, Map<String, List<ApprovalPhaseStateImport_New>> mapApproval, int device,
 			AppListExtractCondition appListExtractCondition, List<String> agentLst, Map<String, Pair<Integer, Integer>> cacheTime36) {
-		if(device == ApprovalDevice.PC.value) {
+		
 			// ドメインモデル「申請」．申請種類をチェック (Check Domain「Application.ApplicationType
 			switch (application.getAppType()) {
 			case COMPLEMENT_LEAVE_APPLICATION:
@@ -543,24 +543,7 @@ public class AppContentServiceImpl implements AppContentService {
 				listOfApp.setAppContent("-1");
 				break;
 			}
-		} else { 
-			if (application.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {
-				
-				// 振休振出申請データを作成( Tạo data application nghỉ bù làm bù)
-				CompLeaveAppDataOutput compLeaveAppDataOutput = appContentDetailCMM045.getContentComplementLeave(
-						application, 
-						companyID, 
-						lstWkType, 
-						approvalListDisplaySetting.getAppReasonDisAtr(), 
-						ScreenAtr.CMM045);
-				listOfApp.setAppContent(compLeaveAppDataOutput.getContent());
-				listOfApp.setOpComplementLeaveApp(Optional.of(compLeaveAppDataOutput.getComplementLeaveAppLink()));
-			}
-			
-			// アルゴリズム「各申請データを作成（スマホ）」を実行する
-			Optional<ApplicationTypeDisplay> opAppDisplay = this.getAppDisplayByMobile(application, listOfApp);
-			listOfApp.setOpAppTypeDisplay(opAppDisplay);
-		}
+		
 		// 承認フェーズList　＝　Input．Map＜ルートインスタンスID、承認フェーズList＞を取得(ApprovalPhaseList= Input．Map＜get RootInstanceID, ApprovalPhaseList>)
 		listOfApp.setOpApprovalPhaseLst(Optional.of(mapApproval.get(application.getAppID())));
 		// 申請一覧．承認状況照会　＝　承認状況照会内容(AppList.ApproveStatusRefer =ApproveStatusReferContents )

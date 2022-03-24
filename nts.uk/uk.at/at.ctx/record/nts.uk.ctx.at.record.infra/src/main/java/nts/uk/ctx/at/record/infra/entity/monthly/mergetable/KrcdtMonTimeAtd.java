@@ -44,6 +44,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTim
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTimeCurrentMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTimeOfExcessOutsideTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTimeTotalTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.PrescribedWorkingTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.WorkTimeOfMonthly;
@@ -865,9 +866,23 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 	/** フレックス時間：当月フレックス時間：フレックス時間 */
 	@Column(name = "FLEX_TIME_CUR")
 	public int flexTimeCurrent;
+	
+	/** フレックス時間：当月フレックス時間：計算フレックス時間 */
+	@Column(name = "FLEX_CALC_TIME_CUR")
+	public int flexCalcTimeCurrent;
+	
+	/** フレックス時間：当月フレックス法定内時間 */
+	@Column(name = "FLEX_LEGAL_TIME_CUR")
+	public int flexLegalTimeCurrent;
+	
+	/** フレックス時間：当月フレックス法定外時間 */
+	@Column(name = "FLEX_ILLEGAL_TIME_CUR")
+	public int flexIllegalTimeCurrent;
+	
 	/** フレックス時間：当月フレックス時間：基準時間 */
 	@Column(name = "STD_TIME_CUR")
 	public int standardTimeCurrent;
+	
 	/** フレックス時間：当月フレックス時間：週平均超過時間 */
 	@Column(name = "EXC_WA_TIME_CUR")
 	public int excessWeekAveTimeCurrent;
@@ -875,9 +890,23 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 	/** 時間外超過：当月フレックス時間：フレックス時間 */
 	@Column(name = "FLEX_TIME_CUR_OT")
 	public int flexTimeCurrentOT;
+	
+	/** 時間外超過：当月フレックス時間：計算フレックス時間 */
+	@Column(name = "FLEX_CALC_TIME_CUR_OT")
+	public int flexCalcTimeCurrentOT;
+
+	/** 時間外超過：当月フレックス時間：フレックス法定内時間 */
+	@Column(name = "FLEX_LEGAL_TIME_CUR_OT")
+	public int flexLegalTimeCurrentOT;
+	
+	/** 時間外超過：当月フレックス時間：フレックス法定外時間 */
+	@Column(name = "FLEX_ILLEGAL_TIME_CUR_OT")
+	public int flexIllegalTimeCurrentOT;
+	
 	/** 時間外超過：当月フレックス時間：基準時間 */
 	@Column(name = "STD_TIME_CUR_OT")
 	public int standardTimeCurrentOT;
+	
 	/** 時間外超過：当月フレックス時間：週平均超過時間 */
 	@Column(name = "EXC_WA_TIME_CUR_OT")
 	public int excessWeekAveTimeCurrentOT;
@@ -934,6 +963,14 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 	/** 計算変形法定内残業時間 */
 	@Column(name = "CALC_IRG_LGL_OVER_TIME")
 	public int calcIrregularLegalOverTime;
+
+	/** 変形法定内残業時間 */
+	@Column(name = "IRG_LEGAL_VACATION_ADD_TIME")
+	public int irregularLegalVacationAddTime;
+
+	/** 変形法定内残業時間 */
+	@Column(name = "IRG_ILLEGAL_VACATION_ADD_TIME")
+	public int irregularIllegalVacationAddTime;
 
 	/* KRCDT_MON_VACT_USE_TIME */
 
@@ -1830,7 +1867,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 		this.irregularWorkingShortageTime = 0;
 		this.irregularLegalOverTime = 0;
 		this.calcIrregularLegalOverTime = 0;
-		
+		this.irregularLegalVacationAddTime = 0;
+		this.irregularIllegalVacationAddTime = 0;
 		this.flexTime = 0;
 		this.calcFlexTime = 0;
 		this.beforeFlexTime = 0;
@@ -1849,9 +1887,15 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 		this.shotTimeBeforeDeduct = 0;
 		this.flexSettleTime = 0;
 		this.flexTimeCurrent = 0;
+		this.flexCalcTimeCurrent = 0;
+		this.flexLegalTimeCurrent = 0;
+		this.flexIllegalTimeCurrent = 0;
 		this.standardTimeCurrent = 0;
 		this.excessWeekAveTimeCurrent = 0;
 		this.flexTimeCurrentOT = 0;
+		this.flexCalcTimeCurrentOT = 0;
+		this.flexLegalTimeCurrentOT = 0;
+		this.flexIllegalTimeCurrentOT = 0;
 		this.standardTimeCurrentOT = 0;
 		this.excessWeekAveTimeCurrentOT = 0;
 		
@@ -1945,11 +1989,11 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 		val flexTimeOfExcessOutsideTime = domain.getFlexTimeOfExcessOutsideTime();
 		val flexShortDeductTime = domain.getFlexShortDeductTime();
 
-		this.flexTime = flexTime.getFlexTime().getTime().v();
-		this.calcFlexTime = flexTime.getFlexTime().getCalcTime().v();
+		this.flexTime = flexTime.getFlexTime().getFlexTime().getTime().v();
+		this.calcFlexTime = flexTime.getFlexTime().getFlexTime().getCalcTime().v();
 		this.beforeFlexTime = flexTime.getBeforeFlexTime().v();
-		this.legalFlexTime = flexTime.getLegalFlexTime().v();
-		this.illegalFlexTime = flexTime.getIllegalFlexTime().v();
+		this.legalFlexTime = flexTime.getFlexTime().getLegalFlexTime().v();
+		this.illegalFlexTime = flexTime.getFlexTime().getIllegalFlexTime().v();
 		this.flexExcessTime = domain.getFlexExcessTime().v();
 		this.flexShortageTime = domain.getFlexShortageTime().v();
 		this.flexCarryforwardWorkTime = flexCarryForwardTime.getFlexCarryforwardWorkTime().v();
@@ -1963,10 +2007,16 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 		this.absenceDeductTime = flexShortDeductTime.getAbsenceDeductTime().v();
 		this.shotTimeBeforeDeduct = flexShortDeductTime.getFlexShortTimeBeforeDeduct().v();
 		this.flexSettleTime = domain.getFlexSettleTime().v();
-		this.flexTimeCurrent = flexTime.getFlexTimeCurrentMonth().getFlexTime().v();
+		this.flexTimeCurrent = flexTime.getFlexTimeCurrentMonth().getFlexTime().getFlexTime().getTime().v();
+		this.flexCalcTimeCurrent = flexTime.getFlexTimeCurrentMonth().getFlexTime().getFlexTime().getCalcTime().v();
+		this.flexLegalTimeCurrent = flexTime.getFlexTimeCurrentMonth().getFlexTime().getLegalFlexTime().valueAsMinutes();
+		this.flexIllegalTimeCurrent = flexTime.getFlexTimeCurrentMonth().getFlexTime().getIllegalFlexTime().valueAsMinutes();
 		this.standardTimeCurrent = flexTime.getFlexTimeCurrentMonth().getStandardTime().v();
 		this.excessWeekAveTimeCurrent = flexTime.getFlexTimeCurrentMonth().getExcessWeekAveTime().v();
-		this.flexTimeCurrentOT = flexTimeOfExcessOutsideTime.getFlexTimeCurrentMonth().getFlexTime().v();
+		this.flexTimeCurrentOT = flexTimeOfExcessOutsideTime.getFlexTimeCurrentMonth().getFlexTime().getFlexTime().getTime().v();
+		this.flexCalcTimeCurrentOT = flexTimeOfExcessOutsideTime.getFlexTimeCurrentMonth().getFlexTime().getFlexTime().getCalcTime().v();
+		this.flexLegalTimeCurrentOT = flexTimeOfExcessOutsideTime.getFlexTimeCurrentMonth().getFlexTime().getLegalFlexTime().valueAsMinutes();
+		this.flexIllegalTimeCurrentOT = flexTimeOfExcessOutsideTime.getFlexTimeCurrentMonth().getFlexTime().getIllegalFlexTime().valueAsMinutes();
 		this.standardTimeCurrentOT = flexTimeOfExcessOutsideTime.getFlexTimeCurrentMonth().getStandardTime().v();
 		this.excessWeekAveTimeCurrentOT = flexTimeOfExcessOutsideTime.getFlexTimeCurrentMonth().getExcessWeekAveTime().v();
 	}
@@ -2060,6 +2110,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 		this.irregularWorkingShortageTime = irregularWorkingTime.getIrregularWorkingShortageTime().v();
 		this.irregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().getTime().v();
 		this.calcIrregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().getCalcTime().v();
+		this.irregularLegalVacationAddTime = irregularWorkingTime.getLegalVacationAddTime().valueAsMinutes();
+		this.irregularIllegalVacationAddTime = irregularWorkingTime.getIllegalVacationAddTime().valueAsMinutes();
 	}
 
 	/* KRCDT_MON_VACT_USE_TIME */
@@ -2926,14 +2978,20 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 		
 		return FlexTimeOfMonthly.of(
 				FlexTime.of(
-						new TimeMonthWithCalculationAndMinus(
-								new AttendanceTimeMonthWithMinus(this.flexTime),
-								new AttendanceTimeMonthWithMinus(this.calcFlexTime)),
+						FlexTimeTotalTimeMonth.of(
+								new TimeMonthWithCalculationAndMinus(
+									new AttendanceTimeMonthWithMinus(this.flexTime),
+									new AttendanceTimeMonthWithMinus(this.calcFlexTime)), 
+								new AttendanceTimeMonth(this.legalFlexTime),
+								new AttendanceTimeMonth(this.illegalFlexTime)),
 						new AttendanceTimeMonth(this.beforeFlexTime),
-						new AttendanceTimeMonthWithMinus(this.legalFlexTime),
-						new AttendanceTimeMonthWithMinus(this.illegalFlexTime),
 						FlexTimeCurrentMonth.of(
-								new AttendanceTimeMonthWithMinus(this.flexTimeCurrent),
+								FlexTimeTotalTimeMonth.of(
+										new TimeMonthWithCalculationAndMinus(
+											new AttendanceTimeMonthWithMinus(this.flexTimeCurrent), 
+											new AttendanceTimeMonthWithMinus(this.flexCalcTimeCurrent)), 
+										new AttendanceTimeMonth(this.flexLegalTimeCurrent), 
+										new AttendanceTimeMonth(this.flexIllegalTimeCurrent)),
 								new AttendanceTimeMonth(this.standardTimeCurrent),
 								new AttendanceTimeMonth(this.excessWeekAveTimeCurrent))),
 				new AttendanceTimeMonth(this.flexExcessTime),
@@ -2948,7 +3006,12 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 						new AttendanceTimeMonth(this.principleTime),
 						new AttendanceTimeMonth(this.forConvenienceTime),
 						FlexTimeCurrentMonth.of(
-								new AttendanceTimeMonthWithMinus(this.flexTimeCurrentOT),
+								FlexTimeTotalTimeMonth.of(
+										new TimeMonthWithCalculationAndMinus(
+											new AttendanceTimeMonthWithMinus(this.flexTimeCurrentOT), 
+											new AttendanceTimeMonthWithMinus(this.flexCalcTimeCurrentOT)), 
+										new AttendanceTimeMonth(this.flexLegalTimeCurrentOT), 
+										new AttendanceTimeMonth(this.flexIllegalTimeCurrentOT)),
 								new AttendanceTimeMonth(this.standardTimeCurrentOT),
 								new AttendanceTimeMonth(this.excessWeekAveTimeCurrentOT))),
 				FlexShortDeductTime.of(
@@ -3042,7 +3105,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				new AttendanceTimeMonth(this.irregularWorkingShortageTime),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.irregularLegalOverTime),
-						new AttendanceTimeMonth(this.calcIrregularLegalOverTime)));
+						new AttendanceTimeMonth(this.calcIrregularLegalOverTime)),
+				new AttendanceTimeMonth(this.irregularIllegalVacationAddTime),
+				new AttendanceTimeMonth(this.irregularLegalVacationAddTime));
 		
 		return RegularAndIrregularTimeOfMonthly.of(
 				new AttendanceTimeMonth(this.weeklyTotalPremiumTime),

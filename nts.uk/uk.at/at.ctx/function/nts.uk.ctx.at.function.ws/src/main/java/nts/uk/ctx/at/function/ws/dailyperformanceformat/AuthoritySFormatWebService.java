@@ -9,12 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.function.app.command.dailyperformanceformat.AddAuthDaiSCommandHandler;
-import nts.uk.ctx.at.function.app.command.dailyperformanceformat.AddAuthorityDailySCommand;
-import nts.uk.ctx.at.function.app.command.dailyperformanceformat.RemoveAuthorityCommand;
-import nts.uk.ctx.at.function.app.command.dailyperformanceformat.RemoveAuthoritySCommandHandler;
-import nts.uk.ctx.at.function.app.command.dailyperformanceformat.UpdateAutDaiSFormatCommandHandler;
-import nts.uk.ctx.at.function.app.command.dailyperformanceformat.UpdateAuthorityDailySFormatCommand;
+import nts.uk.ctx.at.function.app.command.dailyperformanceformat.*;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.DailyPerformanceAuthorityMobileFinder;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.DailyPerformanceMobileCodeFinder;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.dto.DailyAttendanceAuthorityDailyDto;
@@ -39,6 +34,9 @@ public class AuthoritySFormatWebService extends WebService {
 	
 	@Inject
 	private DailyPerformanceMobileCodeFinder dailyCodeFinder;
+
+	@Inject
+	private DuplicateMobileAuthorityDailyFormatCommandHandler duplicateAutDaiFormatCommandHandler;
 
 	@POST
 	@Path("removeAuthorityFormat")
@@ -76,4 +74,9 @@ public class AuthoritySFormatWebService extends WebService {
 		 return this.dailyCodeFinder.findAll();
 	 }
 
+	@POST
+	@Path("duplicateAuthorityDailyFormat")
+	public void duplicateAuthorityDailyFormat(DuplicateMobileAuthorityDailyFormatCommand command) {
+		this.duplicateAutDaiFormatCommandHandler.handle(command);
+	}
 }
