@@ -28,6 +28,24 @@ module nts.uk.ui.at.kdw013 {
         changedDates: Array<Date>;
     }
     
+    export type ConfirmerByDayDto = {
+        date: string;
+        confirmers: Array<ConfirmerDto>;
+    }
+
+    export type ConfirmerDto = {
+        /** 社員ID */
+        confirmSID: string;
+
+        /** 社員コード */
+        confirmSCD: string;
+
+        /** ビジネスネーム */
+        businessName: string;
+        /** 確認日時 */
+        confirmDateTime: string;
+    }
+    
     export type WorkGroupCommand = {
         /** 作業CD1 */
         workCD1: string;
