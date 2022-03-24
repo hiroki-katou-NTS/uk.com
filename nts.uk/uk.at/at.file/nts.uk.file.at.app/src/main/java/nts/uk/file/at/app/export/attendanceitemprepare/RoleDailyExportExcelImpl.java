@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.val;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.anyperiodcorrection.formatsetting.AnyPeriodCorrectionDefaultFormat;
@@ -368,23 +370,37 @@ public class RoleDailyExportExcelImpl {
                     data.put("P10_4",sheet.getSheetNo());
                     data.put("P10_5",sheet.getSheetName().v());
                     StringBuilder disPlayName = new StringBuilder();
-                    List<DisplayTimeItem> listDisplayTimeItem = sheet.getListDisplayTimeItem()
-                            .stream().sorted(Comparator.comparing(DisplayTimeItem::getItemDaily)).collect(Collectors.toList());
-                    for (int i = 0, listDisplayTimeItemSize = listDisplayTimeItem.size(); i < listDisplayTimeItemSize; i++) {
-                        DisplayTimeItem e = listDisplayTimeItem.get(i);
+                    List<NameAndDisplay> nameAndDisplays = new ArrayList<>();
+                    sheet.getListDisplayTimeItem().forEach(e->{
                         val sub = mapIdAnName.getOrDefault(e.getItemDaily(), null);
-                        disPlayName.append(sub != null ? sub.getDisplayNumber():"");
-                        disPlayName.append(sub != null ? sub.getAttendanceItemName() : "");
+                        nameAndDisplays.add(new NameAndDisplay(
+                                sub != null ? sub.getAttendanceItemName() :"",
+                                sub != null ? sub.getDisplayNumber(): null));
+                    });
+                    List<NameAndDisplay> listDisplayTimeItem = nameAndDisplays.stream()
+                            .sorted(Comparator.comparing(NameAndDisplay::getOrder)).collect(Collectors.toList());
+
+                    for (int i = 0, listDisplayTimeItemSize = listDisplayTimeItem.size(); i < listDisplayTimeItemSize; i++) {
+                        NameAndDisplay sub = listDisplayTimeItem.get(i);
+                        disPlayName.append(sub.name);
+                        disPlayName.append(sub.getOrder() == null ? "" :sub.getOrder());
                         if(i < (listDisplayTimeItemSize -1))
                              disPlayName.append(",");
                     }
                     data.put("P10_6",disPlayName.toString());
                     datas.add(alignMasterDataSheetAny(data));
                 }
+
             }
         }
 
         return datas;
+    }
+    @AllArgsConstructor
+    @Getter
+    public class NameAndDisplay{
+        public String name;
+        public Integer order;
     }
     private MasterData alignMasterDataSheetAny(Map<String, Object> data) {
         MasterData masterData = new MasterData(data, null, "");
