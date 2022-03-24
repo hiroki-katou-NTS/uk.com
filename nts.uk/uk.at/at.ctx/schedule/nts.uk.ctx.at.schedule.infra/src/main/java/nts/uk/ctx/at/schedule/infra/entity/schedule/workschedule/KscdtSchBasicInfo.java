@@ -382,6 +382,8 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 					TimeWithDayAttr start = support.start == null ? null : new TimeWithDayAttr(support.start);
 					TimeWithDayAttr end = support.end == null ? null : new TimeWithDayAttr(support.end);
 					Optional<TimeSpanForCalc> timeSpan = Optional.of(new TimeSpanForCalc(start, end));
+					if(support.supportType == SupportType.ALLDAY.value)
+						timeSpan = Optional.empty();
 					return new SupportScheduleDetail(supportDestination, support.supportType == 0 ? SupportType.ALLDAY : SupportType.TIMEZONE, timeSpan);
 				}).collect(Collectors.toList());
 		supportSchedule = new SupportSchedule(supports);
