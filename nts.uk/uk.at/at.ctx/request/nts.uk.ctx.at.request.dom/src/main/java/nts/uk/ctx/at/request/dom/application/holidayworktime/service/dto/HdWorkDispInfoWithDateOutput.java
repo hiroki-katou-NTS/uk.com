@@ -82,4 +82,9 @@ public class HdWorkDispInfoWithDateOutput {
 	 * 月別実績の36協定時間状態
 	 */
 	private Optional<AgreementTimeStatusOfMonthly> actualMonthlyAgreeTimeStatus = Optional.empty();
+	
+	/**
+	 * エラーメッセージ
+	 */
+	private Optional<String> opErrorMsg = Optional.empty();
 }

@@ -140,18 +140,19 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		for(PersonApprovalRoot root: lstPss) {
 			List<ApprovalForApplication> psWootInfor = new ArrayList<>();
 			ApprovalRootCommonOutput psRoot = new ApprovalRootCommonOutput(root.getCompanyId(),
-					root.getApprovalId(), root.getEmployeeId(),
+					root.getApprRoot().getHistoryItems().isEmpty() ? "" : root.getApprRoot().getHistoryItems().get(0).getApprovalId(),
+					root.getEmployeeId(),
 					"", 
 					root.getApprRoot().getHistoryItems().get(0).getHistoryId(),
-					root.getApprRoot().getApplicationType() == null ? 0: root.getApprRoot().getApplicationType().value,
+					root.getApprRoot().getApplicationType().map(v -> v.value).orElse(0),
 					root.getApprRoot().getHistoryItems().get(0).start(), 
 					root.getApprRoot().getHistoryItems().get(0).end(), 
 					// root.getApprRoot().getBranchId(), 
 					// root.getApprRoot().getAnyItemApplicationId(),
-					root.getApprRoot().getConfirmationRootType() == null ? 0: root.getApprRoot().getConfirmationRootType().value,
+					root.getApprRoot().getConfirmationRootType().map(v -> v.value).orElse(0),
 					root.getApprRoot().getEmploymentRootAtr().value,
-					root.getApprRoot().getNoticeId(), 
-					root.getApprRoot().getBusEventId()); 
+					root.getApprRoot().getNoticeId().orElse(null), 
+					root.getApprRoot().getBusEventId().orElse(null)); 
 			//Neu da co person roi
 			if(!mapPsRootInfor.isEmpty() && mapPsRootInfor.containsKey(root.getEmployeeId())) {
 				PersonApproverOutput psApp = mapPsRootInfor.get(root.getEmployeeId());
@@ -196,15 +197,15 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 					"",
 					root.getWorkplaceId(), 
 					root.getApprRoot().getHistoryItems().get(0).getHistoryId(),
-					root.getApprRoot().getApplicationType() == null ? 0:  root.getApprRoot().getApplicationType().value,
+					root.getApprRoot().getApplicationType().map(v -> v.value).orElse(0),
 					root.getApprRoot().getHistoryItems().get(0).start(), 
 					root.getApprRoot().getHistoryItems().get(0).end(), 
 					// root.getApprRoot().getBranchId(), 
 					// root.getApprRoot().getAnyItemApplicationId(),
-					root.getApprRoot().getConfirmationRootType()  == null ? 0:  root.getApprRoot().getConfirmationRootType().value,
+					root.getApprRoot().getConfirmationRootType().map(v -> v.value).orElse(0),
 					root.getApprRoot().getEmploymentRootAtr().value,
-					root.getApprRoot().getNoticeId(), 
-					root.getApprRoot().getBusEventId());
+					root.getApprRoot().getNoticeId().orElse(null), 
+					root.getApprRoot().getBusEventId().orElse(null));
 			//Neu da co workplace roi
 			if(!mapWpRootInfor.isEmpty() && mapWpRootInfor.containsKey(root.getWorkplaceId())) {
 				WorkplaceApproverOutput wpApp = mapWpRootInfor.get(root.getWorkplaceId());						
@@ -298,12 +299,12 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		//find name
 		
 		int empR = comRoot.getApprRoot().getEmploymentRootAtr().value;
-		Integer appType = empR == 1 ? comRoot.getApprRoot().getApplicationType().value : null;
-		Integer confType = empR == 2 ? comRoot.getApprRoot().getConfirmationRootType().value : null;
-		String typeV = this.convertType(empR, appType, confType, comRoot.getApprRoot().getNoticeId(), 
-				comRoot.getApprRoot().getBusEventId());
-		String nameRoot = this.findNameRoot(empR, appType, confType, comRoot.getApprRoot().getNoticeId(), 
-				comRoot.getApprRoot().getBusEventId(), lstName);
+		Integer appType = empR == 1 ? comRoot.getApprRoot().getApplicationType().map(x -> x.value).orElse(null) : null;
+		Integer confType = empR == 2 ? comRoot.getApprRoot().getConfirmationRootType().map(x -> x.value).orElse(null) : null;
+		String typeV = this.convertType(empR, appType, confType, comRoot.getApprRoot().getNoticeId().orElse(null), 
+				comRoot.getApprRoot().getBusEventId().orElse(null));
+		String nameRoot = this.findNameRoot(empR, appType, confType, comRoot.getApprRoot().getNoticeId().orElse(null), 
+				comRoot.getApprRoot().getBusEventId().orElse(null), lstName);
 		//khoi tao
 		ApprovalForApplication approvalForApp = new ApprovalForApplication(empR, 
 				typeV, nameRoot , null, null, null);
