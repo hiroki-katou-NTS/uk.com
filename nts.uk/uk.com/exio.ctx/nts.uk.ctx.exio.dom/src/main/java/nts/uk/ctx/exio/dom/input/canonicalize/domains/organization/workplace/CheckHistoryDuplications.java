@@ -5,9 +5,8 @@ import java.util.Set;
 
 import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
-import nts.uk.ctx.exio.dom.input.errors.RecordError;
 import nts.gul.util.Either;
+import nts.uk.ctx.exio.dom.input.errors.RecordError;
 
 /**
  * 履歴の重複をチェックし、エラーレコードを除外する

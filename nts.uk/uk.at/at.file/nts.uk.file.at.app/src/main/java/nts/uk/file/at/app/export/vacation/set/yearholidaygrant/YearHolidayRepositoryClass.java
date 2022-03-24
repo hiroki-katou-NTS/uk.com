@@ -117,134 +117,884 @@ public class YearHolidayRepositoryClass {
 							maxYearHoliday = ArrYearHoliday[i];
 						}
 					}
+				}
+				
+				if(maxYearHoliday == 0){
+					data.put("コード", c.getYearHolidayCode());
+                    data.put("名称", c.getYearHolidayName());
+                    data.put("備考 54", c.getYearHolidayNote());
+                    if(c.getUseSimultaneousGrant() == UseSimultaneousGrant.NOT_USE){
+                          data.put("一斉付与 3", "-");
+                    }else{
+                    	  data.put("一斉付与 3", "○");
+                          String getSub = c.getSimultaneousGrandMonthDays().toString();
+                          String subDay = "";
+                          String subDays = "";
+                          String subMonth = "";
+                          if(getSub.length()==3){
+                                 subMonth = getSub.substring(0, 1);
+                                 subDay = getSub.substring(1,3);
+                                 if(subDay.substring(0,1).equals("0")){
+                                	 subDays = getSub.substring(2,3);
+                                 }else{
+                                	 subDays = getSub.substring(1,3);
+                                 }
+                                 
+                          }else{
+                                 subMonth = getSub.substring(0,2);
+                                 subDay = getSub.substring(2,4);
+                                 if(subDay.substring(0,1).equals("0")){
+                                	 subDays = getSub.substring(3,4);
+                                 }else{
+                                	 subDays = getSub.substring(2,4);
+                                 }
+                          }
+                          data.put("一斉付与月4", subMonth+""+TextResource.localize("KMF003_42"));
+                          data.put("付与日 5", subDays+""+TextResource.localize("KMF003_77"));
+                    }
+                    if(c.getStandardCalculation() == StandardCalculation.YEAR_HD_AWARD_DATE){
+                          data.put("年間労働日数の計算基準 6", "付与日");
+                    }else{
+                          data.put("年間労働日数の計算基準 6", "締め日");
+                    }
+                    // 6
+                    if(c.getCalculationMethod().value == 0){
+                          //%
+                          data.put("年休付与基準の設定 7", "出勤率");
+                          
+                          if(c.getGrantConditions().get(0).getConditionValue() ==null){
+                                 data.put("基準設定下限 8", "0%");
+                          }else{
+                                 data.put("基準設定下限 8", c.getGrantConditions().get(0).getConditionValueToDouble().intValue()+""+TextResource.localize("KMF003_79"));
+                          }
+                          data.put("上限 9", "100%");
 
-					if(maxYearHoliday == 0){
-						data.put("コード", c.getYearHolidayCode());
-	                    data.put("名称", c.getYearHolidayName());
-	                    data.put("備考 54", c.getYearHolidayNote());
-	                    if(c.getUseSimultaneousGrant() == UseSimultaneousGrant.NOT_USE){
-	                          data.put("一斉付与 3", "-");
-	                    }else{
-	                    	  data.put("一斉付与 3", "○");
-	                          String getSub = c.getSimultaneousGrandMonthDays().toString();
-	                          String subDay = "";
-	                          String subDays = "";
-	                          String subMonth = "";
-	                          if(getSub.length()==3){
-	                                 subMonth = getSub.substring(0, 1);
-	                                 subDay = getSub.substring(1,3);
-	                                 if(subDay.substring(0,1).equals("0")){
-	                                	 subDays = getSub.substring(2,3);
-	                                 }else{
-	                                	 subDays = getSub.substring(1,3);
-	                                 }
+                    }else{
+                          //日
+                          data.put("年休付与基準の設定 7", "労働日数");
+                       if(c.getGrantConditions().get(0).getConditionValue() ==null){
+                              data.put("基準設定下限 8", "0.0日");
+                       }else{
+                              data.put("基準設定下限 8", c.getGrantConditions().get(0).getConditionValue()+""+TextResource.localize("KMF003_77"));
+                       }
+                       data.put("上限 9", "366.0日"); 
+                    }
+                    
+                    if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                		data.put("基準設定２ 18", "-");
+                		data.put("基準設定下限２ 19", "");
+                		data.put("上限２ 20", "");
+                	}else{
+                		data.put("基準設定２ 18", "○");
+                		if(c.getCalculationMethod().value == 0){//%
+                			data.put("基準設定下限２ 19", c.getGrantConditions().get(1).getConditionValueToDouble().intValue()+""+TextResource.localize("KMF003_79"));
+                			data.put("上限２ 20", c.getGrantConditions().get(0).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                		}else{
+                			data.put("基準設定下限２ 19", c.getGrantConditions().get(1).getConditionValueToDouble()+""+TextResource.localize("KMF003_77"));
+                			data.put("上限２ 20", c.getGrantConditions().get(0).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                		}
+                	}
+                    
+                    if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                    	data.put("基準設定３ 27", "-");
+                		data.put("基準設定下限３ 28", "");
+                		data.put("上限３ 29", "");
+                    }else{
+                    	data.put("基準設定３ 27", "○");
+                    	if(c.getCalculationMethod().value == 0){//%
+                			data.put("基準設定下限３ 28", c.getGrantConditions().get(2).getConditionValueToDouble().intValue()+""+TextResource.localize("KMF003_79"));
+                			if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                				data.put("上限３ 29", c.getGrantConditions().get(0).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                			}else{
+                				data.put("上限３ 29", c.getGrantConditions().get(1).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                			}
+                			
+                		}else{
+                			data.put("基準設定下限３ 28", c.getGrantConditions().get(2).getConditionValueToDouble()+""+TextResource.localize("KMF003_77"));
+                			if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                				data.put("上限３ 29", c.getGrantConditions().get(0).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                			}else{
+                				data.put("上限３ 29", c.getGrantConditions().get(1).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                			}
+                		}
+                    }
+                    
+                    if(c.getGrantConditions().get(3).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                    	data.put("基準設定４ 36", "-");
+                    	data.put("基準設定下限４ 37", "");
+                    	data.put("上限４ 38", "");
+                    }else{
+                    	data.put("基準設定４ 36", "○");
+                    	if(c.getCalculationMethod().value == 0){//%
+                    		data.put("基準設定下限４ 37", c.getGrantConditions().get(3).getConditionValueToDouble().intValue()+""+TextResource.localize("KMF003_79"));
+                    		if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                    			if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                    				data.put("上限４ 38", c.getGrantConditions().get(0).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                    			}else{
+                    				data.put("上限４ 38", c.getGrantConditions().get(1).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                    			}
+                    		}else{
+                    			data.put("上限４ 38", c.getGrantConditions().get(2).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                    		}
+                    	}else{
+                    		data.put("基準設定下限４ 37", c.getGrantConditions().get(3).getConditionValueToDouble()+""+TextResource.localize("KMF003_77"));
+                    		if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                    			if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                    				data.put("上限４ 38", c.getGrantConditions().get(0).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                    			}else{
+                    				data.put("上限４ 38", c.getGrantConditions().get(1).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                    			}
+                    		}else{
+                    			data.put("上限４ 38", c.getGrantConditions().get(2).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                    		}
+                    	}
+                    }
+                    
+                    if(c.getGrantConditions().get(4).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                    	data.put("基準設定５ 45", "-");
+                    	data.put("基準設定下限５ 46", "");
+                		data.put("上限５ 47", "");
+                		data.put("付与回 48", "");
+                    }else{
+                    	data.put("基準設定５ 45", "○");
+                    	if(c.getCalculationMethod().value == 0){//%
+                			data.put("基準設定下限５ 46", c.getGrantConditions().get(4).getConditionValueToDouble().intValue()+""+TextResource.localize("KMF003_79"));
+                			if(c.getGrantConditions().get(3).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                				if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                					if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                						data.put("上限５ 47", c.getGrantConditions().get(0).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                					}else{
+                						data.put("上限５ 47", c.getGrantConditions().get(1).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                					}
+                				}else{
+                					data.put("上限５ 47", c.getGrantConditions().get(2).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                				}
+                			}else{
+                				data.put("上限５ 47", c.getGrantConditions().get(3).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                			}
+                			
+                		}else{
+                			data.put("基準設定下限５ 46", c.getGrantConditions().get(4).getConditionValueToDouble()+TextResource.localize("KMF003_77"));
+                			if(c.getGrantConditions().get(3).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                				if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                					if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                						data.put("上限５ 47", c.getGrantConditions().get(0).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                					}else{
+                						data.put("上限５ 47", c.getGrantConditions().get(1).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                					}
+                				}else{
+                					data.put("上限５ 47", c.getGrantConditions().get(2).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                				}
+                			}else{
+                				data.put("上限５ 47", c.getGrantConditions().get(3).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                			}
+                		}
+                    }
+                    MasterData masterData = new MasterData(data, null, "");	
+					masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("一斉付与 3").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("一斉付与月4").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("付与日 5").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("年間労働日数の計算基準 6").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("年休付与基準の設定 7").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("基準設定下限 8").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("上限 9").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					
+					masterData.cellAt("基準設定２ 18").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("基準設定下限２ 19").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("上限２ 20").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					
+					masterData.cellAt("基準設定３ 27").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("基準設定下限３ 28").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("上限３ 29").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					
+					masterData.cellAt("基準設定４ 36").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("基準設定下限４ 37").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("上限４ 38").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					
+					masterData.cellAt("基準設定５ 45").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("基準設定下限５ 46").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("上限５ 47").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("備考 54").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					datas.add(masterData);
+				}else{
 
-	                          }else{
-	                                 subMonth = getSub.substring(0,2);
-	                                 subDay = getSub.substring(2,4);
-	                                 if(subDay.substring(0,1).equals("0")){
-	                                	 subDays = getSub.substring(3,4);
-	                                 }else{
-	                                	 subDays = getSub.substring(2,4);
-	                                 }
-	                          }
-	                          data.put("一斉付与月4", subMonth+""+TextResource.localize("KMF003_42"));
-	                          data.put("付与日 5", subDays+""+TextResource.localize("KMF003_77"));
-	                    }
-	                    if(c.getStandardCalculation() == StandardCalculation.YEAR_HD_AWARD_DATE){
-	                          data.put("年間労働日数の計算基準 6", "付与日");
-	                    }else{
-	                          data.put("年間労働日数の計算基準 6", "締め日");
-	                    }
-	                    // 6
-	                    if(c.getCalculationMethod().value == 0){
-	                          //%
-	                          data.put("年休付与基準の設定 7", "出勤率");
+					for(int i=0 ; i<maxYearHoliday; i++){
+						if(i==0){
+							data.put("コード", c.getYearHolidayCode());
+	                        data.put("名称", c.getYearHolidayName());
+	                        data.put("備考 54", c.getYearHolidayNote());
+	                        if(c.getUseSimultaneousGrant() == UseSimultaneousGrant.NOT_USE){
+	                              data.put("一斉付与 3", "-");
+	                        }else{
+	                        	  data.put("一斉付与 3", "○");
+	                              String getSub = c.getSimultaneousGrandMonthDays().toString();
+	                              String subDay = "";
+	                              String subDays = "";
+	                              String subMonth = "";
+	                              if(getSub.length()==3){
+	                                     subMonth = getSub.substring(0, 1);
+	                                     subDay = getSub.substring(1,3);
+	                                     if(subDay.substring(0,1).equals("0")){
+	                                    	 subDays = getSub.substring(2,3);
+	                                     }else{
+	                                    	 subDays = getSub.substring(1,3);
+	                                     }
+	                                     
+	                              }else{
+	                                     subMonth = getSub.substring(0,2);
+	                                     subDay = getSub.substring(2,4);
+	                                     if(subDay.substring(0,1).equals("0")){
+	                                    	 subDays = getSub.substring(3,4);
+	                                     }else{
+	                                    	 subDays = getSub.substring(2,4);
+	                                     }
+	                              }
+	                              data.put("一斉付与月4", subMonth+""+TextResource.localize("KMF003_42"));
+	                              data.put("付与日 5", subDays+""+TextResource.localize("KMF003_77"));
+	                        }
+	                        if(c.getStandardCalculation() == StandardCalculation.YEAR_HD_AWARD_DATE){
+	                              data.put("年間労働日数の計算基準 6", "付与日");
+	                        }else{
+	                              data.put("年間労働日数の計算基準 6", "締め日");
+	                        }
+	                        // 6
+	                        if(c.getCalculationMethod().value == 0){
+	                              //%
+	                              data.put("年休付与基準の設定 7", "出勤率");
+	                              
+	                              if(c.getGrantConditions().get(0).getConditionValue() ==null){
+	                                     data.put("基準設定下限 8", "0%");
+	                              }else{
+	                                     data.put("基準設定下限 8", c.getGrantConditions().get(0).getConditionValueToDouble().intValue()+""+TextResource.localize("KMF003_79"));
+	                              }
+	                              data.put("上限 9", "100%");
 
-	                          if(c.getGrantConditions().get(0).getConditionValue() ==null){
-	                                 data.put("基準設定下限 8", "0%");
-	                          }else{
-	                                 data.put("基準設定下限 8", c.getGrantConditions().get(0).getConditionValue().v().intValue()+""+TextResource.localize("KMF003_79"));
-	                          }
-	                          data.put("上限 9", "100%");
-
-	                    }else{
-	                          //日
-	                          data.put("年休付与基準の設定 7", "労働日数");
-	                       if(c.getGrantConditions().get(0).getConditionValue() ==null){
-	                              data.put("基準設定下限 8", "0.0日");
-	                       }else{
-	                              data.put("基準設定下限 8", c.getGrantConditions().get(0).getConditionValue()+""+TextResource.localize("KMF003_77"));
-	                       }
-	                       data.put("上限 9", "366.0日");
-	                    }
-
-	                    if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
-	                		data.put("基準設定２ 18", "-");
-	                		data.put("基準設定下限２ 19", "");
-	                		data.put("上限２ 20", "");
-	                	}else{
-	                		data.put("基準設定２ 18", "○");
-	                		if(c.getCalculationMethod().value == 0){//%
-	                			data.put("基準設定下限２ 19", c.getGrantConditions().get(1).getConditionValue().v().intValue()+""+TextResource.localize("KMF003_79"));
-	                			data.put("上限２ 20", c.getGrantConditions().get(0).getConditionValue().v().intValue()-1+""+TextResource.localize("KMF003_79"));
-	                		}else{
-	                			data.put("基準設定下限２ 19", c.getGrantConditions().get(1).getConditionValue().v()+""+TextResource.localize("KMF003_77"));
-	                			data.put("上限２ 20", c.getGrantConditions().get(0).getConditionValue().v()-1+""+TextResource.localize("KMF003_77"));
-	                		}
-	                	}
-
-	                    if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
-	                    	data.put("基準設定３ 27", "-");
-	                		data.put("基準設定下限３ 28", "");
-	                		data.put("上限３ 29", "");
-	                    }else{
-	                    	data.put("基準設定３ 27", "○");
-	                    	if(c.getCalculationMethod().value == 0){//%
-	                			data.put("基準設定下限３ 28", c.getGrantConditions().get(2).getConditionValue().v().intValue()+""+TextResource.localize("KMF003_79"));
-	                			if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
-	                				data.put("上限３ 29", c.getGrantConditions().get(0).getConditionValue().v().intValue()-1+""+TextResource.localize("KMF003_79"));
-	                			}else{
-	                				data.put("上限３ 29", c.getGrantConditions().get(1).getConditionValue().v().intValue()-1+""+TextResource.localize("KMF003_79"));
-	                			}
-
-	                		}else{
-	                			data.put("基準設定下限３ 28", c.getGrantConditions().get(2).getConditionValue().v()+""+TextResource.localize("KMF003_77"));
-	                			if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
-	                				data.put("上限３ 29", c.getGrantConditions().get(0).getConditionValue().v()-1+""+TextResource.localize("KMF003_77"));
-	                			}else{
-	                				data.put("上限３ 29", c.getGrantConditions().get(1).getConditionValue().v()-1+""+TextResource.localize("KMF003_77"));
-	                			}
-	                		}
-	                    }
-
-	                    if(c.getGrantConditions().get(3).getUseConditionAtr() == UseConditionAtr.NOT_USE){
-	                    	data.put("基準設定４ 36", "-");
-	                    	data.put("基準設定下限４ 37", "");
-	                    	data.put("上限４ 38", "");
-	                    }else{
-	                    	data.put("基準設定４ 36", "○");
-	                    	if(c.getCalculationMethod().value == 0){//%
-	                    		data.put("基準設定下限４ 37", c.getGrantConditions().get(3).getConditionValue().v().intValue()+""+TextResource.localize("KMF003_79"));
-	                    		if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
-	                    			if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
-	                    				data.put("上限４ 38", c.getGrantConditions().get(0).getConditionValue().v().intValue()-1+""+TextResource.localize("KMF003_79"));
-	                    			}else{
-	                    				data.put("上限４ 38", c.getGrantConditions().get(1).getConditionValue().v().intValue()-1+""+TextResource.localize("KMF003_79"));
-	                    			}
+	                        }else{
+	                              //日
+	                              data.put("年休付与基準の設定 7", "労働日数");
+	                           if(c.getGrantConditions().get(0).getConditionValue() ==null){
+	                                  data.put("基準設定下限 8", "0.0日");
+	                           }else{
+	                                  data.put("基準設定下限 8", c.getGrantConditions().get(0).getConditionValue()+""+TextResource.localize("KMF003_77"));
+	                           }
+	                           data.put("上限 9", "366.0日"); 
+	                        }
+	                        
+	                        data.put("付与回 10", i+1);
+	                        
+	                        if(listFindByCode.size()==0 || listYearHoliday.size()== 0){
+	                        }else{
+	                        	LengthServiceTbl dataFindByCode = listFindByCode.get(i);
+	                            data.put("勤続年数年 11", dataFindByCode.getYear()+""+TextResource.localize("KMF003_41"));
+	                        	data.put("勤続年数月 12", dataFindByCode.getMonth()+""+TextResource.localize("KMF003_76"));
+	     						data.put("付与日数 13", listYearHoliday.get(0).getGrantDays()+""+TextResource.localize("KMF003_77"));
+	     						
+	     						if(checkDto1(checkDto.maxManageType, checkDto.maxReference ,checkDto.timeManageType) == true){
+	     							data.put("時間年休上限日数 14",listYearHoliday.get(i).getLimitTimeHd().get()+""+TextResource.localize("KMF003_77"));
+	     						}else{
+	     							data.put("時間年休上限日数 14","");
+	     						}
+	     						
+	     						if(checkDto2(checkDto.manageType,checkDto.reference) == true){
+	     							data.put("半休上限回数 15", listYearHoliday.get(i).getLimitDayYear().get()+""+TextResource.localize("KMF003_78"));
+	     						}else{
+	     							data.put("半休上限回数 15","");
+	     						}
+	     		
+	                    		// kiem tra cot thu 3 co check hay ko? 
+	                    		if(c.getUseSimultaneousGrant() == UseSimultaneousGrant.NOT_USE){
+	                    			if(listFindByCode.get(i).getStandGrantDay() == GrantReferenceDate.HIRE_DATE){
+	                					data.put("基準日 16", "入社日");
+	                				}else{
+	                					data.put("基準日 16", "年休付与基準日 ");                    				
+	                				}
+	                    			data.put("一斉付与 17", "");
+	                    			
+	                    			// neu check thu kt dk 16, 17 , 18
 	                    		}else{
-	                    			data.put("上限４ 38", c.getGrantConditions().get(2).getConditionValue().v().intValue()-1+""+TextResource.localize("KMF003_79"));
+	                    			if(listFindByCode.get(i).getAllowStatus() == GrantSimultaneity.NOT_USE){
+	                    				if(listFindByCode.get(i).getStandGrantDay() == GrantReferenceDate.HIRE_DATE){
+	                    					data.put("基準日 16", "入社日");
+	                    				}else{
+	                    					data.put("基準日 16", "年休付与基準日");                    				
+	                    				}
+	                    				data.put("一斉付与 17", "-");
+	                    			}else{
+	                    				data.put("基準日 16", "");
+	                    				data.put("一斉付与 17", "○");
+	                    				
+	                    			}
 	                    		}
+	                        }
+	        				
+	                        if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+	                    		data.put("基準設定２ 18", "-");
+	                    		data.put("基準設定下限２ 19", "");
+	                    		data.put("上限２ 20", "");
+	                    		data.put("付与回 21","");
+	                    		data.put("勤続年数年 22", "");
+	                    		data.put("勤続年数月 23", "");
+	                    		data.put("付与日数 24", "");
+	                    		data.put("時間年休上限日数 25", "");
+	                    		data.put("半休上限回数 26", "");
 	                    	}else{
-	                    		data.put("基準設定下限４ 37", c.getGrantConditions().get(3).getConditionValue().v()+""+TextResource.localize("KMF003_77"));
-	                    		if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+	                    		data.put("基準設定２ 18", "○");
+	                    		if(c.getCalculationMethod().value == 0){//%
+	                    			data.put("基準設定下限２ 19", c.getGrantConditions().get(1).getConditionValueToDouble().intValue()+""+TextResource.localize("KMF003_79"));
+	                    			data.put("上限２ 20", c.getGrantConditions().get(0).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+	                    		}else{
+	                    			data.put("基準設定下限２ 19", c.getGrantConditions().get(1).getConditionValue()+""+TextResource.localize("KMF003_77"));
+	                    			data.put("上限２ 20", c.getGrantConditions().get(0).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+	                    		}
+	                    		
+	                    		//22
+	                    		if(listYearHoliday2.size() !=0){
+	                    			LengthServiceTbl dataFindByCode = listFindByCode.get(i);
+	                    			// 21
+		                            data.put("付与回 21", i+1);
+	                    			//code  enable: false
+	                    			data.put("勤続年数年 22",dataFindByCode.getYear()+"年");
+	                        		data.put("勤続年数月 23",dataFindByCode.getMonth()+"ヶ月");
+	                        		
+//	                        		data.put("勤続年数年 22", "");
+//	                        		data.put("勤続年数月 23", "");
+	                        		data.put("付与日数 24", listYearHoliday2.get(i).getGrantDays()+""+TextResource.localize("KMF003_77"));
+	                        		
+	                        		if(checkDto1(checkDto.maxManageType, checkDto.maxReference ,checkDto.timeManageType) == true){
+	                        			data.put("時間年休上限日数 25", listYearHoliday2.get(i).getLimitTimeHd().get()+""+TextResource.localize("KMF003_77"));
+	         						}else{
+	         							data.put("時間年休上限日数 25", "");
+	         						}
+	         						
+	         						if(checkDto2(checkDto.manageType,checkDto.reference) == true){
+	         							data.put("半休上限回数 26", listYearHoliday2.get(i).getLimitDayYear().get()+""+TextResource.localize("KMF003_78"));
+	         						}else{
+	         							data.put("半休上限回数 26", "");
+	         						}
+	                    		}
+	                    		
+	                    	}
+	                        
+	                        //27 28 29 30 31 32 33 34 35 
+	                        if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+	                        	data.put("基準設定３ 27", "-");
+	                    		data.put("基準設定下限３ 28", "");
+	                    		data.put("上限３ 29", "");
+	                    		data.put("付与回 30", "");
+	                        }else{
+	                        	data.put("基準設定３ 27", "○");
+	                        	if(c.getCalculationMethod().value == 0){//%
+	                    			data.put("基準設定下限３ 28", c.getGrantConditions().get(2).getConditionValueToDouble().intValue()+""+TextResource.localize("KMF003_79"));
 	                    			if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
-	                    				data.put("上限４ 38", c.getGrantConditions().get(0).getConditionValue().v()-1+""+TextResource.localize("KMF003_77"));
+	                    				data.put("上限３ 29", c.getGrantConditions().get(0).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
 	                    			}else{
-	                    				data.put("上限４ 38", c.getGrantConditions().get(1).getConditionValue().v()-1+""+TextResource.localize("KMF003_77"));
+	                    				data.put("上限３ 29", c.getGrantConditions().get(1).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));		}
+				
+				if(maxYearHoliday == 0){
+					data.put("コード", c.getYearHolidayCode());
+                    data.put("名称", c.getYearHolidayName());
+                    data.put("備考 54", c.getYearHolidayNote());
+                    if(c.getUseSimultaneousGrant() == UseSimultaneousGrant.NOT_USE){
+                          data.put("一斉付与 3", "-");
+                    }else{
+                    	  data.put("一斉付与 3", "○");
+                          String getSub = c.getSimultaneousGrandMonthDays().toString();
+                          String subDay = "";
+                          String subDays = "";
+                          String subMonth = "";
+                          if(getSub.length()==3){
+                                 subMonth = getSub.substring(0, 1);
+                                 subDay = getSub.substring(1,3);
+                                 if(subDay.substring(0,1).equals("0")){
+                                	 subDays = getSub.substring(2,3);
+                                 }else{
+                                	 subDays = getSub.substring(1,3);
+                                 }
+                                 
+                          }else{
+                                 subMonth = getSub.substring(0,2);
+                                 subDay = getSub.substring(2,4);
+                                 if(subDay.substring(0,1).equals("0")){
+                                	 subDays = getSub.substring(3,4);
+                                 }else{
+                                	 subDays = getSub.substring(2,4);
+                                 }
+                          }
+                          data.put("一斉付与月4", subMonth+""+TextResource.localize("KMF003_42"));
+                          data.put("付与日 5", subDays+""+TextResource.localize("KMF003_77"));
+                    }
+                    if(c.getStandardCalculation() == StandardCalculation.YEAR_HD_AWARD_DATE){
+                          data.put("年間労働日数の計算基準 6", "付与日");
+                    }else{
+                          data.put("年間労働日数の計算基準 6", "締め日");
+                    }
+                    // 6
+                    if(c.getCalculationMethod().value == 0){
+                          //%
+                          data.put("年休付与基準の設定 7", "出勤率");
+                          
+                          if(c.getGrantConditions().get(0).getConditionValue() ==null){
+                                 data.put("基準設定下限 8", "0%");
+                          }else{
+                                 data.put("基準設定下限 8", c.getGrantConditions().get(0).getConditionValueToDouble().intValue()+""+TextResource.localize("KMF003_79"));
+                          }
+                          data.put("上限 9", "100%");
+
+                    }else{
+                          //日
+                          data.put("年休付与基準の設定 7", "労働日数");
+                       if(c.getGrantConditions().get(0).getConditionValue() ==null){
+                              data.put("基準設定下限 8", "0.0日");
+                       }else{
+                              data.put("基準設定下限 8", c.getGrantConditions().get(0).getConditionValue()+""+TextResource.localize("KMF003_77"));
+                       }
+                       data.put("上限 9", "366.0日"); 
+                    }
+                    
+                    if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                		data.put("基準設定２ 18", "-");
+                		data.put("基準設定下限２ 19", "");
+                		data.put("上限２ 20", "");
+                	}else{
+                		data.put("基準設定２ 18", "○");
+                		if(c.getCalculationMethod().value == 0){//%
+                			data.put("基準設定下限２ 19", c.getGrantConditions().get(1).getConditionValueToDouble().intValue()+""+TextResource.localize("KMF003_79"));
+                			data.put("上限２ 20", c.getGrantConditions().get(0).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                		}else{
+                			data.put("基準設定下限２ 19", c.getGrantConditions().get(1).getConditionValueToDouble()+""+TextResource.localize("KMF003_77"));
+                			data.put("上限２ 20", c.getGrantConditions().get(0).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                		}
+                	}
+                    
+                    if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                    	data.put("基準設定３ 27", "-");
+                		data.put("基準設定下限３ 28", "");
+                		data.put("上限３ 29", "");
+                    }else{
+                    	data.put("基準設定３ 27", "○");
+                    	if(c.getCalculationMethod().value == 0){//%
+                			data.put("基準設定下限３ 28", c.getGrantConditions().get(2).getConditionValueToDouble().intValue()+""+TextResource.localize("KMF003_79"));
+                			if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                				data.put("上限３ 29", c.getGrantConditions().get(0).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                			}else{
+                				data.put("上限３ 29", c.getGrantConditions().get(1).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                			}
+                			
+                		}else{
+                			data.put("基準設定下限３ 28", c.getGrantConditions().get(2).getConditionValueToDouble()+""+TextResource.localize("KMF003_77"));
+                			if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                				data.put("上限３ 29", c.getGrantConditions().get(0).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                			}else{
+                				data.put("上限３ 29", c.getGrantConditions().get(1).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                			}
+                		}
+                    }
+                    
+                    if(c.getGrantConditions().get(3).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                    	data.put("基準設定４ 36", "-");
+                    	data.put("基準設定下限４ 37", "");
+                    	data.put("上限４ 38", "");
+                    }else{
+                    	data.put("基準設定４ 36", "○");
+                    	if(c.getCalculationMethod().value == 0){//%
+                    		data.put("基準設定下限４ 37", c.getGrantConditions().get(3).getConditionValueToDouble().intValue()+""+TextResource.localize("KMF003_79"));
+                    		if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                    			if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                    				data.put("上限４ 38", c.getGrantConditions().get(0).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                    			}else{
+                    				data.put("上限４ 38", c.getGrantConditions().get(1).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                    			}
+                    		}else{
+                    			data.put("上限４ 38", c.getGrantConditions().get(2).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                    		}
+                    	}else{
+                    		data.put("基準設定下限４ 37", c.getGrantConditions().get(3).getConditionValueToDouble()+""+TextResource.localize("KMF003_77"));
+                    		if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                    			if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                    				data.put("上限４ 38", c.getGrantConditions().get(0).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                    			}else{
+                    				data.put("上限４ 38", c.getGrantConditions().get(1).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                    			}
+                    		}else{
+                    			data.put("上限４ 38", c.getGrantConditions().get(2).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                    		}
+                    	}
+                    }
+                    
+                    if(c.getGrantConditions().get(4).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                    	data.put("基準設定５ 45", "-");
+                    	data.put("基準設定下限５ 46", "");
+                		data.put("上限５ 47", "");
+                		data.put("付与回 48", "");
+                    }else{
+                    	data.put("基準設定５ 45", "○");
+                    	if(c.getCalculationMethod().value == 0){//%
+                			data.put("基準設定下限５ 46", c.getGrantConditions().get(4).getConditionValueToDouble().intValue()+""+TextResource.localize("KMF003_79"));
+                			if(c.getGrantConditions().get(3).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                				if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                					if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                						data.put("上限５ 47", c.getGrantConditions().get(0).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                					}else{
+                						data.put("上限５ 47", c.getGrantConditions().get(1).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                					}
+                				}else{
+                					data.put("上限５ 47", c.getGrantConditions().get(2).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                				}
+                			}else{
+                				data.put("上限５ 47", c.getGrantConditions().get(3).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+                			}
+                			
+                		}else{
+                			data.put("基準設定下限５ 46", c.getGrantConditions().get(4).getConditionValueToDouble()+TextResource.localize("KMF003_77"));
+                			if(c.getGrantConditions().get(3).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                				if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                					if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+                						data.put("上限５ 47", c.getGrantConditions().get(0).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                					}else{
+                						data.put("上限５ 47", c.getGrantConditions().get(1).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                					}
+                				}else{
+                					data.put("上限５ 47", c.getGrantConditions().get(2).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                				}
+                			}else{
+                				data.put("上限５ 47", c.getGrantConditions().get(3).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+                			}
+                		}
+                    }
+                    MasterData masterData = new MasterData(data, null, "");	
+					masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("一斉付与 3").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("一斉付与月4").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("付与日 5").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("年間労働日数の計算基準 6").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("年休付与基準の設定 7").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("基準設定下限 8").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("上限 9").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					
+					masterData.cellAt("基準設定２ 18").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("基準設定下限２ 19").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("上限２ 20").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					
+					masterData.cellAt("基準設定３ 27").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("基準設定下限３ 28").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("上限３ 29").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					
+					masterData.cellAt("基準設定４ 36").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("基準設定下限４ 37").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("上限４ 38").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					
+					masterData.cellAt("基準設定５ 45").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("基準設定下限５ 46").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("上限５ 47").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("備考 54").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					datas.add(masterData);
+				}else{
+
+					for(int i=0 ; i<maxYearHoliday; i++){
+						if(i==0){
+							data.put("コード", c.getYearHolidayCode());
+	                        data.put("名称", c.getYearHolidayName());
+	                        data.put("備考 54", c.getYearHolidayNote());
+	                        if(c.getUseSimultaneousGrant() == UseSimultaneousGrant.NOT_USE){
+	                              data.put("一斉付与 3", "-");
+	                        }else{
+	                        	  data.put("一斉付与 3", "○");
+	                              String getSub = c.getSimultaneousGrandMonthDays().toString();
+	                              String subDay = "";
+	                              String subDays = "";
+	                              String subMonth = "";
+	                              if(getSub.length()==3){
+	                                     subMonth = getSub.substring(0, 1);
+	                                     subDay = getSub.substring(1,3);
+	                                     if(subDay.substring(0,1).equals("0")){
+	                                    	 subDays = getSub.substring(2,3);
+	                                     }else{
+	                                    	 subDays = getSub.substring(1,3);
+	                                     }
+	                                     
+	                              }else{
+	                                     subMonth = getSub.substring(0,2);
+	                                     subDay = getSub.substring(2,4);
+	                                     if(subDay.substring(0,1).equals("0")){
+	                                    	 subDays = getSub.substring(3,4);
+	                                     }else{
+	                                    	 subDays = getSub.substring(2,4);
+	                                     }
+	                              }
+	                              data.put("一斉付与月4", subMonth+""+TextResource.localize("KMF003_42"));
+	                              data.put("付与日 5", subDays+""+TextResource.localize("KMF003_77"));
+	                        }
+	                        if(c.getStandardCalculation() == StandardCalculation.YEAR_HD_AWARD_DATE){
+	                              data.put("年間労働日数の計算基準 6", "付与日");
+	                        }else{
+	                              data.put("年間労働日数の計算基準 6", "締め日");
+	                        }
+	                        // 6
+	                        if(c.getCalculationMethod().value == 0){
+	                              //%
+	                              data.put("年休付与基準の設定 7", "出勤率");
+	                              
+	                              if(c.getGrantConditions().get(0).getConditionValue() ==null){
+	                                     data.put("基準設定下限 8", "0%");
+	                              }else{
+	                                     data.put("基準設定下限 8", c.getGrantConditions().get(0).getConditionValueToDouble().intValue()+""+TextResource.localize("KMF003_79"));
+	                              }
+	                              data.put("上限 9", "100%");
+
+	                        }else{
+	                              //日
+	                              data.put("年休付与基準の設定 7", "労働日数");
+	                           if(c.getGrantConditions().get(0).getConditionValue() ==null){
+	                                  data.put("基準設定下限 8", "0.0日");
+	                           }else{
+	                                  data.put("基準設定下限 8", c.getGrantConditions().get(0).getConditionValue()+""+TextResource.localize("KMF003_77"));
+	                           }
+	                           data.put("上限 9", "366.0日"); 
+	                        }
+	                        
+	                        data.put("付与回 10", i+1);
+	                        
+	                        if(listFindByCode.size()==0 || listYearHoliday.size()== 0){
+	                        }else{
+	                        	LengthServiceTbl dataFindByCode = listFindByCode.get(i);
+	                            data.put("勤続年数年 11", dataFindByCode.getYear()+""+TextResource.localize("KMF003_41"));
+	                        	data.put("勤続年数月 12", dataFindByCode.getMonth()+""+TextResource.localize("KMF003_76"));
+	     						data.put("付与日数 13", listYearHoliday.get(0).getGrantDays()+""+TextResource.localize("KMF003_77"));
+	     						
+	     						if(checkDto1(checkDto.maxManageType, checkDto.maxReference ,checkDto.timeManageType) == true){
+	     							data.put("時間年休上限日数 14",listYearHoliday.get(i).getLimitTimeHd().get()+""+TextResource.localize("KMF003_77"));
+	     						}else{
+	     							data.put("時間年休上限日数 14","");
+	     						}
+	     						
+	     						if(checkDto2(checkDto.manageType,checkDto.reference) == true){
+	     							data.put("半休上限回数 15", listYearHoliday.get(i).getLimitDayYear().get()+""+TextResource.localize("KMF003_78"));
+	     						}else{
+	     							data.put("半休上限回数 15","");
+	     						}
+	     		
+	                    		// kiem tra cot thu 3 co check hay ko? 
+	                    		if(c.getUseSimultaneousGrant() == UseSimultaneousGrant.NOT_USE){
+	                    			if(listFindByCode.get(i).getStandGrantDay() == GrantReferenceDate.HIRE_DATE){
+	                					data.put("基準日 16", "入社日");
+	                				}else{
+	                					data.put("基準日 16", "年休付与基準日 ");                    				
+	                				}
+	                    			data.put("一斉付与 17", "");
+	                    			
+	                    			// neu check thu kt dk 16, 17 , 18
+	                    		}else{
+	                    			if(listFindByCode.get(i).getAllowStatus() == GrantSimultaneity.NOT_USE){
+	                    				if(listFindByCode.get(i).getStandGrantDay() == GrantReferenceDate.HIRE_DATE){
+	                    					data.put("基準日 16", "入社日");
+	                    				}else{
+	                    					data.put("基準日 16", "年休付与基準日");                    				
+	                    				}
+	                    				data.put("一斉付与 17", "-");
+	                    			}else{
+	                    				data.put("基準日 16", "");
+	                    				data.put("一斉付与 17", "○");
+	                    				
+	                    			}
+	                    		}
+	                        }
+	        				
+	                        if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+	                    		data.put("基準設定２ 18", "-");
+	                    		data.put("基準設定下限２ 19", "");
+	                    		data.put("上限２ 20", "");
+	                    		data.put("付与回 21","");
+	                    		data.put("勤続年数年 22", "");
+	                    		data.put("勤続年数月 23", "");
+	                    		data.put("付与日数 24", "");
+	                    		data.put("時間年休上限日数 25", "");
+	                    		data.put("半休上限回数 26", "");
+	                    	}else{
+	                    		data.put("基準設定２ 18", "○");
+	                    		if(c.getCalculationMethod().value == 0){//%
+	                    			data.put("基準設定下限２ 19", c.getGrantConditions().get(1).getConditionValueToDouble().intValue()+""+TextResource.localize("KMF003_79"));
+	                    			data.put("上限２ 20", c.getGrantConditions().get(0).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+	                    		}else{
+	                    			data.put("基準設定下限２ 19", c.getGrantConditions().get(1).getConditionValue()+""+TextResource.localize("KMF003_77"));
+	                    			data.put("上限２ 20", c.getGrantConditions().get(0).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+	                    		}
+	                    		
+	                    		//22
+	                    		if(listYearHoliday2.size() !=0){
+	                    			LengthServiceTbl dataFindByCode = listFindByCode.get(i);
+	                    			// 21
+		                            data.put("付与回 21", i+1);
+	                    			//code  enable: false
+	                    			data.put("勤続年数年 22",dataFindByCode.getYear()+"年");
+	                        		data.put("勤続年数月 23",dataFindByCode.getMonth()+"ヶ月");
+	                        		
+//	                        		data.put("勤続年数年 22", "");
+//	                        		data.put("勤続年数月 23", "");
+	                        		data.put("付与日数 24", listYearHoliday2.get(i).getGrantDays()+""+TextResource.localize("KMF003_77"));
+	                        		
+	                        		if(checkDto1(checkDto.maxManageType, checkDto.maxReference ,checkDto.timeManageType) == true){
+	                        			data.put("時間年休上限日数 25", listYearHoliday2.get(i).getLimitTimeHd().get()+""+TextResource.localize("KMF003_77"));
+	         						}else{
+	         							data.put("時間年休上限日数 25", "");
+	         						}
+	         						
+	         						if(checkDto2(checkDto.manageType,checkDto.reference) == true){
+	         							data.put("半休上限回数 26", listYearHoliday2.get(i).getLimitDayYear().get()+""+TextResource.localize("KMF003_78"));
+	         						}else{
+	         							data.put("半休上限回数 26", "");
+	         						}
+	                    		}
+	                    		
+	                    	}
+	                        
+	                        //27 28 29 30 31 32 33 34 35 
+	                        if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+	                        	data.put("基準設定３ 27", "-");
+	                    		data.put("基準設定下限３ 28", "");
+	                    		data.put("上限３ 29", "");
+	                    		data.put("付与回 30", "");
+	                        }else{
+	                        	data.put("基準設定３ 27", "○");
+	                        	if(c.getCalculationMethod().value == 0){//%
+	                    			data.put("基準設定下限３ 28", c.getGrantConditions().get(2).getConditionValueToDouble().intValue()+""+TextResource.localize("KMF003_79"));
+	                    			if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+	                    				data.put("上限３ 29", c.getGrantConditions().get(0).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+	                    			}else{
+	                    				data.put("上限３ 29", c.getGrantConditions().get(1).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
 	                    			}
 	                    		}else{
-	                    			data.put("上限４ 38", c.getGrantConditions().get(2).getConditionValue().v()-1+""+TextResource.localize("KMF003_77"));
+	                    			data.put("基準設定下限３ 28", c.getGrantConditions().get(2).getConditionValue()+""+TextResource.localize("KMF003_77"));
+	                    			if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+	                    				data.put("上限３ 29", c.getGrantConditions().get(0).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+	                    			}else{
+	                    				data.put("上限３ 29", c.getGrantConditions().get(1).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+	                    			}
+	                    		}
+	                        	// 30
+	                        	
+	                        	if(listYearHoliday3.size() !=0){
+	                        		data.put("付与回 30", i+1);
+	                        		LengthServiceTbl dataFindByCode = listFindByCode.get(i);
+	                    			data.put("勤続年数年 31",dataFindByCode.getYear()+"年");
+	                        		data.put("勤続年数月 32",dataFindByCode.getMonth()+"ヶ月");
+	                        		
+//	                    			data.put("勤続年数年 31","");
+//	                        		data.put("勤続年数月 32","");
+	                        		data.put("付与日数 33", listYearHoliday3.get(i).getGrantDays()+""+TextResource.localize("KMF003_77"));
+	                        		
+	                        		if(checkDto1(checkDto.maxManageType, checkDto.maxReference ,checkDto.timeManageType) == true){
+	                        			data.put("時間年休上限日数 34",listYearHoliday3.get(i).getLimitTimeHd().get()+""+TextResource.localize("KMF003_77"));
+	         						}else{
+	         							data.put("時間年休上限日数 34", "");
+	         						}
+	         						
+	         						if(checkDto2(checkDto.manageType,checkDto.reference) == true){
+	         							data.put("半休上限回数 35", listYearHoliday3.get(i).getLimitDayYear().get()+""+TextResource.localize("KMF003_78"));
+	         						}else{
+	         							data.put("半休上限回数 35", "");
+	         						}
+	                        	}
+	                        	
+	                        }
+	                        
+	                        // 36 37 38 39 40 41 42 43 44
+	                        if(c.getGrantConditions().get(3).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+	                        	data.put("基準設定４ 36", "-");
+	                        	data.put("基準設定下限４ 37", "");
+	                        	data.put("上限４ 38", "");
+	                        	data.put("付与回 39", "");
+	                        }else{
+	                        	data.put("基準設定４ 36", "○");
+	                        	if(c.getCalculationMethod().value == 0){//%
+	                        		data.put("基準設定下限４ 37", c.getGrantConditions().get(3).getConditionValueToDouble().intValue()+""+TextResource.localize("KMF003_79"));
+	                        		if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+	                        			if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+	                        				data.put("上限４ 38", c.getGrantConditions().get(0).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+	                        			}else{
+	                        				data.put("上限４ 38", c.getGrantConditions().get(1).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+	                        			}
+	                        		}else{
+	                        			data.put("上限４ 38", c.getGrantConditions().get(2).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+	                        		}
+	                        	}else{
+	                        		data.put("基準設定下限４ 37", c.getGrantConditions().get(3).getConditionValue()+""+TextResource.localize("KMF003_77"));
+	                        		if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+	                        			if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+	                        				data.put("上限４ 38", c.getGrantConditions().get(0).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+	                        			}else{
+	                        				data.put("上限４ 38", c.getGrantConditions().get(1).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+	                        			}
+	                        		}else{
+	                        			data.put("上限４ 38", c.getGrantConditions().get(2).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+	                        		}
+	                        	}
+	                        	if(listYearHoliday4.size() !=0){
+	                        		data.put("付与回 39", i+1);
+	                        		LengthServiceTbl dataFindByCode = listFindByCode.get(i);
+	                        		data.put("勤続年数年 40", dataFindByCode.getYear()+"年");
+	                        		data.put("勤続年数月 41", dataFindByCode.getMonth()+"ヶ月");
+	                        		
+//	                        		data.put("勤続年数年 40", "");
+//	                        		data.put("勤続年数月 41", "");
+	                        		
+	                        		data.put("付与日数  42", listYearHoliday4.get(i).getGrantDays()+""+TextResource.localize("KMF003_77"));
+	                        		
+	                        		if(checkDto1(checkDto.maxManageType, checkDto.maxReference ,checkDto.timeManageType) == true){
+	                        			data.put("時間年休上限日数 43", listYearHoliday4.get(i).getLimitTimeHd().get()+""+TextResource.localize("KMF003_77"));
+	         						}else{
+	         							data.put("時間年休上限日数 43", "");
+	         						}
+	         						
+	         						if(checkDto2(checkDto.manageType,checkDto.reference) == true){
+	         							data.put("半休上限回数  44", listYearHoliday4.get(i).getLimitDayYear().get()+""+TextResource.localize("KMF003_78"));
+	         						}else{
+	         							data.put("半休上限回数  44", "");
+	         						}
+	                        	}
+	                        	
+	                        }
+	                        
+	                        //45 46 47 48 49 50 51 52 53
+	                        if(c.getGrantConditions().get(4).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+	                        	data.put("基準設定５ 45", "-");
+	                        	data.put("基準設定下限５ 46", "");
+	                    		data.put("上限５ 47", "");
+	                    		data.put("付与回 48", "");
+	                        }else{
+	                        	data.put("基準設定５ 45", "○");
+	                        	if(c.getCalculationMethod().value == 0){//%
+	                    			data.put("基準設定下限５ 46", c.getGrantConditions().get(4).getConditionValueToDouble().intValue()+""+TextResource.localize("KMF003_79"));
+	                    			if(c.getGrantConditions().get(3).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+	                    				if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+	                    					if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+	                    						data.put("上限５ 47", c.getGrantConditions().get(0).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+	                    					}else{
+	                    						data.put("上限５ 47", c.getGrantConditions().get(1).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+	                    					}
+	                    				}else{
+	                    					data.put("上限５ 47", c.getGrantConditions().get(2).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+	                    				}
+	                    			}else{
+	                    				data.put("上限５ 47", c.getGrantConditions().get(3).getConditionValueToDouble().intValue()-1+""+TextResource.localize("KMF003_79"));
+	                    			}
+	                    		}else{
+	                    			data.put("基準設定下限５ 46", c.getGrantConditions().get(4).getConditionValue()+TextResource.localize("KMF003_77"));
+	                    			if(c.getGrantConditions().get(3).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+	                    				if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+	                    					if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
+	                    						data.put("上限５ 47", c.getGrantConditions().get(0).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+	                    					}else{
+	                    						data.put("上限５ 47", c.getGrantConditions().get(1).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+	                    					}
+	                    				}else{
+	                    					data.put("上限５ 47", c.getGrantConditions().get(2).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+	                    				}
+	                    			}else{
+	                    				data.put("上限５ 47", c.getGrantConditions().get(3).getConditionValueToDouble()-1+""+TextResource.localize("KMF003_77"));
+	                    			}
 	                    		}
 	                    	}
 	                    }

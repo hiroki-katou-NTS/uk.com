@@ -2357,8 +2357,9 @@ module nts.uk.com.view.ccg.share.ccg {
 
 var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="visibility: hidden;">
         <div class="pull-left ccg001-content">
-            <div id="ccg001-header">
-                <!-- ko if: showBaseDate -->
+            <div id="ccg001-header" class="ccg001-header">
+                <div class= "ccg001-showBaseDate">
+                    <!-- ko if: showBaseDate -->
                     <div class="ccg001-label" data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_27+`</div>
                     <div id="inp_baseDate" class="fit-to-right"
                         data-bind="attr: {tabindex: ccg001Tabindex}, ntsDatePicker: {
@@ -2366,10 +2367,12 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                         dateFormat: 'YYYY/MM/DD',
                         value: inputBaseDate,
                         required: true }"></div>
-                <!-- /ko -->
-                <!-- ko if: showClosure -->
-                    <div class="ccg001-label" data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_28+`</div>
-                    <div id="cbb-closure" style="margin-left: 4px;"
+                    <!-- /ko -->
+                </div>
+                <div class= "ccg001-showClosure">
+                    <!-- ko if: showClosure -->
+                    <div class="ccg001-label" data-bind="ntsFormLabel: { required: true }">`+CCG001TextResource.CCG001_28+`</div>
+                    <div id="cbb-closure"
                         data-bind="attr: {tabindex: ccg001Tabindex}, ntsComboBox: {
                             name: '#[CCG001_28]',
                             options: closureList,
@@ -2382,9 +2385,11 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                 { prop: 'closureId', length: 1 },
                                 { prop: 'closureName', length: 5 },
                             ]}"></div>
-                <!-- /ko -->
-                <!-- ko if: showPeriod -->
-                    <div class="ccg001-label" data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_29+`</div>
+                    <!-- /ko -->
+                </div>
+                <div class= "ccg001-showPeriod">
+                    <!-- ko if: showPeriod -->
+                    <div class="ccg001-label" data-bind="ntsFormLabel: { required: true }">`+CCG001TextResource.CCG001_29+`</div>
                     <div id="ccg001-search-period" data-bind="attr: {tabindex: ccg001Tabindex}, ntsDateRangePicker: {
                         type: showPeriodYM ? 'yearmonth' : 'fullDate',
                         maxRange: maxPeriodRange,
@@ -2392,10 +2397,11 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                         enable: true,
                         showNextPrevious: true,
                         value: inputPeriod}"/>
-                <!-- /ko -->
-                <button id="ccg001-btn-apply-search-condition"
-                    class="proceed fit-to-left fit-to-editor" data-bind="attr: {tabindex: ccg001Tabindex},
+                    <!-- /ko -->
+                    <button id="ccg001-btn-apply-search-condition"
+                        class="proceed fit-to-left fit-to-editor" data-bind="attr: {tabindex: ccg001Tabindex},
                         enable: isValidInput, click: applyDataSearch">`+CCG001TextResource.CCG001_2+`</button>
+                </div>
             </div>
         <div id="tab-panel" class="cf ccg-tabpanel pull-left"
             data-bind="attr: {tabindex: ccg001Tabindex}, ntsTabPanel: { dataSource: tabs, active: selectedTab}">

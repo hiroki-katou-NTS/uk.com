@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.stampmanagement.workplace.RadiusAtr;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.StampMobilePossibleRange;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationName;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -28,14 +29,14 @@ public class InsertUpdateWorkLocationCmd {
 
 	/** 名称 */
 	private String workLocationName; 
-	
+
 	/** 打刻範囲.半径 */
-	private int radius;
+	private Integer radius;
 	
 	/** 打刻範囲.地理座標 .latitude */
-	private double latitude;
+	private Double latitude;
 	/** 打刻範囲.地理座標 .longitude */
-	private double longitude;
+	private Double longitude;
 	
 	/** IPアドレス一覧*/
 	private List<Ipv4AddressDto> listIPAddress;
@@ -43,26 +44,29 @@ public class InsertUpdateWorkLocationCmd {
 	/** 職場*/
 	private WorkplacePossibleCmd workplace;
 	
+	private Integer regionCode;
+	
 	public WorkLocation toDomain() {
 		return new WorkLocation(
 				new ContractCode(AppContexts.user().contractCode()),
 				new WorkLocationCD(this.workLocationCD), 
-				new WorkLocationName(this.workLocationName), 
-				new StampMobilePossibleRange(
-						RadiusAtr.toEnum(this.radius), 
-						new GeoCoordinate(this.latitude, this.longitude)),
+				new WorkLocationName(this.workLocationName),
+				Optional.ofNullable(radius == null || latitude == null || longitude == null ?
+						null : new StampMobilePossibleRange(RadiusAtr.toEnum(radius), new GeoCoordinate(latitude, longitude))),
 				this.listIPAddress.stream().map(c->c.toDomain()).collect(Collectors.toList()),
-				this.workplace == null ? Optional.empty() : Optional.of(this.workplace.toDomain()));
+				this.workplace == null ? Optional.empty() : Optional.of(this.workplace.toDomain()),
+				Optional.ofNullable(regionCode == null ? null : new RegionCode(regionCode)));
 	}
 	
 	public static InsertUpdateWorkLocationCmd toDto(WorkLocation domain) {
 		return new InsertUpdateWorkLocationCmd(
 				domain.getWorkLocationCD().v(), 
-				domain.getWorkLocationName().v(), 
-				domain.getStampRange().getRadius().value,
-				domain.getStampRange().getGeoCoordinate().getLatitude(),
-				domain.getStampRange().getGeoCoordinate().getLongitude(),
+				domain.getWorkLocationName().v(),
+				domain.getStampRange().map(s -> s.getRadius().value).orElse(null),
+				domain.getStampRange().map(s -> s.getGeoCoordinate().getLatitude()).orElse(null),
+				domain.getStampRange().map(s -> s.getGeoCoordinate().getLongitude()).orElse(null),
 				domain.getListIPAddress().stream().map(c-> new Ipv4AddressDto(c)).collect(Collectors.toList()),
-				domain.getWorkplace().map(c-> WorkplacePossibleCmd.toDto(c)).orElse(null));
+				domain.getWorkplace().map(c-> WorkplacePossibleCmd.toDto(c)).orElse(null),
+				domain.getRegionCode().map(x-> x.v()).orElse(null));
 	}
 }

@@ -126,12 +126,9 @@ public class CalcAnnLeaAttendanceRate {
 		val lengthServiceTbl = lengthServiceTblOpt.get();
 
 		// 出勤率計算する期間を計算する
-		val calcPeriodOpt = calcPeriod(grantDate, grantNum, employee, grantHdTblSet, Optional.of(lengthServiceTbl));
-
-
-
-		if (!calcPeriodOpt.isPresent()) {
-			return Optional.of(new CalYearOffWorkAttendRate(0.0, 0.0, 0.0, 0.0));
+		val calcPeriodOpt = calcPeriod(grantDate, grantNum, employee, grantHdTblSet, lengthServiceTbls);
+		if (!calcPeriodOpt.isPresent()){
+			return Optional.of(new CalYearOffWorkAttendRate(0.0, 0.0, 0.0, Optional.empty()));
 		}
 		val calcPeriod = calcPeriodOpt.get();
 
@@ -141,8 +138,8 @@ public class CalcAnnLeaAttendanceRate {
 
 		// 日数から出勤率を計算する
 		results.calcAttendanceRate();
-
-		// 「年休出勤率計算用日数」と「出勤率」を返す
+		
+		// 年休出勤率計算結果を返す
 		return Optional.of(results);
 	}
 
@@ -260,9 +257,9 @@ public class CalcAnnLeaAttendanceRate {
 				// 足りない期間を日別実績から計算
 				val shortageDays = GetDaysForCalcAttdRate.algorithm(require, companyId, employeeId,
 						new DatePeriod(procDate, remainNum.getClosurePeriod().start().addDays(-1)));
-				prescribedDays += shortageDays.getPrescribedDays();
-				workingDays += shortageDays.getWorkingDays();
-				deductedDays += shortageDays.getDeductedDays();
+				prescribedDays += shortageDays.getPrescribedDays().v();
+				workingDays += shortageDays.getWorkingDays().v();
+				deductedDays += shortageDays.getDeductedDays().v();
 
 				// 年休月別残数データから日数を取得
 				prescribedDays += attendanceRateDays.getPrescribedDays().v();
@@ -287,9 +284,9 @@ public class CalcAnnLeaAttendanceRate {
 			// 足りない期間を日別実績から計算
 			val shortageDays = GetDaysForCalcAttdRate.algorithm(require, companyId, employeeId,
 					new DatePeriod(procDate, calcPeriod.getAfterJoinCompany().end()));
-			prescribedDays += shortageDays.getPrescribedDays();
-			workingDays += shortageDays.getWorkingDays();
-			deductedDays += shortageDays.getDeductedDays();
+			prescribedDays += shortageDays.getPrescribedDays().v();
+			workingDays += shortageDays.getWorkingDays().v();
+			deductedDays += shortageDays.getDeductedDays().v();
 		}
 
 		// 「運用開始日使用フラグ」をチェック
@@ -338,9 +335,9 @@ public class CalcAnnLeaAttendanceRate {
 
 		// 「入社前期間の出勤扱い日数」を労働日数に加算
 		workingDays += daysToWork;
-
-		// 年休出勤率計算用日数を返す
-		return new CalYearOffWorkAttendRate(0.0, prescribedDays, workingDays, deductedDays);
+		
+		// 年休出勤率計算結果を返す
+		return new CalYearOffWorkAttendRate(prescribedDays, workingDays, deductedDays, Optional.of(calcPeriod.getCal()));
 	}
 
 	public static interface RequireM2 extends GetDaysForCalcAttdRate.RequireM1 {

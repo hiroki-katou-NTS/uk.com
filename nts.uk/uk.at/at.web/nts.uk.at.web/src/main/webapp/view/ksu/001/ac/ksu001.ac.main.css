@@ -36,20 +36,20 @@
 }
 
 #tableButton1, #tableButton2 {
-	background-color: rgb(237,250,194);
+	background-color: #6a6a6a;
 	width: 910px;
-	height: 55px;
+	height: 54px;
 	margin-top: 5px;
 }
 
 #tableButton1 button, #tableButton2 button {
 	width: 85px !important;
 	height: 20px;
-	box-shadow : 0 1px rgba(0, 0, 0, 0.4);
 	border : 1px solid grey;
 	color : black;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	font-size: 12px;
 }
 
 #tableButton1 table td, #tableButton2 table td {
@@ -115,8 +115,8 @@
 }
 
 .link-selected {
-	background: rgb(237,250,194);	
-	color: gray !important;
+	background: #6a6a6a;	
+	color: #ffffff !important;
 }
 
 #popup-area>div {
@@ -152,7 +152,6 @@
 .ntsTable .ntsButtonCellSelected {
     background-color: #007fff;
     color: white !important;
-    top: 2px;
 }
 
 .ntsTable .ntsButtonCellSelected:not(:disabled):focus, .ntsTable .ntsButtonCellSelected:not(:disabled):hover {

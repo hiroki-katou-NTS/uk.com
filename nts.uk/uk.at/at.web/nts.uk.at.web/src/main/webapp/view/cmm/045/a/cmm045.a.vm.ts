@@ -1725,9 +1725,7 @@ module cmm045.a.viewmodel {
 							return data;
 						}
 		            }).then((data) => {
-						if(!_.isEmpty(data.successMap)) {
-							return service.findByPeriod(self.appListExtractConditionDto);
-						}
+						return service.findByPeriod(self.appListExtractConditionDto);
 					}).then((data: any) => {
 						if(data) {
 							return self.reload(data.appListExtractCondition, data.appListInfo);

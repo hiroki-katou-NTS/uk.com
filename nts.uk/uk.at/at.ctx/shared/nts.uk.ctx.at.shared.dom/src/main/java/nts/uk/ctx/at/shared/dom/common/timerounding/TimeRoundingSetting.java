@@ -55,6 +55,14 @@ public class TimeRoundingSetting extends DomainObject implements Cloneable{
 		this.roundingTime = EnumAdaptor.valueOf(roundingTime, Unit.class);
 		this.rounding = EnumAdaptor.valueOf(rounding, Rounding.class);
 	}
+	
+	/**
+	 * 1分切り捨てで作る
+	 * @return Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN
+	 */
+	public static TimeRoundingSetting oneMinDown() {
+		return new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN);
+	}
 
 //	/**
 //	 * Round.

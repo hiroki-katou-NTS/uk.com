@@ -10,7 +10,9 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  */
 @Getter
 public class StatutoryWorkingTime {
+	/** 実働就業時間用 */
 	private AttendanceTime forActualWorkTime;
+	/** 割増含む就業時間用 */
 	private AttendanceTime forWorkTimeIncludePremium;
 	
 	/**

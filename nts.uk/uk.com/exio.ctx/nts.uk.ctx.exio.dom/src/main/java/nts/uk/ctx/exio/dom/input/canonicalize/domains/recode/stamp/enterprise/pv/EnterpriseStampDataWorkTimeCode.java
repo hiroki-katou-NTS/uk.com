@@ -13,6 +13,7 @@ import java.io.Serializable;
  * Enterprise仕様のデータ型
  * Enterpriseでは、EMPTYを"000"として保持しているため
  */
+@SuppressWarnings("serial")
 @StringMaxLength(3)
 @StringCharType(CharType.ALPHA_NUMERIC)
 @ZeroPaddedCode

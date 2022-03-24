@@ -175,3 +175,8 @@ th {
 .code-name{
 	display: inline-block;
 }
+
+td {
+	text-align: left !important;
+	height: 33px !important;
+}

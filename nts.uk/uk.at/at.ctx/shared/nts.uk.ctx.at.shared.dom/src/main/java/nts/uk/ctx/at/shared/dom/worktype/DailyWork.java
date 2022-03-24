@@ -97,31 +97,6 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 				|| WorkTypeClassification.LeaveOfAbsence == attribute;
 	}
 
-	/**
-	 * 出勤区分区分の取得
-	 *
-	 * @return 出勤休日区分
-	 */
-	public AttendanceHolidayAttr getAttendanceHolidayAttr() {
-		if (this.workTypeUnit == WorkTypeUnit.OneDay) {
-			if (this.oneDay.isHoliday()) {
-				return AttendanceHolidayAttr.HOLIDAY;
-			} else {
-				return AttendanceHolidayAttr.FULL_TIME;
-			}
-		} else {
-			if (this.morning.isAttendance() && this.afternoon.isAttendance()) {
-				return AttendanceHolidayAttr.FULL_TIME;
-			} else if (this.morning.isAttendance() && this.afternoon.isHoliday()) {
-				return AttendanceHolidayAttr.MORNING;
-			} else if (this.morning.isHoliday() && this.afternoon.isAttendance()) {
-				return AttendanceHolidayAttr.AFTERNOON;
-			} else {
-				return AttendanceHolidayAttr.HOLIDAY;
-			}
-		}
-	}
-
 	public boolean isHolidayType() {
 		if (this.workTypeUnit == WorkTypeUnit.OneDay) {
 			if (this.oneDay.isHolidayType()) {
@@ -232,20 +207,6 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 	}
 
 	/**
-	 * 1日振休か判定する
-	 * @return　1日振休である
-	 */
-	public boolean isPause() {
-		if(this.getWorkTypeUnit().isOneDay()) {
-			return this.getOneDay().isPause();
-		}
-		else if(this.getWorkTypeUnit().isMonringAndAfternoon()) {
-			return this.getMorning().isPause() && this.getAfternoon().isPause();
-		}
-		return false;
-	}
-
-	/**
 	 * 受け取った勤務種類の分類に一致しているか判定する
 	 *
 	 * @param workTypeClassification
@@ -280,7 +241,6 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 		return this.oneDay == WorkTypeClassification.Holiday;
 	}
 
-
 	/**
 	 * 1日年休の場合であるか
 	 * @return 1日年休である
@@ -293,7 +253,6 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 			return this.getMorning().isAnnualLeave() && this.getAfternoon().isAnnualLeave();
 		}
 	}
-
 
 	/**
 	 * 1日特別休暇の場合であるか
@@ -334,31 +293,6 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 			return this.getMorning().isYearlyReserved() && this.getAfternoon().isYearlyReserved();
 		}
 	}
-
-//	public WorkTypeRangeForPred decisionWorkTypeRange() {
-//		if(oneDay.isWeekDayAttendance()) {
-//			return WorkTypeRangeForPred.ONEDAY;
-//		}
-//		else if(morning.isWeekDayAttendance() &&(afternoon.isHoliday() || afternoon.isShooting())) {
-//			return WorkTypeRangeForPred.MORNING;
-//		}
-//		else if((morning.isHoliday() || morning.isShooting()) && afternoon.isWeekDayAttendance()) {
-//			return WorkTypeRangeForPred.AFTERNOON;
-//		}
-//		else if(oneDay.isVacation()) {
-//			return WorkTypeRangeForPred.ONEDAY;
-//		}
-//		else if(morning.isVacation() && afternoon.isVacation()) {
-//			return WorkTypeRangeForPred.ONEDAY;
-//		}
-//		else if(morning.isVacation() &&(afternoon.isHoliday()||afternoon.isShooting())) {
-//			return WorkTypeRangeForPred.MORNING;
-//		}
-//		else if((morning.isHoliday()||morning.isShooting()) && morning.isVacation()) {
-//			return WorkTypeRangeForPred.AFTERNOON;
-//		}
-//		return WorkTypeRangeForPred.NOTHING;
-//	}
 
 	public WorkTypeRangeForPred decisionWorkTypeRange() {
 		if (this.workTypeUnit == WorkTypeUnit.OneDay) {

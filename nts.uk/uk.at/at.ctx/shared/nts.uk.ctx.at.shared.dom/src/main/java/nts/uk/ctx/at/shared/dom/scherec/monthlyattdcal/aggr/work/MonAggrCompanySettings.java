@@ -17,6 +17,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.com.ComDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.com.ComRegulaMonthActCalSet;
@@ -59,9 +60,11 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureClassification;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.shr.com.i18n.TextResource;
@@ -130,6 +133,9 @@ public class MonAggrCompanySettings {
 	/** フレックス勤務の月別集計設定 */
 	@Getter
 	private MonthlyAggrSetOfFlex aggrSetOfFlex;
+	/** フレックス勤務の日別計算設定 */
+	@Getter
+	private FlexSet dailyCalcSetOfFlex;
 	/** フレックス不足の年休補填管理 */
 	@Getter
 	private Optional<InsufficientFlexHolidayMnt> insufficientFlexOpt;
@@ -309,7 +315,7 @@ public class MonAggrCompanySettings {
 		domain.absSettingOpt = require.comSubstVacation(companyId);
 		
 		// 代休管理設定
-		domain.dayOffSetting = require.compensatoryLeaveComSetting(companyId);
+		domain.dayOffSetting = require.compensatoryLeaveComSetting(companyId).orElse(null);
 		
 		// 日別実績の運用開始設定
 		domain.operationStartSet = require.dailyOperationStartSet(new CompanyId(companyId));
@@ -405,7 +411,7 @@ public class MonAggrCompanySettings {
 		
 		// 労働時間と日数の設定の利用単位の設定
 		this.usageUnitSet = new UsageUnitSetting(new CompanyId(companyId), false, false, false);
-		val usagaUnitSetOpt = require.usageUnitSetting(companyId);
+		Optional<UsageUnitSetting> usagaUnitSetOpt = require.usageUnitSetting(companyId);
 		if (usagaUnitSetOpt.isPresent()) this.usageUnitSet = usagaUnitSetOpt.get();
 		
 		// 会社別通常勤務労働時間
@@ -433,6 +439,13 @@ public class MonAggrCompanySettings {
 		else {
 			this.aggrSetOfFlex = aggrSetOfFlexOpt.get();
 		}
+		
+		// フレックス勤務の日別計算設定
+		Optional<FlexSet> flexSetOpt = require.flexSet(companyId);
+		if (!flexSetOpt.isPresent()){
+			this.errorInfos.put("011", new ErrMessageContent(TextResource.localize("Msg_1238")));
+		}
+		this.dailyCalcSetOfFlex = flexSetOpt.get();
 
 		// フレックス不足の年休補填管理
 		this.insufficientFlexOpt = require.insufficientFlexHolidayMnt(companyId);
@@ -499,7 +512,7 @@ public class MonAggrCompanySettings {
 			return (WorkType)result;
 		}
 		
-		val workTypeOpt = require.workType(this.companyId, workTypeCode);
+		val workTypeOpt = require.workType(this.companyId, new WorkTypeCode(workTypeCode));
 		if (!workTypeOpt.isPresent()){
 			this.workTypeMap.put(workTypeCode, NullObject);
 			return null;
@@ -559,7 +572,7 @@ public class MonAggrCompanySettings {
 			return (PredetemineTimeSetting)result;
 		}
 		
-		val predetermineTimeSetOpt = require.predetemineTimeSetByWorkTimeCode(this.companyId, workTimeCode);
+		val predetermineTimeSetOpt = require.predetemineTimeSetting(this.companyId, new WorkTimeCode(workTimeCode));
 		if (!predetermineTimeSetOpt.isPresent()){
 			this.predetermineTimeSetMap.put(workTimeCode, NullObject);
 			return null;
@@ -685,19 +698,18 @@ public class MonAggrCompanySettings {
 		Optional<DeforLaborTimeEmp> deforLaborTimeByEmployment(String cid, String employmentCode);
 	}
 	
-	public static interface RequireM2 {
-		
-		Optional<PredetemineTimeSetting> predetemineTimeSetByWorkTimeCode(String companyId, String workTimeCode);
+	public static interface RequireM2 extends PredetemineTimeSetting.Require {
+
 	}
 	
-	public static interface RequireM3 extends GetCommonSet.RequireM3 { }
+	public static interface RequireM3 extends GetCommonSet.RequireM3 {}
 	
-	public static interface RequireM4 {
-		
-		Optional<WorkType> workType(String companyId, String workTypeCd);
-	}
+	public static interface RequireM4 extends WorkType.Require {}
 	
-	public static interface RequireM5 extends GetVacationAddSet.RequireM1 {
+	public static interface RequireM5 extends
+		GetVacationAddSet.RequireM1,
+		UsageUnitSetting.Require,
+		FlexSet.Require {
 		
 		Optional<LegalTransferOrderSetOfAggrMonthly> monthLegalTransferOrderCalcSet(String companyId);
 		
@@ -706,8 +718,6 @@ public class MonAggrCompanySettings {
 		List<WorkdayoffFrame> workdayoffFrames(String companyId);
 		
 		Map<String, AggregateRoot> holidayAddtionSets(String companyId);
-		
-		Optional<UsageUnitSetting> usageUnitSetting(String companyId);
 		
 		Optional<RegularLaborTimeCom> regularLaborTimeByCompany(String companyId);
 		
@@ -736,7 +746,7 @@ public class MonAggrCompanySettings {
 		List<Closure> closure(String companyId);
 	}
 	
-	public static interface RequireM6 extends RequireM5 {
+	public static interface RequireM6 extends RequireM5, CompensatoryLeaveComSetting.Require {
 		
 		Optional<AggregateMethodOfMonthly> aggregateMethodOfMonthly(String cid);
 		
@@ -761,8 +771,6 @@ public class MonAggrCompanySettings {
 		List<EmptYearlyRetentionSetting> emptYearlyRetentionSet(String companyId);
 		
 		Optional<ComSubstVacation> comSubstVacation(String companyId);
-		
-		CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId);
 		
 		Optional<OperationStartSetDailyPerform> dailyOperationStartSet(CompanyId companyId);
 		

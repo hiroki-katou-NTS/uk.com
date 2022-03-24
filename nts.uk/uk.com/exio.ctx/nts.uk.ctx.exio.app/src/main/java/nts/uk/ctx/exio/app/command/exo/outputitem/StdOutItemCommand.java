@@ -53,4 +53,26 @@ public class StdOutItemCommand {
 	private TimeDfsCommand timeDataFormatSetting;
 	
 	private int dispOrder;
+
+	public StdOutItemCommand(boolean isNewMode, String cid, String outItemCd, String condSetCd, String outItemName,
+			int itemType, List<CategoryItemCommand> categoryItems, AtWorkClsDfsCommand atWorkDataOutputItem,
+			CharacterDfsCommand characterDataFormatSetting, DateDfsCommand dateDataFormatSetting,
+			InstantTimeDfsCommand inTimeDataFormatSetting, NumberDfsCommand numberDataFormatSetting,
+			TimeDfsCommand timeDataFormatSetting, int dispOrder) {
+		super();
+		this.isNewMode = isNewMode;
+		this.cid = cid;
+		this.outItemCd = outItemCd;
+		this.condSetCd = condSetCd;
+		this.outItemName = outItemName;
+		this.itemType = itemType;
+		this.categoryItems = categoryItems;
+		this.atWorkDataOutputItem = atWorkDataOutputItem;
+		this.characterDataFormatSetting = characterDataFormatSetting;
+		this.dateDataFormatSetting = dateDataFormatSetting;
+		this.inTimeDataFormatSetting = inTimeDataFormatSetting;
+		this.numberDataFormatSetting = numberDataFormatSetting;
+		this.timeDataFormatSetting = timeDataFormatSetting;
+		this.dispOrder = dispOrder;
+	}
 }

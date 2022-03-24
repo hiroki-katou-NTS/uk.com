@@ -39,10 +39,13 @@ public class StampSetCommunal implements DomainAggregate {
 	private boolean passwordRequiredArt;
 	
 	// 社員コード認証利用するか
-	private boolean employeeAuthcUseArt;
 	
+	private boolean employeeAuthcUseArt;
 	// 指認証失敗回数
 	private Optional<NumberAuthenfailures> authcFailCnt;
+	
+	// 認証方法設定
+	private AuthenticationMethod authcMethod;
 	
 	// [1] ボタン詳細設定を取得する
 	public Optional<ButtonSettings> getDetailButtonSettings(StampButton stamButton) {
