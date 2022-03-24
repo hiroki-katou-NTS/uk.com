@@ -25,6 +25,12 @@ module nts.uk.at.view.kdp010.b {
             stampSetCommunal = new StampSetCommunal();
 
 			screenModelG = new viewModelscreenG.ScreenModel();
+			
+			icqrArtOption: KnockoutObservableArray<any> = ko.observableArray([
+                { id: 0, name: getText("KDP010_148") },
+                { id: 1, name: getText("KDP010_149") }
+			]);
+			
             constructor(){
             }
             start(): JQueryPromise<any> {
@@ -128,6 +134,7 @@ module nts.uk.at.view.kdp010.b {
             authcFailCnt: KnockoutObservable<number> = ko.observable(1);
             required: KnockoutObservable<boolean> = ko.observable(false);
             lstStampPageLayout = ko.observableArray([]);
+ 			authcMethod: KnockoutObservable<number> = ko.observable(0);
             constructor(){
                 let self = this;
                 self.employeeAuthcUseArt.subscribe((newValue) => {
@@ -148,6 +155,7 @@ module nts.uk.at.view.kdp010.b {
                     self.employeeAuthcUseArt(data.employeeAuthcUseArt);
                     self.authcFailCnt(data.authcFailCnt);
                     self.lstStampPageLayout(data.lstStampPageLayout || []);
+					self.authcMethod(data.authcMethod);
                 }
             }
         }

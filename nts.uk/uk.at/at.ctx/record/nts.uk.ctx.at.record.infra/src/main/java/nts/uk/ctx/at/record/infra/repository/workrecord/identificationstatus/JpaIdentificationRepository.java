@@ -175,7 +175,7 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 	public List<Identification> findByEmployeeIDSortDate(String employeeID, GeneralDate startDate,
 			GeneralDate endDate) {
 		// Đối ứng SPR
-		String companyID = "000000000000-0001";
+		String companyID = "000000000004-0018";
 		String loginCompanyID = AppContexts.user().companyId();
 		if(Strings.isNotBlank(loginCompanyID)){
 			companyID = loginCompanyID;

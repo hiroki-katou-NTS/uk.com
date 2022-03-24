@@ -1122,7 +1122,7 @@ module nts.uk.ui.at.kdw013.c {
 				start.value = vm.caltimeSpanView.start() ;
 				end.value = vm.caltimeSpanView.end();
                 if (vm.taskDetailsView().length == 1) {
-                    let tr = nts.uk.time.parseTime(vm.caltimeSpanView.range().replace('作業時間 ', ''));
+                    let tr = nts.uk.time.parseTime(vm.caltimeSpanView.range().replace(getText('KDW013_25'), ''));
                     range.value = (tr.hours * 60) + tr.minutes;
                 }
                 taskDetails.push({supNo: task.supNo, taskItemValues: taskItemValues});

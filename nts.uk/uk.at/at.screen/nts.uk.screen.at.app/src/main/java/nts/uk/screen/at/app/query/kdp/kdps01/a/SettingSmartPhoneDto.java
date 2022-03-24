@@ -38,5 +38,9 @@ public class SettingSmartPhoneDto {
 	 */
 	private StampToSuppress stampToSuppress;
 
-	
+	/**
+	 * 社員別の打刻エリア制限設定
+	 */
+	private EmployeeStampingAreaRestrictionSettingDto employeeStampingAreaRestrictionSetting;
+
 }

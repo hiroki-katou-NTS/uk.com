@@ -463,32 +463,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     	detailBeforeUpdate.displayWorkingHourCheck(companyID
     			, appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()
     			, appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCodeNotNull().isPresent() ? appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode().v() : null);
-    	
-    	//INPUT．休暇申請起動時の表示情報．申請表示情報．申請設定（基準日関係あり）．表示する実績内容」をチェックする
-    	Optional<List<ActualContentDisplay>> opActualContentDisplayLst = 
-    			appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
-    	
-    	List<GeneralDate> listDatesCheck = listDates.stream().filter(x -> !holidayDates.contains(x)).collect(Collectors.toList());
-    	
-    	//対象日リスト = INPUT．「休暇申請．申請．申請開始日」～INPUT．「休暇申請．申請．申請終了日」を年月日リストにした後に取得した「休日の申請日<List>」の年月日を除く
-    	if(opActualContentDisplayLst.isPresent() && !listDatesCheck.isEmpty()) {
-    		List<GeneralDate> listActualDates = 
-    				opActualContentDisplayLst.get().stream()
-    				.filter(a -> a.getOpAchievementDetail().isPresent())
-    				.map(y -> y.getDate()).collect(Collectors.toList());
-    		
-    		for (GeneralDate checkDate : listDatesCheck) {
-    			if(!listActualDates.contains(checkDate)) {
-    				//その他場合
-    				throw new BusinessException("Msg_1715", empEmployeeAdapter.findByEmpId(appAbsence.getEmployeeID()).getEmployeeName(), checkDate.toString("yyyy/MM/dd"));
-    			}
-    		}
-    	}
-//    	else {
-//    		//その他場合
-//    		throw new BusinessException("Msg_1715", empEmployeeAdapter.findByEmpId(appAbsence.getEmployeeID()).getEmployeeName(), listDatesCheck.get(0).toString("yyyy/MM/dd"));
-//    	}
-    	
+ 	
     	// 申請全般登録時チェック処理
     	TimeDigestionParam timeDigestionParam = new TimeDigestionParam();
         if (appAbsence.getReflectFreeTimeApp().getTimeDegestion().isPresent()) {

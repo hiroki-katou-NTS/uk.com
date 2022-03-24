@@ -5,8 +5,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import org.apache.commons.lang3.BooleanUtils;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSetRepository;
@@ -36,12 +34,12 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 	private FlexSet convertToDomain(KshmtCalcCFlex kshstFlexSet) {
 		FlexSet flexSet = FlexSet.createFromJavaType(
 				kshstFlexSet.kshstFlexSetPK.companyId,
-				kshstFlexSet.missCalcHd,
-				kshstFlexSet.premiumCalcHd,
-				kshstFlexSet.isDeductPred,
-				kshstFlexSet.premiumCalcSubhd,
-				kshstFlexSet.calcSetTimeSubhd,
-				kshstFlexSet.flexNoworkingCalc);
+				kshstFlexSet.missCalcHd ? 1 : 0,
+				kshstFlexSet.premiumCalcHd ? 1 : 0,
+				kshstFlexSet.isDeductPred ? 1 : 0,
+				kshstFlexSet.premiumCalcSubhd ? 1 : 0,
+				kshstFlexSet.calcSetTimeSubhd ? 1 : 0,
+				kshstFlexSet.flexNoworkingCalc ? 1 : 0);
 		return flexSet;
 	}
 	
@@ -54,12 +52,12 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 		KshmtCalcCFlex entity = new KshmtCalcCFlex();
 		KshstFlexSetPK kshstFlexSetPK = new KshstFlexSetPK(flexSet.getCompanyId());
 		entity.kshstFlexSetPK = kshstFlexSetPK;
-		entity.missCalcHd = flexSet.getHalfHoliday().getCalcLack().value;
-		entity.premiumCalcHd = flexSet.getHalfHoliday().getCalcPremium().value;
-		entity.isDeductPred = (flexSet.getCompLeave().isDeductFromPred() ? 1 : 0);
-		entity.premiumCalcSubhd = flexSet.getCompLeave().getCalcPremium().value;
-		entity.calcSetTimeSubhd = flexSet.getCompLeave().getCalcSetOfTimeCompLeave().value;
-		entity.flexNoworkingCalc = flexSet.getCalcNoWorkingDay().getSetting().value;
+		entity.missCalcHd = flexSet.getHalfHoliday().getCalcLack().value == 1;
+		entity.premiumCalcHd = flexSet.getHalfHoliday().getCalcPremium().value == 1;
+		entity.isDeductPred = flexSet.getCompLeave().isDeductFromPred();
+		entity.premiumCalcSubhd = flexSet.getCompLeave().getCalcPremium().value == 1;
+		entity.calcSetTimeSubhd = flexSet.getCompLeave().getCalcSetOfTimeCompLeave().value == 1;
+		entity.flexNoworkingCalc = flexSet.getCalcNoWorkingDay().getSetting().value == 1;
 		return entity;
 	}
 	
@@ -87,12 +85,12 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 	public void update(FlexSet flexSet) {
 		KshstFlexSetPK primaryKey = new KshstFlexSetPK(flexSet.getCompanyId());
 		KshmtCalcCFlex entity = this.queryProxy().find(primaryKey, KshmtCalcCFlex.class).get();
-		entity.missCalcHd = flexSet.getHalfHoliday().getCalcLack().value;
-		entity.premiumCalcHd = flexSet.getHalfHoliday().getCalcPremium().value;
-		entity.isDeductPred = (flexSet.getCompLeave().isDeductFromPred() ? 1 : 0);
-		entity.premiumCalcSubhd = flexSet.getCompLeave().getCalcPremium().value;
-		entity.calcSetTimeSubhd = flexSet.getCompLeave().getCalcSetOfTimeCompLeave().value;
-		entity.flexNoworkingCalc = flexSet.getCalcNoWorkingDay().getSetting().value;
+		entity.missCalcHd = flexSet.getHalfHoliday().getCalcLack().value == 1;
+		entity.premiumCalcHd = flexSet.getHalfHoliday().getCalcPremium().value == 1;
+		entity.isDeductPred = flexSet.getCompLeave().isDeductFromPred();
+		entity.premiumCalcSubhd = flexSet.getCompLeave().getCalcPremium().value == 1;
+		entity.calcSetTimeSubhd = flexSet.getCompLeave().getCalcSetOfTimeCompLeave().value == 1;
+		entity.flexNoworkingCalc = flexSet.getCalcNoWorkingDay().getSetting().value == 1;
 		this.commandProxy().update(entity);
 	}
 	

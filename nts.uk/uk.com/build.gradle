@@ -229,6 +229,10 @@ subprojects {
         compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.common', version: version
         compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.client', version: version
         compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.worker', version: version
+        
+        //Zxing
+		compile group: 'com.google.zxing', name: 'core', version: '3.4.1'
+		compile group: 'com.google.zxing', name: 'javase', version: '3.4.1'
 	}
 }
 

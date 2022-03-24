@@ -67,7 +67,8 @@ export class KdpS01AComponent extends Vue {
         entranceExitUse: false
     };
 
-    public locationInfoUse: boolean = false;
+    public employeeStampingAreaRestrictionSetting: model.IEmployeeStampingAreaRestrictionSetting;
+    public stampingAreaRestriction: model.IStampingAreaRestriction;
 
     public get textComment() {
         const vm = this;
@@ -108,14 +109,15 @@ export class KdpS01AComponent extends Vue {
                     vm.$mask('hide');
                     let data: model.ISettingSmartPhone = result.data;
 
-                    vm.$http.post('at', servicePath.getSettingStampCommon).then((result: any) => {  
+                    vm.$http.post('at', servicePath.getSettingStampCommon).then((result: any) => {
                         vm.settingStampCommon.supportUse = result.data.supportUse;
                         vm.settingStampCommon.temporaryUse = result.data.temporaryUse;
-                        vm.locationInfoUse = data.setting.locationInfoUse;
+                        vm.employeeStampingAreaRestrictionSetting = data.employeeStampingAreaRestrictionSetting;
                         vm.settingStampCommon.workUse = result.data.workUse;
                         vm.settingStampCommon.entranceExitUse = result.data.entranceExitUse;
-                    
-                        if (_.has(data, 'setting.pageLayoutSettings') && data.setting.pageLayoutSettings.length > 0) {                          
+                        vm.stampingAreaRestriction = data.setting.stampingAreaRestriction;
+
+                        if (_.has(data, 'setting.pageLayoutSettings') && data.setting.pageLayoutSettings.length > 0) {
 
                             let page = _.find(data.setting.pageLayoutSettings, ['pageNo', 1]) as model.IStampPageLayoutDto;
 
@@ -208,49 +210,77 @@ export class KdpS01AComponent extends Vue {
                         displayBackGroundColor: ''
                     },
                     usrArt: 1,
-                    buttonType: null,
+                    stampType: null,
                     icon:'',
                     taskChoiceArt: 0
                 };
-            
+
             if (button) {
-                let btnType = vm.checkType(button.buttonType.stampType == null ? null : button.buttonType.stampType.changeClockArt, 
-                    button.buttonType.stampType == null ? null : button.buttonType.stampType.changeCalArt, 
-                    button.buttonType.stampType == null ? null : button.buttonType.stampType.setPreClockArt, 
-                    button.buttonType.stampType == null ? null : button.buttonType.stampType.changeHalfDay, 
-                    button.buttonType.reservationArt);
+                let btnType = vm.checkType(
+                    button.stampType == null ? null : button.stampType.changeClockArt, 
+                    button.stampType == null ? null : button.stampType.changeCalArt, 
+                    button.stampType == null ? null : button.stampType.setPreClockArt, 
+                    button.stampType == null ? null : button.stampType.changeHalfDay, 
+                    0 
+                    );
                 
                 // 応援利用＝Trueの場合				
-                if (vm.settingStampCommon.supportUse === true && _.includes ([14, 15, 16, 17, 18], btnType)) {
+                if (vm.settingStampCommon.supportUse === true && _.includes([14, 15, 16, 17, 18], btnType)) {
                     buttonSetting = button;
-                    
+
                 }
                 // 臨時利用＝Trueの場合
-                if (vm.settingStampCommon.temporaryUse === true && _.includes ([12, 13], btnType)) {
+                if (vm.settingStampCommon.temporaryUse === true && _.includes([12, 13], btnType)) {
                     buttonSetting = button;
                 }
 
                 // 入退門利用＝Trueの場合
-                if (vm.settingStampCommon.entranceExitUse === true && _.includes ([10, 11], btnType)) {
+                if (vm.settingStampCommon.entranceExitUse === true && _.includes([10, 11], btnType)) {
                     buttonSetting = button;
                 }
 
-                if (_.includes ([1, 2, 3, 4, 5, 6, 7, 8, 9, 19, 20], btnType)) {
+                if (_.includes([1, 2, 3, 4, 5, 6, 7, 8, 9, 19, 20], btnType)) {
                     buttonSetting = button;
                 }
 
-                buttonSetting.icon = vm.getIcon(button.buttonType.stampType == null ? null : button.buttonType.stampType.changeClockArt, 
-                    button.buttonType.stampType == null ? null : button.buttonType.stampType.changeCalArt, 
-                    button.buttonType.stampType == null ? null : button.buttonType.stampType.setPreClockArt, 
-                    button.buttonType.stampType == null ? null : button.buttonType.stampType.changeHalfDay, 
-                    button.buttonType.reservationArt) + '.png';
+                buttonSetting.icon = vm.getIcon(button.stampType == null ? null : button.stampType.changeClockArt, 
+                    button.stampType == null ? null : button.stampType.changeCalArt, 
+                    button.stampType == null ? null : button.stampType.setPreClockArt,
+                    button.stampType == null ? null : button.stampType.changeHalfDay, 
+                    0) + '.png';
+
                 buttonSetting.taskChoiceArt = button.taskChoiceArt;
-                }
+            }
             vm.setBtnColor(buttonSetting, stampToSuppress);
             resultList.push(buttonSetting);
         }
 
         return resultList;
+    }
+
+    public getGeolocation() {
+        let vm = this;
+
+        return new Promise((resolve) => {
+            let latitude = null, longitude = null;
+            if (vm.employeeStampingAreaRestrictionSetting) {
+                if (vm.employeeStampingAreaRestrictionSetting.stampingAreaRestriction.useLocationInformation == 0) {
+                    return resolve({ latitude, longitude });
+                }
+            } else {
+                if (vm.stampingAreaRestriction.useLocationInformation == 0) {
+                    return resolve({ latitude, longitude });
+                }
+            }
+            navigator.geolocation.getCurrentPosition((position) => {
+                let { coords } = position,
+                    { latitude, longitude } = coords;
+                    
+                return resolve({ latitude, longitude });
+            }, (error) => {
+                return resolve({ latitude, longitude });
+            });
+        });
     }
 
     public stampClick(button: model.ButtonSettingsDto) {
@@ -260,105 +290,25 @@ export class KdpS01AComponent extends Vue {
                 stampDatetime: moment(vm.$dt.now).format('YYYY/MM/DD HH:mm:ss'),
                 stampButton: { pageNo: 1, buttonPositionNo: button.buttonPositionNo, stampMeans: STAMP_MEANS_SMARTPHONE },
                 geoCoordinate: { latitude: null, longitude: null },
-                refActualResult: { cardNumberSupport: null, overtimeDeclaration: null, workLocationCD: null, workTimeCode: null,
-                workGroup: { workCode1: null, workCode2: null, workCode3: null, workCode4: null, workCode5: null } }              
+                refActualResult: {
+                    cardNumberSupport: null, overtimeDeclaration: null, workLocationCD: null, workTimeCode: null,
+                    workGroup: { workCode1: null, workCode2: null, workCode3: null, workCode4: null, workCode5: null }
+                }
             };
 
-        let latitude = null,
-            longitude = null;
-        navigator.geolocation.getCurrentPosition((position) => {
-            if (position) {
+        vm.getGeolocation().then((loc: model.IGeoCoordinate) => {
 
-                if (vm.locationInfoUse) {
-                    latitude = position.coords.latitude;
-                    longitude = position.coords.longitude;
-                }
-
-                command.geoCoordinate = { latitude, longitude };
-                vm.$mask('show');
-
-                vm.$auth.user.then((userInfo) => {
-
-                    vm.$http.post('at', servicePath.getEmployeeWorkByStamping, {sid: userInfo.employeeId, workFrameNo: 1, upperFrameWorkCode: ''}).then((result: any) => {
-                        if (vm.settingStampCommon.workUse === true && result.data.task.length > 0 && button.taskChoiceArt == 1) {
-                            vm.$modal(KdpS01LComponent, {employeeId: userInfo.employeeId}, { title: 'KDPS01_15' }).then((works: IWorkGroup) => {
-                                command.refActualResult.workGroup = works;
-
-                            }).then (() => {
-                                vm.$http.post('at', servicePath.registerStamp, command)
-                                .then((result: any) => {
-                                    vm.$mask('hide');
-                                    vm.getStampToSuppress();
-
-                                    if (!_.has(button, 'buttonType.stampType.changeClockArt')) {
-
-                                        vm.openDialogB(command.stampButton);
-                                    } else {
-                                        let changeClockArt = button.buttonType.stampType.changeClockArt;
-                                        switch (changeClockArt) {
-                                            case 1:
-                                                if (vm.setting.usrAtrValue === 1) {
-                                                    vm.openDialogC(command.stampButton);
-                                                } else {
-                                                    vm.openDialogB(command.stampButton);
-                                                }
-                                                break;
-                                            default:
-                                                vm.openDialogB(command.stampButton);
-                                                break;
-                                        }
-                                    }
-                                }).catch((res: any) => {
-                                    vm.showError(res);
-                                });
-                                        });
-                        } else {
-                            vm.$http.post('at', servicePath.registerStamp, command)
-                            .then((result: any) => {
-                                vm.$mask('hide');
-                                vm.getStampToSuppress();
-
-                                if (!_.has(button, 'buttonType.stampType.changeClockArt')) {
-
-                                    vm.openDialogB(command.stampButton);
-                                } else {
-                                    let changeClockArt = button.buttonType.stampType.changeClockArt;
-                                    switch (changeClockArt) {
-                                        case 1:
-                                            if (vm.setting.usrAtrValue === 1) {
-                                                vm.openDialogC(command.stampButton);
-                                            } else {
-                                                vm.openDialogB(command.stampButton);
-                                            }
-                                            break;
-                                        default:
-                                            vm.openDialogB(command.stampButton);
-                                            break;
-                                    }
-                                }
-                            }).catch((res: any) => {
-                                vm.showError(res);
-                            });
-                        }
-
-                    }).catch((res: any) => {
-                        vm.showError(res);
-                    });
-                });
-                
-            }
-        }, (error) => {
-            command.geoCoordinate = { latitude, longitude };
+            command.geoCoordinate = loc;
             vm.$mask('show');
-            
+
             vm.$auth.user.then((userInfo) => {
 
-                vm.$http.post('at', servicePath.getEmployeeWorkByStamping, {sid: userInfo.employeeId, workFrameNo: 1, upperFrameWorkCode: ''}).then((result: any) => {
+                vm.$http.post('at', servicePath.getEmployeeWorkByStamping, { sid: userInfo.employeeId, workFrameNo: 1, upperFrameWorkCode: '' }).then((result: any) => {
                     if (vm.settingStampCommon.workUse === true && result.data.task.length > 0 && button.taskChoiceArt == 1) {
-                        vm.$modal(KdpS01LComponent, {employeeId: userInfo.employeeId}, { title: 'KDPS01_15' }).then((works: IWorkGroup) => {
+                        vm.$modal(KdpS01LComponent, { employeeId: userInfo.employeeId }, { title: 'KDPS01_15' }).then((works: IWorkGroup) => {
                             command.refActualResult.workGroup = works;
 
-                        }).then (() => {
+                        }).then(() => {
                             vm.$http.post('at', servicePath.registerStamp, command)
                                 .then((result: any) => {
                                     vm.$mask('hide');
@@ -368,7 +318,7 @@ export class KdpS01AComponent extends Vue {
 
                                         vm.openDialogB(command.stampButton);
                                     } else {
-                                        let changeClockArt = button.buttonType.stampType.changeClockArt;
+                                        let changeClockArt = button.stampType.changeClockArt;
                                         switch (changeClockArt) {
                                             case 1:
                                                 if (vm.setting.usrAtrValue === 1) {
@@ -386,39 +336,39 @@ export class KdpS01AComponent extends Vue {
                                     vm.showError(res);
                                 });
                         });
-
                     } else {
-
                         vm.$http.post('at', servicePath.registerStamp, command)
-                                .then((result: any) => {
-                                    vm.$mask('hide');
-                                    vm.getStampToSuppress();
+                            .then((result: any) => {
+                                vm.$mask('hide');
+                                vm.getStampToSuppress();
 
-                                    if (!_.has(button, 'buttonType.stampType.changeClockArt')) {
+                                if (!_.has(button, 'stampType.changeClockArt')) {
 
-                                        vm.openDialogB(command.stampButton);
-                                    } else {
-                                        let changeClockArt = button.buttonType.stampType.changeClockArt;
-                                        switch (changeClockArt) {
-                                            case 1:
-                                                if (vm.setting.usrAtrValue === 1) {
-                                                    vm.openDialogC(command.stampButton);
-                                                } else {
-                                                    vm.openDialogB(command.stampButton);
-                                                }
-                                                break;
-                                            default:
+                                    vm.openDialogB(command.stampButton);
+                                } else {
+                                    let changeClockArt = button.stampType.changeClockArt;
+                                    switch (changeClockArt) {
+                                        case 1:
+                                            if (vm.setting.usrAtrValue === 1) {
+                                                vm.openDialogC(command.stampButton);
+                                            } else {
                                                 vm.openDialogB(command.stampButton);
-                                                break;
-                                        }
+                                            }
+                                            break;
+                                        default:
+                                            vm.openDialogB(command.stampButton);
+                                            break;
                                     }
-                                }).catch((res: any) => {
-                                    vm.showError(res);
-                                });
+                                }
+                            }).catch((res: any) => {
+                                vm.showError(res);
+                            });
 
                     }
-                });
 
+                }).catch((res: any) => {
+                    vm.showError(res);
+                });
             });
 
         });
@@ -481,7 +431,7 @@ export class KdpS01AComponent extends Vue {
     public openDialogL() {
         let vm = this;
         vm.$auth.user.then((userInfo) => {
-            vm.$modal(KdpS01LComponent, {employeeId: userInfo.employeeId}, { title: 'KDPS01_15' }).then(() => {
+            vm.$modal(KdpS01LComponent, { employeeId: userInfo.employeeId }, { title: 'KDPS01_15' }).then(() => {
 
             });
         });
@@ -610,7 +560,7 @@ export class KdpS01AComponent extends Vue {
             default: {
                 return '';
             }
-                
+
         }
     }
 
@@ -623,7 +573,7 @@ export class KdpS01AComponent extends Vue {
             if (changeClockArt == 1) {
                 return 5;
             }
-                
+
             if (changeClockArt == 4) {
                 return 8;
             }
@@ -647,7 +597,7 @@ export class KdpS01AComponent extends Vue {
             if (changeClockArt == 9) {
                 return 13;
             }
-                
+
             if (changeClockArt == 6) {
                 return 14;
             }
@@ -659,7 +609,7 @@ export class KdpS01AComponent extends Vue {
             if (changeClockArt == 12) {
                 return 16;
             }
-                
+
         }
 
         if (changeClockArt == 0 && changeCalArt == 0 && setPreClockArt == 1 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0) {
@@ -697,11 +647,11 @@ export class KdpS01AComponent extends Vue {
         if ((changeClockArt == '' || changeClockArt == null) && (changeCalArt == '' || changeCalArt == null) && (setPreClockArt == '' || setPreClockArt == null) && (changeHalfDay == '' || changeHalfDay == null) && reservationArt == 1) {
             return 19;
         }
-            
+
         if ((changeClockArt == '' || changeClockArt == null) && (changeCalArt == '' || changeCalArt == null) && (setPreClockArt == '' || setPreClockArt == null) && (changeHalfDay == '' || changeHalfDay == null) && reservationArt == 2) {
             return 20;
         }
-            
+
     }
 }
 
@@ -747,7 +697,7 @@ interface ISetting {
 
 interface ISettingsStampCommon {
     //応援利用
-    supportUse: boolean; 
+    supportUse: boolean;
     //臨時利用
     temporaryUse: boolean;
     //作業利用
