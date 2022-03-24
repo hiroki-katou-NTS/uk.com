@@ -2164,11 +2164,6 @@ const API = {
     checkBeforeRegister: 'at/request/application/stamp/checkBeforeRegister',
     checkBeforeUpdate: 'at/request/application/stamp/checkBeforeUpdate',
     register: 'at/request/application/stamp/register',
-<<<<<<< HEAD
     update: 'at/request/application/stamp/updateNew',
     reflectApp: 'at/request/application/reflect-app'
 };
-=======
-    update: 'at/request/application/stamp/updateNew'
-};
->>>>>>> pj/at/release_ver4
