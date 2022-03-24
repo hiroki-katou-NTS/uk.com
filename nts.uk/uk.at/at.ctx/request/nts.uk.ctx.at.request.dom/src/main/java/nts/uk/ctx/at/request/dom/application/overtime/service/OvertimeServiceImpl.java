@@ -27,6 +27,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -191,6 +193,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSetRepo;
+
+	@Inject
+	private FlowWorkSettingRepository flowWorkSettingRepo;
 
 	@Inject
 	private GetFlowWorkBreakTimesAdapter getFlowWorkBreakTimesAdapter;
@@ -1879,6 +1884,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 			@Override
 			public IntegrationOfDaily calculate(CalculationParams params) {
 				return attendanceCalcAdapter.calculate(params);
+			}
+			@Override
+			public Optional<FlowWorkSetting> findFlowWorkSetting(String companyId, String workTimeCode) {
+				return flowWorkSettingRepo.find(companyId, workTimeCode);
 			}
 			@Override
 			public List<DeductionTime> getBreakTimes(String companyID, String workTypeCode, String workTimeCode, Optional<TimeWithDayAttr> opStartTime, Optional<TimeWithDayAttr> opEndTime) {

@@ -5,7 +5,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import java.util.List;
 
 /**
- * 流動勤務の所定内の休憩時間帯を求めるAdapter
+ * 所定内の流動勤休憩時間帯を求めるAdapter
  */
 public interface GetFlowWorkBreakTimesAdapter {
     List<BreakTimeSheet> getFlowWorkBreakTimes(PrevisionalForImpExport params);

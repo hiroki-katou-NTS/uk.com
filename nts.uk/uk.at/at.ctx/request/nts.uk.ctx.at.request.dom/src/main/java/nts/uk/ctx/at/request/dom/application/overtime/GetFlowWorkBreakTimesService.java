@@ -6,17 +6,17 @@ import nts.uk.ctx.at.request.dom.adapter.dailyprocess.cal.PrevisionalForImpExpor
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.ChildCareTimeZoneExport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.OutingTimeZoneExport;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -48,6 +48,19 @@ public class GetFlowWorkBreakTimesService {
      * @return
      */
     private static List<BreakTimeSheet> getRegularWorkBreakTimes(Require require, WorkInfoParams workInfoParams) {
+        if (workInfoParams.getWorkTimeCode() == null) return Collections.emptyList();
+        Optional<FlowWorkSetting> flowWorkSetting = require.findFlowWorkSetting(AppContexts.user().companyId(), workInfoParams.getWorkTimeCode().v());
+        if (!flowWorkSetting.isPresent()) return Collections.emptyList();
+
+        if (flowWorkSetting.get().getHalfDayWorkTimezone().getRestTimezone().isFixRestTime()) {
+            List<DeductionTime> timezones = flowWorkSetting.get().getHalfDayWorkTimezone().getRestTimezone().getFixedRestTimezone().getTimezones();
+            List<BreakTimeSheet> result = new ArrayList<>();
+            for (int i = 0; i < timezones.size(); i++) {
+                result.add(new BreakTimeSheet(new BreakFrameNo(i + 1), timezones.get(i).getStart(), timezones.get(i).getEnd()));
+            }
+            return result;
+        }
+
         PrevisionalForImpExport params = new PrevisionalForImpExport(
                 workInfoParams.getEmployeeId(),
                 workInfoParams.getDate(),
@@ -148,5 +161,7 @@ public class GetFlowWorkBreakTimesService {
         Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode);
 
         IntegrationOfDaily calculate(CalculationParams params);
+
+        Optional<FlowWorkSetting> findFlowWorkSetting(String companyId, String workTimeCode);
     }
 }
