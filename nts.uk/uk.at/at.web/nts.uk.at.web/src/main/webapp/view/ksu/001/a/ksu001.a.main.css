@@ -667,30 +667,30 @@ html {
 }
 
 .xseal { background-color: #B8B8B8 !important; }
-.extable div.xdet, .extable td.xdet { background-color: #bfc5ff !important; }
+.extable div.xdet, .extable td.xdet { background-color: #bfc5ff; }
 
-.bg-schedule-uncorrectable { background-color: #B8B8B8 !important; }
-.bg-daily-alter-self {background-color:#C1E6FE !important;}
-.bg-daily-alter-other {background-color:#4ca8f8 !important;}
-.bg-daily-reflect-application {background-color:#cbf3d2 !important;}
-.bg-schedule-fixed {background-color:#bfc5ff !important;}
-.bg-schedule-support-2 {background-color:#fedfe6;}
+.bg-schedule-uncorrectable-v6-5 { background-color: #B8B8B8; }
+.bg-daily-alter-self-v6-5 {background-color:#C1E6FE;}
+.bg-daily-alter-other-v6-5 {background-color:#4ca8f8;}
+.bg-daily-reflect-application-v6-5 {background-color:#cbf3d2;}
+.bg-schedule-fixed-v6-5 {background-color:#bfc5ff;}
+.bg-schedule-support-v6-5 {background-color:#fedfe6;}
 
-.background-attendance {background-color: #1973b5 !important;}
-.background-holiday {background-color: #db4f51 !important;}
-.background-half-day-work {background-color: #e6a322 !important; }
-.background-schedule-performance {background-color:#258f7e !important;}
+.background-attendance-v6-5 {background-color: #1973b5 ;}
+.background-holiday-v6-5 {background-color: #db4f51;}
+.background-half-day-work-v6-5 {background-color: #e6a322; }
+.background-schedule-performance-v6-5 {background-color:#258f7e;}
 
-.bg-schedule-saturday {background-color:#1973b5 !important;}
-.bg-schedule-sunday {background-color:#db4f51 !important;}
-.bg-schedule-specific-date {background-color:#b18768 !important;}
-.bg-schedule-that-day {background-color:#258f7e !important;}
+.bg-schedule-saturday-v6-5 {background-color:#1973b5;}
+.bg-schedule-sunday-v6-5 {background-color:#db4f51;}
+.bg-schedule-specific-date-v6-5 {background-color:#b18768;}
+.bg-schedule-that-day-v6-5 {background-color:#258f7e;}
 
 .color-schedule-performance-v6-5 {color: #258f7e;}
 .color-attendance-v6-5 {color: #1973b5;}
 .color-half-day-work-v6-5 {color: #e6a322;}
 .color-holiday-v6-5 {color: #db4f51;}
 
-.extable div.other-edited, .extable td.other-edited { background-color: #4ca8f8 !important; }
-.extable div.target-edited, .extable td.target-edited { background-color: #C1E6FE !important;}
+.extable div.other-edited, .extable td.other-edited { background-color: #4ca8f8 ; }
+.extable div.target-edited, .extable td.target-edited { background-color: #C1E6FE ;}
 

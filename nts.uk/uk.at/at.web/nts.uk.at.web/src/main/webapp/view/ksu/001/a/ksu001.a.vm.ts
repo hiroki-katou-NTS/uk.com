@@ -1092,19 +1092,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         } else if (cell.supportStatus == SupportStatus.GO_ALLDAY || cell.supportStatus == SupportStatus.GO_TIMEZONE ||  cell.supportStatus == SupportStatus.COME_ALLDAY) {
                             // 勤務予定（シフト）dto．応援状況 <>（応援に来ない/応援に来る(時間帯)/応援に行かない）
                             // supportStatus != (SupportStatus.DO_NOT_COME, SupportStatus.DO_NOT_GO,  SupportStatus.COME_TIMEZONE)
-                            detailContentDecoNormal.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-2", 0));
+                            detailContentDecoNormal.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-v6-5", 0));
                         } else {
                             if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
                                 // HAND_CORRECTION_MYSELF(0), 手修正（本人）
-                                detailContentDecoNormal.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 0));
+                                detailContentDecoNormal.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self-v6-5", 0));
                             }
                             if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting === EditStateSetting.HAND_CORRECTION_OTHER) {
                                 //HAND_CORRECTION_OTHER(1), 手修正（他人）
-                                detailContentDecoNormal.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 0));
+                                detailContentDecoNormal.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other-v6-5", 0));
                             }
                             if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting === EditStateSetting.REFLECT_APPLICATION) {
                                 //REFLECT_APPLICATION(2), 申請反映
-                                detailContentDecoNormal.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 0));
+                                detailContentDecoNormal.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application-v6-5", 0));
                             }
                         }
                         
@@ -1135,15 +1135,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         } else {
                             if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
                                 // HAND_CORRECTION_MYSELF(0), 手修正（本人）
-                                detailContentDecoModeConfirmNormal.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 0));
+                                detailContentDecoModeConfirmNormal.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self-v6-5", 0));
                             }
                             if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting === EditStateSetting.HAND_CORRECTION_OTHER) {
                                 //HAND_CORRECTION_OTHER(1), 手修正（他人）
-                                detailContentDecoModeConfirmNormal.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 0));
+                                detailContentDecoModeConfirmNormal.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other-v6-5", 0));
                             }
                             if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting === EditStateSetting.REFLECT_APPLICATION) {
                                 //REFLECT_APPLICATION(2), 申請反映
-                                detailContentDecoModeConfirmNormal.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 0));
+                                detailContentDecoModeConfirmNormal.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application-v6-5", 0));
                             }
                         }
                         
@@ -1235,32 +1235,32 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         } else if (cell.supportStatus == SupportStatus.GO_ALLDAY || cell.supportStatus == SupportStatus.GO_TIMEZONE || cell.supportStatus == SupportStatus.COME_ALLDAY) {
                             // 勤務予定（シフト）dto．応援状況 <>（応援に来ない/応援に来る(時間帯)/応援に行かない）
                             // supportStatus != (SupportStatus.DO_NOT_COME, SupportStatus.DO_NOT_GO,  SupportStatus.COME_TIMEZONE)
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-2", 0));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-2", 1));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-v6-5", 0));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-v6-5", 1));
                         } else {
                             if (cell.workTypeEditStatus != null) {
                                 if (cell.workTypeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 0));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self-v6-5", 0));
                                 } else if (cell.workTypeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_OTHER) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 0));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other-v6-5", 0));
                                 } else if (cell.workTypeEditStatus.editStateSetting === EditStateSetting.REFLECT_APPLICATION) {
                                     //REFLECT_APPLICATION(2), 申請反映
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 0));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application-v6-5", 0));
                                 }
                             }
 
                             if (cell.workTimeEditStatus != null) {
                                 if (cell.workTimeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 1));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self-v6-5", 1));
                                 } else if (cell.workTimeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_OTHER) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 1));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other-v6-5", 1));
                                 } else if (cell.workTimeEditStatus.editStateSetting === EditStateSetting.REFLECT_APPLICATION) {
                                     //REFLECT_APPLICATION(2), 申請反映
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 1));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application-v6-5", 1));
                                 }
                             }
                         }
@@ -1309,26 +1309,26 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             if (cell.workTypeEditStatus != null) {
                                 if (cell.workTypeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
-                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 0));
+                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self-v6-5", 0));
                                 } else if (cell.workTypeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_OTHER) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
-                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 0));
+                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other-v6-5", 0));
                                 } else if (cell.workTypeEditStatus.editStateSetting === EditStateSetting.REFLECT_APPLICATION) {
                                     //REFLECT_APPLICATION(2), 申請反映
-                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 0));
+                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application-v6-5", 0));
                                 }
                             }
 
                             if (cell.workTimeEditStatus != null) {
                                 if (cell.workTimeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
-                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 1));
+                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self-v6-5", 1));
                                 } else if (cell.workTimeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_OTHER) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
-                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 1));
+                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other-v6-5", 1));
                                 } else if (cell.workTimeEditStatus.editStateSetting === EditStateSetting.REFLECT_APPLICATION) {
                                     //REFLECT_APPLICATION(2), 申請反映
-                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 1));
+                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application-v6-5", 1));
                                 }
                             }
                         }
@@ -1391,61 +1391,61 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }  else if (cell.supportStatus == SupportStatus.GO_ALLDAY || cell.supportStatus == SupportStatus.GO_TIMEZONE || cell.supportStatus == SupportStatus.COME_ALLDAY) {
                             // 勤務予定（シフト）dto．応援状況 <>（応援に来ない/応援に来る(時1間帯)/応援に行かない）
                             // supportStatus != (SupportStatus.DO_NOT_COME, SupportStatus.DO_NOT_GO,  SupportStatus.COME_TIMEZONE)
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-2", 0));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-2", 1));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-2", 2));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-2", 3));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-v6-5", 0));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-v6-5", 1));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-v6-5", 2));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support-v6-5", 3));
                             
                         } else {
                             if (cell.workTypeEditStatus != null) {
                                 if (cell.workTypeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 0));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self-v6-5", 0));
                                 } else if (cell.workTypeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_OTHER) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 0));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other-v6-5", 0));
                                 } else if (cell.workTypeEditStatus.editStateSetting === EditStateSetting.REFLECT_APPLICATION) {
                                     //REFLECT_APPLICATION(2), 申請反映
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 0));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application-v6-5", 0));
                                 }
                             }
                             
                             if (cell.workTimeEditStatus != null) {
                                 if (cell.workTimeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 1));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self-v6-5", 1));
                                 } else if (cell.workTimeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_OTHER) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 1));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other-v6-5", 1));
                                 } else if (cell.workTimeEditStatus.editStateSetting === EditStateSetting.REFLECT_APPLICATION) {
                                     //REFLECT_APPLICATION(2), 申請反映
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 1));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application-v6-5", 1));
                                 }
                             }
                             
                             if (cell.startTimeEditState != null) {
                                 if (cell.startTimeEditState.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 2));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self-v6-5", 2));
                                 } else if (cell.startTimeEditState.editStateSetting === EditStateSetting.HAND_CORRECTION_OTHER) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 2));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other-v6-5", 2));
                                 } else if (cell.startTimeEditState.editStateSetting === EditStateSetting.REFLECT_APPLICATION) {
                                     //REFLECT_APPLICATION(2), 申請反映
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 2));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application-v6-5", 2));
                                 }
                             }
                             
                             if (cell.endTimeEditState != null) {
                                 if (cell.endTimeEditState.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 3));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self-v6-5", 3));
                                 } else if (cell.endTimeEditState.editStateSetting === EditStateSetting.HAND_CORRECTION_OTHER) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 3));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other-v6-5", 3));
                                 } else if (cell.endTimeEditState.editStateSetting === EditStateSetting.REFLECT_APPLICATION) {
                                     //REFLECT_APPLICATION(2), 申請反映
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 3));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application-v6-5", 3));
                                 }
                             }
                         }
@@ -1500,52 +1500,52 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             if (cell.workTypeEditStatus != null) {
                                 if (cell.workTypeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
-                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 0));
+                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self-v6-5", 0));
                                 } else if (cell.workTypeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_OTHER) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
-                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 0));
+                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other-v6-5", 0));
                                 } else if (cell.workTypeEditStatus.editStateSetting === EditStateSetting.REFLECT_APPLICATION) {
                                     //REFLECT_APPLICATION(2), 申請反映
-                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 0));
+                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application-v6-5", 0));
                                 }
                             }
 
                             if (cell.workTimeEditStatus != null) {
                                 if (cell.workTimeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
-                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 1));
+                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self-v6-5", 1));
                                 } else if (cell.workTimeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_OTHER) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
-                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 1));
+                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other-v6-5", 1));
                                 } else if (cell.workTimeEditStatus.editStateSetting === EditStateSetting.REFLECT_APPLICATION) {
                                     //REFLECT_APPLICATION(2), 申請反映
-                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 1));
+                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application-v6-5", 1));
                                 }
                             }
 
                             if (cell.startTimeEditState != null) {
                                 if (cell.startTimeEditState.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
-                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 2));
+                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self-v6-5", 2));
                                 } else if (cell.startTimeEditState.editStateSetting === EditStateSetting.HAND_CORRECTION_OTHER) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
-                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 2));
+                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other-v6-5", 2));
                                 } else if (cell.startTimeEditState.editStateSetting === EditStateSetting.REFLECT_APPLICATION) {
                                     //REFLECT_APPLICATION(2), 申請反映
-                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 2));
+                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application-v6-5", 2));
                                 }
                             }
 
                             if (cell.endTimeEditState != null) {
                                 if (cell.endTimeEditState.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
-                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 3));
+                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self-v6-5", 3));
                                 } else if (cell.endTimeEditState.editStateSetting === EditStateSetting.HAND_CORRECTION_OTHER) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
-                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 3));
+                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other-v6-5", 3));
                                 } else if (cell.endTimeEditState.editStateSetting === EditStateSetting.REFLECT_APPLICATION) {
                                     //REFLECT_APPLICATION(2), 申請反映
-                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 3));
+                                    detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application-v6-5", 3));
                                 }
                             }    
                         }
@@ -1758,20 +1758,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let field = '_' + ymd;
                 
                 if (dateInfo.isToday) {
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-that-day"));
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-that-day"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-that-day-v6-5"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-that-day-v6-5"));
                 } else if (dateInfo.isSpecificDay) {
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date"));
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date-v6-5"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date-v6-5"));
                 } else if (dateInfo.isHoliday || dateInfo.dayOfWeek == 7) {
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday-v6-5"));
                     detailHeaderDeco.push(new CellColor("_" + ymd, 0, "color-schedule-sunday"));
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday-v6-5"));
                     detailHeaderDeco.push(new CellColor("_" + ymd, 1, "color-schedule-sunday"));
                 } else if (dateInfo.dayOfWeek == 6) {
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-saturday"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-saturday-v6-5"));
                     detailHeaderDeco.push(new CellColor("_" + ymd, 0, "color-schedule-saturday"));
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-saturday"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-saturday-v6-5"));
                     detailHeaderDeco.push(new CellColor("_" + ymd, 1, "color-schedule-saturday"));
                 } else if (dateInfo.dayOfWeek > 0 || dateInfo.dayOfWeek < 6) {
                     // để màu default của grid
@@ -3755,20 +3755,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let field = '_' + ymd;
 
                     if (dateInfo.isToday) {
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-that-day"));
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-that-day"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-that-day-v6-5"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-that-day-v6-5"));
                     } else if (dateInfo.isSpecificDay) {
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date"));
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date-v6-5"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date-v6-5"));
                     } else if (dateInfo.isHoliday || dateInfo.dayOfWeek == 7) {
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday-v6-5"));
                         detailHeaderDeco.push(new CellColor("_" + ymd, 0, "color-schedule-sunday"));
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday-v6-5"));
                         detailHeaderDeco.push(new CellColor("_" + ymd, 1, "color-schedule-sunday"));
                     } else if (dateInfo.dayOfWeek == 6) {
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-saturday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-saturday-v6-5"));
                         detailHeaderDeco.push(new CellColor("_" + ymd, 0, "color-schedule-saturday"));
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-saturday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-saturday-v6-5"));
                         detailHeaderDeco.push(new CellColor("_" + ymd, 1, "color-schedule-saturday"));
                     } else if (dateInfo.dayOfWeek > 0 || dateInfo.dayOfWeek < 6) {
                         // để màu default của grid
