@@ -1913,9 +1913,9 @@ public class DailyPerformanceCorrectionProcessor {
 			result.setLstEmpId(lstEmployeeId);
 			result.getParam().setEmployeeIds(lstEmployeeId);
 		}
-		if (mode == ScreenMode.NORMAL.value) {
-			result.getParam().getEmployeeIds().addAll(lstEmployeeId);
-		}
+//		if (mode == ScreenMode.NORMAL.value) {
+//			result.getParam().getEmployeeIds().addAll(lstEmployeeId);
+//		}
 		
 		return result;
 	}
