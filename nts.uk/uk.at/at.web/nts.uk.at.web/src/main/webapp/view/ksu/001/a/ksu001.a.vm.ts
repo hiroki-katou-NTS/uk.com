@@ -1894,9 +1894,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                
                 $('.icon-do-not-go-to-support').css({'background':'url(' + path1 + ') no-repeat 0px center'  });
                 $('.icon-go-to-support').css({'background':'url(' + path2 + ') no-repeat 0px center'  });
-                $('.icon-go-to-support').css({'background-color':'#fedfe6'});
                 $('.icon-come-to-support').css({'background':'url(' + path3 + ') no-repeat 0px center'  });
-                $('.icon-come-to-support').css({'background-color':'#fedfe6'});
                 
                 // set backgound image icon header
                 if (self.mode() === UpdateMode.EDIT) {
