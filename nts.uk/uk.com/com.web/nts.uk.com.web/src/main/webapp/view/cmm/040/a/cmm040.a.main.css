@@ -45,3 +45,10 @@
 .tab-content-1 {
   margin-bottom: 5px;
 }
+
+.ui-igcombo-field , .ui-corner-all ,.nts-combo-item , .nts-column{
+	     font-size: 0.7rem !important;
+}
+.nts-combo-column-0{
+	width: 370px  !important;
+}
