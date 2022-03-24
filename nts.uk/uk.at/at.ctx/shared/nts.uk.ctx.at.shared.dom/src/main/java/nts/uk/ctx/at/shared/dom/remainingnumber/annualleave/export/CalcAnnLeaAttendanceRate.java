@@ -126,7 +126,7 @@ public class CalcAnnLeaAttendanceRate {
 		val lengthServiceTbl = lengthServiceTblOpt.get();
 
 		// 出勤率計算する期間を計算する
-		val calcPeriodOpt = calcPeriod(grantDate, grantNum, employee, grantHdTblSet, lengthServiceTbls);
+		val calcPeriodOpt = calcPeriod(grantDate, grantNum, employee, grantHdTblSet, Optional.of(lengthServiceTbl));
 		if (!calcPeriodOpt.isPresent()){
 			return Optional.of(new CalYearOffWorkAttendRate(0.0, 0.0, 0.0, Optional.empty()));
 		}
@@ -138,7 +138,7 @@ public class CalcAnnLeaAttendanceRate {
 
 		// 日数から出勤率を計算する
 		results.calcAttendanceRate();
-		
+
 		// 年休出勤率計算結果を返す
 		return Optional.of(results);
 	}
@@ -335,7 +335,7 @@ public class CalcAnnLeaAttendanceRate {
 
 		// 「入社前期間の出勤扱い日数」を労働日数に加算
 		workingDays += daysToWork;
-		
+
 		// 年休出勤率計算結果を返す
 		return new CalYearOffWorkAttendRate(prescribedDays, workingDays, deductedDays, Optional.of(calcPeriod.getCal()));
 	}
