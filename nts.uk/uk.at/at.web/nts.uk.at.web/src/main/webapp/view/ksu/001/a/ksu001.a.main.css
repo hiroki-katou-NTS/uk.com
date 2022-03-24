@@ -198,7 +198,6 @@
 	border-radius: 3.5px !important;
 	box-shadow: 1px 1px 5px 2px #888 !important;
 	padding: 12px;
-	background-color: #F8EFD4 !important;
 	display: none;
 }
 
@@ -666,13 +665,16 @@ html {
 #horzComboBox * {
 	text-align: left;
 }
+
 .xseal { background-color: #B8B8B8 !important; }
+.extable div.xdet, .extable td.xdet { background-color: #bfc5ff !important; }
+
 .bg-schedule-uncorrectable { background-color: #B8B8B8 !important; }
 .bg-daily-alter-self {background-color:#C1E6FE !important;}
 .bg-daily-alter-other {background-color:#4ca8f8 !important;}
 .bg-daily-reflect-application {background-color:#cbf3d2 !important;}
 .bg-schedule-fixed {background-color:#bfc5ff !important;}
-.bg-schedule-support-2 {background-color:#fedfe6 !important;}
+.bg-schedule-support-2 {background-color:#fedfe6;}
 
 .background-attendance {background-color: #1973b5 !important;}
 .background-holiday {background-color: #db4f51 !important;}
@@ -681,4 +683,14 @@ html {
 
 .bg-schedule-saturday {background-color:#1973b5 !important;}
 .bg-schedule-sunday {background-color:#db4f51 !important;}
+.bg-schedule-specific-date {background-color:#b18768 !important;}
 .bg-schedule-that-day {background-color:#258f7e !important;}
+
+.color-schedule-performance-v6-5 {color: #258f7e;}
+.color-attendance-v6-5 {color: #1973b5;}
+.color-half-day-work-v6-5 {color: #e6a322;}
+.color-holiday-v6-5 {color: #db4f51;}
+
+.extable div.other-edited, .extable td.other-edited { background-color: #4ca8f8 !important; }
+.extable div.target-edited, .extable td.target-edited { background-color: #C1E6FE !important;}
+
