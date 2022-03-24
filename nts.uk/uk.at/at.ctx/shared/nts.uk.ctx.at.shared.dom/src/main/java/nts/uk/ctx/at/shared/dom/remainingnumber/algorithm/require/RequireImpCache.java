@@ -80,7 +80,7 @@ public class RequireImpCache {
 	Map<String, Optional<ClosureEmployment>> closureEmploymentMap = new ConcurrentHashMap<String, Optional<ClosureEmployment>>();
 	Map<String, Optional<EmpSubstVacation>> empSubstVacationMap = new ConcurrentHashMap<String, Optional<EmpSubstVacation>>();
 	Map<String, Optional<CompensatoryLeaveEmSetting>> compensatoryLeaveEmSettingMap = new ConcurrentHashMap<>();
-	Map<UseClassification, List<Closure>> closurebyUseClassificationMap = new ConcurrentHashMap<UseClassification, List<Closure>>();	
+	Map<UseClassification, List<Closure>> closurebyUseClassificationMap = new ConcurrentHashMap<UseClassification, List<Closure>>();
 	Map<String, Optional<EmptYearlyRetentionSetting>> emptYearlyRetentionSettingMap = new ConcurrentHashMap<String, Optional<EmptYearlyRetentionSetting>>();
 	Map<String, Optional<RegularLaborTimeWkp>> regularLaborTimeWkpMap = new ConcurrentHashMap<String, Optional<RegularLaborTimeWkp>>();
 	Map<String, Optional<DeforLaborTimeWkp>> deforLaborTimeWkpMap = new ConcurrentHashMap<String, Optional<DeforLaborTimeWkp>>();
@@ -90,7 +90,7 @@ public class RequireImpCache {
 	Map<String, Optional<DeforLaborTimeSha>> deforLaborTimeShaMap = new ConcurrentHashMap<String, Optional<DeforLaborTimeSha>>();
 	Map<WorkTypeSet, Optional<CheckCareResult>> checkCareResultMap = new ConcurrentHashMap<>();
 	Map<String, Optional<GrantHdTblSet>> grantHdTblSetMap = new ConcurrentHashMap<String, Optional<GrantHdTblSet>>();
-	Map<String, List<LengthServiceTbl>> lengthServiceTblMap = new ConcurrentHashMap<String, List<LengthServiceTbl>>();
+	Map<String, Optional<LengthServiceTbl>> lengthServiceTblMap = new ConcurrentHashMap<String, Optional<LengthServiceTbl>>();
 	Map<String, Optional<WorkingConditionItem>> workingConditionItemMap = new ConcurrentHashMap<String, Optional<WorkingConditionItem>>();
 	Map<String, Optional<AnnualLeaveEmpBasicInfo>> annualLeaveEmpBasicInfoMap = new ConcurrentHashMap<String, Optional<AnnualLeaveEmpBasicInfo>>();
 	Map<String, Optional<GrantHdTbl>> grantHdTblMap = new ConcurrentHashMap<String, Optional<GrantHdTbl>>();
@@ -102,5 +102,5 @@ public class RequireImpCache {
 	Map<WorkTimeCode, Optional<FixedWorkSetting>> fixedWorkSettingMap = new ConcurrentHashMap<>();
 	Map<WorkTimeCode, Optional<FlowWorkSetting>> flowWorkSettingMap = new ConcurrentHashMap<>();
 	Map<WorkTimeCode, Optional<FlexWorkSetting>> flexWorkSettingMap = new ConcurrentHashMap<>();
-	
+
 }

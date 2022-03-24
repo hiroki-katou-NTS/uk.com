@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber.test;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -9,25 +12,23 @@ import javax.inject.Inject;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.test.LengthServiceTest;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfService;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayCode;
 import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstLengthServiceTbl;
 
 @Stateless
 public class JpaLengthServiceRepositoryImplTest extends JpaRepository implements LengthServiceTest{
-	
-	private static final String FIND_BY_COMPANY_ID = "SELECT c FROM KshstLengthServiceTbl c "
-			+ "WHERE c.kshstLengthServiceTblPK.companyId = :companyId "
-			+ " ORDER BY c.kshstLengthServiceTblPK.grantNum ";
 
 	/**
 	* convert from KshstLengthServiceTbl entity to LengthServiceTbl domain
 	* @param entity
 	* @return
 	*/
-	private LengthServiceTbl convertToDomain(KshstLengthServiceTbl entity){
-	return LengthServiceTbl.createFromJavaType(entity.kshstLengthServiceTblPK.companyId, 
-												entity.kshstLengthServiceTblPK.yearHolidayCode, entity.kshstLengthServiceTblPK.grantNum, 
-												entity.allowStatus, entity.standGrantDay, entity.year, entity.month);
+
+	private LengthOfService convertToDomain(KshstLengthServiceTbl entity){
+	return LengthOfService.createFromJavaType(entity.kshstLengthServiceTblPK.grantNum, entity.allowStatus,
+			entity.standGrantDay, entity.year, entity.month);
 	}
 	
 //	private KshstLengthServiceTbl toEntity(LengthServiceTbl domain){
@@ -46,10 +47,29 @@ public class JpaLengthServiceRepositoryImplTest extends JpaRepository implements
 	//@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<LengthServiceTbl> findByCompanyId(String companyId) {
-		return this.queryProxy().query(FIND_BY_COMPANY_ID, KshstLengthServiceTbl.class)
-								.setParameter("companyId", companyId)
-								.getList(c -> convertToDomain(c));
+		String query = "SELECT c FROM KshstLengthServiceTbl c "
+				+ "WHERE c.kshstLengthServiceTblPK.companyId = :companyId "
+				+ " ORDER BY c.kshstLengthServiceTblPK.grantNum ";
+
+		Map<String, List<KshstLengthServiceTbl>> entitys = this.queryProxy().query(query, KshstLengthServiceTbl.class)
+				.setParameter("companyId", companyId).getList(c -> c)
+				.stream().collect(Collectors.groupingBy(i -> i.kshstLengthServiceTblPK.yearHolidayCode));
+
+		return entitys.entrySet().stream().map(c -> toDomain(c.getValue()).get()).collect(Collectors.toList());
 	}
-	
+
+	private Optional<LengthServiceTbl> toDomain(List<KshstLengthServiceTbl> entitys) {
+		if (entitys.isEmpty())
+			return Optional.empty();
+
+		List<LengthOfService> lengthOfServices = entitys.stream().map(c -> convertToDomain(c))
+				.collect((Collectors.toList()));
+
+		String companyId = entitys.get(0).kshstLengthServiceTblPK.companyId;
+		String code = entitys.get(0).kshstLengthServiceTblPK.yearHolidayCode;
+
+		return Optional.of(new LengthServiceTbl(companyId, new YearHolidayCode(code), lengthOfServices));
+	}
+
 }
 
