@@ -2840,6 +2840,14 @@ public class ProgramsManager {
      */
     public static final Program CMM001E = new Program(WebAppId.COM, ProgramIdConsts.CMM001E, "CMM001_68",
             "/view/cmm/001/e/index.xhtml");
+    
+    /**
+     * CMM004A
+     */
+    public static final Program CMM004A = new Program(WebAppId.COM, ProgramIdConsts.CMM004A, "",
+            "/view/cmm/004/a/index.xhtml");
+    
+    
     /**
      * KMW003
      */
@@ -4077,6 +4085,12 @@ public class ProgramsManager {
     
     public static final Program OEM003A = new Program(WebAppId.COM, ProgramIdConsts.OEM003A, "OEM003_1",
             "/view/oem/003/a/index.xhtml");
+    
+    public static final Program SMM001A = new Program(WebAppId.COM, ProgramIdConsts.SMM001A, "SMM001_1",
+            "/view/smm/001/a/index.xhtml");
+    
+    public static final Program SMM001B = new Program(WebAppId.COM, ProgramIdConsts.SMM001B, "SMM001_1",
+            "/view/smm/001/b/index.xhtml");
     
     /**
      * All programs map.

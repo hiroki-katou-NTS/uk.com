@@ -201,7 +201,7 @@ module nts.uk.at.kdp003.a {
 				width: 400,
 				title: nts.uk.resource.getText("CCG007_9"),
 				dialogClass: 'no-close'
-			}).onClosed(() => { vm.getDataStartScreen() });
+			}).onClosed(() => { location.reload() });
 		}
 
 		getDataStartScreen() {
@@ -1122,7 +1122,8 @@ module nts.uk.at.kdp003.a {
 			return vm.$window.storage(KDP003_SAVE_DATA)
 				.then((data: StorageData) => {
 					const params: f.EmployeeModeParam | f.FingerVeinModeParam = {
-						mode: selectedId || nameSelectArt === true ? 'employee' : 'fingerVein',
+						// mode: selectedId || nameSelectArt === true ? 'employee' : 'fingerVein',
+						mode: 'employee',
 						companyId: (data || {}).CID
 					};
 

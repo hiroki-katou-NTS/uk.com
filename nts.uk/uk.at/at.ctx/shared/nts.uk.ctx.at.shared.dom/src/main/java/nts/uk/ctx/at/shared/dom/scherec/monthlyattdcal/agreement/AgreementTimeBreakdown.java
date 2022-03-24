@@ -141,7 +141,8 @@ public class AgreementTimeBreakdown {
 		}
 		
 		// フレックス法定外時間
-		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value){
+		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value
+				|| attendanceItemId == AttendanceItemOfMonthly.CUR_MONTH_EXC_WA_TIME_OT.value) {
 			this.flexIllegalTime = this.flexIllegalTime.addMinutes(targetItemTime.v());
 		}
 		

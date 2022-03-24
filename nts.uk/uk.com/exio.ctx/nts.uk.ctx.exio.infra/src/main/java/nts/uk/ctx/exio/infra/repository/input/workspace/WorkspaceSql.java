@@ -21,6 +21,7 @@ import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository.Require;
@@ -277,18 +278,6 @@ public class WorkspaceSql {
 				.paramString("p", conditionString)
 				.getList(rec -> toRevised(rec));
 	}
-	
-	private RevisedDataRecord toRevised(NtsResultRecord record) {
-		
-		int rowNo = record.getInt(ROW_NO.name);
-		
-		val items = workspace.getAllItemsSortedByItemNo().stream()
-				.map(wi -> toDataItem(record, wi))
-				.collect(toList());
-		
-		return new RevisedDataRecord(rowNo, new DataItemList(items));
-	}
-	
 	private static DataItem toDataItem(NtsResultRecord record, WorkspaceItem workspaceItem) {
 		
 		val dataType = workspaceItem.getDataTypeConfig();
@@ -311,6 +300,71 @@ public class WorkspaceSql {
 			return DataItem.of(itemNo, record.getGeneralDate(name));
 		case BOOLEAN:
 			return DataItem.of(itemNo, record.getBoolean(name));
+		default:
+			throw new RuntimeException("unknown: " + dataType.getType());
+		}
+	}
+	
+	private RevisedDataRecord toRevised(NtsResultRecord record) {
+		
+		int rowNo = record.getInt(ROW_NO.name);
+		
+		val items = workspace.getAllItemsSortedByItemNo().stream()
+				.map(wi -> toDataItem(record, wi))
+				.collect(toList());
+		
+		return new RevisedDataRecord(rowNo, new DataItemList(items));
+	}
+	
+	public List<CanonicalizedDataRecord> findCanonicalizedWhere(int itemNoCondition, String conditionString) {
+		
+		String columnName = workspace.getItem(itemNoCondition)
+				.orElseThrow(() -> new RuntimeException("not found: " + itemNoCondition))
+				.getName();
+		
+		String sql = "select * from " + tableName().asCanonicalized()
+				+ " where " + columnName + " = @p";
+		
+		return jdbcProxy.query(sql)
+				.paramString("p", conditionString)
+				.getList(rec -> toCanonicalized(rec));
+	}
+	
+	private CanonicalizedDataRecord toCanonicalized(NtsResultRecord record) {
+		
+		int rowNo = record.getInt(ROW_NO.name);
+		
+		val items = workspace.getAllItemsSortedByItemNo().stream()
+				.map(wi -> toCanonicalItem(record, wi))
+				.collect(toList());
+		
+		return new CanonicalizedDataRecord(rowNo, new CanonicalItemList(items));
+	}
+	
+	private static CanonicalItem toCanonicalItem(NtsResultRecord record, WorkspaceItem workspaceItem) {
+		
+		val dataType = workspaceItem.getDataTypeConfig();
+		int itemNo = workspaceItem.getItemNo();
+		String name = workspaceItem.getName();
+		
+		// nullの場合
+		if(Objects.isNull(record.getObject(name))) {
+			return CanonicalItem.nullValue(itemNo);
+		}
+		
+		switch (dataType.getType()) {
+		case INT:
+			return CanonicalItem.of(itemNo, record.getLong(name));
+		case REAL:
+			return CanonicalItem.of(itemNo, record.getBigDecimal(name));
+		case STRING:
+			return CanonicalItem.of(itemNo, record.getString(name));
+		case DATE:
+			return CanonicalItem.of(itemNo, record.getGeneralDate(name));
+		case DATETIME:
+			return CanonicalItem.of(itemNo, record.getGeneralDateTime(name));
+		case BOOLEAN:
+			return CanonicalItem.of(itemNo, record.getBoolean(name));
 		default:
 			throw new RuntimeException("unknown: " + dataType.getType());
 		}

@@ -7,12 +7,12 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.DeductionTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSheetRoundingAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.service.CalcDeductionTimeService;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.OutingCalcWithinCoreTime;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -56,12 +56,14 @@ public class OutingTotalTime {
 			CalculationRangeOfOneDay oneDay,
 			DeductionAtr dedAtr,
 			GoingOutReason reason,
-			Optional<OutingCalcWithinCoreTime> outingCalcSet, NotUseAtr canOffset) {
+			Optional<OutingCalcWithinCoreTime> outingCalcSet,
+			Optional<WorkTimezoneGoOutSet> goOutSet,
+			NotUseAtr canOffset) {
 		
 		// 外出合計時間の計算
 		DeductionTotalTime outingTotal = CalcDeductionTimeService.calcTotalTime(oneDay,
 				ConditionAtr.convertFromGoOutReason(reason),
-				dedAtr, TimeSheetRoundingAtr.PerTimeSheet, Optional.empty(), canOffset);
+				dedAtr, goOutSet, canOffset);
 		
 		OutingTotalTime result = OutingTotalTime.of(
 				outingTotal.getTotalTime(),
@@ -81,12 +83,12 @@ public class OutingTotalTime {
 		if (isSeparate){
 			// 所定内外出をコア内と外で分けて計算
 			result.withinTotalTime = WithinOutingTotalTime.calcCoreTimeSeparate(
-					oneDay, dedAtr, TimeSheetRoundingAtr.PerTimeSheet, reason, canOffset);
+					oneDay, dedAtr, goOutSet, reason, canOffset);
 		}
 		else{
 			// 所定内外出をコア内と外で分けずに計算
 			result.withinTotalTime = WithinOutingTotalTime.calcCoreTimeNotSeparate(
-					oneDay, dedAtr, TimeSheetRoundingAtr.PerTimeSheet, reason, canOffset);
+					oneDay, dedAtr, goOutSet, reason, canOffset);
 		}
 		// 外出合計時間を返す
 		return result;

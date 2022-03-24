@@ -20,4 +20,7 @@ public interface OutputCodeConvertRepository {
 
 	void remove(String cid, String convertCode);
 	
+	void removeByCom(String cid);
+	
+	void removeDetailByCom(String cid, String convertCd);
 }

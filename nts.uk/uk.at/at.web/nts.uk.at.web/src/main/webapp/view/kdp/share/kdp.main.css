@@ -328,6 +328,9 @@
 #stamp-input.pageScale2 {
 	 width: calc(100% - 284px);
 }
+#stamp-input.pageScale3 {
+	width: 100%;
+}
 .pageComent {
 	white-space: break-spaces;
     padding: 0 1vmin 10px;

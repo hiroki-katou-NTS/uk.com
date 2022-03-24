@@ -33,12 +33,8 @@
 				<table>
 					<tr>
 						<td class="left-contents">
-              <div id="B4_7" class="panel panel-frame">
-                <label id="B4_8">#{i18n.getText('KMK013_569')}</label>
-              </div>
 							<!--B3_1-->
 							<div class="name-label" data-bind="ntsFormLabel: {required: false,inline: inline }">#{i18n.getText('KMK013_21')}</div>
-              <label id="B3_11">#{i18n.getText('KMK013_565')}</label>
 							<div style="padding-left: 15px;">
 								<!--B3_3-->
 								<div tabindex="4" id="B3_3" data-bind="ntsCheckBox: { checked: checkedB33 }">#{i18n.getText('KMK013_22')}</div>
@@ -49,7 +45,6 @@
 							</div>
 							<!-- B2_24 -->
 							<div class="name-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK013_246')}</div>
-              <label id="B3_12">#{i18n.getText('KMK013_565')}</label>
 							<!-- B2_36 -->
 							<div id="b2_36">#{i18n.getText('KMK013_251')}</div>
 							<div>
@@ -98,15 +93,15 @@
 						<td class="right-contents">
 							<div style="display: flex">
 								<div>
-									<!--B4_6-->
-									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK013_564')}</div>
+									<!--B4_5-->
+									<!-- TODO 労働時間に加算する時間 khong tim thay trong design -->
+									<div data-bind="ntsFormLabel: {}">労働時間に加算する時間</div>
 								</div>
 								<!-- B3_6 -->
 								<div style="padding-left: 100px;">
 
 								</div>
 							</div>
-              <a id="B4_9" class="hyperlink" href="#">#{i18n.getText('KMK013_570')}</a>
 							<!-- B4_1 -->
 							<div tabindex="15"  id="tab-panel"
 								data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab,width:300}">
@@ -142,56 +137,6 @@
 														<div tabindex="30" id="b5_9" data-bind="ntsCheckBox: { checked: checkedB59, enable: enableB59 }">#{i18n.getText('KMK013_526')}</div>
 														<!--B5_9_1-->
 														<div tabindex="30" id="b5_9_1" class="double_margin_left" data-bind="ntsCheckBox: { checked: checkedB591, enable: enableB591 }">#{i18n.getText('KMK013_527')}</div>
-													</div>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-									<!--B6_1-->
-									<div tabindex="30" id="b6_1" data-bind="ntsCheckBox: { checked: checkedB61, enable: enableB61 }">#{i18n.getText('KMK013_528')}</div>
-									<!--B7_1-->
-									<table class="table-right">
-										<tbody>
-											<tr>
-												<th class="bg-green">
-													<!--B7_2-->
-													<span id="b7_2" class="table_th">#{i18n.getText('KMK013_529')}</span>
-													<!--B7_3-->
-													<span id="b7_3" class="table_th">#{i18n.getText('KMK013_530')}</span>
-												</th>
-											</tr>
-											<tr>
-												<td>
-													<!--B7_4-->
-													<div tabindex="31" data-bind="ntsRadioBoxGroup: {
-																				options: itemsB7_4,
-																				optionsValue: 'id',
-																				optionsText: 'name',
-																				value: selectedB74,
-																				enable: enableB74}"></div>
-													<div>
-														<!--B7_7-->
-														<div id="b7_7">
-															<!--B7_7_1-->
-															<div tabindex="30" id="b7_7_1" data-bind="ntsCheckBox: { checked: checkedB77, enable: enableB77 }">
-																#{i18n.getText('KMK013_523')}
-															</div>
-															<!--B7_7_2-->
-															<!-- <div class="double_margin_left">#{i18n.getText('KMK013_531')}</div>
-															<div class="double_margin_left" tabindex="31" id="b7_7_2" data-bind="ntsRadioBoxGroup: {
-																				options: itemsB7_7,
-																				optionsValue: 'id',
-																				optionsText: 'name',
-																				value: selectedB772,
-																				enable: enableB772}">
-															</div> -->
-													</div>
-														<!--B7_8-->
-														<div tabindex="30" id="b7_8" data-bind="ntsCheckBox: { checked: checkedB78, enable: enableB78 }">#{i18n.getText('KMK013_524')}</div>
-														<!--B7_10-->
-														<div tabindex="30" id="b7_10" class="item_has_bottom_border" data-bind="ntsCheckBox: { checked: checkedB710, enable: enableB710 }">#{i18n.getText('KMK013_525')}</div>
-														<!--B7_9-->
-														<div tabindex="30" id="b7_9" data-bind="ntsCheckBox: { checked: checkedB79, enable: enableB79 }">#{i18n.getText('KMK013_526')}</div>
 													</div>
 												</td>
 											</tr>
@@ -235,55 +180,6 @@
 										</tr>
 										</tbody>
 									</table>
-									<!--B9_1-->
-									<div tabindex="30" id="b9_1" data-bind="ntsCheckBox: { checked: checkedB91, enable: enableB91 }">#{i18n.getText('KMK013_528')}</div>
-									<!--B10_1-->
-									<table class="table-right">
-										<tbody>
-											<tr>
-												<th class="bg-green">
-													<!--B10_2-->
-													<span id="b10_2" class="table_th">#{i18n.getText('KMK013_529')}</span>
-													<!--B10_3-->
-													<span id="b10_3" class="table_th">#{i18n.getText('KMK013_530')}</span>
-												</th>
-											</tr>
-											<tr>
-												<td>
-													<!--B10_4-->
-													<div tabindex="31" data-bind="ntsRadioBoxGroup: {
-																					options: itemsB7_4,
-																					optionsValue: 'id',
-																					optionsText: 'name',
-																					value: selectedB104,
-																					enable: enableB104}"></div>
-													<div>
-														<!--B10_7-->
-														<div id="b10_7">
-															<!--B10_7_1-->
-															<div tabindex="32" id="b10_7_1" data-bind="ntsCheckBox: { checked: checkedB1071, enable: enableB1071 }">
-																#{i18n.getText('KMK013_523')}
-															</div>
-															<!--B10_7_2-->
-															<!-- <div class="double_margin_left">#{i18n.getText('KMK013_531')}</div>
-															<div class="double_margin_left" tabindex="33" id="b10_7_2" data-bind="ntsRadioBoxGroup: {
-																					options: itemsB7_7,
-																					optionsValue: 'id',
-																					optionsText: 'name',
-																					value: selectedB1072,
-																					enable: enableB1072}"></div> -->
-														</div>
-														<!--B10_8-->
-														<div tabindex="34" id="b10_8" data-bind="ntsCheckBox: { checked: checkedB108, enable: enableB108 }">#{i18n.getText('KMK013_524')}</div>
-														<!--B10_10-->
-														<div tabindex="35" id="b10_10" class="item_has_bottom_border" data-bind="ntsCheckBox: { checked: checkedB1010, enable: enableB1010 }">#{i18n.getText('KMK013_525')}</div>
-														<!--B10_9-->
-														<div tabindex="36" id="b10_9" data-bind="ntsCheckBox: { checked: checkedB109, enable: enableB109 }">#{i18n.getText('KMK013_526')}</div>
-													</div>
-												</td>
-											</tr>
-										</tbody>
-									</table>
 								</div>
 								<div class="tab-content-3">
 									<!--B11_1-->
@@ -324,42 +220,6 @@
 											</tr>
 										</tbody>
 									</table>
-									<!--B12_1-->
-									<div tabindex="45" id="b12_1" data-bind="ntsCheckBox: { checked: checkedB121, enable: enableB121 }">#{i18n.getText('KMK013_528')}</div>
-									<!--B13_1-->
-									<table class="table-right">
-										<tbody>
-											<tr>
-												<th class="bg-green">
-													<!--B13_2-->
-													<span id="b13_2" class="table_th">#{i18n.getText('KMK013_538')}</span>
-													<!--B13_3-->
-													<span id="b13_3" class="table_th">#{i18n.getText('KMK013_539')}</span>
-												</th>
-											</tr>
-											<tr>
-												<td>
-													<!--B13_4-->
-													<div tabindex="46" data-bind="ntsRadioBoxGroup: {
-																					options: itemsB7_4,
-																					optionsValue: 'id',
-																					optionsText: 'name',
-																					value: selectedB134,
-																					enable: enableB134}"></div>
-													<!--B13_7-->
-													<div tabindex="47" id="b13_7" data-bind="ntsCheckBox: { checked: checkedB137, enable: enableB137 }">#{i18n.getText('KMK013_523')}</div>
-													<!--B13_7_1-->
-													<div tabindex="48" class="double_margin_left" id="b13_7_1" data-bind="ntsCheckBox: { checked: checkedB1371, enable: enableB1371 }">#{i18n.getText('KMK013_540')}</div>
-													<!--B13_8-->
-													<div tabindex="49" id="b13_8" data-bind="ntsCheckBox: { checked: checkedB138, enable: enableB138 }">#{i18n.getText('KMK013_524')}</div>
-													<!--B13_10-->
-													<div tabindex="50" class="item_has_bottom_border" id="b13_10" data-bind="ntsCheckBox: { checked: checkedB1310, enable: enableB1310 }">#{i18n.getText('KMK013_525')}</div>
-													<!--B13_9-->
-													<div tabindex="51" id="b13_9" data-bind="ntsCheckBox: { checked: checkedB139, enable: enableB139 }">#{i18n.getText('KMK013_526')}</div>
-												</td>
-											</tr>
-										</tbody>
-									</table>
 								</div>
 								<div class="tab-content-4">
 									<!--B14_1-->
@@ -370,7 +230,7 @@
 												<!--B14_2-->
 												<span id="b14_2" class="table_th">#{i18n.getText('KMK013_541')}</span>
 												<!--B14_3-->
-												<span id="b14_3" class="table_th">#{i18n.getText('KMK013_520')}</span>
+												<span id="b14_3" class="table_th">#{i18n.getText('KMK013_524')}</span>
 											</th>
 										</tr>
 										<tr>
@@ -389,61 +249,11 @@
 												<!--B14_10-->
 												<div tabindex="55" id="b14_10" data-bind="ntsCheckBox: { checked: checkedB1410, enable: enableB1410 }">#{i18n.getText('KMK013_525')}</div>
 												<!--B14_11-->
-												<div tabindex="56" class="item_has_bottom_border" id="b14_11" data-bind="ntsCheckBox: { checked: checkedB1411, enable: enableB1411 }">#{i18n.getText('KMK013_568')}</div>
+												<div tabindex="56" class="item_has_bottom_border" id="b14_11" data-bind="ntsCheckBox: { checked: checkedB1411, enable: enableB1411 }">#{i18n.getText('KMK013_537')}</div>
 												<!--B14_9-->
 												<div tabindex="57" id="b14_9" data-bind="ntsCheckBox: { checked: checkedB149, enable: enableB149 }">#{i18n.getText('KMK013_526')}</div>
 												<!--B14_9_1-->
 												<div tabindex="58" class="double_margin_left" id="b14_9_1" data-bind="ntsCheckBox: { checked: checkedB1491, enable: enableB1491 }">#{i18n.getText('KMK013_527')}</div>
-											</td>
-										</tr>
-										</tbody>
-									</table>
-									<!--B15_1-->
-									<div tabindex="59" id="b15_1" data-bind="ntsCheckBox: { checked: checkedB151, enable: enableB151 }">#{i18n.getText('KMK013_528')}</div>
-									<!--B16_1-->
-									<table class="table-right">
-										<tbody>
-										<tr>
-											<th class="bg-green">
-												<!--B16_2-->
-												<span id="b16_2" class="table_th">#{i18n.getText('KMK013_543')}</span>
-												<!--B16_3-->
-												<span id="b16_3" class="table_th">#{i18n.getText('KMK013_544')}</span>
-											</th>
-										</tr>
-										<tr>
-											<td>
-												<!--B16_4-->
-												<div tabindex="60" data-bind="ntsRadioBoxGroup: {
-																				options: itemsB7_4,
-																				optionsValue: 'id',
-																				optionsText: 'name',
-																				value: selectedB164,
-																				enable: enableB164}"></div>
-												<div>
-													<!--B16_7-->
-													<div id="b16_7">
-														<!--B16_7_1-->
-														<div tabindex="61" id="b16_7_1" data-bind="ntsCheckBox: { checked: checkedB1671, enable: enableB1671 }">
-															#{i18n.getText('KMK013_523')}
-														</div>
-														<!--B16_7_2-->
-														<!-- <div class="double_margin_left">#{i18n.getText('KMK013_531')}</div>
-														<div class="double_margin_left" tabindex="62" id="b16_7_2" data-bind="ntsRadioBoxGroup: {
-																				options: itemsB7_7,
-																				optionsValue: 'id',
-																				optionsText: 'name',
-																				value: selectedB1672,
-																				enable: enableB1672}">
-														</div> -->
-													</div>
-													<!--B16_8-->
-													<div tabindex="63" id="b16_8" data-bind="ntsCheckBox: { checked: checkedB168, enable: enableB168 }">#{i18n.getText('KMK013_524')}</div>
-													<!--B16_10-->
-													<div tabindex="64" class="item_has_bottom_border" id="b16_10" data-bind="ntsCheckBox: { checked: checkedB1610, enable: enableB1610 }">#{i18n.getText('KMK013_525')}</div>
-													<!--B16_9-->
-													<div tabindex="65" id="b16_9" data-bind="ntsCheckBox: { checked: checkedB169, enable: enableB169 }">#{i18n.getText('KMK013_526')}</div>
-												</div>
 											</td>
 										</tr>
 										</tbody>
@@ -453,8 +263,6 @@
 						</td>
 					</tr>
 				</table>
-
-        <div id="B4_10">#{i18n.getText('KMK013_571')}</div>
 			</div>
 		</ui:define>
 	</ui:composition>

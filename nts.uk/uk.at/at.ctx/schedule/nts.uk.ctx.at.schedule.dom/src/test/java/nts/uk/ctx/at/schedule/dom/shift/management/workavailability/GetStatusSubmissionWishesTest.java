@@ -34,6 +34,7 @@ public class GetStatusSubmissionWishesTest {
 	@Test
 	public void testGetStatusSubmissionWishes() {
 		
+		String cmpId = "cmpId";
 		String empId = "empId";
 		GeneralDate availabilityDate = GeneralDateTime.now().addDays(-1).toDate();
 		
@@ -44,7 +45,7 @@ public class GetStatusSubmissionWishesTest {
 			}
 		};
 		
-		DesiredSubmissionStatus status = GetStatusSubmissionWishes.get(require, empId, availabilityDate);
+		DesiredSubmissionStatus status = GetStatusSubmissionWishes.get(require, cmpId, empId, availabilityDate);
 		
 		assertThat(status).isEqualTo(DesiredSubmissionStatus.NO_HOPE);
 	}
@@ -53,6 +54,7 @@ public class GetStatusSubmissionWishesTest {
 	@Test
 	public void testGetStatusSubmissionWishes1() {
 		
+		String cmpId = "cmpId";
 		String empId = "empId";
 		GeneralDate availabilityDate = GeneralDateTime.now().addDays(1).toDate();
 		WorkAvailabilityMemo memo = new WorkAvailabilityMemo("memo");
@@ -68,9 +70,9 @@ public class GetStatusSubmissionWishesTest {
 			}
 		};
 		
-		DesiredSubmissionStatus status = GetStatusSubmissionWishes.get(require, empId, availabilityDate);
+		DesiredSubmissionStatus status = GetStatusSubmissionWishes.get(require, cmpId, empId, availabilityDate);
 		
-		assertThat(workAvailability.get().isHolidayAvailability(require)).isTrue();
+		assertThat(workAvailability.get().isHolidayAvailability(require, cmpId)).isTrue();
 		assertThat(status).isEqualTo(DesiredSubmissionStatus.HOLIDAY_HOPE);
 		
 	}
@@ -79,6 +81,7 @@ public class GetStatusSubmissionWishesTest {
 	@Test
 	public void testGetStatusSubmissionWishes2() {
 		
+		String cmpId = "cmpId";
 		String empId = "empId";
 		GeneralDate availabilityDate = GeneralDateTime.now().addDays(1).toDate();
 		WorkAvailabilityMemo memo = new WorkAvailabilityMemo("memo");
@@ -97,9 +100,9 @@ public class GetStatusSubmissionWishesTest {
 			}
 		};
 		
-		DesiredSubmissionStatus status = GetStatusSubmissionWishes.get(require, empId, availabilityDate);
+		DesiredSubmissionStatus status = GetStatusSubmissionWishes.get(require, cmpId, empId, availabilityDate);
 		
-		assertThat(workAvailability.get().isHolidayAvailability(require)).isFalse();
+		assertThat(workAvailability.get().isHolidayAvailability(require, cmpId)).isFalse();
 		assertThat(status).isEqualTo(DesiredSubmissionStatus.COMMUTING_HOPE);
 		 
 	}

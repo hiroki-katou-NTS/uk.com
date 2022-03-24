@@ -33,9 +33,9 @@ public class CountNumberOfPeopleByAttributeService {
 	 * @return
 	 */
 	public static Map<GeneralDate, Map<EmploymentCode, BigDecimal>> countingEachEmployments(
-			Require require, List<IntegrationOfDaily> dailyWorks) {
+			Require require, String companyId, List<IntegrationOfDaily> dailyWorks) {
 		
-		return  countingEachAttribute(require, AggregationUnitOfEmployeeAttribute.EMPLOYMENT, dailyWorks)
+		return  countingEachAttribute(require, companyId, AggregationUnitOfEmployeeAttribute.EMPLOYMENT, dailyWorks)
 				.entrySet().stream()	
 				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
 					return entry.getValue().entrySet().stream()
@@ -50,9 +50,9 @@ public class CountNumberOfPeopleByAttributeService {
 	 * @return
 	 */
 	public static Map<GeneralDate, Map<ClassificationCode, BigDecimal>> countingEachClassification(
-			Require require, List<IntegrationOfDaily> dailyWorks) {
+			Require require, String companyId, List<IntegrationOfDaily> dailyWorks) {
 		
-		return  countingEachAttribute(require, AggregationUnitOfEmployeeAttribute.CLASSIFICATION, dailyWorks)
+		return  countingEachAttribute(require, companyId, AggregationUnitOfEmployeeAttribute.CLASSIFICATION, dailyWorks)
 				.entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
 					return entry.getValue().entrySet().stream()
@@ -63,23 +63,26 @@ public class CountNumberOfPeopleByAttributeService {
 	/**
 	 * 職位別に集計する
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param dailyWorks 日別勤怠リスト
 	 * @return
 	 */
 	public static Map<GeneralDate, Map<String, BigDecimal>> countingEachJobTitle(
-			Require require, List<IntegrationOfDaily> dailyWorks) {
-		return countingEachAttribute(require, AggregationUnitOfEmployeeAttribute.JOB_TITLE, dailyWorks);
+			Require require, String companyId, List<IntegrationOfDaily> dailyWorks) {
+		return countingEachAttribute(require, companyId, AggregationUnitOfEmployeeAttribute.JOB_TITLE, dailyWorks);
 	}
 
 
 	/**
 	 * 属性別に集計する
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param unit 集計単位
 	 * @param dailyWorks 日別勤怠リスト
 	 * @return
 	 */
-	private static Map<GeneralDate, Map<String, BigDecimal>> countingEachAttribute(Require require
+	private static Map<GeneralDate, Map<String, BigDecimal>> countingEachAttribute(Require require,
+			String companyId
 			, AggregationUnitOfEmployeeAttribute unit
 			, List<IntegrationOfDaily> dailyWorks) {
 		
@@ -89,7 +92,7 @@ public class CountNumberOfPeopleByAttributeService {
 		return empByDate.entrySet().stream()
 				.collect(Collectors.toMap(
 						Map.Entry::getKey
-					,	entry -> NumberOfEmployeesByAttributeCountingService.count(require, unit, entry.getValue())
+					,	entry -> NumberOfEmployeesByAttributeCountingService.count(require, companyId, unit, entry.getValue())
 				));
 
 	}

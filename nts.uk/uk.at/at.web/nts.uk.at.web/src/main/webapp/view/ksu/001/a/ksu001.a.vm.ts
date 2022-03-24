@@ -601,6 +601,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 isLastDay: self.closeDate.lastDay
             };
             service.getDataOfShiftMode(param).done((data: IDataStartScreen) => {
+                $('#contain-view-left').css({'margin-top': '18px'});
                 self.saveModeGridToLocalStorege(ViewMode.SHIFT);
                 self.calculateDisPlayFormatA4Popup(data);
                 self.visibleShiftPalette(true);
@@ -687,6 +688,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
             
             service.getDataOfShortNameMode(param).done((data: IDataStartScreen) => {
+                $('#contain-view-left').css({'margin-top': '3px'});
                 self.visibleShiftPalette(false);
                 self.visibleBtnInput(false);
                 self.saveModeGridToLocalStorege(ViewMode.SHORTNAME);
@@ -746,6 +748,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
 
             service.getDataOfTimeMode(param).done((data: IDataStartScreen) => {
+                $('#contain-view-left').css({'margin-top': '3px'});
                 self.visibleShiftPalette(false);
                 self.visibleBtnInput(true);
                 self.saveModeGridToLocalStorege(ViewMode.TIME);
@@ -815,7 +818,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
         
         destroyAndCreateGrid(dataBindGrid, viewMode) {
-            let self = this;
+            let self = this; 
+            $("#cacheHeightGrid").append($('#heightGrid'));
             $("#cacheDiv").append($('#vertDiv'));
             $("#cacheDiv").append($('#horzDiv'));
             $("#extable").children().remove();
@@ -1004,7 +1008,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             self.tooltipShare = data.listDateInfo;
             self.listWorkTypeInfo = data.listWorkTypeInfo;
-            
             self.listTimeDisable = [];
 
             for (let i = 0; i < data.listEmpInfo.length; i++) {
@@ -1749,14 +1752,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     
                     
                 } else if (dateInfo.isHoliday) {
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday"));
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday-color-schedule-sunday"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday-color-schedule-sunday"));
                 } else if (dateInfo.dayOfWeek == 7) {
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday"));
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday-color-schedule-sunday"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday-color-schedule-sunday"));
                 } else if (dateInfo.dayOfWeek == 6) {
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-saturday"));
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-saturday"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-saturday-color-schedule-saturday"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-saturday-color-schedule-saturday"));
                 } else if (dateInfo.dayOfWeek > 0 || dateInfo.dayOfWeek < 6) {
                     detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-weekdays"));
                     detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-weekdays"));
@@ -2221,11 +2224,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let startTime = null, endTime = null;
                         let isChangeTime = false;
                         if (!_.isEmpty(cellStartTime) && !_.isNil(cellStartTime)) {
-                            startTime = duration.parseString(cellStartTime).toValue();
+                            startTime = self.getPrimitiveValue(cellStartTime);
                             isChangeTime = true;
                         }
                         if (!_.isEmpty(cellEndTime) && !_.isNil(cellEndTime)) {
-                            endTime = duration.parseString(cellEndTime).toValue();
+                            endTime = self.getPrimitiveValue(cellEndTime);
                             isChangeTime = true;
                         }
 
@@ -2620,6 +2623,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             
             $("#extable").exTable("saveScroll");
+            
+            // append button A16
+            $("#extable").append($('#heightGrid'));
+            $('#heightGrid').css({'display':'', 'width': '30px', 'float' : 'right', 'margin-top': '1px'});
         }
 
         createVertSumData() {
@@ -3764,14 +3771,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
 
                     } else if (dateInfo.isHoliday) {
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday"));
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday-color-schedule-sunday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday-color-schedule-sunday"));
                     } else if (dateInfo.dayOfWeek == 7) {
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday"));
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday-color-schedule-sunday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday-color-schedule-sunday"));
                     } else if (dateInfo.dayOfWeek == 6) {
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-saturday"));
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-saturday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-saturday-color-schedule-saturday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-saturday-color-schedule-saturday"));
                     } else if (dateInfo.dayOfWeek > 0 || dateInfo.dayOfWeek < 6) {
                         detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-weekdays"));
                         detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-weekdays"));
@@ -5817,6 +5824,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // btn A6_1, A6_2 職2    
             if (funcNo2_WorkPlace == false) {
                 $('#contain-view-left').empty();
+            } else if(self.userInfor.disPlayFormat == 'shift'){
+                $('#contain-view-left').css({'margin-top': '18px'});
+            } else if(self.userInfor.disPlayFormat != 'shift'){
+                $('#contain-view-left').css({'margin-top': '3px'});
             }
 
             // 職13
@@ -6257,6 +6268,33 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             setTimeout(() => {
                 $('.extable-header-detail a').css("pointer-events", "none");
             }, 500);
+        }
+        
+        getPrimitiveValue(value: any): string {
+            var self = this;
+            let valueResult: string = "";
+            // Time
+            valueResult = value == "" ? null : String(self.getHoursAll(value));
+            return valueResult;
+        }
+
+        getHours(value: any): number {
+            return Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]);
+        }
+
+        //time day
+        getHoursAll(value: any): number {
+            var self = this;
+            if (value.indexOf(":") != -1) {
+                if (value.indexOf("-") != -1) {
+                    let valueTemp = value.split('-')[1];
+                    return self.getHours(valueTemp) - 24 * 60;
+                } else {
+                    return self.getHours(value);
+                }
+            } else {
+                return value;
+            }
         }
     }
 

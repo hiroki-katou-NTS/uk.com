@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -74,6 +75,7 @@ public class CheckTimeIsIncorrect {
 	 */
 	public List<ContainsResultDto> check(String workType, String workTime, TimeZoneDto workTime1,
 			TimeZoneDto workTime2) {
+		String companyId = AppContexts.user().companyId();
 		// 1:Create()
 		WorkInformation wi = new WorkInformation(workType, workTime);
 		WorkInformation.Require require = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository,
@@ -82,13 +84,13 @@ public class CheckTimeIsIncorrect {
 
 		List<ContainsResultDto> listContainsResult = new ArrayList<>();
 		// 2: 変更可能な勤務時間帯のチェック(Require, 対象時刻区分, 勤務NO, 時刻(日区分付き))
-		ContainsResult containsResult1 = wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(1),
+		ContainsResult containsResult1 = wi.containsOnChangeableWorkingTime(require, companyId, ClockAreaAtr.START, new WorkNo(1),
 				new TimeWithDayAttr(workTime1.getStartTime().getTime()));
 		listContainsResult.add(convertToContainsResult(containsResult1, TextResource.localize("KSU001_54"),
 				convertToTime(workTime1.getStartTime().getTime()), true, InnerIndex.STARTTIME.value));
 
 		// 3:変更可能な勤務時間帯のチェック(Require, 対象時刻区分, 勤務NO, 時刻(日区分付き))
-		ContainsResult containsResult2 = wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1),
+		ContainsResult containsResult2 = wi.containsOnChangeableWorkingTime(require, companyId, ClockAreaAtr.END, new WorkNo(1),
 				new TimeWithDayAttr(workTime1.getEndTime().getTime()));
 		listContainsResult.add(convertToContainsResult(containsResult2, TextResource.localize("KSU001_55"),
 				convertToTime(workTime1.getEndTime().getTime()), true, InnerIndex.ENDTIME.value));
@@ -96,13 +98,13 @@ public class CheckTimeIsIncorrect {
 		// 4:
 		if (workTime2 != null) {
 			// 4.1
-			ContainsResult containsResult3 = wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.START,
+			ContainsResult containsResult3 = wi.containsOnChangeableWorkingTime(require, companyId, ClockAreaAtr.START,
 					new WorkNo(2), new TimeWithDayAttr(workTime2.getStartTime().getTime()));
 			listContainsResult.add(convertToContainsResult(containsResult3, TextResource.localize("KSU001_56"),
 					convertToTime(workTime2.getStartTime().getTime()), false, InnerIndex.STARTTIME.value));
 
 			// 4.2
-			ContainsResult containsResult4 = wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.END,
+			ContainsResult containsResult4 = wi.containsOnChangeableWorkingTime(require, companyId, ClockAreaAtr.END,
 					new WorkNo(2), new TimeWithDayAttr(workTime2.getEndTime().getTime()));
 			listContainsResult.add(convertToContainsResult(containsResult4, TextResource.localize("KSU001_57"),
 					convertToTime(workTime2.getEndTime().getTime()), false, InnerIndex.ENDTIME.value));
@@ -161,13 +163,13 @@ public class CheckTimeIsIncorrect {
 		}
 
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeRepo.findByPK(companyId, workTypeCode.v());
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
 		}
 
 		// fix bug 113211
@@ -178,23 +180,23 @@ public class CheckTimeIsIncorrect {
 //		}
 
 		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			return fixedWorkSettingRepository.findByKey(companyId, code.v()).get();
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return fixedWorkSettingRepository.findByKey(companyId, workTimeCode.v());
 		}
-
+		
 		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			return flowWorkSettingRepository.find(companyId, code.v()).get();
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flowWorkSettingRepository.find(companyId, workTimeCode.v());
 		}
-
+		
 		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			return flexWorkSettingRepository.find(companyId, code.v()).get();
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flexWorkSettingRepository.find(companyId, workTimeCode.v());
 		}
-
+		
 		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, wktmCd.v()).get();
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode.v());
 		}
 
 	}

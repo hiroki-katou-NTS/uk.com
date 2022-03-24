@@ -41,6 +41,27 @@ public class AuthenticateTenant {
 		// 認証成功
 		return TenantAuthenticationResult.success();
 	}
+
+	public static TenantAuthenticationResult authenticateNoPassword(Require require, String tenantCode, LoginClient loginClient) {
+		//失敗記録の生成
+		LazyValue<AtomTask> failureLog = new LazyValue<>(
+				() -> createFailreLog(require, tenantCode, "", loginClient));
+
+		// テナントロケータに接続できている以上取得できるはず
+		val optTenant = require.getTenantAuthentication(tenantCode);
+		if(!optTenant.isPresent()) {
+			return TenantAuthenticationResult.failedToIdentifyTenant(failureLog.get());
+		}
+		val tenant = optTenant.get();
+		// 有効期限チェック
+		if(!tenant.isAvailableAt(GeneralDate.today())) {
+			// テナントの有効期限切れ
+			return TenantAuthenticationResult.failedDueToExpiration(failureLog.get());
+		}
+
+		// 認証成功
+		return TenantAuthenticationResult.success();
+	}
 	
 	/**
 	 * 失敗時の失敗記録生成

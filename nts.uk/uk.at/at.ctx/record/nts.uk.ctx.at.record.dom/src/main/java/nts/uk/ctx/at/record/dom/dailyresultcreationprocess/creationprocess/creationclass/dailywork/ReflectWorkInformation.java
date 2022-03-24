@@ -47,7 +47,7 @@ public class ReflectWorkInformation {
 			Stamp stamp, IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt) {
 		
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();
-		if (isReflectStampGoingToWork) {
+		if (isReflectStampGoingToWork || isReflectStampLeavingWork) {
 			// スケジュール管理しない場合勤務情報を更新
 			UpdateIfNotManagedOutput updated = updateIfNotManaged.update(AppContexts.user().companyId(), integrationOfDaily.getEmployeeId(), 
 														integrationOfDaily.getYmd(), integrationOfDaily);
