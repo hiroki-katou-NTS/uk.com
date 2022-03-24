@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives;
+package nts.uk.ctx.at.schedule.dom.shift.specificdaysetting;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
