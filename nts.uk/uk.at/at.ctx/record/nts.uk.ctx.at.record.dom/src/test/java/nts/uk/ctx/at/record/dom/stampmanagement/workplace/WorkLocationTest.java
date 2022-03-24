@@ -65,7 +65,7 @@ public class WorkLocationTest {
 	public void testFindTimeDifference_1() {
 		WorkLocation workLocation = WorkLocationHelper.getDefault();
 
-		assertThat(workLocation.findTimeDifference(require, "ContractCode")).isEqualTo(0);
+		assertThat(workLocation.findTimeDifference(require)).isEqualTo(0);
 	}
 
 	// !regionalTimeDifference.isPresent()
@@ -75,11 +75,11 @@ public class WorkLocationTest {
 
 		new Expectations() {
 			{
-				require.get("ContractCode", 12);
+				require.get(12);
 			}
 		};
 
-		assertThat(workLocation.findTimeDifference(require, "ContractCode")).isEqualTo(0);
+		assertThat(workLocation.findTimeDifference(require)).isEqualTo(0);
 	}
 
 	// regionalTimeDifference.isPresent()
@@ -89,11 +89,11 @@ public class WorkLocationTest {
 
 		new Expectations() {
 			{
-				require.get("ContractCode", 12);
+				require.get(12);
 				result = Optional.of(new RegionalTimeDifference(new RegionCode(12), new RegionName("dummy"), new RegionalTime(10)));
 			}
 		};
 
-		assertThat(workLocation.findTimeDifference(require, "ContractCode")).isEqualTo(10);
+		assertThat(workLocation.findTimeDifference(require)).isEqualTo(10);
 	}
 }
