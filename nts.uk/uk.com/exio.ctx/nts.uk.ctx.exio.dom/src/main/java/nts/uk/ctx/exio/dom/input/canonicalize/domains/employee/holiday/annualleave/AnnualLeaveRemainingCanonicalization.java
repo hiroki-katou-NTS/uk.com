@@ -24,7 +24,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
  * 年休付与残数データ 
@@ -94,7 +93,7 @@ public class AnnualLeaveRemainingCanonicalization extends IndependentCanonicaliz
 				}
 				importingKeys.add(keyValue);
 				
-				super.canonicalize(require, context, interm, keyValue);
+				super.canonicalize(require, context, interm);
 			}
 		});
 	}
@@ -124,11 +123,6 @@ public class AnnualLeaveRemainingCanonicalization extends IndependentCanonicaliz
 				  .addCanonicalized(CanonicalItem.of(Items.所定日数, 0))
 				  .addCanonicalized(CanonicalItem.of(Items.控除日数, 0))
 				  .addCanonicalized(CanonicalItem.of(Items.労働日数, 0));
-	}
-	
-	@Override
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
-		return Arrays.asList(Items.SID);
 	}
 	
 	@Override

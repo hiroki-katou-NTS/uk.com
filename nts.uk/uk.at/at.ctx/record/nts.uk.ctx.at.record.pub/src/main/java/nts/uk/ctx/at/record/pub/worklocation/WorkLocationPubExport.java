@@ -30,18 +30,18 @@ public class WorkLocationPubExport extends AggregateRoot {
 	/**
 	 * bỏ dài rộng, thay bằng bán kính (Enum Radius)
 	 */
-	private int radius;
+	private Integer radius;
 	/**
 	 * 
 	 */
-	private double latitude;
+	private Double latitude;
 	/**
 	 * 
 	 */
-	private double longitude;
+	private Double longitude;
 
 	public static WorkLocationPubExport createSimpleFromJavaType(String contractCode, String workLocationCD,
-			String workLocationName, int radius, double latitude, double longitude) {
+			String workLocationName, Integer radius, Double latitude, Double longitude) {
 		return new WorkLocationPubExport(contractCode, workLocationCD, workLocationName, radius,
 				latitude, longitude);
 	}

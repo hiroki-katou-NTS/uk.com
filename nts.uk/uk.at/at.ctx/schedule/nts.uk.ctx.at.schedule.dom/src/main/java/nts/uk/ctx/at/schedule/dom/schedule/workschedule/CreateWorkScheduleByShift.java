@@ -25,7 +25,7 @@ public class CreateWorkScheduleByShift {
 	 * @param shiftMasterCode シフトマスタコード
 	 * @return
 	 */
-	public static ResultOfRegisteringWorkSchedule create(Require require, String employeeId, GeneralDate date, ShiftMasterCode shiftMasterCode) {
+	public static ResultOfRegisteringWorkSchedule create(Require require, String companyId, String employeeId, GeneralDate date, ShiftMasterCode shiftMasterCode) {
 		Optional<ShiftMaster> shiftMaster = require.getShiftMaster(shiftMasterCode);
 		
 		if (! shiftMaster.isPresent()) {
@@ -36,7 +36,7 @@ public class CreateWorkScheduleByShift {
 					new BusinessException("Msg_1705").getMessage() );
 		}
 		
-		return CreateWorkSchedule.create(require, employeeId, date, shiftMaster.get(), false, new ArrayList<>(), new HashMap<>());
+		return CreateWorkSchedule.create(require, companyId, employeeId, date, shiftMaster.get(), false, new ArrayList<>(), new HashMap<>());
 	}
 	
 	public static interface Require extends CreateWorkSchedule.Require {

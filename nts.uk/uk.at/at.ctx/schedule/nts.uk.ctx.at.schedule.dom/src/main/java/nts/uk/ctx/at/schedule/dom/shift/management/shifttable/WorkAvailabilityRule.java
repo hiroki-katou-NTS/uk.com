@@ -37,10 +37,11 @@ public interface WorkAvailabilityRule {
 	/**
 	 * 休日日数の上限日数を超えているか
 	 * 超える場合 return true
+	 * @param companyId 会社ID
 	 * @param workAvailabilityList 一日の勤務希望リスト: 休日、シフト、時間帯の全部
 	 * @return
 	 */
-	boolean isOverHolidayMaxDays(Require require, List<WorkAvailabilityOfOneDay> workAvailabilityList);
+	boolean isOverHolidayMaxDays(Require require, String companyId, List<WorkAvailabilityOfOneDay> workAvailabilityList);
 	
 	/**
 	 * 基準日に対応する締切日と期間を取得する

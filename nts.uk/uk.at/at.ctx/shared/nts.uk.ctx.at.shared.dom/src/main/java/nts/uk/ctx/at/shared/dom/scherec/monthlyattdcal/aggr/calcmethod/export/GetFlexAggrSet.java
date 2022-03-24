@@ -48,14 +48,14 @@ public class GetFlexAggrSet {
 					cacheCarrier, companyId, employeeId, criteriaDate);
 			
 			for (val workplaceId : workplaceIds){
-				val wkpSetOpt = require.monthFlexCalcSetByWorkplace(companyId, workplaceId);
+				val wkpSetOpt = require.wkpFlexMonthActCalSet(companyId, workplaceId);
 				if (wkpSetOpt.isPresent()) return Optional.of(wkpSetOpt.get());
 			}
 		}
 		
 		// 雇用別設定　確認
 		if (usageUnitSet.isEmployment()){
-			val empSetOpt = require.monthFlexCalcSetByEmployment(companyId, employmentCd);
+			val empSetOpt = require.empFlexMonthActCalSet(companyId, employmentCd);
 			if (empSetOpt.isPresent()) return Optional.of(empSetOpt.get());
 		}
 		
@@ -65,13 +65,9 @@ public class GetFlexAggrSet {
 		return Optional.empty();
 	}
 	
-	public static interface RequireM1 {
+	public static interface RequireM1 extends WkpFlexMonthActCalSet.Require, EmpFlexMonthActCalSet.Require {
 		
 		List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId, 
 				String employeeId, GeneralDate baseDate);
-
-		Optional<WkpFlexMonthActCalSet> monthFlexCalcSetByWorkplace(String cid, String wkpId);
-
-		Optional<EmpFlexMonthActCalSet> monthFlexCalcSetByEmployment(String cid, String empCode);
 	}
 }

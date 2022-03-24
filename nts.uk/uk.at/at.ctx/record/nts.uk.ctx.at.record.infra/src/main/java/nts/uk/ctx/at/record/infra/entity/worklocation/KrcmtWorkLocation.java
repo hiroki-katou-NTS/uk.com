@@ -50,15 +50,15 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 	
 	/** 半径 */
 	@Column(name = "RADIUS")
-	public int radius;
+	public Integer radius;
 	
 	/** 緯度 */
 	@Column(name = "LATITUDE")
-	public double latitude;
+	public Double latitude;
 	
 	/** 経度 */
 	@Column(name = "LONGITUDE")
-	public double longitude;
+	public Double longitude;
 	
 	/** 地域コード */
 	@Column(name = "REGIONAL_CD")
@@ -79,12 +79,15 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 	
 	public static KrcmtWorkLocation toEntity(WorkLocation workLocation) {
 		
-		return new KrcmtWorkLocation(new KwlmtWorkLocationPK(workLocation.getContractCode().v(), workLocation.getWorkLocationCD().v()),
+		return new KrcmtWorkLocation(new KwlmtWorkLocationPK(
+											workLocation.getContractCode().v(), 
+											workLocation.getWorkLocationCD().v()),
 				workLocation.getWorkLocationName().v(),
-				workLocation.getStampRange().getRadius().value,
-				workLocation.getStampRange().getGeoCoordinate().getLatitude(),
-				workLocation.getStampRange().getGeoCoordinate().getLongitude(),
+				workLocation.getStampRange().map(s -> s.getRadius().value).orElse(null),
+				workLocation.getStampRange().map(s -> s.getGeoCoordinate().getLatitude()).orElse(null),
+				workLocation.getStampRange().map(s -> s.getGeoCoordinate().getLongitude()).orElse(null),
 				workLocation.getRegionCode().map(m -> m.v()).orElse(null),
+
 				workLocation.getWorkplace().isPresent() ? KrcmtWorkplacePossible.toEntiy(
 						workLocation.getContractCode().v(),
 						workLocation.getWorkLocationCD().v(),
@@ -100,10 +103,9 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 		return new WorkLocation(
 				new ContractCode(this.kwlmtWorkLocationPK.contractCode),
 				new WorkLocationCD(this.kwlmtWorkLocationPK.workLocationCD), 
-				new WorkLocationName(this.workLocationName), 
-				new StampMobilePossibleRange(
-						RadiusAtr.toEnum(this.radius), 
-						new GeoCoordinate(this.latitude, this.longitude)),
+				new WorkLocationName(this.workLocationName),
+				Optional.ofNullable(radius == null || latitude == null || longitude == null ?
+						null : new StampMobilePossibleRange(RadiusAtr.toEnum(radius), new GeoCoordinate(latitude, longitude))),
 				this.krcmtIP4Address.stream().map(c->c.toDomain()).collect(Collectors.toList()),
 				Optional.ofNullable(this.krcmtWorkplacePossible == null ? null : this.krcmtWorkplacePossible.toDomain()),
 				this.regionalCd == null ? Optional.empty() : Optional.of(new RegionCode(this.regionalCd)));

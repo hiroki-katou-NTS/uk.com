@@ -22,6 +22,9 @@ public class SptmtRoleByRoleTies extends ContractUkJpaEntity implements Serializ
 	
 	@Column(name = "WEB_MENU_CD")
 	public String webMenuCd;
+
+	@Column(name = "IS_SYSTEM_MENU")
+	public boolean isSystemMenu;
 	
 	@Override
 	protected Object getKey() {
@@ -33,7 +36,8 @@ public class SptmtRoleByRoleTies extends ContractUkJpaEntity implements Serializ
 		return new SptmtRoleByRoleTies(
 				domain.getRoleId(),
 				domain.getWebMenuCd().v(),
-				domain.getCompanyId()
+				domain.getCompanyId(),
+				domain.isSystemMenu()
 				);
 	}
 	
@@ -41,15 +45,17 @@ public class SptmtRoleByRoleTies extends ContractUkJpaEntity implements Serializ
 		return new RoleByRoleTies(
 				this.pk.roleId,
 				this.pk.companyId,
-				new WebMenuCode(this.webMenuCd)
+				new WebMenuCode(this.webMenuCd),
+				this.isSystemMenu
 				);
 	}
 
 
-	public SptmtRoleByRoleTies(String roleId, String webMenuCd, String companyId) {
+	public SptmtRoleByRoleTies(String roleId, String webMenuCd, String companyId, boolean isSystemMenu) {
 		super();
 		val pk = new SptmtRoleByRoleTiesPK(roleId,companyId);
 		this.pk = pk;
 		this.webMenuCd = webMenuCd;
+		this.isSystemMenu = isSystemMenu;
 	}
 }

@@ -54,7 +54,7 @@ public class PasswordAuthenticateWithEmployeeCode {
 	
 	public static interface Require extends
 			FailedPasswordAuthenticate.Require,
-			EmployeeIdentify.Require{
+			EmployeeIdentify.RequireByEmployeeCode {
 		
 		Optional<LoginPasswordOfUser> getLoginPasswordOfUser(String userId);
 		

@@ -1,53 +1,40 @@
 package nts.uk.ctx.sys.gateway.infra.repository.singlesignon.saml;
 
-import java.util.Optional;
+import lombok.val;
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.assoc.IdpUserAssociation;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.assoc.IdpUserAssociationRepository;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.assoc.SamlIdpUserName;
+import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.saml.SgwmtSamlUserAssocEmp;
 
 import javax.ejb.Stateless;
-
-import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.IdpUserAssociation;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.IdpUserAssociationRepository;
-import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.saml.SgwmtIdpUserAssociatation;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import java.util.Optional;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaIdpUserAssociationRepository extends JpaRepository implements IdpUserAssociationRepository {
 	
-	private final String BASIC_SELECT 
-					= "select * from SGWMT_SAML_USER_ASSOCIATION ";
-	
-	private SgwmtIdpUserAssociatation fromDomain(IdpUserAssociation domain) {
-		return new SgwmtIdpUserAssociatation(
-				domain.getCompanyId(),
-				domain.getEmployeeId(), 
-				domain.getIdpUserName());
-	}
-
 	@Override
 	public void insert(IdpUserAssociation domain) {
-		this.commandProxy().insert(fromDomain(domain));
+		val entity = SgwmtSamlUserAssocEmp.toEntity(domain);
+		this.commandProxy().insert(entity);
 	}
 
 	@Override
-	public void delete(IdpUserAssociation domain) {
-		this.commandProxy().remove(fromDomain(domain));
+	public void delete(String tenantCode, SamlIdpUserName idpUserName) {
+		String query = "delete from SgwmtSamlUserAssocEmp e where e.pk.contractCode = :cont and e.pk.idpUserName = :name";
+		this.getEntityManager().createQuery(query)
+				.setParameter("cont", tenantCode)
+				.setParameter("name", idpUserName.v())
+				.executeUpdate();
 	}
 
 	@Override
-	public Optional<IdpUserAssociation> findByEmployee(String employeeId) {
-		String query = BASIC_SELECT 
-				+ "where SID = @employeeId ";
-		return new NtsStatement(query, this.jdbcProxy())
-				.paramString("employeeId", employeeId)
-				.getSingle(rec -> SgwmtIdpUserAssociatation.MAPPER.toEntity(rec).toDomain());
-	}
-
-	@Override
-	public Optional<IdpUserAssociation> findByIdpUser(String idpUserId) {
-		String query = BASIC_SELECT 
-				+ "where IDP_USER_NAME = @idpUserId ";
-		return new NtsStatement(query, this.jdbcProxy())
-				.paramString("idpUserId", idpUserId)
-				.getSingle(rec -> SgwmtIdpUserAssociatation.MAPPER.toEntity(rec).toDomain());
+	public Optional<IdpUserAssociation> findByIdpUser(String tenantCode, SamlIdpUserName idpUserName) {
+		val pk = new SgwmtSamlUserAssocEmp.PK(tenantCode, idpUserName.v());
+		return this.queryProxy().find(pk, SgwmtSamlUserAssocEmp.class)
+				.map(e -> e.toDomain());
 	}
 }

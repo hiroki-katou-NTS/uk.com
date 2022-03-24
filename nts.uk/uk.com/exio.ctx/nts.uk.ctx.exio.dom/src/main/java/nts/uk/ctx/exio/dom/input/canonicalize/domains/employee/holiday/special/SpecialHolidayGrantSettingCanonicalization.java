@@ -21,7 +21,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
  * 社員の特別休暇付与設定の正準化
@@ -65,7 +64,7 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 				}
 				importingKeys.add(keyValue);
 				val addedInterm = interm.addCanonicalized(getFixedItems());
-				super.canonicalize(require, context, addedInterm, keyValue);
+				super.canonicalize(require, context, addedInterm);
 			}
 		});
 	}
@@ -86,11 +85,6 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 		return new KeyValues(Arrays.asList(
 				interm.getItemByNo(Items.SID).get().getString(),
 				interm.getItemByNo(Items.特別休暇情報コード).get()));
-	}
-	
-	@Override
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace){
-		return Arrays.asList(Items.SID);
 	}
 	
 	@Override
