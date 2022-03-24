@@ -22,13 +22,6 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class KrcmtRegionalTimeDifferenceMgtPk implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * 契約コード
-	 */
-	@Basic(optional = false)
-	@Column(name = "CONTRACT_CD")
-	public String contractCode;
 	
 	/**
 	 * コード

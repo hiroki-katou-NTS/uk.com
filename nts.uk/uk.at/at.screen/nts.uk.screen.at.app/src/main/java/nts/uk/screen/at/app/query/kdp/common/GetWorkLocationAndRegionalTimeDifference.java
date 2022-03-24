@@ -51,7 +51,7 @@ public class GetWorkLocationAndRegionalTimeDifference {
 		if (workLocation.isPresent()) {
 			WorkLocationRequireImpl require = new WorkLocationRequireImpl(regionalTimeDifferenceRepository);
 			
-			result.setRegional(workLocation.get().findTimeDifference(require, param.getContractCode()));
+			result.setRegional(workLocation.get().findTimeDifference(require));
 			// Step4
 			this.workLocationRepository.findPossibleByCid(param.getContractCode(), param.getWorkLocationCode(), AppContexts.user().companyId()).ifPresent(p->{
 				result.setWorkPlaceId(p.getWorkpalceId());
@@ -77,8 +77,8 @@ public class GetWorkLocationAndRegionalTimeDifference {
 		private RegionalTimeDifferenceRepository regionalTimeDifferenceRepository;
 
 		@Override
-		public Optional<RegionalTimeDifference> get(String contractCode, int code) {
-			return regionalTimeDifferenceRepository.get(contractCode, code);
+		public Optional<RegionalTimeDifference> get(int code) {
+			return regionalTimeDifferenceRepository.get(code);
 		}
 
 	}

@@ -73,16 +73,16 @@ public class WorkLocation extends AggregateRoot {
 	 * 
 	 * @param require
 	 * 			@Require
-	 * @param contractCode
+	 * @param 
 	 *            契約コード
 	 * @return
 	 */
-	public int findTimeDifference(Require require, String contractCode) {
+	public int findTimeDifference(Require require) {
 		if (!this.regionCode.isPresent()) {
 			return 0;
 		}
 
-		Optional<RegionalTimeDifference> regionalTimeDifference = require.get(contractCode, this.regionCode.get().v());
+		Optional<RegionalTimeDifference> regionalTimeDifference = require.get(this.regionCode.get().v());
 		if (regionalTimeDifference.isPresent()) {
 			return regionalTimeDifference.get().getRegionalTimeDifference().v();
 		}
@@ -94,6 +94,6 @@ public class WorkLocation extends AggregateRoot {
 	public static interface Require {
 		// [R-1] 地域別時差管理を取得する
 		// 	地域別時差管理Repository.get(契約コード,コード)
-		Optional<RegionalTimeDifference> get(String contractCode, int code);
+		Optional<RegionalTimeDifference> get(int code);
 	}
 }
