@@ -11,8 +11,10 @@ module nts.uk.at.view.kmr002.a.model {
     export class ScreenModel {
 		modeFuture: KnockoutObservable<boolean> = ko.observable(true);
 		date: KnockoutObservable<any> = ko.observable(moment(new Date()).format("YYYY/MM/DD"));
+		dateBefore: any = null;
 		frameOption: KnockoutObservableArray<any> = ko.observableArray([]);
 		currentFrameNo: KnockoutObservable<number> = ko.observable(null);
+		listOrder: any[] = [];
 		timeLabel: KnockoutObservable<string> = ko.pureComputed(() => {
 			let self = this;
 			if(self.currentFrameNo()) {
@@ -100,42 +102,228 @@ module nts.uk.at.view.kmr002.a.model {
 				if(nts.uk.ui.errors.hasError()) {
 					return;
 				}
-				
-				self.getData().done(() => {
-					if(self.currentFrameNo()==1) {
-						let reservationFrame1 = _.find(self.listOrder, o => o.closingTimeFrame==1);
-						if(reservationFrame1) {
-							if(reservationFrame1.ordered) {
-								error({ messageId: 'Msg_2284' });	
+
+				let self = this,
+					closingTimeFrameNo = self.currentFrameNo(),
+					date = moment(self.dateBefore).format("YYYY/MM/DD"),
+					details: Array<any> = [],
+					positiveCountLst1 = _.filter(self.bentoFrame1List(), (o) => o.bentoCount()>0),
+					positiveCountLst2 = _.filter(self.bentoFrame2List(), (o) => o.bentoCount()>0);
+
+					if (self.dateBefore != null && self.checkChangeOrder(self.currentFrameNo() == 1 ? positiveCountLst1 : positiveCountLst2, self.currentFrameNo()) && 
+						((self.currentFrameNo() == 1 && positiveCountLst1.length > 0) || (self.currentFrameNo() == 2 && positiveCountLst2.length > 0))) {
+						confirm("Msg_3326").ifYes(() => {
+							if(_.isEmpty(self.listOrder) && _.isEmpty(_.concat(positiveCountLst1, positiveCountLst2))) {
+								return error({ messageId: 'Msg_1605' });
 							}
-						}
-					}
-					if(self.currentFrameNo()==2) {
-						let reservationFrame2 = _.find(self.listOrder, o => o.closingTimeFrame==2);
-						if(reservationFrame2) {
-							if(reservationFrame2.ordered) {
-								error({ messageId: 'Msg_2284' });	
+							if (self.currentFrameNo() === 1) {
+								_.forEach(positiveCountLst1, (item) => {
+									details.push({
+										closingTimeFrame: 1,
+										frameNo: item.frameNo(),
+										bentoCount: item.bentoCount()
+									})		
+								});
 							}
-						}
-					}
-				}).then(() => {
-					if(moment(value).isBefore(moment(new Date()).format("YYYY/MM/DD"))) {
-						self.modeFuture(false);
+							if (self.currentFrameNo() === 2) {
+								_.forEach(positiveCountLst2, (item) => {
+									details.push({
+										closingTimeFrame: 2,
+										frameNo: item.frameNo(),
+										bentoCount: item.bentoCount()
+									})		
+								});
+							}
+							let command = { date, closingTimeFrameNo, details };
+							if(_.isEmpty(self.listOrder)) {
+								nts.uk.ui.block.invisible();
+								service.register(command).done(() => {
+									info({ messageId: "Msg_15" }).then(() => {
+										self.getData();
+									});	
+								}).fail((res: any) => {
+									error({ messageId: res.messageId });
+								}).always(() => {
+									nts.uk.ui.block.clear();	
+								});
+							} else {
+								nts.uk.ui.block.invisible();
+								service.update(command).done(() => {
+									info({ messageId: "Msg_15" });	
+								}).fail((res: any) => {
+									error({ messageId: res.messageId });
+								}).always(() => {
+									nts.uk.ui.block.clear();	
+								});
+							}
+						}).then(() => {
+							self.dateBefore = self.date()
+							self.getData().done(() => {
+								if(self.currentFrameNo()==1) {
+									let reservationFrame1 = _.find(self.listOrder, o => o.closingTimeFrame==1);
+									if(reservationFrame1) {
+										if(reservationFrame1.ordered) {
+											error({ messageId: 'Msg_2284' });	
+										}
+									}
+								}
+								if(self.currentFrameNo()==2) {
+									let reservationFrame2 = _.find(self.listOrder, o => o.closingTimeFrame==2);
+									if(reservationFrame2) {
+										if(reservationFrame2.ordered) {
+											error({ messageId: 'Msg_2284' });	
+										}
+									}
+								}
+							}).then(() => {
+								if(moment(value).isBefore(moment(new Date()).format("YYYY/MM/DD"))) {
+									self.modeFuture(false);
+								} else {
+									self.modeFuture(true);
+								}
+								if(!self.modeFuture()) {
+									error({ messageId: 'Msg_2283' });	
+								}
+							});
+						})
 					} else {
-						self.modeFuture(true);
+						self.dateBefore = self.date()
+						self.getData().done(() => {
+							if(self.currentFrameNo()==1) {
+								let reservationFrame1 = _.find(self.listOrder, o => o.closingTimeFrame==1);
+								if(reservationFrame1) {
+									if(reservationFrame1.ordered) {
+										error({ messageId: 'Msg_2284' });	
+									}
+								}
+							}
+							if(self.currentFrameNo()==2) {
+								let reservationFrame2 = _.find(self.listOrder, o => o.closingTimeFrame==2);
+								if(reservationFrame2) {
+									if(reservationFrame2.ordered) {
+										error({ messageId: 'Msg_2284' });	
+									}
+								}
+							}
+						}).then(() => {
+							if(moment(value).isBefore(moment(new Date()).format("YYYY/MM/DD"))) {
+								self.modeFuture(false);
+							} else {
+								self.modeFuture(true);
+							}
+							if(!self.modeFuture()) {
+								error({ messageId: 'Msg_2283' });	
+							}
+						});
 					}
-					if(!self.modeFuture()) {
-						error({ messageId: 'Msg_2283' });	
-					}
-				});
+				
 			});
 			
 			self.currentFrameNo.subscribe(() => {
 				self.canOrder(self.getCanOrder());
+
+				let date = moment(self.dateBefore).format("YYYY/MM/DD"),
+				closingTimeFrameNo = self.currentFrameNo() == 1 ? 2 : 1,
+				details: Array<any> = [],
+				positiveCountLst1 = _.filter(self.bentoFrame1List(), (o) => o.bentoCount()>0),
+				positiveCountLst2 = _.filter(self.bentoFrame2List(), (o) => o.bentoCount()>0);
+
+				if (self.checkChangeOrder(self.currentFrameNo() == 1 ? positiveCountLst2 : positiveCountLst1, self.currentFrameNo() == 1 ? 2 : 1) && 
+					((self.currentFrameNo() == 2 && positiveCountLst1.length > 0) || (self.currentFrameNo() == 1 && positiveCountLst2.length > 0))) {
+					confirm("Msg_3326").ifYes(() => {
+						if(_.isEmpty(self.listOrder) && _.isEmpty(_.concat(positiveCountLst1, positiveCountLst2))) {
+							return error({ messageId: 'Msg_1605' });
+						}
+						if (self.currentFrameNo() === 2) {
+							_.forEach(positiveCountLst1, (item) => {
+								details.push({
+									closingTimeFrame: 1,
+									frameNo: item.frameNo(),
+									bentoCount: item.bentoCount()
+								})		
+							});
+						}
+						if (self.currentFrameNo() === 1) {
+							_.forEach(positiveCountLst2, (item) => {
+								details.push({
+									closingTimeFrame: 2,
+									frameNo: item.frameNo(),
+									bentoCount: item.bentoCount()
+								})		
+							});
+						}
+						let command = { date, closingTimeFrameNo, details };
+						if(_.isEmpty(self.listOrder)) {
+							nts.uk.ui.block.invisible();
+							service.register(command).done(() => {
+								info({ messageId: "Msg_15" }).then(() => {
+									self.getData();
+								});	
+							}).fail((res: any) => {
+								error({ messageId: res.messageId });
+							}).always(() => {
+								nts.uk.ui.block.clear();	
+							});
+						} else {
+							nts.uk.ui.block.invisible();
+							service.update(command).done(() => {
+								info({ messageId: "Msg_15" });	
+							}).fail((res: any) => {
+								error({ messageId: res.messageId });
+							}).always(() => {
+								nts.uk.ui.block.clear();	
+							});
+						}
+					})
+				}
 			});
 			dfd.resolve();
             return dfd.promise();
         }
+
+		checkChangeOrder(countLst: any[], frameNo: number): boolean {
+			let self = this;
+			let result = false;
+
+			// if (_.find(self.listOrder, (o: any) => o.closingTimeFrame==frameNo)) {
+			// 	let frameItemsOrigin: any[] = _.find(self.listOrder, (o: any) => o.closingTimeFrame==frameNo).listBentoReservationDetail;
+			// 	frameItemsOrigin.forEach((item: any) => {
+			// 		let itemByFrame: any = _.find(countLst, (o: any) => o.frameNo() == item.frameNo);
+			// 		if (itemByFrame) {
+			// 			let bentoCount = itemByFrame.bentoCount();
+			// 			if (item.bentoCount != bentoCount) {
+			// 				result = true;
+			// 			}
+			// 		} else {
+			// 			result = true;
+			// 		}
+			// 	});
+			// } else {
+			// 	result = true;
+			// }
+			if (_.find(self.listOrder, (o: any) => o.closingTimeFrame==frameNo)) {
+				let frameItemsOrigin: any[] = _.find(self.listOrder, (o: any) => o.closingTimeFrame==frameNo).listBentoReservationDetail;
+				let menuFrame: any[] = frameNo == 1 ? self.bentoFrame1List() : self.bentoFrame2List();
+				menuFrame.forEach(o => {
+					let itemOrigin = _.find(frameItemsOrigin, x => x.frameNo == o.frameNo());
+					let itemScreen = _.find(countLst, x => x.frameNo() == o.frameNo());
+
+					if (!itemOrigin && itemScreen) result = true;
+					if (itemOrigin && !itemScreen) result = true;
+					if (itemOrigin && itemScreen) {
+						if (itemOrigin.bentoCount != itemScreen.bentoCount()) {
+							result = true;
+						}
+					}
+				})
+			} else {
+				if (countLst.length > 0) {
+					return true;
+				}
+			}
+
+			return result;
+		}
 
 		getData(): JQueryPromise<any> {
 			let self = this,
@@ -144,10 +332,13 @@ module nts.uk.at.view.kmr002.a.model {
 				param = { date }; 
 			nts.uk.ui.block.invisible();
 			service.startScreen(param).done((data: any) => {
+				self.listOrder = data.listOrder;
 				self.bentoMenuByClosingTimeDto = data.bentoMenuByClosingTimeDto;
 				self.frameOption(data.bentoMenuByClosingTimeDto.reservationRecTimeZoneLst);
 				if(!_.isEmpty(self.frameOption())) {
-					self.currentFrameNo(_.head(self.frameOption()).frameNo);
+					if (!self.currentFrameNo()) {
+						self.currentFrameNo(_.head(self.frameOption()).frameNo);
+					}
 				}
 				let menu1: Array<Bento> = [];
 				_.forEach(data.bentoMenuByClosingTimeDto.menu1, (item: any) => {
@@ -218,6 +409,7 @@ module nts.uk.at.view.kmr002.a.model {
 
 		register() {
 			let self = this,
+				closingTimeFrameNo = self.currentFrameNo(),
 				date = moment(self.date()).format("YYYY/MM/DD"),
 				details: Array<any> = [],
 				positiveCountLst1 = _.filter(self.bentoFrame1List(), (o) => o.bentoCount()>0),
@@ -225,21 +417,26 @@ module nts.uk.at.view.kmr002.a.model {
 			if(_.isEmpty(self.listOrder) && _.isEmpty(_.concat(positiveCountLst1, positiveCountLst2))) {
 				return error({ messageId: 'Msg_1605' });
 			}
-			_.forEach(positiveCountLst1, (item) => {
-				details.push({
-					closingTimeFrame: 1,
-					frameNo: item.frameNo(),
-					bentoCount: item.bentoCount()
-				})		
-			});
-			_.forEach(positiveCountLst2, (item) => {
-				details.push({
-					closingTimeFrame: 2,
-					frameNo: item.frameNo(),
-					bentoCount: item.bentoCount()
-				})		
-			});
-			let command = { date, details };
+
+			if (self.currentFrameNo() === 1) {
+				_.forEach(positiveCountLst1, (item) => {
+					details.push({
+						closingTimeFrame: 1,
+						frameNo: item.frameNo(),
+						bentoCount: item.bentoCount()
+					})		
+				});
+			}
+			if (self.currentFrameNo() === 2) {
+				_.forEach(positiveCountLst2, (item) => {
+					details.push({
+						closingTimeFrame: 2,
+						frameNo: item.frameNo(),
+						bentoCount: item.bentoCount()
+					})		
+				});
+			}
+			let command = { date, closingTimeFrameNo, details };
 			if(_.isEmpty(self.listOrder)) {
 				nts.uk.ui.block.invisible();
 				service.register(command).done(() => {
@@ -267,10 +464,78 @@ module nts.uk.at.view.kmr002.a.model {
 
 		toKMR005() {
 			const self = this;
-			nts.uk.request.jump("/view/kmr/005/a/index.xhtml", { 
-				yearMonth: moment(self.date()).utc().format("YYYY/MM"),
-				employeeID: __viewContext.user.employeeId 
-			});
+			let date = moment(self.dateBefore).format("YYYY/MM/DD"),
+				closingTimeFrameNo = self.currentFrameNo(),
+				details: Array<any> = [],
+				positiveCountLst1 = _.filter(self.bentoFrame1List(), (o) => o.bentoCount()>0),
+				positiveCountLst2 = _.filter(self.bentoFrame2List(), (o) => o.bentoCount()>0);
+
+			if (self.checkChangeOrder(self.currentFrameNo() == 1 ? positiveCountLst1 : positiveCountLst2, self.currentFrameNo()) && ((self.currentFrameNo() == 1 && positiveCountLst1.length > 0) || (self.currentFrameNo() == 2 && positiveCountLst2.length > 0))) {
+				confirm("Msg_3326").ifYes(() => {
+					if(_.isEmpty(self.listOrder) && _.isEmpty(_.concat(positiveCountLst1, positiveCountLst2))) {
+						return error({ messageId: 'Msg_1605' });
+					}
+					if (self.currentFrameNo() === 1) {
+						_.forEach(positiveCountLst1, (item) => {
+							details.push({
+								closingTimeFrame: 1,
+								frameNo: item.frameNo(),
+								bentoCount: item.bentoCount()
+							})		
+						});
+					}
+					if (self.currentFrameNo() ===2) {
+						_.forEach(positiveCountLst2, (item) => {
+							details.push({
+								closingTimeFrame: 2,
+								frameNo: item.frameNo(),
+								bentoCount: item.bentoCount()
+							})		
+						});
+					}
+					let command = { date, closingTimeFrameNo, details };
+					if(_.isEmpty(self.listOrder)) {
+						nts.uk.ui.block.invisible();
+						service.register(command).done(() => {
+							info({ messageId: "Msg_15" }).then(() => {
+								self.getData();
+							});	
+						}).fail((res: any) => {
+							error({ messageId: res.messageId });
+						}).always(() => {
+							nts.uk.ui.block.clear();
+							nts.uk.request.jump("/view/kmr/005/a/index.xhtml", { 
+								yearMonth: moment(self.date()).utc().format("YYYY/MM"),
+								employeeID: __viewContext.user.employeeId 
+							});	
+						});
+					} else {
+						nts.uk.ui.block.invisible();
+						service.update(command).done(() => {
+							info({ messageId: "Msg_15" });	
+						}).fail((res: any) => {
+							error({ messageId: res.messageId });
+						}).always(() => {
+							nts.uk.ui.block.clear();
+							nts.uk.request.jump("/view/kmr/005/a/index.xhtml", { 
+								yearMonth: moment(self.date()).utc().format("YYYY/MM"),
+								employeeID: __viewContext.user.employeeId 
+							});	
+						});
+					}
+				})
+				// .then(() => {
+				// 	nts.uk.request.jump("/view/kmr/005/a/index.xhtml", { 
+				// 		yearMonth: moment(self.date()).utc().format("YYYY/MM"),
+				// 		employeeID: __viewContext.user.employeeId 
+				// 	});
+				// })
+			} else {
+				nts.uk.request.jump("/view/kmr/005/a/index.xhtml", { 
+					yearMonth: moment(self.date()).utc().format("YYYY/MM"),
+					employeeID: __viewContext.user.employeeId 
+				});
+			}
 		}
     }
 

@@ -53,6 +53,7 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 		
 		BentoReserveCommand command = context.getCommand();
 		GeneralDate date = GeneralDate.fromString(command.getDate(), "yyyy/MM/dd");
+		int closingTimeFrameNo = command.getClosingTimeFrameNo();
 
  		Optional<WorkLocationCode> workLocationCode = command.getWorkLocationCode() != null?
 				Optional.of(new WorkLocationCode(command.getWorkLocationCode())): Optional.empty();
@@ -68,7 +69,7 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 		GeneralDateTime datetime = GeneralDateTime.now();
 		
 		transaction.execute(() -> {
-			if(!CollectionUtil.isEmpty(command.getFrame1Bentos().values())) {
+			if(!CollectionUtil.isEmpty(command.getFrame1Bentos().values()) && closingTimeFrameNo == 1) {
 				AtomTask persist1 = BentoReserveService.reserve(
 						require, 
 						reservationRegisterInfo, 
@@ -80,7 +81,7 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 				persist1.run();
 			}
 			
-			if(!CollectionUtil.isEmpty(command.getFrame2Bentos().values())) {
+			if(!CollectionUtil.isEmpty(command.getFrame2Bentos().values()) && closingTimeFrameNo == 2) {
 				AtomTask persist2 = BentoReserveService.reserve(
 						require, 
 						reservationRegisterInfo, 
