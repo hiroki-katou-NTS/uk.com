@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
@@ -24,11 +25,7 @@ import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
@@ -48,19 +45,20 @@ public class BreakTimeSheetGetter {
 		
 		val cid = AppContexts.user().companyId();
 		
-		val workType = require.workType(cid, domainDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).orElse(null);
+		val workType = require.workType(cid, domainDaily.getWorkInformation().getRecordInfo().getWorkTypeCode()).orElse(null);
 		if (workType == null) {
 			return new ArrayList<>();
 		}
 		/** 出勤系か判定する */
 		if (workType.getAttendanceHolidayAttr() == AttendanceHolidayAttr.HOLIDAY) {
 			
-			/** 休憩をクレアする */
+			/** 休憩をクリアする */
 			return new ArrayList<>();
 		}
 		
 		/** require.就業時間帯を取得 */
-		val workTimeSet = getWorkTime(require, cid, domainDaily);
+		val workTimeSet = IntegrationOfWorkTime.getWorkTime(require, cid,
+				domainDaily.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull());
 		
 		/** 就業時間帯=NULLチェック */
 		if(workTimeSet == null) {
@@ -70,7 +68,7 @@ public class BreakTimeSheetGetter {
 			return new ArrayList<>();
 		}
 		/** 「１日の計算範囲」クラスを作成 */
-		val oneDayCalcRange = require.createOneDayRange(require.predetemineTimeSetting(cid, workTimeSet.getCode().v()), 
+		CalculationRangeOfOneDay oneDayCalcRange = require.createOneDayRange( 
 				domainDaily, Optional.of(workTimeSet.getCommonSetting()), 
 				workType, JustCorrectionAtr.USE, Optional.of(workTimeSet.getCode()));
 		
@@ -120,9 +118,12 @@ public class BreakTimeSheetGetter {
 		}
 		
 		/** 休憩時間帯に変換 */ 
-		deductionTimeSheet = deductionTimeSheet.stream().filter(c -> c.getDeductionAtr() == DeductionClassification.BREAK)
+		deductionTimeSheet = deductionTimeSheet.stream()
+				.filter(c -> c.getDeductionAtr() == DeductionClassification.BREAK
+						&& (c.getBreakAtr().isPresent() ? c.getBreakAtr().get() != BreakClassification.BREAK_STAMP
+								: true))
 				.collect(Collectors.toList());
-		
+
 		List<BreakTimeSheet> breakTimeSheet = new ArrayList<>();
 		for(int idx = 0; idx < deductionTimeSheet.size(); idx++) {
 			val dudectionSheet = deductionTimeSheet.get(idx);
@@ -161,7 +162,7 @@ public class BreakTimeSheetGetter {
 									new BreakTimeOfDailyAttd(),
 									Optional.empty(),
 									new ArrayList<>()),
-							personDailySetting.getAddSetting().getVacationCalcMethodSet(),
+							personDailySetting.getAddSetting().getAddSetOfWorkingTime(),
 							timeLeavingWork, 
 							withinWorkTimeSheet));
 		}
@@ -182,57 +183,14 @@ public class BreakTimeSheetGetter {
 		
 		return timeSheet.getForDeductionTimeZoneList();
 	}
-	
-	private static IntegrationOfWorkTime getWorkTime(RequireM2 require, String cid, IntegrationOfDaily domainDaily) {
-		/** require.就業時間帯を取得 */
-		val workTimeSet = domainDaily.getWorkInformation().getRecordInfo()
-				.getWorkTimeCodeNotNull()
-				.flatMap(c -> require.workTimeSetting(cid, c.v()))
-				.orElse(null);
-		
-		/** 就業時間帯=NULLチェック */
-		if(workTimeSet == null) {
-			return null;
-		}
-		
-		switch(workTimeSet.getWorkTimeDivision().getWorkTimeForm()) {
-			case FIXED:				
-				return new IntegrationOfWorkTime(workTimeSet.getWorktimeCode(), workTimeSet, 
-						                         require.fixedWorkSetting(cid, workTimeSet.getWorktimeCode().v()).get());
-			case FLEX:				
-				return new IntegrationOfWorkTime(workTimeSet.getWorktimeCode(), workTimeSet, 
-												 require.flexWorkSetting(cid, workTimeSet.getWorktimeCode().v()).get());
-			case FLOW:				
-				return new IntegrationOfWorkTime(workTimeSet.getWorktimeCode(), workTimeSet, 
-						                         require.flowWorkSetting(cid, workTimeSet.getWorktimeCode().v()).get());
-			case TIMEDIFFERENCE:	
-				throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
-			default:				
-				throw new RuntimeException("Non-conformity No Work");
-		}
+
+	public static interface RequireM3 extends PredetemineTimeSetting.Require{
+
 	}
 
-	public static interface RequireM3 {
-
-		Optional<PredetemineTimeSetting> predetemineTimeSetting(String cid, String workTimeCode);
-	}
-
-	public static interface RequireM2 {
+	public static interface RequireM1 extends IntegrationOfWorkTime.RequireM2, RequireM3, WorkType.Require {
 		
-		Optional<WorkTimeSetting> workTimeSetting(String companyId, String workTimeCode);
-		
-		Optional<FixedWorkSetting> fixedWorkSetting(String companyId, String workTimeCode);
-		
-		Optional<FlowWorkSetting> flowWorkSetting(String companyId, String workTimeCode);
-		
-		Optional<FlexWorkSetting> flexWorkSetting(String companyId,String workTimeCode);
-	}
-
-	public static interface RequireM1 extends RequireM2, RequireM3 {
-		
-		Optional<WorkType> workType(String companyId, String workTypeCd);
-		
-		CalculationRangeOfOneDay createOneDayRange(Optional<PredetemineTimeSetting> predetemineTimeSet,
+		CalculationRangeOfOneDay createOneDayRange(
 				IntegrationOfDaily integrationOfDaily, Optional<WorkTimezoneCommonSet> commonSet,
 				WorkType workType, JustCorrectionAtr justCorrectionAtr, Optional<WorkTimeCode> workTimeCode);
 	}

@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
@@ -19,7 +17,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
+import nts.uk.ctx.at.request.dom.application.common.service.application.ApproveAppProcedure;
+import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApproveAppProcedureOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -61,9 +60,6 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 	private AbsenceLeaveAppRepository absenceLeaveAppRepository;
 	
 	@Inject
-	private RegisterAtApproveReflectionInfoService registerAtApproveReflectionInfoService;
-	
-	@Inject
 	private AbsenceServiceProcess absenceServiceProcess;
 	
 	@Inject
@@ -83,6 +79,9 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 	
 	@Inject
 	private ApplicationApprovalService appRepository;
+	
+	@Inject
+	private ApproveAppProcedure approveAppProcedure;
 	
 	/**
 	 * @name 登録する
@@ -112,7 +111,8 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 				command.existAbs() ? command.abs.leaveComDayOffMana.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
 				command.isCheckFlag(), 
 				existFlag, 
-				command.getApplicationForHoliday().getWorkTypeList().stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+				command.getApplicationForHoliday().getWorkTypeList().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				EnumAdaptor.valueOf(command.getSubstituteManagement(), ManageDistinct.class));
 		
 		//振休振出申請（新規）登録処理 (Xử lý đăng ký application nghỉ bù làm bù (New))
 		//QA: http://192.168.50.4:3000/issues/113451 -> done
@@ -190,8 +190,6 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		//ドメイン「振出申請」を1件登録する(đăng ký 1 domain[đơn xin nghì bù])
 		appRepository.insertApp(rec.get(), approvalLst);
 		recruitmentAppRepository.insert(rec.get());
-		//アルゴリズム「登録前共通処理（新規）」を実行する(Thực hiện thuật toán [xử lý chung trước khi đăng ký(new)])
-		String recReflectAppId = registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(rec.get().getEmployeeID(), rec.get());
 		//休暇紐付け管理を登録する
 		absenceServiceProcess.registerVacationLinkManage(leaveComDayOffMana_Rec, new ArrayList<>());
 //		//暫定データの登録(đăng ký data tạm thời)
@@ -203,8 +201,23 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		//ドメイン「振休申請」を1件登録する
 		appRepository.insertApp(abs.get(), approvalLst);
 		absenceLeaveAppRepository.insert(abs.get());
-		//アルゴリズム「登録前共通処理（新規）」を実行する(Thực hiện thuật toán [xử lý chung trước khi đăng ký(new)])
-		String absReflectAppId = registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(abs.get().getEmployeeID(), abs.get());
+		
+		// 申請承認する時の手続き
+		List<String> autoSuccessMail = new ArrayList<>();
+		List<String> autoFailMail = new ArrayList<>();
+		List<String> autoFailServer = new ArrayList<>();
+		ApproveAppProcedureOutput approveAppProcedureOutput = approveAppProcedure.approveAppProcedure(
+        		AppContexts.user().companyId(), 
+        		Arrays.asList(rec.get(), abs.get()), 
+        		Collections.emptyList(), 
+        		AppContexts.user().employeeId(), 
+        		Optional.empty(), 
+        		applicationSetting.getAppTypeSettings(), 
+        		false,
+        		true);
+		autoSuccessMail.addAll(approveAppProcedureOutput.getSuccessList().stream().distinct().collect(Collectors.toList()));
+		autoFailMail.addAll(approveAppProcedureOutput.getFailList().stream().distinct().collect(Collectors.toList()));
+		autoFailServer.addAll(approveAppProcedureOutput.getFailServerList().stream().distinct().collect(Collectors.toList()));
 		
 		//振休振出同時登録時紐付け管理を登録する
 		this.registerTheLinkManagement(companyId, abs.get(), rec.get());
@@ -231,14 +244,12 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 					mailServerSet, 
 					false);
 		}
-		List<String> reflectAppIdLst = new ArrayList<>();
-		if(Strings.isNotBlank(recReflectAppId)) {
-			reflectAppIdLst.add(recReflectAppId);
-		}
-		if(Strings.isNotBlank(absReflectAppId)) {
-			reflectAppIdLst.add(absReflectAppId);
-		}
-		result.setReflectAppIdLst(reflectAppIdLst);
+		result.getAutoSuccessMail().addAll(autoSuccessMail);
+		result.getAutoFailMail().addAll(autoFailMail);
+		result.getAutoFailServer().addAll(autoFailServer);
+		result.setAutoSuccessMail(result.getAutoSuccessMail().stream().distinct().collect(Collectors.toList()));
+		result.setAutoFailMail(result.getAutoFailMail().stream().distinct().collect(Collectors.toList()));
+		result.setAutoFailServer(result.getAutoFailServer().stream().distinct().collect(Collectors.toList()));
 		return result;
 	}
 	
@@ -261,8 +272,24 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		//ドメイン「振出申請」を1件登録する(đăng ký 1 domain[đơn xin nghì bù])
 		appRepository.insertApp(rec.get(), approvalLst);
 		recruitmentAppRepository.insert(rec.get());
-		//アルゴリズム「登録前共通処理（新規）」を実行する(Thực hiện thuật toán [xử lý chung trước khi đăng ký(new)])
-		String reflectAppId = registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(rec.get().getEmployeeID(), rec.get());
+		
+		// 申請承認する時の手続き
+		List<String> autoSuccessMail = new ArrayList<>();
+		List<String> autoFailMail = new ArrayList<>();
+		List<String> autoFailServer = new ArrayList<>();
+		ApproveAppProcedureOutput approveAppProcedureOutput = approveAppProcedure.approveAppProcedure(
+        		AppContexts.user().companyId(), 
+        		Arrays.asList(rec.get()), 
+        		Collections.emptyList(), 
+        		AppContexts.user().employeeId(), 
+        		Optional.empty(), 
+        		applicationSetting.getAppTypeSettings(), 
+        		false,
+        		true);
+		autoSuccessMail.addAll(approveAppProcedureOutput.getSuccessList().stream().distinct().collect(Collectors.toList()));
+		autoFailMail.addAll(approveAppProcedureOutput.getFailList().stream().distinct().collect(Collectors.toList()));
+		autoFailServer.addAll(approveAppProcedureOutput.getFailServerList().stream().distinct().collect(Collectors.toList()));
+		
 		//休暇紐付け管理を登録する
 		absenceServiceProcess.registerVacationLinkManage(leaveComDayOffMana_Rec, new ArrayList<>());
 		//暫定データの登録(đăng ký data tạm thời)
@@ -282,9 +309,12 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 					mailServerSet,
 					false);
 		}
-		if(Strings.isNotBlank(reflectAppId)) {
-			result.setReflectAppIdLst(Arrays.asList(reflectAppId));
-		}
+		result.getAutoSuccessMail().addAll(autoSuccessMail);
+		result.getAutoFailMail().addAll(autoFailMail);
+		result.getAutoFailServer().addAll(autoFailServer);
+		result.setAutoSuccessMail(result.getAutoSuccessMail().stream().distinct().collect(Collectors.toList()));
+		result.setAutoFailMail(result.getAutoFailMail().stream().distinct().collect(Collectors.toList()));
+		result.setAutoFailServer(result.getAutoFailServer().stream().distinct().collect(Collectors.toList()));
 		return result;
 	}
 	
@@ -307,8 +337,24 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		//ドメイン「振休申請」を1件登録する
 		appRepository.insertApp(abs.get(), approvalLst);
 		absenceLeaveAppRepository.insert(abs.get());
-		//アルゴリズム「登録前共通処理（新規）」を実行する(Thực hiện thuật toán [xử lý chung trước khi đăng ký(new)])
-		String reflectAppId = registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(abs.get().getEmployeeID(), abs.get());
+		
+		// 申請承認する時の手続き
+		List<String> autoSuccessMail = new ArrayList<>();
+		List<String> autoFailMail = new ArrayList<>();
+		List<String> autoFailServer = new ArrayList<>();
+		ApproveAppProcedureOutput approveAppProcedureOutput = approveAppProcedure.approveAppProcedure(
+        		AppContexts.user().companyId(), 
+        		Arrays.asList(abs.get()), 
+        		Collections.emptyList(), 
+        		AppContexts.user().employeeId(), 
+        		Optional.empty(), 
+        		applicationSetting.getAppTypeSettings(), 
+        		false,
+        		true);
+		autoSuccessMail.addAll(approveAppProcedureOutput.getSuccessList().stream().distinct().collect(Collectors.toList()));
+		autoFailMail.addAll(approveAppProcedureOutput.getFailList().stream().distinct().collect(Collectors.toList()));
+		autoFailServer.addAll(approveAppProcedureOutput.getFailServerList().stream().distinct().collect(Collectors.toList()));
+		
 		//休暇紐付け管理を登録する
 		absenceServiceProcess.registerVacationLinkManage(leaveComDayOffMana_Abs, payoutSubofHDManagement_Abs);
 		//暫定データの登録(đăng ký data tạm thời)
@@ -328,9 +374,12 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 					mailServerSet,
 					false);
 		}
-		if(Strings.isNotBlank(reflectAppId)) {
-			result.setReflectAppIdLst(Arrays.asList(reflectAppId));
-		}
+		result.getAutoSuccessMail().addAll(autoSuccessMail);
+		result.getAutoFailMail().addAll(autoFailMail);
+		result.getAutoFailServer().addAll(autoFailServer);
+		result.setAutoSuccessMail(result.getAutoSuccessMail().stream().distinct().collect(Collectors.toList()));
+		result.setAutoFailMail(result.getAutoFailMail().stream().distinct().collect(Collectors.toList()));
+		result.setAutoFailServer(result.getAutoFailServer().stream().distinct().collect(Collectors.toList()));
 		return result;
 	}
 	

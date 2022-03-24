@@ -10,7 +10,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.adapter.businesscalendar.daycalendar.BasicWorkSettingImport;
 import nts.uk.ctx.at.record.dom.adapter.businesscalendar.daycalendar.RecCalendarCompanyAdapter;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.calculationsetting.BreakSwitchClass;
@@ -24,7 +23,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.E
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
@@ -48,8 +46,6 @@ public class UpdateIfNotManaged {
 	@Inject
 	private RecCalendarCompanyAdapter recCalendarCompanyAdapter;
 
-	@Inject
-	private WorkingConditionItemService workingConditionItemService;
 	
 	@Inject
 	private StampReflectionManagementRepository stampReflectionManagementRepository;
@@ -67,6 +63,7 @@ public class UpdateIfNotManaged {
 		// ドメインモデル「労働条件項目」を取得する
 		Optional<WorkingConditionItem> optWorkingConditionItem = this.workingConditionItemRepository
 				.getBySidAndStandardDate(employeeId, ymd);
+		WorkInformation workInformation = null;
 		if (optWorkingConditionItem.isPresent() && integrationOfDaily.getAffiliationInfor() != null) {
 			//スケジュール管理しないか確認
 			if (optWorkingConditionItem.get().getScheduleManagementAtr() == ManageAtr.NOTUSE) {
@@ -74,66 +71,56 @@ public class UpdateIfNotManaged {
 				Optional<StampReflectionManagement> optStampReflectionMana = stampReflectionManagementRepository.findByCid(companyId);
 				if(optStampReflectionMana.isPresent()) {
 					if(optStampReflectionMana.get().getBreakSwitchClass() == BreakSwitchClass.WORKTYPE_IS_HOLIDAY_WORK) {
-						//会社カレンダーが稼働日か非稼働日か確認する - RQ651
+						// カレンダーが稼働日か非稼働日か確認する - RQ651
 						WorkingDayCategory workingDayCategory = recCalendarCompanyAdapter.getWorkingDayAtr(cid,
 							integrationOfDaily.getAffiliationInfor().getWplID(),
 							integrationOfDaily.getAffiliationInfor().getClsCode().v(), ymd);
-						if(workingDayCategory == null) {
-							//リソースID không có nên để tạm là ""
-							listError.add(
-									new ErrorMessageInfo(companyId, employeeId, ymd, ExecutionContent.DAILY_CREATION,
-											new ErrMessageResource(""), new ErrMessageContent(TextResource.localize("Msg_588"))));
-							return new UpdateIfNotManagedOutput(false, listError);
-						}
-						//会社の基本勤務を取得する  - 基本勤務を取得する - RQ687
-						BasicWorkSettingImport settingImport = recCalendarCompanyAdapter.getBasicWorkSetting(cid,
-								integrationOfDaily.getAffiliationInfor().getWplID(),
-								integrationOfDaily.getAffiliationInfor().getClsCode().v(), workingDayCategory.value);
-						if (settingImport == null) {
-							//リソースID không có nên để tạm là ""
-							listError.add(
-									new ErrorMessageInfo(companyId, employeeId, ymd, ExecutionContent.DAILY_CREATION,
-											new ErrMessageResource(""), new ErrMessageContent(TextResource.localize("Msg_589"))));
-							return new UpdateIfNotManagedOutput(false, listError);
-						}
-						// 個人情報勤務情報を取得
-						Optional<WorkInformation> optData =  workingConditionItemService.getHolidayWorkScheduleNew(cid, employeeId, ymd,
-								settingImport.getWorktypeCode(),
-								workingDayCategory);
-						//勤務情報を反映
-						if(optData.isPresent()) {
-							integrationOfDaily.getWorkInformation().getRecordInfo().setWorkTypeCode(optData.get().getWorkTypeCode());
-							integrationOfDaily.getWorkInformation().getRecordInfo().setWorkTimeCode(optData.get().getWorkTimeCode());
-							
-							//日別勤怠の編集状態を追加する
-							Optional<EditStateOfDailyAttd> editState28 = integrationOfDaily.getEditState().stream()
-									.filter(c->c.getAttendanceItemId() == 28).findFirst();
-							Optional<EditStateOfDailyAttd> editState29 = integrationOfDaily.getEditState().stream()
-									.filter(c->c.getAttendanceItemId() == 29).findFirst();
-							if(!editState28.isPresent()) {
-								integrationOfDaily.getEditState().add(new EditStateOfDailyAttd(28, EditStateSetting.IMPRINT));
+						
+						if (workingDayCategory == null) {
+							//曜日の勤務情報を取得する
+							workInformation = optWorkingConditionItem.get().getWorkCategory().getWorkInformationDayOfTheWeek(ymd);
+						} else {
+							// 稼働日区分で勤務情報を取得する
+							if (optWorkingConditionItem.map(x -> x.getWorkCategory()).orElse(null) == null) { // 勤務情報なし
+								//リソースID không có nên để tạm là ""
+								listError.add(
+										new ErrorMessageInfo(companyId, employeeId, ymd, ExecutionContent.DAILY_CREATION,
+												new ErrMessageResource(""), new ErrMessageContent(TextResource.localize("Msg_588"))));
+								return new UpdateIfNotManagedOutput(false, listError);
+							} else { // 勤務情報なし以外
+								workInformation = optWorkingConditionItem.get().getWorkCategory().getWorkInfo(workingDayCategory);
 							}
-							if(!editState29.isPresent()) {
-								integrationOfDaily.getEditState().add(new EditStateOfDailyAttd(29, EditStateSetting.IMPRINT));
-							}
-							return new UpdateIfNotManagedOutput(true, listError);
 						}
-					}else {
+						
+					} else {
 						//曜日の勤務情報を取得する
-						WorkInformation workInformation = optWorkingConditionItem.get().getWorkCategory().getWorkInformationDayOfTheWeek(ymd);
+						workInformation = optWorkingConditionItem.get().getWorkCategory().getWorkInformationDayOfTheWeek(ymd);
 						if(!workInformation.getWorkTimeCodeNotNull().isPresent()) {
-							//取得した勤務情報の就業時間帯コードを確認する
+							// 取得した勤務情報の就業時間帯コードを確認する
 							workInformation = optWorkingConditionItem.get().getWorkCategory().getWorkInformationWorkDay();
 						}
-						//勤務情報を反映
-						integrationOfDaily.getWorkInformation().getRecordInfo().setWorkTypeCode(workInformation.getWorkTypeCode());
-						integrationOfDaily.getWorkInformation().getRecordInfo().setWorkTimeCode(workInformation.getWorkTimeCode());
-						
-						return new UpdateIfNotManagedOutput(true, listError);
 					}
 					
 					
+					
+					
 				}
+				// 勤務情報を反映
+				integrationOfDaily.getWorkInformation().getRecordInfo().setWorkTypeCode(workInformation.getWorkTypeCode());
+				integrationOfDaily.getWorkInformation().getRecordInfo().setWorkTimeCode(workInformation.getWorkTimeCode());
+				
+				// 日別勤怠の編集状態を追加する
+				Optional<EditStateOfDailyAttd> editState28 = integrationOfDaily.getEditState().stream()
+						.filter(c->c.getAttendanceItemId() == 28).findFirst();
+				Optional<EditStateOfDailyAttd> editState29 = integrationOfDaily.getEditState().stream()
+						.filter(c->c.getAttendanceItemId() == 29).findFirst();
+				if(!editState28.isPresent()) {
+					integrationOfDaily.getEditState().add(new EditStateOfDailyAttd(28, EditStateSetting.IMPRINT));
+				}
+				if(!editState29.isPresent()) {
+					integrationOfDaily.getEditState().add(new EditStateOfDailyAttd(29, EditStateSetting.IMPRINT));
+				}
+				return new UpdateIfNotManagedOutput(true, listError);
 			}
 		}
 		

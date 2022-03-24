@@ -49,7 +49,10 @@ public class WorkAvailabilityRuleWeekSetting implements WorkAvailabilityRule, Do
 	}
 
 	@Override
-	public boolean isOverHolidayMaxDays(WorkAvailabilityRule.Require require, List<WorkAvailabilityOfOneDay> workAvailabilityList) {
+	public boolean isOverHolidayMaxDays(
+			WorkAvailabilityRule.Require require,
+			String companyId,
+			List<WorkAvailabilityOfOneDay> workAvailabilityList) {
 		
 		return false;
 	}

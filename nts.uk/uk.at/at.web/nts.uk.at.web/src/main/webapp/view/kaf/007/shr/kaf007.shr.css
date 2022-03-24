@@ -4,7 +4,8 @@
 }
 
 #kaf007-share .col-1 {
-	width: 110px;
+	width: 120px;
+	padding-right: 0px;
 }
 
 #kaf007-share .col-2 {
@@ -12,7 +13,7 @@
 }
 
 #kaf007-share .col-2-5 {
-	width: 110px;
+	width: 120px;
 }
 
 #kaf007-share .col-3 {
@@ -23,6 +24,16 @@
 	width: 80px;
 }
 
-.mv-13 {
-	margin: 13px 0;
+.code-name{
+	display: inline-block;
+}
+
+.lblSiftCd, .lblWorkTypeCd {
+	line-height: 40px;
+	margin-left: 20px;
+}
+
+td {
+	text-align: left !important;
+	height: 33px !important;
 }

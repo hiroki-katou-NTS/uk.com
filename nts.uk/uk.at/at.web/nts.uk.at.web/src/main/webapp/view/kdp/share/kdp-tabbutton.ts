@@ -3,16 +3,22 @@
 module nts.uk.at.view.kdp.share {
 	const tabButtonTempate = `
 		<!-- ko if: ko.unwrap($component.filteredTabs).length -->
-		<!-- ko if: ko.unwrap($component.filteredTabs).length > 1 -->
-			<div data-bind="ntsTabPanel: { dataSource: $component.filteredTabs, active: $component.selected }"></div>
-		<!-- /ko -->
+			<!-- ko if: ko.unwrap($component.kdp002) -->
+				<!-- ko if: ko.unwrap($component.filteredTabs).length > 1 -->
+					<div data-bind="ntsTabPanel: { dataSource: $component.filteredTabs, active: $component.selected }"></div>
+				<!-- /ko -->
+			<!-- /ko -->
+			<!-- ko if: !ko.unwrap($component.kdp002) -->
+				<div data-bind="ntsTabPanel: { dataSource: $component.filteredTabs, active: $component.selected },
+				css: { 'has-info-kdp': ko.unwrap($component.filteredTabs).length == 1}"></div>
+			<!-- /ko -->
 		<div id="stampBtnContainer" data-bind="foreach: { data: $component.filteredTabs, as: 'group' }">
 			<div class="grid-container" data-bind="
 				if: ko.toJS($component.currentTab).pageNo === group.pageLayout.pageNo,
 				css: 'btn-layout-type-' + group.pageLayout.buttonLayoutType,
 				style: {padding: ko.toJS($component.currentTab).pageNo === group.pageLayout.pageNo ? '': '0'}">
 				<!-- ko foreach: _.chunk(ko.unwrap(group.pageLayout.buttonSettings), 2) -->
-				<div data-bind="foreach: $data" class="cf">
+				<div class="buttons-row" data-bind="foreach: $data">
 					<button class="stamp-rec-btn"
 						data-bind="
 							btn-setting: $data,
@@ -28,6 +34,9 @@ module nts.uk.at.view.kdp.share {
 		<style>
 		#stamp-desc div {
 			font-size: 2.5vmin;
+		}
+		.has-info-kdp {
+			visibility: hidden;
 		}
 	</style>
 		<!-- /ko -->
@@ -155,9 +164,9 @@ module nts.uk.at.view.kdp.share {
 
 			const data: ButtonSetting = ko.unwrap(valueAccessor());
 
-			const icon = document.createElement('i');
+			//const icon = document.createElement('i');
 
-			ko.applyBindingsToNode(icon, { ntsIcon: { no: getIcon(data.changeClockArt, data.changeCalArt, data.setPreClockArt, data.changeHalfDay), 'width': '68', 'height': '68' } });
+			//ko.applyBindingsToNode(icon, { ntsIcon: { no: getIcon(data.changeClockArt, data.changeCalArt, data.setPreClockArt, data.changeHalfDay), 'width': '68', 'height': '68' } });
 
 			const text = document.createElement('div');
 
@@ -168,7 +177,7 @@ module nts.uk.at.view.kdp.share {
 			let btnType = checkType(data.changeClockArt, data.changeCalArt, data.setPreClockArt, data.changeHalfDay);
 
 			$(element)
-				.append(icon)
+				//.append(icon)
 				.append(text)
 				.css({
 					'color': data.btnTextColor,
@@ -222,6 +231,8 @@ module nts.uk.at.view.kdp.share {
 		temporaryUse: KnockoutObservable<boolean> = ko.observable(false);
 
 		entranceExitUse: KnockoutObservable<boolean> = ko.observable(false);
+
+		kdp002: KnockoutObservable<boolean> = ko.observable(false);
 		
 		constructor(public params: StampParam) {
 			super();
@@ -258,6 +269,10 @@ module nts.uk.at.view.kdp.share {
 
 			if (!params.marginBottom) {
 				params.marginBottom = ko.observable(0);
+			}
+
+			if (params.kdp002) {
+				vm.kdp002 = params.kdp002;
 			}
 
 			ko.computed({
@@ -503,6 +518,7 @@ module nts.uk.at.view.kdp.share {
 		marginBottom: KnockoutObservable<number>;
 		pageComment: KnockoutObservable<string>;
 		commentColor: KnockoutObservable<string>;
+		kdp002: KnockoutObservable<boolean>;
 	}
 
 	export interface StampToSuppress {
@@ -614,9 +630,9 @@ module nts.uk.at.view.kdp.share {
 		let text = element.innerText.replace(/(\r\n|\n|\r)/gm,"");
 		if(text.length < 9){
 			if(type == 0 && $(element).parentsUntil($('.btn-layout-type-0')).length === 1) {
-				element.style.fontSize = '26px';	
+				element.style.fontSize = '34px';	
 			}else{
-				element.style.fontSize = '20px';
+				element.style.fontSize = '24px';
 			}
 			return;
 		}
@@ -631,7 +647,7 @@ module nts.uk.at.view.kdp.share {
 		element.style.fontSize = fontSize + 'px';
 	}
 	let changeHeightBtn = function(check :boolean){
-		$('.btn-layout-type-0>div:first-child button').css({'height':$('.btn-layout-type-0>div:first-child button').width() - (check ? 10 : 0) +'px'});
-		$('.btn-layout-type-0>div:not(:first-child) button').css({'height':$('.btn-layout-type-0>div:not(:first-child) button').width()/2.3 - (check ? 5 : 0) + 'px'});
+		$('.btn-layout-type-0>div:first-child button').css({'height':$('.btn-layout-type-0>div:first-child button').width() / 1.8 - (check ? 10 : 0) +'px'});
+		$('.btn-layout-type-0>div:not(:first-child) button').css({'height':$('.btn-layout-type-0>div:not(:first-child) button').width()/2.8 - (check ? 5 : 0) + 'px'});
 	}
 }

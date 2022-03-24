@@ -88,10 +88,10 @@ public class DeductDaysAndTime implements SerializableWithOptional{
 					"015", new ErrMessageContent(TextResource.localize("Msg_1142"))));
 			return;
 		}
-		val workTimeCd = workTimeCdOpt.get().v();
+		val workTimeCd = workTimeCdOpt.get();
 		
 		// 「所定時間設定．就業加算時間」を取得する
-		this.predetermineTimeSetOfWeekDay = require.predetemineTimeSetByWorkTimeCode(companyId, workTimeCd);
+		this.predetermineTimeSetOfWeekDay = require.predetemineTimeSetting(companyId, workTimeCd);
 		if (!this.predetermineTimeSetOfWeekDay.isPresent()){
 			
 			// エラー処理
@@ -136,9 +136,8 @@ public class DeductDaysAndTime implements SerializableWithOptional{
 		this.absenceDeductTime = this.absenceDeductTime.minusMinutes(applyMinutes);
 	}
 	
-	public static interface RequireM1 { 
-		
-		Optional<PredetemineTimeSetting> predetemineTimeSetByWorkTimeCode(String companyId, String workTimeCode);
+	public static interface RequireM1 extends PredetemineTimeSetting.Require { 
+
 	}
 
 }

@@ -1,25 +1,22 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BPUnitUseSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BPTimeItemSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.shorttimework.CalcOfShortTimeWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOT;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PersonCostCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.service.HistAnPerCost;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.ZeroTime;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
@@ -37,6 +34,9 @@ import nts.uk.ctx.at.shared.dom.workrule.specific.UpperLimitTotalWorkingHour;
  */
 @Getter
 public class ManagePerCompanySet {
+	
+	/** 会社ID */
+	String companyId;
 
 	//会社別の休暇加算設定
 	Optional<HolidayAddtionSet> holidayAdditionPerCompany;
@@ -101,7 +101,11 @@ public class ManagePerCompanySet {
 	/** 残業枠 */
 	List<OvertimeWorkFrame> overtimeFrameList;
 	
+	/** 時間休暇相殺優先順位 */
+	CompanyHolidayPriorityOrder companyHolidayPriorityOrder;
+	
 	public ManagePerCompanySet(
+			String companyId,
 			Optional<HolidayAddtionSet> holidayAdditionPerCompany,
 			Optional<CalculateOfTotalConstraintTime> calculateOfTotalCons,
 			CompensatoryLeaveComSetting compensatoryLeaveComSet,
@@ -121,9 +125,11 @@ public class ManagePerCompanySet {
 			DeformLaborOT deformLaborOT,
 			Optional<DeclareSet> declareSet,
 			Optional<CalcOfShortTimeWork> calcShortWork,
-			List<OvertimeWorkFrame> overtimeFrameList) {
+			List<OvertimeWorkFrame> overtimeFrameList,
+			CompanyHolidayPriorityOrder companyHolidayPriorityOrder) {
 		
 		super();
+		this.companyId = companyId;
 		this.holidayAdditionPerCompany = holidayAdditionPerCompany;
 		this.calculateOfTotalCons = calculateOfTotalCons;
 		this.compensatoryLeaveComSet = compensatoryLeaveComSet;
@@ -144,5 +150,6 @@ public class ManagePerCompanySet {
 		this.declareSet = declareSet;
 		this.calcShortTimeWork = calcShortWork;
 		this.overtimeFrameList = overtimeFrameList;
+		this.companyHolidayPriorityOrder = companyHolidayPriorityOrder;
 	}
 }

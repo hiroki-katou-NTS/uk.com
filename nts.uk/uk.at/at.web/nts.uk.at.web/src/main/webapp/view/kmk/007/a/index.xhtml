@@ -277,10 +277,10 @@
 									<div style="vertical-align: middle; margin-left: 100px"
 										id="combo-box"
 										data-bind="ntsComboBox: {
-														options: $parent.itemCloseAtr,
+														options: $parent.lstHdWrk,
 														optionsValue: 'code',
 														visibleItemsCount: 4,
-														value: closeAtr,
+														value: $parent.closeAtr,
 														optionsText: 'name',
 														editable: false,
 														enable: $parent.isEnable,
@@ -290,9 +290,9 @@
 								</div>
 							</div>
 							<!-- 代休: ver8 -->
-							<div id="oneday-set-10" data-bind="if: currentWorkType().oneDayCls() == '6'">
+							<!-- <div id="oneday-set-10" data-bind="if: currentWorkType().oneDayCls() == '6'">
 								<div data-bind="with: currentWorkType().oneDay">
-									<!-- A6_6, A6_7 -->
+								
 									<div style="margin-left: 20px; margin-top: 10px; display: inline-block; 
 										vertical-align: middle;" id="combo-box"
 										data-bind="ntsComboBox: {
@@ -306,11 +306,11 @@
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}"></div>
-									<!-- A6_8 -->
+									
 									<div style="display: inline-block; margin-top: 10px; vertical-align: middle; 
 									     margin-left: 20px;">#{i18n.getText('KMK007_29')}</div>
 								</div>
-							</div>
+							</div> -->
 						</div>
 					</div>
 					<!-- 午前と午後 -->
@@ -609,6 +609,7 @@
 														visibleItemsCount: 4,
 														value: calculatorMethod,
 														optionsText: 'name',
+														width: '270px',
 														editable: false,
 														enable: $parent.enableMethod,
 														columns: [

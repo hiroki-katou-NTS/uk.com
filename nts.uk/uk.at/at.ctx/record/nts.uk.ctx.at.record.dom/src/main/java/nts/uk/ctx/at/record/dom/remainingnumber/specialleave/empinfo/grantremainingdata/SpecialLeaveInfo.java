@@ -9,12 +9,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseNumber;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.RemNumShiftListWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveOverNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestNumber;
@@ -27,9 +26,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.SpecialLeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialHolidayInterimMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveError;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseNumber;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
-import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantDeadline;
-import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.LimitAccumulationDays;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.LimitCarryoverDays;
 
 /**
  * 特別休暇情報
@@ -45,6 +45,8 @@ public class SpecialLeaveInfo implements Cloneable {
 	private SpecialLeaveRemaining remainingNumber;
 	/** 付与残数データ */
 	private List<SpecialLeaveGrantRemainingData> grantRemainingDataList;
+	/** 付与情報 */
+	private Optional<LeaveGrantDayNumber> grantDaysInfo;
 
 	/**
 	 * コンストラクタ
@@ -54,8 +56,7 @@ public class SpecialLeaveInfo implements Cloneable {
 		this.ymd = GeneralDate.min();
 		this.remainingNumber = new SpecialLeaveRemaining();
 		this.grantRemainingDataList = new ArrayList<>();
-
-
+		this.grantDaysInfo = Optional.empty();
 	}
 
 	/**
@@ -75,6 +76,7 @@ public class SpecialLeaveInfo implements Cloneable {
 		domain.ymd = ymd;
 		domain.remainingNumber = remainingNumber;
 		domain.grantRemainingDataList = grantRemainingDataList;
+		domain.grantDaysInfo = Optional.empty();
 		return domain;
 	}
 
@@ -90,6 +92,7 @@ public class SpecialLeaveInfo implements Cloneable {
 			cloned.grantRemainingDataList.add(grantRemainingData.clone());
 
 		}
+		cloned.grantDaysInfo = this.grantDaysInfo.map(x -> new LeaveGrantDayNumber(x.v()));
 		return cloned;
 	}
 
@@ -102,25 +105,55 @@ public class SpecialLeaveInfo implements Cloneable {
 				this.getGrantRemainingDataList(), grantPeriodAtr);
 	}
 
-//	List<SpecialLeaveGrantRemaining> remainingDataList,
-//	boolean afterGrantAtr){
+
+	/**
+	 * 残数処理
+	 * @param require
+	 * @param companyId
+	 * @param employeeId
+	 * @param periodWorkList
+	 * @param specialLeaveAggregatePeriodWork
+	 * @param specialHolidayInterimMngData
+	 * @param specialLeaveCode
+	 * @param entryDate
+	 * @param aggrResult
+	 * @param baseDate
+	 * @return
+	 */
+	public InPeriodOfSpecialLeaveResultInfor remainNumberProcess(SpecialLeaveManagementService.RequireM5 require,
+			String companyId, String employeeId,
+			SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork,
+			SpecialHolidayInterimMngData specialHolidayInterimMngData,
+			InPeriodOfSpecialLeaveResultInfor aggrResult,
+			int specialLeaveCode, GeneralDate entryDate,
+			GeneralDate baseDate, GrantBeforeAfterAtr grantBeforeAfterAtr){
+		
+		// 特休の付与・消化
+		aggrResult = lapsedGrantDigest(require, companyId, employeeId, specialLeaveAggregatePeriodWork,
+				specialHolidayInterimMngData, specialLeaveCode, entryDate, aggrResult, baseDate);
+		
+		//消滅処理
+		aggrResult = lapsedProcess(specialLeaveAggregatePeriodWork, aggrResult, grantBeforeAfterAtr);
+		
+		
+		
+		return aggrResult;
+	}
 
 
 	/**
-	 * 特休の消滅・付与・消化
+	 * 特休の付与・消化
 	 * @param require
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param specialLeaveAggregatePeriodWork 処理中の特休集計期間WORK
 	 * @param interimSpecialHolidayMng 暫定特休管理データ
-//	 * @param isGetNextMonthData 翌月管理データ取得フラグ
-//	 * @param isCalcAttendanceRate 出勤率計算フラグ
 	 * @param specialLeaveCode 特別休暇コード
 	 * @param entryDate 入社日
 	 * 	@param aggrResult 特休の集計結果
 	 * @return 特休の集計結果
 	 */
-	public InPeriodOfSpecialLeaveResultInfor lapsedGrantDigest(
+	private InPeriodOfSpecialLeaveResultInfor lapsedGrantDigest(
 			SpecialLeaveManagementService.RequireM5 require,
 			String companyId, String employeeId,
 			SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork,
@@ -149,9 +182,6 @@ public class SpecialLeaveInfo implements Cloneable {
 
 		/** 終了時点更新処理 */
 		updateEnd(specialLeaveAggregatePeriodWork, aggrResult);
-
-		/** ○消滅処理 */
-		aggrResult = this.lapsedProcess(specialLeaveAggregatePeriodWork, aggrResult, entryDate);
 
 		/** 「特休の集計結果」を返す */
 		return aggrResult;
@@ -214,13 +244,13 @@ public class SpecialLeaveInfo implements Cloneable {
 	 * 消滅処理
 	 * @param aggregatePeriodWork 処理中の特休集計期間WORK
 	 * @param aggrResult 特休の集計結果
-	 * @param entryDate 入社日
+	 * @param grantPeriodAtr 	付与前、付与後の区分
 	 * @return 特休の集計結果
 	 */
 	private InPeriodOfSpecialLeaveResultInfor lapsedProcess(
 			SpecialLeaveAggregatePeriodWork aggregatePeriodWork,
 			InPeriodOfSpecialLeaveResultInfor aggrResult,
-			GeneralDate entryDate){
+			GrantBeforeAfterAtr grantPeriodAtr){
 
 		// 消滅フラグを取得
 		if (!aggregatePeriodWork.getLapsedWork().isLapsedAtr()) return aggrResult;
@@ -228,9 +258,6 @@ public class SpecialLeaveInfo implements Cloneable {
 		/** 特別休暇を消滅させる */
 		this.decreaseSpecicalHoliday(aggregatePeriodWork);
 
-		// 付与前付与後を判断する
-		GrantBeforeAfterAtr grantPeriodAtr
-			= aggregatePeriodWork.judgeGrantPeriodAtr(entryDate);
 		
 		// 特別休暇情報残数を更新
 		this.updateRemainingNumber(grantPeriodAtr);
@@ -315,6 +342,10 @@ public class SpecialLeaveInfo implements Cloneable {
 
 		/** 特別休暇を付与する */
 		grantSpecialHoliday(require, companyId, employeeId, aggregatePeriodWork, specialLeaveCode, baseDate);
+		
+		/** 付与情報を更新 */
+		this.grantDaysInfo = totalGrantDay(aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant()
+				.map(x->x.getGrantDays()));
 
 		/** 付与前付与後を判断する */
 		GrantBeforeAfterAtr grantPeriodAtr = aggregatePeriodWork.judgeGrantPeriodAtr(entryDate);
@@ -365,13 +396,9 @@ public class SpecialLeaveInfo implements Cloneable {
 
 			// 繰越上限日数
 			int limitCarryoverDays = 0;
-			Optional<LimitAccumulationDays> limitAccumulationDays = specialHolidayOpt.get().getGrantRegular().getLimitAccumulationDays();
-			if ( limitAccumulationDays.isPresent() ) {
-				if(limitAccumulationDays.get().isLimit()){
-					if (limitAccumulationDays.get().getLimitCarryoverDays().isPresent()) {
-						limitCarryoverDays = limitAccumulationDays.get().getLimitCarryoverDays().get().v();
-					}
-				}
+			Optional<LimitCarryoverDays> LimitCarryoverDaysOp = specialHolidayOpt.get().getGrantRegular().getLimitCarryoverDays();
+			if ( LimitCarryoverDaysOp.isPresent() ) {
+				limitCarryoverDays = LimitCarryoverDaysOp.get().v();
 			}
 
 			if ( limitCarryoverDays > 0 ){
@@ -429,6 +456,26 @@ public class SpecialLeaveInfo implements Cloneable {
 		}
 		return this;
 	}
+	
+	/**
+	 * 付与日数を合計する
+	 * @param addGrantNumber
+	 * @return
+	 */
+	private Optional<LeaveGrantDayNumber> totalGrantDay(Optional<LeaveGrantDayNumber> addGrantNumber){
+		if(!addGrantNumber.isPresent()){
+			return this.grantDaysInfo;
+		}
+		
+		LeaveGrantDayNumber grantDay = addGrantNumber.get();
+		if(this.grantDaysInfo.isPresent()){
+			grantDay = new LeaveGrantDayNumber(grantDay.v() + this.grantDaysInfo.get().v());
+		}
+		return Optional.of(grantDay);
+		
+	}
+	
+	
 
 	/**
 	 * 消化処理

@@ -23,12 +23,18 @@ public class RegisterWorkAvailability {
 	/**
 	 * 登録する
 	 * @param require
+	 * @param cid 会社ID
 	 * @param sid 社員ID
 	 * @param datePeriod 期間
 	 * @param workOneDay 一日分の勤務希望リスト
 	 * @return.
 	 */
-	public static AtomTask register(Require require, String sid, DatePeriod datePeriod, List<WorkAvailabilityOfOneDay> workOneDays) {
+	public static AtomTask register(
+			Require require,
+			String cid,
+			String sid,
+			DatePeriod datePeriod,
+			List<WorkAvailabilityOfOneDay> workOneDays) {
 		val shiftRuleOpt = GetUsingShiftTableRuleOfEmployeeService.get(require, sid, datePeriod.end());
 		if (!shiftRuleOpt.isPresent()) {
 			throw new BusinessException("Msg_2049");
@@ -54,7 +60,7 @@ public class RegisterWorkAvailability {
 			}
 		});
 		
-		if (shiftTableSetting.isOverHolidayMaxDays(require, workOneDays)) {
+		if (shiftTableSetting.isOverHolidayMaxDays(require, cid, workOneDays)) {
 			throw new BusinessException("Msg_2051");
 		}
 		

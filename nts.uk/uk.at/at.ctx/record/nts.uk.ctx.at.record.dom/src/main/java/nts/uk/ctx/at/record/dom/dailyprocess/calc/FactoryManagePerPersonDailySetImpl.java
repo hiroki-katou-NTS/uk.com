@@ -13,15 +13,15 @@ import nts.arc.layer.app.cache.DateHistoryCache;
 import nts.arc.layer.app.cache.KeyDateHistoryCache;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HourlyPaymentAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
@@ -37,20 +37,43 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.FactoryManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.EmployeeUnitPriceHistoryItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.EmployeeUnitPriceHistoryRepositoly;
+import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.FactoryManagePerPersonDailySet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.FlexMonthWorkTimeAggrSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.emp.EmpFlexMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.emp.EmpFlexMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.sha.ShaFlexMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.wkp.WkpFlexMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.wkp.WkpFlexMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.export.GetFlexAggrSet;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CheckDateForManageCmpLeaveService;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CheckDateForManageCmpLeaveService.Require;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeCom;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeComRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeEmpRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeSha;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeShaRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeWkpRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeCom;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeComRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeEmpRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeSha;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeShaRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeWkpRepo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -63,8 +86,10 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 /**
  * @author kazuki_watanabe
@@ -72,77 +97,111 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPersonDailySet {
 
-	/*加給設定*/
+	/** 労働時間と日数の設定の利用単位の設定 */
 	@Inject
-	private BPSettingRepository bPSettingRepository;
-	
-	/*加給時間帯設定*/
+	private UsageUnitSettingRepository usageUnitSettingRepo;
+	/** 所属職場履歴 */
 	@Inject
-	private BPTimesheetRepository bPTimesheetRepository;
-	
-	/* 特定日加給時間帯設定 */
+	private AffWorkplaceAdapter affWorkplaceAdapter;
+	/** 会社別通常勤務法定労働時間 */
 	@Inject
-	private SpecBPTimesheetRepository specBPTimesheetRepository;
-	
-	/* 所定時間帯 */
+	private RegularLaborTimeComRepo regularLaborTimeComRepo;
+	/** 会社別変形労働法定労働時間 */
 	@Inject
-	private PredetemineTimeSettingRepository predetemineTimeSetRepository;
-	
-	/* 休暇加算設定 */
+	private DeforLaborTimeComRepo deforLaborTimeComRepo;
+	/** 職場別別通常勤務法定労働時間 */
 	@Inject
-	private HolidayAddtionRepository hollidayAdditonRepository;
+	private RegularLaborTimeWkpRepo regularLaborTimeWkpRepo;
 
 	/* 社員単価履歴 */
 	@Inject
 	private EmployeeUnitPriceHistoryRepositoly employeeUnitPriceHistoryRepositoly;
-	
-	@Inject
-	private RecordDomRequireService requireService;
 
-	/** 代休を管理する年月日かどうかを判断する */
 	@Inject
-	private CheckDateForManageCmpLeaveService checkDateForManageCmpLeaveService;
-	// 以下、「代休を管理する年月日かどうかを判断する」で利用するRepository
-	/** 社員雇用履歴 */
+	private DeforLaborTimeWkpRepo deforLaborTimeWkpRepo;
+	/** 雇用別通常勤務法定労働時間 */
 	@Inject
-	private SysEmploymentHisAdapter sysEmploymentHisAdapter;
+	private RegularLaborTimeEmpRepo regularLaborTimeEmpRepo;
+	/** 雇用別変形労働法定労働時間 */
+	@Inject
+	private DeforLaborTimeEmpRepo deforLaborTimeEmpRepo;
+	/** 社員別通常勤務法定労働時間 */
+	@Inject
+	private RegularLaborTimeShaRepo regularLaborTimeShaRepo;
+	/** 社員別変形労働法定労働時間 */
+	@Inject
+	private DeforLaborTimeShaRepo deforLaborTimeShaRepo;
+	/** 労働条件項目 */
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepo;
+	/** 所定時間設定 */
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSetRepository;
 	/** 代休管理設定（会社別） */
 	@Inject
 	private CompensLeaveComSetRepository compensLeaveComSetRepo;
 	/** 雇用の代休管理設定 */
 	@Inject
 	private CompensLeaveEmSetRepository compensLeaveEmSetRepo;
-	
+	/** 就業時間帯の設定 */
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepo;
+	/** 固定勤務設定 */
+	@Inject
+	private FixedWorkSettingRepository fixedWorkSetRepo;
+	/** 流動勤務設定 */
+	@Inject
+	private FlowWorkSettingRepository flowWorkSetRepo;
+	/** フレックス勤務設定 */
+	@Inject
+	private FlexWorkSettingRepository flexWorkSetRepo;
+	/** 勤務種類 */
 	@Inject
 	private WorkTypeRepository workTypeRepository;
-	
+	/** 会社別フレックス勤務集計方法 */
 	@Inject
-	private FixedWorkSettingRepository fixedWorkSet;
-	
+	private ComFlexMonthActCalSetRepo comFlexMonthActCalSetRepo;
+	/** 職場別フレックス勤務集計方法 */
 	@Inject
-	private FlowWorkSettingRepository flowWorkSet;
-	
+	private WkpFlexMonthActCalSetRepo wkpFlexMonthActCalSetRepo;
+	/** 雇用別フレックス勤務集計方法 */
 	@Inject
-	private FlexWorkSettingRepository flexWorkSet;
-	
+	private EmpFlexMonthActCalSetRepo empFlexMonthActCalSetRepo;
+	/** 社員別フレックス勤務集計方法 */
 	@Inject
-	private WorkTimeSettingRepository workTimeSettingRepository;
+	private ShaFlexMonthActCalSetRepo shaFlexMonthActCalSetRepo;
+	/** 加給設定 */
+	@Inject
+	private BPSettingRepository bPSettingRepository;
+	/** 加給時間帯設定 */
+	@Inject
+	private BPTimesheetRepository bPTimesheetRepository;
+	/** 特定日加給時間帯設定 */
+	@Inject
+	private SpecBPTimesheetRepository specBPTimesheetRepository;
+	/** 休暇加算設定 */
+	@Inject
+	private HolidayAddtionRepository hollidayAdditonRepository;
+	/** 社員雇用履歴 */
+	@Inject
+	private SysEmploymentHisAdapter sysEmploymentHisAdapter;
 	
 	@Override
 	public Optional<ManagePerPersonDailySet> create(String companyId, ManagePerCompanySet companySetting, IntegrationOfDaily daily, WorkingConditionItem nowWorkingItem ) {
-		return internalCreate(companyId, companySetting.getUsageSetting(), daily, nowWorkingItem,
-				companySetting.getShareContainer());
-
+		return internalCreate(companyId, daily, nowWorkingItem, companySetting.getUsageSetting(), companySetting.getShareContainer());
 	}
 
-	private Optional<ManagePerPersonDailySet> internalCreate(String companyId, 
-			Optional<UsageUnitSetting> usageSetting, 
-			IntegrationOfDaily daily, WorkingConditionItem nowWorkingItem,
+	private Optional<ManagePerPersonDailySet> internalCreate(
+			String companyId, 
+			IntegrationOfDaily daily,
+			WorkingConditionItem nowWorkingItem,
+			Optional<UsageUnitSetting> usageUnitSet,
 			MasterShareContainer<String> shareContainer) {
+		
 		try {
-			val require = requireService.createRequire();
+			RequireImpl require = new RequireImpl();
 			
-			/*法定労働時間*/
+			// 法定労働時間
 			DailyUnit dailyUnit = DailyStatutoryLaborTime.getDailyUnit(
 					require,
 					new CacheCarrier(),
@@ -151,18 +210,18 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 					daily.getEmployeeId(),
 					daily.getYmd(),
 					nowWorkingItem.getLaborSystem(),
-					usageSetting);
+					usageUnitSet);
 
 			if(dailyUnit == null || dailyUnit.getDailyTime() == null)
 				dailyUnit = new DailyUnit(new TimeOfDay(0));
 			
-			/*加算設定*/
+			// 加算設定
 			AddSetting addSetting = this.getAddSetting(
 					companyId,
 					hollidayAdditonRepository.findByCompanyId(companyId),
 					nowWorkingItem);
 	
-			/*加給*/
+			// 加給
 			Optional<BonusPaySettingCode> bpCode = daily.getAffiliationInfor().getBonusPaySettingCode();
 			Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
 			if(bpCode.isPresent() && bpCode.get() != null ) {
@@ -179,7 +238,7 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			}
 			
 			/**　勤務種類 */
-			val workType = require.workType(companyId, nowWorkingItem.getWorkCategory().getWorkType().getWeekdayTimeWTypeCode().v());
+			val workType = require.workType(companyId, nowWorkingItem.getWorkCategory().getWorkType().getWeekdayTimeWTypeCode());
 			if(!workType.isPresent()) {
 				return Optional.empty();
 			}
@@ -188,20 +247,27 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay = this.getPredByPersonInfo(
 					nowWorkingItem.getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().get(), shareContainer, workType.get());
 			
-			/** 残業時間帯Require */
-			OverTimeSheet.TransProcRequire overTimeSheetRequire = new TransProcRequireImpl(
-					companyId,
-					this.checkDateForManageCmpLeaveService,
-					this.sysEmploymentHisAdapter,
-					this.compensLeaveComSetRepo,
-					this.compensLeaveEmSetRepo);
+			// フレックス勤務基本設定
+			Optional<FlexMonthWorkTimeAggrSet> flexBasicSet = Optional.empty();
+			if (usageUnitSet.isPresent()){
+				flexBasicSet = GetFlexAggrSet.flexWorkTimeAggrSet(
+						require,
+						new CacheCarrier(),
+						companyId,
+						daily.getAffiliationInfor().getEmploymentCode().v(),
+						daily.getEmployeeId(),
+						daily.getYmd(),
+						usageUnitSet.get(),
+						this.shaFlexMonthActCalSetRepo.find(companyId, daily.getEmployeeId()),
+						this.comFlexMonthActCalSetRepo.find(companyId));
+			}
 
 			/*社員単価履歴*/
 			Optional<EmployeeUnitPriceHistoryItem> unitPrice = this.employeeUnitPriceHistoryRepositoly.get(daily.getEmployeeId(), daily.getYmd());
 			
-			return Optional.of(new ManagePerPersonDailySet(nowWorkingItem, dailyUnit,
+			return Optional.of(new ManagePerPersonDailySet(daily.getYmd(), nowWorkingItem, dailyUnit,
 								addSetting, bonusPaySetting, predetermineTimeSetByPersonWeekDay,
-								overTimeSheetRequire, unitPrice));
+								flexBasicSet, require, unitPrice));
 		}
 		catch(RuntimeException e) {
 			return Optional.empty();
@@ -209,7 +275,9 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 	}
 
 	/**
-	 * @param map 各加算設定
+	 * 加算設定の取得
+	 * @param companyID 会社ID
+	 * @param map 加算設定Map
 	 * @param workingItem 労働条件項目
 	 * @return 加算設定
 	 */
@@ -221,37 +289,37 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 				AggregateRoot hourlyPaymentAdditionSet = map.get("hourlyPaymentAdditionSet");
 				return hourlyPaymentAdditionSet != null
 						?(HourlyPaymentAdditionSet) hourlyPaymentAdditionSet
-						: new HourlyPaymentAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+						: new HourlyPaymentAdditionSet(companyID, AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 			}
 			AggregateRoot workRegularAdditionSet = map.get("regularWork");
 			return workRegularAdditionSet != null
 					?(WorkRegularAdditionSet) workRegularAdditionSet
-					: new WorkRegularAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+					: new WorkRegularAdditionSet(companyID, AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 		
 		case FLEX_TIME_WORK:
 			AggregateRoot workFlexAdditionSet = map.get("flexWork");
 			return workFlexAdditionSet != null
 					?(WorkFlexAdditionSet) workFlexAdditionSet
-					: new WorkFlexAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+					: new WorkFlexAdditionSet(companyID, AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 			
 		case VARIABLE_WORKING_TIME_WORK:
 			AggregateRoot workDeformedLaborAdditionSet = map.get("irregularWork");
 			return workDeformedLaborAdditionSet != null
 					? (WorkDeformedLaborAdditionSet) workDeformedLaborAdditionSet
-					: new WorkDeformedLaborAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+					: new WorkDeformedLaborAdditionSet(companyID, AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 		
 		default:
-			return new WorkDeformedLaborAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+			return new WorkDeformedLaborAdditionSet(companyID, AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 		}
 	}
 	
 	/**
 	 * 就業時間帯の所定時間帯を取得する
 	 * （所定時間帯を計算用就業時間帯に変換して返してくれる計算処理専用メソッド）
-	 * 
-	 * @param workTimeCode
-	 * @param shareContainer
-	 * @return
+	 * @param workTimeCode 就業時間帯コード
+	 * @param shareContainer 共有コンテナ
+	 * @param workType 勤務種類
+	 * @return 計算用所定時間設定
 	 */
 	private PredetermineTimeSetForCalc getPredByPersonInfo(WorkTimeCode workTimeCode,
 			MasterShareContainer<String> shareContainer, WorkType workType) {
@@ -261,20 +329,18 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 		if (!predSetting.isPresent())
 			throw new RuntimeException("predetermineedSetting is null");
 		return PredetermineTimeSetForCalc.convertFromAggregatePremiumTime(predSetting.get(), workType);
-
 	}
 	
 	/**
 	 * 共有コンテナを使った所定時間帯設定の取得
-	 * 
-	 * @param shareContainer
-	 * @param companyId
-	 * @param workTimeCode
-	 * @return
+	 * @param shareContainer 共有コンテナ
+	 * @param companyId 会社ID
+	 * @param workTimeCode 終了時間帯コード
+	 * @return 所定時間設定
 	 */
 	private Optional<PredetemineTimeSetting> getPredetermineTimeSetFromShareContainer(
 			MasterShareContainer<String> shareContainer, String companyId, String workTimeCode) {
-		val predSet = shareContainer.getShared("PredetemineSet" + workTimeCode,
+		Optional<PredetemineTimeSetting> predSet = shareContainer.getShared("PredetemineSet" + workTimeCode,
 				() -> predetemineTimeSetRepository.findByWorkTimeCode(companyId, workTimeCode));
 		if (predSet.isPresent()) {
 			return Optional.of(predSet.get().clone());
@@ -286,124 +352,158 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 	public Optional<ManagePerPersonDailySet> create(String companyId, String sid, GeneralDate ymd,
 			IntegrationOfDaily daily) {
 		
-		val require = requireService.createRequire();
-		val workingItem = require.workingConditionItem(sid, ymd);
+		RequireImpl require = new RequireImpl();
+		Optional<WorkingConditionItem> workingItem = require.workingConditionItem(sid, ymd);
 		if(!workingItem.isPresent()) {
 			return Optional.empty();
 		}
-		val usageSetting = require.usageUnitSetting(companyId);
+		Optional<UsageUnitSetting> usageSetting = require.usageUnitSetting(companyId);
 		MasterShareContainer<String> shareContainer = MasterShareBus.open();
 		
-		val personDailySet = internalCreate(companyId, usageSetting, daily, workingItem.get(), shareContainer);
+		val personDailySet = internalCreate(companyId, daily, workingItem.get(), usageSetting, shareContainer);
 		
 		shareContainer.clearAll();
 		
 		return personDailySet;
 	}
-	
-	/**
-	 * Require実装：代休を管理する年月日かどうかを判断する
-	 * @author shuichi_ishida
-	 */
-	private class CheckDateRequireImpl implements CheckDateForManageCmpLeaveService.Require{
-		
-		/** 社員雇用履歴 */
-		private SysEmploymentHisAdapter sysEmploymentHisAdapter;
-		/** 代休管理設定（会社別） */
-		private CompensLeaveComSetRepository compensLeaveComSetRepo;
-		/** 雇用の代休管理設定 */
-		private CompensLeaveEmSetRepository compensLeaveEmSetRepo;
 
+	private class RequireImpl implements Require {
+		
 		private final KeyDateHistoryCache<String, SEmpHistoryImport> historyCache =
 				KeyDateHistoryCache.incremental((employeeId, date) ->
-				this.sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, date)
+				sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, date)
 				.map(h -> DateHistoryCache.Entry.of(h.getPeriod(), h)));
-		
-		public CheckDateRequireImpl(
-				SysEmploymentHisAdapter sysEmploymentHisAdapter,
-				CompensLeaveComSetRepository compensLeaveComSetRepo,
-				CompensLeaveEmSetRepository compensLeaveEmSetRepo){
-			
-			this.sysEmploymentHisAdapter = sysEmploymentHisAdapter;
-			this.compensLeaveComSetRepo = compensLeaveComSetRepo;
-			this.compensLeaveEmSetRepo = compensLeaveEmSetRepo;
+	
+		public RequireImpl(){
+
 		}
 		
 		@Override
-		public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
+		public Optional<UsageUnitSetting> usageUnitSetting(String companyId) {
+			return usageUnitSettingRepo.findByCompany(companyId);
+		}
+		
+		@Override
+		public List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId, String employeeId,
+				GeneralDate baseDate) {
+			return affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRootRequire(cacheCarrier, companyId, employeeId, baseDate);
+		}
+		
+		@Override
+		public Optional<RegularLaborTimeCom> regularLaborTimeByCompany(String companyId) {
+			return regularLaborTimeComRepo.find(companyId);
+		}
+		
+		@Override
+		public Optional<DeforLaborTimeCom> deforLaborTimeByCompany(String companyId) {
+			return deforLaborTimeComRepo.find(companyId);
+		}
+		
+		@Override
+		public Optional<RegularLaborTimeWkp> regularLaborTimeByWorkplace(String cid, String wkpId) {
+			return regularLaborTimeWkpRepo.find(cid, wkpId);
+		}
+		
+		@Override
+		public Optional<DeforLaborTimeWkp> deforLaborTimeByWorkplace(String cid, String wkpId) {
+			return deforLaborTimeWkpRepo.find(cid, wkpId);
+		}
+		
+		@Override
+		public Optional<RegularLaborTimeEmp> regularLaborTimeByEmployment(String cid, String employmentCode) {
+			return regularLaborTimeEmpRepo.findById(cid, employmentCode);
+		}
+		
+		@Override
+		public Optional<DeforLaborTimeEmp> deforLaborTimeByEmployment(String cid, String employmentCode) {
+			return deforLaborTimeEmpRepo.find(cid, employmentCode);
+		}
+		
+		@Override
+		public Optional<RegularLaborTimeSha> regularLaborTimeByEmployee(String Cid, String EmpId) {
+			return regularLaborTimeShaRepo.find(Cid, EmpId);
+		}
+		
+		@Override
+		public Optional<DeforLaborTimeSha> deforLaborTimeByEmployee(String cid, String empId) {
+			return deforLaborTimeShaRepo.find(cid, empId);
+		}
+		
+		@Override
+		public Optional<WorkingConditionItem> workingConditionItem(String sid, GeneralDate baseDate) {
+			return workingConditionItemRepo.getBySidAndStandardDate(sid, baseDate);
+		}
+		
+		@Override
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return predetemineTimeSetRepository.findByWorkTimeCode(companyId, workTimeCode.v());
+		}
+		
+		@Override
+		public Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId) {
+			return Optional.ofNullable(compensLeaveComSetRepo.find(companyId));
+		}
+		
+		@Override
+		public Optional<CompensatoryLeaveEmSetting> compensatoryLeaveEmSetting(String companyId,
+				String employmentCode) {
+			return Optional.ofNullable(compensLeaveEmSetRepo.find(companyId, employmentCode));
+		}
+		
+		@Override
+		public Optional<SEmpHistoryImport> getSEmpHistoryImport(String employeeId, GeneralDate baseDate) {
 			return this.historyCache.get(employeeId, baseDate);
 		}
 		
 		@Override
-		public Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId){
-			return Optional.ofNullable(this.compensLeaveComSetRepo.find(companyId));
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return workTimeSettingRepo.findByCode(companyId, workTimeCode.v());
 		}
 		
 		@Override
-		public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode){
-			return Optional.ofNullable(this.compensLeaveEmSetRepo.find(companyId, employmentCode));
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return fixedWorkSetRepo.findByKey(companyId, workTimeCode.v());
 		}
-	}
-
-	/**
-	 * Require実装：残業時間帯.振替処理Require
-	 * @author shuichi_ishida
-	 */
-	private class TransProcRequireImpl extends CheckDateRequireImpl implements OverTimeSheet.TransProcRequire{
 		
-		private String cid;
-		/** 代休を管理する年月日かどうかを判断する */
-		//private CheckDateForManageCmpLeaveService checkDateForManageCmpLeaveService;
+		@Override
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flowWorkSetRepo.find(companyId, workTimeCode.v());
+		}
 		
-		public TransProcRequireImpl(
-				String cid, 
-				CheckDateForManageCmpLeaveService checkDateForManageCmpLeaveService,
-				SysEmploymentHisAdapter sysEmploymentHisAdapter,
-				CompensLeaveComSetRepository compensLeaveComSetRepo,
-				CompensLeaveEmSetRepository compensLeaveEmSetRepo){
-			
-			super(sysEmploymentHisAdapter, compensLeaveComSetRepo, compensLeaveEmSetRepo);
-			//this.checkDateForManageCmpLeaveService = checkDateForManageCmpLeaveService;
-			this.cid = cid;
+		@Override
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flexWorkSetRepo.find(companyId, workTimeCode.v());
+		}
+		
+		@Override
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeRepository.findByPK(companyId, workTypeCode.v());
+		}
+		
+		@Override
+		public Optional<WkpFlexMonthActCalSet> wkpFlexMonthActCalSet(String companyId, String workplaceId) {
+			return wkpFlexMonthActCalSetRepo.find(companyId, workplaceId);
+		}
+		
+		@Override
+		public Optional<EmpFlexMonthActCalSet> empFlexMonthActCalSet(String companyId, String employmentCode) {
+			return empFlexMonthActCalSetRepo.find(companyId, employmentCode);
 		}
 
 		@Override
-		public boolean checkDateForManageCmpLeave(
-				Require require, String companyId, String employeeId, GeneralDate ymd) {
-			return CheckDateForManageCmpLeaveService.check(require, companyId, employeeId, ymd);
-		}
-
-		@Override
-		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
-			return super.compensLeaveComSetRepo.find(companyId);
-		}
-
-		@Override
-		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
-			return workTypeRepository.findByPK(companyId, workTypeCd);
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
 		}
 
 		@Override
 		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
-			return workTimeSettingRepository.findByCode(cid, workTimeCode);
+			return this.workTimeSetting(cid, new WorkTimeCode(workTimeCode));
 		}
 
 		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			Optional<FixedWorkSetting> workSetting = fixedWorkSet.findByKey(cid, code.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
+		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+			return this.compensatoryLeaveComSetting(companyId).orElse(null);
 		}
 
-		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			Optional<FlowWorkSetting> workSetting = flowWorkSet.find(cid, code.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
-		}
-
-		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			Optional<FlexWorkSetting> workSetting = flexWorkSet.find(cid, code.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
-		}
 	}
 }

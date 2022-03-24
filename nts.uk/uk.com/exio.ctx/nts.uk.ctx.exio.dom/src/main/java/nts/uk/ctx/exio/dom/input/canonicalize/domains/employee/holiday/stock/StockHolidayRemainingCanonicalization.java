@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import lombok.val;
@@ -22,7 +23,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 
 /**
  * 積立年休付与残数データ
@@ -71,7 +72,7 @@ public class StockHolidayRemainingCanonicalization  extends IndependentCanonical
 
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(DomainDataColumn.SID);
+		return Arrays.asList(new DomainDataColumn(Items.SID, "SID", DataType.STRING));
 	}
 
 	@Override
@@ -89,7 +90,7 @@ public class StockHolidayRemainingCanonicalization  extends IndependentCanonical
 				}
 				importingKeys.add(keyValue);
 				
-				super.canonicalize(require, context, interm, keyValue);
+				super.canonicalize(require, context, interm);
 			}
 		});
 	}
@@ -101,8 +102,10 @@ public class StockHolidayRemainingCanonicalization  extends IndependentCanonical
 	}
 
 	@Override
-	protected IntermediateResult canonicalizeExtends(IntermediateResult targertResult) {
-		return addFixedItems(targertResult);
+	protected Optional<IntermediateResult> canonicalizeExtends(DomainCanonicalization.RequireCanonicalize require, 
+																						ExecutionContext context, 
+																						IntermediateResult targertResult) {
+		return Optional.of(addFixedItems(targertResult));
 	}
 	
 	/**
@@ -117,11 +120,6 @@ public class StockHolidayRemainingCanonicalization  extends IndependentCanonical
 				  .addCanonicalized(CanonicalItem.of(Items.上限超過消滅日数, BigDecimal.ZERO))
 				  .addCanonicalized(CanonicalItem.of(Items.残数時間, 0))
 				  .addCanonicalized(CanonicalItem.of(Items.使用率, BigDecimal.ZERO));
-	}
-	
-	@Override
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
-		return Arrays.asList(Items.SID);
 	}
 	
 	@Override

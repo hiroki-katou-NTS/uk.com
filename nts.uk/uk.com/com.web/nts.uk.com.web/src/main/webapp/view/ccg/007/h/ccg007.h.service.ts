@@ -6,7 +6,6 @@ module nts.uk.pr.view.ccg007.h {
         var servicePath = {
             submitForgotPass: "ctx/sys/gateway/changepassword/submitforgotpass",
             getUserNameByURL: "ctx/sys/gateway/changepassword/getUserNameByURL",
-            submitLogin: "ctx/sys/gateway/login/submit/form1"
         }
 
         /**
@@ -19,17 +18,7 @@ module nts.uk.pr.view.ccg007.h {
         export function getUserNameByURL(embeddedId: string): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.getUserNameByURL + "/" + embeddedId);
         }
-        
-        export function submitLogin(data: SubmitData): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.submitLogin + location.search, data);
-        }
-        
-        export interface CallerParameter {
-            loginId: string;
-            contractCode: string;
-            url: string;
-        }
-        
+
         export class ForgotPasswordCommand {
             embeddedId: string;
             userId: string;

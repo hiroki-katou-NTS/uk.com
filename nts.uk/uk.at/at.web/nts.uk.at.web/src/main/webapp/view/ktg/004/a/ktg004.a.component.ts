@@ -45,15 +45,13 @@ module nts.uk.ui.ktg004.a {
                         </th>
                         <!-- A1_2 -->
                         <th data-bind="if: $component.detailedWorkStatusSettings">
-                            <button class="icon ktg004-no-border" data-bind="click: $component.setting">
-                                <i data-bind="ntsIcon: { no: 5, width: 25, height: 25 }"></i>
-                            </button>
+                            <button class="ktg004-no-border" data-bind="click: $component.setting">設定</button>
                         </th>
                     </thead>
                 </table>
             </div>
             <div class="ktg-004-a ktg004-fontsize ktg004-border" data-bind="widget-content: 100">
-                <div style="padding: 0px 40px 0px 30px;">
+                <div class="widget-content-list">
                     <table class="widget-table" style="width: 100%;">
                         <colgroup>
                             <col width="auto" />
@@ -93,15 +91,12 @@ module nts.uk.ui.ktg004.a {
 		                                <div style="position: relative; width: 50%">
 		                                    <div data-bind="if: row.btn" style="float: left; position: relative;">
 		                                        <!-- A2_2 -->
-		                                        <button class="icon ktg004-no-border" data-bind="
-		                                            click: function() { $component.openKDW003() },
-		                                            ntsIcon: { no: 201, width: 25, height: 28 },
-		                                            enable: row.canClick">
+		                                        <button class="signal-button ktg004-no-border" data-bind="
+                                                        click: function() { $component.openKDW003() },
+                                                        enable: row.canClick">
+                                                    <i data-bind="visible: !row.canClick, ntsIcon: { no: 305 }"></i>
+                                                    <i data-bind="visible: row.canClick, ntsIcon: { no: 306 }"></i>
 		                                        </button>
-		                                        <!-- A2_3 -->
-		                                        <i style="position: absolute; left: 13px; bottom: 0px; cursor: pointer;"
-		                                            data-bind="visible: row.canClick, ntsIcon: { no: 165, width: 13, height: 13 }, click: function() { $component.openKDW003() }">
-		                                        </i>
 		                                    </div>
 		                                    <div data-bind="ntsFormLabel: { required: false, text: row.name }"></div>
 		                                </div>
@@ -131,15 +126,12 @@ module nts.uk.ui.ktg004.a {
 		                                <div style="position: relative; width: 50%">
 		                                    <div data-bind="if: row.btn" style="float: left; position: relative;">
 		                                        <!-- A2_2 -->
-		                                        <button class="icon ktg004-no-border" data-bind="
-		                                            click: function() { $component.openKDW003() },
-		                                            ntsIcon: { no: 201, width: 25, height: 28 },
-		                                            enable: row.canClick">
+		                                        <button class="signal-button ktg004-no-border" data-bind="
+                                                        click: function() { $component.openKDW003() },
+                                                        enable: row.canClick">
+                                                    <i data-bind="visible: !row.canClick, ntsIcon: { no: 305 }"></i>
+                                                    <i data-bind="visible: row.canClick, ntsIcon: { no: 306 }"></i>
 		                                        </button>
-		                                        <!-- A2_3 -->
-		                                        <i style="position: absolute; left: 13px; bottom: 0px; cursor: pointer;"
-		                                            data-bind="visible: row.canClick, ntsIcon: { no: 165, width: 13, height: 13 }, click: function() { $component.openKDW003() }">
-		                                        </i>
 		                                    </div>
 		                                    <div data-bind="ntsFormLabel: { required: false, text: row.name }"></div>
 		                                </div>
@@ -154,7 +146,8 @@ module nts.uk.ui.ktg004.a {
                             </tr>
                         </tbody>
                         <tbody data-bind="foreach: { data: $component.specialHolidaysRemainings, as: 'row'}"> 
-                            <tr class="row-show-ktg004">
+                            <tr class="row-show-ktg004" data-bind="if: (_.find($component.responseData.vacationSetting.speHolidayRemainInfos, { 'specialHolidayCode': $data.code }).manage
+                                                                    && _.find($component.responseData.itemsSetting, { 'item': $data.code}).displayType)">
                                 <td>
 									<div style="display: flex">
 	                                    <div style="position: relative; width: 50%" data-bind=" ntsFormLabel: { required: false, text: row.name }"></div>
@@ -181,7 +174,7 @@ module nts.uk.ui.ktg004.a {
                     padding-left: 10px;
                 }
                 .ktg004-fontsize-larger div.form-label>span.text {
-                    font-size: 1.2rem !important;
+                    font-size: 1rem !important;
                 }
                 .ktg004-no-border {
                     border: none !important;
@@ -192,7 +185,6 @@ module nts.uk.ui.ktg004.a {
                 .ktg004-border table tr td,
                 .ktg004-border table tr th {
                           border-width: 0px;
-                          border-bottom: 1px solid #BFBFBF;
                 }
                 .ktg004-header-text {
                   font-size: smaller;
@@ -617,6 +609,11 @@ module nts.uk.ui.ktg004.a {
         vacationSetting: VacationSetting;
     }
 
+    interface SpeHolidayRemainInfos {
+        manage: boolean;
+        specialHolidayCode: number;
+    }
+
     interface ItemSetting {
         displayType: boolean;
         item: 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32;
@@ -686,6 +683,8 @@ module nts.uk.ui.ktg004.a {
 		
 		// 年休残数管理する
 		annualManage: boolean;
+
+        speHolidayRemainInfos: SpeHolidayRemainInfos[];
 	}
 
     interface SpecialHolidaysRemainings {

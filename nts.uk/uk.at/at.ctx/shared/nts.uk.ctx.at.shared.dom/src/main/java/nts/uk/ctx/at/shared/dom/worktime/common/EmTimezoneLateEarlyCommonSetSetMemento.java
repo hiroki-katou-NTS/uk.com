@@ -15,4 +15,11 @@ public interface EmTimezoneLateEarlyCommonSetSetMemento {
 	 * @param val the new del from em time
 	 */
 	void setDelFromEmTime(boolean val);
+
+	/**
+	 * Sets the deduct by app.
+	 *
+	 * @param val the new deduct by app
+	 */
+	void setIncludeByApp(boolean val);
 }

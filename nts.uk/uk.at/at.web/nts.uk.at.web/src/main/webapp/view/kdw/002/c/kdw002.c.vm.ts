@@ -155,27 +155,7 @@ module nts.uk.at.view.kdw002.c {
                                 $("#useCheckAll").prop('checked', false);
                             }
                             
-                            let notYouCanCheckAll = true;
-                            for(let i =0;i<listData.length;i++){
-                                if(listData[i].toUse ==true && listData[i].userCanUpdateAtr == 1){
-                                    if(!listData[i].youCanChangeIt){
-                                        notYouCanCheckAll =false;
-                                        break;
-                                    }
-                                }
-                            }
-                            $("#youCanCheckAll").prop('checked', notYouCanCheckAll);
-                            
-                            let notOtherCheckAll = true;
-                            for(let i =0;i<listData.length;i++){
-                                if(listData[i].toUse ==true && listData[i].userCanUpdateAtr == 1){
-                                    if(!listData[i].canBeChangedByOthers){
-                                        notOtherCheckAll =false;
-                                        break;
-                                    }
-                                }
-                            }
-                            $("#otherCheckAll").prop('checked', notOtherCheckAll);
+                            displayYouAndOtherCheckAll();
                             
                             //nts.uk.ui.block.clear();
                         }
@@ -288,7 +268,7 @@ module nts.uk.at.view.kdw002.c {
                                         
                                     });
                                 }).always(() => {
-                                    //nts.uk.ui.block.clear();
+                                    nts.uk.ui.block.clear();
                                 });
                             }                               
                         });
@@ -316,7 +296,7 @@ module nts.uk.at.view.kdw002.c {
 
                                     });
                                 }).always(() => {
-                                    //nts.uk.ui.block.clear();
+                                    nts.uk.ui.block.clear();
                                 });
                             }                              
                         });
@@ -385,11 +365,21 @@ module nts.uk.at.view.kdw002.c {
                     let listDefault: Array<DisplayAndInputControl> = [];
                     self.listAttFullDataClone(_.cloneDeep(self.listAttFullData()));
                     _.each(self.listAttFullDataClone(), attFullData => {
+                        let canToUse: boolean = false;
                         for(let i=0;i<data.length;i++){
                             if(attFullData.attendanceItemId == data[i].attendanceItemId){
                                 attFullData.authority = data[i].authority; 
+                                canToUse = true;
                                 break;
                             }    
+                        }
+
+                        if(!canToUse) {
+                            attFullData.authority = {   
+                                'toUse' : false,
+                                'canBeChangedByOthers' : false,
+                                'youCanChangeIt' : false    
+                            }
                         }
                         listDefault.push(DisplayAndInputControl.fromApp(attFullData));
                     });
@@ -405,7 +395,7 @@ module nts.uk.at.view.kdw002.c {
             //get monthly Attd Item By Role ID
             getMonthlyAttdItemByRoleID(roleID: string) {
                 let self = this;
-                let dfd = $.Deferred();
+                let dfd = $.Deferred();                
                 service.getMontlyAttItemNew(roleID).done(function(data) {
                     if (nts.uk.util.isNullOrUndefined(data) || data.length <= 0 || data.every((att: any) => att.authority == null)) {
                         self.isNewMode(true);
@@ -415,13 +405,21 @@ module nts.uk.at.view.kdw002.c {
                     let listDefault: Array<DisplayAndInputControl> = [];
                     self.listAttFullDataClone(_.cloneDeep(self.listAttFullData()));
                     _.each(self.listAttFullDataClone(), attFullData => {
+                        let canToUse: boolean = false;
                         for(let i=0;i<data.length;i++){
                             if(attFullData.attendanceItemId == data[i].attendanceItemId){
                                 attFullData.authority = data[i].authority;
+                                canToUse = true;
                                 break;
-                            }    
+                            } 
                         }
-                            
+                        if(!canToUse) {
+                            attFullData.authority = {   
+                                'toUse' : false,
+                                'canBeChangedByOthers' : false,
+                                'youCanChangeIt' : false    
+                            }
+                        }
                         listDefault.push(DisplayAndInputControl.fromApp(attFullData));
                     });
                     self.dailyServiceTypeControl(
@@ -701,6 +699,7 @@ function useChanged(element, rowId, userCanSet) {
     }else{
         $("#useCheckAll").prop('checked', false);
     }
+	displayYouAndOtherCheckAll();
 }
 
 
@@ -769,6 +768,7 @@ function useHeaderChanged(element) {
 		});	
 	}
 	$("#grid").igGrid("option", "dataSource", dataSource);
+	displayYouAndOtherCheckAll();
 }
 
 
@@ -808,6 +808,28 @@ function canBeChangedByOthersHeaderChanged(element) {
 		});	
 	}
 	$("#grid").igGrid("option", "dataSource", dataSource);
+}
+
+function displayYouAndOtherCheckAll() {
+	let listData = $('#grid').data('igGrid').dataSource._data;
+    let notYouCanCheckAll = true;
+	let notOtherCheckAll = true;
+	let useAndUserCanUpdateAtrLst = _.chain(listData).filter(item => item.toUse ==true && item.userCanUpdateAtr == 1).value();
+	if(_.isEmpty(useAndUserCanUpdateAtrLst)) {
+		notYouCanCheckAll = false;
+		notOtherCheckAll = false;			
+	} else {
+		let youCanChangeItFalseLst = _.chain(useAndUserCanUpdateAtrLst).filter(item => item.youCanChangeIt==false).value();
+		if(!_.isEmpty(youCanChangeItFalseLst)) {
+			notYouCanCheckAll = false;
+		}
+		let canBeChangedByOthersFalseLst = _.chain(useAndUserCanUpdateAtrLst).filter(item => item.canBeChangedByOthers==false).value();
+		if(!_.isEmpty(canBeChangedByOthersFalseLst)) {
+			notOtherCheckAll = false;
+		}
+	}
+	$("#youCanCheckAll").prop('checked', notYouCanCheckAll);
+    $("#otherCheckAll").prop('checked', notOtherCheckAll);
 }
 
 

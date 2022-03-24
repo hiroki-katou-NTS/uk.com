@@ -41,66 +41,9 @@ public class AggregateMonthlyRecordService {
 	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param dailyWorks 日別実績(WORK)List
 	 * @param monthlyWork 月別実績(WORK)
-	 * @return 集計結果
-	 */
-//	public static AggregateMonthlyRecordValue aggregate(RequireM2 require, CacheCarrier cacheCarrier,
-//			String companyId, String employeeId,
-//			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
-//			AggrResultOfAnnAndRsvLeave prevAggrResult,
-//			Optional<AbsRecRemainMngOfInPeriod> prevAbsRecResultOpt,
-//			Optional<BreakDayOffRemainMngOfInPeriod> prevBreakDayOffResultOpt,
-//			Map<Integer, InPeriodOfSpecialLeaveResultInfor> prevSpecialLeaveResultMap,
-//			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
-//			Optional<List<IntegrationOfDaily>> dailyWorks, Optional<IntegrationOfMonthly> monthlyWork) {
-//	return aggregate(require, cacheCarrier, companyId, employeeId, yearMonth, closureId, closureDate, datePeriod, prevAggrResult, prevAbsRecResultOpt,
-//			prevBreakDayOffResultOpt, prevSpecialLeaveResultMap, companySets, employeeSets, dailyWorks, monthlyWork, false);
-
-	public static AggregateMonthlyRecordValue aggregate(RequireM2 require, CacheCarrier cacheCarrier,
-			String companyId, String employeeId,
-			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
-			Optional<AbsRecRemainMngOfInPeriod> prevAbsRecResultOpt,
-			Optional<BreakDayOffRemainMngOfInPeriod> prevBreakDayOffResultOpt,
-			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
-			Optional<List<IntegrationOfDaily>> dailyWorks, Optional<IntegrationOfMonthly> monthlyWork) {
-
-		return aggregate(require, cacheCarrier, companyId, employeeId, yearMonth, closureId, closureDate, datePeriod, prevAbsRecResultOpt,
-				prevBreakDayOffResultOpt, companySets, employeeSets, dailyWorks, monthlyWork, false);
-	}
-
-	/**
-	 * 集計処理
-	 * @param companyId 会社ID
-	 * @param employeeId 社員ID
-	 * @param yearMonth 年月
-	 * @param closureId 締めID
-	 * @param closureDate 締め日付
-	 * @param datePeriod 期間
-	 * @param prevAggrResult 前回集計結果　（年休積立年休の集計結果）
-	 * @param prevAbsRecResultOpt 前回集計結果　（振休振出の集計結果）
-	 * @param prevBreakDayOffResultOpt 前回集計結果　（代休の集計結果）
-	 * @param prevSpecialLeaveResultMap 前回集計結果　（特別休暇の集計結果）
-	 * @param companySets 月別集計で必要な会社別設定
-	 * @param employeeSets 月別集計で必要な社員別設定
-	 * @param dailyWorks 日別実績(WORK)List
-	 * @param monthlyWork 月別実績(WORK)
 	 * @param remainingProcAtr 残数処理フラグ
 	 * @return 集計結果
 	 */
-//	public static AggregateMonthlyRecordValue aggregate(RequireM2 require, CacheCarrier cacheCarrier,
-//			String companyId, String employeeId, YearMonth yearMonth,
-//			ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
-//			AggrResultOfAnnAndRsvLeave prevAggrResult, Optional<AbsRecRemainMngOfInPeriod> prevAbsRecResultOpt,
-//			Optional<BreakDayOffRemainMngOfInPeriod> prevBreakDayOffResultOpt,
-//			Map<Integer, InPeriodOfSpecialLeaveResultInfor> prevSpecialLeaveResultMap,
-//			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
-//			Optional<List<IntegrationOfDaily>> dailyWorks, Optional<IntegrationOfMonthly> monthlyWork,
-//			Boolean remainingProcAtr) {
-//	AggregateMonthlyRecordServiceProc proc = new AggregateMonthlyRecordServiceProc();
-//
-//	return proc.aggregate(require, cacheCarrier, companyId, employeeId, yearMonth, closureId, closureDate,
-//			datePeriod, prevAggrResult, prevAbsRecResultOpt, prevBreakDayOffResultOpt, prevSpecialLeaveResultMap,
-//			companySets, employeeSets, dailyWorks, monthlyWork, remainingProcAtr);
-
 	public static AggregateMonthlyRecordValue aggregate(RequireM2 require, CacheCarrier cacheCarrier,
 			String companyId, String employeeId, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
@@ -138,7 +81,7 @@ public class AggregateMonthlyRecordService {
 		proc.setCompanyId(cid);
 		proc.setEmployeeId(sid);
 		Optional<ComSubstVacation> absSettingOpt = require.comSubstVacation(cid);
-		CompensatoryLeaveComSetting dayOffSetting = require.compensatoryLeaveComSetting(cid);
+		CompensatoryLeaveComSetting dayOffSetting = require.compensatoryLeaveComSetting(cid).orElse(null);
 		MonAggrCompanySettings comSetting = new MonAggrCompanySettings();
 		comSetting.setAbsSettingOpt(absSettingOpt);
 		comSetting.setDayOffSetting(dayOffSetting);
@@ -154,10 +97,8 @@ public class AggregateMonthlyRecordService {
 	}
 
 	public static interface RequireM1 extends MonthlyCalculatingDailys.RequireM4, AggregateMonthlyRecordServiceProc.RequireM7,
-		MonAggrEmployeeSettings.RequireM2 {
+		MonAggrEmployeeSettings.RequireM2, CompensatoryLeaveComSetting.Require {
 
 		Optional<ComSubstVacation> comSubstVacation(String companyId);
-
-		CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId);
 	}
 }

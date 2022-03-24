@@ -1,3 +1,4 @@
+﻿
 module nts.uk.at.view.kmk003.a {
 
     import SimpleWorkTimeSettingDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.SimpleWorkTimeSettingDto;
@@ -20,6 +21,8 @@ module nts.uk.at.view.kmk003.a {
     import FlowWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flowset.FlowWorkSettingModel;
     import DiffTimeWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.difftimeset.DiffTimeWorkSettingModel;
     import FlexWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flexset.FlexWorkSettingModel;
+    import FlStampReflectTzDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlStampReflectTzDto;
+    import StampReflectTimezoneDto = nts.uk.at.view.kmk003.a.service.model.common.StampReflectTimezoneDto;
     
     import FixedWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FixedWorkSettingSaveCommand;
     import FlowWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FlowWorkSettingSaveCommand;
@@ -73,7 +76,6 @@ module nts.uk.at.view.kmk003.a {
             isSimpleMode: KnockoutComputed<boolean>;
             isDetailMode: KnockoutComputed<boolean>;
             isLoading: KnockoutObservable<boolean>;
-            
             flexWorkManaging: boolean;
             workMultiple: KnockoutObservable<boolean>;
             overTimeWorkFrameOptions: KnockoutObservableArray<any>;
@@ -85,6 +87,7 @@ module nts.uk.at.view.kmk003.a {
             lstWorkTimeLanguage: KnockoutObservableArray<IWorkTimeLanguage> = ko.observableArray([]);
 
             tabA2Text : KnockoutObservable<string> = ko.observable("");
+            checkMsg1485: KnockoutComputed<boolean>;
 
             constructor() {
                 let self = this;
@@ -94,7 +97,6 @@ module nts.uk.at.view.kmk003.a {
 
                 // initial screen mode
                 self.screenMode = ko.observable(ScreenMode.NEW);
-
                 //initial otsuka mode
                 self.otsukaMode = ko.observable(false);
 
@@ -110,9 +112,7 @@ module nts.uk.at.view.kmk003.a {
                 self.useHalfDayWorking = ko.observable(false); // A19_1_2 initial value = false
                 self.useHalfDayOvertime = ko.observable(false); // A19_2_2 initial value = false
                 self.useHalfDayBreak = ko.observable(false); // A19_3_2 initial value = false
-
-
-                self.mainSettingModel = new MainSettingModel(self.tabMode, self.isNewOrCopyMode, self.useHalfDayOptions, self.useHalfDayWorking, self.useHalfDayOvertime, self.useHalfDayBreak, self.isNewMode);
+                self.mainSettingModel = new MainSettingModel(self.tabMode, self.isNewOrCopyMode, self.useHalfDayOptions, self.useHalfDayWorking, self.useHalfDayOvertime, self.useHalfDayBreak, self.isNewMode, ko.observable(1));
                 self.selectedWorkTimeCode = ko.observable('');
                 self.workTimeSettingLoader = new WorkTimeSettingLoader(self.mainSettingModel.workTimeSetting.worktimeCode);
                 self.workTimeSettings = ko.observableArray([]);
@@ -131,6 +131,28 @@ module nts.uk.at.view.kmk003.a {
                 self.overTimeWorkFrameOptions = ko.observableArray([]);
 
                 self.backupCommonSetting = null;
+
+                self.checkMsg1485 = ko.computed(() => {
+                  const goOutSet = self.mainSettingModel.commonSetting.goOutSet;
+                  if (goOutSet.roundingMethod() !== 2) {
+                    return false;
+                  }
+                  return goOutSet.diffTimezoneSetting.ottimezone.privateUnionGoOut.approTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.pubHolWorkTimezone.privateUnionGoOut.approTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.workTimezone.privateUnionGoOut.approTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.ottimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.pubHolWorkTimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.workTimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.ottimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.pubHolWorkTimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.workTimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingMethod() === 0;
+                });
+
+                self.checkMsg1485.subscribe(value => {
+                  if (!value) {
+                    $("#A33_41").ntsError("clear");
+                  }
+                });
 
                 self.langId.subscribe(() => {
                     let lang: string = ko.toJS(self.langId);
@@ -650,6 +672,8 @@ module nts.uk.at.view.kmk003.a {
                 
                 //validate disabled item tab 7
                 self.validatetab7();
+
+                self.validateTab8();
                 
                 //validate disabled item tab 11
                 if (!nts.uk.util.isNullOrEmpty(self.backupCommonSetting)) {
@@ -694,6 +718,14 @@ module nts.uk.at.view.kmk003.a {
                     $('#nts-fix-table-a7-flex-notuse-2').find('.nts-input').ntsError('clear');
                 }
             }
+
+            private validateTab8() {
+              const self = this;
+              if (self.checkMsg1485()) {
+                $('#A33_41').ntsError('set', { messageId: 'Msg_1485' });
+              }
+            }
+
             private validateTab11(commonDayoff: SubHolTransferSetDto,commonOvertime: SubHolTransferSetDto) {
                 let self = this;
                 if (self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.useDivision()) {
@@ -753,7 +785,7 @@ module nts.uk.at.view.kmk003.a {
                 self.validateInput();
 
                 // stop function if has error.
-                if ($('.nts-editor').ntsError('hasError') || $('.time-range-editor').ntsError('hasError')) {
+                if ($('.nts-editor').ntsError('hasError') || $('.time-range-editor').ntsError('hasError') || nts.uk.ui.errors.hasError()) {
                     return;
                 }
                 
@@ -927,6 +959,22 @@ module nts.uk.at.view.kmk003.a {
                     self.mainSettingModel.isInterlockDialogJ(true);
                     self.mainSettingModel.updateStampValue();
                 }
+                
+                // set FlowStampReflectTzModel
+                const stampReflectTimezones: StampReflectTimezoneDto[] = [];
+                self.mainSettingModel.fixedWorkSetting.lstStampReflectTimezone.forEach(item => {
+                    stampReflectTimezones.push({
+                        workNo: item.workNo(),
+                        classification: item.classification(),
+                        endTime: item.endTime(),
+                        startTime: item.startTime()
+                    });
+                });
+                const flStampReflectTzDto: FlStampReflectTzDto = {
+                    twoTimesWorkReflectBasicTime: 0,
+                    stampReflectTimezones: stampReflectTimezones
+                }
+                self.mainSettingModel.flowWorkSetting.stampReflectTimezone.updateData(flStampReflectTzDto);
                 self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
                 self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
                 self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
@@ -1083,7 +1131,7 @@ module nts.uk.at.view.kmk003.a {
             tabMode: KnockoutObservable<number>;
             addMode: KnockoutComputed<boolean>;
             isNewMode: KnockoutObservable<boolean>;
-            
+            isManageByTime: KnockoutObservable<number>;
             // Interlock dialog J
             isInterlockDialogJ: KnockoutObservable<boolean>;
             
@@ -1092,7 +1140,7 @@ module nts.uk.at.view.kmk003.a {
                         halfDayWorking: KnockoutObservable<boolean>,
                         halfDayOverTime: KnockoutObservable<boolean>,
                         halfDayBreak: KnockoutObservable<boolean>,
-                        isNewMode: KnockoutObservable<boolean>) {
+                        isNewMode: KnockoutObservable<boolean>,) {
                 let self = this;
                 self.isChangeItemTable = ko.observable(false);
                 self.useHalfDayOptions = useHalfDayOptions;
@@ -1101,7 +1149,6 @@ module nts.uk.at.view.kmk003.a {
                 self.useHalfDayBreak = halfDayBreak;
                 self.isInterlockDialogJ = ko.observable(true);
                 self.tabMode = tabMode;
-                
                 self.addMode = isNewOrCopyMode;
                 self.isNewMode = isNewMode;
                 
@@ -1241,11 +1288,14 @@ module nts.uk.at.view.kmk003.a {
 
                 //afternoon
                 workTimezones
-                    .filter(w => w.timezone.start() >= afterStart)
+                    .filter(w => w.timezone.end() >= afterStart)
                     .map(w => {
                         let dto = w.toDto();
+                        dto.timezone.start = afterStart;
                         dto.employmentTimeFrameNo = afternoonNo++;
-                        afternoonTimes.push(dto);
+                        if (_.filter(afternoonTimes, (time: any) => {return time.timezone.start === dto.timezone.start && time.timezone.end === dto.timezone.end;}).length == 0) {
+                            afternoonTimes.push(dto);
+                        }
                     })
 
                 return {
@@ -1423,65 +1473,53 @@ module nts.uk.at.view.kmk003.a {
                     temp.timezone.rounding.roundingTime(_self.fixedWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezoneSimpleMode()[0].roundingTime());
                     _self.fixedWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezone([temp]);
                 }
-
-                let workTimes = _self.autoCreateHalfDayWT(_self.fixedWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezone());
-
-                command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = workTimes.morning;
-                command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone = workTimes.afternoon;
-
-                if (!_self.useHalfDayOverTime()) {
-                    let OTTimes = _self.autoCreateHalfDayOT(_self.fixedWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone());
-
-                    command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstOTTimezone = OTTimes.morning;
-                    command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstOTTimezone = OTTimes.afternoon;
-                }
-
-                /*if (_self.isNewMode() && !_self.useHalfDayBreak()) {
-                    let restTimes = _self.autoCreateHalfDayBreak(_self.fixedWorkSetting.getHDWtzOneday().restTimezone.timezones());
-
-                    command.fixedWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.timezones = restTimes.morning;
-                    command.fixedWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.timezones = restTimes.afternoon;
-                }*/
-
-				if (!_self.useHalfDayBreak()){
+				if (command.screenMode == 1){
 					let amTimes : any = [], pmTimes : any = [];
-					
 					_.forEach(command.fixedWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.timezones, (z : any) => {
-						let checkAdd = 0;
-						if (_.inRange(z.start, workTimes.morning[0].timezone.start - 0.1, workTimes.morning[0].timezone.end + 0.1) &&
-						_.inRange(z.end, workTimes.morning[0].timezone.start - 0.1, workTimes.morning[0].timezone.end + 0.1)){
-							checkAdd = 1;
 							amTimes.push({
 								start: z.start, 
 								end: z.end
 							})
-						}
 						
-						if (_.inRange(z.start, workTimes.afternoon[0].timezone.start - 0.1, workTimes.afternoon[0].timezone.end + 0.1) &&
-						_.inRange(z.end, workTimes.afternoon[0].timezone.start - 0.1, workTimes.afternoon[0].timezone.end + 0.1)){
-							checkAdd = 2;
 							pmTimes.push({
 								start: z.start, 
 								end: z.end
 							})
-						}
-						if (checkAdd == 0) {
-							amTimes.push({
-								start: z.start, 
-								end: z.end
-							})
-							
-							pmTimes.push({
-								start: z.start, 
-								end: z.end
-							})
-						}
 					});
-					
                     command.fixedWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.timezones = amTimes;
                     command.fixedWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.timezones = pmTimes;
+				} else {
+					let workTimes = _self.autoCreateHalfDayWT(_self.fixedWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezone());
+	
+	                command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = workTimes.morning;
+	                command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone = workTimes.afternoon;
+	
+	                if (!_self.useHalfDayOverTime()) {
+	                    let OTTimes = _self.autoCreateHalfDayOT(_self.fixedWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone());
+	
+	                    command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstOTTimezone = OTTimes.morning;
+	                    command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstOTTimezone = OTTimes.afternoon;
+	                }
+	
+					if (!_self.useHalfDayBreak()){
+						let amTimes : any = [], pmTimes : any = [];
+						
+						_.forEach(command.fixedWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.timezones, (z : any) => {
+								amTimes.push({
+									start: z.start, 
+									end: z.end
+								})
+							
+								pmTimes.push({
+									start: z.start, 
+									end: z.end
+								})
+						});
+						
+	                    command.fixedWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.timezones = amTimes;
+	                    command.fixedWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.timezones = pmTimes;
+					}  
 				}
-
                 return command;
             }
 
@@ -1500,7 +1538,7 @@ module nts.uk.at.view.kmk003.a {
             /**
              * Collect flex data and convert to command dto
              */
-            toFlexCommand(): FlexWorkSettingSaveCommand {
+             toFlexCommand(): FlexWorkSettingSaveCommand {
                 let self = this;
                 let command: FlexWorkSettingSaveCommand;
                 const oneDayFlex = _.map(self.flexWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezone(),item=>item.toDto());
@@ -1513,148 +1551,140 @@ module nts.uk.at.view.kmk003.a {
                     predseting: self.predetemineTimeSetting.toDto(),
                     worktimeSetting: self.workTimeSetting.toDto(),
                 };
-
-                if (!self.useHalfDayWorking()) {
-                    //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
-                    let times = self.autoCreateHalfDayWT(self.flexWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezone());
-
-                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone =  times.morning;
-                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone =  times.afternoon;
-                }
-
-                if (!self.useHalfDayOverTime()) {
-                    let OTTimes = self.autoCreateHalfDayOT(self.flexWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone());
-
-                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstOTTimezone = OTTimes.morning;
-                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstOTTimezone = OTTimes.afternoon;
-                }
-
-                if (self.isNewMode() && !self.useHalfDayBreak()) {
-                    let breakTimes = self.autoCreateHalfDayBreak(self.flexWorkSetting.getHDWtzOneday().restTimezone.fixedRestTimezone.timezones());
-
-                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.fixedRestTimezone.timezones = breakTimes.morning;
-                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.fixedRestTimezone.timezones = breakTimes.afternoon;
-
-                    /*let restTimeFlex = self.autoCreateHalfDayRestFlex();
-                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.flowRestSets = restTimeFlex.morning;
-                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.flowRestSets = restTimeFlex.afternoon;*/
-                }
-				// ver24.2 start
-				// A22_23 休憩時間を固定にする (休憩時間帯を固定にする)
-				let fixRestTime = command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.fixRestTime;
-				// A19_3_2 半日勤務の時間帯の設定＝するの場合
-				if (self.useHalfDayBreak()) {
-					if (fixRestTime == false) {
-						command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.fixedRestTimezone.timezones = [];
-						command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.fixedRestTimezone.timezones = [];
+				if (command.screenMode == 0){
+					if (!self.useHalfDayWorking()) {
+	                    //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
+	                    let times = self.autoCreateHalfDayWT(self.flexWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezone());
+	
+	                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone =  times.morning;
+	                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone =  times.afternoon;
+	                }
+	
+	                if (!self.useHalfDayOverTime()) {
+	                    let OTTimes = self.autoCreateHalfDayOT(self.flexWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone());
+	
+	                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstOTTimezone = OTTimes.morning;
+	                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstOTTimezone = OTTimes.afternoon;
+	                }
+	
+	                if (self.isNewMode() && !self.useHalfDayBreak()) {
+	                    let breakTimes = self.autoCreateHalfDayBreak(self.flexWorkSetting.getHDWtzOneday().restTimezone.fixedRestTimezone.timezones());
+	
+	                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.fixedRestTimezone.timezones = breakTimes.morning;
+	                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.fixedRestTimezone.timezones = breakTimes.afternoon;
+	
+	                    /*let restTimeFlex = self.autoCreateHalfDayRestFlex();
+	                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.flowRestSets = restTimeFlex.morning;
+	                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.flowRestSets = restTimeFlex.afternoon;*/
+	                }
+					// ver24.2 start
+					// A22_23 休憩時間を固定にする (休憩時間帯を固定にする)
+					let fixRestTime = command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.fixRestTime;
+					// A19_3_2 半日勤務の時間帯の設定＝するの場合
+					if (self.useHalfDayBreak()) {
+						if (fixRestTime == false) {
+							command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.fixedRestTimezone.timezones = [];
+							command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.fixedRestTimezone.timezones = [];
+						}
 					}
-				}
-				// A19_3_2 半日勤務の時間帯の設定＝しないの場合
-				if (!self.useHalfDayBreak()) {
-					let amTimes : any = [], pmTimes : any = [];
-					let workTimes = self.autoCreateHalfDayWT(self.flexWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezone());
-					let useHereAfterRestSet = command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.flowRestTimezone.useHereAfterRestSet;
-					if (fixRestTime == false) {
-						_.forEach(command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.flowRestTimezone.flowRestSets, (z : any) => {
-							let checkAdd = 0;
-							if (_.inRange(z.flowPassageTime, workTimes.morning[0].timezone.start - 0.1, workTimes.morning[0].timezone.end + 0.1) &&
-							_.inRange(z.flowRestTime, workTimes.morning[0].timezone.start - 0.1, workTimes.morning[0].timezone.end + 0.1)){
-								checkAdd = 1;
+					// A19_3_2 半日勤務の時間帯の設定＝しないの場合
+					if (!self.useHalfDayBreak()) {
+						let amTimes : any = [], pmTimes : any = [];
+						let workTimes = self.autoCreateHalfDayWT(self.flexWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezone());
+						let useHereAfterRestSet = command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.flowRestTimezone.useHereAfterRestSet;
+						if (fixRestTime == false) {
+							_.forEach(command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.flowRestTimezone.flowRestSets, (z : any) => {
 								amTimes.push({
 									flowPassageTime: z.flowPassageTime, 
 									flowRestTime: z.flowRestTime
 								})
-							}
 							
-							if (_.inRange(z.flowPassageTime, workTimes.afternoon[0].timezone.start - 0.1, workTimes.afternoon[0].timezone.end + 0.1) &&
-							_.inRange(z.flowRestTime, workTimes.afternoon[0].timezone.start - 0.1, workTimes.afternoon[0].timezone.end + 0.1)){
-								checkAdd = 2;
 								pmTimes.push({
 									flowPassageTime: z.flowPassageTime, 
 									flowRestTime: z.flowRestTime
 								})
-							}
+							});
+							command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.flowRestSets = amTimes;
+							command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.useHereAfterRestSet = useHereAfterRestSet;
 							
-							if (checkAdd == 0){
-								amTimes.push({
-									flowPassageTime: z.flowPassageTime, 
-									flowRestTime: z.flowRestTime
-								})
+							command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.flowRestSets = pmTimes;
+							command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.useHereAfterRestSet = useHereAfterRestSet;
+							
+							if (useHereAfterRestSet == true) {
+								let z = command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.flowRestTimezone.hereAfterRestSet
 								
-								pmTimes.push({
-									flowPassageTime: z.flowPassageTime, 
-									flowRestTime: z.flowRestTime
-								})
+								command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.hereAfterRestSet = z;
+								command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.hereAfterRestSet = z;
+							} else {
+								command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.hereAfterRestSet = { flowPassageTime: 0 ,flowRestTime: 0}
+								command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.hereAfterRestSet = { flowPassageTime: 0 ,flowRestTime: 0}
 							}
+							command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.fixedRestTimezone.timezones = [];
+							command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.fixedRestTimezone.timezones = [];
+						} else {
+							_.forEach(command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.fixedRestTimezone.timezones, (z : any) => {
+								amTimes.push({
+									start: z.start, 
+									end: z.end
+								})
+							
+								pmTimes.push({
+									start: z.start, 
+									end: z.end
+								})
+							})
+							
+							command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.fixedRestTimezone.timezones = amTimes;
+							command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.fixedRestTimezone.timezones = pmTimes;
+						}
+					}
+				} else {
+					// A22_23 休憩時間を固定にする (休憩時間帯を固定にする)
+					let fixRestTime = command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.fixRestTime;
+					let amTimes : any = [], pmTimes : any = [];
+					if (fixRestTime == true) {
+						_.forEach(command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.fixedRestTimezone.timezones, (z : any) => {
+							amTimes.push({
+								start: z.start, 
+								end: z.end
+							})
+						
+							pmTimes.push({
+								start: z.start, 
+								end: z.end
+							})
+						})
+							
+						command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.fixedRestTimezone.timezones = amTimes;
+						command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.fixedRestTimezone.timezones = pmTimes;
+						command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = command.flexWorkSetting.lstHalfDayWorkTimezone[0].workTimezone.lstWorkingTimezone;
+	                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone = command.flexWorkSetting.lstHalfDayWorkTimezone[0].workTimezone.lstWorkingTimezone;
+					} else {
+						_.forEach(command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.flowRestTimezone.flowRestSets, (z : any) => {
+							amTimes.push({
+								flowPassageTime: z.flowPassageTime, 
+								flowRestTime: z.flowRestTime
+							})
+						
+							pmTimes.push({
+								flowPassageTime: z.flowPassageTime, 
+								flowRestTime: z.flowRestTime
+							})
 						});
+						let useHereAfterRestSet = command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.flowRestTimezone.useHereAfterRestSet;
 						command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.flowRestSets = amTimes;
 						command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.useHereAfterRestSet = useHereAfterRestSet;
 						
 						command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.flowRestSets = pmTimes;
 						command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.useHereAfterRestSet = useHereAfterRestSet;
 						
-						if (useHereAfterRestSet == true) {
-							let z = command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.flowRestTimezone.hereAfterRestSet
-							
-							if (_.inRange(z.flowPassageTime, workTimes.morning[0].timezone.start - 0.1, workTimes.morning[0].timezone.end + 0.1) &&
-							_.inRange(z.flowRestTime, workTimes.morning[0].timezone.start - 0.1, workTimes.morning[0].timezone.end + 0.1)){
-								command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.hereAfterRestSet = z;
-							} else {
-								command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.useHereAfterRestSet = false;
-								command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.hereAfterRestSet = { flowPassageTime: 0 ,flowRestTime: 0}
-							}
-							
-							if (_.inRange(z.flowPassageTime, workTimes.afternoon[0].timezone.start - 0.1, workTimes.afternoon[0].timezone.end + 0.1) &&
-							_.inRange(z.flowRestTime, workTimes.afternoon[0].timezone.start - 0.1, workTimes.afternoon[0].timezone.end + 0.1)){
-								command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.hereAfterRestSet = z;
-							} else {
-								command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.useHereAfterRestSet = false;
-								command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.hereAfterRestSet = { flowPassageTime: 0 ,flowRestTime: 0}
-							}
-						} else {
-							command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.hereAfterRestSet = { flowPassageTime: 0 ,flowRestTime: 0}
-							command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.hereAfterRestSet = { flowPassageTime: 0 ,flowRestTime: 0}
-						}
-						command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.fixedRestTimezone.timezones = [];
-						command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.fixedRestTimezone.timezones = [];
-					} else {
-						_.forEach(command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.fixedRestTimezone.timezones, (z : any) => {
-							let checkAdd = 0;
-							if (_.inRange(z.start, workTimes.morning[0].timezone.start - 0.1, workTimes.morning[0].timezone.end + 0.1) &&
-							_.inRange(z.end, workTimes.morning[0].timezone.start - 0.1, workTimes.morning[0].timezone.end + 0.1)){
-								checkAdd = 1;
-								amTimes.push({
-									start: z.start, 
-									end: z.end
-								})
-							}
-							
-							if (_.inRange(z.start, workTimes.afternoon[0].timezone.start - 0.1, workTimes.afternoon[0].timezone.end + 0.1) &&
-							_.inRange(z.end, workTimes.afternoon[0].timezone.start - 0.1, workTimes.afternoon[0].timezone.end + 0.1)){
-								checkAdd = 2;
-								pmTimes.push({
-									start: z.start, 
-									end: z.end
-								})
-							}
-							
-							if (checkAdd == 0) {
-								amTimes.push({
-									start: z.start, 
-									end: z.end
-								})
-								
-								pmTimes.push({
-									start: z.start, 
-									end: z.end
-								})
-							}
-						})
+						let z = command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.flowRestTimezone.hereAfterRestSet
 						
-						command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.fixedRestTimezone.timezones = amTimes;
-						command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.fixedRestTimezone.timezones = pmTimes;
+						command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.hereAfterRestSet = z;
+						command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.hereAfterRestSet = z;
 					}
 				}
+                
 
                 return command;
             }
@@ -1762,7 +1792,8 @@ module nts.uk.at.view.kmk003.a {
 	                self.updateInterlockDialogJ();
 	                self.updateStampValue();
 	                dfd.resolve();
-				})
+				});
+              
 				return dfd.promise();
             }
             

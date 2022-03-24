@@ -33,13 +33,12 @@ import nts.uk.ctx.exio.dom.input.canonicalize.history.ExternalImportHistory;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryKeyColumnNames;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.DatePeriodCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
-import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
-import nts.gul.util.Either;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
@@ -95,12 +94,21 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 		
 		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interm -> {
 			
+			interm = preCanonicalize(interm); 
+			
 			val results = canonicalizeHistory(require, context, interm);
 			
 			results.forEach(result -> {
 				require.save(context, result.complete());
 			});
 		});
+	}
+
+	/**
+	 * 正準化前に挟みたい処理があれば、オーバーライドする。 
+	 */
+	protected List<IntermediateResult> preCanonicalize(List<IntermediateResult> interm) {
+		return interm;
 	}
 
 	/**
@@ -124,7 +132,11 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 				.getItemByNo(this.getItemNoOfEmployeeId())
 				.get().getString();
 
-		DomainDataId id = new DomainDataId(this.getParentTableName(), Arrays.asList(new DomainDataId.Key(DomainDataColumn.SID, employeeId)));
+		
+		DomainDataId id = new DomainDataId(
+				this.getParentTableName(), 
+				Arrays.asList(new DomainDataId.Key(DomainDataColumn.getSID(this.getItemNoOfEmployeeId()),
+				employeeId)));
 		
 		// 既存履歴
 		val existingHistory = require.getHistory(id, this.historyType, getKeyColumnNames());
@@ -144,7 +156,8 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 		
 		employeeCanonicalized.stream()
 				.sorted(Comparator.comparing(c -> c.getItemByNo(itemNoStartDate).get().getDate()))
-				.forEach(interm -> getPeriod(interm)
+				.forEach(interm -> new DatePeriodCanonicalization(itemNoStartDate,itemNoEndDate)
+						.getPeriod(interm)
 						.map(p -> new Container(interm, DateHistoryItem.createNewHistory(p)))
 						.ifRight(c -> containers.add(c))
 						.ifLeft(e -> require.add(ExternalImportError.record(interm.getRowNo(), context.getDomainId(), e.getText()))));
@@ -240,24 +253,6 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 			
 			return interm.addCanonicalized(canonicalizedItems);
 		}
-	}
-	
-	/**
-	 * 期間を取り出す
-	 * @param revisedData
-	 * @return
-	 */
-	private Either<ErrorMessage, DatePeriod> getPeriod(IntermediateResult interm) {
-		
-		val startDate = interm.getItemByNo(itemNoStartDate).get().getDate();
-		val endDate = interm.getItemByNo(itemNoEndDate).get().getDate();
-		
-		val period = new DatePeriod(startDate, endDate);
-		if (period.isReversed()) {
-			return Either.left(new ErrorMessage("開始日と終了日が逆転しています。"));
-		}
-		
-		return Either.right(period);
 	}
 	
 	
@@ -425,7 +420,7 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 	}
 
 	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(DomainDataColumn.HIST_ID);
+		return Arrays.asList(DomainDataColumn.getHistId(this.itemNoHistoryId));
 	}
 	
 	public static interface RequireAdjust{

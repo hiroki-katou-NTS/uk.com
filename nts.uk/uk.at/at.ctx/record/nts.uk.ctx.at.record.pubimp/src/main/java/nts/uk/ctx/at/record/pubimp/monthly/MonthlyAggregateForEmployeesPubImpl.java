@@ -34,7 +34,6 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDa
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
-import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.CreatingDailyResultsConditionRepository;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
@@ -72,6 +71,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.company.CompanyMonthDaySettingRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayManagementUsageUnitRepository;
@@ -115,7 +115,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepositor
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByScheData;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetManageWorkHourRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSetRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSetRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSetRepository;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
@@ -131,6 +135,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.Sn
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSetRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSetRepo;
@@ -203,6 +208,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpComHisAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagementRepo;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -500,6 +506,8 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 	@Inject
 	private IntegrationOfDailyGetter integrationOfDailyGetter;
 	@Inject
+	private DailyRecordShareFinder dailyRecordShareFinder;
+	@Inject
 	private GetProcessingDate getProcessingDate;
 	@Inject
 	private DailySnapshotWorkAdapter snapshotAdapter;
@@ -569,6 +577,18 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 	private CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
 	@Inject
 	private AttendanceItemConvertFactory factory;
+	@Inject
+	private WorkRegularAdditionSetRepository workRegularAdditionSetRepo;
+	@Inject
+	private AddSetManageWorkHourRepository addSetManageWorkHourRepo;
+	@Inject
+	private WorkFlexAdditionSetRepository workFlexAdditionSetRepo;
+	@Inject
+	private WorkDeformedLaborAdditionSetRepository workDeformedLaborAdditionSetRepo;
+	@Inject
+	private FlexSetRepository flexSetRepo;
+	@Inject
+	private EmpComHisAdapter empComHisAdapter;
 
 	@Override
 	public List<AtomTask> aggregate(CacheCarrier cache, String cid, List<String> sids, boolean canAggrWhenLock) {
@@ -621,7 +641,8 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 				careUsedNumberRepo, childCareLeaveRemInfoRepo, careLeaveRemainingInfoRepo, tempChildCareManagementRepo,
 				tempCareManagementRepo, nursingLeaveSettingRepo, executionLogRepo, workingConditionRepository,
 				transaction, employmentAdapter, creatingDailyResultsConditionRepo, getPeriodFromPreviousToNextGrantDate,
-				workDaysNumberOnLeaveCountRepo);
+				workDaysNumberOnLeaveCountRepo, calculateDailyRecordServiceCenter, workRegularAdditionSetRepo, addSetManageWorkHourRepo, 
+				workFlexAdditionSetRepo, workDeformedLaborAdditionSetRepo, flexSetRepo, empComHisAdapter);
 
 		return MonthlyAggregateForEmployees.aggregate(require, cid, sids, canAggrWhenLock);
 	}
@@ -760,7 +781,11 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 				EmploymentAdapter employmentAdapter,
 				CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo,
 				GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate,
-				WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo) {
+				WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo, 
+				CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter, 
+				WorkRegularAdditionSetRepository workRegularAdditionSetRepo, AddSetManageWorkHourRepository addSetManageWorkHourRepo, 
+				WorkFlexAdditionSetRepository workFlexAdditionSetRepo, WorkDeformedLaborAdditionSetRepository workDeformedLaborAdditionSetRepo,
+				FlexSetRepository flexSetRepo, EmpComHisAdapter empComHisAdapter) {
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter,
 					grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo,
 					specialLeaveBasicInfoRepo, interimRecAbasMngRepo, empSubstVacationRepo,
@@ -811,10 +836,13 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 					careUsedNumberRepo, childCareLeaveRemInfoRepo, careLeaveRemainingInfoRepo,
 					tempChildCareManagementRepo, tempCareManagementRepo, nursingLeaveSettingRepo, executionLogRepo,
 					workingConditionRepository, transaction, employmentAdapter, creatingDailyResultsConditionRepo,
-					getPeriodFromPreviousToNextGrantDate, workDaysNumberOnLeaveCountRepo,
-					calculateDailyRecordServiceCenter);
+					getPeriodFromPreviousToNextGrantDate, workDaysNumberOnLeaveCountRepo, calculateDailyRecordServiceCenter,
+					workRegularAdditionSetRepo, addSetManageWorkHourRepo,  workFlexAdditionSetRepo, workDeformedLaborAdditionSetRepo,
+					flexSetRepo, empComHisAdapter);
 			this.cache = cache;
 		}
+		
+		MonthlyAggregateForEmployeesPubImplCache cacheMonthly = new MonthlyAggregateForEmployeesPubImplCache();
 
 		@Override
 		public Map<GeneralDate, WorkInfoOfDailyAttendance> dailyWorkInfos(String employeeId, DatePeriod datePeriod) {
@@ -823,7 +851,29 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 			List<WorkInfoOfDailyPerformance> lstDom = lstDomCache.stream()
 					.map(x -> new WorkInfoOfDailyPerformance(x.getEmployeeId(), x.getYmd(), x.getWorkInformation()))
 					.collect(Collectors.toList());
-			List<WorkInfoOfDailyPerformance> lstDomOld = workInformationRepo.findByPeriodOrderByYmd(employeeId, datePeriod);
+			List<WorkInfoOfDailyPerformance> lstDomOld = new ArrayList<>();
+			List<WorkInfoOfDailyPerformance> dataByRepo =  new ArrayList<>();
+			
+			for(GeneralDate date : datePeriod.datesBetween()){
+				String keyForGet = employeeId + "-" + date.toString();	
+				if(cacheMonthly.getWorkInfoOfDailyPerformanceMap().containsKey(keyForGet)){
+					lstDomOld.add(cacheMonthly.getWorkInfoOfDailyPerformanceMap().get(keyForGet));
+				}
+				else{
+					dataByRepo =workInformationRepo.findByPeriodOrderByYmd(employeeId,  new DatePeriod(date, datePeriod.end()));
+					
+					dataByRepo.forEach((v) ->{
+						String keyForPut = employeeId + "-" + v.getYmd().toString();
+						if(!cacheMonthly.getWorkInfoOfDailyPerformanceMap().containsKey(keyForPut)){
+							cacheMonthly.getWorkInfoOfDailyPerformanceMap().put(keyForPut, v);
+						}
+						lstDomOld.add(v);
+					});
+					
+					break;
+				}
+			};
+			
 			lstDomOld.removeIf(x -> {
 				val fromCache = lstDom.stream().filter(y -> y.getYmd().equals(x.getYmd())).findFirst();
 				return fromCache.isPresent();
@@ -839,8 +889,30 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 					.filter(x -> x.getAttendanceLeave().isPresent())
 					.map(x -> new TimeLeavingOfDailyPerformance(employeeId, x.getYmd(), x.getAttendanceLeave().get()))
 					.collect(Collectors.toList());
-			List<TimeLeavingOfDailyPerformance> lstDomOld = timeLeavingOfDailyPerformanceRepo
-					.findbyPeriodOrderByYmd(employeeId, datePeriod);
+			List<TimeLeavingOfDailyPerformance> lstDomOld = new ArrayList<>();
+			List<TimeLeavingOfDailyPerformance> dataByRepo =  new ArrayList<>();
+			
+			for(GeneralDate date : datePeriod.datesBetween()){
+				String keyForGet = employeeId + "-" + date.toString();	
+				if(cacheMonthly.getTimeLeavingOfDailyPerformanceMap().containsKey(keyForGet)){
+					lstDomOld.add(cacheMonthly.getTimeLeavingOfDailyPerformanceMap().get(keyForGet));
+				}
+				else{
+					dataByRepo =timeLeavingOfDailyPerformanceRepo
+							.findbyPeriodOrderByYmd(employeeId,  new DatePeriod(date, datePeriod.end()));
+					
+					dataByRepo.forEach((v) ->{
+						String keyForPut = employeeId + "-" + v.getYmd().toString();
+						if(!cacheMonthly.getTimeLeavingOfDailyPerformanceMap().containsKey(keyForPut)){
+							cacheMonthly.getTimeLeavingOfDailyPerformanceMap().put(keyForPut, v);
+						}
+						lstDomOld.add(v);
+					});
+					
+					break;
+				}
+			};
+			
 			lstDomOld.removeIf(x -> {
 				val fromCache = lstDom.stream().filter(y -> y.getYmd().equals(x.getYmd())).findFirst();
 				return fromCache.isPresent();
@@ -856,8 +928,30 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 			List<TemporaryTimeOfDailyPerformance> lstDom = lstDomCache.stream().filter(x -> x.getTempTime().isPresent())
 					.map(x -> new TemporaryTimeOfDailyPerformance(employeeId, x.getYmd(), x.getTempTime().get()))
 					.collect(Collectors.toList());
-			List<TemporaryTimeOfDailyPerformance> lstDomOld = temporaryTimeOfDailyPerformanceRepo
-					.findbyPeriodOrderByYmd(employeeId, datePeriod);
+			List<TemporaryTimeOfDailyPerformance> lstDomOld = new ArrayList<>();
+			List<TemporaryTimeOfDailyPerformance> dataByRepo =  new ArrayList<>();
+			
+			for(GeneralDate date : datePeriod.datesBetween()){
+				String keyForGet = employeeId + "-" + date.toString();	
+				if(cacheMonthly.getTemporaryTimeOfDailyPerformanceMap().containsKey(keyForGet)){
+					lstDomOld.add(cacheMonthly.getTemporaryTimeOfDailyPerformanceMap().get(keyForGet));
+				}
+				else{
+					dataByRepo =temporaryTimeOfDailyPerformanceRepo
+							.findbyPeriodOrderByYmd(employeeId,  new DatePeriod(date, datePeriod.end()));
+					
+					dataByRepo.forEach((v) ->{
+						String keyForPut = employeeId + "-" + v.getYmd().toString();
+						if(!cacheMonthly.getTemporaryTimeOfDailyPerformanceMap().containsKey(keyForPut)){
+							cacheMonthly.getTemporaryTimeOfDailyPerformanceMap().put(keyForPut, v);
+						}
+						lstDomOld.add(v);
+					});
+					
+					break;
+				}
+			};
+			
 			lstDomOld.removeIf(x -> {
 				val fromCache = lstDom.stream().filter(y -> y.getYmd().equals(x.getYmd())).findFirst();
 				return fromCache.isPresent();
@@ -872,7 +966,29 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 			List<SpecificDateAttrOfDailyPerfor> lstDom = lstDomCache.stream().filter(x -> x.getTempTime().isPresent())
 					.map(x -> new SpecificDateAttrOfDailyPerfor(employeeId, x.getYmd(), x.getSpecDateAttr().get()))
 					.collect(Collectors.toList());
-			List<SpecificDateAttrOfDailyPerfor> lstDomOld =specificDateAttrOfDailyPerforRepo.findByPeriodOrderByYmd(employeeId, datePeriod);
+			List<SpecificDateAttrOfDailyPerfor> lstDomOld = new ArrayList<>();
+			List<SpecificDateAttrOfDailyPerfor> dataByRepo =  new ArrayList<>();
+			
+			for(GeneralDate date : datePeriod.datesBetween()){
+				String keyForGet = employeeId + "-" + date.toString();	
+				if(cacheMonthly.getSpecificDateAttrOfDailyPerforMap().containsKey(keyForGet)){
+					lstDomOld.add(cacheMonthly.getSpecificDateAttrOfDailyPerforMap().get(keyForGet));
+				}
+				else{
+					dataByRepo =specificDateAttrOfDailyPerforRepo.findByPeriodOrderByYmd(employeeId,  new DatePeriod(date, datePeriod.end()));
+					
+					dataByRepo.forEach((v) ->{
+						String keyForPut = employeeId + "-" + v.getYmd().toString();
+						if(!cacheMonthly.getSpecificDateAttrOfDailyPerforMap().containsKey(keyForPut)){
+							cacheMonthly.getSpecificDateAttrOfDailyPerforMap().put(keyForPut, v);
+						}
+						lstDomOld.add(v);
+					});
+					
+					break;
+				}
+			};
+			
 			lstDomOld.removeIf(x -> {
 				val fromCache = lstDom.stream().filter(y -> y.getYmd().equals(x.getYmd())).findFirst();
 				return fromCache.isPresent();
@@ -886,7 +1002,29 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(employeeId, datePeriod);
 			List<EmployeeDailyPerError> lstDom = lstDomCache.stream().flatMap(x -> x.getEmployeeError().stream())
 					.collect(Collectors.toList());
-			List<EmployeeDailyPerError> lstDomOld = employeeDailyPerErrorRepo.findByPeriodOrderByYmd(employeeId, datePeriod);
+			List<EmployeeDailyPerError> lstDomOld = new ArrayList<>();
+			List<EmployeeDailyPerError> dataByRepo =  new ArrayList<>();
+			
+			for(GeneralDate date : datePeriod.datesBetween()){
+				String keyForGet = employeeId + "-" + date.toString();	
+				if(cacheMonthly.getEmployeeDailyPerErrorMap().containsKey(keyForGet)){
+					lstDomOld.add(cacheMonthly.getEmployeeDailyPerErrorMap().get(keyForGet));
+				}
+				else{
+					dataByRepo =employeeDailyPerErrorRepo.findByPeriodOrderByYmd(employeeId,  new DatePeriod(date, datePeriod.end()));
+					
+					dataByRepo.forEach((v) ->{
+						String keyForPut = employeeId + "-" + v.getDate().toString();
+						if(!cacheMonthly.getEmployeeDailyPerErrorMap().containsKey(keyForPut)){
+							cacheMonthly.getEmployeeDailyPerErrorMap().put(keyForPut, v);
+						}
+						lstDomOld.add(v);
+					});
+					
+					break;
+				}
+			};
+			
 			lstDomOld.removeIf(x -> {
 				val fromCache = lstDom.stream().filter(y -> y.getDate().equals(x.getDate())).findFirst();
 				return fromCache.isPresent();
@@ -896,12 +1034,36 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 		}
 
 		@Override
-		public Map<GeneralDate, AnyItemValueOfDailyAttd> dailyAnyItems(List<String> employeeId, DatePeriod baseDate) {
-			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(employeeId, baseDate);
+		public Map<GeneralDate, AnyItemValueOfDailyAttd> dailyAnyItems(List<String> employeeIds, DatePeriod baseDate) {
+			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(employeeIds, baseDate);
 			List<AnyItemValueOfDaily> lstDom = lstDomCache.stream().filter(x -> x.getAnyItemValue().isPresent())
 					.map(x -> new AnyItemValueOfDaily(x.getEmployeeId(), x.getYmd(), x.getAnyItemValue().get()))
 					.collect(Collectors.toList());
-			List<AnyItemValueOfDaily> lstDomOld = anyItemValueOfDailyRepo.finds(employeeId, baseDate);
+			List<AnyItemValueOfDaily> lstDomOld = new ArrayList<>();
+			List<AnyItemValueOfDaily> dataByRepo =  new ArrayList<>();
+			
+			for(String employeeId : employeeIds){
+				for(GeneralDate date : baseDate.datesBetween()){
+					String keyForGet = employeeIds + "-" + date.toString();	
+					if(cacheMonthly.getAnyItemValueOfDailyMap().containsKey(keyForGet)){
+						lstDomOld.add(cacheMonthly.getAnyItemValueOfDailyMap().get(keyForGet));
+					}
+					else{
+						dataByRepo =anyItemValueOfDailyRepo.finds(Arrays.asList(employeeId),  new DatePeriod(date, baseDate.end()));
+						
+						dataByRepo.forEach((v) ->{
+							String keyForPut = employeeId + "-" + v.getYmd().toString();
+							if(!cacheMonthly.getAnyItemValueOfDailyMap().containsKey(keyForPut)){
+								cacheMonthly.getAnyItemValueOfDailyMap().put(keyForPut, v);
+							}
+							lstDomOld.add(v);
+						});
+						
+						break;
+					}
+				};
+			}
+			
 			lstDomOld.removeIf(x -> {
 				val fromCache = lstDom.stream().filter(y -> y.getYmd().equals(x.getYmd()) && y.getEmployeeId().equals(x.getEmployeeId())).findFirst();
 				return fromCache.isPresent();
@@ -911,12 +1073,36 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 		}
 
 		@Override
-		public Map<GeneralDate, PCLogOnInfoOfDailyAttd> dailyPcLogons(List<String> employeeId, DatePeriod baseDate) {
-			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(employeeId, baseDate);
+		public Map<GeneralDate, PCLogOnInfoOfDailyAttd> dailyPcLogons(List<String> employeeIds, DatePeriod baseDate) {
+			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(employeeIds, baseDate);
 			List<PCLogOnInfoOfDaily> lstDom = lstDomCache.stream().filter(x -> x.getPcLogOnInfo().isPresent())
 					.map(x -> new PCLogOnInfoOfDaily(x.getEmployeeId(), x.getYmd(), x.getPcLogOnInfo().get()))
 					.collect(Collectors.toList());
-			List<PCLogOnInfoOfDaily> lstDomOld =pcLogOnInfoOfDailyRepo.finds(employeeId, baseDate);
+			List<PCLogOnInfoOfDaily> lstDomOld = new ArrayList<>();
+			List<PCLogOnInfoOfDaily> dataByRepo =  new ArrayList<>();
+			
+			for(String employeeId : employeeIds){
+				for(GeneralDate date : baseDate.datesBetween()){
+					String keyForGet = employeeIds + "-" + date.toString();	
+					if(cacheMonthly.getPCLogOnInfoOfDailyMap().containsKey(keyForGet)){
+						lstDomOld.add(cacheMonthly.getPCLogOnInfoOfDailyMap().get(keyForGet));
+					}
+					else{
+						dataByRepo =pcLogOnInfoOfDailyRepo.finds(Arrays.asList(employeeId),  new DatePeriod(date, baseDate.end()));
+						
+						dataByRepo.forEach((v) ->{
+							String keyForPut = employeeId + "-" + v.getYmd().toString();
+							if(!cacheMonthly.getPCLogOnInfoOfDailyMap().containsKey(keyForPut)){
+								cacheMonthly.getPCLogOnInfoOfDailyMap().put(keyForPut, v);
+							}
+							lstDomOld.add(v);
+						});
+						
+						break;
+					}
+				};
+			}
+			
 			lstDomOld.removeIf(x -> {
 				val fromCache = lstDom.stream().filter(y -> y.getYmd().equals(x.getYmd()) && y.getEmployeeId().equals(x.getEmployeeId())).findFirst();
 				return fromCache.isPresent();
@@ -927,14 +1113,31 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 
 		@Override
 		public Map<GeneralDate, AttendanceTimeOfDailyAttendance> dailyAttendanceTimes(String employeeId, DatePeriod datePeriod) {
-			List<AttendanceTimeOfDailyPerformance> lstDomOld = mergeAttendanceTime(Arrays.asList(employeeId), datePeriod, attendanceTimeRepo.findByPeriodOrderByYmd(employeeId, datePeriod));
+			Map<String, List<GeneralDate>> mapDate = createMapDate(Arrays.asList(employeeId), datePeriod);
+			List<AttendanceTimeOfDailyPerformance> lstDomOld = mergeAttendanceTime(Arrays.asList(employeeId), datePeriod, attendanceTimeRepo.finds(mapDate));
 			return lstDomOld.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTime()));
+		}
+		
+		private Map<String, List<GeneralDate>> createMapDate(List<String> employeeId, DatePeriod datePeriod){
+			Map<String, List<GeneralDate>> mapDate = new HashMap<>();
+			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(employeeId, datePeriod);
+			employeeId.forEach(x -> {
+				val daily = lstDomCache.stream().filter(y -> y.getEmployeeId().equals(x)).collect(Collectors.toList());
+				if(!daily.isEmpty()) {
+					val lstDate = datePeriod.datesBetween().stream().filter(t -> lstDomCache.stream().noneMatch(y -> y.getYmd().equals(t))).collect(Collectors.toList());
+					mapDate.put(x, lstDate);
+				}else {
+					mapDate.put(x, datePeriod.datesBetween());
+				}
+			});
+			return mapDate;
 		}
 		
 		@Override
 		public Map<String, Map<GeneralDate, AttendanceTimeOfDailyAttendance>> dailyAttendanceTimesclones(
 				List<String> employeeId, DatePeriod datePeriod) {
-			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyPerformance = mergeAttendanceTime(employeeId, datePeriod, attendanceTimeRepo.finds(employeeId, datePeriod));
+			Map<String, List<GeneralDate>> mapDate = createMapDate(employeeId, datePeriod);
+			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyPerformance = mergeAttendanceTime(employeeId, datePeriod, attendanceTimeRepo.finds(mapDate));
 			Map<String, Map<GeneralDate, AttendanceTimeOfDailyAttendance>> result = new HashMap<String, Map<GeneralDate,AttendanceTimeOfDailyAttendance>>();
 			
 			for (String id : employeeId) {
@@ -965,20 +1168,21 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 		
 		@Override
 		public List<OuenWorkTimeOfDailyAttendance> ouenWorkTimeOfDailyAttendance(String empId, GeneralDate ymd) {
-			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(empId, new DatePeriod(ymd, ymd));
+/*			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(empId, new DatePeriod(ymd, ymd));
 			List<OuenWorkTimeOfDailyAttendance> lstDom = lstDomCache.stream()
 					.filter(x -> x.getEmployeeId().equals(empId) && x.getYmd().equals(ymd))
 					.flatMap(x -> x.getOuenTime().stream()).collect(Collectors.toList());
 			if(!lstDom.isEmpty()) {
 				return lstDom;
 			}
-			return ouenWorkTimeOfDailyRepo.find(empId, ymd).map(x -> x.getOuenTimes()).orElse(new ArrayList<>());
+			return ouenWorkTimeOfDailyRepo.find(empId, ymd).map(x -> x.getOuenTimes()).orElse(new ArrayList<>());*/
+			return new ArrayList<>();
 		}
 
 		@Override
 		public List<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeSheetOfDailyAttendance(String empId,
 				GeneralDate ymd) {
-			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(empId, new DatePeriod(ymd, ymd));
+/*			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(empId, new DatePeriod(ymd, ymd));
 			List<OuenWorkTimeSheetOfDailyAttendance> lstDom = lstDomCache.stream()
 					.filter(x -> x.getEmployeeId().equals(empId) && x.getYmd().equals(ymd))
 					.flatMap(x -> x.getOuenTimeSheet().stream()).collect(Collectors.toList());
@@ -989,7 +1193,9 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 			if(domain == null)
 				return new ArrayList<>();
 			
-			return domain.getOuenTimeSheet();
+			return domain.getOuenTimeSheet();*/
+			
+			return new ArrayList<>();
 		}
 		
 		@Override
@@ -1008,12 +1214,37 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 		}
 
 		@Override
-		public Map<GeneralDate, AffiliationInforOfDailyAttd> dailyAffiliationInfors(List<String> employeeId, DatePeriod ymd) {
-			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(employeeId, ymd);
+		public Map<GeneralDate, AffiliationInforOfDailyAttd> dailyAffiliationInfors(List<String> employeeIds, DatePeriod ymd) {
+			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(employeeIds, ymd);
 			List<AffiliationInforOfDailyPerfor> lstDom = lstDomCache.stream()
 					.map(x -> new AffiliationInforOfDailyPerfor(x.getEmployeeId(), x.getYmd(), x.getAffiliationInfor()))
 					.collect(Collectors.toList());
-			List<AffiliationInforOfDailyPerfor> lstDomOld = affiliationInforOfDailyPerforRepo.finds(employeeId, ymd);
+			List<AffiliationInforOfDailyPerfor> lstDomOld = new ArrayList<>();
+			List<AffiliationInforOfDailyPerfor> dataByRepo =  new ArrayList<>();
+			
+			for(String employeeId : employeeIds){
+				for(GeneralDate date : ymd.datesBetween()){
+					String keyForGet = employeeIds + "-" + date.toString();	
+					if(cacheMonthly.getAffiliationInforOfDailyPerforMap().containsKey(keyForGet)){
+						lstDomOld.add(cacheMonthly.getAffiliationInforOfDailyPerforMap().get(keyForGet));
+					}
+					else{
+						dataByRepo =affiliationInforOfDailyPerforRepo.finds(Arrays.asList(employeeId),  new DatePeriod(date, ymd.end()));
+						
+						dataByRepo.forEach((v) ->{
+							String keyForPut = employeeId + "-" + v.getYmd().toString();
+							if(!cacheMonthly.getAffiliationInforOfDailyPerforMap().containsKey(keyForPut)){
+								cacheMonthly.getAffiliationInforOfDailyPerforMap().put(keyForPut, v);
+							}
+							lstDomOld.add(v);
+						});
+						
+						break;
+					}
+				};
+			}
+			
+			
 			lstDomOld.removeIf(x -> {
 				val fromCache = lstDom.stream().filter(y -> y.getYmd().equals(x.getYmd())).findFirst();
 				return fromCache.isPresent();
@@ -1025,7 +1256,8 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 		@Override
 		public List<IntegrationOfDaily> integrationOfDaily(String sid, DatePeriod period) {
 			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(sid, period);
-			List<IntegrationOfDaily> lstDomDB = integrationOfDailyGetter.getIntegrationOfDaily(sid, period);
+			Map<String, List<GeneralDate>> mapDate = createMapDate(Arrays.asList(sid), period);
+			List<IntegrationOfDaily> lstDomDB = dailyRecordShareFinder.find(mapDate);
 			return replaceFromCache(lstDomDB, lstDomCache);
 		}
 
@@ -1037,7 +1269,8 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 				converter.setData(domain);
 				return converter.toDomain();
 			}).collect(Collectors.toList());
-			List<IntegrationOfDaily> lstDomDB = integrationOfDailyGetter.getIntegrationOfDailyClones(sid, period);
+			Map<String, List<GeneralDate>> mapDate = createMapDate(sid, period);
+			List<IntegrationOfDaily> lstDomDB = dailyRecordShareFinder.find(mapDate);
 			return replaceFromCache(lstDomDB, lstDomCacheClone);
 		}
 		

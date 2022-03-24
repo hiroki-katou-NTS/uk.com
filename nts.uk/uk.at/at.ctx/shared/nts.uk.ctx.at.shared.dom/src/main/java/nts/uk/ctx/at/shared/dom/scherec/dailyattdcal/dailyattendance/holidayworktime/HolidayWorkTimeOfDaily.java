@@ -35,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareFrameSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -66,52 +67,65 @@ public class HolidayWorkTimeOfDaily implements Cloneable{
 		this.holidayTimeSpentAtWork = holidayTimeSpentAtWork;
 	}
 	
+	public static HolidayWorkTimeOfDaily createEmpty(){
+		return new HolidayWorkTimeOfDaily(
+				new ArrayList<>(),
+				new ArrayList<>(),
+				Finally.empty(),
+				AttendanceTime.ZERO);
+	}
 
 	/**
 	 * メンバー変数の時間計算を指示するクラス
 	 * アルゴリズム：日別実績の休出時間
-	 * @param recordReGet 実績
+	 * @param recordReGet 再取得クラス
 	 * @param holidayWorkTimeSheet 休日出勤時間帯
-	 * @param holidayAutoCalcSetting 自動計算設定（休出時間）
-	 * @param workType 勤務種類
-	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
-	 * @param eachCompanyTimeSet 会社別代休時間設定
-	 * @param integrationOfDaily 日別実績(Work)
 	 * @param beforeApplicationTime 事前深夜時間
-	 * @param holidayLateNightAutoCalSetting 自動計算設定（休出深夜時間）
 	 * @param declareResult 申告時間帯作成結果
 	 * @return 日別実績の休出時間
 	 */
 	public static HolidayWorkTimeOfDaily calculationTime(
 			ManageReGetClass recordReGet,
 			HolidayWorkTimeSheet holidayWorkTimeSheet,
-			AutoCalSetting holidayAutoCalcSetting,
-			WorkType workType,
-			Optional<String> workTimeCode,
-			IntegrationOfDaily integrationOfDaily,
 			AttendanceTime beforeApplicationTime,
-			AutoCalSetting holidayLateNightAutoCalSetting,
 			DeclareTimezoneResult declareResult) {
+
+		// 勤務種類
+		if (!recordReGet.getWorkType().isPresent()) return HolidayWorkTimeOfDaily.createEmpty();
+		WorkType workType = recordReGet.getWorkType().get();
+		// 就業時間帯コード
+		Optional<String> workTimeCode = Optional.empty();
+		if (recordReGet.getIntegrationOfWorkTime().isPresent()){
+			workTimeCode = Optional.of(recordReGet.getIntegrationOfWorkTime().get().getCode().v());
+		}
+		// 日別実績(Work)
+		IntegrationOfDaily integrationOfDaily = recordReGet.getIntegrationOfDaily();
+		// 自動計算設定（休出時間）
+		AutoCalSetting holidayAutoCalcSetting = recordReGet.getIntegrationOfDaily().getCalAttr().getHolidayTimeSetting().getRestTime();
+		// 自動計算設定（休出深夜時間）
+		AutoCalSetting holidayLateNightAutoCalSetting = recordReGet.getIntegrationOfDaily().getCalAttr().getHolidayTimeSetting().getLateNightTime();
 		
 		//休出枠時間帯の作成
 		val holidayWorkFrameTimeSheet = holidayWorkTimeSheet.changeHolidayWorkTimeFrameTimeSheet(
-				recordReGet.getPersonDailySetting().getOverTimeSheetReq(),
+				recordReGet.getPersonDailySetting().getRequire(),
 				workType.getCompanyId(),
 				holidayAutoCalcSetting,
 				workType,
 				workTimeCode,
 				integrationOfDaily,
-				true);
+				true,
+				recordReGet.getWorkTimezoneCommonSet().map(c -> c.getGoOutSet()));
 		//休出時間の計算
 		val holidayWorkFrameTime = holidayWorkTimeSheet.collectHolidayWorkTime(
-				recordReGet.getPersonDailySetting().getOverTimeSheetReq(),
+				recordReGet.getPersonDailySetting().getRequire(),
 				workType.getCompanyId(),
 				holidayAutoCalcSetting,
 				workType,
 				workTimeCode,
 				integrationOfDaily,
 				declareResult,
-				true);
+				true,
+				recordReGet.getWorkTimezoneCommonSet().map(c -> c.getGoOutSet()));
 		
 		//休日出勤深夜時間の計算
 		val holidayMidnightWork = Finally.of(calcMidNightTimeIncludeHolidayWorkTime(

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.byperiod;
 
 import lombok.Getter;
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
@@ -39,6 +40,15 @@ public class ExcessOutsideItemByPeriod implements Cloneable {
 		ExcessOutsideItemByPeriod domain = new ExcessOutsideItemByPeriod(breakdownNo);
 		domain.excessTime = excessTime;
 		return domain;
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(ExcessOutsideItemByPeriod target) {
+		
+		this.excessTime = this.excessTime.addMinutes(target.excessTime.valueAsMinutes());
 	}
 	
 	@Override

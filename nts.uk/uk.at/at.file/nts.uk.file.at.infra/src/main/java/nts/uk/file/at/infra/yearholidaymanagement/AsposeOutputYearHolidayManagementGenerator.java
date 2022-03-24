@@ -491,7 +491,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		try {
 			AnnualPaidLeaveSetting annualPaidLeaveSetting = this.annualPaidLeaveSettingRepository
 					.findByCompanyId(AppContexts.user().companyId());
-			boolean isManageTime = annualPaidLeaveSetting.getTimeSetting().getTimeManageType().equals(ManageDistinct.YES);
+			boolean isManageTime = annualPaidLeaveSetting.getTimeSetting().getTimeVacationDigestUnit().getManage().equals(ManageDistinct.YES);
 			worksheet.setName(sheetName);
 			Cells cells = worksheet.getCells();
 			this.setHeader(cells, query);
@@ -531,11 +531,11 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 						pageBreaks.add(currentRow);
 						beginRow = currentRow;
 					}
-					currentRow = this.printWP(cells, currentRow, wpName);
+					currentRow = this.printWP(cells, currentRow, wpName, lastWPRow);
 					lastWPRow = currentRow - 1;
 				} else {
 					if ((currentRow - beginRow) > MAX_ROW + 1) {
-						currentRow = this.printWP(cells, currentRow, wpName);
+						currentRow = this.printWP(cells, currentRow, wpName, lastWPRow);
 						lastWPRow = currentRow - 1;
 					}
 				}
@@ -924,7 +924,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	 * @param wpName
 	 * @return chỉ số dòng để in dữ liệu tiếp theo
 	 */
-	private int printWP(Cells cells, int currentRow, String wpName) {
+	private int printWP(Cells cells, int currentRow, String wpName, int lastWpRow) {
 		cells.get(currentRow, 0).setValue(wpName);
 
 		Range workPlaceRange = cells.createRange(currentRow, WP_COL, 1, 9);
@@ -936,7 +936,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		}
 		workPlaceRange.merge();
 
-		this.setWPStyle(currentRow, cells);
+		this.setWPStyle(currentRow, cells, lastWpRow == 0);
 
 		currentRow++;
 
@@ -949,7 +949,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	 * @param currentRow
 	 * @param cells
 	 */
-	private void setWPStyle(int currentRow, Cells cells) {
+	private void setWPStyle(int currentRow, Cells cells, boolean isFirstWp) {
 		for (int i = 0; i < MAX_COL; i++) {
 			Style style = new Style();
 			style.copy(cells.get(currentRow, i).getStyle());
@@ -959,6 +959,11 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			Font font = style.getFont();
 			font.setDoubleSize(NORMAL_FONT_SIZE);
 			font.setName(FONT_NAME );
+			
+			// Update #122438
+			if (!isFirstWp) {
+				style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+			}
 			cells.get(currentRow, i).setStyle(style);
 		}
 	}

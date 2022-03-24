@@ -1,5 +1,10 @@
 .ksu-002a {
     width: 903px;
+    margin-left: 80px!important;
+}
+
+.ksu-002a-title {
+    width: 963px;
     margin-left: 20px!important;
 }
 
@@ -7,7 +12,7 @@
 	margin-left: 0px!important;
 }
 
-.ksu-002a .btn-right {
+.ksu-002a-title .btn-right {
     float: right;
 }
 
@@ -101,6 +106,14 @@
 	background-color: #D9D9D9;
 	color: #404040 !important;
 }
+
+#function-panel {
+	margin: 0px !important;
+}
+
+#employ_view {
+	margin: 0px !important;
+}
 .background-attendance {background-color: #0000ff !important;}
 .background-holiday {background-color: #ff0000 !important;}
 .background-half-day-work {background-color: #FF7F27 !important; }
@@ -110,3 +123,7 @@
 .background-white {background-color: white}
 .color-default {color : #000000;}
 .bg-schedule-uncorrectable-ksu001 {background-color:#ddddd2;}
+
+#functions-area button, #functions-area-bottom button, .sidebar-content-header button {
+	margin-left: 50px;
+}

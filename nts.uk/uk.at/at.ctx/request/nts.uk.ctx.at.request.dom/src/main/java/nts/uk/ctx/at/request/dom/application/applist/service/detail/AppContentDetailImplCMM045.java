@@ -10,13 +10,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.i18n.I18NText;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
@@ -734,12 +732,13 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 	public CompLeaveAppDataOutput getContentComplementLeave(Application application, String companyID, List<WorkType> workTypeLst, DisplayAtr appReasonDisAtr,
 			ScreenAtr screenAtr) {
 		// 振休振出申請紐付けを取得 (Lấy đơn liên kết nghỉ bù làm bù)
-		LinkComplementLeaveOutput linkComplementLeaveOutput = this.getLinkComplementLeave(application.getAppID(), workTypeLst, companyID);
+		LinkComplementLeaveOutput linkComplementLeaveOutput = this.getLinkComplementLeave(application.getAppID(), workTypeLst, companyID, screenAtr);
 		ComplementLeaveAppLink complementLeaveAppLink = new ComplementLeaveAppLink();
 		complementLeaveAppLink.setLinkAppID(linkComplementLeaveOutput.getAppID());
 		if(linkComplementLeaveOutput.getComplementLeaveFlg()!=null) {
 			complementLeaveAppLink.setComplementLeaveFlg(linkComplementLeaveOutput.getComplementLeaveFlg().value);
 		}
+		complementLeaveAppLink.setAppHdsubRec(linkComplementLeaveOutput.getAppHdsubRec());
 		if(Strings.isNotBlank(linkComplementLeaveOutput.getAppID())) {
 			// ドメインモデル「申請」を取得 (Lấy domain model 「application」)
 			Application applicationLink = applicationRepository.findByID(linkComplementLeaveOutput.getAppID()).get();
@@ -760,30 +759,36 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 	}
 
 	@Override
-	public LinkComplementLeaveOutput getLinkComplementLeave(String appID, List<WorkType> workTypeLst, String companyID) {
+	public LinkComplementLeaveOutput getLinkComplementLeave(String appID, List<WorkType> workTypeLst, String companyID, ScreenAtr screenAtr) {
 		// ドメインモデル「振休申請」を取得 ( Lấy Domain model 「振休申請」
 		Optional<AbsenceLeaveApp> opAbsenceLeaveApp = absenceLeaveAppRepository.findByID(appID);
 		if(opAbsenceLeaveApp.isPresent()) {
 			AbsenceLeaveApp absenceLeaveApp = opAbsenceLeaveApp.get();
+			if(screenAtr==ScreenAtr.KAF018) {
+				return new LinkComplementLeaveOutput(null, null, null, absenceLeaveApp, null);
+			}
 			// ドメインモデル「振休振出同時申請管理」を取得 (Lấy domail model 「CompltLeaveSimMng」
 			Optional<AppHdsubRec> opCompltLeaveSimMng = compltLeaveSimMngRepository.findByAbsID(appID).filter(x -> x.getSyncing()==SyncState.SYNCHRONIZING);
 			if(!opCompltLeaveSimMng.isPresent()) {
-				return new LinkComplementLeaveOutput(null, null, absenceLeaveApp, null);
+				return new LinkComplementLeaveOutput(null, null, null, absenceLeaveApp, null);
 			}
 			// ドメインモデル「振出申請」を取得 ( Lấy domain model 「振出申請」)
 			RecruitmentApp recruitmentApp = recruitmentAppRepository.findByID(opCompltLeaveSimMng.get().getRecAppID()).get();
-			return new LinkComplementLeaveOutput(recruitmentApp.getAppID(), TypeApplicationHolidays.Rec, absenceLeaveApp, recruitmentApp);
+			return new LinkComplementLeaveOutput(recruitmentApp.getAppID(), TypeApplicationHolidays.Rec, opCompltLeaveSimMng.get(), absenceLeaveApp, recruitmentApp);
 		} else {
 			// ドメインモデル「振出申請」を取得 (Lấy domain model 「振出申請」)
 			RecruitmentApp recruitmentApp = recruitmentAppRepository.findByID(appID).get();
+			if(screenAtr==ScreenAtr.KAF018) {
+				return new LinkComplementLeaveOutput(null, null, null, null, recruitmentApp);
+			}
 			// ドメインモデル「振休振出同時申請管理」を取得 (Lấy domail model 「CompltLeaveSimMng」
 			Optional<AppHdsubRec> opCompltLeaveSimMng = compltLeaveSimMngRepository.findByRecID(appID).filter(x -> x.getSyncing()==SyncState.SYNCHRONIZING);
 			if(!opCompltLeaveSimMng.isPresent()) {
-				return new LinkComplementLeaveOutput(null, null, null, recruitmentApp);
+				return new LinkComplementLeaveOutput(null, null, null, null, recruitmentApp);
 			}
 			// ドメインモデル「振休申請」を取得 ( Lấy domain model 「振休申請」)
 			AbsenceLeaveApp absenceLeaveApp = absenceLeaveAppRepository.findByID(opCompltLeaveSimMng.get().getAbsenceLeaveAppID()).get();
-			return new LinkComplementLeaveOutput(absenceLeaveApp.getAppID(), TypeApplicationHolidays.Abs, absenceLeaveApp, recruitmentApp);
+			return new LinkComplementLeaveOutput(absenceLeaveApp.getAppID(), TypeApplicationHolidays.Abs, opCompltLeaveSimMng.get(), absenceLeaveApp, recruitmentApp);
 		}
 	}
 	

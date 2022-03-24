@@ -661,8 +661,14 @@ public class AppContentServiceImpl implements AppContentService {
 						frameAtr = approver.getApprovalAtr();
 						isBreak = true;
 						listOfApp.setOpApprovalFrameStatus(Optional.of(frameAtr.value));
-						// 反映状態　＝　反映状態（承認一覧モード）//Trạng thái phản ánh= trạng thái phản ánh(mode danh sách approve)
-						reflectedStateString = this.getReflectStatusApprovalListMode(reflectedState, phaseAtr, frameAtr, device);
+						// 取得した承認枠．承認者．承認区分＝未承認　AND　反映状態＝取消済
+						if(frameAtr==ApprovalBehaviorAtrImport_New.UNAPPROVED && reflectedState==ReflectedState.CANCELED) {
+							// 申請内容＝-1　をセットする
+							listOfApp.setAppContent("-1");
+						} else {
+							// 反映状態　＝　反映状態（承認一覧モード）//Trạng thái phản ánh= trạng thái phản ánh(mode danh sách approve)
+							reflectedStateString = this.getReflectStatusApprovalListMode(reflectedState, phaseAtr, frameAtr, device);
+						}
 					}
 				}
 			}
@@ -1275,15 +1281,15 @@ public class AppContentServiceImpl implements AppContentService {
 			Optional<AppOverTime> apOptional = appOverTimeRepo.find(companyId, application.getAppID());
 			if (apOptional.isPresent()) {
 				// 申請種類表示＝残業申請.残業区分
-				 return result = Optional.of(EnumAdaptor.valueOf(apOptional.get().getOverTimeClf().value, ApplicationTypeDisplay.class));				
+				 return Optional.of(EnumAdaptor.valueOf(apOptional.get().getOverTimeClf().value, ApplicationTypeDisplay.class));
 			}
 		} else if (application.getAppType() == ApplicationType.STAMP_APPLICATION) {
 			// 申請.打刻申請モードをチェック
 			if (application.getOpStampRequestMode().isPresent()) {
 				if (application.getOpStampRequestMode().get() == StampRequestMode.STAMP_ADDITIONAL) {
-					return result = Optional.of(ApplicationTypeDisplay.STAMP_ADDITIONAL);
+					return Optional.of(ApplicationTypeDisplay.STAMP_ADDITIONAL);
 				} else {
-					return result = Optional.of(ApplicationTypeDisplay.STAMP_ONLINE_RECORD);
+					return Optional.of(ApplicationTypeDisplay.STAMP_ONLINE_RECORD);
 				}
 			}
 		}

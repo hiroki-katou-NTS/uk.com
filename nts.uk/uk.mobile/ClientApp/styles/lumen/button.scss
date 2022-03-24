@@ -3,15 +3,25 @@
     font-weight: unset;
     text-transform: unset;
     padding: 0.282rem 0.5rem;
-    border-width: 1px 1px 4px 1px;
+
+    border: none !important;
+    margin: 0 !important;
+
     &-lg {
         font-size: 1rem;
         padding: 0.4rem 1rem;
     }
+
     &-sm {
         font-size: 0.8rem;
         padding: 0.2rem 0.4rem;
     }
+
+    &-info {
+        background-color: #CFCFCF !important;
+        color: #000 !important;
+    }
+
     &-secondary {
         border-color: darken($secondary, 20%);
         &.focus,

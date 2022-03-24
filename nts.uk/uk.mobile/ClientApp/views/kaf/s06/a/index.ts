@@ -921,6 +921,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         const vm = this;
 
         vm.$mask('show');
+        let holidayFlg = false;
 
         if (
             vm.c11 &&
@@ -969,6 +970,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         .then((result: any) => {
             if (result) {
                 appDates = result.data.holidayDateLst;
+                holidayFlg = result.data.holidayFlg;
 
                 // xử lý confirmMsg
                 return vm.handleConfirmMessage(result.data.confirmMsgLst);
@@ -993,6 +995,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
                     vm.changeDateFromList(linkWithDraw);
                     command.leaveComDayOffMana = linkWithVacation;
                     command.payoutSubofHDManagements = linkWithDraw;
+                    command.holidayFlg = holidayFlg;
                 } else {
                     commandUpdate.application = commandCheck.applicationUpdate;
                     commandUpdate.applyForLeave = commandCheck.applyForLeave;
@@ -1010,12 +1013,11 @@ export class KafS06AComponent extends KafS00ShrComponent {
                     commandUpdate.payoutSubofHDManagementDto = payoutSubofHDManagementDto;
                     commandUpdate.leaveComDayOffMana = leaveComDayOffMana;
                     commandUpdate.payoutSubofHDManagements = payoutSubofHDManagements;
-
+                    commandUpdate.holidayFlg = holidayFlg;
                 }
                 
                 // đăng kí 
                 return vm.$http.post('at', vm.modeNew ? API.insert : API.update, vm.modeNew ? command : commandUpdate).then((res: any) => {
-                    vm.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
                     vm.$goto('kafs06a1', { mode: vm.modeNew ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appIDLst[0] });
                 });
             }
@@ -2214,8 +2216,7 @@ const API = {
     insert: 'at/request/application/appforleave/mobile/insert',
     update: 'at/request/application/appforleave/mobile/update',
     registerSample: 'at/request/application/changeDataSample',
-    sendMailAfterRegisterSample: '',
-    reflectApp: 'at/request/application/reflect-app'
+    sendMailAfterRegisterSample: ''
 };
 interface HolidayWorkSubHolidayLinkingMng {
     // 社員ID

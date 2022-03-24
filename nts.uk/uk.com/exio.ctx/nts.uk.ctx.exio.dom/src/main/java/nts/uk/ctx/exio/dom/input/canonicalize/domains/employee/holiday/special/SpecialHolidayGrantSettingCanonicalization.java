@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import lombok.val;
@@ -19,7 +20,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 
 /**
  * 社員の特別休暇付与設定の正準化
@@ -63,16 +64,16 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 				}
 				importingKeys.add(keyValue);
 				val addedInterm = interm.addCanonicalized(getFixedItems());
-				super.canonicalize(require, context, addedInterm, keyValue);
+				super.canonicalize(require, context, addedInterm);
 			}
 		});
 	}
 	
 	@Override
-	protected IntermediateResult canonicalizeExtends(
+	protected Optional<IntermediateResult> canonicalizeExtends(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context, IntermediateResult interm) {
-		return interm;
+		return Optional.of(interm);
 	}
 	
 	private static CanonicalItemList getFixedItems() {
@@ -87,11 +88,6 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 	}
 	
 	@Override
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace){
-		return Arrays.asList(Items.SID);
-	}
-	
-	@Override
 	protected String getParentTableName() {
 		return "KRCMT_HDSP_BASIC";
 	}
@@ -103,7 +99,7 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 	
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(DomainDataColumn.SID);
+		return Arrays.asList(new DomainDataColumn(Items.SID, "SID", DataType.STRING));
 	}
 	
 	@Override

@@ -8,10 +8,19 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
+
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
+import nts.arc.layer.app.cache.MapCache;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
@@ -20,6 +29,8 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
+import nts.uk.ctx.bs.employee.dom.setting.code.EmployeeCESetting;
+import nts.uk.ctx.bs.employee.dom.setting.code.IEmployeeCESettingRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfiguration;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfigurationRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
@@ -66,101 +77,134 @@ import nts.uk.shr.com.company.CompanyId;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ExternalImportPrepareRequire {
-	
+
 	public Require create(String companyId) {
-		
+
 		return EmbedStopwatch.embed(new RequireImpl(companyId));
 	}
-	
+
 	public static interface Require extends
 			ExternalImportCurrentState.Require,
 			PrepareImporting.Require,
 			ExternalImportWorkspaceRepository.Require {
-		
+
 		ExternalImportSetting getExternalImportSetting(ExternalImportCode settingCode);
-		
+
 		ExternalImportCurrentState getExternalImportCurrentState();
 	}
-	
+
 	@Inject
 	private ExternalImportCurrentStateRepository currentStateRepo;
-	
+
 	@Inject
 	private ImportingUserConditionRepository importingUserConditionRepo;
-	
+
 	@Inject
 	private ImportableItemsRepository importableItemsRepo;
-	
+
 	@Inject
 	private ImportingDomainRepository importingDomainRepo;
-	
+
 	@Inject
 	private DomainWorkspaceRepository domainWorkspaceRepo;
-	
+
 	@Inject
 	private ExternalImportWorkspaceRepository workspaceRepo;
-	
+
 	@Inject
 	private RevisedDataRecordRepository revisedDataRecordRepo;
-	
+
 	@Inject
 	private CanonicalizedDataRecordRepository canonicalizedDataRecordRepo;
-	
+
 	@Inject
 	private ExternalImportExistingRepository existingRepo;
-	
+
 	@Inject
 	private ImportingDataMetaRepository metaRepo;
-	
+
 	@Inject
 	private DomainDataRepository domainDataRepo;
-	
+
 	@Inject
 	private EmployeeDataMngInfoRepository employeeDataMngInfoRepo;
-	
+
 	@Inject
 	private TaskingRepository taskingRepo;
-	
+
 	@Inject
 	private ExternalImportSettingRepository settingRepo;
-	
+
 	@Inject
 	private ReviseItemRepository reviseItemRepo;
-	
+
 	@Inject
 	private ExternalImportErrorsRepository errorsRepo;
-	
+
 	@Inject
 	private WorkplaceConfigurationRepository wkpConfigRepo;
 
 	@Inject
 	private WorkplaceInformationRepository wkpInfoRepo;
-	
+
 	@Inject
 	private JobTitleInfoRepository jobTitleInfoRepo;
-	
+
 	@Inject
 	private UserRepository userRepo;
-	
+
 	@Inject
 	private StampCardRepository stampCardRepo;
-	
-	
-	
+
+	@Inject
+	private StampDakokuRepository stampDakokuRepo;
+
+	@Inject
+	private IEmployeeCESettingRepository iEmployeeCESettingRepo;
+
+
 	public class RequireImpl implements Require {
-		
+
 		private final String contractCode;
-		
+
 		private final String companyId;
+
+		private final MapCache<Triple<ExternalImportCode, ImportingDomainId, Integer>, ReviseItem> cacheReviseItem;
+
+		private final MapCache<Pair<ImportingDomainId, Integer>, ImportableItem> cacheImportableItem;
+
+		private final MapCache<Pair<String, Integer>, ImportingUserCondition> cacheImportingUserCondition;
+		
+		private final MapCache<ExternalImportCode, ExternalImportSetting> cacheImportSetting;
+
+		private final MapCache<String, EmployeeCESetting> cacheEmployeeCESetting;
 		
 		public RequireImpl(String companyId) {
 			this.contractCode = CompanyId.getContractCodeOf(companyId);
 			this.companyId = companyId;
+
+			this.cacheReviseItem = MapCache.incremental(key -> {
+				return reviseItemRepo.get(companyId, key.getLeft(), key.getMiddle(), key.getRight());
+			});
+
+			this.cacheImportableItem = MapCache.incremental(key -> {
+				return importableItemsRepo.get(key.getLeft(), key.getRight());
+			});
+
+			this.cacheImportingUserCondition = MapCache.incremental(key -> {
+				return importingUserConditionRepo.get(companyId, key.getLeft(), key.getRight());
+			});
+			this.cacheImportSetting = MapCache.incremental(key -> {
+				return settingRepo.get(companyId, key);
+			});
+			this.cacheEmployeeCESetting = MapCache.incremental(key->{
+				return iEmployeeCESettingRepo.getByComId(companyId);
+			});
 		}
-		
-		
+
+
 		/***** 外部受入関連 *****/
-		
+
 		@Override
 		public void add(ExternalImportError error) {
 			errorsRepo.add(companyId, error);
@@ -175,91 +219,95 @@ public class ExternalImportPrepareRequire {
 		public void update(ExternalImportCurrentState currentState) {
 			currentStateRepo.save(currentState);
 		}
-		
+
 		@Override
 		public ExternalImportSetting getExternalImportSetting(ExternalImportCode settingCode) {
-			return settingRepo.get(null, companyId, settingCode)
-						.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
+			return cacheImportSetting.get(settingCode)
+					.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
 		}
-		
+
 		@Override
 		public ImportingDomain getImportingDomain(ImportingDomainId domainId) {
 			return importingDomainRepo.find(domainId);
 		}
-		
+
 		@Override
 		public DomainWorkspace getDomainWorkspace(ImportingDomainId domainId) {
 			return domainWorkspaceRepo.get(domainId);
 		}
-		
+
 		@Override
 		public Optional<ReviseItem> getReviseItem(ExternalImportCode importCode, ImportingDomainId domainId, int importItemNumber) {
-			return reviseItemRepo.get(companyId, importCode, domainId, importItemNumber);
+			return cacheReviseItem.get(Triple.of(importCode, domainId, importItemNumber));
 		}
 		
+		@Override
+		public Optional<EmployeeCESetting> getEmployeeCESetting(String companyId) {
+			return cacheEmployeeCESetting.get(companyId);
+		}
+
 		@Override
 		public ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo) {
-			return importableItemsRepo.get(domainId, itemNo)
+			return cacheImportableItem.get(Pair.of(domainId, itemNo))
 					.orElseThrow(() -> new RuntimeException("not found: " + domainId + ", " + itemNo));
 		}
-		
+
 		@Override
-		public Optional<ImportingUserCondition> getImportingUserCondition(String settingCode,
-				int itemNo) {
-			return importingUserConditionRepo.get(companyId, settingCode, itemNo);
+		public Optional<ImportingUserCondition> getImportingUserCondition(String settingCode, int itemNo) {
+			return cacheImportingUserCondition.get(Pair.of(settingCode, itemNo));
 		}
-		
-		
+
+
 		/***** Workspace *****/
-				
+
 		@Override
 		public void setupWorkspace() {
 			errorsRepo.cleanOldTables(companyId);
-			
+
 			errorsRepo.setup(companyId);
 		}
-		
+
 		@Override
 		public void setupWorkspaceForEachDomain(ExecutionContext context) {
 			workspaceRepo.cleanOldTables(this, context);
 			existingRepo.cleanOldTables(context);
 			metaRepo.cleanOldTables(context);
-			
+
 			workspaceRepo.setup(this, context);
 			existingRepo.setup(context);
 			metaRepo.setup(context);
 		}
-		
+
 		@Override
 		public void save(ExecutionContext context, AnyRecordToDelete toDelete) {
 			existingRepo.save(context, toDelete);
 		}
-		
+
 		@Override
 		public void save(ExecutionContext context, AnyRecordToChange recordToChange) {
 			existingRepo.save(context, recordToChange);
 		}
-		
+
 		@Override
 		public void save(ExecutionContext context, RevisedDataRecord revisedDataRecord) {
 			revisedDataRecordRepo.save(this, context, revisedDataRecord);
 		}
-		
+
 		@Override
 		public void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord) {
 			canonicalizedDataRecordRepo.save(this, context, canonicalizedDataRecord);
 		}
-		
+
 		@Override
 		public int getMaxRowNumberOfRevisedData(ExecutionContext context) {
 			return revisedDataRecordRepo.getMaxRowNumber(this, context);
 		}
-		
+
 		@Override
 		public List<String> getStringsOfRevisedData(ExecutionContext context, int itemNo) {
 			return revisedDataRecordRepo.getStrings(this, context, itemNo);
 		}
-		
+
 		@Override
 		public Optional<RevisedDataRecord> getRevisedDataRecordByRowNo(ExecutionContext context, int rowNo) {
 			return revisedDataRecordRepo.findByRowNo(this, context, rowNo);
@@ -269,20 +317,26 @@ public class ExternalImportPrepareRequire {
 		public List<RevisedDataRecord> getAllRevisedDataRecords(ExecutionContext context) {
 			return revisedDataRecordRepo.findAll(this, context);
 		}
-		
+
 		@Override
 		public List<RevisedDataRecord> getRevisedDataRecordWhere(
 				ExecutionContext context, int itemNoCondition, String conditionString) {
 			return revisedDataRecordRepo.findByCriteria(this, context, itemNoCondition, conditionString);
 		}
-		
+
 		@Override
 		public void save(ExecutionContext context, ImportingDataMeta meta) {
 			metaRepo.save(context, meta);
 		}
-		
-		
+
+
 		/***** domains for canonicalization *****/
+
+		@Override
+		public ExternalImportSetting getExternalImportSetting(ExecutionContext context) {
+			return this.cacheImportSetting.get(new ExternalImportCode(context.getSettingCode())).get();
+		}
+		
 		
 		@Override
 		public Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeCode(String employeeCode) {
@@ -293,11 +347,11 @@ public class ExternalImportPrepareRequire {
 		public Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeId(String employeeId) {
 			return employeeDataMngInfoRepo.findByEmpId(employeeId);
 		}
-		
+
 		public Optional<Task> getTask(String companyId, int taskFrameNo, String taskCode) {
 			return taskingRepo.getOptionalTask(companyId, new TaskFrameNo(taskFrameNo), new TaskCode(taskCode));
 		}
-		
+
 		@Override
 		public boolean existsDomainData(DomainDataId id) {
 			return domainDataRepo.exists(id);
@@ -349,5 +403,16 @@ public class ExternalImportPrepareRequire {
 			return wkpInfoRepo.findAll(companyId);
 		}
 
+		@Override
+		public boolean existsStamp(String cardNumber, GeneralDateTime stampDateTime, int changeClockArt) {
+			return stampDakokuRepo.existsStamp(new ContractCode(contractCode), new StampNumber(cardNumber), stampDateTime, ChangeClockAtr.valueOf(changeClockArt));
+		}
+
+
+		@Override
+		public List<CanonicalizedDataRecord> getCanonicalizedData(ExecutionContext context, ImportingDomainId domainId,
+				int targetItemNo, String targetItemValue) {
+			return canonicalizedDataRecordRepo.findByCriteria(this, context, domainId, targetItemNo, targetItemValue);
+		}
 	}
 }

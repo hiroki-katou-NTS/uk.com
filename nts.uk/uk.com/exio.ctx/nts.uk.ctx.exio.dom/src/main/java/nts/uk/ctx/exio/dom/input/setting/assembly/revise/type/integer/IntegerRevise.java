@@ -21,7 +21,7 @@ public class IntegerRevise implements ReviseValue {
 	private Optional<ExternalImportCodeConvert> codeConvert;
 	
 	@Override
-	public Either<ErrorMessage, ?> revise(String target) {
+	public Either<ErrorMessage, ?> revise(ReviseValue.Require require, String target) {
 		
 		if (StringUtil.isNullOrEmpty(target, false)) {
 			return Either.right(null);

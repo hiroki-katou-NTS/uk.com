@@ -47,14 +47,14 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                             <tr data-bind="if: leaveType() == 6">
                                 <th style="border: 0; padding-bottom: 6px" colspan="2"/>
                             </tr>
-                            <tr class="bg-green">
-                                <th>
+                            <tr class="bg-gray">
+                                <th style="background-color: #fff;">
                                 <th data-bind="text: $i18n('KAF012_7')"/>
                             </tr>
                         </thead>
                         <tbody data-bind="foreach: applyTimeData">
                             <tr data-bind="if: display, attr: {height: !display() ? '0' : appTimeType < 4 ? '85px' : displayShowMore() ? '192px' : '464px'}">
-                                <td class="bg-green" data-bind="text: appTimeTypeName"/>
+                                <td class="bg-gray" data-bind="text: appTimeTypeName"/>
                                 <td style="vertical-align: baseline">
                                     <div class="control-group valign-center">
                                         <span data-bind="text: scheduledTimeLabel"/>
@@ -116,10 +116,10 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                                 enable: !$parents[1].viewMode()
                                                                             }"/>
                                                     </div>
-                                                    <span data-bind="text: $vm.$i18n('KAF012_33'), visible: appTimeType() == 0 &amp;&amp; !enableInput()"/><!--私用-->
-                                                    <span data-bind="text: $vm.$i18n('KAF012_52'), visible: appTimeType() == 1"/><!--公用-->
-                                                    <span data-bind="text: $vm.$i18n('KAF012_51'), visible: appTimeType() == 2"/><!--有償-->
-                                                    <span data-bind="text: $vm.$i18n('KAF012_34'), visible: appTimeType() == 3 &amp;&amp; !enableInput()"/><!--組合-->
+                                                    <span data-bind="text: $vm.$i18n('KAF012_33'), visible: appTimeType() == 0 &amp;&amp; displayText()"/><!--私用-->
+                                                    <span data-bind="text: $vm.$i18n('KAF012_52'), visible: appTimeType() == 1 &amp;&amp; displayText()"/><!--公用-->
+                                                    <span data-bind="text: $vm.$i18n('KAF012_51'), visible: appTimeType() == 2 &amp;&amp; displayText()"/><!--有償-->
+                                                    <span data-bind="text: $vm.$i18n('KAF012_34'), visible: appTimeType() == 3 &amp;&amp; displayText()"/><!--組合-->
                                                 </div>
                                             </div>
                                         </div>
@@ -134,7 +134,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     <div data-bind="style: {height: leaveType() == 6 ? '33px' : '0px'}" />
                     <div>
                         <button id="time-calc-button" 
-                                class="proceed caret-right" 
+                                class="proceed caret-right button-min-width" 
                                 data-bind="text: $i18n('KAF012_38'), click: handleCalculate, enable: !viewMode(), style: {height: calcButtonHeight() + 'px'}"/>
                     </div>
                 </div>
@@ -143,28 +143,28 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                         <thead>
                             <tr data-bind="if: leaveType() == 6">
                                 <th style="border: 0;"/>
-                                <th colspan="6" class="bg-green" data-bind="text: $i18n('KAF012_8')"/>
+                                <th colspan="6" class="bg-gray" data-bind="text: $i18n('KAF012_8')"/>
                             </tr>
                             <tr>
                                 <th class="bg-yellow" data-bind="css: {hidden: leaveType() != 6}">
                                     <span data-bind="text: $i18n('KAF012_40')"/>
                                 </th>
-                                <th class="bg-green" data-bind="css: {hidden: (leaveType() != 0 &amp;&amp; leaveType() != 6) &#124;&#124; !displaySubCol()}">
+                                <th class="bg-gray" data-bind="css: {hidden: (leaveType() != 0 &amp;&amp; leaveType() != 6) &#124;&#124; !displaySubCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('KAF012_3') : $i18n('KAF012_8')"/>
                                 </th>
-                                <th class="bg-green" data-bind="css: {hidden: (leaveType() != 1 &amp;&amp; leaveType() != 6) &#124;&#124; !displayAnnCol()}">
+                                <th class="bg-gray" data-bind="css: {hidden: (leaveType() != 1 &amp;&amp; leaveType() != 6) &#124;&#124; !displayAnnCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('KAF012_4') : $i18n('KAF012_8')"/>
                                 </th>
-                                <th class="bg-green" data-bind="css: {hidden: (leaveType() != 2 &amp;&amp; leaveType() != 6) &#124;&#124; !displayChiCol()}">
+                                <th class="bg-gray" data-bind="css: {hidden: (leaveType() != 2 &amp;&amp; leaveType() != 6) &#124;&#124; !displayChiCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('Com_ChildNurseHoliday') : $i18n('KAF012_8')"/>
                                 </th>
-                                <th class="bg-green" data-bind="css: {hidden: (leaveType() != 3 &amp;&amp; leaveType() != 6) &#124;&#124; !displayCarCol()}">
+                                <th class="bg-gray" data-bind="css: {hidden: (leaveType() != 3 &amp;&amp; leaveType() != 6) &#124;&#124; !displayCarCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('Com_CareHoliday') : $i18n('KAF012_8')"/>
                                 </th>
-                                <th class="bg-green" data-bind="css: {hidden: (leaveType() != 4 &amp;&amp; leaveType() != 6) &#124;&#124; !display60hCol()}">
+                                <th class="bg-gray" data-bind="css: {hidden: (leaveType() != 4 &amp;&amp; leaveType() != 6) &#124;&#124; !display60hCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('Com_ExsessHoliday') : $i18n('KAF012_8')"/>
                                 </th>
-                                <th class="bg-green" data-bind="css: {hidden: (leaveType() != 5 &amp;&amp; leaveType() != 6) &#124;&#124; !displaySpeCol()}">
+                                <th class="bg-gray" data-bind="css: {hidden: (leaveType() != 5 &amp;&amp; leaveType() != 6) &#124;&#124; !displaySpeCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('KAF012_46') : $i18n('KAF012_8')"/>
                                 </th>
                             </tr>
@@ -757,6 +757,9 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         startTimeRequired: KnockoutObservable<boolean>;
         endTimeRequired: KnockoutObservable<boolean>;
         enableInput: KnockoutComputed<boolean>;
+        displayText: KnockoutComputed<boolean>;
+        privateGoingOut: KnockoutObservable<number>;
+        unionGoingOut: KnockoutObservable<number>;
 
         constructor(appTimeType: number, workNo: number, reflectSetting?: KnockoutObservable<ReflectSetting>) {
             this.appTimeType = ko.observable(appTimeType < 4 ? appTimeType : GoingOutReason.PRIVATE);
@@ -764,6 +767,20 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
             this.startTime = ko.observable(null);
             this.endTime = ko.observable(null);
             this.display = ko.observable(workNo < 4);
+            this.privateGoingOut = ko.computed(() => {
+                if (!!reflectSetting
+                    && !!reflectSetting()) {
+                        return reflectSetting().destination.privateGoingOut;
+                    }
+                    return 0;
+            });
+            this.unionGoingOut = ko.computed(() => {
+                if (!!reflectSetting
+                    && !!reflectSetting()) {
+                        return reflectSetting().destination.unionGoingOut;
+                    }
+                    return 0;
+            });
             this.displayCombobox = ko.computed(() => {
                 if (!!reflectSetting
                     && !!reflectSetting()
@@ -808,17 +825,27 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                 if (!this.displayCombobox()) {
                     if (!!reflectSetting
                         && !!reflectSetting()
-                        && reflectSetting().destination.privateGoingOut == 1
-                        && this.appTimeType() == GoingOutReason.UNION)
+                        && reflectSetting().destination.privateGoingOut == 0
+                        && this.appTimeType() == GoingOutReason.PRIVATE)
                         return false;
                     if (!!reflectSetting
                         && !!reflectSetting()
-                        && reflectSetting().destination.unionGoingOut == 1
-                        && this.appTimeType() == GoingOutReason.PRIVATE)
+                        && reflectSetting().destination.unionGoingOut == 0
+                        && this.appTimeType() == GoingOutReason.UNION)
                         return false;
                 }
                 return true;
             });
+
+            this.displayText = ko.computed(() => {
+                if (this.appTimeType() === GoingOutReason.PUBLIC || this.appTimeType() === GoingOutReason.COMPENSATION) {
+                    return true;
+                }
+                if (!this.displayCombobox()) {
+                    return true;
+                    }
+                return false;
+            })
         }
 
         validateTime(start: any, end: any) {

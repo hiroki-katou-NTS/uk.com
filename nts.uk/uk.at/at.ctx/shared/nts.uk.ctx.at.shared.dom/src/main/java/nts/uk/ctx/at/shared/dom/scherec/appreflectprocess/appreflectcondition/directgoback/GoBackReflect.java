@@ -75,8 +75,8 @@ public class GoBackReflect extends AggregateRoot{
 	private  List<Integer> processWorkType(Require require, GoBackDirectlyShare appGoback,
 			DailyRecordOfApplication dailyApp) {
 		// 勤務種類を取得する
-		Optional<WorkType> workTypeOpt = require.findByPK(companyId,
-				dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
+		Optional<WorkType> workTypeOpt = require.workType(companyId,
+				dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode());
 		if (!checkWorkType(workTypeOpt)) {
 			// [input. 直行直帰申請. 勤務情報]を勤務情報DTOへセット
 			// [勤務種類コード、就業時間帯コード]を勤務情報DTOへセット
@@ -111,9 +111,5 @@ public class GoBackReflect extends AggregateRoot{
 		return false;
 	}
 
-	public static interface Require extends ReflectWorkInformation.Require {
-
-		// WorkTypeRepository
-		Optional<WorkType> findByPK(String companyId, String workTypeCd);
-	}
+	public static interface Require extends ReflectWorkInformation.Require { }
 }

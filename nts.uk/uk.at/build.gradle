@@ -310,6 +310,8 @@ project (':at.ctx:schedule:nts.uk.ctx.at.schedule.dom') {
 	dependencies {
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom')
 		compile project(':at.ctx:at.auth:nts.uk.ctx.at.auth.dom')
+		
+		testCompile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom').sourceSets.test.output
 	}
 }
 
@@ -640,6 +642,8 @@ project (':at.ctx:aggregation:nts.uk.ctx.at.aggregation.app') {
 project (':at.ctx:aggregation:nts.uk.ctx.at.aggregation.dom') {
 	dependencies {
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom')
+		
+		testCompile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom').sourceSets.test.output
 	}
 }
 
@@ -1007,6 +1011,14 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.exio', name: 'nts.uk.ctx.exio.infra', version: version)
 		runtime(group: 'com.exio', name: 'nts.uk.ctx.exio.pub', version: version)
 		runtime(group: 'com.exio', name: 'nts.uk.ctx.exio.pubimp', version: version)
+		
+		runtime(group: 'com.link.smile', name: 'nts.uk.ctx.link.smile.ac', version: version)
+		runtime(group: 'com.link.smile', name: 'nts.uk.ctx.link.smile.app', version: version)
+		runtime(group: 'com.link.smile', name: 'nts.uk.ctx.link.smile.dom', version: version)
+		runtime(group: 'com.link.smile', name: 'nts.uk.ctx.link.smile.infra', version: version)
+		runtime(group: 'com.link.smile', name: 'nts.uk.ctx.link.smile.ws', version: version)
+		runtime(group: 'com.link.smile', name: 'nts.uk.ctx.link.smile.pub', version: version)
+		runtime(group: 'com.link.smile', name: 'nts.uk.ctx.link.smile.pubimp', version: version)
 
 		runtime(group: 'com.query', name: 'nts.uk.query.ac', version: version)
 		runtime(group: 'com.query', name: 'nts.uk.query.app', version: version)

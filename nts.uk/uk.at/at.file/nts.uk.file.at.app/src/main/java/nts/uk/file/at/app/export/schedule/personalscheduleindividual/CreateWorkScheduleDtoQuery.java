@@ -1,5 +1,14 @@
 package nts.uk.file.at.app.export.schedule.personalscheduleindividual;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import lombok.val;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -20,17 +29,10 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto.WorkScheduleWorkInforDto;
 import nts.uk.shr.com.context.AppContexts;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 勤務予定で勤務予定（勤務情報）dtoを作成する
@@ -85,45 +87,42 @@ public class CreateWorkScheduleDtoQuery {
         for (val ntegrationOfDaily : dailyListAttendanceWork) {
             // 4.1出勤・休日系の判定(@Require)
             val workStyle = ntegrationOfDaily.getWorkInformation().getRecordInfo().getWorkStyle(new WorkInformation.Require() {
-                @Override
-                public Optional<WorkType> getWorkType(String workTypeCd) {
-                    return workTypeRepo.findByPK(companyId, workTypeCd);
-                }
-
-                @Override
-                public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-                    return workTimeSettingRepository.findByCode(companyId, workTimeCode);
-                }
 
                 @Override
                 public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
                     return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
                 }
+        		@Override
+        		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+        			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
+        		}
 
-                @Override
-                public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-                    Optional<FixedWorkSetting> workSetting = fixedWorkSet.findByKey(companyId, code.v());
-                    return workSetting.isPresent() ? workSetting.get() : null;
-                }
+        		@Override
+        		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+        			return fixedWorkSet.findByKey(companyId, workTimeCode.v());
+        		}
 
-                @Override
-                public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-                    Optional<FlowWorkSetting> workSetting = flowWorkSet.find(companyId, code.v());
-                    return workSetting.isPresent() ? workSetting.get() : null;
-                }
+        		@Override
+        		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+        			return flowWorkSet.find(companyId, workTimeCode.v());
+        		}
 
-                @Override
-                public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-                    Optional<FlexWorkSetting> workSetting = flexWorkSet.find(companyId, code.v());
-                    return workSetting.isPresent() ? workSetting.get() : null;
-                }
+        		@Override
+        		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+        			return flexWorkSet.find(companyId, workTimeCode.v());
+        		}
 
-                @Override
-                public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-                    Optional<PredetemineTimeSetting> workSetting = predetemineTimeSet.findByWorkTimeCode(companyId, wktmCd.v());
-                    return workSetting.isPresent() ? workSetting.get() : null;
-                }
-            });
+        		@Override
+        		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+        			return predetemineTimeSet.findByWorkTimeCode(companyId, workTimeCode.v());
+        		}
+
+        		@Override
+        		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+        			return workTypeRepo.findByPK(companyId, workTypeCode.v());
+        		}
+
+            }, companyId);
 
 
             // 勤務種類コード = 日別勤怠(Work)．勤務情報．勤務情報．勤務種類コード

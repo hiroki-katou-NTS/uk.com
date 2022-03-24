@@ -59,12 +59,14 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	/**
 	 * [C-1] 所定時間帯で作る
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param workInformation 勤務情報
 	 * @return
 	 */
-	public static TimeLeavingOfDailyAttd createByPredetermineZone(Require require, WorkInformation workInformation) {
+	public static TimeLeavingOfDailyAttd createByPredetermineZone(Require require, String companyId,
+			WorkInformation workInformation) {
 		
-		Optional<WorkInfoAndTimeZone> workInfoAndTimeZone = workInformation.getWorkInfoAndTimeZone(require);
+		Optional<WorkInfoAndTimeZone> workInfoAndTimeZone = workInformation.getWorkInfoAndTimeZone(require, companyId);
 		if (! workInfoAndTimeZone.isPresent() ) {
 			throw new RuntimeException("Invalid value!");
 		}
@@ -149,6 +151,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	 */
 	public Optional<TimeWithDayAttr> getLastLeaveTime() {
 		Optional<TimeLeavingWork> last = this.timeLeavingWorks.stream()
+				.filter(c->c.getLeaveTime().isPresent())
 				.sorted((f, s) -> s.getWorkNo().compareTo(f.getWorkNo()))
 				.findFirst();
 		return last.flatMap(l -> l.getLeaveTime());
@@ -166,7 +169,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 			return this;
 		List<TimeLeavingWork> newAttendanceLeave = new ArrayList<>();
 		for (TimeLeavingWork attendanceLeave : this.timeLeavingWorks) {
-			newAttendanceLeave.add(attendanceLeave.correctJustTime(isJustTimeLateAttendance, isJustEarlyLeave));
+			newAttendanceLeave.add(attendanceLeave.correctJustTimeCalcStamp(isJustTimeLateAttendance, isJustEarlyLeave));
 		}
 
 		return new TimeLeavingOfDailyAttd(newAttendanceLeave, this.workTimes);

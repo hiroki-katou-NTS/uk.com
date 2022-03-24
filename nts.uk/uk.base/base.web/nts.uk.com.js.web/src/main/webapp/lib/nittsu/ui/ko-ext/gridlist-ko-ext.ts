@@ -8,11 +8,11 @@ module nts.uk.ui.koExtentions {
     class NtsGridListBindingHandler implements KnockoutBindingHandler {
 
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            let HEADER_HEIGHT = 27;
-            let ROW_HEIGHT = 24;
+            let HEADER_HEIGHT = 30;
+            let ROW_HEIGHT = 30;
             let DIFF_NUMBER = 2;
             
-            var $grid = $(element).addClass("nts-gridlist");
+            var $grid = $(element);
             let gridId = $grid.attr('id');
             if (nts.uk.util.isNullOrUndefined(gridId)) {
                 throw new Error('the element NtsGridList must have id attribute.');
@@ -37,7 +37,7 @@ module nts.uk.ui.koExtentions {
             $grid.data("initValue", value); 
             
             if (data.multiple){
-                ROW_HEIGHT = 24;
+                ROW_HEIGHT = 30;
                 
                 // Internet Explorer 6-11
                 let _document: any = document;
@@ -57,7 +57,7 @@ module nts.uk.ui.koExtentions {
                     name: 'RowSelectors',
                     enableCheckBoxes: data.multiple,
                     enableRowNumbering: false, //this feature is not needed
-                    rowSelectorColumnWidth: 25
+                    rowSelectorColumnWidth: 40
                 });    
             }
             if(columnResize){
@@ -196,6 +196,8 @@ module nts.uk.ui.koExtentions {
                     }
                 }
             });
+
+            $grid.closest('.ui-iggrid').addClass('nts-gridlist');
             
             if (data.itemDraggable) {
                 new SwapHandler().setModel(new GridSwapList($grid, optionsValue)).enableDragDrop(data.dataSource);
@@ -493,7 +495,7 @@ module nts.uk.ui.koExtentions {
             
 
             $grid.data("ui-changed", false);
-            $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
+            $grid.closest('.ui-iggrid').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
         }
     }
     

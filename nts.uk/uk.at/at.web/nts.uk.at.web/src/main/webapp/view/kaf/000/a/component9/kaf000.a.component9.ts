@@ -28,8 +28,8 @@ module nts.uk.at.view.kaf000.a.component9.viewmodel {
         }
 
 		backtoPre() {
-            if (document.referrer) {
-                window.location = document.referrer;
+            if (document.referrer && window.location.href != document.referrer) {
+                window.location.href = document.referrer;
             } else {
                 window.history.back();
             }

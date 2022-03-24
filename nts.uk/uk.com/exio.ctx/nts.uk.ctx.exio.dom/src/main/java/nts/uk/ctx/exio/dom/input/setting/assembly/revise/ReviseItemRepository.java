@@ -9,8 +9,12 @@ import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 public interface ReviseItemRepository {
 	
 	Optional<ReviseItem> get(String companyId, ExternalImportCode settingCode, ImportingDomainId domainId, int importItemNumber);
+	
+	List<ReviseItem> get(String companyId, ExternalImportCode settingCode);
 
 	void persist(ReviseItem reviseItem);
+	
+	void persist(List<ReviseItem> reviseItem);
 	
 	void delete(String companyId, ExternalImportCode settingCode, ImportingDomainId domainId, int importItemNumber);
 

@@ -2,11 +2,14 @@ package nts.uk.ctx.exio.infra.repository.input.workspace;
 
 import static java.util.stream.Collectors.toList;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.val;
@@ -18,6 +21,7 @@ import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository.Require;
@@ -43,8 +47,8 @@ public class WorkspaceSql {
 	private final DatabaseProduct database;	//this.database().product();
 
 	static final Column ROW_NO = new Column("ROW_NO", new DataTypeConfiguration(DataType.INT, 10,0), "rowno", true);
-	static final Column CONTRACT_CD = new Column("CONTRACT_CD", new DataTypeConfiguration(DataType.STRING, 12,0), "contract", false);
-	static final Column CID = new Column("CID", new DataTypeConfiguration(DataType.STRING, 17,0), "cid", false);
+	static final Column CONTRACT_CD = new Column("CONTRACT_CD", new DataTypeConfiguration(DataType.STRING, 12,0), "9999", false);
+	static final Column CID = new Column("CID", new DataTypeConfiguration(DataType.STRING, 17,0), "9998", false);
 
 	public static WorkspaceSql create(Require require, ExecutionContext context, JdbcProxy jdbcProxy, DatabaseProduct database) {
 
@@ -97,32 +101,46 @@ public class WorkspaceSql {
 	protected List<Column> allWorkspaceTableColumns() {
 		List<Column> result = new ArrayList<>();
 		result.add(ROW_NO);
-		result.add(CONTRACT_CD);
-		result.add(CID);
 		for (WorkspaceItem item : workspace.getAllItemsSortedByItemNo()){
-			if(CONTRACT_CD.name.equals(item.getName()) || CID.name.equals(item.getName())) break;
 			result.add(new Column(item.getName(), item.getDataTypeConfig(), "@" + Insert.paramItem(item.getItemNo()), false));
 		}
 		return result;
 	}
 	
 	static class CommonColumns {
-		static final List<String> LIST = Arrays.asList(ROW_NO.paramName, CONTRACT_CD.paramName, CID.paramName);
+		static final List<String> NothingItemNoList = Arrays.asList(ROW_NO.paramName);
+		static final List<String> HasItemNoList = Arrays.asList(CONTRACT_CD.paramName, CID.paramName);
 		
 		static String sqlParams() {
-			return LIST.stream()
+			return NothingItemNoList.stream()
 					.map(paramName -> "@" + paramName)
 					.collect(Collectors.joining(","));
 		}
 		
 		static void setParams(NtsStatement statement, int rowNo, ExecutionContext context) {
 			
+			//項目Noを持たず、列が自動生成される者たち
 			statement.paramInt(ROW_NO.paramName, rowNo);
 			
+			//項目Noを持つので列は生成される者たち
 			String companyId = context.getCompanyId();
 			String contractCode = CompanyId.getContractCodeOf(companyId);
-			statement.paramString(CONTRACT_CD.paramName, contractCode);
-			statement.paramString(CID.paramName, companyId);
+			statement.paramString("p"+CONTRACT_CD.paramName, contractCode);
+			statement.paramString("p"+CID.paramName, companyId);
+		}
+
+		/**
+		 * 項目Noが割り振られている共通列を取り除く 
+		 */
+		static List<WorkspaceItem> removeCommonColumns(List<WorkspaceItem> allItemsSortedByItemNo) {
+			val commonColumnsMinItemNo = HasItemNoList.stream()
+							.map(item -> Integer.valueOf(item))
+							.min((first, second) -> Integer.compare(first, second))
+							.get();
+			return allItemsSortedByItemNo.stream()
+							.filter(item -> item.getItemNo() < commonColumnsMinItemNo)
+							.sorted((first, second) -> Integer.compare(first.getItemNo() ,second.getItemNo()))
+							.collect(Collectors.toList());
 		}
 	}
 	
@@ -164,15 +182,16 @@ public class WorkspaceSql {
 
 		/*
 		 * VALUES句の列順は、項目No順にテーブルが作られるという仕様を前提とする。
-		 * ただし先頭はROW_NO, CONTRACT_CD, CID列で固定。
+		 * ただし先頭はROW_NO列で固定。
 		 */
 		String sql = Insert.createInsertSql(tableName, workspace, allWorkspaceTableColumns());
 		
 		val statement = jdbcProxy.query(sql);
 		
 		CommonColumns.setParams(statement, rowNo, context);
+		val domainsItemsSortedByItemNo = CommonColumns.removeCommonColumns(workspace.getAllItemsSortedByItemNo());
 		
-		for (val workspaceItem : workspace.getAllItemsSortedByItemNo()) {
+		for (val workspaceItem : domainsItemsSortedByItemNo) {
 			val dataType = workspaceItem.getDataTypeConfig();
 			Object itemValue = itemValueGetter.apply(workspaceItem.getItemNo());
 			Insert.setParam(dataType, itemValue, statement, workspaceItem);
@@ -204,17 +223,17 @@ public class WorkspaceSql {
 				DataTypeConfiguration dataType,
 				Object value,
 				NtsStatement statement,
-				WorkspaceItem workspaceItem) {
+				WorkspaceItem workspaceItem
+				) {
 			
 			String param = paramItem(workspaceItem.getItemNo());
 			
 			try {
-				if(dataType.getType() == DataType.BOOLEAN){
-					// bool型への暫定対応　本来はItemTypeにBOOLEANを追加すべきだが、一旦ここで変換して回避
-					dataType.getType().setParam(statement, param, Objects.equals(value,1));
-				} else{
-					dataType.getType().setParam(statement, param, value);
+				if(dataType.getType() == DataType.BOOLEAN && value != null && value.getClass() == Long.class){
+					// 編集済データをINSERTする際はBoolean型の項目であっても数値でくるので、変換が必要
+					value = Objects.equals(value,Long.valueOf(1));
 				}
+				dataType.getType().setParam(statement, param, value);
 			} catch (Exception ex) {
 				throw new RuntimeException("パラメータ設定に失敗：" + value + ", " + dataType + ", " + workspaceItem, ex);
 			}
@@ -259,18 +278,6 @@ public class WorkspaceSql {
 				.paramString("p", conditionString)
 				.getList(rec -> toRevised(rec));
 	}
-	
-	private RevisedDataRecord toRevised(NtsResultRecord record) {
-		
-		int rowNo = record.getInt(ROW_NO.name);
-		
-		val items = workspace.getAllItemsSortedByItemNo().stream()
-				.map(wi -> toDataItem(record, wi))
-				.collect(toList());
-		
-		return new RevisedDataRecord(rowNo, new DataItemList(items));
-	}
-	
 	private static DataItem toDataItem(NtsResultRecord record, WorkspaceItem workspaceItem) {
 		
 		val dataType = workspaceItem.getDataTypeConfig();
@@ -293,6 +300,71 @@ public class WorkspaceSql {
 			return DataItem.of(itemNo, record.getGeneralDate(name));
 		case BOOLEAN:
 			return DataItem.of(itemNo, record.getBoolean(name));
+		default:
+			throw new RuntimeException("unknown: " + dataType.getType());
+		}
+	}
+	
+	private RevisedDataRecord toRevised(NtsResultRecord record) {
+		
+		int rowNo = record.getInt(ROW_NO.name);
+		
+		val items = workspace.getAllItemsSortedByItemNo().stream()
+				.map(wi -> toDataItem(record, wi))
+				.collect(toList());
+		
+		return new RevisedDataRecord(rowNo, new DataItemList(items));
+	}
+	
+	public List<CanonicalizedDataRecord> findCanonicalizedWhere(int itemNoCondition, String conditionString) {
+		
+		String columnName = workspace.getItem(itemNoCondition)
+				.orElseThrow(() -> new RuntimeException("not found: " + itemNoCondition))
+				.getName();
+		
+		String sql = "select * from " + tableName().asCanonicalized()
+				+ " where " + columnName + " = @p";
+		
+		return jdbcProxy.query(sql)
+				.paramString("p", conditionString)
+				.getList(rec -> toCanonicalized(rec));
+	}
+	
+	private CanonicalizedDataRecord toCanonicalized(NtsResultRecord record) {
+		
+		int rowNo = record.getInt(ROW_NO.name);
+		
+		val items = workspace.getAllItemsSortedByItemNo().stream()
+				.map(wi -> toCanonicalItem(record, wi))
+				.collect(toList());
+		
+		return new CanonicalizedDataRecord(rowNo, new CanonicalItemList(items));
+	}
+	
+	private static CanonicalItem toCanonicalItem(NtsResultRecord record, WorkspaceItem workspaceItem) {
+		
+		val dataType = workspaceItem.getDataTypeConfig();
+		int itemNo = workspaceItem.getItemNo();
+		String name = workspaceItem.getName();
+		
+		// nullの場合
+		if(Objects.isNull(record.getObject(name))) {
+			return CanonicalItem.nullValue(itemNo);
+		}
+		
+		switch (dataType.getType()) {
+		case INT:
+			return CanonicalItem.of(itemNo, record.getLong(name));
+		case REAL:
+			return CanonicalItem.of(itemNo, record.getBigDecimal(name));
+		case STRING:
+			return CanonicalItem.of(itemNo, record.getString(name));
+		case DATE:
+			return CanonicalItem.of(itemNo, record.getGeneralDate(name));
+		case DATETIME:
+			return CanonicalItem.of(itemNo, record.getGeneralDateTime(name));
+		case BOOLEAN:
+			return CanonicalItem.of(itemNo, record.getBoolean(name));
 		default:
 			throw new RuntimeException("unknown: " + dataType.getType());
 		}
