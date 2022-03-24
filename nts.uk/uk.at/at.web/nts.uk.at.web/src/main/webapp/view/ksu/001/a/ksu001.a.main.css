@@ -681,10 +681,10 @@ html {
 .background-half-day-work-v6-5 {background-color: #e6a322; }
 .background-schedule-performance-v6-5 {background-color:#258f7e;}
 
-.bg-schedule-saturday-v6-5 {background-color:#1973b5;}
-.bg-schedule-sunday-v6-5 {background-color:#db4f51;}
-.bg-schedule-specific-date-v6-5 {background-color:#b18768;}
-.bg-schedule-that-day-v6-5 {background-color:#258f7e;}
+.bg-schedule-saturday-v6-5 {background-color:#1973b5 !important;}
+.bg-schedule-sunday-v6-5 {background-color:#db4f51 !important;}
+.bg-schedule-specific-date-v6-5 {background-color:#b18768 !important;}
+.bg-schedule-that-day-v6-5 {background-color:#258f7e !important;}
 
 .color-schedule-performance-v6-5 {color: #258f7e;}
 .color-attendance-v6-5 {color: #1973b5;}
