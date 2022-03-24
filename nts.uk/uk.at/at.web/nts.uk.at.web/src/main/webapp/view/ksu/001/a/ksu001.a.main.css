@@ -31,6 +31,11 @@
     text-align: left;
 }
 
+.extable-body-leftmost  .x-link {
+    width: 98%;
+    vertical-align: middle;
+}
+
 #tab-1, #tab-2 {
 	height: 525px;
 }
@@ -422,13 +427,14 @@
 	width: 65px
 }
 
-.icon-leftmost { 
+.icon-do-not-go-to-support { 
 	background-image:
 		url(/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/7.png);
 	height: 20px;
 	width: 20px;
 	left: 2px !important;
-	margin-top: -4px !important
+	margin-top: -4px !important;
+	background-repeat: no-repeat;
 }
 
 .mb-5 {
@@ -636,12 +642,6 @@ html {
 }
 
 
-.background-attendance {background-color: #0000ff !important;}
-.background-holiday {background-color: #ff0000 !important;}
-.background-half-day-work {background-color: #FF7F27 !important; }
-.background-schedule-performance {background-color:#008000 !important;}
-.bg-daily-alter-self {background-color:#94B7FE;}
-.bg-daily-alter-other {background-color:#CEE6FF;}
 .background-white {background-color: white}
 .color-default {color : #595959;}
 .bg-schedule-uncorrectable-ksu001 {background-color:#ddddd2;}
@@ -666,3 +666,19 @@ html {
 #horzComboBox * {
 	text-align: left;
 }
+.xseal { background-color: #B8B8B8 !important; }
+.bg-schedule-uncorrectable { background-color: #B8B8B8 !important; }
+.bg-daily-alter-self {background-color:#C1E6FE !important;}
+.bg-daily-alter-other {background-color:#4ca8f8 !important;}
+.bg-daily-reflect-application {background-color:#cbf3d2 !important;}
+.bg-schedule-fixed {background-color:#bfc5ff !important;}
+.bg-schedule-support-2 {background-color:#fedfe6 !important;}
+
+.background-attendance {background-color: #1973b5 !important;}
+.background-holiday {background-color: #db4f51 !important;}
+.background-half-day-work {background-color: #e6a322 !important; }
+.background-schedule-performance {background-color:#258f7e !important;}
+
+.bg-schedule-saturday {background-color:#1973b5 !important;}
+.bg-schedule-sunday {background-color:#db4f51 !important;}
+.bg-schedule-that-day {background-color:#258f7e !important;}
