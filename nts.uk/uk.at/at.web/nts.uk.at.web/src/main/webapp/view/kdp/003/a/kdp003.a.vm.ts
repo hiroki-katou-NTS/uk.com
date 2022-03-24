@@ -347,19 +347,10 @@ module nts.uk.at.kdp003.a {
 						if (data.workLocationCD != null && data.workLocationCD !== '') {
 							vm.regionalTime(data.regional);
 							vm.worklocationCode = data.workLocationCD;
-							if (data.workPlaceId != null && data.workPlaceId !== '') {
-								vm.workPlace = [];
-								vm.workPlace.push(data.workPlaceId);
-								vm.modeBasyo(true);
-								dfd.resolve(loginData);
-							} else  {
-								vm.getWorkPlaceAndTimeZone();
-								dfd.resolve(loginData);
-							}
-						} else {
-							vm.getWorkPlaceAndTimeZone();
-							dfd.resolve(loginData);
 						}
+						
+						vm.getWorkPlaceAndTimeZone();
+						dfd.resolve(loginData);
 					});
 				}
 			});
@@ -384,9 +375,9 @@ module nts.uk.at.kdp003.a {
 							if (data) {
 								if (ko.unwrap(vm.regionalTime) == 0) {
 									vm.regionalTime(data.regional);
-								}
-								if (data.workLocationCD != null) {
-									vm.worklocationCode = data.workLocationCD;
+									if (data.workLocationCD != null) {
+										vm.worklocationCode = data.workLocationCD;
+									}
 								}
 							}
 						})
