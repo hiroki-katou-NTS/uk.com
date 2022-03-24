@@ -74,9 +74,9 @@ module nts.uk.at.view.kfp002.a.viewmodel {
             self.aggregateFrames = ko.observableArray([]);
             self.legendOptions = {
                 items: [
-                    { colorCode: '#94B7FE', labelText: self.$i18n("KFP002_6") },
-                    { colorCode: '#CEE6FF', labelText: self.$i18n("KFP002_7") },
-                    { colorCode: '#F69164', labelText: self.$i18n("KFP002_8") }
+                    { colorCode: '#BFC5FF', labelText: self.$i18n("KFP002_6") },
+                    { colorCode: '#C1E6FE', labelText: self.$i18n("KFP002_7") },
+                    { colorCode: '#F9D4A9', labelText: self.$i18n("KFP002_8") }
                 ]
             };
             self.cursorMoveDirections = ko.observableArray([
@@ -116,7 +116,8 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                         anyPeriodFrameCode: val,
                         cursorDirection: self.cursorDirection(),
                         displayZero: self.displayZero(),
-                        displayItemNumber: self.displayItemNumber()
+                        displayItemNumber: self.displayItemNumber(),
+                        employees: self.lstEmployee()
                     });
                     if (!_.isEmpty(self.lstEmployee()) && self.displayFormat()) {
                         self.getData();
@@ -138,6 +139,7 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                         cursorDirection: value,
                         displayZero: self.displayZero(),
                         displayItemNumber: self.displayItemNumber()
+                        employees: self.lstEmployee()
                     });
                 }
             });
@@ -162,7 +164,8 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                         anyPeriodFrameCode: self.selectedFrameCode(),
                         cursorDirection: self.cursorDirection(),
                         displayZero: self.displayZero(),
-                        displayItemNumber: val
+                        displayItemNumber: val,
+                        employees: self.lstEmployee()
                     });
                 }
             });
@@ -180,7 +183,8 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                         anyPeriodFrameCode: self.selectedFrameCode(),
                         cursorDirection: self.cursorDirection(),
                         displayZero: val,
-                        displayItemNumber: self.displayItemNumber()
+                        displayItemNumber: self.displayItemNumber(),
+                        employees: self.lstEmployee()
                     });
                 }
             });
@@ -188,6 +192,15 @@ module nts.uk.at.view.kfp002.a.viewmodel {
             self.lstEmployee.subscribe(val => {
                 if (!_.isEmpty(val) && self.displayFormat()) {
                     self.getData();
+                }
+                if (!self.isStartScreen()) {
+                    nts.uk.characteristics.save(DATA_KEY, {
+                        anyPeriodFrameCode: self.selectedFrameCode(),
+                        cursorDirection: self.cursorDirection(),
+                        displayZero: self.displayZero(),
+                        displayItemNumber: self.displayItemNumber(),
+                        employees: val
+                    });
                 }
             });
         }
@@ -208,6 +221,7 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                         self.cursorDirection(cacheData ? cacheData.cursorDirection : 0);
                         self.displayZero(cacheData ? cacheData.displayZero : false);
                         self.displayItemNumber(cacheData ? cacheData.displayItemNumber : false);
+                        self.lstEmployee(cacheData ? cacheData.employees : []);
                     });
                 });
                 self.getFormatSetting();
@@ -809,5 +823,6 @@ module nts.uk.at.view.kfp002.a.viewmodel {
         cursorDirection: number; //カーソル移動方向
         displayZero: boolean; //ゼロ表示
         displayItemNumber: boolean; //項目番号表示
+        employees: Array<any>;
     }
 }
