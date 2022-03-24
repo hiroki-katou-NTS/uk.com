@@ -221,7 +221,10 @@ public class SettingOfManagerFinder {
 		String approverId   = null;
 		String approvalName = null;
 		// ドメインモデル「承認フェーズ」を取得する
-		Optional<ApprovalPhase> commonPhase = this.appPhaseRepo.getApprovalFirstPhase(psAppRoot.getApprovalId());
+		Optional<ApprovalPhase> commonPhase = this.appPhaseRepo.getApprovalFirstPhase(psAppRoot.getApprRoot().getHistoryItems().isEmpty()
+				? ""
+				: psAppRoot.getApprRoot().getHistoryItems().get(0).getApprovalId());
+		
 		if (commonPhase.isPresent()) {
 			commonPhase.get().getApprovers().sort((p1, p2) -> p1.getApproverOrder() - p2.getApproverOrder());
 			ApprovalAtr appAtr = commonPhase.get().getApprovalAtr();

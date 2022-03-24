@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 
@@ -14,11 +15,19 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalSettingInformation;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtAppover;
+import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtAppoverPK;
+import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprovalPhase;
+import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprovalPhasePK;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprovalRoutePs;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtPsApprovalRootPK;
 /**
@@ -178,6 +187,50 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				+ " AND c.sysAtr = :sysAtr"
 				+ " AND c.endDate = :endDate";
 		
+		private static final String GET_PSROOT_BY_SID_AND_APPROVALS = "SELECT m FROM WwfmtApprovalRoutePs m"
+				+ " WHERE m.wwfmtPsApprovalRootPK.companyId = :cid"
+				+ " AND m.wwfmtPsApprovalRootPK.employeeId = :sid"
+				+ " AND m.wwfmtPsApprovalRootPK.approvalId IN :approvalIds"
+				+ " AND m.sysAtr = 0";
+		
+		private static final String GET_HIST_WITH_START_AFTER_BASEDATE = "SELECT m FROM WwfmtApprovalRoutePs m"
+				+ " WHERE m.wwfmtPsApprovalRootPK.companyId = :cid"
+				+ " AND m.wwfmtPsApprovalRootPK.employeeId = :sid"
+				+ " AND m.startDate >= :baseDate"
+				+ " AND m.sysAtr = 0";
+		
+		private static final String GET_PREVIOUS_HISTORY = "SELECT m FROM WwfmtApprovalRoutePs m"
+				+ " WHERE m.wwfmtPsApprovalRootPK.companyId = :cid"
+				+ " AND m.wwfmtPsApprovalRootPK.employeeId = :sid"
+				+ " AND m.endDate = :baseDate"
+				+ " AND m.sysAtr = 0";
+		
+		private static final String GET_HIST_WITH_END_AFTER_BASEDATE = "SELECT m FROM WwfmtApprovalRoutePs m"
+				+ " WHERE m.wwfmtPsApprovalRootPK.companyId = :cid"
+				+ " AND m.wwfmtPsApprovalRootPK.employeeId = :sid"
+				+ " AND m.endDate >= :baseDate"
+				+ " AND m.sysAtr = 0";
+		
+		private static final String GET_EMP_HIST_WITH_START_AFTER_BASEDATE = "SELECT m FROM WwfmtApprovalRoutePs m"
+				+ " WHERE m.wwfmtPsApprovalRootPK.companyId = :cid"
+				+ " AND m.wwfmtPsApprovalRootPK.employeeId IN :sids"
+				+ " AND m.startDate >= :baseDate"
+				+ " AND m.sysAtr = 0"
+				+ " AND m.opeMode = 1";
+		
+		private static final String GET_ALL_EMP_HIST = "SELECT m FROM WwfmtApprovalRoutePs m"
+				+ " WHERE m.wwfmtPsApprovalRootPK.companyId = :cid"
+				+ " AND m.wwfmtPsApprovalRootPK.employeeId = :sid"
+				+ " AND m.sysAtr = :sysAtr";
+		
+		private static final String GET_HIST_FROM_BASEDATE = "SELECT m FROM WwfmtApprovalRoutePs m"
+				+ " WHERE m.wwfmtPsApprovalRootPK.companyId = :cid"
+				+ " AND m.wwfmtPsApprovalRootPK.employeeId = :sid"
+				+ " AND m.opeMode = 1"
+				+ " AND m.sysAtr = 0"
+				+ " AND m.startDate <= :periodEnd"
+				+ " AND m.endDate >= :periodStart";
+		
 		private static final String FIND_COMMON;
 		private static final String FIND_APPLICATION;
 		private static final String FIND_CONFIRMATION;
@@ -254,6 +307,14 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				+ " WHERE m.wwfmtPsApprovalRootPK.employeeId = :sid"
 				+ " AND m.startDate <= :baseDate"
 				+ "	AND m.endDate >= :baseDate";
+		
+		private static final String GET_START_OF_LASTEST_HIST = "SELECT m FROM WwfmtApprovalRoutePs m"
+				+ " WHERE m.wwfmtPsApprovalRootPK.companyId = :cid"
+				+ " AND m.wwfmtPsApprovalRootPK.employeeId = :sid"
+				+ " AND m.sysAtr = :sysAtr"
+				+ " AND m.endDate = :baseDate"
+				+ " AND m.opeMode = 1"
+				+ " ORDER BY m.startDate DESC";
 		
 		@Override
 		public List<String> getListSidRegistered(String sid, GeneralDate baseDate) {
@@ -356,14 +417,16 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	@Override
 	public void updatePsApprovalRoot(PersonApprovalRoot psAppRoot) {
 		WwfmtApprovalRoutePs a = toEntityPsApR(psAppRoot);
-		WwfmtApprovalRoutePs x = this.queryProxy().find(a.wwfmtPsApprovalRootPK, WwfmtApprovalRoutePs.class).get();
-		x.setStartDate(a.startDate);
-		x.setEndDate(a.endDate);
-		x.setApplicationType(a.applicationType);
-		x.setConfirmationRootType(a.confirmationRootType);
-		x.setEmploymentRootAtr(a.employmentRootAtr);
-		this.commandProxy().update(x);
-		this.getEntityManager().flush();
+		Optional<WwfmtApprovalRoutePs> optEntity = this.queryProxy().find(a.wwfmtPsApprovalRootPK, WwfmtApprovalRoutePs.class);
+		optEntity.ifPresent(x -> {
+			x.setStartDate(a.startDate);
+			x.setEndDate(a.endDate);
+			x.setApplicationType(a.applicationType);
+			x.setConfirmationRootType(a.confirmationRootType);
+			x.setEmploymentRootAtr(a.employmentRootAtr);
+			this.commandProxy().update(x);
+			this.getEntityManager().flush();
+		});
 	}
 	/**
 	 * update All Person Approval Root
@@ -466,9 +529,6 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		case CONFIRMATION:
 			query = FIND_CONFIRMATION;
 			break;
-		case ANYITEM:
-			query = FIND_ANYITEM;
-			break;
 		case NOTICE:
 			query = FIND_NOTICE;
 			break;
@@ -542,7 +602,8 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				entity.employmentRootAtr,
 				entity.sysAtr,
 				entity.noticeId,
-				entity.busEventId);
+				entity.busEventId,
+				entity.opeMode);
 		return domain;
 	}
 	/**
@@ -552,22 +613,88 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 */
 	private WwfmtApprovalRoutePs toEntityPsApR(PersonApprovalRoot domain){
 		val entity = new WwfmtApprovalRoutePs();
-		entity.wwfmtPsApprovalRootPK = new WwfmtPsApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(),
+		entity.wwfmtPsApprovalRootPK = new WwfmtPsApprovalRootPK(domain.getCompanyId(),
+				domain.getApprRoot().getHistoryItems().isEmpty() ? "" : domain.getApprRoot().getHistoryItems().get(0).getApprovalId(),
 				domain.getEmployeeId(), domain.getApprRoot().getHistoryItems().get(0).getHistoryId());
 		entity.sysAtr = domain.getApprRoot().getSysAtr().value;
 		entity.startDate = domain.getApprRoot().getHistoryItems().get(0).start();
 		entity.endDate = domain.getApprRoot().getHistoryItems().get(0).end();
 		entity.employmentRootAtr = domain.getApprRoot().getEmploymentRootAtr().value;
 		entity.applicationType = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.APPLICATION) ?
-				domain.getApprRoot().getApplicationType().value : null;
+				domain.getApprRoot().getApplicationType().map(x -> x.value).orElse(null) : null;
 		entity.confirmationRootType = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.CONFIRMATION) ?
-				domain.getApprRoot().getConfirmationRootType().value : null;
+				domain.getApprRoot().getConfirmationRootType().map(x -> x.value).orElse(null) : null;
 		entity.noticeId = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.NOTICE) ?
-				domain.getApprRoot().getNoticeId() : null;
+				domain.getApprRoot().getNoticeId().orElse(null) : null;
 		entity.busEventId = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.BUS_EVENT) ?
-				domain.getApprRoot().getBusEventId() : null;
+				domain.getApprRoot().getBusEventId().orElse(null) : null;
+		entity.opeMode = domain.getOperationMode().value;
 		return entity;
 	}
+	
+	/**
+	 * Convert ApprovalPhase to entity WwfmtApprovalPhase and WwfmtAppover
+	 */
+	private WwfmtApprovalPhase toEntityAppPhase(ApprovalPhase domain) {
+		WwfmtApprovalPhase entity = new WwfmtApprovalPhase();
+		entity.wwfmtApprovalPhasePK = new WwfmtApprovalPhasePK(domain.getApprovalId(), domain.getPhaseOrder());
+		entity.approvalForm = domain.getApprovalForm().value;
+		entity.browsingPhase = domain.getBrowsingPhase();
+		entity.approvalAtr = domain.getApprovalAtr().value;
+		
+		List<WwfmtAppover> wwfmtAppovers = domain.getApprovers().stream()
+				.map(x -> this.toEntityApprover(domain.getApprovalId(), domain.getPhaseOrder(), x))
+				.collect(Collectors.toList());
+		entity.wwfmtAppovers = wwfmtAppovers;
+		return entity;
+	}
+	
+	/**
+	 * Convert Approver to WwfmtAppover
+	 */
+	private WwfmtAppover toEntityApprover(String approvalId, int phaseOrder, Approver domain) {
+		val entity = new WwfmtAppover();
+		entity.wwfmtAppoverPK = new WwfmtAppoverPK(approvalId, phaseOrder, domain.getApproverOrder());
+		entity.jobGCD = domain.getJobGCD();
+		entity.employeeId = domain.getEmployeeId();
+		entity.confirmPerson = domain.getConfirmPerson().value;
+		entity.specWkpId = domain.getSpecWkpId();
+		return entity;
+	}
+	
+	private List<ApprovalSettingInformation> createApprovalSettingInformations(List<WwfmtApprovalRoutePs> rootEntities,
+			List<WwfmtApprovalPhase> phaseEntities) {
+		return rootEntities.stream()
+				.map(root -> {
+					List<WwfmtApprovalPhase> phases = phaseEntities.stream()
+							.filter(x -> x.wwfmtApprovalPhasePK.approvalId.equals(root.wwfmtPsApprovalRootPK.approvalId))
+							.collect(Collectors.toList());
+					return this.createApprovalSettingInfoFromEntities(root, phases);
+				})
+				.collect(Collectors.toList());
+	}
+	
+	private ApprovalSettingInformation createApprovalSettingInfoFromEntities(WwfmtApprovalRoutePs root, List<WwfmtApprovalPhase> phases) {
+		List<ApprovalPhase> approvalPhases = phases.stream().map(this::toDomainApPhase).collect(Collectors.toList());
+		return new ApprovalSettingInformation(approvalPhases, toDomainPsApR(root)) ;
+	}
+	
+	private ApprovalPhase toDomainApPhase(WwfmtApprovalPhase entity){
+		List<Approver> lstApprover = new ArrayList<>();
+		for(WwfmtAppover approver: entity.wwfmtAppovers) {
+			lstApprover.add(approver.toDomainApprover());
+		}
+		
+		val domain = ApprovalPhase.createSimpleFromJavaType(
+				entity.wwfmtApprovalPhasePK.approvalId,
+				entity.wwfmtApprovalPhasePK.phaseOrder,
+				entity.approvalForm,
+				entity.browsingPhase,
+				entity.approvalAtr,
+				lstApprover);
+		return domain;
+	}
+	
 	@Override
 	public List<PersonApprovalRoot> findAllByBaseDate(String companyId, GeneralDate baseDate, int sysAtr) {
 		List<PersonApprovalRoot> data = this.queryProxy().query(FIND_ALL_BY_BASEDATE, WwfmtApprovalRoutePs.class)
@@ -789,5 +916,257 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			.getList(x -> convertNtsResult(x));
 		return lstResult;
 	}
+
+	@Override
+	public List<PersonApprovalRoot> getPersonApprovalRoots(String cid, String sid, GeneralDate baseDate,
+			List<ApplicationType> appTypes, List<ConfirmationRootType> confirmationRootTypes) {
+		
+		List<Integer> intAppTypes = appTypes.stream().map(x -> x.value).collect(Collectors.toList());
+		List<Integer> intConfirmationRootTypes = confirmationRootTypes.stream().map(x -> x.value).collect(Collectors.toList());
+		String queryString = "SELECT m FROM WwfmtApprovalRoutePs m"
+				+ " WHERE m.wwfmtPsApprovalRootPK.companyId = :cid"
+				+ " AND m.wwfmtPsApprovalRootPK.employeeId = :sid"
+				+ " AND m.startDate <= :baseDate"
+				+ " AND m.endDate >= :baseDate"
+				+ " AND m.sysAtr = 0"
+				+ " AND m.opeMode = 1";
+		
+		List<WwfmtApprovalRoutePs> entities = this.queryProxy().query(queryString, WwfmtApprovalRoutePs.class)
+				.setParameter("cid", cid)
+				.setParameter("sid", sid)
+				.setParameter("baseDate", baseDate)
+				.getList();
+		
+		return entities.stream()
+				.filter(m -> (m.employmentRootAtr == 0)
+						|| (m.employmentRootAtr == 1 && intAppTypes.contains(m.applicationType))
+						|| (m.employmentRootAtr == 2 && intConfirmationRootTypes.contains(m.confirmationRootType)))
+				.map(m -> toDomainPsApR(m))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ApprovalSettingInformation> getApprovalSettingByEmployees(String cid, List<String> sids, GeneralDate baseDate,
+			SystemAtr sysAtr) {
+		
+		String rootQuery = "SELECT m FROM WwfmtApprovalRoutePs m"
+				+ " WHERE m.wwfmtPsApprovalRootPK.companyId = :cid"
+				+ " AND m.wwfmtPsApprovalRootPK.employeeId IN :sids"
+				+ " AND m.startDate <= :baseDate"
+				+ " AND m.endDate >= :baseDate"
+				+ " AND m.sysAtr = :sysAtr";
+		String phaseQuery = "SELECT phase FROM WwfmtApprovalPhase phase"
+				+ " WHERE phase.wwfmtApprovalPhasePK.approvalId IN :approvalIds";
+		
+		List<WwfmtApprovalRoutePs> rootEntities = this.queryProxy()
+				.query(rootQuery, WwfmtApprovalRoutePs.class)
+				.setParameter("cid", cid)
+				.setParameter("sids", sids)
+				.setParameter("baseDate", baseDate)
+				.setParameter("sysAtr", sysAtr.value)
+				.getList();
+		if (rootEntities.isEmpty()) {
+			return new ArrayList<ApprovalSettingInformation>();
+		}
+		
+		List<String> approvalIds = rootEntities.stream()
+				.map(x -> x.wwfmtPsApprovalRootPK.approvalId)
+				.collect(Collectors.toList());
+		List<WwfmtApprovalPhase> phaseEntities = this.queryProxy()
+				.query(phaseQuery, WwfmtApprovalPhase.class)
+				.setParameter("approvalIds", approvalIds)
+				.getList();
+		
+		return this.createApprovalSettingInformations(rootEntities, phaseEntities);
+	}
+	
+	@Override
+	public List<PersonApprovalRoot> getPsRootBySidAndApprovals(String cid, String sid, List<String> approvalIds) {
+		return this.queryProxy()
+				.query(GET_PSROOT_BY_SID_AND_APPROVALS, WwfmtApprovalRoutePs.class)
+				.setParameter("cid", cid)
+				.setParameter("sid", sid)
+				.setParameter("approvalIds", approvalIds)
+				.getList(this::toDomainPsApR);
+	}
+
+	@Override
+	public List<PersonApprovalRoot> getHistWithStartAfterBaseDate(String cid, String sid, GeneralDate baseDate) {
+		return this.queryProxy()
+				.query(GET_HIST_WITH_START_AFTER_BASEDATE, WwfmtApprovalRoutePs.class)
+				.setParameter("cid", cid)
+				.setParameter("sid", sid)
+				.setParameter("baseDate", baseDate)
+				.getList(this::toDomainPsApR);
+	}
+
+	@Override
+	public void deleteHistFromApprovals(List<String> approvalIds) {
+		String rootQuery = "SELECT m FROM WwfmtApprovalRoutePs m"
+				+ " WHERE m.wwfmtPsApprovalRootPK.approvalId IN :approvalIds";
+		String phaseQuery = "SELECT phase FROM WwfmtApprovalPhase phase"
+				+ " WHERE phase.wwfmtApprovalPhasePK.approvalId IN :approvalIds";
+		String approverQuery = "SELECT approver FROM WwfmtAppover approver"
+				+ " WHERE approver.wwfmtAppoverPK.approvalId IN :approvalIds";
+		
+		List<WwfmtPsApprovalRootPK> rootEntitiePks = this.queryProxy()
+				.query(rootQuery, WwfmtApprovalRoutePs.class)
+				.setParameter("approvalIds", approvalIds)
+				.getList(x -> x.wwfmtPsApprovalRootPK);
+		List<WwfmtApprovalPhasePK> phaseEntitiePks = this.queryProxy()
+				.query(phaseQuery, WwfmtApprovalPhase.class)
+				.setParameter("approvalIds", approvalIds)
+				.getList(x -> x.wwfmtApprovalPhasePK);
+		List<WwfmtAppoverPK> approverEntitiePks = this.queryProxy()
+				.query(approverQuery, WwfmtAppover.class)
+				.setParameter("approvalIds", approvalIds)
+				.getList(x -> x.wwfmtAppoverPK);
+		this.commandProxy().removeAll(WwfmtApprovalRoutePs.class, rootEntitiePks);
+		this.commandProxy().removeAll(WwfmtApprovalPhase.class, phaseEntitiePks);
+		this.commandProxy().removeAll(WwfmtAppover.class, approverEntitiePks);
+		this.getEntityManager().flush();
+	}
+
+	@Override
+	public List<PersonApprovalRoot> getPreviousHistory(String cid, String sid, GeneralDate baseDate) {
+		return this.queryProxy()
+				.query(GET_PREVIOUS_HISTORY, WwfmtApprovalRoutePs.class)
+				.setParameter("cid", cid)
+				.setParameter("sid", sid)
+				.setParameter("baseDate", baseDate)
+				.getList(this::toDomainPsApR);
+	}
+
+	@Override
+	public List<PersonApprovalRoot> getHistWithEndAfterBaseDate(String cid, String sid, GeneralDate baseDate) {
+		return this.queryProxy()
+				.query(GET_HIST_WITH_END_AFTER_BASEDATE, WwfmtApprovalRoutePs.class)
+				.setParameter("cid", cid)
+				.setParameter("sid", sid)
+				.setParameter("baseDate", baseDate)
+				.getList(this::toDomainPsApR);
+	}
+
+	@Override
+	public List<ApprovalSettingInformation> getHistIncludeBaseDate(String cid, String sid, GeneralDate baseDate) {
+		List<WwfmtApprovalRoutePs> rootEntities = this.queryProxy()
+			.query(GET_HIST_WITH_START_AFTER_BASEDATE, WwfmtApprovalRoutePs.class)
+			.setParameter("cid", cid)
+			.setParameter("sid", sid)
+			.setParameter("baseDate", baseDate)
+			.getList();
+		
+		if (rootEntities.isEmpty()) {
+			return new ArrayList<ApprovalSettingInformation>();
+		}
+		List<String> approvalIds = rootEntities.stream()
+				.map(x -> x.wwfmtPsApprovalRootPK.approvalId)
+				.collect(Collectors.toList());
+		
+		String phaseQuery = "SELECT phase FROM WwfmtApprovalPhase phase"
+				+ " WHERE phase.wwfmtApprovalPhasePK.approvalId IN :approvalIds";
+		List<WwfmtApprovalPhase> phaseEntities = this.queryProxy()
+				.query(phaseQuery, WwfmtApprovalPhase.class)
+				.setParameter("approvalIds", approvalIds)
+				.getList();
+		
+		return this.createApprovalSettingInformations(rootEntities, phaseEntities);
+	}
+
+	
+	@Override
+	public List<PersonApprovalRoot> getEmpHistWithStartAfterBaseDate(String cid, List<String> sids,
+			GeneralDate baseDate) {
+		if (sids.isEmpty()) {
+			return new ArrayList<PersonApprovalRoot>();
+		}
+		
+		return this.queryProxy()
+				.query(GET_EMP_HIST_WITH_START_AFTER_BASEDATE, WwfmtApprovalRoutePs.class)
+				.setParameter("cid", cid)
+				.setParameter("sids", sids)
+				.setParameter("baseDate", baseDate)
+				.getList(this::toDomainPsApR);
+	}
+	
+	@Override
+	public List<PersonApprovalRoot> getAllEmpHist(String cid, String sid, SystemAtr systemAtr) {
+		return this.queryProxy()
+				.query(GET_ALL_EMP_HIST, WwfmtApprovalRoutePs.class)
+				.setParameter("cid", cid)
+				.setParameter("sid", sid)
+				.setParameter("sysAtr", systemAtr.value)
+				.getList(this::toDomainPsApR);
+	}
+
+	@Override
+	public Optional<GeneralDate> getStartOfLastestHist(String cid, String sid) {
+		 Optional<WwfmtApprovalRoutePs> entity = this.queryProxy()
+				 .query(GET_START_OF_LASTEST_HIST, WwfmtApprovalRoutePs.class)
+				 .setParameter("cid", cid)
+				 .setParameter("sid", sid)
+				 .setParameter("sysAtr", SystemAtr.WORK.value)
+				 .setParameter("baseDate", GeneralDate.ymd(9999, 12, 31))
+				 .getList()
+				 .stream()
+				 .findFirst();
+		
+		 if (entity.isPresent()) {
+			 return Optional.ofNullable(entity.get().startDate);
+		 }
+		 return Optional.empty();
+	}
+
+	@Override
+	public Optional<PersonApprovalRoot> getSmallestHistFromBaseDate(String cid, String sid, GeneralDate baseDate,
+			List<ApplicationType> appTypes, List<ConfirmationRootType> confirmTypes) {
+		List<Integer> intAppTypes = appTypes.stream().map(x -> x.value).collect(Collectors.toList());
+		List<Integer> intConfirmationRootTypes = appTypes.stream().map(x -> x.value).collect(Collectors.toList());
+		String queryString = "SELECT m FROM WwfmtApprovalRoutePs m"
+				+ " WHERE m.wwfmtPsApprovalRootPK.companyId = :cid"
+				+ " AND m.wwfmtPsApprovalRootPK.employeeId = :sid"
+				+ " AND m.opeMode = 1"
+				+ " AND m.sysAtr = 0"
+				+ " AND m.startDate > :baseDate"
+				+ " ORDER BY m.startDate ASC";
+		List<WwfmtApprovalRoutePs> entities = this.queryProxy()
+				.query(queryString, WwfmtApprovalRoutePs.class)
+				.setParameter("cid", cid)
+				.setParameter("sid", sid)
+				.setParameter("baseDate", baseDate)
+				.getList();
+		
+		return entities.stream()
+				.filter(m -> (m.employmentRootAtr == 0)
+						|| (m.employmentRootAtr == 1 && intAppTypes.contains(m.applicationType))
+						|| (m.employmentRootAtr == 2 && intConfirmationRootTypes.contains(m.confirmationRootType)))
+				.map(this::toDomainPsApR)
+				.findFirst();
+	}
+
+	@Override
+	public List<PersonApprovalRoot> getHistFromBaseDate(String cid, String sid, DatePeriod period) {
+		return this.queryProxy()
+				.query(GET_HIST_FROM_BASEDATE, WwfmtApprovalRoutePs.class)
+				.setParameter("cid", cid)
+				.setParameter("sid", sid)
+				.setParameter("periodEnd", period.end())
+				.setParameter("periodStart", period.start())
+				.getList(this::toDomainPsApR);
+	}
+
+	@Override
+	public void insertPersonApprovalRootAndPhases(PersonApprovalRoot personApprovalRoot,
+			List<ApprovalPhase> approvalPhases) {
+		WwfmtApprovalRoutePs rootEntitiy = this.toEntityPsApR(personApprovalRoot);
+		List<WwfmtApprovalPhase> phaseEntities = approvalPhases.stream()
+				.map(this::toEntityAppPhase)
+				.collect(Collectors.toList());
+		this.commandProxy().insert(rootEntitiy);
+		this.commandProxy().insertAll(phaseEntities);
+		
+	}
+
+
 	
 }
