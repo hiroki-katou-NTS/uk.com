@@ -24,29 +24,29 @@ public class KshmtCalcCFlex  extends ContractUkJpaEntity implements Serializable
 	@EmbeddedId
 	public KshstFlexSetPK kshstFlexSetPK;
 	
-	/** 不足計算 */
+	/** 半日休日の計算方法.不足計算 */
 	@Column(name = "MISS_CALC_HD")
 	public int missCalcHd;
 	
-	/** 割増計算 */
+	/** 半日休日の計算方法.割増計算 */
 	@Column(name = "PREMIUM_CALC_HD")
 	public int premiumCalcHd;
 	
-	/** 不足計算*/
-	@Column(name = "MISS_CALC_SUBHD")
-	public int missCalcSubhd;
+	/** 代休取得時の計算方法.所定から控除するかどうか */
+	@Column(name = "IS_DEDUCT_PRED")
+	public int isDeductPred;
 	
-	/** 割増計算 */
+	/** 代休取得時の計算方法.割増計算 */
 	@Column(name = "PREMIUM_CALC_SUBHD")
 	public int premiumCalcSubhd;
 	
-	/** 法定労働控除時間計算 */
-	@Column(name="FLEX_DEDUCT_CALC")
-	public boolean flexDeductCalc;
+	/** 代休取得時の計算方法.時間代休時の計算設定 */
+	@Column(name="CALC_SET_TIME_SUBHD")
+	public int calcSetTimeSubhd;
 
-	/** 非勤務日計算 */
-	@Column(name="FLEX_NONWKING_CALC")
-	public int flexNonwkingCalc;
+	/** 非勤務日計算.設定 */
+	@Column(name="FLEX_NOWORKING_CALC")
+	public int flexNoworkingCalc;
 	
 	@Override
 	protected Object getKey() {

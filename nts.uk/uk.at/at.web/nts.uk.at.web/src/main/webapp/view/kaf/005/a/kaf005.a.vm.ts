@@ -1643,7 +1643,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						// đăng kí 
 						return vm.$ajax('at', !vm.isAgentNew() ? API.register : API.registerMultiple, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								nts.uk.request.ajax("at", API.reflectApp, successData.reflectAppIdLst);
 								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, vm.mode()==MODE.MULTiPLE_AGENT, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 							});
 						});
@@ -3556,8 +3555,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		registerMultiple: 'at/request/application/overtime/registerMultiple',
 		calculate: 'at/request/application/overtime/calculate',
 		breakTimes: 'at/request/application/overtime/breakTimes',
-        getLatestMultiApp: 'at/request/application/overtime/latestMultiApp',
-		reflectApp: "at/request/application/reflect-app"
+        getLatestMultiApp: 'at/request/application/overtime/latestMultiApp'
 	};
 	
 	const BACKGROUND_COLOR = {

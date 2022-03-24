@@ -47,5 +47,4 @@ public class AggregatePeriodWork {
 		this.endWork = endWork;
 		this.grantWork.setGrantPeriodAtr(grantPeriodAtr);
 	}
-
 }

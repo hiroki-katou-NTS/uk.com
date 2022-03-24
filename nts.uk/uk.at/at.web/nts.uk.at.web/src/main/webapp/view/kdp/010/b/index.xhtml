@@ -92,6 +92,20 @@
 						</td>
 					</tr>
 				</table>
+				
+				<!-- A12 -->
+				<div class="label-middle" data-bind="visible: screenModelG.settingsUsingEmbossing.ic_card">
+					<label>#{i18n.getText('KDP010_146')}</label>
+				</div>
+				<table class="form-data" data-bind="visible: screenModelG.settingsUsingEmbossing.ic_card, with: stampSetCommunal">
+					<tr>
+						<td>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_147')}</div> 
+							<div class="inline-display min-with-120" tabindex="10" data-bind="ntsRadioBoxGroup: {options: $parent.icqrArtOption, optionsValue: 'id', optionsText: 'name', value: authcMethod, enable: true }"></div>
+						</td>
+					</tr>
+				</table>
+				
 				<div class="label-middle">
 					<label>#{i18n.getText('KDP010_173')}</label>
 				</div>

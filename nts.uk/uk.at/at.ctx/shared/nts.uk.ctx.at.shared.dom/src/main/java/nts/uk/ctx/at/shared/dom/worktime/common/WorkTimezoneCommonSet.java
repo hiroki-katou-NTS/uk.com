@@ -165,25 +165,6 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject implements Clone
 	}
 	
 	/**
-	 * 遅刻・早退設定の共通設定のみtrueに変更した「 就業時間帯の共通設定」を返す
-	 * @return
-	 */
-	public WorkTimezoneCommonSet changeWorkTimezoneLateEarlySet() {
-		return new WorkTimezoneCommonSet(this.zeroHStraddCalculateSet,
-//										 this.intervalSet,
-										 this.subHolTimeSet,
-										 this.medicalSets,
-										 this.goOutSet,
-										 this.stampSet,
-										 this.lateNightTimeSet,
-										 this.shortTimeWorkSet,
-										 this.extraordTimeSet,
-										 this.lateEarlySet.changeCommonSet(true),
-										 this.holidayCalculation,
-										 this.raisingSalarySet);
-	}
-	
-	/**
 	 * 遅刻・早退設定の共通設定のみ反転させた「 就業時間帯の共通設定」を返す
 	 * @return　就業時間帯の共通設定
 	 */
@@ -197,7 +178,9 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject implements Clone
 				 this.lateNightTimeSet,
 				 this.shortTimeWorkSet,
 				 this.extraordTimeSet,
-				 this.lateEarlySet.changeCommonSet(this.getLateEarlySet().getCommonSet().isDelFromEmTime()?false:true),
+				 this.lateEarlySet.changeCommonSet(
+						this.getLateEarlySet().getCommonSet().isInclude() ? false : true,
+						this.getLateEarlySet().getCommonSet().isIncludeByApp()),
 				 this.holidayCalculation,
 				 this.raisingSalarySet);
 	}

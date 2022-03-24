@@ -46,6 +46,7 @@ public class TimeStampInputSettingFinder {
 	@Inject
 	private StampSettingOfRICOHCopierRepository stampSettingOfRICOHCopierRepo;
 	
+	
 	/** 打刻の前準備(ポータル)の設定内容を取得する*/
 	public Optional<PortalStampSettingsDto> getPortalStampSettings() {
 		Optional<PortalStampSettings> domain = portalStampSettingsRepo.get(AppContexts.user().companyId());

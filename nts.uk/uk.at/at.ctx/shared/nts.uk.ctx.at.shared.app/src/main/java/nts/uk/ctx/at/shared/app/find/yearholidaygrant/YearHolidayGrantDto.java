@@ -39,9 +39,9 @@ public class YearHolidayGrantDto {
 	
 	private List<GrantConditionDto> grantConditions;
 	
-	public static YearHolidayGrantDto fromDomain(GrantHdTblSet domain){
+	public static YearHolidayGrantDto fromDomain(GrantHdTblSet domain, Require require){
 		List<GrantConditionDto> conditions = domain.getGrantConditions().stream()
-				.map(x-> GrantConditionDto.fromDomain(x))
+				.map(x-> GrantConditionDto.fromDomain(x,require))
 				.collect(Collectors.toList());
 		
 		return new YearHolidayGrantDto(
@@ -55,5 +55,9 @@ public class YearHolidayGrantDto {
 			domain.getYearHolidayNote().v(),
 			conditions
 		);
+	}
+	
+	public static interface Require extends GrantConditionDto.Require{
+		
 	}
 }

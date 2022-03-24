@@ -6,6 +6,9 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.childcareset.ShortTimeWorkGetRange;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FixedChangeAtr;
@@ -20,34 +23,31 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 @NoArgsConstructor
 public class WorkTimezoneShortTimeWorkSet extends WorkTimeDomainObject implements Cloneable{
 
-	/** The nurs timezone work use. */
-	// 介護時間帯に勤務した場合に勤務として扱う
+	/** 介護時間帯に勤務した場合に勤務として扱う */
 	private boolean nursTimezoneWorkUse;
-
-	/** The employment time deduct. */
-	// 就業時間から控除する
-	private boolean employmentTimeDeduct;
-
-	/** The child care work use. */
-	// 育児時間帯に勤務した場合に勤務として扱う
+	/** 育児時間帯に勤務した場合に勤務として扱う */
 	private boolean childCareWorkUse;
+	/** 丸め設定 */
+	private TimeRoundingSetting roundingSet;
 
 	/**
 	 * Instantiates a new work timezone short time work set.
 	 *
 	 * @param nursTimezoneWorkUse
 	 *            the nurs timezone work use
-	 * @param employmentTimeDeduct
-	 *            the employment time deduct
 	 * @param childCareWorkUse
 	 *            the child care work use
+	 * @param roundingSet
+	 *            the rounding setting
 	 */
-	public WorkTimezoneShortTimeWorkSet(boolean nursTimezoneWorkUse, boolean employmentTimeDeduct,
-			boolean childCareWorkUse) {
+	public WorkTimezoneShortTimeWorkSet(
+			boolean nursTimezoneWorkUse,
+			boolean childCareWorkUse,
+			TimeRoundingSetting roundingSet) {
 		super();
 		this.nursTimezoneWorkUse = nursTimezoneWorkUse;
-		this.employmentTimeDeduct = employmentTimeDeduct;
 		this.childCareWorkUse = childCareWorkUse;
+		this.roundingSet = roundingSet;
 	}
 
 	/**
@@ -58,8 +58,8 @@ public class WorkTimezoneShortTimeWorkSet extends WorkTimeDomainObject implement
 	 */
 	public WorkTimezoneShortTimeWorkSet(WorkTimezoneShortTimeWorkSetGetMemento memento) {
 		this.nursTimezoneWorkUse = memento.getNursTimezoneWorkUse();
-		this.employmentTimeDeduct = memento.getEmploymentTimeDeduct();
 		this.childCareWorkUse = memento.getChildCareWorkUse();
+		this.roundingSet = memento.getRoudingSet();
 	}
 
 	/**
@@ -70,8 +70,8 @@ public class WorkTimezoneShortTimeWorkSet extends WorkTimeDomainObject implement
 	 */
 	public void saveToMemento(WorkTimezoneShortTimeWorkSetSetMemento memento) {
 		memento.setNursTimezoneWorkUse(this.nursTimezoneWorkUse);
-		memento.setEmploymentTimeDeduct(this.employmentTimeDeduct);
 		memento.setChildCareWorkUse(this.childCareWorkUse);
+		memento.setRoudingSet(this.roundingSet);
 	}
 
 	/**
@@ -106,8 +106,10 @@ public class WorkTimezoneShortTimeWorkSet extends WorkTimeDomainObject implement
 	 */
 	public void restoreWorkTimezoneShortTimeWorkSet(WorkTimezoneShortTimeWorkSet clone) {
 		this.nursTimezoneWorkUse = clone.childCareWorkUse;
-		this.employmentTimeDeduct = clone.employmentTimeDeduct;
 		this.childCareWorkUse = clone.childCareWorkUse;
+		this.roundingSet = new TimeRoundingSetting(
+				clone.roundingSet.getRoundingTime().value,
+				clone.roundingSet.getRounding().value);
 	}
 	
 	@Override
@@ -115,8 +117,10 @@ public class WorkTimezoneShortTimeWorkSet extends WorkTimeDomainObject implement
 		WorkTimezoneShortTimeWorkSet cloned = new WorkTimezoneShortTimeWorkSet();
 		try {
 			cloned.nursTimezoneWorkUse = this.nursTimezoneWorkUse ? true : false ;
-			cloned.employmentTimeDeduct = this.employmentTimeDeduct ? true : false ;
 			cloned.childCareWorkUse = this.childCareWorkUse ? true : false ;
+			cloned.roundingSet = new TimeRoundingSetting(
+					this.roundingSet.getRoundingTime().value,
+					this.roundingSet.getRounding().value);
 		}
 		catch (Exception e){
 			throw new RuntimeException("WorkTimezoneShortTimeWorkSet clone error.");
@@ -163,7 +167,8 @@ public class WorkTimezoneShortTimeWorkSet extends WorkTimeDomainObject implement
 	 * @return 就業時間帯の短時間勤務設定
 	 */
 	public static WorkTimezoneShortTimeWorkSet generateDefault(){
-		WorkTimezoneShortTimeWorkSet domain = new WorkTimezoneShortTimeWorkSet(false, false, false);
+		WorkTimezoneShortTimeWorkSet domain = new WorkTimezoneShortTimeWorkSet(false, false,
+				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN));
 		return domain;
 	}
 }

@@ -83,6 +83,30 @@ public class AddPerformSettingByInTimeCommand {
 	 */
 	private int minuteFractionDigitProcessCls;
 
+	public AddPerformSettingByInTimeCommand(String cid, int nullValueSubs, String valueOfNullValueSubs,
+			int outputMinusAsZero, int fixedValue, String valueOfFixedValue, int timeSeletion, int fixedLengthOutput,
+			Integer fixedLongIntegerDigit, int fixedLengthEditingMethod, int delimiterSetting,
+			int previousDayOutputMethod, int nextDayOutputMethod, Integer minuteFractionDigit, int decimalSelection,
+			int minuteFractionDigitProcessCls) {
+		super();
+		this.cid = cid;
+		this.nullValueSubs = nullValueSubs;
+		this.valueOfNullValueSubs = valueOfNullValueSubs;
+		this.outputMinusAsZero = outputMinusAsZero;
+		this.fixedValue = fixedValue;
+		this.valueOfFixedValue = valueOfFixedValue;
+		this.timeSeletion = timeSeletion;
+		this.fixedLengthOutput = fixedLengthOutput;
+		this.fixedLongIntegerDigit = fixedLongIntegerDigit;
+		this.fixedLengthEditingMethod = fixedLengthEditingMethod;
+		this.delimiterSetting = delimiterSetting;
+		this.previousDayOutputMethod = previousDayOutputMethod;
+		this.nextDayOutputMethod = nextDayOutputMethod;
+		this.minuteFractionDigit = minuteFractionDigit;
+		this.decimalSelection = decimalSelection;
+		this.minuteFractionDigitProcessCls = minuteFractionDigitProcessCls;
+	}
+
 }
 
 

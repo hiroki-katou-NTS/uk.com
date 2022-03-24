@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -13,7 +14,8 @@ import nts.arc.layer.dom.AggregateRoot;
  *
  */
 @Getter
-public class CompanyHolidayPriorityOrder extends AggregateRoot{
+@AllArgsConstructor
+public class CompanyHolidayPriorityOrder extends AggregateRoot {
 
 	/** 会社ID */
 	private final String companyId;

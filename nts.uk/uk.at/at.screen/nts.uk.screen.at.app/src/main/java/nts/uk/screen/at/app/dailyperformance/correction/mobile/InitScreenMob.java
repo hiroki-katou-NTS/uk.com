@@ -548,7 +548,7 @@ public class InitScreenMob {
 		monthActualReferButtonDis = formatDailyDto != null && !formatDailyDto.isEmpty() && displayFormat == 0 ? true : false;
 
 		DaiPerformanceFunDto daiPerformanceFunDto = daiPerformanceFunFinder.getDaiPerformanceFunById(companyId);
-		timeExcessReferButtonDis = daiPerformanceFunDto.getDisp36Atr() == 1 && displayFormat == 0 ? true : false;
+		timeExcessReferButtonDis = (daiPerformanceFunDto != null ? daiPerformanceFunDto.getDisp36Atr() == 1: false) && (displayFormat == 0 ? true : false);
 
 		Optional<DailyPerformanceAuthorityDto> authorityDto = authorityDtos.stream().filter(x -> x.getFunctionNo().compareTo(new BigDecimal(25)) == 0).findFirst();
 		if (authorityDto.isPresent()) {

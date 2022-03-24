@@ -3,7 +3,6 @@ package nts.uk.ctx.exio.dom.input.errors;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import lombok.Value;
 
 /**
  * 単一レコードのエラー

@@ -16,7 +16,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserInforExImport;
 import nts.uk.ctx.sys.gateway.dom.company.CollectCompanyList;
 import nts.uk.ctx.sys.gateway.dom.mail.UrlExecInfoRepository;
@@ -48,27 +47,26 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 
 	@Override
 	public String registerEmbeddedForApp(String appId, int appType, int prePostAtr, String loginId, String employeeId) {
+		String contractCode = AppContexts.user().contractCode();
 		EmbeddedUrlScreenID embeddedUrlScreenID = this.getEmbeddedUrlRequestScreenID(appType, prePostAtr);
 		List<UrlTaskIncre> taskInce = new ArrayList<>();
 		taskInce.add(UrlTaskIncre.createFromJavaType(null, null, null, appId, appId));
 		return this.embeddedUrlInfoRegis(embeddedUrlScreenID.getProgramId(), embeddedUrlScreenID.getDestinationId(), 1, 1, 
-				employeeId, "000000000000", loginId, "", 0, taskInce);
+				employeeId, contractCode, loginId, "", 0, taskInce);
 	}
 
 	@Override
 	public String embeddedUrlInfoRegis(String programId, String screenId, Integer periodCls, Integer numOfPeriod, 
 			String employeeId, String contractCD, String loginId, String employeeCD, Integer isCompanyNotLogin, List<UrlTaskIncre> taskIncidental) {
-		if (loginId.isEmpty() && employeeId.isEmpty()) {
+		if (employeeId.isEmpty()) {
 			return Strings.EMPTY;
 		} 
 		// Request list 313
-		if(Strings.isNotBlank(employeeId)){
-			Optional<UserInforExImport> opUserInforEx = userAdapter.getByEmpID(employeeId);
-			if(opUserInforEx.isPresent()){
-				loginId = opUserInforEx.get().getLoginID();
-				employeeCD = opUserInforEx.get().getEmpCD();
-			};
-		}	
+		UserInforExImport userInforEx = userAdapter.getByEmpID(employeeId).get();
+		employeeCD = userInforEx.getEmpCD();
+		loginId = userInforEx.getLoginID();
+		String userId = userInforEx.getUserID();
+
 		// 埋込URL期間区分＝空白（指定なし）
 		int periodClsReal = 1;
 		if(periodCls!=null){
@@ -83,13 +81,8 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 		}
 		String cid = AppContexts.user().companyId();
 		if(isCompanyNotLogin==1){
-			// imported（ゲートウェイ）「ユーザ」を取得する
-			Optional<UserImportNew> opUserImportNew = userAdapter.findUserByContractAndLoginIdNew(contractCD, loginId);
-			if(!opUserImportNew.isPresent()){
-				throw new BusinessException("Msg_301");
-			}
 			// 「切替可能な会社一覧を取得する」
-			List<String> companyIDLst = collectCompanyList.getCompanyList(opUserImportNew.get().getUserId(), contractCD);
+			List<String> companyIDLst = collectCompanyList.getCompanyList(userId, contractCD);
 			if(CollectionUtil.isEmpty(companyIDLst)){
 				throw new BusinessException("Msg_1419");
 			}
@@ -106,7 +99,7 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 				serverPath = serverPath.replaceFirst("3000", "8080");
 			}
 			String apiPath = "view/ccg/033/index.xhtml";
-			return (serverPath + apiPath +"?id="+ urlInfo.getEmbeddedId());
+			return (serverPath + apiPath +"?tcd=" + contractCD + "&id="+ urlInfo.getEmbeddedId());
 		}
 		return Strings.EMPTY;
 		

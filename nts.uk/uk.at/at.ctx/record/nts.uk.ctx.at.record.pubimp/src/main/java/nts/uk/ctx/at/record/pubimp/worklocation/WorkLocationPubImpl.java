@@ -31,9 +31,13 @@ public class WorkLocationPubImpl implements WorkLocationPub {
 	 * @return
 	 */
 	public WorkLocationPubExport convertToExport(WorkLocation workLocation) {
-		return new WorkLocationPubExport(workLocation.getContractCode().v(), workLocation.getWorkLocationCD().v(),
-				workLocation.getWorkLocationName().v(), workLocation.getStampRange().getRadius().value,
-				workLocation.getStampRange().getGeoCoordinate().getLatitude(), workLocation.getStampRange().getGeoCoordinate().getLongitude());
+		return new WorkLocationPubExport(
+				workLocation.getContractCode().v(),
+				workLocation.getWorkLocationCD().v(),
+				workLocation.getWorkLocationName().v(),
+				workLocation.getStampRange().map(s -> s.getRadius().value).orElse(null),
+				workLocation.getStampRange().map(s -> s.getGeoCoordinate().getLatitude()).orElse(null),
+				workLocation.getStampRange().map(s -> s.getGeoCoordinate().getLongitude()).orElse(null));
 	}
 
 	@Override
@@ -47,9 +51,13 @@ public class WorkLocationPubImpl implements WorkLocationPub {
 	public List<WorkLocationPubExport> findAll(String companyId) {
 		String contractCode = AppContexts.user().contractCode();
 		return workRepository.findAll(contractCode).stream().map(w -> 
-					WorkLocationPubExport.createSimpleFromJavaType(w.getContractCode().v(), w.getWorkLocationCD().v(), 
-						w.getWorkLocationName().v(), w.getStampRange().getRadius().value,
-						w.getStampRange().getGeoCoordinate().getLatitude(), w.getStampRange().getGeoCoordinate().getLongitude()))
+					WorkLocationPubExport.createSimpleFromJavaType(
+							w.getContractCode().v(),
+							w.getWorkLocationCD().v(),
+							w.getWorkLocationName().v(),
+							w.getStampRange().map(s -> s.getRadius().value).orElse(null),
+							w.getStampRange().map(s -> s.getGeoCoordinate().getLatitude()).orElse(null),
+							w.getStampRange().map(s -> s.getGeoCoordinate().getLongitude()).orElse(null)))
 				.collect(Collectors.toList());
 	}
 }
