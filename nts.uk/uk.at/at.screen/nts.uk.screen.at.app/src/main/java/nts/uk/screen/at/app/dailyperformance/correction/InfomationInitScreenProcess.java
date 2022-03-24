@@ -177,6 +177,8 @@ public class InfomationInitScreenProcess {
 			changeEmployeeIds = initDto.getParam().getEmployeeIds().isEmpty() ? initDto.getLstEmpId() : initDto.getParam().getEmployeeIds();
 		} else {
 			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
+			changeEmployeeIds.addAll(initDto.getParam().getLstEmpsSupport());
+			changeEmployeeIds = changeEmployeeIds.stream().distinct().collect(Collectors.toList());
 		}
 		// 応援勤務者の特定 - No1291
 		List<String> employeeIdsOri = changeEmployeeIds;
