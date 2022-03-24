@@ -63,6 +63,7 @@ public class WorkLocation extends AggregateRoot {
 						List<Ipv4Address> listIPAddress, 
 						Optional<WorkplacePossible> workplace, 
 						Optional<RegionCode> regionCode) {
+
 		super();
 		this.contractCode = contractCode;
 		this.workLocationCD = workLocationCD;
