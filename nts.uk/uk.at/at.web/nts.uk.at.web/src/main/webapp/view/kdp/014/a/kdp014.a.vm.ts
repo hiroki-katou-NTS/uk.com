@@ -81,14 +81,14 @@ module nts.uk.at.view.kdp014.a {
         /** Quick search tab options */
         showAllReferableEmployee: true,
         showOnlyMe: true,
-        showSameDepartment: true,
-        showSameDepartmentAndChild: true,
+        showSameDepartment: false,
+        showSameDepartmentAndChild: false,
         showSameWorkplace: true,
         showSameWorkplaceAndChild: true,
 
         /** Advanced search properties */
-        showEmployment: true,
-        showDepartment: true,
+        showEmployment: false,
+        showDepartment: false,
         showWorkplace: true,
         showClassification: true,
         showJobTitle: true,
