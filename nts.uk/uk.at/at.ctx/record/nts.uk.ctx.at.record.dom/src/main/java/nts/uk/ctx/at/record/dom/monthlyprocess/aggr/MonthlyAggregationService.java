@@ -147,7 +147,8 @@ public class MonthlyAggregationService {
 						ExecutionContent.MONTHLY_AGGREGATION.value, EmployeeExecutionStatus.COMPLETE.value)));
 				
 				/** 永続化 */
-				require.transaction(AtomTask.bundle(aggrStatus.getAtomTasks()));
+				aggrStatus.getAtomTasks().forEach(t -> require.transaction(t));
+//				require.transaction(AtomTask.bundle(aggrStatus.getAtomTasks()));
 				dataSetter.updateData("monthlyAggregateCount", stateHolder.count());
 			}
 			if (coStatus == ProcessState.INTERRUPTION){

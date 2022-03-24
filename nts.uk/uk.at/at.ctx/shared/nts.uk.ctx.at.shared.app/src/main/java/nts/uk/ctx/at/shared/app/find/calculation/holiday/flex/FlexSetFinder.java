@@ -44,12 +44,12 @@ public class FlexSetFinder {
 	private FlexSetDto convertToDbType(FlexSet flexSet) {
 
 		FlexSetDto flexSetDto = new FlexSetDto();
-		flexSetDto.setMissCalcHd(flexSet.getMissCalcHd().value);
-		flexSetDto.setPremiumCalcHd(flexSet.getPremiumCalcHd().value);
-		flexSetDto.setMissCalcSubhd(flexSet.getMissCalcSubhd().value);
-		flexSetDto.setPremiumCalcSubhd(flexSet.getPremiumCalcSubhd().value);
-		flexSetDto.setFlexNonworkingDayCalc(flexSet.getFlexNonworkingDayCalc().value);
-		flexSetDto.setFlexDeductTimeCalc(flexSet.getFlexDeductTimeCalc().value);
+		flexSetDto.setMissCalcHd(flexSet.getHalfHoliday().getCalcLack().value);
+		flexSetDto.setPremiumCalcHd(flexSet.getHalfHoliday().getCalcPremium().value);
+		flexSetDto.setIsDeductPred(flexSet.getCompLeave().isDeductFromPred() ? 1 : 0);
+		flexSetDto.setPremiumCalcSubhd(flexSet.getCompLeave().getCalcPremium().value);
+		flexSetDto.setCalcSetTimeSubhd(flexSet.getCompLeave().getCalcSetOfTimeCompLeave().value);
+		flexSetDto.setFlexNoworkingCalc(flexSet.getCalcNoWorkingDay().getSetting().value);
 
 		return flexSetDto;
 	}

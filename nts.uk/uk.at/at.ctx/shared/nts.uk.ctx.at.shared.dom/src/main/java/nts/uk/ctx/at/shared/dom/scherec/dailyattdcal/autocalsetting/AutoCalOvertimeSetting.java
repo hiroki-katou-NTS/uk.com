@@ -87,6 +87,12 @@ public class AutoCalOvertimeSetting extends DomainObject {
 		this.legalMidOtTime = legalMidOtTime;
 	}
 
+	/**
+	 * 利用する自動計算設定の決定
+	 * @param statutoryAtr 法定内区分
+	 * @param goEarlyAtr 早出区分
+	 * @return 自動計算設定
+	 */
 	public AutoCalSetting decisionUseCalcSetting(StatutoryAtr statutoryAtr,boolean goEarlyAtr) {
 		if(statutoryAtr.isStatutory()) {
 			return this.legalOtTime;
@@ -99,6 +105,28 @@ public class AutoCalOvertimeSetting extends DomainObject {
 				return this.normalOtTime;
 			}
 		}			
+	}
+	
+	/**
+	 * 利用する自動計算設定の決定（深夜用）
+	 * @param statutoryAtr 法定内区分
+	 * @param goEarly 早出区分
+	 * @return 自動計算設定
+	 */
+	public AutoCalSetting decisionUseCalcSettingForMidnight(StatutoryAtr statutoryAtr, boolean goEarly) {
+		// 法内である
+		if (statutoryAtr.isStatutory()) {
+			return this.legalMidOtTime;
+		}
+		else {
+			// 早出である
+			if (goEarly) {
+				return this.earlyMidOtTime;
+			}
+			else {
+				return this.normalMidOtTime;
+			}
+		}
 	}
 	
 	/**
@@ -122,20 +150,7 @@ public class AutoCalOvertimeSetting extends DomainObject {
 	 * @return 打刻から計算する
 	 */
 	public boolean decisionCalcAtr(StatutoryAtr statutoryAtr,boolean goEarly) {
-		if(!statutoryAtr.isStatutory()) {
-			if(goEarly) {
-				/*早出残業区分を参照*/
-				return this.getEarlyOtTime().getCalAtr().isCalculateEmbossing();
-			}
-			else {
-				/*普通残業計算区分を参照*/
-				return this.getNormalOtTime().getCalAtr().isCalculateEmbossing();
-			}
-		}
-		else {
-			/*法定内の場合*/
-			return this.getLegalOtTime().getCalAtr().isCalculateEmbossing();
-		}
+		return this.decisionUseCalcSetting(statutoryAtr, goEarly).getCalAtr().isCalculateEmbossing();
 	}
 	
 }

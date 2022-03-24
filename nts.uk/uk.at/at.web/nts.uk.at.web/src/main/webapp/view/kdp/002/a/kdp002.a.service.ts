@@ -17,8 +17,8 @@ module nts.uk.at.view.kdp002.a {
 
 		}
 
-		export function startPage(): JQueryPromise<any> {
-			return ajax("at", url.startPage);
+		export function startPage(data): JQueryPromise<any> {
+			return ajax("at", url.startPage, data);
 		}
 
 		export function getStampData(data): JQueryPromise<any> {

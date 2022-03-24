@@ -9,11 +9,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -22,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 // 流動勤務時間帯設定
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class FlowWorkTimezoneSetting extends WorkTimeDomainObject implements Cloneable{
 
 	/** The work time rounding. */
@@ -89,6 +92,18 @@ public class FlowWorkTimezoneSetting extends WorkTimeDomainObject implements Clo
 			return Optional.empty();
 		}
 		return Optional.of(timeSheet.get(0));
+	}
+	
+	/**
+	 * 法定内残業枠NOを取得する
+	 * @return 法定内残業枠NO(List)
+	 */
+	public List<OverTimeFrameNo> getInLegalOverTimes() {
+		return this.lstOTTimezone.stream()
+				.map(o -> new OverTimeFrameNo(o.getInLegalOTFrameNo().v().intValue()))
+				.distinct()
+				.sorted((f,s) -> f.compareTo(s))
+				.collect(Collectors.toList());
 	}
 	
 	/**

@@ -51,9 +51,17 @@ module nts.uk.at.kdp003.q {
 		
 		workPlaceTxtRefer: KnockoutObservable<string> = ko.observable('');
 		startDateOfMsgUpdate = '';
+		regionalTime = 0;
 
 		created(parentParam: ParentParam) {
 			const vm = this;
+			vm.regionalTime = parentParam.regionalTime;
+            
+                vm.dateValue(new DatePeriod({
+                    startDate: moment(vm.$date.now()).add(vm.regionalTime, 'm').format('YYYY/MM/DD'),
+                    endDate: moment(vm.$date.now()).add(vm.regionalTime, 'm').format('YYYY/MM/DD')
+                }));
+			
 			vm.parentParam = parentParam;
 			vm.isNewMode(vm.parentParam.isNewMode);
 			vm.isStartUpdateMode = !vm.parentParam.isNewMode;
@@ -184,7 +192,7 @@ module nts.uk.at.kdp003.q {
 			if (vm.destination() === DestinationClassification.WORKPLACE && _.isEmpty(vm.workPlaceIdList())) {
 				return 'Msg_1813';
 			}
-			if (moment.utc(vm.dateValue().startDate).isBefore(moment.utc().format('YYYY/MM/DD'))) {
+			if (moment.utc(vm.dateValue().startDate).isBefore(moment.utc().add(vm.regionalTime, 'm').format('YYYY/MM/DD'))) {
 				if (vm.isNewMode()) {
 					return 'Msg_1834';
 				} else if (!moment.utc(vm.startDateOfMsgUpdate, 'YYYY/MM/DD').isSame(moment.utc(vm.dateValue().startDate, 'YYYY/MM/DD'))) {
@@ -372,7 +380,8 @@ module nts.uk.at.kdp003.q {
 	export class ParentParam {
 		isNewMode: boolean;
 		role: Role;
-		messageNotice: MessageNotice
+		messageNotice: MessageNotice;
+		regionalTime: number;
 	}
 
 	export class DatePeriod {

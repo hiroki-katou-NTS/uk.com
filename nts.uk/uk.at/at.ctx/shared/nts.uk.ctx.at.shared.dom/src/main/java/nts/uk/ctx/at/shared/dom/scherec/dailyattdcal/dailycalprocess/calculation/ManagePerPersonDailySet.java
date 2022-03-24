@@ -1,16 +1,14 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.EmployeeUnitPriceHistoryItem;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.WorkingHoursUnitPrice;
+import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.FactoryManagePerPersonDailySet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
@@ -23,6 +21,10 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
  */
 @Getter
 public class ManagePerPersonDailySet {
+	
+	/** 処理日 */
+	private GeneralDate ymd;
+	
 	/** 労働条件 */
 	private WorkingConditionItem personInfo;
 	
@@ -34,9 +36,6 @@ public class ManagePerPersonDailySet {
 	
 	/** 加給設定 */
 	private Optional<BonusPaySetting> bonusPaySetting;
-	
-	/** 残業時間帯Require */
-	private OverTimeSheet.TransProcRequire overTimeSheetReq;
 
 	/** 社員単価履歴 */
 	private Optional<EmployeeUnitPriceHistoryItem> unitPrice;
@@ -47,28 +46,43 @@ public class ManagePerPersonDailySet {
 	 * 例2： 年休の場合は、就業時間に加算する場合は平日時の所定時間分を就業時間に加算する（時給者の場合は就業時間に加算するケースが多い）
 	 */
 	private PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay;
+
+	/** フレックス勤務基本設定 */
+	private Optional<FlexMonthWorkTimeAggrSet> flexBasicSet;
+	
+	/** 日別計算用require */
+	private FactoryManagePerPersonDailySet.Require require;
 	
 	/**
 	 * Constructor
-	 * @param personInfo 労働条件
-	 * @param dailyUnit　法定労働時間
-	 * @param overTimeSheetReq 残業時間帯Require
+	 * @param ymd 処理日
+	 * @param personInfo 労働条件項目
+	 * @param dailyUnit 法定労働時間
+	 * @param addSetting 加算設定
+	 * @param bonusPaySetting 加給設定
+	 * @param predetermineTimeSetByPersonWeekDay 平日時の計算用就業時間帯
+	 * @param flexBasicSet フレックス勤務基本設定
+	 * @param require 日別計算用Require
 	 */
 	public ManagePerPersonDailySet(
+			GeneralDate ymd,
 			WorkingConditionItem personInfo,
 			DailyUnit dailyUnit,
 			AddSetting addSetting,
 			Optional<BonusPaySetting> bonusPaySetting,
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay,
-			OverTimeSheet.TransProcRequire overTimeSheetReq,
+			Optional<FlexMonthWorkTimeAggrSet> flexBasicSet,
+			FactoryManagePerPersonDailySet.Require require,
 			Optional<EmployeeUnitPriceHistoryItem> unitPrice) {
 		super();
+		this.ymd = ymd;
 		this.personInfo = personInfo;
 		this.dailyUnit = dailyUnit;
 		this.addSetting = addSetting;
 		this.bonusPaySetting = bonusPaySetting;
 		this.predetermineTimeSetByPersonWeekDay = predetermineTimeSetByPersonWeekDay;
-		this.overTimeSheetReq = overTimeSheetReq;
+		this.flexBasicSet = flexBasicSet;
+		this.require = require;
 		this.unitPrice = unitPrice;
 	}
 }

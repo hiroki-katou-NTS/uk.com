@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,7 +35,7 @@ public class WorkplaceApprovalRoot extends AggregateRoot {
 			Integer confirmationRootType,
 			int employmentRootAtr, int sysAtr, Integer noticeId, String busEventId){
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
-		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(GeneralDate.fromString(startDate, "yyyy-MM-dd"), GeneralDate.fromString(endDate, "yyyy-MM-dd")));
+		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(GeneralDate.fromString(startDate, "yyyy-MM-dd"), GeneralDate.fromString(endDate, "yyyy-MM-dd")), approvalId);
 		employmentAppHistorys.add(employmentAppHistory);
 		return new WorkplaceApprovalRoot(companyId,
 			approvalId,
@@ -42,9 +43,9 @@ public class WorkplaceApprovalRoot extends AggregateRoot {
 			new ApprovalRoot(EnumAdaptor.valueOf(sysAtr, SystemAtr.class),
 					EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
 					employmentAppHistorys,
-					applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
-					confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
-					noticeId, busEventId));
+					Optional.ofNullable(applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class)), 
+					Optional.ofNullable(confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class)),
+					Optional.ofNullable(noticeId), Optional.ofNullable(busEventId)));
 	}
 	public static WorkplaceApprovalRoot convert(String companyId,
 			String approvalId, String workplaceId, String historyId, Integer applicationType,
@@ -52,7 +53,7 @@ public class WorkplaceApprovalRoot extends AggregateRoot {
 			Integer confirmationRootType,
 			int employmentRootAtr, int sysAtr, Integer noticeId, String busEventId){
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
-		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(startDate,endDate));
+		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(startDate,endDate), approvalId);
 		employmentAppHistorys.add(employmentAppHistory);
 		return new WorkplaceApprovalRoot(companyId,
 			approvalId,
@@ -60,9 +61,9 @@ public class WorkplaceApprovalRoot extends AggregateRoot {
 			new ApprovalRoot(EnumAdaptor.valueOf(sysAtr, SystemAtr.class),
 					EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
 					employmentAppHistorys,
-					applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
-					confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
-					noticeId, busEventId));
+					Optional.ofNullable(applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class)), 
+					Optional.ofNullable(confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class)),
+					Optional.ofNullable(noticeId), Optional.ofNullable(busEventId)));
 	}
 	public static WorkplaceApprovalRoot updateEdate(WorkplaceApprovalRoot wpApprovalRoot, String eDate){
 		WorkplaceApprovalRoot wp = wpApprovalRoot;

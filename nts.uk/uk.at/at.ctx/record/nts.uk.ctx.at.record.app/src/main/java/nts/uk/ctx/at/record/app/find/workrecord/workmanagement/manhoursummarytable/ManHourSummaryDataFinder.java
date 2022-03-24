@@ -8,6 +8,7 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.adapter.function.alarmworkplace.EmployeeInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.GetAllEmployeeWithWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.GetWorkplaceOfEmployeeAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workplace.ReferenceableWorkplaceImport;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSetting;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSettingRepository;
@@ -64,7 +65,7 @@ public class ManHourSummaryDataFinder {
         RequireImpl require = new RequireImpl(empWithWkpAdapter, workplaceOfEmpAdapter);
         Map<String, String> rangeMap = new HashMap<>();
         if (optManHourRecordRef.isPresent()) {
-            rangeMap = optManHourRecordRef.get().getWorkCorrectionStartDate(require, cid, userId, employeeId, baseDate);
+            rangeMap =  optManHourRecordRef.get().getWorkCorrectionStartDate(require, cid, userId, employeeId, baseDate).getAffiliationInformation();
         }
 
         // 3.作業詳細データを取得する(社員リスト,職場リスト,期間)
@@ -140,12 +141,12 @@ public class ManHourSummaryDataFinder {
         }
 
         @Override
-        public Map<String, String> getWorkPlace(String userID, String employeeID, GeneralDate date) {
+        public ReferenceableWorkplaceImport getWorkPlace(String userID, String employeeID, GeneralDate date) {
             return workplaceAdapter.get(userID, employeeID, date);
         }
 
         @Override
-        public Map<String, String> getByCID(String companyId, GeneralDate baseDate) {
+        public ReferenceableWorkplaceImport getByCID(String companyId, GeneralDate baseDate) {
             return empWkpAdapter.get(companyId, baseDate);
         }
     }

@@ -1,0 +1,12 @@
+.radio-box-group {
+  margin: auto;
+  width: 80%;
+  padding: 30px 0px;
+}
+
+.radio-box-group .with-text {
+  position: relative;
+  margin-left: 10px;
+  margin-bottom: 15px;
+  width: 30%;
+}

@@ -20,5 +20,7 @@ public class GetWkpIDParam {
     public String wkpCode;
     
     public String baseDate;
+    
+    DataSessionDto dataSessionDto;
 
 }

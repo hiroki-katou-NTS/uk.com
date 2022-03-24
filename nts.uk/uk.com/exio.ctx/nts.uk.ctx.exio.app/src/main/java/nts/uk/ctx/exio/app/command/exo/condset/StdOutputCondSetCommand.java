@@ -1,15 +1,17 @@
 package nts.uk.ctx.exio.app.command.exo.condset;
 
-import lombok.Data;
-import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
-
 import java.util.List;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 
 /**
  * The class Standard output condition setting command.<br>
  * Command 出力条件設定（定型）
  */
 @Data
+@NoArgsConstructor
 public class StdOutputCondSetCommand implements StdOutputCondSet.MementoGetter {
 
 	/**
@@ -75,4 +77,27 @@ public class StdOutputCondSetCommand implements StdOutputCondSet.MementoGetter {
 
 	private List<StdOutItemOrderCommand> listStandardOutputItem;
 
+	public StdOutputCondSetCommand(String companyId, String conditionSetCode, int categoryId, int delimiter,
+			int itemOutputName, int autoExecution, String conditionSetName, int conditionOutputName, int stringFormat,
+			Long version, String copyDestinationCode, boolean overWrite, boolean newMode, String destinationName,
+			int standType, List<StdOutItemOrderCommand> listStandardOutputItem) {
+		super();
+		this.companyId = companyId;
+		this.conditionSetCode = conditionSetCode;
+		this.categoryId = categoryId;
+		this.delimiter = delimiter;
+		this.itemOutputName = itemOutputName;
+		this.autoExecution = autoExecution;
+		this.conditionSetName = conditionSetName;
+		this.conditionOutputName = conditionOutputName;
+		this.stringFormat = stringFormat;
+		this.version = version;
+		this.copyDestinationCode = copyDestinationCode;
+		this.overWrite = overWrite;
+		this.newMode = newMode;
+		this.destinationName = destinationName;
+		this.standType = standType;
+		this.listStandardOutputItem = listStandardOutputItem;
+	}
+	
 }

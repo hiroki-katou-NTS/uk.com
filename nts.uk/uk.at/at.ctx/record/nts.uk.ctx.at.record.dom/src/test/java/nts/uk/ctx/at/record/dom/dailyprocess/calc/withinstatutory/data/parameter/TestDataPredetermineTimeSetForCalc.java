@@ -6,6 +6,7 @@ import java.util.function.Function;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
@@ -55,6 +56,7 @@ public class TestDataPredetermineTimeSetForCalc {
 	 */
 	static Function<TestDataCsvRecord, PredetermineTimeSetForCalc> buildPredetermineTimeSetForCalc = record -> {
 		return new PredetermineTimeSetForCalc(
+				new WorkTimeCode(record.asStr("workTimecode")),
 				record.list("timeSheets", 2, buildTimezoneUse),
 				record.asInt("AMEndTime", v -> new TimeWithDayAttr(v)),
 				record.asInt("PMStartTime", v -> new TimeWithDayAttr(v)),

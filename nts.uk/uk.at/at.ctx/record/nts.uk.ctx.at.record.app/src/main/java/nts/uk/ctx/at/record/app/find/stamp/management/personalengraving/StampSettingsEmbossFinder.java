@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.command.kdp.kdp002.a.ConfirmUseOfStampEmbossCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp002.a.ConfirmUseOfStampEmbossCommandHandler;
@@ -89,7 +90,7 @@ public class StampSettingsEmbossFinder {
 	@Inject
 	private WorkManagementMultipleRepository workManagementMultipleRepository;
 
-	public KDP002AStartPageOutput getSettings() {
+	public KDP002AStartPageOutput getSettings(RegionalTimeInput param) {
 
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
@@ -116,8 +117,17 @@ public class StampSettingsEmbossFinder {
 		// 4 DS: タイムカードを取得する
 		TimeCard timeCard = getTimeCard(employeeId, GeneralDate.today());
 
-		// 5  DS 社員の打刻一覧を取得する
+		// 5 DS 社員の打刻一覧を取得する
 		DatePeriod period = new DatePeriod(GeneralDate.today().addDays(-3), GeneralDate.today());
+		GeneralDateTime changeTime = GeneralDateTime.now().addMinutes(param.getRegionalTimeDifference());
+		if (changeTime.day() != GeneralDateTime.now().day()) {
+			if (GeneralDateTime.now().before(changeTime)) {
+				period = new DatePeriod(GeneralDate.today().addDays(-2), GeneralDate.today().addDays(1));
+			}
+			if (GeneralDateTime.now().after(changeTime)) {
+				period = new DatePeriod(GeneralDate.today().addDays(-4), GeneralDate.today().addDays(-1));
+			}
+		}
 		List<EmployeeStampInfo> employeeStampDatas = getEmployeeStampDatas(period, employeeId);
 
 		// 6 抑制する打刻種類を取得する

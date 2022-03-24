@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -59,5 +61,9 @@ public class CompensatoryLeaveEmSetting extends AggregateRoot {
 		this.companyId = companyId;
 		this.employmentCode = employmentCode;
 		this.isManaged = isManaged;
+	}
+	
+	public static interface Require {
+		Optional<CompensatoryLeaveEmSetting> compensatoryLeaveEmSetting(String companyId, String employmentCode);
 	}
 }

@@ -23,8 +23,8 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  */
 public class DeleteAttendanceProcess {
 
-	public static DailyAfterAppReflectResult process(Require require, Optional<WorkTypeCode> workTypeCode,
-			DailyRecordOfApplication dailyApp) {
+	public static DailyAfterAppReflectResult process(Require require, String companyId,
+			Optional<WorkTypeCode> workTypeCode, DailyRecordOfApplication dailyApp) {
 
 		List<Integer> itemId = new ArrayList<>();
 		if (!workTypeCode.isPresent()) {
@@ -32,7 +32,7 @@ public class DeleteAttendanceProcess {
 		}
 
 		// 1日半日出勤・1日休日系の判定（休出判定あり）
-		Optional<WorkType> workType = require.getWorkType(workTypeCode.get().v());
+		Optional<WorkType> workType = require.workType(companyId, workTypeCode.get());
 		if (!workType.isPresent())
 			return new DailyAfterAppReflectResult(dailyApp, itemId);
 		AttendanceDayAttr dayAttr = workType.get().chechAttendanceDay();
@@ -71,9 +71,5 @@ public class DeleteAttendanceProcess {
 		}
 	}
 		
-	public static interface Require {
-
-		Optional<WorkType> getWorkType(String workTypeCd);
-
-	}
+	public static interface Require extends WorkType.Require { }
 }

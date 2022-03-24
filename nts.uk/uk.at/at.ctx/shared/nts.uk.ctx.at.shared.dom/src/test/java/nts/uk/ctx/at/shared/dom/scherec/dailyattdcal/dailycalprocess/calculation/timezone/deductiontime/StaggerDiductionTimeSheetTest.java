@@ -12,7 +12,7 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
@@ -51,7 +51,7 @@ public class StaggerDiductionTimeSheetTest {
 				Helper.createCommonSet(GoOutSetHelper.createWorkTimezoneGoOutSet(
 						GoOutTimeRoundingMethod.IN_FRAME,
 						new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN))),
-				HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+				AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 		assertThat(result.valueAsMinutes()).isEqualTo(TimeWithDayAttr.hourMinute(18, 0).valueAsMinutes());	//終了時刻 18:00
 	}
 	
@@ -72,7 +72,7 @@ public class StaggerDiductionTimeSheetTest {
 				Helper.createCommonSet(GoOutSetHelper.createWorkTimezoneGoOutSet(
 						GoOutTimeRoundingMethod.IN_FRAME,
 						new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN))),
-				HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+				AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 		assertThat(result.valueAsMinutes()).isEqualTo(TimeWithDayAttr.hourMinute(17, 0).valueAsMinutes());	//終了時刻 17:00
 	}
 	
@@ -93,7 +93,7 @@ public class StaggerDiductionTimeSheetTest {
 				Helper.createCommonSet(GoOutSetHelper.createWorkTimezoneGoOutSet(
 						GoOutTimeRoundingMethod.IN_FRAME,
 						new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN))),
-				HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+				AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 		assertThat(result.valueAsMinutes()).isEqualTo(TimeWithDayAttr.hourMinute(19, 0).valueAsMinutes());	//終了時刻 19:00
 	}
 	
@@ -117,7 +117,7 @@ public class StaggerDiductionTimeSheetTest {
 				Helper.createCommonSet(GoOutSetHelper.createWorkTimezoneGoOutSet(
 						GoOutTimeRoundingMethod.IN_FRAME,
 						new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN))),
-				HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+				AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 		assertThat(result.valueAsMinutes()).isEqualTo(TimeWithDayAttr.hourMinute(20, 30).valueAsMinutes());	//終了時刻 20:30
 	}
 	
@@ -138,7 +138,7 @@ public class StaggerDiductionTimeSheetTest {
 				Helper.createCommonSet(GoOutSetHelper.createWorkTimezoneGoOutSet(
 						GoOutTimeRoundingMethod.IN_FRAME,	//実働時間帯の枠ごとに合計せず丸める
 						new TimeRoundingSetting(Unit.ROUNDING_TIME_15MIN, Rounding.ROUNDING_UP))),
-				HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+				AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 		assertThat(result.valueAsMinutes()).isEqualTo(TimeWithDayAttr.hourMinute(17, 30).valueAsMinutes());	//終了時刻 17:30
 	}
 	
@@ -159,7 +159,7 @@ public class StaggerDiductionTimeSheetTest {
 				Helper.createCommonSet(GoOutSetHelper.createWorkTimezoneGoOutSet(
 						GoOutTimeRoundingMethod.AFTER_TOTAL_IN_FRAME,	//実働時間帯の枠ごとに合計してから丸める
 						new TimeRoundingSetting(Unit.ROUNDING_TIME_15MIN, Rounding.ROUNDING_UP))),
-				HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+				AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 		assertThat(result.valueAsMinutes()).isEqualTo(TimeWithDayAttr.hourMinute(17, 15).valueAsMinutes());	//終了時刻 17:15
 	}
 	
@@ -180,7 +180,7 @@ public class StaggerDiductionTimeSheetTest {
 				Helper.createCommonSet(GoOutSetHelper.createWorkTimezoneGoOutSet(
 						GoOutTimeRoundingMethod.AFTER_TOTAL,	//実働時間帯ごとに合計して丸める
 						new TimeRoundingSetting(Unit.ROUNDING_TIME_15MIN, Rounding.ROUNDING_UP))),
-				HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+				AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 		assertThat(result.valueAsMinutes()).isEqualTo(TimeWithDayAttr.hourMinute(17, 10).valueAsMinutes());	//終了時刻 17:10
 	}
 	
@@ -202,7 +202,7 @@ public class StaggerDiductionTimeSheetTest {
 				Helper.createCommonSet(GoOutSetHelper.createWorkTimezoneGoOutSet(
 						GoOutTimeRoundingMethod.IN_FRAME,	//実働時間帯の枠ごとに合計せず丸める
 						new TimeRoundingSetting(Unit.ROUNDING_TIME_15MIN, Rounding.ROUNDING_UP))),
-				HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+				AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 		assertThat(result.valueAsMinutes()).isEqualTo(TimeWithDayAttr.hourMinute(17, 45).valueAsMinutes());	//終了時刻 17:45
 	}
 	
@@ -224,7 +224,7 @@ public class StaggerDiductionTimeSheetTest {
 				Helper.createCommonSet(GoOutSetHelper.createWorkTimezoneGoOutSet(
 						GoOutTimeRoundingMethod.AFTER_TOTAL_IN_FRAME,	//実働時間帯の枠ごとに合計してから丸める
 						new TimeRoundingSetting(Unit.ROUNDING_TIME_15MIN, Rounding.ROUNDING_UP))),
-				HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+				AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 		assertThat(result.valueAsMinutes()).isEqualTo(TimeWithDayAttr.hourMinute(17, 15).valueAsMinutes());	//終了時刻 17:15
 	}
 	
@@ -246,7 +246,7 @@ public class StaggerDiductionTimeSheetTest {
 				Helper.createCommonSet(GoOutSetHelper.createWorkTimezoneGoOutSet(
 						GoOutTimeRoundingMethod.AFTER_TOTAL,	//実働時間帯ごとに合計して丸める
 						new TimeRoundingSetting(Unit.ROUNDING_TIME_15MIN, Rounding.ROUNDING_UP))),
-				HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+				AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 		assertThat(result.valueAsMinutes()).isEqualTo(TimeWithDayAttr.hourMinute(17, 10).valueAsMinutes());	//終了時刻 17:10
 	}
 	
@@ -269,7 +269,7 @@ public class StaggerDiductionTimeSheetTest {
 								new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 								new TimeRoundingSetting(Unit.ROUNDING_TIME_5MIN, Rounding.ROUNDING_UP),			//就業時間内のみ 5分切り上げ
 								new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)))),
-				HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+				AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 		assertThat(result.valueAsMinutes()).isEqualTo(TimeWithDayAttr.hourMinute(17, 05).valueAsMinutes());		//終了時刻 17:05
 	}
 	
@@ -292,7 +292,7 @@ public class StaggerDiductionTimeSheetTest {
 								new TimeRoundingSetting(Unit.ROUNDING_TIME_10MIN, Rounding.ROUNDING_UP),		//休出のみ 10分切り上げ
 								new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 								new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)))),
-				HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+				AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 		assertThat(result.valueAsMinutes()).isEqualTo(TimeWithDayAttr.hourMinute(17, 10).valueAsMinutes());		//終了時刻 17:10
 	}
 	
@@ -315,7 +315,7 @@ public class StaggerDiductionTimeSheetTest {
 								new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 								new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 								new TimeRoundingSetting(Unit.ROUNDING_TIME_15MIN, Rounding.ROUNDING_UP)))),		//残業のみ 15分切り上げ
-				HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+				AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 		assertThat(result.valueAsMinutes()).isEqualTo(TimeWithDayAttr.hourMinute(19, 15).valueAsMinutes());		//終了時刻 19:15
 	}
 	

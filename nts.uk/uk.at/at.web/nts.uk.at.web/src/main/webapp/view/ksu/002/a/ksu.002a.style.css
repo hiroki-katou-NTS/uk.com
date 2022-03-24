@@ -123,3 +123,7 @@
 .background-white {background-color: white}
 .color-default {color : #000000;}
 .bg-schedule-uncorrectable-ksu001 {background-color:#ddddd2;}
+
+#functions-area button, #functions-area-bottom button, .sidebar-content-header button {
+	margin-left: 50px;
+}

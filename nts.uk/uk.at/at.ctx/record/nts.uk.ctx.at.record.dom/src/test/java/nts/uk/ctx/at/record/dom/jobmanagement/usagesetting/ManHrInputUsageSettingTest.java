@@ -17,7 +17,7 @@ public class ManHrInputUsageSettingTest {
 
 	@Test
 	public void getter() {
-		ManHrInputUsageSetting setting = new ManHrInputUsageSetting("", NotUseAtr.NOT_USE);
+		ManHrInputUsageSetting setting = new ManHrInputUsageSetting("", NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 		setting.setUsrAtr(NotUseAtr.NOT_USE);
 
 		NtsAssert.invokeGetters(setting);

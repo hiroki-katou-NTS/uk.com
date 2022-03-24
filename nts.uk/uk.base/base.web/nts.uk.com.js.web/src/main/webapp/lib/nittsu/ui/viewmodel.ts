@@ -332,6 +332,7 @@ module nts.uk.ui.viewmodel {
 		diff: 0,
 		tick: -1,
 		clock: -1,
+        loaded: false,
 		now() {
 			return Date.now()
 		},
@@ -345,6 +346,10 @@ module nts.uk.ui.viewmodel {
 			_.extend($date, {
 				diff: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
 			});
+            _.extend($date, {
+                loaded: true
+            });
+            windows.setShared('oldDiff', $date.diff);
 		});
 	};
 
@@ -362,9 +367,9 @@ module nts.uk.ui.viewmodel {
 
 	BaseViewModel.prototype.$date = Object.defineProperties($date, {
 		now: {
-			value: function $now() {
-				return moment().add($date.diff, 'ms').toDate();
-			}
+            value: function $now() {
+                return $date.loaded ? moment().add($date.diff, 'ms').toDate() : moment().add(windows.getShared('oldDiff') || 0, 'ms').toDate();
+            }
 		},
 		today: {
 			value: function $today() {

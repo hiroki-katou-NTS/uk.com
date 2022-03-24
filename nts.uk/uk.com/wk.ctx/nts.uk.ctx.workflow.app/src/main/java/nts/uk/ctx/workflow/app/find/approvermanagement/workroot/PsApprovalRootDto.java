@@ -38,14 +38,14 @@ public class PsApprovalRootDto {
 					domain.getApprovalId(),
 					domain.getEmployeeId(),
 					domain.getApprRoot().getHistoryItems().get(0).getHistoryId(),
-					domain.getApprRoot().getApplicationType() == null ? null : domain.getApprRoot().getApplicationType().value,
+					domain.getApprRoot().getApplicationType().map(x -> x.value).orElse(null),
 					domain.getApprRoot().getHistoryItems().get(0).start().toString("yyyy/MM/dd"),
 					domain.getApprRoot().getHistoryItems().get(0).end().toString("yyyy/MM/dd"),
 					// domain.getApprRoot().getBranchId(),
 					// domain.getApprRoot().getAnyItemApplicationId(),
-					domain.getApprRoot().getConfirmationRootType() == null ? null : domain.getApprRoot().getConfirmationRootType().value,
+					domain.getApprRoot().getConfirmationRootType().map(x -> x.value).orElse(null),
 					domain.getApprRoot().getEmploymentRootAtr().value,
-					domain.getApprRoot().getNoticeId(),
-					domain.getApprRoot().getBusEventId());
+					domain.getApprRoot().getNoticeId().orElse(null),
+					domain.getApprRoot().getBusEventId().orElse(null));
 	}
 }

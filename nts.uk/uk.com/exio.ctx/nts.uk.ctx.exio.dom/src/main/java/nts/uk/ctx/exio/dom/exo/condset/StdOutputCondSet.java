@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
  * @author nws-minhnb
  */
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class StdOutputCondSet extends AggregateRoot {

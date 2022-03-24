@@ -30,7 +30,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.OutsideWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSheetRoundingAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.UseTimeAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
@@ -48,12 +47,13 @@ import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.worktime.common.GetSubHolOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -100,7 +100,7 @@ public class OverTimeSheet {
 	 * @param overTimeOfDaily 日別勤怠の残業時間
 	 * @param goOutSet 就業時間帯の外出設定
 	 */
-	public void calculateOvertimeEachTimeZone(TransProcRequire require, String cid, String sid, GeneralDate date,
+	public void calculateOvertimeEachTimeZone(Require require, String cid, String sid, GeneralDate date,
 			String workTypeCode, Optional<String> workTimeCode, AutoCalOvertimeSetting autoCalcSetting,
 			List<OverTimeFrameNo> statutoryFrameNoList, OverTimeOfDaily overTimeOfDaily, boolean upperControl,
 			List<OvertimeWorkFrame> overtimeFrameList, Optional<WorkTimezoneGoOutSet> goOutSet) {
@@ -247,10 +247,10 @@ public class OverTimeSheet {
 	 * @param workTimeCode 就業時間帯コード:Optional<就業時間帯コード>
 	 * @param overTimeFrame 残業枠：List<残業枠>
 	 */
-	public void transferProcSubHol(TransProcRequire require, String cid, String sid, GeneralDate date, String workTypeCode, Optional<String> workTimeCode,
+	public void transferProcSubHol(Require require, String cid, String sid, GeneralDate date, String workTypeCode, Optional<String> workTimeCode,
 			List<OvertimeWorkFrame> overTimeFrame) {
 		//○平日かどうか判断
-		Optional<WorkType> workTypeOpt = require.findByPK(cid, workTypeCode);
+		Optional<WorkType> workTypeOpt = require.workType(cid, new WorkTypeCode(workTypeCode));
 		if(!workTypeOpt.isPresent()) return ;
 		AttendanceDayAttr  workStype = workTypeOpt.get().chechAttendanceDay();
 		if(workStype == AttendanceDayAttr.HOLIDAY_WORK  || workStype == AttendanceDayAttr.HOLIDAY){
@@ -258,7 +258,7 @@ public class OverTimeSheet {
 		}
 
 		// ○当日が代休管理する日かどうかを判断する
-		boolean checkDateForMag = require.checkDateForManageCmpLeave(require, cid, sid, date);
+		boolean checkDateForMag = CheckDateForManageCmpLeaveService.check(require, cid, sid, date);
 		if(!checkDateForMag){
 			return;
 		}
@@ -280,7 +280,7 @@ public class OverTimeSheet {
 	}
 	
 	//残業時間を代休へ振り替える(一定時間)
-	private void transProcesCertainPeriod(TransProcRequire require, String cid, Optional<String> workTimeCode, List<OvertimeWorkFrame> overTimeFrame) {
+	private void transProcesCertainPeriod(Require require, String cid, Optional<String> workTimeCode, List<OvertimeWorkFrame> overTimeFrame) {
 		//振替可能時間を計算
 		AttendanceTime sumTime = calculateTransferableTime(require, cid, workTimeCode, overTimeFrame, UseTimeAtr.TIME);
 		
@@ -296,7 +296,7 @@ public class OverTimeSheet {
 	}
 	
 	// 振替可能時間を計算
-	private AttendanceTime calculateTransferableTime(TransProcRequire require, String cid, Optional<String> workTimeCode,
+	private AttendanceTime calculateTransferableTime(Require require, String cid, Optional<String> workTimeCode,
 			List<OvertimeWorkFrame> overTimeFrame, UseTimeAtr atr) {
 
 		//代休発生設定を取得する
@@ -385,7 +385,7 @@ public class OverTimeSheet {
 	}
 	
 	//残業時間を代休へ振り替える(指定時間)
-	private void transferProcessSpecifi(TransProcRequire require, String cid, Optional<String> workTimeCode, List<OvertimeWorkFrame> overTimeFrame) {
+	private void transferProcessSpecifi(Require require, String cid, Optional<String> workTimeCode, List<OvertimeWorkFrame> overTimeFrame) {
 		// 振替可能時間を計算
 		AttendanceTime sumTime = calculateTransferableTime(require, cid, workTimeCode, overTimeFrame, UseTimeAtr.TIME);
 
@@ -421,7 +421,7 @@ public class OverTimeSheet {
 	 * @return 残業枠時間(List)
 	 */
 	public List<OverTimeFrameTime> collectOverTimeWorkTime(
-			OverTimeSheet.TransProcRequire require,
+			Require require,
 			String cid, 
 			AutoCalOvertimeSetting autoCalcSet,
 			WorkType workType,
@@ -484,7 +484,8 @@ public class OverTimeSheet {
 	 * @return 控除時間
 	 */
 	public AttendanceTime getDeductionTime(
-			ConditionAtr conditionAtr, DeductionAtr dedAtr, Optional<WorkTimezoneGoOutSet> goOutSet, nts.uk.shr.com.enumcommon.NotUseAtr canOffset) {
+			ConditionAtr conditionAtr, DeductionAtr dedAtr, Optional<WorkTimezoneGoOutSet> goOutSet, 
+			nts.uk.shr.com.enumcommon.NotUseAtr canOffset) {
 		
 		return ActualWorkTimeSheetListService.calcDeductionTime(ActualWorkTimeSheetAtr.OverTimeWork, conditionAtr, dedAtr, goOutSet,
 				this.frameTimeSheets.stream().map(tc -> (ActualWorkingTimeSheet)tc).collect(Collectors.toList()), canOffset);
@@ -507,7 +508,7 @@ public class OverTimeSheet {
 	 * アルゴリズム：残業枠時間帯の作成
 	 * @return 残業枠時間帯List
 	 */
-	public List<OverTimeFrameTimeSheet> changeOverTimeFrameTimeSheet(OverTimeSheet.TransProcRequire require,
+	public List<OverTimeFrameTimeSheet> changeOverTimeFrameTimeSheet(Require require,
 			String cid, 
 			AutoCalOvertimeSetting autoCalcSet,
 			WorkType workType,
@@ -629,29 +630,11 @@ public class OverTimeSheet {
 	public TimeDivergenceWithCalculation calcMidNightTime(AutoCalOvertimeSetting autoCalcSet) {
 		TimeDivergenceWithCalculation calcTime = TimeDivergenceWithCalculation.defaultValue();
 		for(OverTimeFrameTimeSheetForCalc timeSheet:frameTimeSheets) {
-			val calcSet = getCalcSetByAtr(autoCalcSet, timeSheet.getWithinStatutryAtr(),timeSheet.isGoEarly());
+			AutoCalSetting calcSet = autoCalcSet.decisionUseCalcSettingForMidnight(
+					timeSheet.getWithinStatutryAtr(), timeSheet.isGoEarly());
 			calcTime = calcTime.addMinutes(timeSheet.calcMidNightTime(calcSet));
 		}
 		return calcTime;
-	}
-	
-	/**
-	 * 法定内区分、早出区分に従って計算区分の取得
-	 * @param autoCalcSet 自動計算設定
-	 * @param statutoryAtr　法定内区分
-	 * @param goEarly　早出区分
-	 * @return　自動計算設定
-	 */
-	private AutoCalSetting getCalcSetByAtr(AutoCalOvertimeSetting autoCalcSet,StatutoryAtr statutoryAtr, boolean goEarly) {
-		//法内である
-		if(statutoryAtr.isStatutory() ) {
-			return autoCalcSet.getLegalMidOtTime();
-		}
-		//早出である
-		if(goEarly) {
-			return autoCalcSet.getEarlyMidOtTime();
-		}
-		return autoCalcSet.getNormalMidOtTime();
 	}
 	
 	/**
@@ -855,19 +838,10 @@ public class OverTimeSheet {
 		return results;
 	}
 	
-	/**
-	 * 振替処理Require
-	 * @author shuichi_ishida
-	 */
-	public static interface TransProcRequire extends CheckDateForManageCmpLeaveService.Require, GetSubHolOccurrenceSetting.Require{
+	public static interface Require extends
+		CheckDateForManageCmpLeaveService.Require, GetSubHolOccurrenceSetting.Require,
+		WorkType.Require {
 		
-		/** 代休を管理する年月日かどうかを判断する */
-		boolean checkDateForManageCmpLeave(
-				CheckDateForManageCmpLeaveService.Require require,
-				String companyId, String employeeId, GeneralDate ymd);
-		
-		//WorkTypeRepository.findByPK
-		Optional<WorkType> findByPK(String companyId, String workTypeCd);
 	}
 
 	/**

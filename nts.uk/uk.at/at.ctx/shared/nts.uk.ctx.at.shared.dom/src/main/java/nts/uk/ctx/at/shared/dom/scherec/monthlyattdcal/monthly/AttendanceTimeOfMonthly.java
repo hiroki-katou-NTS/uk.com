@@ -143,6 +143,11 @@ public class AttendanceTimeOfMonthly extends AggregateRoot implements Serializab
 		return domain;
 	}
 
+	public static interface Require {
+		Optional<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
+		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth);
+	}
+	
 	/**
 	 * 集計準備
 	 * @param companyId 会社ID
