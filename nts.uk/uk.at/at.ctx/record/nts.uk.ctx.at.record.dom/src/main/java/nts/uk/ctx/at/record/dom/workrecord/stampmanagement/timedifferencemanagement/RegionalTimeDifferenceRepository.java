@@ -19,17 +19,15 @@ public interface RegionalTimeDifferenceRepository {
 
 	/**
 	 * [2] get
-	 * @param contractCode  契約コード
 	 * @param code			コード
 	 * @return
 	 */
-	public Optional<RegionalTimeDifference> get(String contractCode, int code);
+	public Optional<RegionalTimeDifference> get(int code);
 	
 	/**
 	 * [3] get*
-	 * @param contractCode
 	 * @return
 	 */
-	public List<RegionalTimeDifference> getAll(String contractCode);
+	public List<RegionalTimeDifference> getAll();
 	
 }
