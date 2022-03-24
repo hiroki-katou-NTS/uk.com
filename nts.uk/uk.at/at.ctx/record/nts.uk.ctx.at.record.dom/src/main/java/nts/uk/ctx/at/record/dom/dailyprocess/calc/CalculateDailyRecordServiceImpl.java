@@ -254,7 +254,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		Optional<PredetemineTimeSetting> predetemineTimeSet = Optional.empty();
 		Optional<WorkTimeCode> workTimeCode = integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull();
 		if (workTimeCode.isPresent()) {
-			this.getPredetermineTimeSetFromShareContainer(
+			predetemineTimeSet = this.getPredetermineTimeSetFromShareContainer(
 					companyCommonSetting.getShareContainer(),
 					AppContexts.user().companyId(),
 					workTimeCode.get().v());
