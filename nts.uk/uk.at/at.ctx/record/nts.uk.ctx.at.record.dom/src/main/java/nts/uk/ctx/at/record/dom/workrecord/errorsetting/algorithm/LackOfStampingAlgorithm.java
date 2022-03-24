@@ -91,10 +91,6 @@ public class LackOfStampingAlgorithm {
 				}
 			}
 		}
-		else {
-			attendanceItemIDList.add(attdId.get(1));
-			attendanceItemIDList.add(leaveId.get(1));
-		}
 		
 		if (attendanceItemIDList.size() > 0) {
 			// 社員の日別実績のエラーを作成する

@@ -294,6 +294,9 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 				result.add(new StampLeakStateEachWork(new WorkNo(workNo), timeLeavingWork.get().checkStampLeakState()));
 			}
 		}
+		if (predWorkCount > 0 && result.isEmpty()) {
+			result.add(new StampLeakStateEachWork(new WorkNo(1), TLWStampLeakState.NOT_EXIST));
+		}
 		return result;
 	}
 	

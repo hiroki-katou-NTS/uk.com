@@ -251,10 +251,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 		
 		// 所定時間設定の取得
-		Optional<PredetemineTimeSetting> predetemineTimeSet = this.getPredetermineTimeSetFromShareContainer(
-				companyCommonSetting.getShareContainer(),
-				AppContexts.user().companyId(),
-				integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v());
+		Optional<PredetemineTimeSetting> predetemineTimeSet = Optional.empty();
+		Optional<WorkTimeCode> workTimeCode = integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull();
+		if (workTimeCode.isPresent()) {
+			this.getPredetermineTimeSetFromShareContainer(
+					companyCommonSetting.getShareContainer(),
+					AppContexts.user().companyId(),
+					workTimeCode.get().v());
+		}
 		
 		// 計算条件のチェック
 		// ※　計算しない場合、勤務情報の計算ステータス→未計算にしつつ、エラーチェックは行う必要有
