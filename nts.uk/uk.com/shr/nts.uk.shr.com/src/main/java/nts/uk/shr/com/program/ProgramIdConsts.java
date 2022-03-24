@@ -1267,6 +1267,8 @@ public class ProgramIdConsts {
 	public static final String KFP001G = "KFP001G";
 	public static final String KFP001H = "KFP001H";
 
+	public static final String KFP002A = "KFP002A";
+	public static final String KFP002B = "KFP002B";
 
 	//KDL030
 	public static final String KDL030 = "KDL030";

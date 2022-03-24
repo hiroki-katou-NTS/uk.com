@@ -73,7 +73,7 @@ public class AnyPeriodRecordToAttendanceItemConverterImpl extends AttendanceItem
     protected void convertDomainToDto(String type) {
         switch (type) {
             case ItemConst.ANY_PERIOD_ATTENDANCE_TIME_NAME:
-                processOnDomain(type, c -> AttendanceTimeOfAnyPeriodDto.fromDomain((AttendanceTimeOfAnyPeriod) c));
+                processOnDomain(type, c -> AttendanceTimeOfAnyPeriodDto.fromDomain((AttendanceTimeOfAnyPeriod) c, loadOptionalItemMaster()));
                 break;
             default:
                 break;

@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcution;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionRepository;
 import nts.uk.ctx.at.record.infra.entity.executionstatusmanage.optionalperiodprocess.KrcmtAggrPeriodExcution;
@@ -136,7 +137,10 @@ implements AggrPeriodExcutionRepository{
 				krcmtAggrPeriodExcution.endDateTime, 
 				krcmtAggrPeriodExcution.executionAtr, 
 				krcmtAggrPeriodExcution.executionStatus, 
-				krcmtAggrPeriodExcution.presenceOfError);
+				krcmtAggrPeriodExcution.presenceOfError,
+				krcmtAggrPeriodExcution.aggrFrameName,
+				new DatePeriod(	krcmtAggrPeriodExcution.startYmd,krcmtAggrPeriodExcution.endYmd)
+				);
 		return aggrPeriodExcution;
 	}
 
@@ -154,7 +158,8 @@ implements AggrPeriodExcutionRepository{
 				.setParameter("end", endP)
 				.getList(c -> convertToDomainApe(c));
 	}
-	
+
+
 	@Override
 	public List<AggrPeriodExcution> findAggrCode(String companyId, String aggrFrameCode) {
 		return this.queryProxy().query(FIND_AGGR_CODE, KrcmtAggrPeriodExcution.class)
@@ -172,12 +177,25 @@ implements AggrPeriodExcutionRepository{
 		this.commandProxy().insert(convertToDbTypeApe(excution));
 
 	}
-	
-	/**
-	 * 
-	 * @param excution
-	 * @return
-	 */
+
+	@Override
+	public void updateExcution(AggrPeriodExcution excution) {
+		KrcmtAggrPeriodExcutionPK primaryKey = new KrcmtAggrPeriodExcutionPK(excution.getCompanyId(),
+				excution.getExecutionEmpId(), excution.getAggrId());
+		KrcmtAggrPeriodExcution periodExcution = this.queryProxy().find(primaryKey, KrcmtAggrPeriodExcution.class).get();
+		periodExcution.aggrFrameCode = excution.getAggrFrameCode().v();
+		periodExcution.startDateTime = excution.getStartDateTime();
+		periodExcution.startYmd = excution.getPeriod().start();
+		periodExcution.endYmd = excution.getPeriod().end();
+		periodExcution.aggrFrameName = excution.getAnyAggrName().v();
+		periodExcution.endDateTime = excution.getEndDateTime();
+		periodExcution.executionAtr = excution.getExecutionAtr().value;
+		periodExcution.executionStatus = excution.getExecutionStatus() != null ? excution.getExecutionStatus().get().value : null;
+		periodExcution.presenceOfError = excution.getPresenceOfError().value;
+		
+
+		this.commandProxy().update(periodExcution);
+	}
 	private KrcmtAggrPeriodExcution convertToDbTypeApe(AggrPeriodExcution excution) {
 		KrcmtAggrPeriodExcution entity = new KrcmtAggrPeriodExcution();
 		entity.krcmtAggrPeriodExcutionPK = new KrcmtAggrPeriodExcutionPK(excution.getCompanyId(), excution.getExecutionEmpId(), excution.getAggrId());
@@ -187,24 +205,13 @@ implements AggrPeriodExcutionRepository{
 		entity.executionAtr = excution.getExecutionAtr().value;
 		entity.executionStatus = excution.getExecutionStatus() != null ? excution.getExecutionStatus().get().value : null;
 		entity.presenceOfError = excution.getPresenceOfError().value;
+		entity.startYmd = excution.getPeriod().start();
+		entity.endYmd = excution.getPeriod().end();
+		entity.aggrFrameName = excution.getAnyAggrName().v();
+
 		return entity;
 	}
-	
-	@Override
-	public void updateExcution(AggrPeriodExcution excution) {
-		KrcmtAggrPeriodExcutionPK primaryKey = new KrcmtAggrPeriodExcutionPK(excution.getCompanyId(),
-				excution.getExecutionEmpId(), excution.getAggrId());
-		KrcmtAggrPeriodExcution periodExcution = this.queryProxy().find(primaryKey, KrcmtAggrPeriodExcution.class).get();
-		periodExcution.aggrFrameCode = excution.getAggrFrameCode().v();
-		periodExcution.startDateTime = excution.getStartDateTime();
-		periodExcution.endDateTime = excution.getEndDateTime();
-		periodExcution.executionAtr = excution.getExecutionAtr().value;
-		periodExcution.executionStatus = excution.getExecutionStatus() != null ? excution.getExecutionStatus().get().value : null;
-		periodExcution.presenceOfError = excution.getPresenceOfError().value;
-		
 
-		this.commandProxy().update(periodExcution);
-	}
 
 	@Override
 	public Optional<AggrPeriodExcution> findBy(String companyId, String aggrId, int status) {
@@ -247,6 +254,9 @@ implements AggrPeriodExcutionRepository{
 		periodExcution.executionAtr = excution.getExecutionAtr().value;
 		periodExcution.executionStatus = executionStatus;
 		periodExcution.presenceOfError = excution.getPresenceOfError().value;
+		periodExcution.startYmd = excution.getPeriod().start();
+		periodExcution.endYmd = excution.getPeriod().end();
+		periodExcution.aggrFrameName = excution.getAnyAggrName().v();
 
 		this.commandProxy().update(periodExcution);
 	}

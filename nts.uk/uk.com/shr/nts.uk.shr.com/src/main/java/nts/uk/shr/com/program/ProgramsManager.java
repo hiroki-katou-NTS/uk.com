@@ -3042,6 +3042,13 @@ public class ProgramsManager {
     public static final Program KFP001H = new Program(WebAppId.AT, ProgramIdConsts.KFP001H, "KFP001_1",
             "/view/kfp/001/h/index.xhtml");
 
+    /**
+     * KFP002
+     */
+    public static final Program KFP002A = new Program(WebAppId.AT, ProgramIdConsts.KFP002A, "任意期間の修正",
+            "/view/kfp/002/a/index.xhtml");
+    public static final Program KFP002B = new Program(WebAppId.AT, ProgramIdConsts.KFP002B, "KFP002_2",
+            "/view/kfp/002/b/index.xhtml");
 
     // KDL030
     public static final Program KDL030 = new Program(WebAppId.AT, ProgramIdConsts.KDL030, "KDL030_1",

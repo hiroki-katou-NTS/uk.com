@@ -75,29 +75,29 @@ public class SrcdtDataCorrection extends ContractUkJpaEntity {
 	@Column(name = "VIEW_VALUE_AFTER")
 	public String viewValueAfter;
 
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "RAW_VALUE_BEFORE_ID", insertable = false, updatable = false)
-	public SrcdtRawDecimalvalue rawDecimalValueBefore;
-
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "RAW_VALUE_AFTER_ID", insertable = false, updatable = false)
-	public SrcdtRawDecimalvalue rawDecimalValueAfter;
-
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "RAW_VALUE_BEFORE_ID", insertable = false, updatable = false)
-	public SrcdtRawVarcharValue rawVarcharValueBefore;
-
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "RAW_VALUE_AFTER_ID", insertable = false, updatable = false)
-	public SrcdtRawVarcharValue rawVarcharValueAfter;
-
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "RAW_VALUE_BEFORE_ID", insertable = false, updatable = false)
-	public SrcdtRawNvarcharValue rawNvarcharValueBefore;
-
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "RAW_VALUE_AFTER_ID", insertable = false, updatable = false)
-	public SrcdtRawNvarcharValue rawNvarcharValueAfter;
+//	@OneToOne(cascade = CascadeType.ALL)
+//	@JoinColumn(name = "RAW_VALUE_BEFORE_ID", insertable = false, updatable = false)
+//	public SrcdtRawDecimalvalue rawDecimalValueBefore;
+//
+//	@OneToOne(cascade = CascadeType.ALL)
+//	@JoinColumn(name = "RAW_VALUE_AFTER_ID", insertable = false, updatable = false)
+//	public SrcdtRawDecimalvalue rawDecimalValueAfter;
+//
+//	@OneToOne(cascade = CascadeType.ALL)
+//	@JoinColumn(name = "RAW_VALUE_BEFORE_ID", insertable = false, updatable = false)
+//	public SrcdtRawVarcharValue rawVarcharValueBefore;
+//
+//	@OneToOne(cascade = CascadeType.ALL)
+//	@JoinColumn(name = "RAW_VALUE_AFTER_ID", insertable = false, updatable = false)
+//	public SrcdtRawVarcharValue rawVarcharValueAfter;
+//
+//	@OneToOne(cascade = CascadeType.ALL)
+//	@JoinColumn(name = "RAW_VALUE_BEFORE_ID", insertable = false, updatable = false)
+//	public SrcdtRawNvarcharValue rawNvarcharValueBefore;
+//
+//	@OneToOne(cascade = CascadeType.ALL)
+//	@JoinColumn(name = "RAW_VALUE_AFTER_ID", insertable = false, updatable = false)
+//	public SrcdtRawNvarcharValue rawNvarcharValueAfter;
 
 	@Column(name = "VALUE_DATA_TYPE")
 	public Integer valueType;
@@ -167,15 +167,13 @@ public class SrcdtDataCorrection extends ContractUkJpaEntity {
 		entityLog.rawValueBefore = (correctedItem.getValueBefore().getRawValue() != null
 				&& correctedItem.getValueBefore().getRawValue().getValue() != null)
 						? String.valueOf(correctedItem.getValueBefore().getRawValue().getValue()) : null;
-		entityLog.viewValueBefore = correctedItem.getValueBefore().getViewValue() != null
-				? correctedItem.getValueBefore().getViewValue() : null;
+		entityLog.viewValueBefore = correctedItem.getValueBefore().getViewValue();
 		entityLog.rawValueAfter = (correctedItem.getValueAfter().getRawValue() != null
 				&& correctedItem.getValueAfter().getRawValue().getValue() != null)
 						? String.valueOf(correctedItem.getValueAfter().getRawValue().getValue()) : null;
-		entityLog.viewValueAfter = correctedItem.getValueAfter().getViewValue() != null
-				? correctedItem.getValueAfter().getViewValue() : null;
+		entityLog.viewValueAfter = correctedItem.getValueAfter().getViewValue();
 		
-	    //entityLog.valueType = dataLog.getTargetDataType().value;
+//	    entityLog.valueType = dataLog.getTargetDataType().value;
 		entityLog.showOrder = dataLog.getShowOrder();
 		entityLog.note = dataLog.getRemark();
 		return entityLog;
@@ -197,26 +195,26 @@ public class SrcdtDataCorrection extends ContractUkJpaEntity {
 				this.showOrder, this.note);
 	}
 
-	public SrcdtDataCorrection(SrcdtDataCorrectionLogPk pk, String userName, String employeeId, Integer ymKey,
-			Integer yKey, String stringKey, int correctionAttr, String itemName, String rawValueBefore,
-			String viewValueBefore, String rawValueAfter, String viewValueAfter, Integer valueType, int showOrder,
-			String note) {
-		super();
-		this.pk = pk;
-		this.userName = userName;
-		this.employeeId = employeeId;
-		this.ymKey = ymKey;
-		this.yKey = yKey;
-		this.stringKey = stringKey;
-		this.correctionAttr = correctionAttr;
-		this.itemName = itemName;
-		this.rawValueBefore = rawValueBefore;
-		this.viewValueBefore = viewValueBefore;
-		this.rawValueAfter = rawValueAfter;
-		this.viewValueAfter = viewValueAfter;
-		this.valueType = valueType;
-		this.showOrder = showOrder;
-		this.note = note;
-	}
+//	public SrcdtDataCorrection(SrcdtDataCorrectionLogPk pk, String userName, String employeeId, Integer ymKey,
+//			Integer yKey, String stringKey, int correctionAttr, String itemName, String rawValueBefore,
+//			String viewValueBefore, String rawValueAfter, String viewValueAfter, Integer valueType, int showOrder,
+//			String note) {
+//		super();
+//		this.pk = pk;
+//		this.userName = userName;
+//		this.employeeId = employeeId;
+//		this.ymKey = ymKey;
+//		this.yKey = yKey;
+//		this.stringKey = stringKey;
+//		this.correctionAttr = correctionAttr;
+//		this.itemName = itemName;
+//		this.rawValueBefore = rawValueBefore;
+//		this.viewValueBefore = viewValueBefore;
+//		this.rawValueAfter = rawValueAfter;
+//		this.viewValueAfter = viewValueAfter;
+//		this.valueType = valueType;
+//		this.showOrder = showOrder;
+//		this.note = note;
+//	}
 	
 }
