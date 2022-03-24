@@ -19,8 +19,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.timedifferen
 @Stateless
 public class JpaRegionalTimeDifferenceRepository extends JpaRepository implements RegionalTimeDifferenceRepository {
 	
-	private static final String GET_ALL = "select s from KrcmtRegionalTimeDifferenceMgt s "
-			+ " where s.pk.contractCode = :contractCode" ;
+	private static final String GET_ALL = "select s from KrcmtRegionalTimeDifferenceMgt s " ;
 
 	@Override
 	public void insert(RegionalTimeDifference regionalTimeDifference) {
@@ -29,14 +28,13 @@ public class JpaRegionalTimeDifferenceRepository extends JpaRepository implement
 	}
 
 	@Override
-	public Optional<RegionalTimeDifference> get(String contractCode, int code) {
-		KrcmtRegionalTimeDifferenceMgt entity = this.queryProxy().find(new KrcmtRegionalTimeDifferenceMgtPk(contractCode, code ),KrcmtRegionalTimeDifferenceMgt.class).orElse(null);
+	public Optional<RegionalTimeDifference> get(int code) {
+		KrcmtRegionalTimeDifferenceMgt entity = this.queryProxy().find(new KrcmtRegionalTimeDifferenceMgtPk(code ),KrcmtRegionalTimeDifferenceMgt.class).orElse(null);
 		return entity == null ? Optional.empty() : Optional.of(entity.toDomain());
 	}
 
 	@Override
-	public List<RegionalTimeDifference> getAll(String contractCode) {
-		return this.queryProxy().query(GET_ALL, KrcmtRegionalTimeDifferenceMgt.class).setParameter("contractCode", contractCode)
-				.getList(x -> x.toDomain());
+	public List<RegionalTimeDifference> getAll() {
+		return this.queryProxy().query(GET_ALL, KrcmtRegionalTimeDifferenceMgt.class).getList(x -> x.toDomain());
 	}
 }
