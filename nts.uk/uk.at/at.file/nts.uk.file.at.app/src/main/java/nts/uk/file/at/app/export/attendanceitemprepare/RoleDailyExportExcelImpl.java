@@ -373,7 +373,7 @@ public class RoleDailyExportExcelImpl {
                     for (int i = 0, listDisplayTimeItemSize = listDisplayTimeItem.size(); i < listDisplayTimeItemSize; i++) {
                         DisplayTimeItem e = listDisplayTimeItem.get(i);
                         val sub = mapIdAnName.getOrDefault(e.getItemDaily(), null);
-                        disPlayName.append(e.getDisplayOrder());
+                        disPlayName.append(sub != null ? sub.getDisplayNumber():"");
                         disPlayName.append(sub != null ? sub.getAttendanceItemName() : "");
                         if(i < (listDisplayTimeItemSize -1))
                              disPlayName.append(",");
