@@ -112,12 +112,11 @@ module nts.uk.at.view.kfp002.a.viewmodel {
 
             self.selectedFrameCode.subscribe(val => {
                 if (!self.isStartScreen()) {
-                    nts.uk.characteristics.save(DATA_KEY, {
+                    nts.uk.characteristics.save((DATA_KEY + __viewContext.user.employeeId), {
                         anyPeriodFrameCode: val,
                         cursorDirection: self.cursorDirection(),
                         displayZero: self.displayZero(),
-                        displayItemNumber: self.displayItemNumber(),
-                        employees: self.lstEmployee()
+                        displayItemNumber: self.displayItemNumber()
                     });
                     if (!_.isEmpty(self.lstEmployee()) && self.displayFormat()) {
                         self.getData();
@@ -134,12 +133,11 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                     }
                 }
                 if (!self.isStartScreen()) {
-                    nts.uk.characteristics.save(DATA_KEY, {
+                    nts.uk.characteristics.save((DATA_KEY + __viewContext.user.employeeId), {
                         anyPeriodFrameCode: self.selectedFrameCode(),
                         cursorDirection: value,
                         displayZero: self.displayZero(),
                         displayItemNumber: self.displayItemNumber()
-                        employees: self.lstEmployee()
                     });
                 }
             });
@@ -160,12 +158,11 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                     });
                 }
                 if (!self.isStartScreen()) {
-                    nts.uk.characteristics.save(DATA_KEY, {
+                    nts.uk.characteristics.save((DATA_KEY + __viewContext.user.employeeId), {
                         anyPeriodFrameCode: self.selectedFrameCode(),
                         cursorDirection: self.cursorDirection(),
                         displayZero: self.displayZero(),
-                        displayItemNumber: val,
-                        employees: self.lstEmployee()
+                        displayItemNumber: val
                     });
                 }
             });
@@ -179,12 +176,11 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                     }
                 }
                 if (!self.isStartScreen()) {
-                    nts.uk.characteristics.save(DATA_KEY, {
+                    nts.uk.characteristics.save((DATA_KEY + __viewContext.user.employeeId), {
                         anyPeriodFrameCode: self.selectedFrameCode(),
                         cursorDirection: self.cursorDirection(),
                         displayZero: val,
-                        displayItemNumber: self.displayItemNumber(),
-                        employees: self.lstEmployee()
+                        displayItemNumber: self.displayItemNumber()
                     });
                 }
             });
@@ -192,15 +188,6 @@ module nts.uk.at.view.kfp002.a.viewmodel {
             self.lstEmployee.subscribe(val => {
                 if (!_.isEmpty(val) && self.displayFormat()) {
                     self.getData();
-                }
-                if (!self.isStartScreen()) {
-                    nts.uk.characteristics.save(DATA_KEY, {
-                        anyPeriodFrameCode: self.selectedFrameCode(),
-                        cursorDirection: self.cursorDirection(),
-                        displayZero: self.displayZero(),
-                        displayItemNumber: self.displayItemNumber(),
-                        employees: val
-                    });
                 }
             });
         }
@@ -216,12 +203,11 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                 });
                 $.when(self.aggregateFrames(_.sortBy(frames, ["aggrFrameCode"]))).then(() => {
                     self.isStartScreen(false);
-                    nts.uk.characteristics.restore(DATA_KEY).done((cacheData: ScreenStatus) => {
+                    nts.uk.characteristics.restore((DATA_KEY + __viewContext.user.employeeId)).done((cacheData: ScreenStatus) => {
                         self.selectedFrameCode(cacheData ? cacheData.anyPeriodFrameCode : null);
                         self.cursorDirection(cacheData ? cacheData.cursorDirection : 0);
                         self.displayZero(cacheData ? cacheData.displayZero : false);
                         self.displayItemNumber(cacheData ? cacheData.displayItemNumber : false);
-                        self.lstEmployee(cacheData ? cacheData.employees : []);
                     });
                 });
                 self.getFormatSetting();
@@ -823,6 +809,5 @@ module nts.uk.at.view.kfp002.a.viewmodel {
         cursorDirection: number; //カーソル移動方向
         displayZero: boolean; //ゼロ表示
         displayItemNumber: boolean; //項目番号表示
-        employees: Array<any>;
     }
 }
