@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.stampmanagement.workplace;
 
-import java.util.Optional;
-
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.gul.location.GeoCoordinate;
@@ -21,12 +19,12 @@ public class StampMobilePossibleRange implements DomainValue {
 	/**
 	 * 地理座標
 	 */
-	private Optional<GeoCoordinate> geoCoordinate;
+	private GeoCoordinate geoCoordinate;
 
 	public StampMobilePossibleRange(RadiusAtr radius, GeoCoordinate geoCoordinate) {
 		super();
 		this.radius = radius;
-		this.geoCoordinate = Optional.ofNullable(geoCoordinate); 
+		this.geoCoordinate = geoCoordinate; 
 	}
 	
 	/**
@@ -35,10 +33,7 @@ public class StampMobilePossibleRange implements DomainValue {
 	 * @return
 	 */
 	public boolean checkWithinStampRange(GeoCoordinate geoCoordinateInput) {
-		if (!this.geoCoordinate.isPresent()) {
-			return true;
-		}
-		int value = (int) this.geoCoordinate.get().getDistanceAsMeter(geoCoordinateInput);
+		int value = (int) this.geoCoordinate.getDistanceAsMeter(geoCoordinateInput);
 		return !(value > this.radius.getValue());
 	}
 }
