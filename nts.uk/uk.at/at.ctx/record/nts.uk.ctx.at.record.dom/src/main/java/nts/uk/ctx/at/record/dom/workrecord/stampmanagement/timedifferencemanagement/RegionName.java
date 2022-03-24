@@ -11,7 +11,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
  * @author chungnt
  *
  */
-@StringMaxLength(20)
+@StringMaxLength(200)
 @StringCharType(CharType.ALPHA_NUMERIC)
 @ZeroPaddedCode
 public class RegionName extends StringPrimitiveValue<RegionName>{

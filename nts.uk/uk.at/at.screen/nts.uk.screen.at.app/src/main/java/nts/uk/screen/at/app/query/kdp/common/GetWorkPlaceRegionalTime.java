@@ -60,7 +60,7 @@ public class GetWorkPlaceRegionalTime {
 		
 		if (workLocation.isPresent()) {
 			result.setWorkPlaceId(workLocation.get().getWorkplace().map(m -> m.getWorkpalceId()).orElse(""));
-			result.setRegional(workLocation.get().findTimeDifference(require, param.getContractCode()));
+			result.setRegional(workLocation.get().findTimeDifference(require));
 			result.setWorkLocationName(workLocation.get().getWorkLocationName().v());
 			result.setWorkLocationCD(workLocation.get().getWorkLocationCD().v());
 		}
@@ -75,8 +75,8 @@ public class GetWorkPlaceRegionalTime {
 		private RegionalTimeDifferenceRepository regionalTimeDifferenceRepository;
 
 		@Override
-		public Optional<RegionalTimeDifference> get(String contractCode, int code) {
-			return regionalTimeDifferenceRepository.get(contractCode, code);
+		public Optional<RegionalTimeDifference> get(int code) {
+			return regionalTimeDifferenceRepository.get(code);
 		}
 
 	}

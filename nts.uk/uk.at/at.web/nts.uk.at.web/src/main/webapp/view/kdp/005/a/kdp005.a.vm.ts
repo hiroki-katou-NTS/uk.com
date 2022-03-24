@@ -1181,43 +1181,10 @@ module nts.uk.at.view.kdp005.a {
                                     });
                                 });
                             } else {
-								
-
                                 dfd.resolve();
                             }
                         });
 				} else {
-					vm.$window.storage("contractInfo")
-                        .then((info: any) => {
-                            if (info) {
-                                vm.$ajax(API.GET_IP_URL, { contractCode: info.contractCode }).done((response) => {
-                                    let getWkLocParam = { contractCode: info.contractCode, ipv4Address: response.ipaddress };
-
-                                    vm.$ajax(API.GET_WORKLOCATION, getWkLocParam).done((workLoc: IWorkPlaceRegionalTimeDto) => {
-
-                                        let {regional, workLocationCD, workLocationName, workPlaceId } = workLoc;
-
-                                        if (workLoc && workLocationCD != null && workLocationName != null) {
-
-                                            self.worklocationCode = workLoc.workLocationCD;
-                                            
-                                            if (workPlaceId) {
-                                                self.workplace = [workPlaceId];
-												self.modeBasyo(true);
-                                                dfd.resolve();
-                                            }
-											dfd.resolve();
-                                        } else {
-
-                                            self.modeBasyo(false);
-                                            dfd.resolve();
-                                        }
-                                    });
-                                });
-                            } else {
-                                dfd.resolve();
-                            }
-                        });
 					dfd.resolve();
 				}
 				return dfd.promise();
