@@ -4079,6 +4079,22 @@ public class ProgramsManager {
     public static final Program OEM003A = new Program(WebAppId.COM, ProgramIdConsts.OEM003A, "OEM003_1",
             "/view/oem/003/a/index.xhtml");
     
+    /** KHA001 */
+    public static final Program KHA001A = new Program(WebAppId.AT
+            , ProgramIdConsts.KHA001A
+            , "KHA001_50"
+            , "/view/kha/001/a/index.xhtml");
+    
+    /** KMP002 */
+    public static final Program KMP002A = new Program(WebAppId.AT
+            , ProgramIdConsts.KMP002A
+            , "KMP002_1"
+            , "/view/kmp/002/a/index.xhtml");
+    public static final Program KMP002B = new Program(WebAppId.AT
+            , ProgramIdConsts.KMP002B
+            , "KMP002_4"
+            , "/view/kmp/002/b/index.xhtml");
+
     public static final Program SMM001A = new Program(WebAppId.COM, ProgramIdConsts.SMM001A, "SMM001_1",
             "/view/smm/001/a/index.xhtml");
     

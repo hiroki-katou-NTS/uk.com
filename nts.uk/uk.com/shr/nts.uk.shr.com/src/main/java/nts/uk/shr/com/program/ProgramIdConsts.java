@@ -1746,4 +1746,10 @@ public class ProgramIdConsts {
 	public static final String SMM001A = "SMM001A";
 	public static final String SMM001B = "SMM001B";
 
+	/** KHA001 */
+	public static final String KHA001A = "KHA001A";
+	
+	/** KMP002 */
+	public static final String KMP002A = "KMP002A";
+	public static final String KMP002B = "KMP002B";
 }
