@@ -511,12 +511,13 @@ module nts.uk.ui.at.kdw013.a {
 
                                 }
                                 _.forEach(rdis, rdi => {
-
+                                    //thỏa mãn điều kiện của ※3 . Cứ tìm được hr có value là được
                                     let hr = _.find(manHrContents, hr => { return hr.itemId == rdi.attendanceItemId });
+                                    //「工数入力表示フォーマット．実績欄表示項目一覧．対象項目」が「勤怠項目リスト．勤怠項目ID」に含まれている
                                     let attItem = _.find(_.get(setting, 'dailyAttendanceItem', []), ati => ati.attendanceItemId == rdi.attendanceItemId);
                                     //PC3_6 PC3_7 ☐ ☑
-                                    if (!_.isNil(_.get(hr, 'value'))) {
-                                        let control  = genControl(hr,attItem);
+                                    if (!_.isNil(_.get(hr, 'value')) && !!attItem) {
+                                        let control = genControl(hr, attItem);
                                         events.push({ title: rdi.displayName, text: control.text, valueType: control.type });
                                     }
 

@@ -643,7 +643,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         
         let items7 = (function() {
           let list = [];
-          let supportTime = stampRecord.supportTime;
+          let supportTime = stampRecord ? stampRecord.supportTime : null;
           for (let i = 1; i <= self.maxSupport; i++) {
               let dataObject = new TimePlaceOutput(i);
               _.forEach(supportTime, item => {
@@ -848,7 +848,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         
         let items7 = (function() {
           let list = [];
-          let supportTime = stampRecord.supportTime;
+          let supportTime = stampRecord ? stampRecord.supportTime : null;
           for (let i = 1; i <= self.maxSupport; i++) {
             let dataObject = new TimePlaceOutput(i);
             _.forEach(supportTime, item => {

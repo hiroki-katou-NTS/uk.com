@@ -77,6 +77,10 @@ input {
 .btn_worklocation .nts-button-container {
 	min-width: 75px;
 }
+.btn_workplace .nts-button-container button,
+.btn_worklocation .nts-button-container button {
+	min-width: 75px !important;
+}
 .btn_workplace > div,
 .btn_worklocation > div {
 	display: flex;
@@ -86,3 +90,6 @@ input {
 	white-space: nowrap;
 }
 
+#kaf002TabPanel > div.tabs-list > label.with-text.radio-wrapper > span {
+	min-width: 0 !important;
+}
