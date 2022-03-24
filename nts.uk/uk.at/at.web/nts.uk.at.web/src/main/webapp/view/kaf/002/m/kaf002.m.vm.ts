@@ -497,7 +497,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
             let optionGrid = {
                 width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '420px' : '520px',
-                height: isChrome ? (ko.toJS(self.isPreAtr) ? '310px' : '340px') : (ko.toJS(self.isPreAtr) ? '310px' : '340px'),
+                height: isChrome ? (ko.toJS(self.isPreAtr) ? '300px' : '330px') : (ko.toJS(self.isPreAtr) ? '300px' : '330px'),
                 dataSource: dataSource,
                 primaryKey: 'id',
                 virtualization: true,
@@ -554,7 +554,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 new ItemModel('3', '組合')];
             let option2 = {
               width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '555px' : '655px',
-              height: isChrome ? (ko.toJS(self.isPreAtr) ? '310px' : '340px') : (ko.toJS(self.isPreAtr) ? '310px' : '340px'),
+              height: isChrome ? (ko.toJS(self.isPreAtr) ? '300px' : '330px') : (ko.toJS(self.isPreAtr) ? '300px' : '330px'),
               dataSource: dataSource,
               primaryKey: 'id',
               virtualization: true,

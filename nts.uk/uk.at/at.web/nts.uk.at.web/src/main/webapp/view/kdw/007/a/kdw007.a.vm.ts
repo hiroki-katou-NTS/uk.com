@@ -137,7 +137,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     nts.uk.ui.block.clear();
                 });
             });
-            setTimeout(function() {
+//            setTimeout(function() {
             self.selectedErrorAlarmCode.subscribe((code) => {
                 
                     nts.uk.ui.block.invisible();
@@ -168,7 +168,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     nts.uk.ui.block.clear();
                 }, 500);
             });
-                 },100);
+//                 },100);
 
             self.selectedErrorAlarm().typeAtr.subscribe((val: any) => {
                 if (self.screenMode() == ScreenMode.Daily && self.selectedErrorAlarm().typeAtr() == '2') {

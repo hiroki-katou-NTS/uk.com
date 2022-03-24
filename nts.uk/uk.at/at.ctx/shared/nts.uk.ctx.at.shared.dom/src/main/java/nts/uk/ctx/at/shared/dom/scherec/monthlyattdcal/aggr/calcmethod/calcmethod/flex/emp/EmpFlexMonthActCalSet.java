@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.emp;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.AggregateTimeSetting;
@@ -47,5 +49,9 @@ public class EmpFlexMonthActCalSet extends FlexMonthWorkTimeAggrSet {
 		domain.flexTimeHandle = flexTimeHandle;
 		domain.employmentCode = employmentCode;
 		return domain;
+	}
+	
+	public static interface Require {
+		Optional<EmpFlexMonthActCalSet> empFlexMonthActCalSet(String companyId, String employmentCode);
 	}
 }

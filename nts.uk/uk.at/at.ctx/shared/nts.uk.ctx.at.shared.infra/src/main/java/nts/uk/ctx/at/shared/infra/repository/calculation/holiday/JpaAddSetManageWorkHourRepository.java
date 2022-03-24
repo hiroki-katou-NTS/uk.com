@@ -27,12 +27,7 @@ public class JpaAddSetManageWorkHourRepository extends JpaRepository implements 
 	public Optional<AddSetManageWorkHour> findByCid(String companyId) {
 		Optional<KshstAddSetManWKHour> optEntity = this.queryProxy().find(new KshstAddSetManWKHourPK(companyId), KshstAddSetManWKHour.class);
 		if (optEntity.isPresent()) {
-			JpaHolidayAddtionRepository holidayAddtionRepository = new JpaHolidayAddtionRepository();
-			AddSetManageWorkHour domain = holidayAddtionRepository.convertToDomainAddSetManageWorkHour(optEntity.get());
-			if (domain == null) {
-				return Optional.empty(); 
-			}
-			return Optional.of(domain);
+			return JpaHolidayAddtionRepository.convertToDomainAddSetManageWorkHour(optEntity.get());
 		}
 		return Optional.empty();
 	}

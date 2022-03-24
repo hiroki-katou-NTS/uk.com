@@ -97,4 +97,30 @@ public class NumberDfsCommand {
 	 */
 	private int decimalDigit;
 
+	public NumberDfsCommand(String condSetCd, String outItemCd, String cid, int nullValueReplace, int outputMinusAsZero,
+			int fixedValue, int fixedValueOperation, int fixedValueOperationSymbol, int fixedLengthOutput,
+			int fixedLengthEditingMethod, int decimalPointClassification, int decimalFraction, int formatSelection,
+			String valueOfNullValueReplace, String valueOfFixedValue, BigDecimal fixedCalculationValue,
+			int fixedLengthIntegerDigit, int decimalDigit) {
+		super();
+		this.condSetCd = condSetCd;
+		this.outItemCd = outItemCd;
+		this.cid = cid;
+		this.nullValueReplace = nullValueReplace;
+		this.outputMinusAsZero = outputMinusAsZero;
+		this.fixedValue = fixedValue;
+		this.fixedValueOperation = fixedValueOperation;
+		this.fixedValueOperationSymbol = fixedValueOperationSymbol;
+		this.fixedLengthOutput = fixedLengthOutput;
+		this.fixedLengthEditingMethod = fixedLengthEditingMethod;
+		this.decimalPointClassification = decimalPointClassification;
+		this.decimalFraction = decimalFraction;
+		this.formatSelection = formatSelection;
+		this.valueOfNullValueReplace = valueOfNullValueReplace;
+		this.valueOfFixedValue = valueOfFixedValue;
+		this.fixedCalculationValue = fixedCalculationValue;
+		this.fixedLengthIntegerDigit = fixedLengthIntegerDigit;
+		this.decimalDigit = decimalDigit;
+	}
+
 }

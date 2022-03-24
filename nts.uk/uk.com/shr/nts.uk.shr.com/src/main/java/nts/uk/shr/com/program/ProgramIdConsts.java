@@ -244,6 +244,12 @@ public class ProgramIdConsts {
 
 	public static final String KSM004F = "KSM004F";
 	
+	public static final String CMM030A = "CMM030A";
+	public static final String CMM030B = "CMM030B";
+	public static final String CMM030C = "CMM030C";
+	public static final String CMM030F = "CMM030F";
+	public static final String CMM030G = "CMM030G";
+	
 	public static final String CMM040A = "CMM040A";
 	
 	public static final String CMM040B = "CMM040B";
@@ -255,6 +261,8 @@ public class ProgramIdConsts {
 	public static final String CMM044D = "CMM044D";
 
 	public static final String CMM001E = "CMM001E";
+	
+	public static final String CMM004A = "CMM004A";
 	
 	public static final String CMM020A = "CMM020A";
 
@@ -625,6 +633,8 @@ public class ProgramIdConsts {
 	
 	public static final String KDP010J = "KDP010J";
 	
+	public static final String KDP014A = "KDP014A";
+	
 	public static final String KDP010K = "KDP010K";
 
 	public static final String KDW007A = "KDW007A";
@@ -780,6 +790,8 @@ public class ProgramIdConsts {
 	public static final String CMM018M = "CMM018M";
 
 	public static final String CMM018N = "CMM018N";
+	
+	public static final String CMM018R = "CMM018R";
 
 	public static final String KDL032A = "KDL032A";
 
@@ -1309,6 +1321,7 @@ public class ProgramIdConsts {
 	public static final String KDP005A = "KDP005A";
 	public static final String KDP005H = "KDP005H";
 	public static final String KDP005I = "KDP005I";
+	public static final String KDP005H2 = "KDP005H2";
 	
 	/** CAS004 */
 	public static final String CAS004A = "CAS004A";
@@ -1322,6 +1335,7 @@ public class ProgramIdConsts {
 	public static final String KMP001E = "KMP001E";
 	public static final String KMP001H = "KMP001H";
 	public static final String KMP001I = "KMP001I";
+	public static final String KMP001J = "KMP001J";
 
 	public static final String KDL020A = "KDL020A";
 	public static final String KDL020B = "KDL020B";
@@ -1715,9 +1729,12 @@ public class ProgramIdConsts {
 	/** KWR008C */
 	public static final String KWR008C = "KWR008C";
 
+<<<<<<< HEAD
 	/** KHA001 */
 	public static final String KHA001A = "KHA001A";
   
+=======
+>>>>>>> pj/at/release_ver4
 	/**
 	 * KHA003
 	 */
@@ -1739,5 +1756,17 @@ public class ProgramIdConsts {
 	public static final String OEW001D = "OEW001D";
 	
 	public static final String OEM003A = "OEM003A";
+	
+	public static final String SMM001A = "SMM001A";
+	public static final String SMM001B = "SMM001B";
 
+<<<<<<< HEAD
+=======
+	/** KHA001 */
+	public static final String KHA001A = "KHA001A";
+	
+	/** KMP002 */
+	public static final String KMP002A = "KMP002A";
+	public static final String KMP002B = "KMP002B";
+>>>>>>> pj/at/release_ver4
 }

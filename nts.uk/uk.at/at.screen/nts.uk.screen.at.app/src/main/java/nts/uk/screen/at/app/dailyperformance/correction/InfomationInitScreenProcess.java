@@ -345,11 +345,16 @@ public class InfomationInitScreenProcess {
 	
 	private void setStateParam(DailyPerformanceCorrectionDto screenDto, DatePeriodInfo info, int displayFormat, Boolean transferDesScreen, InitialDisplayEmployeeDto initDto) {
 		DPCorrectionStateParam cacheParam = new DPCorrectionStateParam(
+<<<<<<< HEAD
 				new DatePeriod(screenDto.getDateRange().getStartDate(), screenDto.getDateRange().getEndDate()),
 				screenDto.getEmployeeIds(), displayFormat, screenDto.getEmployeeIds(), 
 				screenDto.getLstControlDisplayItem(), info, transferDesScreen,
 				initDto != null && initDto.getParam() != null ? initDto.getParam().getLstWrkplaceId() : new ArrayList<>(),
 				initDto != null && initDto.getParam() != null ? initDto.getParam().getLstEmpsSupport() : new ArrayList<>());
+=======
+				new DateRange(screenDto.getDateRange().getStartDate(), screenDto.getDateRange().getEndDate()),
+				screenDto.getEmployeeIds(), displayFormat, screenDto.getEmployeeIds(), screenDto.getLstControlDisplayItem(), info, transferDesScreen);
+>>>>>>> pj/at/release_ver4
 		screenDto.setStateParam(cacheParam);
 
 	}

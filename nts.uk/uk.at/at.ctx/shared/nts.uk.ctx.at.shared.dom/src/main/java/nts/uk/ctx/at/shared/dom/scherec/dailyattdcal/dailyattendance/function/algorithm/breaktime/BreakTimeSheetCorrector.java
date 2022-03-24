@@ -12,11 +12,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.D
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -27,7 +24,13 @@ public class BreakTimeSheetCorrector {
 			
 	public static void correct(RequireM1 require, String cid, IntegrationOfDaily dailyRecord, boolean correctValCopyFromSche) {
 
+<<<<<<< HEAD
 		val workType = require.workType(cid, dailyRecord.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).orElse(null);
+=======
+		val cid = AppContexts.user().companyId();
+		
+		val workType = require.workType(cid, dailyRecord.getWorkInformation().getRecordInfo().getWorkTypeCode()).orElse(null);
+>>>>>>> pj/at/release_ver4
 		if (workType == null) {
 			return;
 		}
@@ -86,7 +89,7 @@ public class BreakTimeSheetCorrector {
 			WorkType workType, IntegrationOfDaily dailyRecord) {
 		
 		/** 就業時間帯コード */
-		val wtc = dailyRecord.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().map(c -> c.v()).orElse(null);
+		val wtc = dailyRecord.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().map(c -> c).orElse(null);
 		if (wtc == null) {
 			
 			return BreakTimeType.CANT_CHECK;
@@ -137,6 +140,7 @@ public class BreakTimeSheetCorrector {
 		
 		Optional<ManagePerPersonDailySet> managePerPersonDailySet(String sid, GeneralDate ymd, IntegrationOfDaily dailyRecord);
 		
+<<<<<<< HEAD
 		DailyRecordToAttendanceItemConverter createDailyConverter(String cid);
 		
 		Optional<WorkType> workType(String companyId, String workTypeCd);
@@ -146,5 +150,8 @@ public class BreakTimeSheetCorrector {
 		Optional<FlowWorkSetting> flowWorkSetting(String companyId, String workTimeCode);
 		
 		Optional<FlexWorkSetting> flexWorkSetting(String companyId,String workTimeCode);
+=======
+		DailyRecordToAttendanceItemConverter createDailyConverter();
+>>>>>>> pj/at/release_ver4
 	}
 }

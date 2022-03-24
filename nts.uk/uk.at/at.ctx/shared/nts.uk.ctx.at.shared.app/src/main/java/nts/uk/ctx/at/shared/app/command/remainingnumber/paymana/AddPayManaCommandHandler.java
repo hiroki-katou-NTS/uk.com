@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
@@ -32,9 +33,12 @@ public class AddPayManaCommandHandler extends CommandHandlerWithResult<PayManaRe
 		Double temp = new Double(0);
 		if (temp.equals(command.getRemainDays())) {
 			stateAtr = DigestionAtr.USED.value;
+		} else if (command.getExpiredDate().beforeOrEquals(GeneralDate.today())) {
+			stateAtr = DigestionAtr.EXPIRED.value;
 		}
 		PayoutManagementData payMana = new PayoutManagementData(newIDPayout,cId, command.getEmployeeId(), unknowDate, command.getDayOff(), command.getExpiredDate(), command.getLawAtr(),
 				command.getOccurredDays(), command.getOccurredDays(), stateAtr);
+		payMana.validate();
 		SubstitutionOfHDManagementData subMana = new SubstitutionOfHDManagementData(newIDSub, cId, command.getEmployeeId(), unknowDate, command.getSubDayoffDate(), command.getSubDays(), command.getRemainDays());
 		SubstitutionOfHDManagementData splitMana = new SubstitutionOfHDManagementData(newIDsplit, cId, command.getEmployeeId(), unknowDate, command.getHolidayDate(), command.getRequiredDays(), command.getRemainDays());
 		List<String> error = payoutManaDataService.addPayoutManagement(command.getEmployeeId(), command.getPickUp(), command.getPause(), command.getCheckedSplit(), payMana, subMana, splitMana,

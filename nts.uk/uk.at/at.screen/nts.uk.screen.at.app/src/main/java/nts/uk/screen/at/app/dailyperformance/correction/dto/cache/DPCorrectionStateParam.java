@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPControlDisplayItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DatePeriodInfo;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.arc.time.calendar.period.DatePeriod;
 /**
  * 日別実績の修正の状態
@@ -20,7 +21,8 @@ public class DPCorrectionStateParam implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	//対象期間
-	private DatePeriod period;
+//	private DatePeriod period;
+	private DateRange period;
 	
 	//対象社員
 	private List<String> employeeIds;

@@ -63,7 +63,9 @@ import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeNameType;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalStatusActualResultKDW003Dto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ConfirmStatusActualResultKDW003Dto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCellDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPControlDisplayItem;
@@ -512,9 +514,15 @@ public class InitScreenMob {
 			}
 		}
 		screenDto.setLstData(lstData);
+<<<<<<< HEAD
 		setStateParam(screenDto, resultPeriod, displayFormat, false, allIds);
+=======
+		setStateParam(screenDto, resultPeriod, displayFormat, false);
+		List<ConfirmStatusActualResultKDW003Dto> lstConfirmStatusActualResultKDW003Dto = confirmResults.stream().map(c->ConfirmStatusActualResultKDW003Dto.fromDomain(c)).collect(Collectors.toList());
+		List<ApprovalStatusActualResultKDW003Dto> lstApprovalStatusActualResultKDW003Dto = approvalResults.stream().map(c->ApprovalStatusActualResultKDW003Dto.fromDomain(c)).collect(Collectors.toList());
+>>>>>>> pj/at/release_ver4
 		screenDto.setApprovalConfirmCache(new ApprovalConfirmCache(sId, listEmployeeId,
-				new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), 0, confirmResults, approvalResults));
+				dateRange, 0, lstConfirmStatusActualResultKDW003Dto, lstApprovalStatusActualResultKDW003Dto));
 		return screenDto;
 	}
 
@@ -560,7 +568,7 @@ public class InitScreenMob {
 		monthActualReferButtonDis = formatDailyDto != null && !formatDailyDto.isEmpty() && displayFormat == 0 ? true : false;
 
 		DaiPerformanceFunDto daiPerformanceFunDto = daiPerformanceFunFinder.getDaiPerformanceFunById(companyId);
-		timeExcessReferButtonDis = daiPerformanceFunDto.getDisp36Atr() == 1 && displayFormat == 0 ? true : false;
+		timeExcessReferButtonDis = (daiPerformanceFunDto != null ? daiPerformanceFunDto.getDisp36Atr() == 1: false) && (displayFormat == 0 ? true : false);
 
 		Optional<DailyPerformanceAuthorityDto> authorityDto = authorityDtos.stream().filter(x -> x.getFunctionNo().compareTo(new BigDecimal(25)) == 0).findFirst();
 		if (authorityDto.isPresent()) {
@@ -909,7 +917,7 @@ public class InitScreenMob {
 	private void setStateParam(DailyPerformanceCorrectionDto screenDto, DatePeriodInfo info, int displayFormat,
 			Boolean transferDesScreen, InitialDisplayEmployeeDto initDto) {
 		DPCorrectionStateParam cacheParam = new DPCorrectionStateParam(
-				new DatePeriod(screenDto.getDateRange().getStartDate(), screenDto.getDateRange().getEndDate()),
+				new DateRange(screenDto.getDateRange().getStartDate(), screenDto.getDateRange().getEndDate()),
 				screenDto.getEmployeeIds(), displayFormat, screenDto.getEmployeeIds(),
 				screenDto.getLstControlDisplayItem(), info, transferDesScreen,
 				initDto != null && initDto.getParam() != null ? initDto.getParam().getLstWrkplaceId() : new ArrayList<>(),

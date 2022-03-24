@@ -25,4 +25,6 @@ public class SettingPotalStampInputDto {
 	private List<EmpInfoPotalStampDto> empInfos;
 	
 	private  StampResultDisplayDto stampResultDisplayDto;
+	
+	private List<EmployeeStampInfoDto> employeeStampInfo;
 }

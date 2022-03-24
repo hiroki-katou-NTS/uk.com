@@ -39,6 +39,7 @@
     "markdown-it": "^8.4.2",
     "mini-css-extract-plugin": "^0.4.1",
     "node-sass": "^4.10.0",
+    "npm-run-all": "^4.1.5",
     "optimize-css-assets-webpack-plugin": "^5.0.0",
     "prettier": "1.17.0",
     "raw-loader": "^0.5.1",
@@ -66,7 +67,9 @@
     "webpack": "./node_modules/.bin/webpack --config webpack.config.js",
     "webpack:vendor": "./node_modules/.bin/webpack --config webpack.config.vendor.js",
     "webpack:prod": "./node_modules/.bin/webpack --config webpack.config.js --env.prod",
-    "webpack:vendor:prod": "./node_modules/.bin/webpack --config webpack.config.vendor.js --env.prod"
+    "webpack:vendor:prod": "./node_modules/.bin/webpack --config webpack.config.vendor.js --env.prod",
+    "inst": "npm install",
+    "war": "run-s inst webpack:vendor webpack webpack:prod webpack:vendor:prod"
   },
   "keywords": [
     "uk",

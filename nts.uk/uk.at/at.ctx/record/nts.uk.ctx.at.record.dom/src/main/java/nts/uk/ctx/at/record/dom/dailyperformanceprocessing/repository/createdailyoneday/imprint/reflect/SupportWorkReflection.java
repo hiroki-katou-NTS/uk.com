@@ -59,11 +59,51 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 public class SupportWorkReflection {
 
+<<<<<<< HEAD
 	public static ReflectionAtr supportWorkReflect(Require require, String cid, SupportParam param,
 			IntegrationOfDaily integrationOfDaily, StampReflectRangeOutput stampReflectRangeOutput) {
 		// 補正処理を行うかどうか判定
 		if (!judgCorrectionProces(require, cid, param.isTimePriorityFlag(), param.getTimeDay(),
 				stampReflectRangeOutput)) {
+=======
+	@Inject
+	private JudCriteriaSameStampOfSupportRepo ofSupportRepo;
+	
+	@Inject
+	private ManHrInputUsageSettingRepository manHrInputUsageSettingRepo;
+	
+	@Inject
+	private TaskOperationSettingRepository taskOperationSettingRepo;
+	@Inject 
+	private StampCardRepository stampCardRepo;
+	
+	@Inject
+	private StampDakokuRepository stampRepo;
+
+	public ReflectionAtr supportWorkReflect(String cid, SupportParam param, IntegrationOfDaily integrationOfDaily,
+			StampReflectRangeOutput stampReflectRangeOutput) {
+		
+		/** 工数入力の利用設定を取得する */
+		val manHrInputUsageSet = manHrInputUsageSettingRepo.get(cid);
+		
+		val require = new ManHrInputUsageSetting.Require() {
+			
+			@Override
+			public Optional<TaskOperationSetting> taskOperationSetting(String cid) {
+				return taskOperationSettingRepo.getTasksOperationSetting(cid);
+			}
+		};
+		
+		/** 作業実績の補正処理を行っても良いか判断する */
+		if (!manHrInputUsageSet.map(c -> c.decideCanCorrectTaskRecord(require)).orElse(false)) 
+			/** 反映状態＝反映失敗を返す */		
+			return ReflectionAtr.REFLECT_FAIL;
+
+		// 打刻データが応援開始・終了反映時間内かの確認を行う
+		boolean startAtr = this.checkStarEndSupport(param.getTimeDay(), stampReflectRangeOutput);
+		if (!startAtr) { /** TODO：　一旦動かないようにする、タスクデモで参照するように　*/
+			// 反映状態＝反映失敗を返す
+>>>>>>> pj/at/release_ver4
 			return ReflectionAtr.REFLECT_FAIL;
 		}
 

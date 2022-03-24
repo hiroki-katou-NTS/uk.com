@@ -176,5 +176,8 @@ public interface DailyRecordAdUpService {
 		adUpEmpError(domain.getEmployeeError(),  Arrays.asList(Pair.of(domain.getEmployeeId(), domain.getYmd())));
 
 		adTimeAndAnyItemAdUp(Arrays.asList(domain));
+		
+		//スナップショットが存在しない場合に登録する
+		domain.getSnapshot().ifPresent(snap -> adUpSnapshot(domain.getEmployeeId(), domain.getYmd(), snap));
 	}
 }

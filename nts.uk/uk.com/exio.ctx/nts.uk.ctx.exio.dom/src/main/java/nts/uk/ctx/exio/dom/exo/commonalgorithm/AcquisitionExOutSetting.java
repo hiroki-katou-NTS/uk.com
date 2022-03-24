@@ -46,8 +46,7 @@ public class AcquisitionExOutSetting {
 	private StandardOutputItemOrderRepository stdOutItemOrderRepo;
 
 	// 外部出力取得設定一覧
-	public List<StdOutputCondSet> getExOutSetting(String userId, StandardAtr standardType, String conditionSetCd) {
-		String cid = AppContexts.user().companyId();
+	public List<StdOutputCondSet> getExOutSetting(String cid, String userId, StandardAtr standardType, String conditionSetCd) {
 		List<StdOutputCondSet> stdOutputCondSetList = new ArrayList<StdOutputCondSet>();
 
 		if (standardType == StandardAtr.STANDARD) {

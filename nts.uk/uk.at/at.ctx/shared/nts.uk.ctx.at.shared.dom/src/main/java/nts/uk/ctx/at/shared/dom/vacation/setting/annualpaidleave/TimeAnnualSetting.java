@@ -14,6 +14,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.MonthVacationGrantDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
@@ -151,6 +152,28 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
     	return this.maxYearDayLeave.getLimitedTimeHdDays(fromGrantTableDays);
     }
     
+    //時間年休管理
+    public boolean isManaged() {
+    	return this.getTimeVacationDigestUnit().getManage() == ManageDistinct.YES;
+    }
+    
+	/**
+	 * 積立年休の付与数を取得する
+	 */
+    protected Optional<MonthVacationGrantDay> getAnnualLeavGrant(ManageDistinct yearManageType, int timeRemain, int timeAnnualLeavOneDay) {
+		if (!yearManageType.isManaged() || !isManaged()) {
+			return Optional.empty();
+		}
+		if(timeAnnualLeavOneDay == 0) {
+			return Optional.empty();
+		}
+		if (this.getRoundProcessClassific() == TimeAnnualRoundProcesCla.TruncateOnDay0) {
+			return Optional.of(MonthVacationGrantDay.createWithTruncate(Double.valueOf(timeRemain) / timeAnnualLeavOneDay));
+		} else {
+			return Optional.of(MonthVacationGrantDay.createWithRoundUp(Double.valueOf(timeRemain) / timeAnnualLeavOneDay));
+		}
+	}
+	
     /**
      * [7] 消化単位をチェックする
      * @param time 休暇使用時間

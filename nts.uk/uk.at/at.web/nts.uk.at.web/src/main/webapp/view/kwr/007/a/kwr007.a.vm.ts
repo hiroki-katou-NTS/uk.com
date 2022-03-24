@@ -129,7 +129,10 @@ module nts.uk.at.view.kwr007.a {
       vm.ccg001ComponentOption = {
         /** Common properties */
         systemType: 2, //システム区分 - 2: 就業
-        showEmployeeSelection: true,
+          // 2022.03.18 - 3S - chinh.hm - issues #123486    - 変更 START
+        //showEmployeeSelection: true,
+        showEmployeeSelection: false,
+          // 2022.03.18 - 3S - chinh.hm - issues #123486    - 変更 END
         showQuickSearchTab: true, //クイック検索
         showAdvancedSearchTab: true, //詳細検索
         showBaseDate: false, //基準日利用
@@ -159,7 +162,9 @@ module nts.uk.at.view.kwr007.a {
         /** Advanced search properties */
         showEmployment: true,// 雇用条件
         showDepartment: false, // 部門条件
-        showWorkplace: false,// 職場条件
+          // 2022.03.21 - 3S - chinh.hm - issues #123486    - 変更 START
+        showWorkplace: true,// 職場条件
+          // 2022.03.21 - 3S - chinh.hm - issues #123486    - 変更 END
         showClassification: true,// 分類条件
         showJobTitle: true,// 職位条件
         showWorktype: true,// 勤種条件

@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.sys.assist.dom.mastercopy.handler.KeyValueHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,10 +138,14 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 
 		// 初期値コピー処理
 		for (MasterCopyData masterCopyData : masterCopyDataList) {
+
+			val keyValueHolder = new KeyValueHolder();
+
 			for (TargetTableInfo targetTableInfo : masterCopyData.getTargetTables()) {
 				try {
 					copyDataRepository.copy(contractCode, companyId, targetTableInfo,
-							categoryCopyMethod.get(masterCopyData.getCategoryNo().v()));
+							categoryCopyMethod.get(masterCopyData.getCategoryNo().v()),
+							keyValueHolder);
 				} catch (Exception ex) {
 					MasterCopyCategory copyCategory = repository
 							.findCatByCategoryNo(masterCopyData.getCategoryNo().v());

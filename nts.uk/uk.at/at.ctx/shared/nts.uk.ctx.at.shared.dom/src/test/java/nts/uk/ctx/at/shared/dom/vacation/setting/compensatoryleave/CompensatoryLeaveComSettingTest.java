@@ -193,7 +193,7 @@ public class CompensatoryLeaveComSettingTest {
 		val domain = CompensatoryLeaveComSettingTestHelper.create();
 		new Expectations() {
 			{
-				require.getCmpLeaveComSet("DUMMY-CID");
+				require.compensatoryLeaveComSetting("DUMMY-CID");
 				result = Optional.empty();
 			}
 			{
@@ -214,7 +214,7 @@ public class CompensatoryLeaveComSettingTest {
 		val dummyDate = GeneralDate.today();
 		new Expectations() {
 			{
-				require.getCmpLeaveComSet("DUMMY-CID");
+				require.compensatoryLeaveComSetting("DUMMY-CID");
 				result = Optional.of(new CompensatoryLeaveComSetting("DUMMT-CID",
 						ManageDistinct.YES,
 						null,
@@ -223,7 +223,7 @@ public class CompensatoryLeaveComSettingTest {
 						ManageDistinct.YES));
 			}
 			{
-				require.getEmploymentHis("DUMMY-SID", dummyDate);
+				require.getSEmpHistoryImport("DUMMY-SID", dummyDate);
 				result = Optional.of(new SEmpHistoryImport("DUMMY-SID", "DUMMY-SCD", "DUMMY-SNAME", new DatePeriod(dummyDate, dummyDate)));
 			}
 			{
@@ -245,7 +245,7 @@ public class CompensatoryLeaveComSettingTest {
 		val dummyDate = GeneralDate.today();
 		new Expectations() {
 			{
-				require.getCmpLeaveComSet("DUMMY-CID");
+				require.compensatoryLeaveComSetting("DUMMY-CID");
 				result = Optional.of(new CompensatoryLeaveComSetting("DUMMT-CID",
 						ManageDistinct.YES,
 						null,
@@ -254,7 +254,7 @@ public class CompensatoryLeaveComSettingTest {
 						ManageDistinct.YES));
 			}
 			{
-				require.getEmploymentHis("DUMMY-SID", dummyDate);
+				require.getSEmpHistoryImport("DUMMY-SID", dummyDate);
 				result = Optional.of(new SEmpHistoryImport("DUMMY-SID", "DUMMY-SCD", "DUMMY-SNAME", new DatePeriod(dummyDate, dummyDate)));
 			}
 			{
@@ -275,7 +275,7 @@ public class CompensatoryLeaveComSettingTest {
 		val dummyDate = GeneralDate.today();
 		new Expectations() {
 			{
-				require.getCmpLeaveComSet("DUMMY-CID");
+				require.compensatoryLeaveComSetting("DUMMY-CID");
 				result = Optional.empty();
 			}
 			{
@@ -296,7 +296,7 @@ public class CompensatoryLeaveComSettingTest {
 		val dummyDate = GeneralDate.today();
 		new Expectations() {
 			{
-				require.getCmpLeaveComSet("DUMMY-CID");
+				require.compensatoryLeaveComSetting("DUMMY-CID");
 				result = Optional.of(new CompensatoryLeaveComSetting("DUMMT-CID",
 						ManageDistinct.YES,
 						null,
@@ -305,7 +305,7 @@ public class CompensatoryLeaveComSettingTest {
 						ManageDistinct.YES));
 			}
 			{
-				require.getEmploymentHis("DUMMY-SID", dummyDate);
+				require.getSEmpHistoryImport("DUMMY-SID", dummyDate);
 				result = Optional.of(new SEmpHistoryImport("DUMMY-SID", "DUMMY-SCD", "DUMMY-SNAME", new DatePeriod(dummyDate, dummyDate)));
 			}
 			{
@@ -327,7 +327,7 @@ public class CompensatoryLeaveComSettingTest {
 		val dummyDate = GeneralDate.today();
 		new Expectations() {
 			{
-				require.getCmpLeaveComSet("DUMMY-CID");
+				require.compensatoryLeaveComSetting("DUMMY-CID");
 				result = Optional.of(new CompensatoryLeaveComSetting("DUMMT-CID",
 						ManageDistinct.NO,
 						null,

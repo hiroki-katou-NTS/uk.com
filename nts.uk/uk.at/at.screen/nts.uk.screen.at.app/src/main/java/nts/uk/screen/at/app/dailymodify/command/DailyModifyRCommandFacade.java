@@ -357,6 +357,7 @@ public class DailyModifyRCommandFacade {
 							old -> old.getEmployeeId().equals(x.getEmployeeId()) && old.getDate().equals(x.getDate()))
 							.findFirst().orElse(null);
 					CorrectDailyAttendanceService.correctFurikyu(correctDaiAttRequireImpl.createRequire(),
+							AppContexts.user().companyId(),
 							dailyOldSameDate.getWorkInfo().toDomain(x.getEmployeeId(), x.getDate()), domDaily.getWorkInformation());
 					//ootsuka mode
 					if (AppContexts.optionLicense().customize().ootsuka()) {

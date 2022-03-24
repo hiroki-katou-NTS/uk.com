@@ -1,12 +1,11 @@
 package nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting;
 
-import java.util.Map;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.workplace.ReferenceableWorkplaceImport;
 
 /**
  * @author thanhpv
@@ -62,7 +61,7 @@ public class ManHourRecordReferenceSetting extends AggregateRoot {
 	 * @input baseDate	年月日
 	 * @output 参照可能範囲	Map<社員ID,職場ID>
 	 */
-	public Map<String, String> getWorkCorrectionStartDate(Require require, String companyId, String userId, String employeeId, GeneralDate baseDate) {
+	public ReferenceableWorkplaceImport getWorkCorrectionStartDate(Require require, String companyId, String userId, String employeeId, GeneralDate baseDate) {
 		//if @参照範囲 == ロールの社員参照範囲と同じ																				
 		if(this.referenceRange == ReferenceRange.SAME_AS_EMPLOYEE_REFERENCE_RANGE_OF_ROLE)	
 			//return require.参照可能社員を取得する(ユーザID,社員ID,基準日)															
@@ -83,10 +82,10 @@ public class ManHourRecordReferenceSetting extends AggregateRoot {
 		
 		//[R-3] 参照可能社員を取得する							
 		//参照可能社員の所属職場を取得するAdapter.取得する(ユーザID,社員ID,基準日)		
-		Map<String, String> getWorkPlace(String userID, String employeeID, GeneralDate date);
+		ReferenceableWorkplaceImport getWorkPlace(String userID, String employeeID, GeneralDate date);
 		
 		//[R-4] 全社員を取得する							
 		//全ての職場の所属社員を取得するAdapter.取得する(会社ID,基準日)		
-		Map<String, String> getByCID(String companyId, GeneralDate baseDate);
+		ReferenceableWorkplaceImport getByCID(String companyId, GeneralDate baseDate);
 	}
 }

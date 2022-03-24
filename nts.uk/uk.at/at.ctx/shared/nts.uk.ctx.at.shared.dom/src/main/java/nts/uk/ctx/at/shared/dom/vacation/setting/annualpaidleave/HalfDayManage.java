@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import lombok.Builder;
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.MonthVacationGrantDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt;
 /**
@@ -56,6 +57,7 @@ public class HalfDayManage implements Serializable {
 		return this.reference.equals(MaxDayReference.CompanyUniform)
 				? Optional.of(this.maxNumberUniformCompany.toLimitedTimeHdDays()) : fromGrantTableCount;
 	}
+<<<<<<< HEAD
 	
 	/**
 	 * [1] 半日回数上限に対応する月次の勤怠項目を取得する
@@ -83,5 +85,21 @@ public class HalfDayManage implements Serializable {
 		if (timeManageType == ManageDistinct.YES && manageType == ManageDistinct.YES)
 			return true;
 		return false;
+=======
+	 
+	/**
+	 * 積立年休の付与数を取得する
+	 */
+	protected MonthVacationGrantDay getAnnualLeavGrant(ManageDistinct yearManageType, Double dayRemains) {
+		if (!yearManageType.isManaged()) {
+			return new MonthVacationGrantDay(0.0);
+		}
+		if (this.roundProcesCla == RoundProcessingClassification.TruncateOnDay0) {
+			return MonthVacationGrantDay.createWithTruncate(dayRemains);
+		} else if (this.roundProcesCla == RoundProcessingClassification.RoundUpToTheDay) {
+			return MonthVacationGrantDay.createWithRoundUp(dayRemains);
+		}
+		return new MonthVacationGrantDay(dayRemains);
+>>>>>>> pj/at/release_ver4
 	}
 }

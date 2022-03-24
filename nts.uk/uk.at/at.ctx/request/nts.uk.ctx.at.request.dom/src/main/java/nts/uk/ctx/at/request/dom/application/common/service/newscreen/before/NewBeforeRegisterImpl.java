@@ -258,6 +258,13 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 			}
 			throw new BusinessException(builder.build());
 		}
+		
+		List<String> errorMsgLst = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getErrorMsgLst();
+		if(!CollectionUtil.isEmpty(errorMsgLst)) {
+			if(application.getAppType()!=ApplicationType.BUSINESS_TRIP_APPLICATION) {
+				throw new BusinessException(errorMsgLst.get(0));
+			}
+		}
 
 		// アルゴリズム「申請の締め切り期限をチェック」を実施する
 		deadlineAppCheck(opStartDate.get(), opEndDate.get(), 

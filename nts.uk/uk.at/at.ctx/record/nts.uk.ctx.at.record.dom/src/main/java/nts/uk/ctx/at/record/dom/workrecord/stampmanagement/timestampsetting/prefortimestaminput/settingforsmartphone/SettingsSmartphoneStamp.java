@@ -11,11 +11,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.gul.location.GeoCoordinate;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.EmployeeStampingAreaRestrictionSetting;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestriction;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CreateStampDataForEmployeesService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * AR: スマホ打刻の打刻設定
@@ -40,11 +45,9 @@ public class SettingsSmartphoneStamp implements DomainAggregate{
 	// 打刻ボタンを抑制する
 	private boolean buttonEmphasisArt;
 	
-	// 	位置情報を利用する
-	private NotUseAtr locationInfoUse;
-	
-	// 	打刻エリア制限する
-	private NotUseAtr areaLimitAtr;
+	//打刻エリア制限
+	@Setter
+	private StampingAreaRestriction stampingAreaRestriction;
 	
 	// [1] ボタン詳細設定を取得する																							
 	public Optional<ButtonSettings> getDetailButtonSettings(StampButton stamButton) {
@@ -60,6 +63,8 @@ public class SettingsSmartphoneStamp implements DomainAggregate{
 		// return $打刻ページレイアウト.ボタン詳細設定リスト : filter $.ボタン位置NO = 打刻ボタン.ボタン位置NO
 		return stampPageLayout.get().getLstButtonSet().stream().filter(it -> it.getButtonPositionNo().equals(stamButton.getButtonPositionNo())).findFirst();
 	}
+	
+	
 	
 	// [2] ページを追加する
 	public void addPage(StampPageLayout pageLayoutSetting) {
@@ -86,6 +91,28 @@ public class SettingsSmartphoneStamp implements DomainAggregate{
 	public void deletePage() {
 		
 		this.pageLayoutSettings.clear();
+	}
+	
+	// [5] 打打刻してもいいエリアかチェックする
+	public Optional<WorkLocation> checkCanStampAreas(Require require ,ContractCode contractCd ,String companyId , String employeeId , GeoCoordinate positionInfor) {
+		// $エリア制限設定 = require.エリア制限設定を取得する(社員ID)
+		
+		
+		Optional<EmployeeStampingAreaRestrictionSetting> stampingAreaSetting = require.findByEmployeeId(employeeId);
+		// if $エリア制限設定.isPresent
+		if(stampingAreaSetting.isPresent()){
+			// return $エリア制限設定.打刻してもいいエリアかチェックする(require,契約コード,会社ID,打刻位置)
+			return stampingAreaSetting.get().checkAreaStamp(require, contractCd.v(), companyId, employeeId, Optional.ofNullable(positionInfor));
+			
+		}
+		// return @打刻エリア制限.打刻してもいいエリアかチェックする(require,契約コード,会社ID,社員ID,打刻位置)
+		return stampingAreaRestriction.checkAreaStamp(require, contractCd.v(), companyId, employeeId, Optional.ofNullable(positionInfor));
+	}
+
+	public static interface Require  extends CreateStampDataForEmployeesService.Require, StampingAreaRestriction.Require{
+		// [R-1] エリア制限設定を取得する
+		Optional<EmployeeStampingAreaRestrictionSetting> findByEmployeeId(String employId);
+
 	}
 	
 	

@@ -328,8 +328,14 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 //		});
 	}
 
+	//スナップショットが存在しない場合に登録する
 	@Override
 	public void adUpSnapshot(String sid, GeneralDate ymd, SnapShot snapshot) {
+		//スナップショットを取得する
+		if(snapshotAdapter.find(sid, ymd).isPresent()) {
+			return;
+		}
+		//スナップショット（仮）を更新
 		snapshotAdapter.update(DailySnapshotWorkImport.from(sid, ymd, snapshot));
 	}
 

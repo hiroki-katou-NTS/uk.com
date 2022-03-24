@@ -1897,12 +1897,10 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1963,7 +1961,7 @@ var nts;
                     return this.year;
                 };
                 JapanYear.prototype.toString = function () {
-                    return "".concat(this.empire).concat(this.year, "\u5E74");
+                    return "" + this.empire + this.year + "\u5E74";
                 };
                 return JapanYear;
             }());
@@ -1979,7 +1977,7 @@ var nts;
                     return this.month;
                 };
                 JapanYearMonth.prototype.toString = function () {
-                    return "".concat(this.empire).concat(this.year, "\u5E74").concat(this.month);
+                    return "" + this.empire + this.year + "\u5E74" + this.month;
                 };
                 return JapanYearMonth;
             }(JapanYear));
@@ -1995,7 +1993,7 @@ var nts;
                     return this.date;
                 };
                 JapanDate.prototype.toString = function () {
-                    return "".concat(this.empire).concat(this.year, "\u5E74").concat(this.month, "\u6708").concat(this.date, "\u65E5");
+                    return "" + this.empire + this.year + "\u5E74" + this.month + "\u6708" + this.date + "\u65E5";
                 };
                 return JapanDate;
             }(JapanYearMonth));
@@ -2066,13 +2064,13 @@ var nts;
                 var dateString = null;
                 if (value.length <= 4) {
                     // "YYYY"
-                    dateString = "".concat(value, "1231");
+                    dateString = value + "1231";
                 }
                 else if (value.length <= 7) {
                     // ["YYYY/M", "YYYY-M", "YYYYMM"]
                     var momentValue = moment.utc(value, ["YYYY/M", "YYYY-M", "YYYYMM"]);
                     var month = momentValue.month() + 1;
-                    dateString = "".concat(momentValue.year()).concat(month >= 10 ? month : '0' + month).concat(momentValue.daysInMonth());
+                    dateString = "" + momentValue.year() + (month >= 10 ? month : '0' + month) + momentValue.daysInMonth();
                 }
                 else {
                     // ["YYYY/M/D", "YYYY-M-D", "YYYYMMDD"]
@@ -3100,7 +3098,7 @@ var nts;
                     duration_1.create = create;
                     function createText(duration) {
                         var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePartText = duration.minutePartText;
-                        return "".concat(isNegative ? '-' : '').concat(asHoursInt, ":").concat(minutePartText).replace(/^\-{1,}/g, '-');
+                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + minutePartText).replace(/^\-{1,}/g, '-');
                     }
                 })(duration = minutesBased.duration || (minutesBased.duration = {}));
             })(minutesBased = time.minutesBased || (time.minutesBased = {}));
@@ -3537,7 +3535,7 @@ var nts;
                     duration_2.create = create;
                     function createText(duration) {
                         var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePartText = duration.minutePartText, secondPartText = duration.secondPartText;
-                        return "".concat(isNegative ? '-' : '').concat(asHoursInt, ":").concat(minutePartText, ":").concat(secondPartText).replace(/^\-{1,}/g, '-');
+                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + minutePartText + ":" + secondPartText).replace(/^\-{1,}/g, '-');
                     }
                 })(duration = secondsBased.duration || (secondsBased.duration = {}));
             })(secondsBased = time.secondsBased || (time.secondsBased = {}));
@@ -7149,14 +7147,12 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="../reference.ts"/>
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
 };
 var nts;
 (function (nts) {
@@ -7379,8 +7375,7 @@ var nts;
                         self.$container.tabIndex = -1;
                         $.data(self.$container, NAMESPACE, self);
                         var pTable = $.data(self.$container, NAMESPACE);
-                        pTable.owner = { headers: [], bodies: [],
-                            find: function (name, where) {
+                        pTable.owner = { headers: [], bodies: [], find: function (name, where) {
                                 var o = this;
                                 var elm = o[where].filter(function (e, i) { return e.classList.contains(name); });
                                 if (!elm || elm.length === 0)
@@ -7569,11 +7564,11 @@ var nts;
                         if (self.columnVirtualization) {
                             var contentHorzScrollOptions = {
                                 containerClass: BODY_PRF + DETAIL_HORZ_SCROLL,
-                                height: "".concat(helper.getScrollWidth(), "px"),
+                                height: helper.getScrollWidth() + "px",
                                 width: $detailContent.style.width
                             };
                             var top_1 = parseFloat($detailContent.style.top) + parseFloat($detailContent.style.height);
-                            $contentHorzScroll = render.createWrapper("".concat(top_1, "px"), $detailContent.style.left, contentHorzScrollOptions);
+                            $contentHorzScroll = render.createWrapper(top_1 + "px", $detailContent.style.left, contentHorzScrollOptions);
                             $contentHorzScroll.style.overflowX = "scroll";
                             if ($vertSumHeader) {
                                 $contentHorzScroll.style.overflowY = "hidden";
@@ -7582,10 +7577,10 @@ var nts;
                                 $contentHorzScroll.style.overflowY = "scroll";
                             }
                             var $scrollContent = document.createElement("div");
-                            var $detailContentTbl = $detailContent.querySelector(".".concat(BODY_TBL_PRF + DETAIL));
+                            var $detailContentTbl = $detailContent.querySelector("." + (BODY_TBL_PRF + DETAIL));
                             var contentWidth = Array.prototype.slice.call($detailContentTbl.querySelectorAll("col"))
                                 .reduce(function (width, col) { return width + parseFloat(col.style.width); }, 0);
-                            $scrollContent.style.width = "".concat(contentWidth, "px");
+                            $scrollContent.style.width = contentWidth + "px";
                             $scrollContent.style.height = "1px";
                             $contentHorzScroll.appendChild($scrollContent);
                             $frag.appendChild($contentHorzScroll);
@@ -7885,7 +7880,7 @@ var nts;
                         var $tbody = $table.getElementsByTagName("tbody")[0];
                         if (!isUpdate) {
                             if (options.columnVirtualization) {
-                                $container.style.height = "".concat(parseFloat(options.height) - helper.getScrollWidth(), "px");
+                                $container.style.height = parseFloat(options.height) - helper.getScrollWidth() + "px";
                             }
                             else {
                                 $container.style.height = options.height;
@@ -8026,16 +8021,16 @@ var nts;
                         }
                         Painter.prototype.styleInnerCell = function (idx, innerCount) {
                             var self = this;
-                            var divStyle = "", incellHeight = "".concat(parseInt(self.options.rowHeight) / self.multilineCountInCell, "px"), incellCountInRow = Math.ceil(innerCount / self.multilineCountInCell);
+                            var divStyle = "", incellHeight = parseInt(self.options.rowHeight) / self.multilineCountInCell + "px", incellCountInRow = Math.ceil(innerCount / self.multilineCountInCell);
                             var incellRowIdx = Math.floor(idx / incellCountInRow);
-                            divStyle += "; top: ".concat(incellRowIdx === 0 ? 0 : incellRowIdx + incellHeight, "px");
+                            divStyle += "; top: " + (incellRowIdx === 0 ? 0 : incellRowIdx + incellHeight) + "px";
                             if (incellRowIdx === 0) {
-                                divStyle += "; height: ".concat(incellHeight, ";");
+                                divStyle += "; height: " + incellHeight + ";";
                             }
                             else {
-                                divStyle += "; height: ".concat(incellHeight, ";");
+                                divStyle += "; height: " + incellHeight + ";";
                             }
-                            divStyle += "; position: absolute; \n                    left: ".concat((idx - incellRowIdx * incellCountInRow) * (100 / incellCountInRow), "%;\n                    line-height: ").concat(incellHeight, ";\n                    width: calc(").concat(100 / incellCountInRow, "%); text-align: center;");
+                            divStyle += "; position: absolute; \n                    left: " + (idx - incellRowIdx * incellCountInRow) * (100 / incellCountInRow) + "%;\n                    line-height: " + incellHeight + ";\n                    width: calc(" + 100 / incellCountInRow + "%); text-align: center;";
                             return divStyle;
                         };
                         Painter.prototype.cell = function (rData, rowIdx, key) {
@@ -8414,7 +8409,7 @@ var nts;
                                         || helper.hasClass(b, BODY_PRF + RIGHT_HORZ_SUM); });
                                     if (leftRightHorzSumBody.length > 0) {
                                         leftRightHorzSumBody.forEach(function (b) {
-                                            var rowElm = b.querySelector("tr:nth-of-type(".concat(rowIndex + 1, ")"));
+                                            var rowElm = b.querySelector("tr:nth-of-type(" + (rowIndex + 1) + ")");
                                             if (rowElm) {
                                                 helper.addClass1n(rowElm.children, render.HIGHLIGHT_CLS);
                                             }
@@ -8469,7 +8464,7 @@ var nts;
                                         || helper.hasClass(b, BODY_PRF + RIGHT_HORZ_SUM); });
                                     if (leftRightHorzSumBody.length > 0) {
                                         leftRightHorzSumBody.forEach(function (b) {
-                                            var rowElm = b.querySelector("tr:nth-of-type(".concat(rowIndex + 1, ")"));
+                                            var rowElm = b.querySelector("tr:nth-of-type(" + (rowIndex + 1) + ")");
                                             if (rowElm) {
                                                 helper.removeClass1n(rowElm.children, render.HIGHLIGHT_CLS);
                                             }
@@ -9199,7 +9194,7 @@ var nts;
                                         continue;
                                     }
                                     if (rElm) {
-                                        var td = rElm.querySelector("td:nth-of-type(".concat(self.highlightColumnIndex + 1, ")"));
+                                        var td = rElm.querySelector("td:nth-of-type(" + (self.highlightColumnIndex + 1) + ")");
                                         if (td) {
                                             helper.removeClass1n(td, render.HIGHLIGHT_CLS);
                                         }
@@ -9586,7 +9581,7 @@ var nts;
                             var $exTable = helper.closest($cell, "." + NAMESPACE);
                             if ($.data($exTable, NAMESPACE).updateMode !== EDIT)
                                 return;
-                            if (!selector.is(evt.target, ".".concat(selection.CELL_SELECTED_CLS))) {
+                            if (!selector.is(evt.target, "." + selection.CELL_SELECTED_CLS)) {
                                 var $grid = helper.getTable($exTable, options.containerClass);
                                 var inputSelecting = $.data($grid, internal.INPUT_SELECTING);
                                 var editor = $.data($exTable, update.EDITOR);
@@ -9598,7 +9593,7 @@ var nts;
                                 }
                                 selection.markCell($cell, true);
                                 var selectedCoord = helper.getCellCoord($cell);
-                                if (selector.is($cell, ".".concat(render.CHILD_CELL_CLS))) {
+                                if (selector.is($cell, "." + render.CHILD_CELL_CLS)) {
                                     selectedCoord.innerIdx = selector.index($cell);
                                 }
                                 else {
@@ -9618,8 +9613,8 @@ var nts;
                                         var bodyRowHeight = parseFloat($.data($exTable, NAMESPACE).bodyRowHeight);
                                         var offsetHeight = !_.isNil($cell.style.height) && $cell.style.height !== "" ? parseFloat($cell.style.height)
                                             : (isNaN(bodyRowHeight) ? 50 : bodyRowHeight);
-                                        errPopup.style.top = "".concat(offset.top + offsetHeight + 2, "px");
-                                        errPopup.style.left = "".concat(offset.left, "px");
+                                        errPopup.style.top = offset.top + offsetHeight + 2 + "px";
+                                        errPopup.style.left = offset.left + "px";
                                     }
                                 }
                                 return;
@@ -9636,7 +9631,7 @@ var nts;
                             var moveDir = "prevCellOf";
                             if (event.keyCode === $.ui.keyCode.ENTER || event.keyCode === $.ui.keyCode.TAB
                                 || event.keyCode === $.ui.keyCode.RIGHT || event.keyCode === $.ui.keyCode.LEFT) {
-                                if ($cell.querySelector(".".concat(update.EDITOR_CLS)) && event.keyCode !== $.ui.keyCode.ENTER)
+                                if ($cell.querySelector("." + update.EDITOR_CLS) && event.keyCode !== $.ui.keyCode.ENTER)
                                     return;
                                 event.preventDefault();
                                 var cell_1;
@@ -9649,7 +9644,7 @@ var nts;
                                 internal.getGem($grid).rollTo(cell_1);
                                 _.defer(function () {
                                     var $cell = selection.cellAt($grid, cell_1.rowIndex, cell_1.columnKey);
-                                    var childCells = $cell.querySelectorAll(".".concat(render.CHILD_CELL_CLS));
+                                    var childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                                     if (childCells.length > 0) {
                                         selection.markCell(childCells[cell_1.innerIdx], true);
                                     }
@@ -9659,7 +9654,7 @@ var nts;
                                     $.data($grid, internal.INPUT_SELECTING, { rowIdx: cell_1.rowIndex, columnKey: cell_1.columnKey, innerIdx: cell_1.innerIdx });
                                 });
                             }
-                            else if (selector.is(evt.target, ".".concat(selection.CELL_SELECTED_CLS))) {
+                            else if (selector.is(evt.target, "." + selection.CELL_SELECTED_CLS)) {
                                 var cellTxt = $cell.innerText;
                                 if (evt.keyCode === 113) {
                                     update.edit($exTable, $cell, options.containerClass);
@@ -9813,8 +9808,8 @@ var nts;
                             $input.value = inputVal;
                             $editor = document.createElement("div");
                             $editor.className = update.EDITOR_CLS;
-                            if (selector.is($cell, ".".concat(render.CELL_CLS))) {
-                                $editor.style.height = "".concat(parseFloat(exTable.bodyRowHeight) - 3, "px");
+                            if (selector.is($cell, "." + render.CELL_CLS)) {
+                                $editor.style.height = parseFloat(exTable.bodyRowHeight) - 3 + "px";
                             }
                             else {
                                 $editor.style.height = "calc(100% - 1px)";
@@ -9955,7 +9950,7 @@ var nts;
                                             //                                    return;
                                             //                                }
                                             //                                edit($exTable, $cell.querySelectorAll("." + render.CHILD_CELL_CLS)[cell.innerIdx], land);
-                                            var childCells = $cell.querySelectorAll(".".concat(render.CHILD_CELL_CLS));
+                                            var childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                                             if (childCells) {
                                                 selection.markCell(childCells[cell.innerIdx], true);
                                                 $.data($grid_1, internal.INPUT_SELECTING, { rowIdx: cell.rowIndex, columnKey: cell.columnKey, innerIdx: cell.innerIdx });
@@ -9992,7 +9987,7 @@ var nts;
                                         //                                return;
                                         //                            }
                                         //                            edit($exTable, $cell.querySelectorAll("." + render.CHILD_CELL_CLS)[cell.innerIdx], land);
-                                        var childCells = $cell.querySelectorAll(".".concat(render.CHILD_CELL_CLS));
+                                        var childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                                         if (childCells) {
                                             selection.markCell(childCells[cell_2.innerIdx], true);
                                             $.data($grid_1, internal.INPUT_SELECTING, { rowIdx: cell_2.rowIndex, columnKey: cell_2.columnKey, innerIdx: cell_2.innerIdx });
@@ -10032,7 +10027,7 @@ var nts;
                         if (editor) {
                             var $input = editor.$editor.querySelector("input");
                             var content = $input.value;
-                            var $parent = helper.closest(editor.$editor, ".".concat(update.EDITABLE_CLS));
+                            var $parent = helper.closest(editor.$editor, "." + update.EDITABLE_CLS);
                             helper.removeClass($parent, update.EDIT_CELL_CLS);
                             $parent.textContent = content;
                             $.data($exTable, update.EDITOR, null);
@@ -10326,10 +10321,10 @@ var nts;
                         else {
                             gen.dataSource[rowIdx][columnKey] = value;
                             var detail = new selection.Cell(rowIdx, columnKey, value, -1);
-                            if (selector.is($grid, ".".concat(BODY_PRF + LEFTMOST))) {
+                            if (selector.is($grid, "." + (BODY_PRF + LEFTMOST))) {
                                 detail.land = BODY_PRF + LEFTMOST;
                             }
-                            else if (selector.is($grid, ".".concat(BODY_PRF + MIDDLE))) {
+                            else if (selector.is($grid, "." + (BODY_PRF + MIDDLE))) {
                                 detail.land = BODY_PRF + MIDDLE;
                             }
                             if (!helper.isEqual(origDs[rowIdx][columnKey], value)) {
@@ -11040,7 +11035,7 @@ var nts;
                         Printer.prototype.copy = function (cut) {
                             var self = this;
                             var selectedCells = selection.getSelectedCells(this.$grid);
-                            var copiedData = "".concat(self.token);
+                            var copiedData = "" + self.token;
                             if (selectedCells.length === 1) {
                                 var cell = selectedCells[0];
                                 var ds = internal.getDataSource(self.$grid);
@@ -11579,7 +11574,7 @@ var nts;
                                 else if (vtor.actValid === internal.DURATION) {
                                     isValid = isTimeDuration(value, vtor.max, vtor.min);
                                     if (_.isNil(vtor.max)) {
-                                        vtor.max = "".concat(validation.DEF_HOUR_MAX, ":00");
+                                        vtor.max = validation.DEF_HOUR_MAX + ":00";
                                     }
                                     if (_.isNil(vtor.min)) {
                                         vtor.min = "0:00";
@@ -11637,7 +11632,7 @@ var nts;
                                     $.data($cell, internal.CUSTOM_ERR, false);
                                     _.forEach(result.innerErrorClear, function (innerErr) {
                                         var $pCell = selection.cellAt($body, rowIdx, columnKey);
-                                        var childCells = $pCell.querySelectorAll(".".concat(render.CHILD_CELL_CLS));
+                                        var childCells = $pCell.querySelectorAll("." + render.CHILD_CELL_CLS);
                                         var $oCell = childCells ? childCells[innerErr] : $pCell;
                                         if ($.data($oCell, internal.CUSTOM_ERR)) {
                                             if (errors.any($oCell, innerErr))
@@ -12166,7 +12161,7 @@ var nts;
                         if (!rowExists($grid, rowIdx))
                             return;
                         var $cell = cellAt($grid, rowIdx, columnKey);
-                        var childCells = $cell.querySelectorAll(".".concat(render.CHILD_CELL_CLS));
+                        var childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                         if (_.isNil(childCells) || childCells.length === 0) {
                             helper.removeClass($cell, selection.CELL_SELECTED_CLS);
                             return;
@@ -12633,10 +12628,10 @@ var nts;
                             this.$leftHorzSumContent = this.$container.querySelector("." + BODY_PRF + LEFT_HORZ_SUM);
                             this.$horzSumHeader = this.$container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM);
                             this.$horzSumContent = this.$container.querySelector("." + BODY_PRF + HORIZONTAL_SUM);
-                            this.$rightHorzSumHeader = this.$container.querySelector(".".concat(HEADER_PRF + RIGHT_HORZ_SUM));
-                            this.$rightHorzSumContent = this.$container.querySelector(".".concat(BODY_PRF + RIGHT_HORZ_SUM));
-                            this.$detailHorzScroll = this.$container.querySelector(".".concat(BODY_PRF + DETAIL_HORZ_SCROLL));
-                            this.$verticalSumHeader = this.$container.querySelector(".".concat(HEADER_PRF + VERTICAL_SUM));
+                            this.$rightHorzSumHeader = this.$container.querySelector("." + (HEADER_PRF + RIGHT_HORZ_SUM));
+                            this.$rightHorzSumContent = this.$container.querySelector("." + (BODY_PRF + RIGHT_HORZ_SUM));
+                            this.$detailHorzScroll = this.$container.querySelector("." + (BODY_PRF + DETAIL_HORZ_SCROLL));
+                            this.$verticalSumHeader = this.$container.querySelector("." + (HEADER_PRF + VERTICAL_SUM));
                             if ($follower) {
                                 this.$depLeftmostHeader = $follower.querySelector("." + HEADER_PRF + LEFTMOST);
                                 this.$depLeftmostBody = $follower.querySelector("." + BODY_PRF + LEFTMOST);
@@ -12927,7 +12922,7 @@ var nts;
                             return !e.classList.contains(BODY_PRF + HORIZONTAL_SUM) && !e.classList.contains(BODY_PRF + LEFT_HORZ_SUM)
                                 && !e.classList.contains(BODY_PRF + RIGHT_HORZ_SUM) && !e.classList.contains(BODY_PRF + DETAIL_HORZ_SCROLL);
                         });
-                        var $detailHorzScroll = $container.querySelector(".".concat(BODY_PRF + DETAIL_HORZ_SCROLL));
+                        var $detailHorzScroll = $container.querySelector("." + (BODY_PRF + DETAIL_HORZ_SCROLL));
                         if (horzSumExists) {
                             $horzSumHeader = $container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM);
                             $horzSumBody = $container.querySelector("." + BODY_PRF + HORIZONTAL_SUM);
@@ -12944,8 +12939,8 @@ var nts;
                                 || ($wrapper.style.overflow && $wrapper.style.overflow === "hidden scroll")) {
                                 if ($wrapper.classList.contains(BODY_PRF + DETAIL) && $detailHorzScroll) {
                                     var detailHeight = height - helper.getScrollWidth();
-                                    $wrapper.style.height = "".concat(detailHeight, "px");
-                                    $detailHorzScroll.style.top = "".concat(parseFloat($wrapper.style.top) + detailHeight, "px");
+                                    $wrapper.style.height = detailHeight + "px";
+                                    $detailHorzScroll.style.top = parseFloat($wrapper.style.top) + detailHeight + "px";
                                 }
                                 else {
                                     $wrapper.style.height = height + "px";
@@ -12953,9 +12948,9 @@ var nts;
                             }
                             else {
                                 var detailHeight = height - helper.getScrollWidth();
-                                $wrapper.style.height = "".concat(detailHeight, "px");
+                                $wrapper.style.height = detailHeight + "px";
                                 if ($wrapper.classList.contains(BODY_PRF + DETAIL) && $detailHorzScroll) {
-                                    $detailHorzScroll.style.top = "".concat(parseFloat($wrapper.style.top) + detailHeight, "px");
+                                    $detailHorzScroll.style.top = parseFloat($wrapper.style.top) + detailHeight + "px";
                                 }
                             }
                         });
@@ -12988,29 +12983,29 @@ var nts;
                         var $vertSumContent = $container.querySelector("." + BODY_PRF + VERTICAL_SUM);
                         var $detailHeader = $container.querySelector("." + HEADER_PRF + DETAIL);
                         var $detailBody = $container.querySelector("." + BODY_PRF + DETAIL);
-                        var $middleHeader = $container.querySelector(".".concat(HEADER_PRF + MIDDLE));
-                        var $middleBody = $container.querySelector(".".concat(BODY_PRF + MIDDLE));
-                        var $horzSumHeader = $container.querySelector(".".concat(HEADER_PRF + HORIZONTAL_SUM));
-                        var $horzSumContent = $container.querySelector(".".concat(BODY_PRF + HORIZONTAL_SUM));
-                        var $rightHorzSumHeader = $container.querySelector(".".concat(HEADER_PRF + RIGHT_HORZ_SUM));
-                        var $rightHorzSumContent = $container.querySelector(".".concat(BODY_PRF + RIGHT_HORZ_SUM));
-                        var $detailHorzScroll = $container.querySelector(".".concat(BODY_PRF + DETAIL_HORZ_SCROLL));
+                        var $middleHeader = $container.querySelector("." + (HEADER_PRF + MIDDLE));
+                        var $middleBody = $container.querySelector("." + (BODY_PRF + MIDDLE));
+                        var $horzSumHeader = $container.querySelector("." + (HEADER_PRF + HORIZONTAL_SUM));
+                        var $horzSumContent = $container.querySelector("." + (BODY_PRF + HORIZONTAL_SUM));
+                        var $rightHorzSumHeader = $container.querySelector("." + (HEADER_PRF + RIGHT_HORZ_SUM));
+                        var $rightHorzSumContent = $container.querySelector("." + (BODY_PRF + RIGHT_HORZ_SUM));
+                        var $detailHorzScroll = $container.querySelector("." + (BODY_PRF + DETAIL_HORZ_SCROLL));
                         var detailOffsetLeft = parseFloat($detailHeader.style.left), //selector.offset($detailHeader).left, 
                         width = window.innerWidth - detailOffsetLeft;
                         var scrollWidth = helper.getScrollWidth();
                         var $sup = table.$follower, oMiddleWidth = 0;
                         if (adjustMiddle === true && $middleHeader) {
-                            var $leftHorzSumHeader = $container.querySelector(".".concat(HEADER_PRF + LEFT_HORZ_SUM));
-                            var $leftHorzSumBody = $container.querySelector(".".concat(BODY_PRF + LEFT_HORZ_SUM));
+                            var $leftHorzSumHeader = $container.querySelector("." + (HEADER_PRF + LEFT_HORZ_SUM));
+                            var $leftHorzSumBody = $container.querySelector("." + (BODY_PRF + LEFT_HORZ_SUM));
                             var leftHorzSumWidth = void 0, horzSumLeft = void 0, rightHorzSumLeft = void 0, middleWidth = parseFloat($middleHeader.style.width); //$middleHeader.clientWidth;
                             if ($middleHeader.style.display !== "none") {
                                 width -= middleWidth;
                                 oMiddleWidth = middleWidth;
                                 var newDetailLeft = detailOffsetLeft + middleWidth;
-                                $detailHeader.style.left = "".concat(newDetailLeft, "px");
-                                $detailBody.style.left = "".concat(newDetailLeft, "px");
+                                $detailHeader.style.left = newDetailLeft + "px";
+                                $detailBody.style.left = newDetailLeft + "px";
                                 if ($detailHorzScroll) {
-                                    $detailHorzScroll.style.left = "".concat(newDetailLeft, "px");
+                                    $detailHorzScroll.style.left = newDetailLeft + "px";
                                 }
                                 if ($leftHorzSumHeader) {
                                     leftHorzSumWidth = parseFloat($leftHorzSumHeader.style.width) + middleWidth;
@@ -13023,10 +13018,10 @@ var nts;
                             else {
                                 width += middleWidth;
                                 var newDetailLeft = detailOffsetLeft - middleWidth;
-                                $detailHeader.style.left = "".concat(newDetailLeft, "px");
-                                $detailBody.style.left = "".concat(newDetailLeft, "px");
+                                $detailHeader.style.left = newDetailLeft + "px";
+                                $detailBody.style.left = newDetailLeft + "px";
                                 if ($detailHorzScroll) {
-                                    $detailHorzScroll.style.left = "".concat(newDetailLeft, "px");
+                                    $detailHorzScroll.style.left = newDetailLeft + "px";
                                 }
                                 if ($leftHorzSumHeader) {
                                     leftHorzSumWidth = parseFloat($leftHorzSumHeader.style.width) - middleWidth;
@@ -13037,13 +13032,13 @@ var nts;
                                 }
                             }
                             if ($leftHorzSumHeader) {
-                                $leftHorzSumHeader.style.width = "".concat(leftHorzSumWidth, "px");
-                                $leftHorzSumBody.style.width = "".concat(leftHorzSumWidth, "px");
-                                $horzSumHeader.style.left = "".concat(horzSumLeft, "px");
-                                $horzSumContent.style.left = "".concat(horzSumLeft, "px");
+                                $leftHorzSumHeader.style.width = leftHorzSumWidth + "px";
+                                $leftHorzSumBody.style.width = leftHorzSumWidth + "px";
+                                $horzSumHeader.style.left = horzSumLeft + "px";
+                                $horzSumContent.style.left = horzSumLeft + "px";
                                 if ($rightHorzSumHeader) {
-                                    $rightHorzSumHeader.style.left = "".concat(rightHorzSumLeft, "px");
-                                    $rightHorzSumContent.style.left = "".concat(rightHorzSumLeft, "px");
+                                    $rightHorzSumHeader.style.left = rightHorzSumLeft + "px";
+                                    $rightHorzSumContent.style.left = rightHorzSumLeft + "px";
                                 }
                             }
                         }
@@ -13058,13 +13053,13 @@ var nts;
                                 $container.style.width = (parseFloat($container.style.width) + (width - parseFloat($detailBody.style.width))) + "px";
                             }
                             else if (adjustMiddle && helper.hasScrollBar($detailBody, true)) {
-                                var $leftmostHeader = $container.querySelector(".".concat(HEADER_PRF + LEFTMOST));
+                                var $leftmostHeader = $container.querySelector("." + (HEADER_PRF + LEFTMOST));
                                 $container.style.width = parseFloat($leftmostHeader.style.width) + oMiddleWidth + width + parseFloat($vertSumContent.style.width) + 15 + "px";
                             }
                             $detailHeader.style.width = width + "px";
                             $detailBody.style.width = width + "px";
                             if ($detailHorzScroll) {
-                                $detailHorzScroll.style.width = "".concat(width, "px");
+                                $detailHorzScroll.style.width = width + "px";
                             }
                             if (storage.area.getPartWidths($container).isPresent()) {
                                 storage.area.save($container, $.data($detailHeader, internal.EX_PART), width);
@@ -13078,7 +13073,7 @@ var nts;
                                     || $horzSumHeader.style.display === "none")) {
                                     horzSumWidth = width;
                                 }
-                                $horzSumContent.style.width = "".concat(horzSumWidth, "px");
+                                $horzSumContent.style.width = horzSumWidth + "px";
                             }
                             repositionVertSum($container, $vertSumHeader, $vertSumContent, $rightHorzSumHeader, $rightHorzSumContent);
                             syncDetailAreaLine($container, $detailHeader, $detailBody);
@@ -13103,12 +13098,12 @@ var nts;
                                 + (width - parseFloat($detailBody.style.width))) + "px";
                         }
                         else if (adjustMiddle && helper.hasScrollBar($detailBody, true)) {
-                            var $leftmostHeader = $container.querySelector(".".concat(HEADER_PRF + LEFTMOST));
+                            var $leftmostHeader = $container.querySelector("." + (HEADER_PRF + LEFTMOST));
                             $container.style.width = parseFloat($leftmostHeader.style.width) + oMiddleWidth + width + 15 + "px";
                         }
                         $detailBody.style.width = width + "px";
                         if ($detailHorzScroll) {
-                            $detailHorzScroll.style.width = "".concat(width, "px");
+                            $detailHorzScroll.style.width = width + "px";
                         }
                         if (storage.area.getPartWidths($container).isPresent()) {
                             storage.area.save($container, $.data($detailHeader, internal.EX_PART), width);
@@ -13182,13 +13177,13 @@ var nts;
                     function repositionHorzSum($container, $horzSumHeader, $horzSumBody) {
                         $horzSumHeader = $horzSumHeader || $container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM);
                         $horzSumBody = $horzSumBody || $container.querySelector("." + BODY_PRF + HORIZONTAL_SUM);
-                        var $rightHorzSumHeader = $container.querySelector(".".concat(HEADER_PRF + RIGHT_HORZ_SUM));
-                        var $rightHorzSumContent = $container.querySelector(".".concat(BODY_PRF + RIGHT_HORZ_SUM));
+                        var $rightHorzSumHeader = $container.querySelector("." + (HEADER_PRF + RIGHT_HORZ_SUM));
+                        var $rightHorzSumContent = $container.querySelector("." + (BODY_PRF + RIGHT_HORZ_SUM));
                         if (!$horzSumHeader)
                             return;
                         var headerTop = parseFloat($container.querySelector("." + HEADER_PRF + DETAIL).style.height)
                             + parseFloat($container.querySelector("." + BODY_PRF + DETAIL).style.height) + DISTANCE + SPACE;
-                        var $detailHorzScroll = $container.querySelector(".".concat(BODY_PRF + DETAIL_HORZ_SCROLL));
+                        var $detailHorzScroll = $container.querySelector("." + (BODY_PRF + DETAIL_HORZ_SCROLL));
                         if ($detailHorzScroll) {
                             headerTop += helper.getScrollWidth();
                         }
@@ -13198,8 +13193,8 @@ var nts;
                         $horzSumHeader.style.top = headerTop + "px";
                         $horzSumBody.style.top = bodyTop + "px";
                         if ($rightHorzSumHeader && $rightHorzSumContent) {
-                            $rightHorzSumHeader.style.top = "".concat(headerTop, "px");
-                            $rightHorzSumContent.style.top = "".concat(bodyTop, "px");
+                            $rightHorzSumHeader.style.top = headerTop + "px";
+                            $rightHorzSumContent.style.top = bodyTop + "px";
                         }
                     }
                     resize.repositionHorzSum = repositionHorzSum;
@@ -13215,8 +13210,8 @@ var nts;
                         $vertSumHeader.style.left = vertSumLeft + "px";
                         $vertSumContent.style.left = vertSumLeft + "px";
                         if ($rightHorzSumHeader && $rightHorzSumContent) {
-                            $rightHorzSumHeader.style.left = "".concat(vertSumLeft, "px");
-                            $rightHorzSumContent.style.left = "".concat(vertSumLeft, "px");
+                            $rightHorzSumHeader.style.left = vertSumLeft + "px";
+                            $rightHorzSumContent.style.left = vertSumLeft + "px";
                         }
                     }
                     resize.repositionVertSum = repositionVertSum;
@@ -13229,7 +13224,7 @@ var nts;
                                 || e.classList.contains(BODY_PRF + RIGHT_HORZ_SUM))
                                 return;
                             if (e.classList.contains(BODY_PRF + LEFTMOST)) {
-                                e.style.height = "".concat(height - helper.getScrollWidth(), "px");
+                                e.style.height = height - helper.getScrollWidth() + "px";
                             }
                             else {
                                 e.style.height = height + "px";
@@ -14008,14 +14003,14 @@ var nts;
                                     var id = target.getAttribute("id");
                                     if (_.isNil(id))
                                         return;
-                                    if (!rightClickFt.chartFilter.apply(rightClickFt, __spreadArray(__spreadArray([], id.split('-'), false), [target], false)))
+                                    if (!rightClickFt.chartFilter.apply(rightClickFt, __spreadArrays(id.split('-'), [target])))
                                         return;
                                 }
                                 else {
-                                    if (selector.is(target, ".".concat(render.CHILD_CELL_CLS))) {
-                                        target = helper.closest(target, ".".concat(render.CELL_CLS));
+                                    if (selector.is(target, "." + render.CHILD_CELL_CLS)) {
+                                        target = helper.closest(target, "." + render.CELL_CLS);
                                     }
-                                    if (!selector.is(target, ".".concat(render.CELL_CLS)))
+                                    if (!selector.is(target, "." + render.CELL_CLS))
                                         return;
                                 }
                                 var cm, ui = {};
@@ -14023,13 +14018,13 @@ var nts;
                                     ui = helper.getCellCoord(target);
                                 }
                                 else {
-                                    _a = __spreadArray([], id.split('-'), true), ui.rowIndex = _a[0], ui.id = _a[1];
+                                    _a = __spreadArrays(id.split('-')), ui.rowIndex = _a[0], ui.id = _a[1];
                                 }
                                 ui.target = target;
                                 ui.contextMenu = function (items) {
                                     if (_.isNil(cm)) {
                                         cm = new widget.ContextMenu();
-                                        cm.$table = $container.querySelector(".".concat(options.tableClass));
+                                        cm.$table = $container.querySelector("." + options.tableClass);
                                     }
                                     if (items === "show") {
                                         cm.click(event);
@@ -14050,12 +14045,12 @@ var nts;
                                     if (!_.isNil(hoverFt.selector) && !selector.is(target, hoverFt.selector))
                                         return;
                                     event.stopPropagation();
-                                    if (!selector.is(target, ".".concat(render.CELL_CLS))) {
-                                        target = helper.closest(target, ".".concat(render.CELL_CLS));
+                                    if (!selector.is(target, "." + render.CELL_CLS)) {
+                                        target = helper.closest(target, "." + render.CELL_CLS);
                                     }
                                     if (_.isNil(target))
                                         return;
-                                    var ui = helper.getCellCoord(target), $table = $container.querySelector(".".concat(options.tableClass));
+                                    var ui = helper.getCellCoord(target), $table = $container.querySelector("." + options.tableClass);
                                     ui.target = event.target;
                                     ui.tooltip = function (tooltipOpt, sources) {
                                         var $t2 = $.data($table, internal.TOOLTIP);
@@ -14081,12 +14076,12 @@ var nts;
                                     if (!_.isNil(hoverFt.selector) && !selector.is(target, hoverFt.selector))
                                         return;
                                     event.stopPropagation();
-                                    if (!selector.is(target, ".".concat(render.CELL_CLS))) {
-                                        target = helper.closest(target, ".".concat(render.CELL_CLS));
+                                    if (!selector.is(target, "." + render.CELL_CLS)) {
+                                        target = helper.closest(target, "." + render.CELL_CLS);
                                     }
                                     if (_.isNil(target))
                                         return;
-                                    var ui = helper.getCellCoord(target), $table = $container.querySelector(".".concat(options.tableClass));
+                                    var ui = helper.getCellCoord(target), $table = $container.querySelector("." + options.tableClass);
                                     ui.target = event.target;
                                     ui.tooltip = function (tooltipOpt) {
                                         if (tooltipOpt === "hide") {
@@ -14105,12 +14100,12 @@ var nts;
                             $container.addXEventListener(events.MOUSE_DOWN, function () {
                                 var target = event.target;
                                 event.stopPropagation();
-                                if (selector.is(target, ".".concat(render.CHILD_CELL_CLS))) {
-                                    target = helper.closest(target, ".".concat(render.CELL_CLS));
+                                if (selector.is(target, "." + render.CHILD_CELL_CLS)) {
+                                    target = helper.closest(target, "." + render.CELL_CLS);
                                 }
-                                if (!selector.is(target, ".".concat(render.CELL_CLS)))
+                                if (!selector.is(target, "." + render.CELL_CLS))
                                     return;
-                                var ui = helper.getCellCoord(target), $table = $container.querySelector(".".concat(options.tableClass));
+                                var ui = helper.getCellCoord(target), $table = $container.querySelector("." + options.tableClass);
                                 ui.target = target;
                                 ui.popupPanel = function (popupOpt, $panel, position) {
                                     var $pu = $.data($table, internal.POPUP);
@@ -14623,8 +14618,8 @@ var nts;
                         $container.find("." + BODY_PRF + LEFT_HORZ_SUM).hide();
                         $container.find("." + HEADER_PRF + HORIZONTAL_SUM).hide();
                         $container.find("." + BODY_PRF + HORIZONTAL_SUM).hide();
-                        $container.find(".".concat(HEADER_PRF + RIGHT_HORZ_SUM)).hide();
-                        $container.find(".".concat(BODY_PRF + RIGHT_HORZ_SUM)).hide();
+                        $container.find("." + (HEADER_PRF + RIGHT_HORZ_SUM)).hide();
+                        $container.find("." + (BODY_PRF + RIGHT_HORZ_SUM)).hide();
                         resize.fitWindowHeight($container[0], undefined, false);
                     }
                     /**
@@ -14635,8 +14630,8 @@ var nts;
                         $container.find("." + BODY_PRF + LEFT_HORZ_SUM).show();
                         $container.find("." + HEADER_PRF + HORIZONTAL_SUM).show();
                         $container.find("." + BODY_PRF + HORIZONTAL_SUM).show();
-                        $container.find(".".concat(HEADER_PRF + RIGHT_HORZ_SUM)).show();
-                        $container.find(".".concat(BODY_PRF + RIGHT_HORZ_SUM)).show();
+                        $container.find("." + (HEADER_PRF + RIGHT_HORZ_SUM)).show();
+                        $container.find("." + (BODY_PRF + RIGHT_HORZ_SUM)).show();
                         resize.fitWindowHeight($container[0], undefined, true);
                     }
                     /**
@@ -14648,22 +14643,22 @@ var nts;
                             return;
                         $vertSumHeader.hide();
                         $container.find("." + BODY_PRF + VERTICAL_SUM).hide();
-                        var $rightHorzSumHeader = $container.find(".".concat(HEADER_PRF + RIGHT_HORZ_SUM));
+                        var $rightHorzSumHeader = $container.find("." + (HEADER_PRF + RIGHT_HORZ_SUM));
                         $rightHorzSumHeader.hide();
-                        $container.find(".".concat(BODY_PRF + RIGHT_HORZ_SUM)).hide();
-                        var $detailBody = $container.find(".".concat(BODY_PRF + DETAIL));
+                        $container.find("." + (BODY_PRF + RIGHT_HORZ_SUM)).hide();
+                        var $detailBody = $container.find("." + (BODY_PRF + DETAIL));
                         if (!helper.hasScrollBar($detailBody[0], true)) {
                             $container.css("width", parseFloat($container.css("width")) - parseFloat($vertSumHeader.css("width")));
                         }
-                        var $detailHorzScroll = $container.find(".".concat(BODY_PRF + DETAIL_HORZ_SCROLL));
+                        var $detailHorzScroll = $container.find("." + (BODY_PRF + DETAIL_HORZ_SCROLL));
                         if ($detailHorzScroll.length > 0) {
                             $detailHorzScroll.css("overflow-y", "scroll");
                         }
                         resize.fitWindowWidth($container[0]);
-                        $detailBody.css("max-width", "".concat(parseFloat($detailBody.css("max-width")) + helper.getScrollWidth(), "px"));
+                        $detailBody.css("max-width", parseFloat($detailBody.css("max-width")) + helper.getScrollWidth() + "px");
                         scroll.unbindVertWheel($container.find("." + BODY_PRF + DETAIL)[0]);
                         if ($rightHorzSumHeader.length > 0 && $rightHorzSumHeader.css("display") === "none") {
-                            scroll.unbindVertWheel($container.find(".".concat(BODY_PRF + HORIZONTAL_SUM))[0]);
+                            scroll.unbindVertWheel($container.find("." + (BODY_PRF + HORIZONTAL_SUM))[0]);
                         }
                     }
                     /**
@@ -14677,18 +14672,18 @@ var nts;
                             return;
                         $vertSumHeader.show();
                         $vertSumBody.show();
-                        var $rightHorzSumHeader = $container.find(".".concat(HEADER_PRF + RIGHT_HORZ_SUM));
+                        var $rightHorzSumHeader = $container.find("." + (HEADER_PRF + RIGHT_HORZ_SUM));
                         $rightHorzSumHeader.show();
-                        $container.find(".".concat(BODY_PRF + RIGHT_HORZ_SUM)).show();
-                        var $detailHorzScroll = $container.find(".".concat(BODY_PRF + DETAIL_HORZ_SCROLL));
+                        $container.find("." + (BODY_PRF + RIGHT_HORZ_SUM)).show();
+                        var $detailHorzScroll = $container.find("." + (BODY_PRF + DETAIL_HORZ_SCROLL));
                         if ($detailHorzScroll.length > 0) {
                             $detailHorzScroll.css("overflow-y", "hidden");
                         }
                         resize.fitWindowWidth($container[0]);
-                        $detailBody.css("max-width", "".concat(parseFloat($detailBody.css("max-width")) - helper.getScrollWidth(), "px"));
+                        $detailBody.css("max-width", parseFloat($detailBody.css("max-width")) - helper.getScrollWidth() + "px");
                         scroll.bindVertWheel($detailBody[0]);
                         if ($rightHorzSumHeader.length > 0 && $rightHorzSumHeader.css("display") !== "none") {
-                            scroll.bindVertWheel($container.find(".".concat(BODY_PRF + HORIZONTAL_SUM))[0]);
+                            scroll.bindVertWheel($container.find("." + (BODY_PRF + HORIZONTAL_SUM))[0]);
                         }
                         $vertSumBody.scrollTop($detailBody.scrollTop());
                         if (!helper.hasScrollBar($detailBody[0], true)) {
@@ -14699,13 +14694,13 @@ var nts;
                      * Hide middle.
                      */
                     function hideMiddle($container) {
-                        var $middleHeader = $container.find(".".concat(HEADER_PRF + MIDDLE));
+                        var $middleHeader = $container.find("." + (HEADER_PRF + MIDDLE));
                         if ($middleHeader.length === 0)
                             return;
-                        var $middleBody = $container.find(".".concat(BODY_PRF + MIDDLE));
+                        var $middleBody = $container.find("." + (BODY_PRF + MIDDLE));
                         $middleHeader.hide();
                         $middleBody.hide();
-                        var $detailBody = $container.find(".".concat(BODY_PRF + DETAIL));
+                        var $detailBody = $container.find("." + (BODY_PRF + DETAIL));
                         if (!helper.hasScrollBar($detailBody[0], true)) {
                             $container.css("width", parseFloat($container.css("width")) - parseFloat($middleHeader.css("width")));
                         }
@@ -14715,10 +14710,10 @@ var nts;
                      * Show middle.
                      */
                     function showMiddle($container) {
-                        var $middleHeader = $container.find(".".concat(HEADER_PRF + MIDDLE));
+                        var $middleHeader = $container.find("." + (HEADER_PRF + MIDDLE));
                         if ($middleHeader.length === 0)
                             return;
-                        var $middleBody = $container.find(".".concat(BODY_PRF + MIDDLE)), $detailBody = $container.find(".".concat(BODY_PRF + DETAIL));
+                        var $middleBody = $container.find("." + (BODY_PRF + MIDDLE)), $detailBody = $container.find("." + (BODY_PRF + DETAIL));
                         $middleHeader.show();
                         $middleBody.show();
                         resize.fitWindowWidth($container[0], true);
@@ -15202,7 +15197,7 @@ var nts;
                      * Set stick fields.
                      */
                     function setStickFields($container, fields) {
-                        var $grid = $container.find(".".concat(BODY_PRF + DETAIL));
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
                         var sticker = $grid.data(internal.STICKER);
                         if (!sticker) {
                             sticker = new spread.Sticker();
@@ -15288,7 +15283,7 @@ var nts;
                         var exTable = $container.data(NAMESPACE);
                         if (!exTable || exTable.updateMode !== STICK)
                             return;
-                        var $grid = $container.find(".".concat(BODY_PRF + DETAIL));
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
                         var redoStack = $grid.data(internal.STICK_REDO_STACK);
                         if (!redoStack || redoStack.length === 0)
                             return;
@@ -15317,7 +15312,7 @@ var nts;
                         var exTable = $container.data(NAMESPACE);
                         if (!exTable || exTable.updateMode !== COPY_PASTE)
                             return;
-                        var $grid = $container.find(".".concat(BODY_PRF + DETAIL));
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
                         var printer = $grid.data(internal.PRINTER_INST);
                         if (!printer)
                             return;
@@ -15330,7 +15325,7 @@ var nts;
                         var exTable = $container.data(NAMESPACE);
                         if (!exTable || exTable.updateMode !== COPY_PASTE)
                             return;
-                        var $grid = $container.find(".".concat(BODY_PRF + DETAIL));
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
                         var printer = $grid.data(internal.PRINTER_INST);
                         if (!printer)
                             return;
@@ -15343,7 +15338,7 @@ var nts;
                         var exTable = $container.data(NAMESPACE);
                         if (!exTable || exTable.updateMode !== EDIT)
                             return;
-                        var $grid = $container.find(".".concat(BODY_PRF + DETAIL));
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
                         var histories = $grid.data(internal.EDIT_HISTORY);
                         if (!histories || histories.length === 0)
                             return;
@@ -15370,7 +15365,7 @@ var nts;
                         var exTable = $container.data(NAMESPACE);
                         if (!exTable || exTable.updateMode !== EDIT)
                             return;
-                        var $grid = $container.find(".".concat(BODY_PRF + DETAIL));
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
                         var redoStack = $grid.data(internal.EDIT_REDO_STACK);
                         if (!redoStack || redoStack.length === 0)
                             return;
@@ -15383,14 +15378,14 @@ var nts;
                      * Paste validate.
                      */
                     function setPasteValidate($container, validate) {
-                        var $grid = $container.find(".".concat(BODY_PRF + DETAIL));
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
                         $grid.data(internal.PASTE_VALIDATE, validate);
                     }
                     /**
                      * After paste.
                      */
                     function setAfterPaste($container, afterPaste) {
-                        var $grid = $container.find(".".concat(BODY_PRF + DETAIL));
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
                         $grid.data(internal.AFTER_PASTE, afterPaste);
                     }
                     /**
@@ -15494,10 +15489,10 @@ var nts;
                         var $table;
                         switch (name) {
                             case "middle":
-                                $table = $container.find(".".concat(BODY_PRF + MIDDLE))[0];
+                                $table = $container.find("." + (BODY_PRF + MIDDLE))[0];
                                 break;
                             case "detail":
-                                $table = $container.find(".".concat(BODY_PRF + DETAIL))[0];
+                                $table = $container.find("." + (BODY_PRF + DETAIL))[0];
                                 break;
                             default:
                                 return;
@@ -15547,10 +15542,10 @@ var nts;
                         var $table;
                         switch (name) {
                             case "middle":
-                                $table = $container.find(".".concat(BODY_PRF + MIDDLE))[0];
+                                $table = $container.find("." + (BODY_PRF + MIDDLE))[0];
                                 break;
                             case "detail":
-                                $table = $container.find(".".concat(BODY_PRF + DETAIL))[0];
+                                $table = $container.find("." + (BODY_PRF + DETAIL))[0];
                                 break;
                             default:
                                 return;
@@ -17533,7 +17528,7 @@ var nts;
                     function textOverflow($cell) {
                         $cell.addXEventListener(events.MOUSE_ENTER + ".celloverflow", function (evt) {
                             var $target = $(evt.target);
-                            if ($target.find(".".concat(update.EDITOR_CLS)).length > 0)
+                            if ($target.find("." + update.EDITOR_CLS).length > 0)
                                 return;
                             if (!displayFullText($target)) {
                                 var $link = $target.find("a");
@@ -17834,7 +17829,7 @@ var nts;
                                         else {
                                             var exist = _.find(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
                                             if (!exist) {
-                                                accessor.checked(__spreadArray(__spreadArray([], checkeds, true), [value_1], false));
+                                                accessor.checked(__spreadArrays(checkeds, [value_1]));
                                             }
                                             else {
                                                 _.remove(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
@@ -18143,7 +18138,7 @@ var nts;
                             }
                             // generate template if has columns
                             if (_.isArray(columns)) {
-                                template = "<div class='".concat(COMBOROW, "'>").concat(_.map(columns, function (c, i) { return "<div data-ntsclass='".concat(c.toggle || '', "' class='").concat(COMBOCOL, "-").concat(i, " ").concat(c.prop.toLowerCase(), " ").concat(c.toggle || '', "'>${").concat(c.prop, "}&nbsp;</div>"); }).join(''), "</div>");
+                                template = "<div class='" + COMBOROW + "'>" + _.map(columns, function (c, i) { return "<div data-ntsclass='" + (c.toggle || '') + "' class='" + COMBOCOL + "-" + i + " " + c.prop.toLowerCase() + " " + (c.toggle || '') + "'>${" + c.prop + "}&nbsp;</div>"; }).join('') + "</div>";
                             }
                             if (!$element.attr('tabindex')) {
                                 $element.attr('tabindex', 0);
@@ -18155,13 +18150,13 @@ var nts;
                                 var option = _.find(data[DATA], function (t) { return t[optionsValue] == data[VALUE]; }), _template = template;
                                 if (option) {
                                     _.each(_.keys(option), function (k) {
-                                        _template = _template.replace("${".concat(k, "}"), _.escape(option[k]));
+                                        _template = _template.replace("${" + k + "}", _.escape(option[k]));
                                     });
                                     $show.html(_template);
                                     _.each(ks, function (k) {
-                                        $show.find(".".concat(k.toLowerCase(), ":not(:last-child)"))
-                                            .css('width', "".concat(cws[k] * WoC, "px"));
-                                        $show.find(".".concat(k.toLowerCase()))
+                                        $show.find("." + k.toLowerCase() + ":not(:last-child)")
+                                            .css('width', cws[k] * WoC + "px");
+                                        $show.find("." + k.toLowerCase())
                                             .css({
                                             'height': '31px',
                                             'line-height': '31px'
@@ -18298,8 +18293,8 @@ var nts;
                                     // calc new size of template columns
                                     _.each(ks, function (k) {
                                         $("[class*=ui-igcombo-orientation]")
-                                            .find(".".concat(k.toLowerCase(), ":not(:last-child)"))
-                                            .css('width', "".concat(cws[k] * WoC, "px"));
+                                            .find("." + k.toLowerCase() + ":not(:last-child)")
+                                            .css('width', cws[k] * WoC + "px");
                                     });
                                 },
                                 selectionChanged: function (evt, ui) {
@@ -18389,8 +18384,8 @@ var nts;
                                     }
                                     // calc new size of template columns
                                     _.each(ks, function (k) {
-                                        $(ui.list).find(".".concat(k.toLowerCase()).concat(_.size(ks) == 1 ? '' : ':not(:last-child)'))
-                                            .css('width', "".concat(cws[k] * WoC, "px"));
+                                        $(ui.list).find("." + k.toLowerCase() + (_.size(ks) == 1 ? '' : ':not(:last-child)'))
+                                            .css('width', cws[k] * WoC + "px");
                                     });
                                     // fix min width of dropdown = $element.width();
                                     $(ui.list)
@@ -20505,7 +20500,7 @@ var nts;
                             var delKeyCode = [46];
                             var dotWithNumpadKeyCodes = [110, 190]; //'.'
                             var minusWithNumpadKeyCodes = [109, 189]; //'-'
-                            var allowedKeyCodes = __spreadArray(__spreadArray(__spreadArray(__spreadArray(__spreadArray(__spreadArray([], numberKeyCodes, true), numberNumpadKeyCodes, true), backspaceKeyCode, true), delKeyCode, true), dotWithNumpadKeyCodes, true), minusWithNumpadKeyCodes, true);
+                            var allowedKeyCodes = __spreadArrays(numberKeyCodes, numberNumpadKeyCodes, backspaceKeyCode, delKeyCode, dotWithNumpadKeyCodes, minusWithNumpadKeyCodes);
                             if (allowedKeyCodes.indexOf(dorgi.keyCode) == -1) {
                                 $input.val(dval);
                                 $input.data(_kc, null);
@@ -21208,7 +21203,7 @@ var nts;
                         var HEADER_HEIGHT = 30;
                         var ROW_HEIGHT = 30;
                         var DIFF_NUMBER = 2;
-                        var $grid = $(element).addClass("nts-gridlist");
+                        var $grid = $(element);
                         var gridId = $grid.attr('id');
                         if (nts.uk.util.isNullOrUndefined(gridId)) {
                             throw new Error('the element NtsGridList must have id attribute.');
@@ -21368,7 +21363,7 @@ var nts;
                             tabIndex: -1,
                             dataBound: function () {
                                 if (window.navigator.userAgent.indexOf("Edge") > -1) {
-                                    var scrollContainer_1 = $("#".concat($grid.attr("id"), "_scrollContainer"));
+                                    var scrollContainer_1 = $("#" + $grid.attr("id") + "_scrollContainer");
                                     var height_1 = scrollContainer_1.height();
                                     if (scrollHeightSet) {
                                         scrollContainer_1.height(0);
@@ -21383,6 +21378,7 @@ var nts;
                                 }
                             }
                         });
+                        $grid.closest('.ui-iggrid').addClass('nts-gridlist');
                         if (data.itemDraggable) {
                             new SwapHandler().setModel(new GridSwapList($grid, optionsValue)).enableDragDrop(data.dataSource);
                         }
@@ -21657,7 +21653,7 @@ var nts;
                             }
                         });
                         $grid.data("ui-changed", false);
-                        $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
+                        $grid.closest('.ui-iggrid').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
                     };
                     return NtsGridListBindingHandler;
                 }());
@@ -21886,7 +21882,7 @@ var nts;
                                 $element.attr("tabindex", "0");
                             }
                             $element.data("tabindex", $element.attr("tabindex"));
-                            var gridId = _.isNil(elementId) ? randomId() : "".concat(elementId, "_grid");
+                            var gridId = _.isNil(elementId) ? randomId() : elementId + "_grid";
                             $element.append("<table id='" + gridId + "' class='ntsListBox ntsControl'/>");
                             var container = $element.find("#" + gridId);
                             container.data("options", options.slice());
@@ -22018,7 +22014,7 @@ var nts;
                             // add validate event
                             $element
                                 .on('validate', function () {
-                                var $container = $("#".concat($element.attr('id'), "_grid"));
+                                var $container = $("#" + $element.attr('id') + "_grid");
                                 if ($element.data('nts_validate')) {
                                     if (ko.toJS(data.required) && _.isEmpty(ko.toJS(data.value)) && $container.data("enable")) {
                                         $element
@@ -22036,7 +22032,7 @@ var nts;
                             });
                             $element.prepend($('<style>', {
                                 type: 'text/css',
-                                text: "\n                    #".concat($element.attr('id'), ".error {\n                        border-color: #ff6666;\n                    }\n\n                    table[id='").concat($element.attr('id'), "_grid'] .ui-iggrid-tablebody tr,\n                    table[id='").concat($element.attr('id'), "_grid'] .ui-iggrid-tablebody tr:hover {\n                        outline: none;\n                    }\n\n                    table[id='").concat($element.attr('id'), "_grid'] .ui-iggrid-tablebody tr,\n                    table[id='").concat($element.attr('id'), "_grid'] .ui-iggrid-tablebody tr:hover {\n                        cursor: pointer;\n                    }")
+                                text: "\n                    #" + $element.attr('id') + ".error {\n                        border-color: #ff6666;\n                    }\n\n                    table[id='" + $element.attr('id') + "_grid'] .ui-iggrid-tablebody tr,\n                    table[id='" + $element.attr('id') + "_grid'] .ui-iggrid-tablebody tr:hover {\n                        outline: none;\n                    }\n\n                    table[id='" + $element.attr('id') + "_grid'] .ui-iggrid-tablebody tr,\n                    table[id='" + $element.attr('id') + "_grid'] .ui-iggrid-tablebody tr:hover {\n                        cursor: pointer;\n                    }"
                             }));
                             $element
                                 .removeAttr('data-bind')
@@ -23869,7 +23865,8 @@ var nts;
                                         read: function () {
                                             var ds = ko.toJS(accessor.dataSource);
                                             return ds.filter(function (d) { return d.visible !== false; })
-                                                .map(function (d) { return (__assign(__assign({}, d), { active: active, tabindex: tabindex, dataBind: 'vertical-link' !== dir ? undefined : {
+                                                .map(function (d) { return (__assign(__assign({}, d), { active: active,
+                                                tabindex: tabindex, dataBind: 'vertical-link' !== dir ? undefined : {
                                                     'btn-link': d.title,
                                                     icon: d.icon || 'CHECKBOX',
                                                     width: 40,
@@ -23920,7 +23917,7 @@ var nts;
                                     $contents.style.minHeight = '';
                                 }
                                 else {
-                                    $contents.style.minHeight = "".concat($tabs.offsetHeight, "px");
+                                    $contents.style.minHeight = $tabs.offsetHeight + "px";
                                 }
                             }
                             $(element)
@@ -24065,7 +24062,7 @@ var nts;
                                     if (!dir) {
                                         return DEFAULT_CONTAINER_CLASS;
                                     }
-                                    return "".concat(DEFAULT_CONTAINER_CLASS, " caret-").concat(direction, " direction-").concat(direction);
+                                    return DEFAULT_CONTAINER_CLASS + " caret-" + direction + " direction-" + direction;
                                 },
                                 disposeWhenNodeIsRemoved: element
                             });
@@ -24074,8 +24071,8 @@ var nts;
                                     var w = ko.unwrap(width);
                                     var h = ko.unwrap(height);
                                     return {
-                                        width: "".concat(w || '', "px").replace(/(px){2,}/, 'px').replace(/%px/, '%'),
-                                        height: "".concat(h || '', "px").replace(/(px){2,}/, 'px').replace(/%px/, '%')
+                                        width: ((w || '') + "px").replace(/(px){2,}/, 'px').replace(/%px/, '%'),
+                                        height: ((h || '') + "px").replace(/(px){2,}/, 'px').replace(/%px/, '%')
                                     };
                                 },
                                 disposeWhenNodeIsRemoved: element
@@ -24222,8 +24219,7 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
-                                dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -34346,8 +34342,7 @@ var nts;
                                 var txt = td.querySelector(".mgrid-refer-text");
                                 if (!txt)
                                     return;
-                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]],
-                                    relatedItemList: function (nama) {
+                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]], relatedItemList: function (nama) {
                                         var ctrl = _mafollicle[SheetDef][_currentSheet].controlMap && _mafollicle[SheetDef][_currentSheet].controlMap[nama];
                                         if (ctrl && ctrl.pattern && ctrl.list) {
                                             return ctrl.pattern[ctrl.list[data.rowId]];
@@ -36548,11 +36543,11 @@ var nts;
                                 if (chart.end <= parent_1.start || chart.start >= parent_1.end)
                                     show = false;
                                 else if (parent_1.start > chart.start) {
-                                    chart.html.style.left = "".concat(chart.origin[0] + parent_1.start * chart.unitToPx, "px");
-                                    chart.html.style.width = "".concat((chart.end - parent_1.start) * chart.unitToPx - 1, "px");
+                                    chart.html.style.left = chart.origin[0] + parent_1.start * chart.unitToPx + "px";
+                                    chart.html.style.width = (chart.end - parent_1.start) * chart.unitToPx - 1 + "px";
                                 }
                                 else if (parent_1.end < chart.end) {
-                                    chart.html.style.width = "".concat((parent_1.end - chart.start) * chart.unitToPx - 1, "px");
+                                    chart.html.style.width = (parent_1.end - chart.start) * chart.unitToPx - 1 + "px";
                                 }
                             }
                         }
@@ -36897,7 +36892,7 @@ var nts;
                                 if (!self.metaholder.hasOwnProperty("start"))
                                     return;
                                 chart.html.style.cursor = "";
-                                self.metaholder.id = "pgc".concat(support.replaceAll(uk.util.randomId(), '-', ''));
+                                self.metaholder.id = "pgc" + support.replaceAll(uk.util.randomId(), '-', '');
                                 self.metaholder.ancestorChart = chart;
                                 self.metaholder.isPressed = true;
                                 self.addChartWithType(self.pasteBand.typeName, {
@@ -37374,12 +37369,12 @@ var nts;
                             self.placeholder = chart_1.pDiv.cloneNode(true);
                             self.placeholder.className = "gantt-holder";
                             var width = self.pasteBand.blockSize * chart.unitToPx - 1;
-                            var cssText = "; position: absolute; width: ".concat(width, "px; height: ").concat(chart.chartWidth, "px; user-select: none;\n                    border: 1px solid #AAB7B8; z-index: 3000; background-color: #FFF; box-shadow: inset 1px 2px 3px 1px #AAB7B8;");
+                            var cssText = "; position: absolute; width: " + width + "px; height: " + chart.chartWidth + "px; user-select: none;\n                    border: 1px solid #AAB7B8; z-index: 3000; background-color: #FFF; box-shadow: inset 1px 2px 3px 1px #AAB7B8;";
                             self.placeholder.style.cssText = cssText;
                             self.placeholder.addEventListener("mousedown", function () {
                                 if (!self.metaholder.hasOwnProperty("start") || event.button !== 0)
                                     return;
-                                self.metaholder.id = "pgc".concat(support.replaceAll(uk.util.randomId(), '-', ''));
+                                self.metaholder.id = "pgc" + support.replaceAll(uk.util.randomId(), '-', '');
                                 self.metaholder.isPressed = true;
                                 self.addChartWithType(self.pasteBand.typeName, {
                                     id: self.metaholder.id,
@@ -37447,11 +37442,11 @@ var nts;
                         self.metaholder.lineNo = parent.lineNo;
                         var length = (endLine - startLine) * parent.unitToPx - 1, currentLength = parseFloat(self.placeholder.style.width || 0);
                         if (length !== currentLength) {
-                            self.placeholder.style.width = "".concat(length, "px");
+                            self.placeholder.style.width = length + "px";
                         }
                         var posTop = parent.origin[1] + parent.lineNo * parent.lineWidth + Math.floor((parent.lineWidth - parent.chartWidth) / 2), posLeft = parent.origin[0] + self.metaholder.start * chart.unitToPx;
-                        self.placeholder.style.top = "".concat(posTop, "px");
-                        self.placeholder.style.left = "".concat(posLeft, "px");
+                        self.placeholder.style.top = posTop + "px";
+                        self.placeholder.style.left = posLeft + "px";
                         if (!self.chartArea.contains(self.placeholder)) {
                             self.chartArea.appendChild(self.placeholder);
                         }
@@ -37596,16 +37591,16 @@ var nts;
                             return 1;
                         }
                         if (this.limitStartMin > this.start || this.limitStartMax < this.start) {
-                            chart_1.warning.push(new Warn("".concat(this.lineNo, "-").concat(this.id, " start is out of range.")));
+                            chart_1.warning.push(new Warn(this.lineNo + "-" + this.id + " start is out of range."));
                             return 1;
                         }
                         if (this.limitEndMin > this.end || this.limitEndMax < this.end) {
-                            chart_1.warning.push(new Warn("".concat(this.lineNo, "-").concat(this.id, " end is out of range.")));
+                            chart_1.warning.push(new Warn(this.lineNo + "-" + this.id + " end is out of range."));
                         }
                         var self = this, posTop = self.origin[1] + self.lineNo * self.lineWidth + Math.floor((self.lineWidth - self.chartWidth) / 2), posLeft = self.origin[0] + self.start * self.unitToPx, chart = document.createElement("div");
-                        chart.setAttribute("id", "".concat(self.lineNo, "-").concat(self.id));
+                        chart.setAttribute("id", self.lineNo + "-" + self.id);
                         chart.className = "nts-ganttchart";
-                        chart.style.cssText = "; position: absolute; top: ".concat(posTop, "px; left: ").concat(posLeft, "px; z-index: ").concat(self.zIndex, "; text-overflow: ellipsis;\n                overflow: hidden; white-space: nowrap; width: ").concat((self.end - self.start) * self.unitToPx - 1, "px; height: ").concat(self.chartWidth, "px;\n                line-height: ").concat(self.chartWidth, "px; background-color: ").concat(self.color, "; cursor: ").concat(self.cursor, "; border: 1px solid #AAB7B8; font-size: 13px;");
+                        chart.style.cssText = "; position: absolute; top: " + posTop + "px; left: " + posLeft + "px; z-index: " + self.zIndex + "; text-overflow: ellipsis;\n                overflow: hidden; white-space: nowrap; width: " + ((self.end - self.start) * self.unitToPx - 1) + "px; height: " + self.chartWidth + "px;\n                line-height: " + self.chartWidth + "px; background-color: " + self.color + "; cursor: " + self.cursor + "; border: 1px solid #AAB7B8; font-size: 13px;";
                         self.html = chart;
                         self.html.onselectstart = function () { return false; };
                     };
@@ -37626,10 +37621,10 @@ var nts;
                             self.initEnd = style.initEnd;
                         }
                         if (_.has(style, "top")) {
-                            self.html.style.top = "".concat(style.top, "px");
+                            self.html.style.top = style.top + "px";
                         }
                         if (_.has(style, "left")) {
-                            self.html.style.left = "".concat(style.left, "px");
+                            self.html.style.left = style.left + "px";
                         }
                         if (_.has(style, "width")) {
                             if (style.width <= 0) {
@@ -37639,7 +37634,7 @@ var nts;
                                 }
                             }
                             else {
-                                self.html.style.width = "".concat(style.width, "px");
+                                self.html.style.width = style.width + "px";
                             }
                         }
                     };
@@ -37874,7 +37869,7 @@ var nts;
                             else if (target.start < child.end) {
                                 if (target.end < child.end) {
                                     if (target.definedType !== child.definedType) {
-                                        var id = "pgc".concat(support.replaceAll(uk.util.randomId(), '-', ''));
+                                        var id = "pgc" + support.replaceAll(uk.util.randomId(), '-', '');
                                         self.addChartWithType(child.definedType, {
                                             id: id,
                                             parent: child.parent,
@@ -38331,7 +38326,7 @@ var nts;
                                 break;
                             case Page.SIDEBAR:
                                 _.forEach(self.configs, function (tabConfig) {
-                                    var $tab = $("#".concat(tabConfig.tabId));
+                                    var $tab = $("#" + tabConfig.tabId);
                                     var $contentHeader = $tab.find(".sidebar-content-header");
                                     if ($contentHeader.find(".nts-guide-link").length == 0) {
                                         var top_5 = ($contentHeader.height() - 18) / 2;
@@ -38634,6 +38629,7 @@ var nts;
                     diff: 0,
                     tick: -1,
                     clock: -1,
+                    loaded: false,
                     now: function () {
                         return Date.now();
                     },
@@ -38646,6 +38642,10 @@ var nts;
                         _.extend($date, {
                             diff: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
                         });
+                        _.extend($date, {
+                            loaded: true
+                        });
+                        windows.setShared('oldDiff', $date.diff);
                     });
                 };
                 // get date time now
@@ -38660,7 +38660,7 @@ var nts;
                 BaseViewModel.prototype.$date = Object.defineProperties($date, {
                     now: {
                         value: function $now() {
-                            return moment().add($date.diff, 'ms').toDate();
+                            return $date.loaded ? moment().add($date.diff, 'ms').toDate() : moment().add(windows.getShared('oldDiff') || 0, 'ms').toDate();
                         }
                     },
                     today: {
@@ -38752,7 +38752,7 @@ var nts;
                 Object.defineProperties($jump, {
                     self: {
                         value: function $to() {
-                            $jump.apply(null, __spreadArray([], Array.prototype.slice.apply(arguments, []), true));
+                            $jump.apply(null, __spreadArrays(Array.prototype.slice.apply(arguments, [])));
                         }
                     },
                     blank: {
@@ -39205,7 +39205,7 @@ var nts;
                             });
                         }.bind(self);
                     },
-                    template: "<div class=\"assy-hist\" data-bind=\"let: { text: nts.uk.resource.getText }, style: { height: height(), width: width() }\">\n            <div class=\"as-area hist-label\" data-bind=\"ntsFormLabel: {}, text: text('JAP0020_A1_1'), style: { paddingRight: labelDistance() }\"></div>\n            <div class=\"as-area hist-list\" id=\"".concat(nts.uk.util.randomId(), "\" tabindex=\"3\" \n                data-bind=\"ntsListBox: {\n                options: histList,\n                optionsValue: 'histId',\n                optionsText: 'displayText',\n                multiple: false,\n                value: selectedHistId,\n                enable: true,\n                rows: 5,\n                columns: [\n                    { key: 'displayText', length: 15 }\n                ]}\">\n            </div>\n            <div class=\"as-area\">\n                <div class=\"del-chk\" tabindex=\"6\" data-bind=\"ntsCheckBox: { checked: delChecked, enable: delEnable() },\n                    style: { visibility: delVisible() ? 'visible' : 'hidden' }\">\n                </div>\n            </div>\n            <div class=\"as-area hist-btn\" data-bind=\"template: { afterRender: afterRender }\">\n                <button class=\"add\" tabindex=\"4\"\n                    data-bind=\"click: openAddHistDialog,\n                    enable: histList().length == 0 || (screenMode() == 1 &amp;&amp; isLatestHistSelected), text: text('JAP0020_A1_3')\"></button>\n                <br/>\n                <button class=\"update\" tabindex=\"5\"\n                    data-bind=\"click: openUpdHistDialog,\n                    enable: histList().length > 0 &amp;&amp; screenMode() == 1 &amp;&amp; isLatestHistSelected, text: text('JAP0020_A1_4')\"></button>\n                <br/>\n                <button tabindex=\"7\" class=\"danger delete\"\n                    data-bind=\"click: deleteHist,\n                    enable: !delVisible() || (histList().length > 0 &amp;&amp; delEnable() &amp;&amp; delChecked()), text: text('JAP0020_A1_6')\"></button>\n            </div>\n        </div>")
+                    template: "<div class=\"assy-hist\" data-bind=\"let: { text: nts.uk.resource.getText }, style: { height: height(), width: width() }\">\n            <div class=\"as-area hist-label\" data-bind=\"ntsFormLabel: {}, text: text('JAP0020_A1_1'), style: { paddingRight: labelDistance() }\"></div>\n            <div class=\"as-area hist-list\" id=\"" + nts.uk.util.randomId() + "\" tabindex=\"3\" \n                data-bind=\"ntsListBox: {\n                options: histList,\n                optionsValue: 'histId',\n                optionsText: 'displayText',\n                multiple: false,\n                value: selectedHistId,\n                enable: true,\n                rows: 5,\n                columns: [\n                    { key: 'displayText', length: 15 }\n                ]}\">\n            </div>\n            <div class=\"as-area\">\n                <div class=\"del-chk\" tabindex=\"6\" data-bind=\"ntsCheckBox: { checked: delChecked, enable: delEnable() },\n                    style: { visibility: delVisible() ? 'visible' : 'hidden' }\">\n                </div>\n            </div>\n            <div class=\"as-area hist-btn\" data-bind=\"template: { afterRender: afterRender }\">\n                <button class=\"add\" tabindex=\"4\"\n                    data-bind=\"click: openAddHistDialog,\n                    enable: histList().length == 0 || (screenMode() == 1 &amp;&amp; isLatestHistSelected), text: text('JAP0020_A1_3')\"></button>\n                <br/>\n                <button class=\"update\" tabindex=\"5\"\n                    data-bind=\"click: openUpdHistDialog,\n                    enable: histList().length > 0 &amp;&amp; screenMode() == 1 &amp;&amp; isLatestHistSelected, text: text('JAP0020_A1_4')\"></button>\n                <br/>\n                <button tabindex=\"7\" class=\"danger delete\"\n                    data-bind=\"click: deleteHist,\n                    enable: !delVisible() || (histList().length > 0 &amp;&amp; delEnable() &amp;&amp; delChecked()), text: text('JAP0020_A1_6')\"></button>\n            </div>\n        </div>"
                 });
                 function observableOrDefault(val, def) {
                     return ko.isObservable(val) ? val : ko.observable(_.isNil(val) ? def : val);
@@ -40450,7 +40450,8 @@ var nts;
                         var currentColumns = $grid.igGrid("option", "columns");
                         currentColumns.push({
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                            width: 60, formatter: function createButton(deleteField, row) {
+                            width: 60,
+                            formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
                                 var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);
@@ -48099,8 +48100,7 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
-                                dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -48414,8 +48414,7 @@ var nts;
                                         }
                                     });
                                 }
-                            },
-                            checkChildSiblings: function (source, key, childKey, primaryKey) {
+                            }, checkChildSiblings: function (source, key, childKey, primaryKey) {
                                 var isAllCheck = _.isNil(_.find(source[childKey], function (c) {
                                     var controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + c[primaryKey], checkbox = $tree.find("." + controlCls).find("input[type='checkbox']");
                                     return !checkbox.is(":checked");
@@ -48426,8 +48425,7 @@ var nts;
                                     $checkbox.click();
                                 }
                                 return isAllCheck;
-                            },
-                            checkSiblings: function (rowId, source, key, childKey, primaryKey) {
+                            }, checkSiblings: function (rowId, source, key, childKey, primaryKey) {
                                 //let source = $tree.igTreeGrid("option", "dataSource");
                                 for (var i = 0; i < source.length; i++) {
                                     if (!_.isEmpty(source[i][childKey])) {
@@ -48446,12 +48444,10 @@ var nts;
                                     }
                                 }
                                 return { process: false, value: false };
-                            },
-                            getTrueRowData: function (rowId, primaryKey, childKey) {
+                            }, getTrueRowData: function (rowId, primaryKey, childKey) {
                                 var dataSource = $tree.data("igTreeGrid").dataSource._origDs, flatSource = helper.flatChild(dataSource, childKey);
                                 return _.find(flatSource, function (s) { return s[primaryKey] === rowId; });
-                            },
-                            flatChild: function (dataSource, childKey) {
+                            }, flatChild: function (dataSource, childKey) {
                                 var result = [];
                                 if (_.isEmpty(dataSource)) {
                                     return result;
@@ -48499,7 +48495,8 @@ var nts;
                                             if ($tree.data("igTreeGrid") !== null) {
                                                 $tree.data("igTreeGridUpdating").deleteRow(rowId);
                                             }
-                                        }, initValue: value,
+                                        },
+                                        initValue: value,
                                         rowObj: rowObj,
                                         showHeaderCheckbox: col.showHeaderCheckbox,
                                         enable: isRowEnable,
@@ -50859,7 +50856,7 @@ var nts;
                         IconBindingHandler.prototype.update = function (el, value, allBindingsAccessor) {
                             var numb = ko.unwrap(value());
                             var size = allBindingsAccessor.get('size') || 'contain';
-                            var url = "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/".concat(numb, ".png");
+                            var url = "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + numb + ".png";
                             $.Deferred()
                                 .resolve(true)
                                 .then(function () { return icons.indexOf(numb) > -1; })
@@ -50869,7 +50866,7 @@ var nts;
                                     icons.push(numb);
                                 }
                                 $(el).css({
-                                    'background-image': "url('".concat(url, "')"),
+                                    'background-image': "url('" + url + "')",
                                     'background-repeat': 'no-repeat',
                                     'background-position': 'center',
                                     'background-size': size
@@ -51122,7 +51119,7 @@ var nts;
                             if (uri.match(/^(data:image\/)/)) {
                                 var fileName = nts.uk.util.randomId();
                                 var fileType = uri.substring(uri.indexOf('/') + 1, uri.indexOf(';base64'));
-                                self.backupData(null, "".concat(fileName, ".").concat(fileType), fileType, 3 * (uri.length / 4));
+                                self.backupData(null, fileName + "." + fileType, fileType, 3 * (uri.length / 4));
                                 self.$imagePreview.attr("src", uri);
                                 self.$imagePreview.closest(".image-holder").removeClass(".image-upload-icon");
                                 self.$imagePreview.closest(".image-container").removeClass(".container-no-upload-background");
@@ -51292,7 +51289,7 @@ var nts;
                             return this.data.url;
                         }
                         else {
-                            return "http://cors-anywhere.herokuapp.com/".concat(this.data.url);
+                            return "http://cors-anywhere.herokuapp.com/" + this.data.url;
                         }
                     };
                     ImageEditorHelper.prototype.getFileNameFromUrl = function () {
@@ -51437,7 +51434,7 @@ var nts;
                             });
                         }, getMonths = function () { return _.range(0, 13).map(function (m) { return ({ text: m === 0 ? "" : m, value: m === 0 ? "" : m }); }); }, getDaysInMonth = function (month) { return _.range(0, moment(month, "MM").daysInMonth() + 1).map(function (m) { return ({ text: m === 0 ? "" : m, value: m === 0 ? "" : m }); }); }, monthValueAccessor = getComboBinding(data, ko.observable(""), getMonths()), dayOfMonthValueAccessor = getComboBinding(data, ko.observable(""), [{ text: "", value: "" }]);
                         // init binding element
-                        element.innerHTML = "\n                <div tabindex='".concat(element.getAttribute('tabindex') || 0, "' class='ntsMonthPicker ntsComboBox ntsMonthDays_Component' id='").concat(nts.uk.util.randomId(), "' data-bind='ntsComboBox: $month'></div>\n                <div class='ntsMonthLabel ntsLabel ntsMonthDays_Component' id='").concat(nts.uk.util.randomId(), "'><label data-bind=\"text: '\u6708'\"></label></div>\n                <div tabindex='").concat(element.getAttribute('tabindex') || 0, "' class='ntsDayPicker ntsComboBox ntsMonthDays_Component' id='").concat(nts.uk.util.randomId(), "' data-bind='ntsComboBox: $dayOfMonth'></div>\n                <div class='ntsDayPicker ntsLabel ntsMonthDays_Component' id='").concat(nts.uk.util.randomId(), "'><label data-bind=\"text: '\u65E5'\"></label></div>\n                ");
+                        element.innerHTML = "\n                <div tabindex='" + (element.getAttribute('tabindex') || 0) + "' class='ntsMonthPicker ntsComboBox ntsMonthDays_Component' id='" + nts.uk.util.randomId() + "' data-bind='ntsComboBox: $month'></div>\n                <div class='ntsMonthLabel ntsLabel ntsMonthDays_Component' id='" + nts.uk.util.randomId() + "'><label data-bind=\"text: '\u6708'\"></label></div>\n                <div tabindex='" + (element.getAttribute('tabindex') || 0) + "' class='ntsDayPicker ntsComboBox ntsMonthDays_Component' id='" + nts.uk.util.randomId() + "' data-bind='ntsComboBox: $dayOfMonth'></div>\n                <div class='ntsDayPicker ntsLabel ntsMonthDays_Component' id='" + nts.uk.util.randomId() + "'><label data-bind=\"text: '\u65E5'\"></label></div>\n                ";
                         // set default attr to element
                         element.removeAttribute('tabindex');
                         if (!element.className) {
@@ -52370,7 +52367,7 @@ var nts;
                         WidgetResizeContentBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                             var $el = $(element);
                             var widget = viewModel.widget, $user = viewModel.$user;
-                            var WG_SIZE = "".concat($user.employeeId, ".WIDGET_SIZE");
+                            var WG_SIZE = $user.employeeId + ".WIDGET_SIZE";
                             var mkv = new ko.ViewModel();
                             var minHeight = valueAccessor();
                             var key = ko.unwrap(widget);
@@ -52387,7 +52384,7 @@ var nts;
                                         element.style.minHeight = '';
                                     }
                                     else {
-                                        element.style.minHeight = "".concat(ko.unwrap(mh), "px");
+                                        element.style.minHeight = ko.unwrap(mh) + "px";
                                     }
                                 },
                                 disposeWhenNodeIsRemoved: element
@@ -52475,13 +52472,13 @@ var nts;
                                             element.style.height = height.value;
                                         }
                                         else if (def) {
-                                            element.style.height = "".concat(def, "px");
-                                            element.style.maxHeight = "".concat(def, "px");
+                                            element.style.height = def + "px";
+                                            element.style.maxHeight = def + "px";
                                         }
                                     }
                                     else if (def) {
-                                        element.style.height = "".concat(def, "px");
-                                        element.style.maxHeight = "".concat(def, "px");
+                                        element.style.height = def + "px";
+                                        element.style.maxHeight = def + "px";
                                     }
                                 });
                             }
@@ -52672,7 +52669,7 @@ var nts;
                                 }
                                 var html = ko.unwrap(accessor);
                                 var bound = element.getBoundingClientRect();
-                                var popper = $("<div class=\"constraint\"><span>".concat(html, "</span></div>"))
+                                var popper = $("<div class=\"constraint\"><span>" + html + "</span></div>")
                                     .appendTo(document.body);
                                 var pbound = popper.get(0).getBoundingClientRect();
                                 var top = bound.top - pbound.height - 8;
@@ -52682,8 +52679,8 @@ var nts;
                                 }
                                 popper
                                     .css({
-                                    'top': "".concat(top >= 0 ? top : bottom, "px"),
-                                    'left': "".concat((bound.left + (bound.width / 2)) - (pbound.width / 2) + 4, "px")
+                                    'top': (top >= 0 ? top : bottom) + "px",
+                                    'left': (bound.left + (bound.width / 2)) - (pbound.width / 2) + 4 + "px"
                                 });
                                 $element.data('__popper__', popper);
                             })
@@ -52905,7 +52902,7 @@ var nts;
                                 }
                             }
                             else {
-                                var selectedSet = _.find(menuSet, function (m) { return selected_8 === "".concat(m.companyId, ":").concat(m.webMenuCode); });
+                                var selectedSet = _.find(menuSet, function (m) { return selected_8 === m.companyId + ":" + m.webMenuCode; });
                                 if (selectedSet) {
                                     vm.selectSet(selectedSet);
                                 }
@@ -52935,7 +52932,7 @@ var nts;
                             if (!vm.ctrl()) {
                                 return item.displayName;
                             }
-                            return "".concat(item.programId).concat(item.screenId);
+                            return "" + item.programId + item.screenId;
                         });
                     };
                     HeaderViewModel.prototype.selectSet = function (item, resetCountMenu) {
@@ -52955,7 +52952,7 @@ var nts;
                         vm.$nextTick(function () { return vm.setHoverMenu(); });
                         //  $(vm.$el).css({ 'background-color': menuBar.backgroundColor });
                         // storage selected set for reload page
-                        nts.uk.localStorage.setItem(MENU_KEY, "".concat(item.companyId, ":").concat(item.webMenuCode));
+                        nts.uk.localStorage.setItem(MENU_KEY, item.companyId + ":" + item.webMenuCode);
                     };
                     HeaderViewModel.prototype.setDisplayMenu = function () {
                         var vm = this;
@@ -53016,7 +53013,7 @@ var nts;
                                 window.location.href = item.url;
                             }
                             else {
-                                window.location.href = "".concat(item.url, "?").concat(item.queryString).replace(/\?{2,}/, '?');
+                                window.location.href = (item.url + "?" + item.queryString).replace(/\?{2,}/, '?');
                             }
                         }
                     };
@@ -53305,24 +53302,24 @@ var nts;
                                     var value = ko.unwrap(params.value);
                                     var disabled = ko.unwrap(params.disabled);
                                     if (disabled) {
-                                        return "".concat(icon, "_UNSELECT");
+                                        return icon + "_UNSELECT";
                                     }
                                     if (active) {
-                                        return "".concat(icon, "_SELECT");
+                                        return icon + "_SELECT";
                                     }
                                     if (value === undefined) {
                                         if (!!state) {
-                                            return "".concat(icon, "_SELECT");
+                                            return icon + "_SELECT";
                                         }
-                                        return "".concat(icon, "_UNSELECT");
+                                        return icon + "_UNSELECT";
                                     }
                                     if (!_.isArray(state)) {
                                         if (_.isEqual(state, value)) {
-                                            return "".concat(icon, "_SELECT");
+                                            return icon + "_SELECT";
                                         }
-                                        return "".concat(icon, "_UNSELECT");
+                                        return icon + "_UNSELECT";
                                     }
-                                    return _.some(state, function (c) { return _.isEqual(c, value); }) ? "".concat(icon, "_SELECT") : "".concat(icon, "_UNSELECT");
+                                    return _.some(state, function (c) { return _.isEqual(c, value); }) ? icon + "_SELECT" : icon + "_UNSELECT";
                                 }
                             });
                             _this.arrowIcon = ko.computed({
@@ -53334,24 +53331,24 @@ var nts;
                                     var value = ko.unwrap(params.value);
                                     var disabled = ko.unwrap(params.disabled);
                                     if (disabled) {
-                                        return "".concat(icon, "_UNSELECT");
+                                        return icon + "_UNSELECT";
                                     }
                                     if (active) {
-                                        return "".concat(icon, "_SELECT");
+                                        return icon + "_SELECT";
                                     }
                                     if (value === undefined) {
                                         if (!!state) {
-                                            return "".concat(icon, "_SELECT");
+                                            return icon + "_SELECT";
                                         }
-                                        return "".concat(icon, "_UNSELECT");
+                                        return icon + "_UNSELECT";
                                     }
                                     if (!_.isArray(state)) {
                                         if (_.isEqual(state, value)) {
-                                            return "".concat(icon, "_SELECT");
+                                            return icon + "_SELECT";
                                         }
-                                        return "".concat(icon, "_UNSELECT");
+                                        return icon + "_UNSELECT";
                                     }
-                                    return _.some(state, function (c) { return _.isEqual(c, value); }) ? "".concat(icon, "_SELECT") : "".concat(icon, "_UNSELECT");
+                                    return _.some(state, function (c) { return _.isEqual(c, value); }) ? icon + "_SELECT" : icon + "_UNSELECT";
                                 }
                             });
                             return _this;
@@ -53498,24 +53495,24 @@ var nts;
                                     var value = ko.unwrap(params.value);
                                     var disabled = ko.unwrap(params.disabled);
                                     if (disabled) {
-                                        return "".concat(icon, "_UNSELECT");
+                                        return icon + "_UNSELECT";
                                     }
                                     if (active) {
-                                        return "".concat(icon, "_SELECT");
+                                        return icon + "_SELECT";
                                     }
                                     if (value === undefined) {
                                         if (!!state) {
-                                            return "".concat(icon, "_SELECT");
+                                            return icon + "_SELECT";
                                         }
-                                        return "".concat(icon, "_UNSELECT");
+                                        return icon + "_UNSELECT";
                                     }
                                     if (!_.isArray(state)) {
                                         if (_.isEqual(state, value)) {
-                                            return "".concat(icon, "_SELECT");
+                                            return icon + "_SELECT";
                                         }
-                                        return "".concat(icon, "_UNSELECT");
+                                        return icon + "_UNSELECT";
                                     }
-                                    return _.some(state, function (c) { return _.isEqual(c, value); }) ? "".concat(icon, "_SELECT") : "".concat(icon, "_UNSELECT");
+                                    return _.some(state, function (c) { return _.isEqual(c, value); }) ? icon + "_SELECT" : icon + "_UNSELECT";
                                 }
                             });
                             return _this;
@@ -53792,11 +53789,11 @@ var nts;
                         element.innerHTML = '';
                         var div = document.createElement('div');
                         $(element).replaceWith(div);
-                        div.innerHTML = "<svg fill=\"none\" xmls=\"http://www.w3.org/2000/svg\">".concat((_.get(nts.ui.icons, icon) || _.get(nts.ui.icons, (icon || '').replace(/_(UN)?SELECT/g, ''))) || '', "</svg>");
+                        div.innerHTML = "<svg fill=\"none\" xmls=\"http://www.w3.org/2000/svg\">" + ((_.get(nts.ui.icons, icon) || _.get(nts.ui.icons, (icon || '').replace(/_(UN)?SELECT/g, ''))) || '') + "</svg>";
                         element.setAttribute('fill', 'none');
-                        element.setAttribute('width', "".concat(size || width || 12));
-                        element.setAttribute('height', "".concat(size || height || 12));
-                        element.setAttribute('viewBox', "0 0 ".concat(size || width || 12, " ").concat(size || height || 12));
+                        element.setAttribute('width', "" + (size || width || 12));
+                        element.setAttribute('height', "" + (size || height || 12));
+                        element.setAttribute('viewBox', "0 0 " + (size || width || 12) + " " + (size || height || 12));
                         element.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
                         _.each(div.firstElementChild.childNodes, function (c) { return element.appendChild(c.cloneNode(true)); });
                         $(div).replaceWith(element);
@@ -54151,12 +54148,12 @@ var nts;
                             var zero = $(element).closest('#master-wrapper.modal').length || $(element).parent().hasClass('master-content');
                             if (!mb.length) {
                                 var height = element.getBoundingClientRect().top + (valueAccessor() || (zero ? 0 : (md.length ? 0 : 20))) - 2;
-                                element.style.height = "calc(100vh - ".concat(Math.floor(Math.max(0, height)), "px)");
+                                element.style.height = "calc(100vh - " + Math.floor(Math.max(0, height)) + "px)";
                             }
                             else {
                                 var bd = mb.get(0).getBoundingClientRect();
                                 var height = element.getBoundingClientRect().top + (valueAccessor() || (zero ? (bd.height || 0) : 20)) - 2;
-                                element.style.height = "calc(100vh - ".concat(Math.floor(Math.max(0, height)), "px)");
+                                element.style.height = "calc(100vh - " + Math.floor(Math.max(0, height)) + "px)";
                             }
                         })
                             .always(function () {
@@ -54185,7 +54182,7 @@ var nts;
                         var left = allBindingsAccessor.get('left');
                         var right = allBindingsAccessor.get('right');
                         var bottom = allBindingsAccessor.get('bottom');
-                        var replacer = function ($t) { return "".concat($t, "px").replace(/(px){2,}/, 'px').replace(/ptpx/, 'pt').replace(/%px/, '%'); };
+                        var replacer = function ($t) { return ($t + "px").replace(/(px){2,}/, 'px').replace(/ptpx/, 'pt').replace(/%px/, '%'); };
                         ko.computed({
                             read: function () {
                                 var $f = ko.unwrap(float);

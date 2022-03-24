@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule;
 
-import java.util.Collections;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -8,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
@@ -17,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTSet;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 
 /**
  * 日別勤怠の勤務予定時間 (new)
@@ -77,14 +74,7 @@ public class WorkScheduleTimeOfDaily {
 		//時刻から所定時間を計算
 		TotalWorkingTime totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(
 				scheduleManageReGetClass,
-				VacationClass.createAllZero(),
-				schedulePerformance.getWorkType().get(),
-				Optional.of(WorkTimeDailyAtr.REGULAR_WORK),
 				Optional.empty(),
-				Collections.emptyList(),
-				personDailySetting.getPersonInfo(),
-				Optional.of(schedulePerformance.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc()),
-				Optional.of(schedulePerformance.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode()),
 				new DeclareTimezoneResult());
 		
 		//設定を元に戻す
