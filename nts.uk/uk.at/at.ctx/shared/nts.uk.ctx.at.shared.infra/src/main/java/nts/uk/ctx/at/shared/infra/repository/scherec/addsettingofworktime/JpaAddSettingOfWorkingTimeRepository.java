@@ -9,6 +9,9 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfPremium
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTimeRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.CalculationMethodAtTheTimeOfLackOfFixedTimeForFlexWork;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.CalculationMethodForNormalWorkAndDeformedLaborOverTime;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.CalulationMethodWhenFlexWorkHoursExceededThePrescribedTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.TreatDeductTimeForCalcWorkTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.TreatLateEarlyTimeSetUnit;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.TreatVacationTimeForCalcPremium;
@@ -31,10 +34,10 @@ public class JpaAddSettingOfWorkingTimeRepository extends JpaRepository implemen
 	@Override
 	public Optional<AddSettingOfWorkingTime> findByCIDAndLabor(String companyId, int laborSystemAtr) {
 		Optional<KsrmtCalcCAddInclude> includeWorktime = this.queryProxy().find(
-				new KsrmtCalcCAddIncludePK(companyId, laborSystemAtr, 0), KsrmtCalcCAddInclude.class);
+				new KsrmtCalcCAddIncludePK(companyId, laborSystemAtr, false), KsrmtCalcCAddInclude.class);
 		if (includeWorktime.isPresent()) {
 			Optional<KsrmtCalcCAddInclude> includePremium = this.queryProxy().find(
-					new KsrmtCalcCAddIncludePK(companyId, laborSystemAtr, 1), KsrmtCalcCAddInclude.class);
+					new KsrmtCalcCAddIncludePK(companyId, laborSystemAtr, true), KsrmtCalcCAddInclude.class);
 			Optional<KsrmtCalcCAddWorktime> worktime = this.queryProxy().find(
 					new KsrmtCalcCAddPK(companyId, laborSystemAtr), KsrmtCalcCAddWorktime.class);
 			Optional<KsrmtCalcCAddPremium> premium = this.queryProxy().find(
@@ -77,35 +80,35 @@ public class JpaAddSettingOfWorkingTimeRepository extends JpaRepository implemen
 		if (includePremium.isPresent()){
 			// 割増設定がある時、割増計算方法を設定する
 			useAtr = 1;			// 割増計算方法を設定する="する"
-			prmCalcActualOpe = includePremium.get().isActualOnly;
-			prmCalcIncludeCare = includePremium.get().isCare;
-			prmIncludeLate = includePremium.get().isLate;
-			prmIncludeLateByApp = includePremium.get().isLateDeleteApp;
-			prmEnableSetPerWorkHour = includePremium.get().lateSettingUnit;
-			prmCalcIncludeInterval = includePremium.get().isIntervalTime;
-			prmAddition = includePremium.get().isVacation;
+			prmCalcActualOpe = includePremium.get().isActualOnly();
+			prmCalcIncludeCare = includePremium.get().getIsCare();
+			prmIncludeLate = includePremium.get().getIsLate();
+			prmIncludeLateByApp = includePremium.get().getIsLateDeleteApp();
+			prmEnableSetPerWorkHour = includePremium.get().getLateSettingUnit();
+			prmCalcIncludeInterval = includePremium.get().getIsIntervalTime();
+			prmAddition = includePremium.get().getIsVacation();
 		}
 		else{
 			// 割増設定がない時、就業時間の設定を割増時間に写す
-			prmCalcActualOpe = includeWorktime.isActualOnly;
-			prmCalcIncludeCare = includeWorktime.isCare;
-			prmIncludeLate = includeWorktime.isLate;
-			prmIncludeLateByApp = includeWorktime.isLateDeleteApp;
-			prmEnableSetPerWorkHour = includeWorktime.lateSettingUnit;
-			prmCalcIncludeInterval = includeWorktime.isIntervalTime;
-			prmAddition = includeWorktime.isVacation;
+			prmCalcActualOpe = includeWorktime.isActualOnly();
+			prmCalcIncludeCare = includeWorktime.getIsCare();
+			prmIncludeLate = includeWorktime.getIsLate();
+			prmIncludeLateByApp = includeWorktime.getIsLateDeleteApp();
+			prmEnableSetPerWorkHour = includeWorktime.getLateSettingUnit();
+			prmCalcIncludeInterval = includeWorktime.getIsIntervalTime();
+			prmAddition = includeWorktime.getIsVacation();
 		}
 		// 労働時間の加算設定(就業時間の加算設定)から取得する
 		if (worktime.isPresent()){
-			wrkExcessOfFixDefo = worktime.get().fixCalcOverPredtime;
-			wrkExcessOfFlex = worktime.get().fleCalcShortPredtime;
-			wrkWithinMonth = worktime.get().fleCalcInLegal;
-			wrkMinusAbsence = worktime.get().fleCalcDeductPredtimeAbsence;
+			wrkExcessOfFixDefo = worktime.get().getFixCalcOverPredtime();
+			wrkExcessOfFlex = worktime.get().getFleCalcShortPredtime();
+			wrkWithinMonth = worktime.get().getFleCalcInLegal();
+			wrkMinusAbsence = worktime.get().getFleCalcDeductPredtimeAbsence();
 		}
 		// 労働時間の加算設定(割増時間の加算設定)から取得する
 		if (premium.isPresent()){
-			prmExcessOfFixDefo = premium.get().fixCalcOverPredtime;
-			prmExcessOfFlex = premium.get().fleCalcOverPredtime;
+			prmExcessOfFixDefo = premium.get().getFixCalcOverPredtime();
+			prmExcessOfFlex = premium.get().getFleCalcOverPredtime();
 		}
 		// 割増時間の加算設定の属性値を作成する
 		Optional<TreatDeductTimeForCalcWorkTime> prmTreatDeduct = Optional.empty();
@@ -130,16 +133,16 @@ public class JpaAddSettingOfWorkingTimeRepository extends JpaRepository implemen
 						prmTreatDeduct,
 						prmTreatVacation),
 				AddSettingOfWorkTime.createFromJavaType(
-						includeWorktime.isActualOnly,
+						includeWorktime.isActualOnly(),
 						Optional.of(TreatDeductTimeForCalcWorkTime.createFromJavaType(
-								includeWorktime.isCare,
+								includeWorktime.getIsCare(),
 								TreatLateEarlyTimeSetUnit.createFromJavaType(
-										includeWorktime.isLate,
-										includeWorktime.isLateDeleteApp,
-										includeWorktime.lateSettingUnit),
-								includeWorktime.isIntervalTime)),
+										includeWorktime.getIsLate(),
+										includeWorktime.getIsLateDeleteApp(),
+										includeWorktime.getLateSettingUnit()),
+								includeWorktime.getIsIntervalTime())),
 						Optional.of(new TreatVacationTimeForCalcWorkTime(
-								includeWorktime.isVacation,
+								includeWorktime.getIsVacation(),
 								wrkExcessOfFixDefo,
 								wrkWithinMonth,
 								wrkExcessOfFlex,
@@ -160,7 +163,7 @@ public class JpaAddSettingOfWorkingTimeRepository extends JpaRepository implemen
 			AddSettingOfWorkingTime domain){
 		
 		KsrmtCalcCAddInclude entity = new KsrmtCalcCAddInclude();
-		KsrmtCalcCAddIncludePK key = new KsrmtCalcCAddIncludePK(companyId, laborSystemAtr, 0);
+		KsrmtCalcCAddIncludePK key = new KsrmtCalcCAddIncludePK(companyId, laborSystemAtr, false);
 		entity.pk = key;
 		updateEntityIncludeWorktime(entity, domain);
 		return entity;
@@ -176,7 +179,7 @@ public class JpaAddSettingOfWorkingTimeRepository extends JpaRepository implemen
 			AddSettingOfWorkingTime domain){
 		
 		AddSettingOfWorkTime addSet = domain.getAddSetOfWorkTime();
-		entity.isActualOnly = addSet.getCalculateActualOperation().isCalclationByActualTime() ? 0 : 1;
+		entity.isActualOnly = addSet.getCalculateActualOperation().isCalclationByActualTime();
 		entity.isVacation = null;
 		entity.isCare = null;
 		entity.lateSettingUnit = null;
@@ -185,16 +188,16 @@ public class JpaAddSettingOfWorkingTimeRepository extends JpaRepository implemen
 		entity.isIntervalTime = null;
 		if (addSet.getTreatVacation().isPresent()){
 			TreatVacationTimeForCalcWorkTime treatVacation = addSet.getTreatVacation().get();
-			entity.isVacation = treatVacation.getAddition().value;
+			entity.isVacation = treatVacation.getAddition() == NotUseAtr.USE;
 		}
 		if (addSet.getTreatDeduct().isPresent()){
 			TreatDeductTimeForCalcWorkTime treatDeduct = addSet.getTreatDeduct().get();
-			entity.isCare = treatDeduct.getCalculateIncludCareTime().value;
-			entity.lateSettingUnit = treatDeduct.getTreatLateEarlyTimeSet().isEnableSetPerWorkHour() ? 1 : 0;
+			entity.isCare = treatDeduct.getCalculateIncludCareTime() == NotUseAtr.USE;
+			entity.lateSettingUnit = treatDeduct.getTreatLateEarlyTimeSet().isEnableSetPerWorkHour();
 			TreatLateEarlyTime treatLate = treatDeduct.getTreatLateEarlyTimeSet().getTreatSet();
-			entity.isLate = treatLate.isInclude() ? 1 : 0;
-			entity.isLateDeleteApp = treatLate.isIncludeByApp() ? 1 : 0;
-			entity.isIntervalTime = treatDeduct.getCalculateIncludIntervalExemptionTime().value;
+			entity.isLate = treatLate.isInclude();
+			entity.isLateDeleteApp = treatLate.isIncludeByApp();
+			entity.isIntervalTime = treatDeduct.getCalculateIncludIntervalExemptionTime() == NotUseAtr.USE;
 		}
 	}
 	
@@ -213,7 +216,7 @@ public class JpaAddSettingOfWorkingTimeRepository extends JpaRepository implemen
 		if (domain.getUseAtr().isNotUse()) return Optional.empty();
 		
 		KsrmtCalcCAddInclude entity = new KsrmtCalcCAddInclude();
-		KsrmtCalcCAddIncludePK key = new KsrmtCalcCAddIncludePK(companyId, laborSystemAtr, 1);
+		KsrmtCalcCAddIncludePK key = new KsrmtCalcCAddIncludePK(companyId, laborSystemAtr, true);
 		entity.pk = key;
 		updateEntityIncludePremium(entity, domain);
 		return Optional.of(entity);
@@ -229,7 +232,7 @@ public class JpaAddSettingOfWorkingTimeRepository extends JpaRepository implemen
 			AddSettingOfWorkingTime domain){
 		
 		AddSettingOfPremiumTime addSet = domain.getAddSetOfPremium();
-		entity.isActualOnly = addSet.getCalculateActualOperation().isCalclationByActualTime() ? 0 : 1;
+		entity.isActualOnly = addSet.getCalculateActualOperation().isCalclationByActualTime();
 		entity.isVacation = null;
 		entity.isCare = null;
 		entity.lateSettingUnit = null;
@@ -238,16 +241,16 @@ public class JpaAddSettingOfWorkingTimeRepository extends JpaRepository implemen
 		entity.isIntervalTime = null;
 		if (addSet.getTreatVacation().isPresent()){
 			TreatVacationTimeForCalcPremium treatVacation = addSet.getTreatVacation().get();
-			entity.isVacation = treatVacation.getAddition().value;
+			entity.isVacation = treatVacation.getAddition() == NotUseAtr.USE;
 		}
 		if (addSet.getTreatDeduct().isPresent()){
 			TreatDeductTimeForCalcWorkTime treatDeduct = addSet.getTreatDeduct().get();
-			entity.isCare = treatDeduct.getCalculateIncludCareTime().value;
-			entity.lateSettingUnit = treatDeduct.getTreatLateEarlyTimeSet().isEnableSetPerWorkHour() ? 1 : 0;
+			entity.isCare = treatDeduct.getCalculateIncludCareTime() == NotUseAtr.USE;
+			entity.lateSettingUnit = treatDeduct.getTreatLateEarlyTimeSet().isEnableSetPerWorkHour();
 			TreatLateEarlyTime treatLate = treatDeduct.getTreatLateEarlyTimeSet().getTreatSet();
-			entity.isLate = treatLate.isInclude() ? 1 : 0;
-			entity.isLateDeleteApp = treatLate.isIncludeByApp() ? 1 : 0;
-			entity.isIntervalTime = treatDeduct.getCalculateIncludIntervalExemptionTime().value;
+			entity.isLate = treatLate.isInclude();
+			entity.isLateDeleteApp = treatLate.isIncludeByApp();
+			entity.isIntervalTime = treatDeduct.getCalculateIncludIntervalExemptionTime() == NotUseAtr.USE;
 		}
 	}
 	
@@ -286,16 +289,18 @@ public class JpaAddSettingOfWorkingTimeRepository extends JpaRepository implemen
 		if (domain.getAddSetOfWorkTime().getTreatVacation().isPresent()){
 			TreatVacationTimeForCalcWorkTime treatVacation = domain.getAddSetOfWorkTime().getTreatVacation().get();
 			if (treatVacation.getDeformationExceedsPredeterminedValue().isPresent()){
-				entity.fixCalcOverPredtime = treatVacation.getDeformationExceedsPredeterminedValue().get().value; 
+				entity.fixCalcOverPredtime = treatVacation.getDeformationExceedsPredeterminedValue()
+						.get() == CalculationMethodForNormalWorkAndDeformedLaborOverTime.CALCULATE_AS_OVERTIME_HOURS; 
 			}
 			if (treatVacation.getAdditionWithinMonthlyStatutory().isPresent()){
-				entity.fleCalcInLegal = treatVacation.getAdditionWithinMonthlyStatutory().get().value;
+				entity.fleCalcInLegal = treatVacation.getAdditionWithinMonthlyStatutory().get() == NotUseAtr.USE;
 			}
 			if (treatVacation.getPredeterminedDeficiencyOfFlex().isPresent()){
-				entity.fleCalcShortPredtime = treatVacation.getPredeterminedDeficiencyOfFlex().get().value;
+				entity.fleCalcShortPredtime = treatVacation.getPredeterminedDeficiencyOfFlex()
+						.get() == CalculationMethodAtTheTimeOfLackOfFixedTimeForFlexWork.DO_NOT_CALCULATE_FLEX_DEFICIENCY;
 			}
 			if (treatVacation.getMinusAbsenceTime().isPresent()){
-				entity.fleCalcDeductPredtimeAbsence = treatVacation.getMinusAbsenceTime().get().value;
+				entity.fleCalcDeductPredtimeAbsence = treatVacation.getMinusAbsenceTime().get() == NotUseAtr.USE;
 			}
 		}
 	}
@@ -333,10 +338,12 @@ public class JpaAddSettingOfWorkingTimeRepository extends JpaRepository implemen
 		if (domain.getAddSetOfPremium().getTreatVacation().isPresent()){
 			TreatVacationTimeForCalcPremium treatVacation = domain.getAddSetOfPremium().getTreatVacation().get();
 			if (treatVacation.getDeformationExceedsPredeterminedValue().isPresent()){
-				entity.fixCalcOverPredtime = treatVacation.getDeformationExceedsPredeterminedValue().get().value; 
+				entity.fixCalcOverPredtime = treatVacation.getDeformationExceedsPredeterminedValue()
+						.get() == CalculationMethodForNormalWorkAndDeformedLaborOverTime.CALCULATE_AS_OVERTIME_HOURS; 
 			}
 			if (treatVacation.getPredeterminedExcessTimeOfFlex().isPresent()){
-				entity.fleCalcOverPredtime = treatVacation.getPredeterminedExcessTimeOfFlex().get().value;
+				entity.fleCalcOverPredtime = treatVacation.getPredeterminedExcessTimeOfFlex()
+						.get() == CalulationMethodWhenFlexWorkHoursExceededThePrescribedTime.DO_NOT_CALCULATE_FLEX_EXCESS;
 			}
 		}
 	}

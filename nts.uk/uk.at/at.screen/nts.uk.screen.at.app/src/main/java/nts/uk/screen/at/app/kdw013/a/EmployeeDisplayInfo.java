@@ -21,7 +21,7 @@ public class EmployeeDisplayInfo {
 	// 年月日
 	private GeneralDate workStartDate;
 	// List＜確認者>
-	private List<ConfirmerDto> lstComfirmerDto;
+	private List<ConfirmerByDay> lstComfirmerDto;
 	// List<日別勤怠(Work)>
 	private List<IntegrationOfDailyDto> lstIntegrationOfDaily;
 	// List<日別実績の実績内容>

@@ -3,9 +3,8 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto.cache;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.ClosureDateDto;
 
 @Data
 @NoArgsConstructor
@@ -13,11 +12,12 @@ import nts.arc.time.calendar.period.DatePeriod;
 public class AggrPeriodClosure {
 
 	/** 締めID */
-	private ClosureId closureId;
+	private Integer closureId;
 	/** 締め日 */
-	private ClosureDate closureDate;
+//	private ClosureDate closureDate;
+	private ClosureDateDto closureDate;
 	/** 年月 */
 	private int yearMonth;
 	/** 期間 */
-	private DatePeriod period;
+	private DateRange period;
 }

@@ -19,7 +19,7 @@ import nts.uk.query.pub.workplace.WorkplaceExport;
 // 社員情報
 @Builder
 @Data
-public class EmployeeInformationExport {
+public class EmployeeInformationExport implements Comparable<EmployeeInformationExport> {
 
 	/** The employee id. */
 	String employeeId; // 社員ID
@@ -67,5 +67,10 @@ public class EmployeeInformationExport {
 	int age;
 	
 	int gender;
+
+	@Override
+	public int compareTo(EmployeeInformationExport o) {
+		return this.employeeCode.compareTo(o.employeeCode);
+	}
 	
 }

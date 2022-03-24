@@ -80,3 +80,7 @@ span.limited-label {
 .fixed-flex-layout-right .compact-grid .ui-igcombo-wrapper {
   height: 27px;
 }
+
+td.source-type label span {
+	width: 54px;
+}

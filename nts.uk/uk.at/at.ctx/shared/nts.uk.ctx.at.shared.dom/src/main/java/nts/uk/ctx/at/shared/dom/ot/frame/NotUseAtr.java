@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.ot.frame;
 
+import nts.arc.enums.EnumAdaptor;
+
 /**
  * UseClassification
  */
@@ -89,4 +91,9 @@ public enum NotUseAtr {
 	public boolean isNotUse() {
 		return NOT_USE.equals(this);
 	}
+	
+	public static NotUseAtr toEnum(int value){
+		return EnumAdaptor.valueOf(value, NotUseAtr.class);
+	}
+	
 }

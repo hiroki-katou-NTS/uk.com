@@ -17,12 +17,14 @@ module nts.uk.ui.at.kdw013.setting {
                             <tr>
                                 <td style='width:' data-bind="i18n: 'KDW013_13'"></td>
                                 <td>
-                                    <div style="margin-left: 15px;" data-bind="ntsComboBox: {
+                                    <div tabindex="1" style="margin-left: 15px;top: 82px;
+    position: relative;" 
+                                        data-bind="ntsComboBox: {
                                         width:'85px',
-                                        options: $component.firstDays,
+                                        options: $component.slotDurations,
                                         optionsValue: 'id',
                                         visibleItemsCount: 20,
-                                        value: $component.params.firstDay,
+                                        value: $component.params.slotDuration,
                                         optionsText: 'title',
                                         editable: false,
                                         required: false,
@@ -35,7 +37,30 @@ module nts.uk.ui.at.kdw013.setting {
                             <tr>
                                 <td data-bind="i18n: 'KDW013_14'"></td>
                                 <td>
-                                <div style="margin-left: 15px;" data-bind="ntsComboBox: {
+                                <div tabindex="0" style="top: -41px;
+    position: relative;margin-left: 15px;" data-bind="ntsComboBox: {
+                                        width:'85px',
+                                        options: $component.firstDays,
+                                        optionsValue: 'id',
+                                        visibleItemsCount: 20,
+                                        value: $component.params.firstDay,
+                                        optionsText: 'title',
+                                        editable: false,
+                                        required: false,
+                                        selectFirstIfNull: false,
+                                        dropDownAttachedToBody: false,
+                                        columns: [{ prop: 'title', length: 2 }]}" >
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-bind="i18n: 'KDW013_15'"></td>
+                                <td>
+                                    <div tabindex="0" style="top: -41px;
+    position: relative;margin-left: 15px;" 
+
+
+                                        data-bind="ntsComboBox: {
                                         width:'85px',
                                         options: $component.timeList,
                                         optionsValue: 'value',
@@ -47,23 +72,7 @@ module nts.uk.ui.at.kdw013.setting {
                                         selectFirstIfNull: false,
                                         dropDownAttachedToBody: false,
                                         columns: [{ prop: 'text', length: 2 }]}" >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td data-bind="i18n: 'KDW013_15'"></td>
-                                <td>
-                                    <div style="margin-left: 15px;" data-bind="ntsComboBox: {
-                                        width:'85px',
-                                        options: $component.slotDurations,
-                                        optionsValue: 'id',
-                                        visibleItemsCount: 20,
-                                        value: $component.params.slotDuration,
-                                        optionsText: 'title',
-                                        editable: false,
-                                        required: false,
-                                        selectFirstIfNull: false,
-                                        dropDownAttachedToBody: false,
-                                        columns: [{ prop: 'title', length: 2 }]}" >
+
                                 </td>
                             </tr>
                         </tbody>
@@ -85,6 +94,10 @@ module nts.uk.ui.at.kdw013.setting {
                     }
                     .fc-popup-setting tr input {
                         text-align: right;
+                    }
+                    #fc td, #fc tr {
+                        border: none;
+                        vertical-align: middle;
                     }
                 </style>
             `
@@ -132,7 +145,7 @@ module nts.uk.ui.at.kdw013.setting {
         const vm = this;
         const { params } = vm;
         const state = { open: false };
-        const { firstDay, scrollTime, slotDuration, position, initialView} = params;
+        const { firstDay, scrollTime, slotDuration, position, initialView, showConfirm} = params;
 
         // store all value to charactorgistic domain
         ko.computed({
@@ -142,6 +155,7 @@ module nts.uk.ui.at.kdw013.setting {
                 const sc = ko.unwrap(scrollTime);
                 const sd = ko.unwrap(slotDuration);
                 const iv = ko.unwrap(initialView);
+                const sf = ko.unwrap(showConfirm);
                 // store when popup opened
                 if (state.open) {
                     storeSetting().then((value) => {
@@ -149,13 +163,14 @@ module nts.uk.ui.at.kdw013.setting {
                             firstDay: fd,
                             scrollTime: sc,
                             slotDuration: sd,
-                            initialView: iv
+                            initialView: iv,
+                            showConfirm:sf
                         };
                         value.firstDay = fd;
                         value.scrollTime = sc;
                         value.slotDuration = sd;
                         value.initialView = value.initialView;
-
+                        value.showConfirm = sf;
                         storeSetting(value);
                     });
                 } else if (ps) {

@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.app.command.exo.condset;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.exo.condset.OutputPeriodSetting;
 
@@ -8,6 +9,7 @@ import nts.uk.ctx.exio.dom.exo.condset.OutputPeriodSetting;
  * Command 出力期間設定
  */
 @Data
+@NoArgsConstructor
 public class SaveOutputPeriodSetCommand implements OutputPeriodSetting.MementoGetter {
 	
 	private Boolean isNew;

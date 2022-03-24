@@ -5,6 +5,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionAdapter;
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionImport;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcution;
@@ -26,18 +28,20 @@ public class AggrPeriodExcutionAdapterImpl implements AggrPeriodExcutionAdapter 
 	 *
 	 * @param excution the excution
 	 */
+
 	@Override
-	public void addExcution(AggrPeriodExcutionImport excution) {
+	public void addExcution(AggrPeriodExcutionImport excution, String aggrFrameName, GeneralDate startYmd, GeneralDate endYmd) {
 		this.pub.addExcution(AggrPeriodExcution.createFromJavaType(
-				excution.getCompanyId(), 
-				excution.getExecutionEmpId(), 
-				excution.getAggrFrameCode(), 
-				excution.getAggrId(), 
-				excution.getStartDateTime(), 
-				excution.getEndDateTime(), 
-				excution.getExecutionAtr(), 
-				excution.getExecutionAtr(), 
-				excution.getPresenceOfError())
+				excution.getCompanyId(),
+				excution.getExecutionEmpId(),
+				excution.getAggrFrameCode(),
+				excution.getAggrId(),
+				excution.getStartDateTime(),
+				excution.getEndDateTime(),
+				excution.getExecutionAtr(),
+				excution.getExecutionAtr(),
+				excution.getPresenceOfError(),
+				aggrFrameName,new DatePeriod(startYmd,endYmd))
 		);
 	}
 

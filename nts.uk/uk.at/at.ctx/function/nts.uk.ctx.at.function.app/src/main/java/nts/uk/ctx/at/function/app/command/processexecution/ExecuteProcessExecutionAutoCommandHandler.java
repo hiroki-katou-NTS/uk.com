@@ -285,7 +285,11 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	
 	@Inject
 	private TempAbsenceHistoryService tempAbsenceHistoryService;
-	
+
+	final static String SPACE = " ";
+	final static String ZEZO_TIME = "00:00";
+	final static String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm";
+
 	@Override
 	public boolean keepsTrack() {
 		return false;
@@ -2572,12 +2576,19 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				// (AggrPeriodExcution)
 				int executionAtr = nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodexcution.
 						ExecutionAtr.AUTOMATIC_EXECUTION.value;
+				//EA4209
+				val startDate = GeneralDateTime.now();
+				val endDate = GeneralDateTime.now();
+
 				AggrPeriodExcutionImport aggrPeriodExcution = AggrPeriodExcutionImport.builder().companyId(companyId)
 						.aggrId(execId).aggrFrameCode(aggrFrameCode).executionEmpId("System")
-						.startDateTime(GeneralDateTime.now()).executionAtr(executionAtr)
+						.startDateTime(startDate).executionAtr(executionAtr)
 						.executionStatus(Optional.empty()).presenceOfError(PresenceOfError.NO_ERROR.value)
-						.endDateTime(GeneralDateTime.now()).build();
-				this.aggrPeriodExcutionAdapter.addExcution(aggrPeriodExcution);
+						.endDateTime(endDate).build();
+				this.aggrPeriodExcutionAdapter.addExcution(aggrPeriodExcution,
+						anyAggrPeriod.get().getOptionalAggrName(),
+						anyAggrPeriod.get().getPeriod().start(),
+						anyAggrPeriod.get().getPeriod().end());
 
 				// 取得した「社員ID＜List＞」の分だけ「任意期間集計対象者」を登録する
 				List<AggrPeriodTargetImport> targetLists = new ArrayList<>();

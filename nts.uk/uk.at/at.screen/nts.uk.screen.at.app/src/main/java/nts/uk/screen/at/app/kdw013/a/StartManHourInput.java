@@ -9,6 +9,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.ManHrInputDisplayFormat;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageSetting;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
+import nts.uk.screen.at.app.kdw006.i.ManHrInputUsageSettingDto;
 
 /**
  * 
@@ -28,5 +29,8 @@ public class StartManHourInput {
 	
 	/** Optional<工数入力表示フォーマット> */
 	private Optional<ManHrInputDisplayFormat> manHrInputDisplayFormat;
+	
+	/** 工数入力の利用設定 */
+	private ManHrInputUsageSettingDto manHrInputUsageSetting;
 	
 }

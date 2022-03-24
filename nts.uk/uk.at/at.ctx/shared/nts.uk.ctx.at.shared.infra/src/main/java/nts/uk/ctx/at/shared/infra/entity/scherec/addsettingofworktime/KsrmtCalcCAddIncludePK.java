@@ -28,5 +28,9 @@ public class KsrmtCalcCAddIncludePK implements Serializable {
 	public int laborSystemAtr;
 	/** 割増区分 */
 	@Column(name = "PREMIUM_ATR")
-	public int premiumAtr;
+	public boolean premiumAtr;
+
+	public int getIsLate() {
+		return this.premiumAtr ? 1 : 0;
+	}
 }

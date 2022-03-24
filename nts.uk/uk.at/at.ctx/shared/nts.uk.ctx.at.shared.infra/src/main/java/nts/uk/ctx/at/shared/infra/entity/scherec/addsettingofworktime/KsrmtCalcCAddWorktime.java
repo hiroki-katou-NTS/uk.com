@@ -24,19 +24,35 @@ public class KsrmtCalcCAddWorktime extends ContractUkJpaEntity implements Serial
 
 	/** 通常、変形の所定超過時 */
 	@Column(name = "FIX_CALC_OVER_PREDTIME")
-	public Integer fixCalcOverPredtime;
+	public Boolean fixCalcOverPredtime;
 	/** 月次法定内のみ加算 */
 	@Column(name = "FLE_CALC_IN_LEGAL")
-	public Integer fleCalcInLegal;
+	public Boolean fleCalcInLegal;
 	/** フレックスの所定不足時 */
 	@Column(name = "FLE_CALC_SHORT_PREDTIME")
-	public Integer fleCalcShortPredtime;
+	public Boolean fleCalcShortPredtime;
 	/** 欠勤をマイナスにせず所定から控除する */
 	@Column(name = "FLE_CALC_DEDUCT_PREDTIME_ABSENCE")
-	public Integer fleCalcDeductPredtimeAbsence;
+	public Boolean fleCalcDeductPredtimeAbsence;
 
 	@Override
 	protected Object getKey() {
 		return this.pk;
+	}
+
+	public Integer getFixCalcOverPredtime() {
+		return KsrmtCalcCAddInclude.convertToInt(this.fixCalcOverPredtime);
+	}
+
+	public Integer getFleCalcInLegal() {
+		return KsrmtCalcCAddInclude.convertToInt(this.fleCalcInLegal);
+	}
+
+	public Integer getFleCalcShortPredtime() {
+		return KsrmtCalcCAddInclude.convertToInt(this.fleCalcShortPredtime);
+	}
+
+	public Integer getFleCalcDeductPredtimeAbsence() {
+		return KsrmtCalcCAddInclude.convertToInt(this.fleCalcDeductPredtimeAbsence);
 	}
 }

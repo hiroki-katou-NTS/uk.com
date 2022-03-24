@@ -15,6 +15,7 @@ import java.util.Map;
 /**
  * E版打刻データ端末区分
  */
+@SuppressWarnings("serial")
 @StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(1)
 public class EnterpriseStampDataTerminalAttr extends StringPrimitiveValue<EnterpriseStampDataTerminalAttr> {

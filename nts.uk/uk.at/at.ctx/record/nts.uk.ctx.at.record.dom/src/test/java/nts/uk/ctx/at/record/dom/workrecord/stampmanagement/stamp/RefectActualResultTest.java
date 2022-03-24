@@ -29,7 +29,7 @@ public class RefectActualResultTest {
 
 	@Test
 	public void testRefectActualResult() {
-		Integer cardNumberSupport = 9999;//dummy
+		String cardNumberSupport = "9999";//dummy
 		WorkLocationCD workLocationCD = new WorkLocationCD("workLocationCD");//dummy
 		WorkTimeCode workTimeCode = new WorkTimeCode("workTimeCode");//dummy
 		WorkGroup group = new WorkGroup(new WorkCode("DUMMY"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()); //dummy

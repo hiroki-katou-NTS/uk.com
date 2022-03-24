@@ -31,7 +31,11 @@ public class JpaSetSmartphoneStampRepository  extends JpaRepository implements S
 	public Optional<SettingsSmartphoneStamp> get(String cid) {
 		Optional<KrcmtStampSmartPhone> entity = this.queryProxy().find(cid, KrcmtStampSmartPhone.class);
 		if (entity.isPresent()) {
-			return Optional.of(entity.get().toDomain());
+			
+			SettingsSmartphoneStamp domain = entity.get().toDomain();
+			
+			return Optional.of(domain);
+			
 		}
 		return Optional.empty();
 	}
