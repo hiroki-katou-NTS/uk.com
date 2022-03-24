@@ -80,10 +80,11 @@ public class ShiftMaster extends WorkInformation implements DomainAggregate {
 	/**
 	 * エラーチェックする
 	 * @param require
+	 * @param companyId 会社ID
 	 */
-	public void checkError(Require require) {
+	public void checkError(Require require, String companyId) {
 
-		val status = this.checkErrorCondition( require );
+		val status = this.checkErrorCondition(require, companyId);
 		switch( status ) {
 			case WORKTYPE_WAS_DELETE:
 				throw new BusinessException("Msg_1608");

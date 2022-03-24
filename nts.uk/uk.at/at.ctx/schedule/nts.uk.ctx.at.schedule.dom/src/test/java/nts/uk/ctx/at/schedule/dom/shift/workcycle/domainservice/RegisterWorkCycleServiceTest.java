@@ -52,7 +52,8 @@ public class RegisterWorkCycleServiceTest {
     @Test
     public void testWhenHasErrorCode() {
 
-        WorkCycle workCycle = WorkCycle.create("CID001", "COD001", "Name001", Arrays.asList(
+    	String cid = "CID001";
+        WorkCycle workCycle = WorkCycle.create(cid, "COD001", "Name001", Arrays.asList(
                 WorkCycleInfo.create(2, new WorkInformation("WType001", "WTime001")),
                 WorkCycleInfo.create(3, new WorkInformation("WType002", "WTime002")),
                 WorkCycleInfo.create(4, new WorkInformation("WType004", null)),
@@ -64,7 +65,7 @@ public class RegisterWorkCycleServiceTest {
 
         new Expectations(WorkInformation.class) {
             {
-                workCycle.getInfos().get(0).getWorkInformation().checkErrorCondition(require);
+                workCycle.getInfos().get(0).getWorkInformation().checkErrorCondition(require, cid);
                 returns(ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE,ErrorStatusWorkInfo.WORKTYPE_WAS_ABOLISHED,
                         ErrorStatusWorkInfo.WORKTIME_ARE_REQUIRE_NOT_SET,ErrorStatusWorkInfo.NORMAL,
                         ErrorStatusWorkInfo.NORMAL,ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY);
@@ -83,14 +84,15 @@ public class RegisterWorkCycleServiceTest {
 
     @Test
     public void testInsert() {
-        WorkCycle workCycle = WorkCycle.create("CID001", "COD001", "Name001", Arrays.asList(
+    	String cid = "CID001";
+        WorkCycle workCycle = WorkCycle.create(cid, "COD001", "Name001", Arrays.asList(
                 WorkCycleInfo.create(2, new WorkInformation("WType001", null)),
                 WorkCycleInfo.create(3, new WorkInformation("WType002", null))
                 )
         );
         new Expectations(WorkInformation.class) {
             {
-                workCycle.getInfos().get(0).getWorkInformation().checkErrorCondition(require);
+                workCycle.getInfos().get(0).getWorkInformation().checkErrorCondition(require, cid);
                 returns(ErrorStatusWorkInfo.NORMAL,ErrorStatusWorkInfo.NORMAL);
 
             }
@@ -108,7 +110,8 @@ public class RegisterWorkCycleServiceTest {
 
     @Test
     public void testUpdate() {
-        WorkCycle workCycle = WorkCycle.create("CID001", "COD001", "Name001", Arrays.asList(
+    	String cid = "CID001";
+        WorkCycle workCycle = WorkCycle.create(cid, "COD001", "Name001", Arrays.asList(
                 WorkCycleInfo.create(2, new WorkInformation("WType001", "WTime001")),
                 WorkCycleInfo.create(3, new WorkInformation("WType002", null))
                 )
@@ -116,7 +119,7 @@ public class RegisterWorkCycleServiceTest {
 
         new Expectations(WorkInformation.class) {
             {
-                workCycle.getInfos().get(0).getWorkInformation().checkErrorCondition(require);
+                workCycle.getInfos().get(0).getWorkInformation().checkErrorCondition(require, cid);
                 returns(ErrorStatusWorkInfo.NORMAL,ErrorStatusWorkInfo.NORMAL);
             }
         };

@@ -29,4 +29,6 @@ public class DPParams {
     public Boolean initFromScreenOther;
     public DPCorrectionStateParam dpStateParam;
     public boolean changeFormat = false;
+
+    public DailyPerformanceCorrectionDto screenDto;
 }

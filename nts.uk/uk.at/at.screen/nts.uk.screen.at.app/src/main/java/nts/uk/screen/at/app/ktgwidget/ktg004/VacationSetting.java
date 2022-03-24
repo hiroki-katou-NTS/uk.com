@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.ktgwidget.ktg004;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,4 +44,7 @@ public class VacationSetting {
     
     // 年休残数管理する
     boolean annualManage;
+    
+    // 特別休暇管理情報
+    List<SpeHolidayRemainInfo> speHolidayRemainInfos;
 }

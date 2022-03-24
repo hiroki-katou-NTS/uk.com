@@ -49,7 +49,7 @@ public class UpdateShiftMasterServiceTest {
 		}};
 
 		NtsAssert.businessException("Msg_2163"
-				, () -> UpdateShiftMasterService.update(require
+				, () -> UpdateShiftMasterService.update(require, "companyId"
 							, new ShiftMasterCode("shiftMasterCode")
 							, ShiftMasterHelper.DispInfo.createDummy()
 							, new WorkInformation("workTypeCode", null)
@@ -84,13 +84,13 @@ public class UpdateShiftMasterServiceTest {
 		}};
 		new MockUp<ShiftMaster>() {
 			/** [Mock] エラーチェックする **/
-			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require) {
+			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require, String companyId) {
 				// エラーなし
 			}
 		};
 
 		NtsAssert.businessException("Msg_1610"
-				, () -> UpdateShiftMasterService.update(require
+				, () -> UpdateShiftMasterService.update(require, "companyId"
 							, original.getShiftMasterCode()
 							, ShiftMasterHelper.DispInfo.createDummy()
 							, new WorkInformation("workTypeCode", null)
@@ -119,13 +119,13 @@ public class UpdateShiftMasterServiceTest {
 		}};
 		new MockUp<ShiftMaster>() {
 			/** [Mock] エラーチェックする **/
-			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require) {
+			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require, String companyId) {
 				throw new BusinessException("Msg_435");
 			}
 		};
 
 		NtsAssert.businessException("Msg_435"
-				, () -> UpdateShiftMasterService.update(require
+				, () -> UpdateShiftMasterService.update(require, "companyId"
 							, original.getShiftMasterCode()
 							, ShiftMasterHelper.DispInfo.createDummy()
 							, new WorkInformation(original.getWorkTypeCode(), original.getWorkTimeCodeNotNull().orElse(null))
@@ -172,13 +172,13 @@ public class UpdateShiftMasterServiceTest {
 		}};
 		new MockUp<ShiftMaster>() {
 			/** [Mock] エラーチェックする **/
-			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require) {
+			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require, String companyId) {
 				// エラーなし
 			}
 		};
 
 		NtsAssert.atomTask(
-				() -> UpdateShiftMasterService.update(require
+				() -> UpdateShiftMasterService.update(require, "companyId"
 							, changed.getShiftMasterCode()
 							, changed.getDisplayInfor()
 							, new WorkInformation(changed.getWorkTypeCode(), changed.getWorkTimeCodeNotNull().orElse(null))
@@ -224,13 +224,13 @@ public class UpdateShiftMasterServiceTest {
 		}};
 		new MockUp<ShiftMaster>() {
 			/** [Mock] エラーチェックする **/
-			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require) {
+			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require, String companyId) {
 				// エラーなし
 			}
 		};
 
 		NtsAssert.atomTask(
-				() -> UpdateShiftMasterService.update(require
+				() -> UpdateShiftMasterService.update(require, "companyId"
 							, changed.getShiftMasterCode()
 							, changed.getDisplayInfor()
 							, new WorkInformation(changed.getWorkTypeCode(), changed.getWorkTimeCodeNotNull().orElse(null))
@@ -281,13 +281,13 @@ public class UpdateShiftMasterServiceTest {
 		}};
 		new MockUp<ShiftMaster>() {
 			/** [Mock] エラーチェックする **/
-			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require) {
+			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require, String companyId) {
 				// エラーなし
 			}
 		};
 
 		NtsAssert.atomTask(
-				() -> UpdateShiftMasterService.update(require
+				() -> UpdateShiftMasterService.update(require, "companyId"
 							, changed.getShiftMasterCode()
 							, changed.getDisplayInfor()
 							, new WorkInformation(changed.getWorkTypeCode(), changed.getWorkTimeCodeNotNull().orElse(null))

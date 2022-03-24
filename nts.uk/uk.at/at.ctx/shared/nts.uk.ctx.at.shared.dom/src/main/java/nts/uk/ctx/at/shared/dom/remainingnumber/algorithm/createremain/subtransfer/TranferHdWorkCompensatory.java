@@ -29,7 +29,7 @@ public class TranferHdWorkCompensatory {
 
 	public static IntegrationOfDaily process(Require require, String cid, IntegrationOfDaily dailyRecord, List<OvertimeHdHourTransfer>timeAfterReflectApp) {
 
-		Optional<WorkType> workTypeOpt = require.getWorkType(dailyRecord.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
+		Optional<WorkType> workTypeOpt = require.workType(cid, dailyRecord.getWorkInformation().getRecordInfo().getWorkTypeCode());
 		if (!workTypeOpt.isPresent() || workTypeOpt.get().getWorkTypeSetList().stream()
 				.filter(x -> x.getWorkAtr() == WorkAtr.OneDay).findFirst().map(x -> x.getGenSubHodiday())
 				.orElse(WorkTypeSetCheck.NO_CHECK) == WorkTypeSetCheck.NO_CHECK) {
@@ -101,7 +101,6 @@ public class TranferHdWorkCompensatory {
 		
 	}
 
-	public static interface Require extends CreateWorkMaxTimeZone.Require, SubstituteTransferProcess.Require {
-		Optional<WorkType> getWorkType(String workTypeCd);
-	}
+	public static interface Require extends CreateWorkMaxTimeZone.Require, SubstituteTransferProcess.Require,
+		WorkType.Require { }
 }

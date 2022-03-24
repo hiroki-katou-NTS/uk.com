@@ -37,7 +37,8 @@ public class AnnualHolidaysFinder {
 		InforAnnualHolidaysAccHolidayDto confirmDto = null;
 		// Input．社員IDリストをチェック
 		// 社員の代休残数詳細情報を取得
-		confirmDto = annualHoliday.getGetInforRemainAnnualHoliday(GeneralDate.today(), sIDs.get(0));
+		if(lstEmp.size() > 0)
+		confirmDto = annualHoliday.getGetInforRemainAnnualHoliday(GeneralDate.today(), sIDs.size() > 1 ? lstEmp.get(0).getEmployeeId() : sIDs.get(0));
 		
 		if (sIDs.size() != 1)
 		mode = 1; // 画面 ＝ 複数モード

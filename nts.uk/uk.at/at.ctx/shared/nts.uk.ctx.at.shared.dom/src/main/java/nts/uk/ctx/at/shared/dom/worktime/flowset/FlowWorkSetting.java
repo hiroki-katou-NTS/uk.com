@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 // 流動勤務設定
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable, WorkSetting {
 
 	/** The company id. */
@@ -218,6 +221,10 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		return cloned;
 	}
 
+	public static interface Require {
+		Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode);
+	}
+	
 	/**
 	 * 平日勤務時間帯.勤務時間帯.残業時間帯を取得する(就業時間帯NOの昇順）
 	 * @return 残業時間帯
@@ -260,6 +267,16 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 				.collect(Collectors.toMap(k->new EmTimezoneNo(k.getWorktimeNo()), v->new OverTimeFrameNo(v.getInLegalOTFrameNo().v().intValue())));
 	}
 
+	/**
+	 * 法定内残業枠NOを取得する
+	 * @return 法定内残業枠NO(List)
+	 */
+	public List<OverTimeFrameNo> getInLegalOverTimes() {
+		if(this.legalOTSetting.isOutsideLegal()) {
+			return new ArrayList<>();
+		}
+		return this.halfDayWorkTimezone.getInLegalOverTimes();
+	}
 
 	/**
 	 * 変更可能な勤務時間帯を取得する
@@ -269,7 +286,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	@Override
 	public ChangeableWorkingTimeZone getChangeableWorkingTimeZone(WorkSetting.Require require) {
 		
-		val predTimeStg = this.getPredetermineTimeSetting(require);
+		val predTimeStg = this.getPredetermineTimeSetting(require).get();
 		val workAbleOneDay = predTimeStg.getOneDaySpan();
 		val workAbleMorning = predTimeStg.getHalfDayOfAmSpan();
 		val workAbleEvening = predTimeStg.getHalfDayOfPmSpan();
@@ -340,8 +357,5 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	private ChangeableWorkingTimeZonePerNo createChangeableWkTzPerNo(int workNo, TimeSpanForCalc timeSpan ) {
 		return ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
 				new WorkNo(workNo) ,timeSpan);
-	}
-
-	public static interface Require {
 	}
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.appabsence.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
  */
 @AllArgsConstructor
 @Getter
+@Setter
 public class NursingCareLeaveManagement {
 
     // 子の看護管理区分

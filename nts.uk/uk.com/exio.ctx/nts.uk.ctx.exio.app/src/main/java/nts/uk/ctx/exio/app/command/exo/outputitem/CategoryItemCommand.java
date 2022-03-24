@@ -23,4 +23,13 @@ public class CategoryItemCommand {
 	 * 順序
 	 */
 	private int displayOrder;
+
+	public CategoryItemCommand(int categoryItemNo, int categoryId, Integer operationSymbol, int displayOrder) {
+		super();
+		this.categoryItemNo = categoryItemNo;
+		this.categoryId = categoryId;
+		this.operationSymbol = operationSymbol;
+		this.displayOrder = displayOrder;
+	}
+	
 }

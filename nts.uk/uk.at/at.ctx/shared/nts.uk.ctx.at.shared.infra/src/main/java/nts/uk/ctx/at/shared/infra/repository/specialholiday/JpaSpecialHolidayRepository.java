@@ -384,14 +384,14 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 
 		KshmtHdspGrantDeadline entity = new KshmtHdspGrantDeadline();
 		boolean isAutoGrant = domain.getAutoGrant().value == 0 ? false : true;
-		int timeSpecifyMethod = TimeLimitSpecification.INDEFINITE_PERIOD.value, limitCarryoverDays = 999;
+		Integer timeSpecifyMethod = TimeLimitSpecification.INDEFINITE_PERIOD.value, limitCarryoverDays = 999;
 		entity.pk = new KshmtHdspGrantDeadlinePK(domain.getCompanyId(), domain.getSpecialHolidayCode().v());
 
 		if (isAutoGrant) {
 			if (domain.getGrantRegular().getGrantPeriodic().isPresent()) {
 				timeSpecifyMethod = domain.getGrantRegular().getGrantPeriodic().get().getGrantDeadline().getTimeSpecifyMethod().value;
 			}
-			limitCarryoverDays = 0;
+			limitCarryoverDays = null;
 
 			if (domain.getGrantRegular().getFixGrantDate().isPresent()) {
 				if (domain.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays()

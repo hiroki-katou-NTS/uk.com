@@ -14,7 +14,7 @@ public class TenantLocatorService {
 		val datasourceOpt = TenantLocatorClient.getDataSource(tenantCode);
 		if (!datasourceOpt.isPresent()) {
 			disconnect();
-			throw new BusinessException("Msg_314");
+			return;
 		}
 
 		connectDataSource(datasourceOpt.get().getDatasourceName());
@@ -52,5 +52,13 @@ public class TenantLocatorService {
 			return false;
 		}
 		return !dataSourse.toString().equals("");
+	}
+	
+	@SuppressWarnings("serial")
+	public static class NoDataSourceException extends Exception {
+		
+		public BusinessException toBusinessException() {
+			return new BusinessException("Msg_314");
+		}
 	}
 }

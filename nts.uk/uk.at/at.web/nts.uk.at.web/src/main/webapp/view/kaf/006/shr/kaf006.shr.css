@@ -82,3 +82,8 @@ button.nts-switch-button {
 .small-height{
     height: 25px !important;
 }
+
+td {
+	text-align: left !important;
+	height: 33px !important;
+}

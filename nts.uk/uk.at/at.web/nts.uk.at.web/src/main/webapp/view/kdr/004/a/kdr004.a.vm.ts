@@ -59,7 +59,10 @@ module nts.uk.at.view.kdr004.a {
             vm.ccg001ComponentOption = {
                 /** Common properties */
                 systemType: 2, //システム区分 - 2: 就業
-                showEmployeeSelection: true,
+                // 2022.03.18 - 3S - chinh.hm - issues #123483     - 変更 START
+                //showEmployeeSelection: true,
+                showEmployeeSelection: false,
+                // 2022.03.18 - 3S - chinh.hm - issues #123483     - 変更 END
                 showQuickSearchTab: true, //クイック検索
                 showAdvancedSearchTab: true, //詳細検索
                 showBaseDate: true, //基準日利用

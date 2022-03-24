@@ -6,8 +6,8 @@ import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffJobTitleHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffWorkplaceHistoryCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.CardNumberCanonicalaization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.employeebasic.EmployeeBasicCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.OccurenceHolidayCanonicalizationBase;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
@@ -18,6 +18,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalizedDataRecord;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 
 /**
@@ -49,6 +50,15 @@ public interface DomainCanonicalization {
 	 */
 	ImportingDataMeta appendMeta(ImportingDataMeta source);
 
+	
+	/**
+	 * 他のドメインの移送マッピングを流用する場合はOverrideすること
+	 *　(exp...打刻E版、Smile休職情報)
+	 */
+	default ImportingDomainId getTransferDomainId(ExecutionContext context) {
+		return context.getDomainId();
+	}
+	
 	/**
 	 * 受入に影響される既存データを補正する
 	 * @param require

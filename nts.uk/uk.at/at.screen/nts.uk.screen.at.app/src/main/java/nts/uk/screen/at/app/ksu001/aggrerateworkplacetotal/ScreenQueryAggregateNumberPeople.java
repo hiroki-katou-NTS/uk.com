@@ -30,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.bs.employee.dom.classification.Classification;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
@@ -85,7 +86,6 @@ public class ScreenQueryAggregateNumberPeople {
 			) {
 		String companyId = AppContexts.user().companyId();
 		RequireImpl require = RequireImpl.builder()
-									.companyId(companyId)
 									.service(service)
 									.workTypeRepository(workTypeRepository)
 									.workTimeSettingRepository(workTimeSettingRepository)
@@ -99,7 +99,7 @@ public class ScreenQueryAggregateNumberPeople {
 			// 1.1: 雇用別に集計する(Require, List<日別勤怠(Work)>)
 			
 			Map<GeneralDate, Map<EmploymentCode, BigDecimal>> countEachEpl 
-				= CountNumberOfPeopleByAttributeService.countingEachEmployments(require, dailyWorks);
+				= CountNumberOfPeopleByAttributeService.countingEachEmployments(require, companyId, dailyWorks);
 			
 			List<String> empCodes = countEachEpl.entrySet()
 						.stream()
@@ -152,7 +152,7 @@ public class ScreenQueryAggregateNumberPeople {
 		} else if (workplaceCounterOp == WorkplaceCounterCategory.CLASSIFICATION_PEOPLE) { // 職場計カテゴリ == 分類人数
 			//2.1:  分類別に集計する(Require, List<日別勤怠(Work)>)
 			Map<GeneralDate, Map<ClassificationCode, BigDecimal>> countEachClassification = 
-					CountNumberOfPeopleByAttributeService.countingEachClassification(require, dailyWorks);
+					CountNumberOfPeopleByAttributeService.countingEachClassification(require, companyId, dailyWorks);
 			//2.2: <call>
 			List<Classification> classifications = classificationRepository.getClassificationByCodes(
 					companyId, 
@@ -194,7 +194,7 @@ public class ScreenQueryAggregateNumberPeople {
 		} else if (workplaceCounterOp == WorkplaceCounterCategory.POSITION_PEOPLE) { // 職場計カテゴリ == 職位人数
 			// 3.1: 職位別に集計する(Require, List<日別勤怠(Work)>)
 			Map<GeneralDate, Map<String, BigDecimal>> countEachJob =
-					CountNumberOfPeopleByAttributeService.countingEachJobTitle(require, dailyWorks);
+					CountNumberOfPeopleByAttributeService.countingEachJobTitle(require, companyId, dailyWorks);
 			
 			// 3.2: <call>
 			List<JobTitleInfo> jobTitleInfos = 
@@ -250,8 +250,6 @@ public class ScreenQueryAggregateNumberPeople {
 	@Builder
 	private static class RequireImpl implements CountNumberOfPeopleByAttributeService.Require {
 
-		private String companyId;
-
 		private BasicScheduleService service;
 		
 		private WorkTypeRepository workTypeRepository;
@@ -265,18 +263,6 @@ public class ScreenQueryAggregateNumberPeople {
 		private FlexWorkSettingRepository flexWorkSet;
 		
 		private PredetemineTimeSettingRepository predetemineTimeSet;
-		
-		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			
-			return workTypeRepository.findByPK(companyId, workTypeCd);
-		}
-
-		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
-		}
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -285,24 +271,33 @@ public class ScreenQueryAggregateNumberPeople {
 		}
 
 		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			Optional<FixedWorkSetting> workSetting = fixedWorkSet.findByKey(companyId, code.v());
-			return workSetting.orElse(null);
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return this.workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
 		}
+
 		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			Optional<FlowWorkSetting> workSetting = flowWorkSet.find(companyId, code.v());
-			return workSetting.orElse(null);
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return this.fixedWorkSet.findByKey(companyId, workTimeCode.v());
 		}
+
 		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			Optional<FlexWorkSetting> workSetting = flexWorkSet.find(companyId, code.v());
-			return workSetting.orElse(null);
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return this.flowWorkSet.find(companyId, workTimeCode.v());
 		}
+
 		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			Optional<PredetemineTimeSetting> workSetting = predetemineTimeSet.findByWorkTimeCode(companyId, wktmCd.v());
-			return workSetting.orElse(null);
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return this.flexWorkSet.find(companyId, workTimeCode.v());
+		}
+
+		@Override
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return this.predetemineTimeSet.findByWorkTimeCode(companyId, workTimeCode.v());
+		}
+
+		@Override
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return this.workTypeRepository.findByPK(companyId, workTypeCode.v());
 		}
 		
 	}

@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.gateway.infra.repository.tenantlogin;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.command.CommandProxy;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationFailureLog;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationFailureLogRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.tenantlogin.SgwdtFailLogTenantAuth;
@@ -23,6 +24,8 @@ public class JpaTenantAuthenticationFailureLogRepository extends JpaRepository i
 	
 	@Override
 	public void insert(TenantAuthenticationFailureLog domain) {
-		this.commandProxy().insert(toEntity(domain));
+		this.forDefaultDataSource(em -> {
+			this.commandProxy(em).insert(toEntity(domain));
+		});
 	}
 }

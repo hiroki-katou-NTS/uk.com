@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.setting.output;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -94,6 +95,12 @@ public class AppDispInfoWithDateOutput {
 	@Setter
 	private Optional<List<WorkTimeSetting>> opWorkTimeLst;
 	
+	/**
+	 * エラーメッセージ
+	 */
+	@Setter
+	private List<String> errorMsgLst;
+	
 	public AppDispInfoWithDateOutput(
 			ApprovalFunctionSet approvalFunctionSet,
 			PrePostInitAtr prePostAtr,
@@ -112,6 +119,7 @@ public class AppDispInfoWithDateOutput {
 		this.opPreAppContentDisplayLst = Optional.empty();
 		this.opAppDeadline = Optional.empty();
 		this.opWorkTimeLst = Optional.empty();
+		this.errorMsgLst = new ArrayList<String>();
 	}
 	
 }

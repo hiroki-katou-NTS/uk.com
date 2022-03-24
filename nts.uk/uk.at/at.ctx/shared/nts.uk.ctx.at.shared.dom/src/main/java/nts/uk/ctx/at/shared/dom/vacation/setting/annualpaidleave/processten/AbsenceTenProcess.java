@@ -96,7 +96,8 @@ public class AbsenceTenProcess {
 			String companyID, String employeeID, GeneralDate baseDate) {
 		SubstitutionHolidayOutput result = new SubstitutionHolidayOutput();
 		// ドメインモデル「代休管理設定」を取得する(lấy dữ liệu domain 「代休管理設定」)
-		CompensatoryLeaveComSetting compensatoryLeaveComSet = require.compensatoryLeaveComSetting(companyID);
+		CompensatoryLeaveComSetting compensatoryLeaveComSet = require.compensatoryLeaveComSetting(companyID).orElse(null);
+		if(compensatoryLeaveComSet == null) return result;
 		// 代休を管理する年月日かどうかを判断する
 		boolean manageSubsHoliday = CheckDateForManageCmpLeaveService.check(require, companyID, employeeID, baseDate);
 		// ※OUTPUTの代休管理区分　＝　代休管理するか
@@ -241,9 +242,9 @@ public class AbsenceTenProcess {
 	
 	public static interface RequireM4 extends RequireM0, CompensatoryLeaveComSetting.RequireM7 {
 
-		CompensatoryLeaveEmSetting compensatoryLeaveEmSetting(String companyId, String employmentCode);
+		Optional<CompensatoryLeaveEmSetting> compensatoryLeaveEmSetting(String companyId, String employmentCode);
 
-		CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId);
+		Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId);
 	}
 	
 	public static interface RequireM3 extends RequireM0 {

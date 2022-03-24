@@ -111,7 +111,7 @@ public class MakeShiftMasterServiceTest {
 		}};
 		new MockUp<ShiftMaster>() {
 			/** [Mock] エラーチェックする **/
-			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require) {
+			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require, String cid) {
 				// エラーなし
 			}
 		};
@@ -146,7 +146,7 @@ public class MakeShiftMasterServiceTest {
 		}};
 		new MockUp<ShiftMaster>() {
 			/** [Mock] エラーチェックする **/
-			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require) {
+			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require, String cid) {
 				throw new BusinessException("Msg_434");
 			}
 		};
@@ -190,7 +190,7 @@ public class MakeShiftMasterServiceTest {
 		}};
 		new MockUp<ShiftMaster>() {
 			/** [Mock] エラーチェックする **/
-			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require) {
+			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require, String cid) {
 				// エラーなし
 			}
 		};
@@ -237,7 +237,7 @@ public class MakeShiftMasterServiceTest {
 		}};
 		new MockUp<ShiftMaster>() {
 			/** [Mock] エラーチェックする **/
-			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require) {
+			@Mock public void checkError(@SuppressWarnings("unused") ShiftMaster.Require require, String cid) {
 				// エラーなし
 			}
 		};

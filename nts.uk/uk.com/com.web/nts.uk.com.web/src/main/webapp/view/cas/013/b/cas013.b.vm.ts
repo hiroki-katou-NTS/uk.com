@@ -84,13 +84,16 @@ module nts.uk.com.view.cas013.b {
             }).fail(error => {
                 vm.backToTopPage();
             })
-            vm.KCP005_load()
+             // vm.KCP005_load()
         }
         created() {
             let vm = this;
             vm.companyId.subscribe((cid) => {
                 if (cid){
-                    vm.getListEmployee(cid);
+                    vm.getListEmployee(cid)
+					  .done(() => {
+						vm.KCP005_load();
+					  })
                 }
             });
 
@@ -127,6 +130,7 @@ module nts.uk.com.view.cas013.b {
                         vm.optionalColumnDatasource(job);
                         vm.employInfors(emps);
                         vm.listEmployee(data);
+                        dfd.resolve( vm );
                     }else {
                         block.clear()
                     }

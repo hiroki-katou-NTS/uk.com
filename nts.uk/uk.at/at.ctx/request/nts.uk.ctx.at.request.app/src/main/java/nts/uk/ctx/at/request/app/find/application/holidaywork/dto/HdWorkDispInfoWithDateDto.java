@@ -79,6 +79,11 @@ public class HdWorkDispInfoWithDateDto {
 	 */
 	private Integer actualMonthlyAgreeTimeStatus;
 	
+	/**
+	 * エラーメッセージ
+	 */
+	private String opErrorMsg;
+	
 	public static HdWorkDispInfoWithDateDto fromDomain(HdWorkDispInfoWithDateOutput domain) {
 		if(domain == null) return null;
 		List<WorkType> workTypeDomainList = domain.getWorkTypeList().orElse(new ArrayList<WorkType>());
@@ -92,6 +97,7 @@ public class HdWorkDispInfoWithDateDto {
 				domain.getInitWorkTimeName().isPresent() ? domain.getInitWorkTimeName().get().v() : "", 
 				domain.getOvertimeStatus().isPresent() ? OvertimeStatusDto.fromDomain(domain.getOvertimeStatus().get()) : null, 
 				ApplicationTimeDto.fromDomain(domain.getActualApplicationTime().orElse(null)), 
-				domain.getActualMonthlyAgreeTimeStatus().isPresent() ? domain.getActualMonthlyAgreeTimeStatus().get().value : null);
+				domain.getActualMonthlyAgreeTimeStatus().isPresent() ? domain.getActualMonthlyAgreeTimeStatus().get().value : null,
+				domain.getOpErrorMsg().orElse(null));
 	}
 }
