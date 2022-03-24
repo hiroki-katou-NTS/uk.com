@@ -110,13 +110,6 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 			interm = Items.fillNewData(context, interm);
 		}
 		
-		// ログインIDの重複チェック
-		if (Items.User.isDuplicatedLoginId(require, interm)) {
-			require.add(ExternalImportError.record(interm.getRowNo(), context.getDomainId(),"ログインIDが重複しています。"));
-			
-			return;
-		}
-		
 		require.save(context, interm.complete());
 	}
 	
@@ -313,20 +306,10 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 						.addCanonicalized(CanonicalItem.of(有効期限, GeneralDate.max()))
 						.addCanonicalized(CanonicalItem.of(特別利用者, 0))
 						.addCanonicalized(CanonicalItem.of(複数会社を兼務する, 0))
-						.addCanonicalized(CanonicalItem.of(デフォルトユーザ, 0));
+						.addCanonicalized(CanonicalItem.of(デフォルトユーザ, 0))
+						.optionalItem(CanonicalItem.of(ログインID, String.format("%12s", "")))//12桁空白埋め
+						;
 			}
-			
-			static boolean isDuplicatedLoginId(RequireCanonicalize require, IntermediateResult interm) {
-				
-				String userId = interm.getItemByNo(ユーザID).get().getString();
-				String loginId = interm.getItemByNo(ログインID).get().getString();
-
-				// 異なるユーザIDであるにも関わらず同じログインIDの既存データがあるか
-				return require.getUserByLoginId(loginId)
-						.filter(u -> !u.getUserID().equals(userId))
-						.isPresent();
-			}
-
 		}
 		
 		/** ユーザのログインパスワード */

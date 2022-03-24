@@ -6,6 +6,7 @@ import nts.arc.primitive.constraint.IntegerRange;
 /**
  * E版打刻データファンクションNO
  */
+@SuppressWarnings("serial")
 @IntegerRange(min = 0, max = 99)
 public class EnterpriseStampDataFunctionNo extends IntegerPrimitiveValue<EnterpriseStampDataFunctionNo> {
 
