@@ -112,7 +112,7 @@ module nts.uk.at.view.kmr002.a.model {
 
 					if (self.dateBefore != null && self.checkChangeOrder(self.currentFrameNo() == 1 ? positiveCountLst1 : positiveCountLst2, self.currentFrameNo()) && 
 						((self.currentFrameNo() == 1 && positiveCountLst1.length > 0) || (self.currentFrameNo() == 2 && positiveCountLst2.length > 0))) {
-						confirm("Msg_3326").ifYes(() => {
+						confirm({ messageId: "Msg_3326" }).ifYes(() => {
 							if(_.isEmpty(self.listOrder) && _.isEmpty(_.concat(positiveCountLst1, positiveCountLst2))) {
 								return error({ messageId: 'Msg_1605' });
 							}
@@ -230,7 +230,7 @@ module nts.uk.at.view.kmr002.a.model {
 
 				if (self.checkChangeOrder(self.currentFrameNo() == 1 ? positiveCountLst2 : positiveCountLst1, self.currentFrameNo() == 1 ? 2 : 1) && 
 					((self.currentFrameNo() == 2 && positiveCountLst1.length > 0) || (self.currentFrameNo() == 1 && positiveCountLst2.length > 0))) {
-					confirm("Msg_3326").ifYes(() => {
+					confirm({ messageId: "Msg_3326" }).ifYes(() => {
 						if(_.isEmpty(self.listOrder) && _.isEmpty(_.concat(positiveCountLst1, positiveCountLst2))) {
 							return error({ messageId: 'Msg_1605' });
 						}
@@ -471,7 +471,7 @@ module nts.uk.at.view.kmr002.a.model {
 				positiveCountLst2 = _.filter(self.bentoFrame2List(), (o) => o.bentoCount()>0);
 
 			if (self.checkChangeOrder(self.currentFrameNo() == 1 ? positiveCountLst1 : positiveCountLst2, self.currentFrameNo()) && ((self.currentFrameNo() == 1 && positiveCountLst1.length > 0) || (self.currentFrameNo() == 2 && positiveCountLst2.length > 0))) {
-				confirm("Msg_3326").ifYes(() => {
+				confirm({ messageId: "Msg_3326" }).ifYes(() => {
 					if(_.isEmpty(self.listOrder) && _.isEmpty(_.concat(positiveCountLst1, positiveCountLst2))) {
 						return error({ messageId: 'Msg_1605' });
 					}
