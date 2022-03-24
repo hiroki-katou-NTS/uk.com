@@ -368,7 +368,8 @@ public class RoleDailyExportExcelImpl {
                     data.put("P10_4",sheet.getSheetNo());
                     data.put("P10_5",sheet.getSheetName().v());
                     StringBuilder disPlayName = new StringBuilder();
-                    List<DisplayTimeItem> listDisplayTimeItem = sheet.getListDisplayTimeItem();
+                    List<DisplayTimeItem> listDisplayTimeItem = sheet.getListDisplayTimeItem()
+                            .stream().sorted(Comparator.comparing(DisplayTimeItem::getItemDaily)).collect(Collectors.toList());
                     for (int i = 0, listDisplayTimeItemSize = listDisplayTimeItem.size(); i < listDisplayTimeItemSize; i++) {
                         DisplayTimeItem e = listDisplayTimeItem.get(i);
                         val sub = mapIdAnName.getOrDefault(e.getItemDaily(), null);
