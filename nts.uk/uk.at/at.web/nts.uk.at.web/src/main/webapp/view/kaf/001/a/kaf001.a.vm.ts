@@ -247,7 +247,6 @@ module kaf001.a.viewmodel {
             block.invisible();
 
             let self = this;
-            let vm = new ko.ViewModel();
             let employeeIds : Array<string> = [];
 
             _.each(self.selectedEmployeeCode(), x => {
@@ -271,76 +270,76 @@ module kaf001.a.viewmodel {
                     baseDate: self.selectedDate(),
 					isAgentMode: true
                 };
-                switch (applicationType) {
+				switch (applicationType) {
                     case ApplicationType.OVER_TIME_APPLICATION: {
                         if (mode != null) {
                             switch (mode) {
                                 case 0:
                                     //KAF005-残業申請（早出）
-                                    vm.$jump("/view/kaf/005/a/index.xhtml?overworkatr=0", transfer);
+                                    nts.uk.request.jump("/view/kaf/005/a/index.xhtml?overworkatr=0", transfer);
                                     break;
 
                                 case 1:
                                     //KAF005-残業申請（通常）
-                                    vm.$jump("/view/kaf/005/a/index.xhtml?overworkatr=1", transfer);
+                                    nts.uk.request.jump("/view/kaf/005/a/index.xhtml?overworkatr=1", transfer);
                                     break;
 
                                 case 2:
                                     //KAF005-残業申請（早出・通常）
-                                    vm.$jump("/view/kaf/005/a/index.xhtml?overworkatr=2", transfer);
+                                    nts.uk.request.jump("/view/kaf/005/a/index.xhtml?overworkatr=2", transfer);
                                     break;
                                 case 3:
                                     //KAF005-残業申請（multiple）
-                                    vm.$jump("/view/kaf/005/a/index.xhtml?overworkatr=3", transfer);
+                                    nts.uk.request.jump("/view/kaf/005/a/index.xhtml?overworkatr=3", transfer);
                                     break;
                             }
                         }
                         break;
                     }
                     case ApplicationType.ABSENCE_APPLICATION: {
-                        vm.$jump("/view/kaf/006/a/index.xhtml", transfer);
+                        nts.uk.request.jump("/view/kaf/006/a/index.xhtml", transfer);
                         break;
                     }
                     case ApplicationType.WORK_CHANGE_APPLICATION: {
-                        vm.$jump("/view/kaf/007/a/index.xhtml", transfer);
+                        nts.uk.request.jump("/view/kaf/007/a/index.xhtml", transfer);
                         break;
                     }
                     case ApplicationType.BUSINESS_TRIP_APPLICATION: {
-                        vm.$jump("/view/kaf/008/a/index.xhtml", transfer);
+                        nts.uk.request.jump("/view/kaf/008/a/index.xhtml", transfer);
                         // jump("at", "/view/kaf/008/a/index.xhtml", {success : true});
                         break;
                     }
                     case ApplicationType.GO_RETURN_DIRECTLY_APPLICATION: {
-                        vm.$jump("/view/kaf/009/a/index.xhtml", transfer);
+                        nts.uk.request.jump("/view/kaf/009/a/index.xhtml", transfer);
                         break;
                     }
                     case ApplicationType.BREAK_TIME_APPLICATION: {
-                        vm.$jump("/view/kaf/010/a/index.xhtml", transfer);
+                        nts.uk.request.jump("/view/kaf/010/a/index.xhtml", transfer);
                         break;
                     }
                     case ApplicationType.ANNUAL_HOLIDAY_APPLICATION: {
-                        vm.$jump("/view/kaf/012/a/index.xhtml", transfer);
+                        nts.uk.request.jump("/view/kaf/012/a/index.xhtml", transfer);
                         break;
                     }
                     case ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION: {
-                        vm.$jump("/view/kaf/004/a/index.xhtml", transfer);
+                        nts.uk.request.jump("/view/kaf/004/a/index.xhtml", transfer);
                         break;
                     }
                     case ApplicationType.COMPLEMENT_LEAVE_APPLICATION: {
-                        vm.$jump("/view/kaf/011/a/index.xhtml", transfer);
+                        nts.uk.request.jump("/view/kaf/011/a/index.xhtml", transfer);
                         break;
                     }
                     case ApplicationType.STAMP_APPLICATION: {
                         if (mode == 0) {
-                            vm.$jump("/view/kaf/002/a/index.xhtml", transfer);
+                            nts.uk.request.jump("/view/kaf/002/a/index.xhtml", transfer);
                         }
                         if (mode == 1) {
-                            vm.$jump("/view/kaf/002/b/index.xhtml", transfer);
+                            nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                         }
                         break;
                     }
                     case ApplicationType.OPTIONAL_ITEM_APPLICATION: {
-                        vm.$jump("/view/kaf/020/a/index.xhtml", transfer);
+                        nts.uk.request.jump("/view/kaf/020/a/index.xhtml", transfer);
                         break;
                     }
                 }
