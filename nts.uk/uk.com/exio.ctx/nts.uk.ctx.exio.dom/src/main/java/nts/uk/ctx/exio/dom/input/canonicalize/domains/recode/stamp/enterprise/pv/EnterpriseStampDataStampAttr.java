@@ -18,6 +18,7 @@ import java.util.Optional;
 /**
  * E版打刻データ打刻区分
  */
+@SuppressWarnings("serial")
 @StringCharType(CharType.ANY_HALF_WIDTH)
 @StringMaxLength(1)
 public class EnterpriseStampDataStampAttr extends StringPrimitiveValue<EnterpriseStampDataStampAttr> {

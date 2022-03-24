@@ -5,10 +5,12 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodexcution.ExecutionAtr;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodexcution.ExecutionStatus;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodexcution.PresenceOfError;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.AnyAggrFrameCode;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.AnyAggrName;
 
 /**
  * 任意期間集計実行ログ KRCMT_AGGR_PERIODEXCUTION
@@ -46,6 +48,11 @@ public class AggrPeriodExcution {
 	/** エラーの有無 */
 	private PresenceOfError presenceOfError;
 
+	private AnyAggrName anyAggrName;
+
+	/** 対象期間 */
+	private DatePeriod period;
+
 	/**
 	 * Contructor
 	 * @param companyId
@@ -60,7 +67,8 @@ public class AggrPeriodExcution {
 	 */
 	public AggrPeriodExcution(String companyId, String executionEmpId, AnyAggrFrameCode aggrFrameCode, String aggrId,
 	                          GeneralDateTime startDateTime, GeneralDateTime endDateTime, ExecutionAtr executionAtr,
-	                          Optional<ExecutionStatus> executionStatus, PresenceOfError presenceOfError) {
+	                          Optional<ExecutionStatus> executionStatus, PresenceOfError presenceOfError, AnyAggrName anyAggrName,
+							  DatePeriod period) {
 		super();
 		this.companyId = companyId;
 		this.executionEmpId = executionEmpId;
@@ -71,6 +79,8 @@ public class AggrPeriodExcution {
 		this.executionAtr = executionAtr;
 		this.executionStatus = executionStatus;
 		this.presenceOfError = presenceOfError;
+		this.anyAggrName = anyAggrName;
+		this.period = period;
 	}
 	
 	/**
@@ -87,12 +97,14 @@ public class AggrPeriodExcution {
 	 * @return
 	 */
 	public static AggrPeriodExcution createFromJavaType(String companyId, String executionEmpId, String aggrFrameCode, String aggrId, GeneralDateTime startDateTime,
-			GeneralDateTime endDateTime, int executionAtr, Integer executionStatus, int presenceOfError){
+			GeneralDateTime endDateTime, int executionAtr, Integer executionStatus, int presenceOfError,String anyAggrName, DatePeriod datePeriod ){
 		
 		return new AggrPeriodExcution(companyId, executionEmpId, new AnyAggrFrameCode(aggrFrameCode), aggrId, startDateTime, endDateTime,
 				EnumAdaptor.valueOf(executionAtr, ExecutionAtr.class),
 				executionStatus != null ? Optional.of(EnumAdaptor.valueOf(executionStatus, ExecutionStatus.class)) : Optional.empty(),
-				EnumAdaptor.valueOf(presenceOfError, PresenceOfError.class));
+				EnumAdaptor.valueOf(presenceOfError, PresenceOfError.class),
+				new AnyAggrName(anyAggrName),
+				datePeriod);
 	}
 
 }

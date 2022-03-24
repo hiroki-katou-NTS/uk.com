@@ -24,13 +24,21 @@ public class KsrmtCalcCAddPremium extends ContractUkJpaEntity implements Seriali
 
 	/** 通常、変形の所定超過時 */
 	@Column(name = "FIX_CALC_OVER_PREDTIME")
-	public Integer fixCalcOverPredtime;
+	public Boolean fixCalcOverPredtime;
 	/** フレックスの所定超過時 */
 	@Column(name = "FLE_CALC_OVER_PREDTIME")
-	public Integer fleCalcOverPredtime;
+	public Boolean fleCalcOverPredtime;
 	
 	@Override
 	protected Object getKey() {
 		return this.pk;
+	}
+	
+	public Integer getFixCalcOverPredtime() {
+		return KsrmtCalcCAddInclude.convertToInt(this.fixCalcOverPredtime);
+	}
+
+	public Integer getFleCalcOverPredtime() {
+		return KsrmtCalcCAddInclude.convertToInt(this.fleCalcOverPredtime);
 	}
 }

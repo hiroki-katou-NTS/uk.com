@@ -515,6 +515,12 @@ export class KafS05Component extends KafS00ShrComponent {
             command
         )
             .then((res: any) => {
+                let errorMsgLst = res.data.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
+                if (!_.isEmpty(errorMsgLst)) {
+                    self.$modal.error({ messageId: errorMsgLst[0] }).then(() => {
+
+                    });
+                }
                 self.model.displayInfoOverTime = res.data;
                 let step1 = self.$refs.step1 as KafS05Step1Component;
                 step1.loadData(self.model.displayInfoOverTime);

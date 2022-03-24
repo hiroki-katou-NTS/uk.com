@@ -32,6 +32,7 @@ module nts.uk.at.view.kdp002.c {
 			employeeCode: string;
 			mode: a.Mode;
 			error: any;
+			regionalTime: number;
 		}
 
 		export class ScreenModel extends ko.ViewModel {
@@ -71,6 +72,7 @@ module nts.uk.at.view.kdp002.c {
 			modeShowPointNoti: KnockoutObservable<boolean | null> = ko.observable(null);
 
 			infoEmpFromScreenA!: EmployeeParam;
+			regionalTime: number = 0;
 
 			item1: KnockoutObservable<string> = ko.observable('');
 			item2: KnockoutObservable<string> = ko.observable('');
@@ -86,7 +88,7 @@ module nts.uk.at.view.kdp002.c {
 			showBtnNoti: KnockoutObservable<boolean | null> = ko.observable(null);
 			noticeSetting: KnockoutObservable<INoticeSet> = ko.observable(null);
 
-			constructor() {
+			constructor(params: any) {
 				super();
 
 				let self = this;
@@ -107,11 +109,9 @@ module nts.uk.at.view.kdp002.c {
 					.then((data: any) => {
 						self.noticeSetting(data.noticeSetDto);
 					});
-
-				vm.$ajax("at", "server/time/now").then((output: any) => {
-					let data: Date = moment(output).utc();
-					self.timeView(data)
-				})
+            
+                let data: Date = moment(moment(vm.$date.now()).add(ko.unwrap(nts.uk.ui.windows.getShared("infoEmpToScreenC").regionalTime), 'm')).toDate();
+                    self.timeView(data)
 			}
 
 			setSizeDialog() {
@@ -156,12 +156,16 @@ module nts.uk.at.view.kdp002.c {
 					dfd = $.Deferred();
 				let itemIds: DISPLAY_ITEM_IDS = nts.uk.ui.windows.getShared("KDP010_2C");
 				self.infoEmpFromScreenA = nts.uk.ui.windows.getShared("infoEmpToScreenC");
-
+                
+				self.regionalTime = self.infoEmpFromScreenA.regionalTime;
+                const vm = new ko.ViewModel();
+				self.time.now = ko.observable(moment(vm.$date.now()).add(ko.unwrap(self.regionalTime), 'm').toDate())
+                
 				self.getWorkPlacwName(self.infoEmpFromScreenA.workPlaceId);
 
 				let data = {
 					employeeId: self.infoEmpFromScreenA.employeeId,
-					stampDate: moment().format("YYYY/MM/DD"),
+					stampDate: moment(time).format("YYYY/MM/DD"),
 					attendanceItems: itemIds
 				}
 
@@ -253,7 +257,6 @@ module nts.uk.at.view.kdp002.c {
 						}
 					}
 				});
-
 				self.$window.shared("screenC").done((nameScreen: any) => {
 					switch (nameScreen.screen) {
 						case 'KDP001':
@@ -293,8 +296,8 @@ module nts.uk.at.view.kdp002.c {
 				const mockvm = new ko.ViewModel();
 
 				const param = {
-					startDate: mockvm.$date.now(),
-					endDate: mockvm.$date.now(),
+					startDate: moment(mockvm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate(),
+					endDate: moment(mockvm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate(),
 					sid: vm.infoEmpFromScreenA.employeeId
 				}
 

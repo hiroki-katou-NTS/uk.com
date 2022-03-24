@@ -36,4 +36,5 @@ DOMAIN_ID,NAME,AVAILABLE_MODES,TRANSACTION_UNIT
 144,"社員別作業の絞込",0,2
 990,"Smile人事基本情報",0,2
 991,"Smile職制情報",0,2
+992,"Smile休職休業",4,2
 999,"テストサンプル",15,2

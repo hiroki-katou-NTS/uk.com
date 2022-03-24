@@ -1,0 +1,49 @@
+<publishData>
+  <publishTarget publishUrl="http://localhost/">
+    <file relUrl="bin/kinjirou.dll" publishTime="2009/09/14 16:22:51" />
+    <file relUrl="bin/KMTX03.exe" publishTime="2010/08/18 9:17:12" />
+    <file relUrl="bin/log/201105171141-外部受入err.txt" publishTime="2011/05/17 11:41:28" />
+    <file relUrl="bin/log/201105171523-外部受入err.txt" publishTime="2011/05/17 15:23:46" />
+    <file relUrl="bin/log/201105171303-外部受入err.txt" publishTime="2011/05/17 13:03:23" />
+    <file relUrl="bin/DataConvert_Services.pdb" publishTime="2011/05/19 8:56:13" />
+    <file relUrl="bin/DataConvert_Services.dll" publishTime="2011/05/19 8:56:13" />
+    <file relUrl="bin/log/201105171156-外部受入err.txt" publishTime="2011/05/17 11:56:40" />
+    <file relUrl="bin/log/201105171200-外部受入err.txt" publishTime="2011/05/17 12:00:19" />
+    <file relUrl="bin/OdbcApi.dll" publishTime="2011/04/13 15:38:45" />
+    <file relUrl="bin/log/201105171520-外部受入err.txt" publishTime="2011/05/17 15:20:16" />
+    <file relUrl="bin/log/201105171403-外部受入err.txt" publishTime="2011/05/17 14:03:45" />
+    <file relUrl="bin/log/201105171133-外部受入err.txt" publishTime="2011/05/17 11:33:33" />
+    <file relUrl="bin/log/201105171339-外部受入err.txt" publishTime="2011/05/17 13:39:52" />
+    <file relUrl="bin/log/201105171142-外部受入err.txt" publishTime="2011/05/17 11:42:32" />
+    <file relUrl="bin/KinElog.dll" publishTime="2011/04/14 9:54:30" />
+    <file relUrl="bin/log/201105171400-外部受入err.txt" publishTime="2011/05/17 14:00:40" />
+    <file relUrl="bin/log/201105171302-外部受入err.txt" publishTime="2011/05/17 13:02:24" />
+    <file relUrl="bin/run.bat" publishTime="2011/05/17 9:47:52" />
+    <file relUrl="bin/log/201105171338-外部受入err.txt" publishTime="2011/05/17 13:38:55" />
+    <file relUrl="bin/log/201105171137-外部受入err.txt" publishTime="2011/05/17 11:37:34" />
+    <file relUrl="bin/KMTXCVDL.dll" publishTime="2010/06/16 9:52:13" />
+    <file relUrl="bin/Kansuu.dll" publishTime="2011/04/14 9:53:57" />
+    <file relUrl="Web.config" publishTime="2011/05/18 19:01:20" />
+    <file relUrl="bin/log/201105171136-外部受入err.txt" publishTime="2011/05/17 11:36:31" />
+    <file relUrl="bin/log/201105171410-外部受入err.txt" publishTime="2011/05/17 14:10:07" />
+    <file relUrl="bin/log/201105171301-外部受入err.txt" publishTime="2011/05/17 13:01:31" />
+    <file relUrl="bin/log/201105171522-外部受入err.txt" publishTime="2011/05/17 15:22:30" />
+    <file relUrl="bin/log/201105171325-外部受入err.txt" publishTime="2011/05/17 13:25:21" />
+    <file relUrl="bin/log/201105171330-外部受入err.txt" publishTime="2011/05/17 13:30:15" />
+    <file relUrl="bin/log/201105171139-外部受入err.txt" publishTime="2011/05/17 11:39:21" />
+    <file relUrl="bin/log/201105171801-外部受入err.txt" publishTime="2011/05/17 18:01:12" />
+    <file relUrl="bin/log/201105171358-外部受入err.txt" publishTime="2011/05/17 13:58:39" />
+    <file relUrl="bin/log/201105171424-外部受入err.txt" publishTime="2011/05/17 14:24:10" />
+    <file relUrl="bin/log/201105171732-外部受入err.txt" publishTime="2011/05/17 17:32:53" />
+    <file relUrl="bin/log/201105171409-外部受入err.txt" publishTime="2011/05/17 14:09:57" />
+    <file relUrl="bin/kmini01.dll" publishTime="2010/03/03 15:00:58" />
+    <file relUrl="Service1.asmx" publishTime="2011/05/16 15:30:40" />
+    <file relUrl="bin/log/201105171402-外部受入err.txt" publishTime="2011/05/17 14:02:10" />
+    <file relUrl="bin/log/201105171401-外部受入err.txt" publishTime="2011/05/17 14:01:28" />
+    <file relUrl="bin/log/201105171337-外部受入err.txt" publishTime="2011/05/17 13:37:02" />
+    <file relUrl="bin/log/201105171352-外部受入err.txt" publishTime="2011/05/17 13:52:12" />
+    <file relUrl="bin/log/201105171406-外部受入err.txt" publishTime="2011/05/17 14:06:24" />
+    <file relUrl="bin/log/201105171309-外部受入err.txt" publishTime="2011/05/17 13:09:45" />
+    <file relUrl="bin/kmini02.dll" publishTime="2010/03/03 15:32:55" />
+  </publishTarget>
+</publishData>

@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="/master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:stylefile path="./kmp001.j.main.css" />
+			<com:scriptfile path="./kmp001.j.vm.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.common.QRCodeVerticalNumber
+				nts.uk.ctx.at.shared.dom.common.QRCodeHorizontalNumber
+			</com:ValidatorScript>
+
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- J1_1 -->
+				<a class="goback"
+					data-bind="i18n: 'KMP001_100', ntsLinkButton: { jump: '/view/kmp/001/h/index.xhtml' }"></a>
+				<!-- J1_2 -->
+				<button class="proceed"
+					data-bind="click: exportQR, i18n: 'KMP001_175'"></button>
+			</div>
+
+			<div id="contents-area">
+				<!-- J2_1 -->
+				<div id="com-ccg001"></div>
+				<!-- J2_2 -->
+				<table>
+					<tr>
+						<td id="left-side">
+							<!-- J2_2 -->
+							<div id="com-kcp005"></div>
+						</td>
+
+						<td id="right-side">
+							<div>
+								<!-- J2_3 -->
+								<label data-bind="i18n: 'KMP001_161'"></label>
+							</div> <br></br>
+
+							<div>
+								<!-- J2_4 -->
+								<label data-bind="i18n: 'KMP001_162'"></label>
+							</div> <br></br>
+
+							<table>
+								<tr>
+									<!-- J2_5 -->
+									<td class="labelJ2">
+										<div
+											data-bind="ntsFormLabel: {text: $i18n('KMP001_163'), required: true}"></div>
+									</td>
+									<td>
+										<!-- J2_6 --> <!-- J2_7, J2_8, J2_9 -->
+										<div id="radioGroup"
+											data-bind="ntsRadioBoxGroup: {options: qrSizeOption, optionsValue: 'id', optionsText: 'name', value: qrSize, enable: true }"></div>
+									</td>
+								</tr>
+
+							</table> <br></br>
+
+							<table>
+								<tr>
+									<!-- J2_10 -->
+									<td class="labelJ2">
+										<div
+											data-bind="ntsFormLabel: {inline: true, text: $i18n('KMP001_167'), required: true}"></div>
+									</td>
+									<td class="rightJ2">
+										<!-- J2_11 --> <label data-bind="i18n: 'KMP001_168'"></label>
+										<!-- J2_12 --> <input class="sizeInput"
+										data-bind="ntsNumberEditor: {
+													name: '#[KMP001_173]',
+													value: textEditorJ2_12,
+													constraint: 'QRCodeVerticalNumber',
+													required: true
+												}" />
+										<!-- J2_13 --> <label data-bind="i18n: 'KMP001_171'"></label>
+										<!-- J2_14 --> <label data-bind="i18n: 'KMP001_169'"></label>
+										<!-- J2_15 --> <label data-bind="i18n: 'KMP001_170'"></label>
+										<!-- J2_16 --> <input class="sizeInput"
+										data-bind="ntsNumberEditor: {
+													name: '#[KMP001_174]',
+													value: textEditorJ2_16,
+													constraint: 'QRCodeHorizontalNumber',
+													required: true
+												}" />
+										<!-- J2_17 --> <label data-bind="i18n: 'KMP001_171'"></label>
+										<!-- J2_18 -->
+										<div id="labelJ2_18">
+											<label data-bind="i18n: 'KMP001_172'"></label>
+										</div>
+									</td>
+								</tr>
+
+							</table>
+
+						</td>
+					</tr>
+				</table>
+			</div>
+
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
