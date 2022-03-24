@@ -78,6 +78,6 @@ public class ConvertTimeRecordUpdateToXmlServiceTest {
 
 		Optional<String> actualResult = ConvertTimeRecordUpdateToXmlService.convertToXml(require, new ContractCode(""), new EmpInfoTerminalCode(""));
 
-		assertThat(actualResult.get()).isEqualTo("sp_vol=68,1@iditi1=10");
+		assertThat(actualResult.get()).isEqualTo("sp_vol=68,1\niditi1=10");
 	}
 }

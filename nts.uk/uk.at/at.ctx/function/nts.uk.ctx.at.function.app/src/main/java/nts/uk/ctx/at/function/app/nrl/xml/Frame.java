@@ -169,7 +169,7 @@ public class Frame implements MeanCarryable {
 		byte[] byteDatas = new byte[(int)len];
 		int i = 0;
 		for (String item : items) {
-			byte[] bytes =  Element.PAYLOAD.equals(item) ? (bodyBytes != null ? bodyBytes : Codryptofy.decode(pickItem(item))) :
+			byte[] bytes =  bodyBytes != null && Element.PAYLOAD.equals(item) ? bodyBytes :
 							((Element.NRL_NO.equals(item) || Element.MAC_ADDR.equals(item) ||  Element.CONTRACT_CODE.equals(item)) ?
 									asciiCharToBytes(pickItem(item)) : hexStringToBytes(pickItem(item)));
 			int arrLen = bytes.length;
@@ -228,7 +228,7 @@ public class Frame implements MeanCarryable {
 	        		lineNumber++;
 	        	}
 	        }
-	        return result.toString().trim();
+            return Codryptofy.convertToShiftJIS(result.toString().trim());
 	    } catch (IOException e) {
 	        throw new RuntimeException(e);
 	    }

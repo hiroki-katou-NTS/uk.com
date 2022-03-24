@@ -50,7 +50,7 @@ public class SendToNRLRemote extends NRLRequest<Frame> {
 		if (xml.isPresent()) {
 			payload = xml.get();
 		}
-		payload = Codryptofy.paddingWithByte(payload, 51200, " ");
+		payload = Codryptofy.paddingWithByte(payload, 51200);
 		List<MapItem> items = NRContentList.createFieldForPadding2(Command.TR_REMOTE,
 				Optional.ofNullable(Integer.toHexString(51242)), context.getTerminal());
 		context.collect(items, payload);

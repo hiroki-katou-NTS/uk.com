@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.dto;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,26 +68,55 @@ public class TimeRecordSettingInfoDto {
 
 		List<TimeRecordSetReceptFormatDto> lstReceptFormat = new ArrayList<>();
 		List<TimeRecordSetUpdateReceptDto> lstUpdateRecept = new ArrayList<>();
-		String[] lstDataRecv = objectRecv.split(NRRemoteCommon.ROW);
-		for (int i = 0; i < lstDataRecv.length; i++) {
-			if (i == 0) {
-				empInfoTerName = lstDataRecv[i].split(NRRemoteCommon.ELEMENT)[0];
-				romVersion = lstDataRecv[i].split(NRRemoteCommon.ELEMENT)[1];
-				modelEmpInfoTer = lstDataRecv[i].split(NRRemoteCommon.ELEMENT)[2];
-			} else {
-				lstReceptFormat.add(createSettingFormat(lstDataRecv[i]));
+		Reader inputString = new StringReader(objectRecv);
+		String line = null;
+		int lineData = 0;
+		BufferedReader reader = new BufferedReader(inputString);
+		// タイムレコード設定受信フォーマットリスト
+		try {
+			while((line = reader.readLine()) != null){
+				if(line.isEmpty()) {
+					continue;
+				}
+				if (lineData == 0) {
+					empInfoTerName = line.split(NRRemoteCommon.ELEMENT)[0];
+					romVersion = line.split(NRRemoteCommon.ELEMENT)[1];
+					modelEmpInfoTer = line.split(NRRemoteCommon.ELEMENT)[2];
+				} else {
+					lstReceptFormat.add(createSettingFormat(line));
+				}
+				lineData++;
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-
-		String[] lstDataUpdate = objectValueCurrent.split(NRRemoteCommon.ROW);
-		for (int i = 0; i < lstDataUpdate.length; i++) {
-			lstUpdateRecept.add(createSettingUpdate(lstDataUpdate[i]));
-		}
-
+		
+		lstUpdateRecept.addAll(createLstUpdateRecept(objectValueCurrent));
+	
 		return new TimeRecordSettingInfoDto(macAdd, empInfoTerName, romVersion, modelEmpInfoTer, lstReceptFormat,
 				lstUpdateRecept);
 	}
 
+	//タイムレコード設定現在と更新受信リスト
+	private static List<TimeRecordSetUpdateReceptDto> createLstUpdateRecept(String objectValueCurrent){
+		List<TimeRecordSetUpdateReceptDto> lstUpdateRecept = new ArrayList<>();
+		Reader inputString = new StringReader(objectValueCurrent);
+		String line = null;
+		BufferedReader reader = new BufferedReader(inputString);
+		// タイムレコード設定受信フォーマットリスト
+		try {
+			while((line = reader.readLine()) != null){
+				if(line.isEmpty()) {
+					continue;
+				}
+				lstUpdateRecept.add(createSettingUpdate(line));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return lstUpdateRecept;
+	}
+	
 	// [S-2] タイムレコードの設定情報を作る
 	public static TimeRecordSettingInfoDto create(TimeRecordSetFormatList setFormat,
 			TimeRecordSetUpdateList setUpdate) {
@@ -117,9 +150,9 @@ public class TimeRecordSettingInfoDto {
 			builder.append("=");
 			builder.append(x.getUpdateValue());
 			master.ifPresent(data -> builder.append(data.getRebootFlg().equals("1") ? ",1" : ""));
-			builder.append("@");
+			builder.append("\n");
 		});
-		return StringUtils.removeEnd(builder.toString(), "@");
+		return StringUtils.removeEnd(builder.toString(), "\n");
 	}
 
 	// [S-1] タイムレコード設定受信フォーマットリストを作る
@@ -133,8 +166,11 @@ public class TimeRecordSettingInfoDto {
 
 	// [S-2] タイムレコード設定更新受信リストを作る
 	private static TimeRecordSetUpdateReceptDto createSettingUpdate(String data) {
-
-		String[] filed = data.split(NRRemoteCommon.ELEMENT);
+		
+		String[] filed = data.split(NRRemoteCommon.ELEMENT_VALUE);
+		if(filed.length <2) {
+			return new TimeRecordSetUpdateReceptDto(filed[0], "");
+		}
 		return new TimeRecordSetUpdateReceptDto(filed[0], filed[1]);
 	}
 

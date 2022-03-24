@@ -30,7 +30,7 @@ import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.message.No
  *         タイムレコーダへ送信するお知らせメッセージを取得する
  */
 @RequestScoped
-@Named(Command.MESSAGE)
+@Named(value = Command.MESSAGE, decrypt = true)
 public class GetNotificationMessageQuery extends NRLRequest<Frame> {
 	
 	@Inject
@@ -51,9 +51,9 @@ public class GetNotificationMessageQuery extends NRLRequest<Frame> {
 		StringBuilder builder = new StringBuilder();
 		lstMessage.forEach(data -> {
 			builder.append(String.format("%02d", data.getDisplayOrder()));
-			builder.append(Codryptofy.paddingWithByte(data.getContent(), 1200, " "));
+			builder.append(Codryptofy.paddingWithByte(data.getContent(), 1200));
 		});
-		String payload = Codryptofy.paddingWithByte(builder.toString(), 36060, " ");
+		String payload = Codryptofy.paddingWithByte(builder.toString(), 36060);
 	
 		int length = 36060 + 42;//payload+soh+hdr+....
 		List<MapItem> items = NRContentList.createFieldForPadding2(Command.MESSAGE,

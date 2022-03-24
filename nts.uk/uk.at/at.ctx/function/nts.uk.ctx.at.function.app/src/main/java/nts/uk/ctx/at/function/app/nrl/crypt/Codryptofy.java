@@ -15,8 +15,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * Codryptofy.
  * 
@@ -248,13 +246,17 @@ public class Codryptofy {
 	}
 	
 	public static String paddingWithByte(String text, int byteText) {
-		return paddingWithByte(text, byteText, " ");
-	}
-	
-	public static String paddingWithByte(String text, int byteText, String defaultText) {
 		int sizeText = decode(text).length;
-		String emptyString = StringUtils.rightPad("", byteText-sizeText, defaultText);
-		return encode(decode(text + emptyString));
+		byte[] result = new byte[byteText];
+		System.arraycopy(decode(text), 0, result, 0, sizeText);
+		
+		int len = sizeText;
+		byte[] emptyByte = decode(" ");
+		for(int i = sizeText; i< byteText; i++) {
+			System.arraycopy(emptyByte, 0, result, len, emptyByte.length);
+			len+=emptyByte.length;
+		}
+		return encode(result);
 	}
 	
 	public static String paddingFullBlock(String payload) {
@@ -262,5 +264,9 @@ public class Codryptofy {
 		if(sizeText % 16 == 0)
 			return payload;
 		return paddingWithByte(payload, (sizeText/16+1) * 16);
+	}
+	
+	public static String convertToShiftJIS(String text) {
+		return encode(decode(text));
 	}
 }

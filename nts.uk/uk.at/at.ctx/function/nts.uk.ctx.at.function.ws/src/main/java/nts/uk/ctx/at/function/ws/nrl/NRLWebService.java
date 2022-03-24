@@ -5,6 +5,7 @@ import java.io.InputStream;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -61,6 +62,6 @@ public class NRLWebService extends RequestDispatcher {
 	public Response requestMessage(InputStream is) {
 		NRLResponse response = ignite(is);
 		Frame frame = response.getEntity(Frame.class);
-		return Response.ok().type(MediaType.APPLICATION_OCTET_STREAM).entity(frame.createFormatFrom()).build();
+		return Response.ok().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_TYPE.withCharset("Shift_JIS")).entity(frame.createFormatFrom()).build();
 	}
 }

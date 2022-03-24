@@ -33,7 +33,7 @@ public class ConvertNRLRemoteReceiveToObjectServiceTest {
 	@Test
 	public void test() throws FileNotFoundException {
 
-        String payload = "NRL-m,200,9@基本設定,ボリューム,sp_vol,num,1,5,0:9,0@@@@@sp_vol,68";
+        String payload = "NRL-m,200,9\n基本設定,ボリューム,sp_vol,num,1,5,0:9,0@@@@@sp_vol=68";
 		Optional<AtomTask> actualResult = ConvertNRLRemoteReceiveToObjectService.convertData(require, new ContractCode(""), new EmpInfoTerminalCode(""), "", payload);
 
 		NtsAssert.atomTask(() -> actualResult.get(),

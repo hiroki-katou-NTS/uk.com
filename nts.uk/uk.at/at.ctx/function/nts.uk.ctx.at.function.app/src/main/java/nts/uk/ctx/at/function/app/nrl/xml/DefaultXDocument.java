@@ -40,6 +40,7 @@ public class DefaultXDocument extends XDocument<Frame> {
 			Command command = null;
 			Stack<String> layers = new Stack<>();
 			int hdrIndex = -1, plIndex = -1, lengthIndex = -1;
+			int lengthItemClosed = 0;
 			
 			while ((line = readLine(br)) != null) {
 				String layer = layers.size() > 0 ? layers.peek() : null; 
@@ -91,13 +92,25 @@ public class DefaultXDocument extends XDocument<Frame> {
 					} else if (lengthIndex == elmIndex) {
 						int pktLength = Integer.decode("0x" + value);
 						MarshalResult result = new MarshalResult();
-						payload = decryptPayload(tmpFile.createInputStream(), pktLength, command, result);
+						payload = decryptPayload(tmpFile.createInputStream(), pktLength, command, result, value);
 						origPl = result.getOrigPlBytes();
 					} 
-					if (plIndex == elmIndex) dataItems.add(new Item(elmIndex, Codryptofy.encodeUTF8(payload)));
-					else dataItems.add(new Item(elmIndex, value));
+					if (plIndex == elmIndex) {
+						if (command == Command.TR_REMOTE_SEND_SETTING  || command == Command.MESSAGE) {
+							dataItems.add(new Item(elmIndex, Codryptofy.convertToShiftJIS(value)));
+							origPl = Codryptofy.decode(value);
+						} else {
+							dataItems.add(new Item(elmIndex, Codryptofy.encodeUTF8(payload)));
+						}
+					}else {
+						dataItems.add(new Item(elmIndex, value));
+					}
 				} else if (line.startsWith("</" + Element.ITEM)) {
+					lengthItemClosed++;
 					layers.pop();
+					if(lengthItemClosed == 2) {
+						break;
+					}
 				} else if (line.startsWith("</" + Element.ROOT)) {
 					layers.pop();
 					break;

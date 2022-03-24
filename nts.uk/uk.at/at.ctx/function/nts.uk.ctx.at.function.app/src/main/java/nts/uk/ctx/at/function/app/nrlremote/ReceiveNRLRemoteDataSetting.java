@@ -25,7 +25,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
  *         タイムレコード設定を保存する
  */
 @RequestScoped
-@Named(value = Command.TR_REMOTE_SEND_SETTING)
+@Named(value = Command.TR_REMOTE_SEND_SETTING, decrypt = true)
 public class ReceiveNRLRemoteDataSetting extends NRLRequest<Frame> {
 
 	@Inject
