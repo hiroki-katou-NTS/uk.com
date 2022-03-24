@@ -5,9 +5,12 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 
 /**
  * @author hungnm
@@ -19,6 +22,7 @@ public class DPErrorDto {
 	private String errorCode;
 	private String errorType;
 	private String employeeId;
+	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate processingDate;
 	private List<Integer> attendanceItemId;
 	private boolean errorCancelable;
