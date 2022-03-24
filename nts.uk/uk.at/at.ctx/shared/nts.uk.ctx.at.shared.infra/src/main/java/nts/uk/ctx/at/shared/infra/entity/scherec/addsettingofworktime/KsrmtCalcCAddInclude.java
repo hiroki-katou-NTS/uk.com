@@ -45,7 +45,8 @@ public class KsrmtCalcCAddInclude extends ContractUkJpaEntity implements Seriali
 	public Boolean isIntervalTime;
 	
 	public int isActualOnly() {
-		return convertToInt(this.isActualOnly);
+		/** ENUM CalcurationByActualTimeAtr参照（0：実働のみ、1：実働以外）*/
+		return this.isActualOnly ? 0 : 1;
 	}
 
 	public Integer getIsVacation() {
