@@ -243,7 +243,10 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		}
 		
 		/*前半休憩、後半外出*/
-		else if((this.getDeductionAtr().isBreak() && compareTimeSheet.getDeductionAtr().isGoOut())){
+		/*前半休憩、後半休憩打刻*/
+		else if((this.getDeductionAtr().isBreak() && compareTimeSheet.getDeductionAtr().isGoOut()) ||
+				(this.getDeductionAtr().isBreak() && compareTimeSheet.getDeductionAtr().isBreak() &&
+						this.getBreakAtr().get().isBreak() && compareTimeSheet.getBreakAtr().get().isBreakStamp())){
 			if(!fluidFixedAtr.isFluidWork()) {
 				TimeSpanForDailyCalc duplicationSpan = this.getTimeSheet().getDuplicatedWith(compareTimeSheet.getTimeSheet()).get();
 				//休憩を削る
@@ -326,7 +329,10 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 			return map.stream().sorted((a, b) -> a.timeSheet.getStart().compareTo(b.timeSheet.getStart())).collect(Collectors.toList());
 		}
 		/*前半外出、後半休憩*/
-		else if(this.getDeductionAtr().isGoOut() && compareTimeSheet.getDeductionAtr().isBreak()){
+		/*前半休憩打刻、後半休憩*/
+		else if((this.getDeductionAtr().isGoOut() && compareTimeSheet.getDeductionAtr().isBreak()) || 
+				(this.getDeductionAtr().isBreak() && compareTimeSheet.getDeductionAtr().isBreak() &&
+						this.getBreakAtr().get().isBreakStamp() && compareTimeSheet.getBreakAtr().get().isBreak())){
 			if(!fluidFixedAtr.isFluidWork()) {
 				
 				TimeSpanForDailyCalc duplicationSpan = compareTimeSheet.getTimeSheet().getDuplicatedWith(this.getTimeSheet()).get();
@@ -380,20 +386,8 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		}
 		/*休憩系と休憩系*/
 		else if(this.getDeductionAtr().isBreak() && compareTimeSheet.getDeductionAtr().isBreak()) {
-			/*前半休憩、後半休憩打刻*/
-			if(this.getBreakAtr().get().isBreak() && compareTimeSheet.getBreakAtr().get().isBreakStamp()) {
-				map.addAll(baseThisNotDupSpan.stream().map(tc -> this.cloneWithNewTimeSpan(Optional.of(tc))).collect(Collectors.toList()));
-				map.add(compareTimeSheet);
-				return map.stream().sorted((a, b) -> a.timeSheet.getStart().compareTo(b.timeSheet.getStart())).collect(Collectors.toList());
-			}
-			/*前半休憩打刻、後半休憩*/
-			else if((this.getBreakAtr().get().isBreakStamp() && compareTimeSheet.getBreakAtr().get().isBreak())){
-				map.add(this);
-				map.addAll(baseCompareNotDupSpan.stream().map(tc -> compareTimeSheet.cloneWithNewTimeSpan(Optional.of(tc))).collect(Collectors.toList()));
-				return map.stream().sorted((a, b) -> a.timeSheet.getStart().compareTo(b.timeSheet.getStart())).collect(Collectors.toList());
-			}
 			/*休憩と休憩　→　育児と育児の重複と同じにする(後ろにある時間の開始を前の終了に合わせる)*/
-			else if(this.getBreakAtr().get().isBreak() && compareTimeSheet.getBreakAtr().get().isBreak()) {
+			if(this.getBreakAtr().get().isBreak() && compareTimeSheet.getBreakAtr().get().isBreak()) {
 				map.add(this);
 				if(baseCompareNotDupSpan!= null) {
 					map.addAll(baseCompareNotDupSpan.stream().map(tc -> compareTimeSheet.cloneWithNewTimeSpan(Optional.of(tc))).collect(Collectors.toList()));
