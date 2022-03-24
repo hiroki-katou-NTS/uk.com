@@ -74,9 +74,9 @@ module nts.uk.at.view.kfp002.a.viewmodel {
             self.aggregateFrames = ko.observableArray([]);
             self.legendOptions = {
                 items: [
-                    { colorCode: '#94B7FE', labelText: self.$i18n("KFP002_6") },
-                    { colorCode: '#CEE6FF', labelText: self.$i18n("KFP002_7") },
-                    { colorCode: '#F69164', labelText: self.$i18n("KFP002_8") }
+                    { colorCode: '#BFC5FF', labelText: self.$i18n("KFP002_6") },
+                    { colorCode: '#C1E6FE', labelText: self.$i18n("KFP002_7") },
+                    { colorCode: '#F9D4A9', labelText: self.$i18n("KFP002_8") }
                 ]
             };
             self.cursorMoveDirections = ko.observableArray([
@@ -112,7 +112,7 @@ module nts.uk.at.view.kfp002.a.viewmodel {
 
             self.selectedFrameCode.subscribe(val => {
                 if (!self.isStartScreen()) {
-                    nts.uk.characteristics.save(DATA_KEY, {
+                    nts.uk.characteristics.save((DATA_KEY + __viewContext.user.employeeId), {
                         anyPeriodFrameCode: val,
                         cursorDirection: self.cursorDirection(),
                         displayZero: self.displayZero(),
@@ -133,7 +133,7 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                     }
                 }
                 if (!self.isStartScreen()) {
-                    nts.uk.characteristics.save(DATA_KEY, {
+                    nts.uk.characteristics.save((DATA_KEY + __viewContext.user.employeeId), {
                         anyPeriodFrameCode: self.selectedFrameCode(),
                         cursorDirection: value,
                         displayZero: self.displayZero(),
@@ -158,7 +158,7 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                     });
                 }
                 if (!self.isStartScreen()) {
-                    nts.uk.characteristics.save(DATA_KEY, {
+                    nts.uk.characteristics.save((DATA_KEY + __viewContext.user.employeeId), {
                         anyPeriodFrameCode: self.selectedFrameCode(),
                         cursorDirection: self.cursorDirection(),
                         displayZero: self.displayZero(),
@@ -176,7 +176,7 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                     }
                 }
                 if (!self.isStartScreen()) {
-                    nts.uk.characteristics.save(DATA_KEY, {
+                    nts.uk.characteristics.save((DATA_KEY + __viewContext.user.employeeId), {
                         anyPeriodFrameCode: self.selectedFrameCode(),
                         cursorDirection: self.cursorDirection(),
                         displayZero: val,
@@ -203,7 +203,7 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                 });
                 $.when(self.aggregateFrames(_.sortBy(frames, ["aggrFrameCode"]))).then(() => {
                     self.isStartScreen(false);
-                    nts.uk.characteristics.restore(DATA_KEY).done((cacheData: ScreenStatus) => {
+                    nts.uk.characteristics.restore((DATA_KEY + __viewContext.user.employeeId)).done((cacheData: ScreenStatus) => {
                         self.selectedFrameCode(cacheData ? cacheData.anyPeriodFrameCode : null);
                         self.cursorDirection(cacheData ? cacheData.cursorDirection : 0);
                         self.displayZero(cacheData ? cacheData.displayZero : false);
