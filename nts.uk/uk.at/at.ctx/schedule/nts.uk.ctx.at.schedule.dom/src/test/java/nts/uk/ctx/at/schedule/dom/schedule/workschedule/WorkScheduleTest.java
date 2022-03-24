@@ -81,13 +81,13 @@ public class WorkScheduleTest {
 			
 			new Expectations() {{
 				
-				workInformation.checkNormalCondition(require);
+				workInformation.checkNormalCondition(require, anyString);
 				result = false;
 				
 			}};
 			
 			NtsAssert.businessException("Msg_2119", 
-					() -> WorkSchedule.create(require, "empId", GeneralDate.ymd(2020, 11, 1), workInformation));
+					() -> WorkSchedule.create(require, "cmpId", "empId", GeneralDate.ymd(2020, 11, 1), workInformation));
 			
 		}
 		
@@ -104,15 +104,15 @@ public class WorkScheduleTest {
 			
 			new Expectations() {{
 				
-				workInformation.checkNormalCondition(require);
+				workInformation.checkNormalCondition(require, anyString);
 				result = true;
 				
-				workInformation.isAttendanceRate(require);
+				workInformation.isAttendanceRate(require, anyString);
 				result = false;
 				
 			}};
 			
-			WorkSchedule result = WorkSchedule.create(require, "empId", GeneralDate.ymd(2020, 11, 1), workInformation);
+			WorkSchedule result = WorkSchedule.create(require, "cmpId", "empId", GeneralDate.ymd(2020, 11, 1), workInformation);
 			
 			assertThat( result.getEmployeeID() ).isEqualTo( "empId" );
 			assertThat ( result.getYmd() ).isEqualTo( GeneralDate.ymd(2020, 11, 1) );
@@ -141,14 +141,14 @@ public class WorkScheduleTest {
 			
 			new Expectations() {{
 				
-				workInformation.checkNormalCondition(require);
+				workInformation.checkNormalCondition(require, anyString);
 				result = true;
 				
-				workInformation.isAttendanceRate(require);
+				workInformation.isAttendanceRate(require, anyString);
 				result = true;
 			}};
 			
-			WorkSchedule result = WorkSchedule.create(require, "empId", GeneralDate.ymd(2020, 11, 1), workInformation);
+			WorkSchedule result = WorkSchedule.create(require, "cmpId", "empId", GeneralDate.ymd(2020, 11, 1), workInformation);
 			
 			assertThat( result.getEmployeeID() ).isEqualTo( "empId" );
 			assertThat ( result.getYmd() ).isEqualTo( GeneralDate.ymd(2020, 11, 1) );
@@ -176,18 +176,18 @@ public class WorkScheduleTest {
 		
 		new Expectations() {{
 			
-			workInformation.checkNormalCondition(require);
+			workInformation.checkNormalCondition(require, anyString);
 			result = true;
 			
 			require.getLoginEmployeeId();
 			result = "empId";
 			
-			workInformation.isAttendanceRate(require);
+			workInformation.isAttendanceRate(require, anyString);
 			result = true;
 		}};
 		
 		WorkSchedule result = WorkSchedule.createByHandCorrectionWithWorkInformation(
-				require, "empId", GeneralDate.ymd(2020, 11, 1), workInformation);
+				require, "cmpId", "empId", GeneralDate.ymd(2020, 11, 1), workInformation);
 		
 		assertThat( result.getEmployeeID() ).isEqualTo( "empId" );
 		assertThat( result.getYmd() ).isEqualTo( GeneralDate.ymd(2020, 11, 1) );
@@ -633,12 +633,12 @@ public class WorkScheduleTest {
 		WorkSchedule workSchedule = WorkScheduleHelper.createWithWorkInfo(workInfo);
 		
 		new Expectations() {{
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = false;
 		}};
 		
 		NtsAssert.businessException("Msg_2103", () -> {
-			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require, taskSchedule);
+			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require, "cid", taskSchedule);
 		});
 		
 	}
@@ -655,7 +655,7 @@ public class WorkScheduleTest {
 				TaskScheduleDetailTestHelper.create("code2", 10, 0, 12, 0)));
 		
 		new Expectations(workSchedule) {{
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = true;
 			
 			workSchedule.getTimeVacation();
@@ -666,7 +666,7 @@ public class WorkScheduleTest {
 		}};
 		
 		NtsAssert.businessException("Msg_2098", () -> {
-			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require, taskSchedule);
+			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require, "cid", taskSchedule);
 		});
 		
 	}
@@ -684,7 +684,7 @@ public class WorkScheduleTest {
 				TaskScheduleDetailTestHelper.create("code2", 10, 0, 12, 0)));
 		
 		new Expectations(workSchedule) {{
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = true;
 			
 			workSchedule.getTimeVacation();
@@ -698,7 +698,7 @@ public class WorkScheduleTest {
 		}};
 		
 		NtsAssert.businessException("Msg_2099", () -> {
-			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require, taskSchedule);
+			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require, "cid", taskSchedule);
 		});
 		
 	}
@@ -717,7 +717,7 @@ public class WorkScheduleTest {
 				TaskScheduleDetailTestHelper.create("code2", 10, 0, 12, 0)));
 		
 		new Expectations(workSchedule) {{
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = true;
 			
 			workSchedule.getTimeVacation();
@@ -734,7 +734,7 @@ public class WorkScheduleTest {
 		}};
 		
 		NtsAssert.businessException("Msg_2100", () -> {
-			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require, taskSchedule);
+			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require, "cid", taskSchedule);
 		});
 		
 	}
@@ -762,7 +762,7 @@ public class WorkScheduleTest {
 						timevacationUseTimeOfDaily));
 		
 		new Expectations(workSchedule) {{
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = true;
 			
 			workSchedule.getTimeVacation();
@@ -779,7 +779,7 @@ public class WorkScheduleTest {
 		}};
 		
 		NtsAssert.businessException("Msg_2101", () -> {
-			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require, taskSchedule);
+			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require, "cid", taskSchedule);
 		});
 		
 	}
@@ -813,7 +813,7 @@ public class WorkScheduleTest {
 						timevacationUseTimeOfDaily));
 		
 		new Expectations(workSchedule) {{
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = true;
 			
 			workSchedule.getTimeVacation();
@@ -830,7 +830,7 @@ public class WorkScheduleTest {
 		}};
 		
 		NtsAssert.businessException("Msg_2101", () -> {
-			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require, taskSchedule);
+			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require, "cid", taskSchedule);
 		});
 		
 	}
@@ -864,7 +864,7 @@ public class WorkScheduleTest {
 						timevacationUseTimeOfDaily));
 		
 		new Expectations(workSchedule) {{
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = true;
 			
 			workSchedule.getTimeVacation();
@@ -880,7 +880,7 @@ public class WorkScheduleTest {
 			result = false;
 		}};
 		
-		boolean result = NtsAssert.Invoke.privateMethod( workSchedule, "checkWhetherTaskScheduleIsCorrect", require, taskSchedule );
+		boolean result = NtsAssert.Invoke.privateMethod( workSchedule, "checkWhetherTaskScheduleIsCorrect", require, "cid", taskSchedule );
 		
 		assertThat( result ).isTrue();
 		
@@ -901,7 +901,7 @@ public class WorkScheduleTest {
 				TaskScheduleDetailTestHelper.create("code2", 13, 0, 14, 0)));
 		
 		new Expectations(workSchedule) {{
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = true;
 			
 			workSchedule.getTimeVacation();
@@ -918,7 +918,7 @@ public class WorkScheduleTest {
 			
 		}};
 		
-		workSchedule.updateTaskSchedule(require, newTaskSchedule);
+		workSchedule.updateTaskSchedule(require, "cid", newTaskSchedule);
 		
 		assertThat( workSchedule.getTaskSchedule() ).isEqualTo( newTaskSchedule );
 		
@@ -1092,11 +1092,11 @@ public class WorkScheduleTest {
 		
 		new Expectations(workSchedule) {{
 			
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = false;
 		}};
 		
-		List<TimeSpanForCalc> result = NtsAssert.Invoke.privateMethod(workSchedule, "getWorkingTimeSpan", require);
+		List<TimeSpanForCalc> result = NtsAssert.Invoke.privateMethod(workSchedule, "getWorkingTimeSpan", require, "cid");
 		
 		assertThat( result ).isEmpty();
 	}
@@ -1121,14 +1121,14 @@ public class WorkScheduleTest {
 		
 		new Expectations(workSchedule) {{
 			
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = true;
 			
 			timeLeaving.getTimeOfTimeLeavingAtt();
 			result = timeLeavingAttList;
 		}};
 		
-		List<TimeSpanForCalc> result = NtsAssert.Invoke.privateMethod(workSchedule, "getWorkingTimeSpan", require);
+		List<TimeSpanForCalc> result = NtsAssert.Invoke.privateMethod(workSchedule, "getWorkingTimeSpan", require, "cid");
 		
 		assertThat( result )
 			.extracting( 
@@ -1154,12 +1154,12 @@ public class WorkScheduleTest {
 		
 		new Expectations() {{
 			
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = false;
 		}};
 		
 		NtsAssert.businessException("Msg_2103", () -> {
-			workSchedule.createTaskScheduleForWholeDay(require, new TaskCode("code"));
+			workSchedule.createTaskScheduleForWholeDay(require, "cid", new TaskCode("code"));
 		});
 	}
 	
@@ -1183,14 +1183,14 @@ public class WorkScheduleTest {
 		
 		new Expectations() {{
 			
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = true;
 			
 			timeLeaving.getTimeOfTimeLeavingAtt();
 			result = timeLeavingAttList;
 		}};
 		
-		workSchedule.createTaskScheduleForWholeDay(require, new TaskCode("code"));
+		workSchedule.createTaskScheduleForWholeDay(require, "cid", new TaskCode("code"));
 		
 		TaskSchedule result = workSchedule.getTaskSchedule();
 		assertThat( result.getDetails() )
@@ -1220,13 +1220,14 @@ public class WorkScheduleTest {
 		
 		new Expectations() {{
 			
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = false;
 		}};
 		
 		NtsAssert.businessException("Msg_2103", () -> {
 			workSchedule.addTaskScheduleWithTimeSpan(
 					require,
+					"cid",
 					new TimeSpanForCalc(
 						TimeWithDayAttr.hourMinute(11, 0),
 						TimeWithDayAttr.hourMinute(18, 0)),
@@ -1275,7 +1276,7 @@ public class WorkScheduleTest {
 		// mock
 		new Expectations(workSchedule) {{
 			
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = true;
 			
 			timeLeaving.getTimeOfTimeLeavingAtt();
@@ -1289,6 +1290,7 @@ public class WorkScheduleTest {
 		// run
 		workSchedule.addTaskScheduleWithTimeSpan(
 			require,
+			"cid",
 			new TimeSpanForCalc(
 				TimeWithDayAttr.hourMinute(10, 0),
 				TimeWithDayAttr.hourMinute(18, 0)),

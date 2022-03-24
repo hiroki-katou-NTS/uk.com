@@ -7,6 +7,10 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -93,5 +97,23 @@ public class GoOutTimezoneRoundingSet extends WorkTimeDomainObject implements Cl
 			throw new RuntimeException("GoOutTimezoneRoundingSet clone error.");
 		}
 		return cloned;
+	}
+
+	/**
+	 * 丸め設定を取得する
+	 * @param actualAtr 実働時間帯区分
+	 * @param reason 外出理由
+	 * @param dedAtr 控除区分
+	 * @param reverse 逆丸め用
+	 * @return 時間丸め設定
+	 */
+	public TimeRoundingSetting getRoundingSet(ActualWorkTimeSheetAtr actualAtr, GoingOutReason reason, DeductionAtr dedAtr, TimeRoundingSetting reverse) {
+		if(actualAtr.isWithinWorkTime()) {
+			return this.workTimezone.getRoundingSet(reason, dedAtr, reverse);
+		}
+		if(actualAtr.isHolidayWork()) {
+			return this.pubHolWorkTimezone.getRoundingSet(reason, dedAtr, reverse);
+		}
+		return this.ottimezone.getRoundingSet(reason, dedAtr, reverse);
 	}
 }

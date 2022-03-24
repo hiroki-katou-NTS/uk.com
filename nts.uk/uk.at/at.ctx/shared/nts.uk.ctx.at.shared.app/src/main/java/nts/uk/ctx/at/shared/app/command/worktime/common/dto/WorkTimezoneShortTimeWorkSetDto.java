@@ -5,6 +5,10 @@
 package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 
 import lombok.Value;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.TimeRoundingSettingDto;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSetGetMemento;
 
 /**
@@ -16,11 +20,11 @@ public class WorkTimezoneShortTimeWorkSetDto implements WorkTimezoneShortTimeWor
 	/** The nurs timezone work use. */
 	private boolean nursTimezoneWorkUse;
 
-	/** The employment time deduct. */
-	private boolean employmentTimeDeduct;
-
 	/** The child care work use. */
 	private boolean childCareWorkUse;
+
+	/** The rounding setting. */
+	private TimeRoundingSettingDto roundingSet;
 
 	/*
 	 * (non-Javadoc)
@@ -37,17 +41,6 @@ public class WorkTimezoneShortTimeWorkSetDto implements WorkTimezoneShortTimeWor
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
-	 * WorkTimezoneShortTimeWorkSetGetMemento#getEmploymentTimeDeduct()
-	 */
-	@Override
-	public boolean getEmploymentTimeDeduct() {
-		return this.employmentTimeDeduct;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
 	 * WorkTimezoneShortTimeWorkSetGetMemento#getChildCareWorkUse()
 	 */
 	@Override
@@ -55,4 +48,17 @@ public class WorkTimezoneShortTimeWorkSetDto implements WorkTimezoneShortTimeWor
 		return this.childCareWorkUse;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
+	 * WorkTimezoneShortTimeWorkSetGetMemento#getRoundingSet()
+	 */
+	@Override
+	public TimeRoundingSetting getRoudingSet() {
+		if (this.roundingSet == null) {
+			return new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN);
+		} 
+		return new TimeRoundingSetting(this.roundingSet.getRoundingTime(), this.roundingSet.getRounding());
+	}
 }

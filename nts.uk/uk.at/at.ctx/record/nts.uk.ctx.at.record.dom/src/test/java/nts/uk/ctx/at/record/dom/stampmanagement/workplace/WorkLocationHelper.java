@@ -11,19 +11,29 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 public class WorkLocationHelper {
 
 	public static WorkLocation getDefault() {
-
-		return new WorkLocation(new ContractCode("ContractCode"), new WorkLocationCD("WorkLocationCD"),
+		
+		return new WorkLocation(
+				new ContractCode("ContractCode"), 
+				new WorkLocationCD("WorkLocationCD"),
 				new WorkLocationName("WorkLocationName"),
-				new StampMobilePossibleRange(RadiusAtr.M_100, new GeoCoordinate(100, 200)), new ArrayList<>(),
-				Optional.empty(), Optional.empty());
+				Optional.of(new StampMobilePossibleRange(RadiusAtr.M_100, new GeoCoordinate(100, 200))),
+				new ArrayList<>(),
+				Optional.empty(), 
+				Optional.empty());
 	}
-
+	
 	public static WorkLocation getHaveGegionCode() {
-
-		return new WorkLocation(new ContractCode("ContractCode"), new WorkLocationCD("WorkLocationCD"),
+		
+		return new WorkLocation(
+				new ContractCode("ContractCode"), 
+				new WorkLocationCD("WorkLocationCD"),
 				new WorkLocationName("WorkLocationName"),
-				new StampMobilePossibleRange(RadiusAtr.M_100, new GeoCoordinate(100, 200)), new ArrayList<>(),
-				Optional.empty(), Optional.of(new RegionCode(12)));
+				Optional.of(new StampMobilePossibleRange(RadiusAtr.M_100, new GeoCoordinate(100, 200))),
+				new ArrayList<>(),
+				Optional.empty(), 
+				Optional.of(new RegionCode(12)));
+		
 	}
+	
 
 }

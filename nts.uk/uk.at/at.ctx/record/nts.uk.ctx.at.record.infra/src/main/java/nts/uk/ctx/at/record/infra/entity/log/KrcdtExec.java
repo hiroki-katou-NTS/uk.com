@@ -44,9 +44,6 @@ public class KrcdtExec extends ContractUkJpaEntity implements Serializable {
 	@Column(name = "PROCESSING_MONTH")
 	public Integer processingMonth;
 	
-	@Column(name = "EXECUTED_MENU")
-	public int executedMenu;
-	
 	@Column(name = "EXECUTED_DATE")
 	public GeneralDateTime executedDate;
 
@@ -58,9 +55,6 @@ public class KrcdtExec extends ContractUkJpaEntity implements Serializable {
 
 	@Column(name = "CLOSURE_ID")
 	public int closureID;
-	
-	@Column(name = "OPERATION_CASE_ID")
-	public String caseSpecExeContentID;
 	
 	@Column(name = "CAL_AGG_CLASS")
 	public int executionClassification;
@@ -79,12 +73,11 @@ public class KrcdtExec extends ContractUkJpaEntity implements Serializable {
 				new KrcdtEmpExecutionLogPK(domain.getEmpCalAndSumExecLogID()),
 				domain.getCompanyID(),
 				domain.getProcessingMonth().v(),
-				domain.getExecutedMenu().value,
 				domain.getExecutionDate(),
 			(domain.getExecutionStatus()!=null&& domain.getExecutionStatus().isPresent())?domain.getExecutionStatus().get().value:null,
 				domain.getEmployeeID(),
 				domain.getClosureID(),
-				domain.getCaseSpecExeContentID(),domain.getExecutionClassification().value
+				domain.getExecutionClassification().value
 				//domain.getExecutionLogs().stream().map(c->KrcdtExecLog.toEntity(c)).collect(Collectors.toList())
 				);
 	}
@@ -95,11 +88,10 @@ public class KrcdtExec extends ContractUkJpaEntity implements Serializable {
 				this.krcdtEmpExecutionLogPK.empCalAndSumExecLogID,
 				this.companyID,
 				new YearMonth( this.processingMonth),
-				this.executedMenu,
 				this.executedDate, 
 				this.executedStatus,
 				this.employeeID,
 				this.closureID, 
-				this.caseSpecExeContentID,this.executionClassification);
+				this.executionClassification);
 	}
 }

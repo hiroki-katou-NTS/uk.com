@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidaywork
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.timeseries.FlexTimeOfTimeSeries;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculationAndMinus;
 
 /**
  * フレックス時間
@@ -30,16 +29,10 @@ public class FlexTime implements Serializable{
 
 	/** フレックス時間 */
 	@Setter
-	private TimeMonthWithCalculationAndMinus flexTime;
+	private FlexTimeTotalTimeMonth flexTime;
 	/** 事前フレックス時間 */
 	@Setter
 	private AttendanceTimeMonth beforeFlexTime;
-	/** 法定内フレックス時間 */
-	@Setter
-	private AttendanceTimeMonthWithMinus legalFlexTime;
-	/** 法定外フレックス時間 */
-	@Setter
-	private AttendanceTimeMonthWithMinus illegalFlexTime;
 	/** 当月フレックス時間 */
 	@Setter
 	private FlexTimeCurrentMonth flexTimeCurrentMonth;
@@ -52,10 +45,8 @@ public class FlexTime implements Serializable{
 	 */
 	public FlexTime(){
 		
-		this.flexTime = TimeMonthWithCalculationAndMinus.ofSameTime(0);
+		this.flexTime = new FlexTimeTotalTimeMonth();
 		this.beforeFlexTime = new AttendanceTimeMonth(0);
-		this.legalFlexTime = new AttendanceTimeMonthWithMinus(0);
-		this.illegalFlexTime = new AttendanceTimeMonthWithMinus(0);
 		this.flexTimeCurrentMonth = new FlexTimeCurrentMonth();
 		this.timeSeriesWorks = new HashMap<>();
 	}
@@ -70,17 +61,13 @@ public class FlexTime implements Serializable{
 	 * @return フレックス時間
 	 */
 	public static FlexTime of(
-			TimeMonthWithCalculationAndMinus flexTime,
+			FlexTimeTotalTimeMonth flexTime,
 			AttendanceTimeMonth beforeFlexTime,
-			AttendanceTimeMonthWithMinus legalFlexTime,
-			AttendanceTimeMonthWithMinus illegalFlexTime,
 			FlexTimeCurrentMonth flexTimeCurrentMonth){
 
 		val domain = new FlexTime();
 		domain.flexTime = flexTime;
 		domain.beforeFlexTime = beforeFlexTime;
-		domain.legalFlexTime = legalFlexTime;
-		domain.illegalFlexTime = illegalFlexTime;
 		domain.flexTimeCurrentMonth = flexTimeCurrentMonth;
 		return domain;
 	}
@@ -200,11 +187,8 @@ public class FlexTime implements Serializable{
 	 */
 	public void sum(FlexTime target){
 		
-		this.flexTime = this.flexTime.addMinutes(
-				target.flexTime.getTime().v(), target.flexTime.getCalcTime().v());
+		this.flexTime.sum(target.flexTime);
 		this.beforeFlexTime = this.beforeFlexTime.addMinutes(target.beforeFlexTime.v());
-		this.legalFlexTime = this.legalFlexTime.addMinutes(target.legalFlexTime.v());
-		this.illegalFlexTime = this.illegalFlexTime.addMinutes(target.illegalFlexTime.v());
 		this.flexTimeCurrentMonth.sum(target.flexTimeCurrentMonth);
 	}
 	

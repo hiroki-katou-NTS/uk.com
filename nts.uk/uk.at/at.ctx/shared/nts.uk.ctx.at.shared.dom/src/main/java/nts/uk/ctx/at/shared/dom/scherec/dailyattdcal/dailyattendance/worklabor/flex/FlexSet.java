@@ -4,54 +4,78 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.CalcMethodOfNoWorkingDay;
 
 /**
  * フレックス勤務の日別計算設定
- * The Class FlexSet.
+ * @author shuichi_ishida
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class FlexSet extends AggregateRoot {
 
 	/** 会社ID */
 	private String companyId;
-
-	/** 不足計算 */
-	public FlexCalcAtr missCalcHd;
-
-	/** 割増計算 */
-	public FlexCalcAtr premiumCalcHd;
-
-	/** 不足計算 */
-	public FlexCalcAtr missCalcSubhd;
-
-	/** 割増計算 */
-	public FlexCalcAtr premiumCalcSubhd;
-	
-	/** 法定労働控除時間計算 */
-	public TimeHolidayCalcSet flexDeductTimeCalc;
-	
+	/** 半日休日の計算方法 */
+	private FlexCalcMethodOfHalfHoliday halfHoliday;
+	/** 代休取得時の計算方法 */
+	private FlexCalcMethodOfCompLeave compLeave;
 	/** 非勤務日計算 */
-	public CalcMethodOfNoWorkingDay flexNonworkingDayCalc;
+	private CalcFlexOfNoWorkingDay calcNoWorkingDay;
 
 	/**
-	 * Create from Java Type of Flex Set
-	 * 
-	 * @param companyId
-	 * @param missCalcHd
-	 * @param premiumCalcHd
-	 * @param missCalcSubhd
-	 * @param premiumCalcSubhd
-	 * @return
+	 * コンストラクタ
 	 */
-	public static FlexSet createFromJavaType(String companyId, int missCalcHd, int premiumCalcHd, int missCalcSubhd,
-			int premiumCalcSubhd, int flexDeductTimeCalc, int flexNonworkingDayCalc) {
-		return new FlexSet(companyId, EnumAdaptor.valueOf(missCalcHd, FlexCalcAtr.class), EnumAdaptor.valueOf(premiumCalcHd, FlexCalcAtr.class),EnumAdaptor.valueOf(missCalcSubhd, FlexCalcAtr.class),EnumAdaptor.valueOf(premiumCalcSubhd, FlexCalcAtr.class),
-				EnumAdaptor.valueOf(flexDeductTimeCalc, TimeHolidayCalcSet.class), EnumAdaptor.valueOf(flexNonworkingDayCalc, CalcMethodOfNoWorkingDay.class));
+	public FlexSet(){
+		this.companyId = "Dummy";
+		this.halfHoliday = new FlexCalcMethodOfHalfHoliday();
+		this.compLeave = new FlexCalcMethodOfCompLeave();
+		this.calcNoWorkingDay = new CalcFlexOfNoWorkingDay();
+	}
+	
+	public static interface Require {
+		Optional<FlexSet> flexSet(String companyId);
+	}
+	
+	/**
+	 * デフォルト値で作成する
+	 * @return フレックス勤務の日別計算設定
+	 */
+	public static FlexSet defaultValue(){
+		FlexSet result = new FlexSet();
+		return result;
+	}
+	
+	/**
+	 * ファクトリー
+	 * @param companyId 会社ID
+	 * @param shortCalcHd 半日休日の計算方法.不足計算
+	 * @param premiumCalcHd 半日休日の計算方法.割増計算
+	 * @param isDeductFromPred 代休取得時の計算方法.所定から控除するかどうか
+	 * @param premiumCalcCompLeave 代休取得時の計算方法.割増計算
+	 * @param calcSetOfTimeCompLeave 代休取得時の計算方法.時間代休時の計算設定
+	 * @param calcNoWorkingDay 非勤務日計算.設定
+	 * @return フレックス勤務の日別計算設定
+	 */
+	public static FlexSet createFromJavaType(
+			String companyId,
+			int shortCalcHd,
+			int premiumCalcHd,
+			int isDeductFromPred,
+			int premiumCalcCompLeave,
+			int calcSetOfTimeCompLeave,
+			int calcNoWorkingDay) {
+		
+		return new FlexSet(
+				companyId,
+				FlexCalcMethodOfHalfHoliday.createJavaType(
+						shortCalcHd, premiumCalcHd),
+				FlexCalcMethodOfCompLeave.createJavaType(
+						isDeductFromPred, premiumCalcCompLeave, calcSetOfTimeCompLeave),
+				CalcFlexOfNoWorkingDay.createJavaType(calcNoWorkingDay));
 	}
 }

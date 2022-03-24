@@ -879,6 +879,9 @@ project (':com.screen:nts.uk.screen.com.app') {
 		compile project (':exio.ctx:nts.uk.ctx.exio.dom')
 		compile project (':exio.ctx:nts.uk.ctx.exio.app')
 		
+		compile project (':com.ctx:link:smile:nts.uk.ctx.link.smile.dom')
+		compile project (':com.ctx:link:smile:nts.uk.ctx.link.smile.app')
+		
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: version
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: version
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: version
@@ -893,6 +896,7 @@ project (':com.screen:nts.uk.screen.com.infra') {
 		compile project (':exio.ctx:nts.uk.ctx.exio.dom')
 		compile project (':exio.ctx:nts.uk.ctx.exio.app')
 		compile project (':exio.ctx:nts.uk.ctx.exio.infra')
+		compile project (':com.ctx:link:smile:nts.uk.ctx.link.smile.infra')
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.infra')
 		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.infra')
 		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.infra')
@@ -1347,6 +1351,12 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pubimp')
 		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ws')
 		
+		runtime project (':com.ctx:link:smile:nts.uk.ctx.link.smile.ac')
+		runtime project (':com.ctx:link:smile:nts.uk.ctx.link.smile.app')
+		runtime project (':com.ctx:link:smile:nts.uk.ctx.link.smile.dom')
+		runtime project (':com.ctx:link:smile:nts.uk.ctx.link.smile.infra')
+		runtime project (':com.ctx:link:smile:nts.uk.ctx.link.smile.ws')
+		
 		runtime project (':pereg.ctx:nts.uk.ctx.pereg.ac')
 		runtime project (':pereg.ctx:nts.uk.ctx.pereg.app')
 		runtime project (':pereg.ctx:nts.uk.ctx.pereg.dom')
@@ -1800,6 +1810,7 @@ project (':query:nts.uk.query.app') {
 		compile project (':office.ctx:nts.uk.ctx.office.dom')
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.dom')
 		compile project (':exio.ctx:nts.uk.ctx.exio.dom')
+		compile project (':com.ctx:link:smile:nts.uk.ctx.link.smile.dom')
 		
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: version
 		compile group: 'at.function', name: 'nts.uk.ctx.at.function.dom', version: version
@@ -1836,6 +1847,7 @@ project (':query:nts.uk.query.infra') {
 		compile project (':health.ctx:nts.uk.ctx.health.infra')
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.infra')
 		compile project (':exio.ctx:nts.uk.ctx.exio.infra')
+		compile project (':com.ctx:link:smile:nts.uk.ctx.link.smile.infra')
 		
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.infra', version: version
 		compile group: 'at.function', name: 'nts.uk.ctx.at.function.infra', version: version
@@ -1875,6 +1887,65 @@ project (':query:nts.uk.query.pubimp') {
 	}
 }
 
+project (':com.ctx:link:smile:nts.uk.ctx.link.smile.pubimp') {
+	dependencies {
+		compile project (':shr:nts.uk.shr.com')
+		compile project (':com.ctx:link:smile:nts.uk.ctx.link.smile.pub')
+		compile project (':com.ctx:link:smile:nts.uk.ctx.link.smile.dom')
+		compile project (':com.ctx:link:smile:nts.uk.ctx.link.smile.app')
+	}
+}
+project (':com.ctx:link:smile:nts.uk.ctx.link.smile.pub') {
+	dependencies {
+		compile project (':shr:nts.uk.shr.com')
+	}
+}
+project (':com.ctx:link:smile:nts.uk.ctx.link.smile.ac') {
+	dependencies {
+		compile project (':com.ctx:link:smile:nts.uk.ctx.link.smile.dom')
+		compile project (':com.ctx:link:smile:nts.uk.ctx.link.smile.app')
+		compile project (':shr:nts.uk.shr.com')	
+	}
+}
+project (':com.ctx:link:smile:nts.uk.ctx.link.smile.ws') {
+	dependencies {
+		compile project (':com.ctx:link:smile:nts.uk.ctx.link.smile.app')
+		compile project (':shr:nts.uk.shr.com')
+
+	}
+}
+project (':com.ctx:link:smile:nts.uk.ctx.link.smile.app') {
+	dependencies {
+		compile project (':shr:nts.uk.shr.com')
+		compile project (':com.ctx:link:smile:nts.uk.ctx.link.smile.dom')
+		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.app')
+		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
+		compile project (':exio.ctx:nts.uk.ctx.exio.app')
+		compile project (':exio.ctx:nts.uk.ctx.exio.dom')
+		
+		compile group: 'at.record', name: 'nts.uk.ctx.at.record.app', version: version
+		compile group: 'at.record', name: 'nts.uk.ctx.at.record.dom', version: version
+	}
+}
+project (':com.ctx:link:smile:nts.uk.ctx.link.smile.dom') {
+	dependencies {
+		compile project (':shr:nts.uk.shr.com')
+		compile project (':exio.ctx:nts.uk.ctx.exio.dom')
+		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
+		
+		compile group: 'at.record', name: 'nts.uk.ctx.at.record.dom', version: version
+	}
+}
+project (':com.ctx:link:smile:nts.uk.ctx.link.smile.infra') {
+	dependencies {
+		compile project (':com.ctx:link:smile:nts.uk.ctx.link.smile.dom')
+		compile project (':shr:nts.uk.shr.com')
+		compile project (':exio.ctx:nts.uk.ctx.exio.infra')
+		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.infra')
+		
+		compile group: 'at.record', name: 'nts.uk.ctx.at.record.infra', version: version
+	}
+}
 
 //========== published for internal system ==========================
 
@@ -1889,3 +1960,4 @@ project (':pub:nts.uk.pub.spr') {
 		compile project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.app')
 	}
 }
+

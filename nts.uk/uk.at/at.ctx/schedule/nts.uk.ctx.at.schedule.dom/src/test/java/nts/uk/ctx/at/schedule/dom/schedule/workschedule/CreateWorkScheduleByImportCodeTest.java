@@ -22,6 +22,7 @@ public class CreateWorkScheduleByImportCodeTest {
 	@Test
 	public void testCreate_Msg_2183 () {
 
+		String companyId = "companyId";
 		String employeeId = "employeeId";
 		GeneralDate date = GeneralDate.ymd(2021, 5, 1);
 
@@ -34,6 +35,7 @@ public class CreateWorkScheduleByImportCodeTest {
 
 		ResultOfRegisteringWorkSchedule result = CreateWorkScheduleByImportCode.create(
 				require,
+				companyId,
 				employeeId,
 				date,
 				new ShiftMasterImportCode("import-001"),
@@ -59,6 +61,7 @@ public class CreateWorkScheduleByImportCodeTest {
 	@Test
 	public void testCreate_Msg_1705 () {
 
+		String companyId = "companyId";
 		String employeeId = "employeeId";
 		GeneralDate date = GeneralDate.ymd(2021, 5, 1);
 		ShiftMasterImportCode importCode = new ShiftMasterImportCode("import-001");
@@ -75,6 +78,7 @@ public class CreateWorkScheduleByImportCodeTest {
 
 		ResultOfRegisteringWorkSchedule result = CreateWorkScheduleByImportCode.create(
 				require,
+				companyId,
 				employeeId,
 				date,
 				importCode,
@@ -100,6 +104,7 @@ public class CreateWorkScheduleByImportCodeTest {
 	@Test
 	public void testCreate_Exception_in_WorkSchedule_dot_create (@Injectable ShiftMaster shiftMaster) {
 
+		String companyId = "companyId";
 		String employeeId = "employeeId";
 		GeneralDate date = GeneralDate.ymd(2021, 5, 1);
 		ShiftMasterImportCode importCode = new ShiftMasterImportCode("import-001");
@@ -112,13 +117,14 @@ public class CreateWorkScheduleByImportCodeTest {
 			require.getShiftMaster(importCode);
 			result = Optional.of(shiftMaster);
 
-			WorkSchedule.create(require, employeeId, date, shiftMaster);
+			WorkSchedule.create(require, companyId, employeeId, date, shiftMaster);
 			result = new BusinessException("message_id");
 
 		}};
 
 		ResultOfRegisteringWorkSchedule result = CreateWorkScheduleByImportCode.create(
 				require,
+				companyId,
 				employeeId,
 				date,
 				importCode,
@@ -147,6 +153,7 @@ public class CreateWorkScheduleByImportCodeTest {
 			@Injectable WorkSchedule newWorkSchedule,
 			@Injectable WorkSchedule correctedResult) {
 
+		String companyId = "companyId";
 		String employeeId = "employeeId";
 		GeneralDate date = GeneralDate.ymd(2021, 5, 1);
 		ShiftMasterImportCode importCode = new ShiftMasterImportCode("import-001");
@@ -159,7 +166,7 @@ public class CreateWorkScheduleByImportCodeTest {
 			require.getShiftMaster(importCode);
 			result = Optional.of(shiftMaster);
 
-			WorkSchedule.create(require, employeeId, date, shiftMaster);
+			WorkSchedule.create(require, companyId, employeeId, date, shiftMaster);
 			result = newWorkSchedule;
 
 			require.correctWorkSchedule(newWorkSchedule);
@@ -169,6 +176,7 @@ public class CreateWorkScheduleByImportCodeTest {
 
 		ResultOfRegisteringWorkSchedule result = CreateWorkScheduleByImportCode.create(
 				require,
+				companyId,
 				employeeId,
 				date,
 				importCode,
@@ -190,6 +198,7 @@ public class CreateWorkScheduleByImportCodeTest {
 			@Injectable WorkSchedule newWorkSchedule,
 			@Injectable WorkSchedule correctedResult) {
 
+		String companyId = "companyId";
 		String employeeId = "employeeId";
 		GeneralDate date = GeneralDate.ymd(2021, 5, 1);
 		ShiftMasterImportCode importCode = new ShiftMasterImportCode("import-001");
@@ -202,7 +211,7 @@ public class CreateWorkScheduleByImportCodeTest {
 			require.getShiftMaster(importCode);
 			result = Optional.of(shiftMaster);
 
-			WorkSchedule.create(require, employeeId, date, shiftMaster);
+			WorkSchedule.create(require, companyId, employeeId, date, shiftMaster);
 			result = newWorkSchedule;
 
 			require.correctWorkSchedule(newWorkSchedule);
@@ -212,6 +221,7 @@ public class CreateWorkScheduleByImportCodeTest {
 
 		ResultOfRegisteringWorkSchedule result = CreateWorkScheduleByImportCode.create(
 				require,
+				companyId,
 				employeeId,
 				date,
 				importCode,

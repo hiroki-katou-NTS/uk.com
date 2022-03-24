@@ -2,13 +2,13 @@ package nts.uk.ctx.at.request.app.command.application.businesstrip;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -25,7 +25,8 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
+import nts.uk.ctx.at.request.dom.application.common.service.application.ApproveAppProcedure;
+import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApproveAppProcedureOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
@@ -49,10 +50,9 @@ public class AddBusinessTripCommandHandler extends CommandHandlerWithResult<AddB
 
     @Inject
     NewAfterRegister newAfterRegister;
-
+    
     @Inject
-    private RegisterAtApproveReflectionInfoService registerService;
-
+	private ApproveAppProcedure approveAppProcedure;
 
     @Override
     protected ProcessResult handle(CommandHandlerContext<AddBusinessTripCommand> context) {
@@ -96,12 +96,28 @@ public class AddBusinessTripCommandHandler extends CommandHandlerWithResult<AddB
                         .getAppDispInfoWithDateOutput()
                         .getOpListApprovalPhaseState()
                         .get() : null);
-
-        // アルゴリズム「2-2.新規画面登録時承認反映情報の整理」を実行する
-        String reflectAppId = this.registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
-
+        
         // ドメインモデル「出張申請」を追加する
         this.businessTripRepository.add(businessTrip);
+
+        // 申請承認する時の手続き
+        List<String> autoSuccessMail = new ArrayList<>();
+		List<String> autoFailMail = new ArrayList<>();
+		List<String> autoFailServer = new ArrayList<>();
+		ApproveAppProcedureOutput approveAppProcedureOutput = approveAppProcedure.approveAppProcedure(
+         		AppContexts.user().companyId(), 
+         		Arrays.asList(application), 
+         		Collections.emptyList(), 
+         		AppContexts.user().employeeId(), 
+         		Optional.empty(), 
+         		businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings(), 
+         		false,
+         		true);
+		autoSuccessMail.addAll(approveAppProcedureOutput.getSuccessList().stream().distinct().collect(Collectors.toList()));
+		autoFailMail.addAll(approveAppProcedureOutput.getFailList().stream().distinct().collect(Collectors.toList()));
+		autoFailServer.addAll(approveAppProcedureOutput.getFailServerList().stream().distinct().collect(Collectors.toList()));
+
+        
 
 
         // アルゴリズム「出張申請暫定残数を更新する」を実行する
@@ -125,9 +141,12 @@ public class AddBusinessTripCommandHandler extends CommandHandlerWithResult<AddB
 	            appTypeSet.get(),
 	            businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet(),
 	            false);
-        if(Strings.isNotBlank(reflectAppId)) {
-        	processResult.setReflectAppIdLst(Arrays.asList(reflectAppId));
-        }
+        processResult.getAutoSuccessMail().addAll(autoSuccessMail);
+        processResult.getAutoFailMail().addAll(autoFailMail);
+        processResult.getAutoFailServer().addAll(autoFailServer);
+        processResult.setAutoSuccessMail(processResult.getAutoSuccessMail().stream().distinct().collect(Collectors.toList()));
+        processResult.setAutoFailMail(processResult.getAutoFailMail().stream().distinct().collect(Collectors.toList()));
+        processResult.setAutoFailServer(processResult.getAutoFailServer().stream().distinct().collect(Collectors.toList()));
         return processResult;
     }
 

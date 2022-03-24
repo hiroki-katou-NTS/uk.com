@@ -183,7 +183,7 @@ module nts.uk.at.view.kdp005.a {
 					width: 400,
 					title: nts.uk.resource.getText("CCG007_9"),
 					dialogClass: 'no-close'
-				}).onClosed(() => { self.startScreen().then(() => dfd.resolve()) });
+				}).onClosed(() => { location.reload() });
 				return dfd.promise();
 			}
 

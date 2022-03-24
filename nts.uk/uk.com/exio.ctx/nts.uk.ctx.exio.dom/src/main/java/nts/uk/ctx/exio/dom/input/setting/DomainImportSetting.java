@@ -60,21 +60,26 @@ public class DomainImportSetting implements DomainAggregate {
 		void deleteReviseItems(ExternalImportCode settingCode);
 	}
 
-
-	public void assemble(RequireAssemble require, ExecutionContext context, ExternalImportCsvFileInfo csvFileInfo,InputStream csvFileStream) {
-		csvFileInfo.parse(
-				csvFileStream,
-				r -> processRecord(require, context, r));
+	/**
+	 * 編集し、組み立てる
+	 * @param require
+	 * @param context
+	 * @param csvFileInfo
+	 * @param csvFileStream
+	 * @return 編集に成功した行数
+	 */
+	public int assemble(RequireAssemble require, ExecutionContext context, ExternalImportCsvFileInfo csvFileInfo,InputStream csvFileStream) {
+		return csvFileInfo.parse(csvFileStream, r -> processRecord(require, context, r));
 	}
 
 	/**
 	 * 1レコード分の組み立て
 	 * @param require
 	 * @param context
-	 * @param columnNames
 	 * @param csvRecord
+	 * @return 処理に成功したか
 	 */
-	private void processRecord(
+	private boolean processRecord(
 			RequireAssemble require,
 			ExecutionContext context,
 			CsvRecord csvRecord) {
@@ -82,21 +87,19 @@ public class DomainImportSetting implements DomainAggregate {
 		val optRevisedData = assembly.assemble(require, context, csvRecord);
 		if(!optRevisedData.isPresent()) {
 			// データの組み立て結果が空の場合
-			return;
+			return false;
 		}
 
 		val revisedData = optRevisedData.get();
 
-		val errors = ValidateData.validate(require, context, revisedData);
-
-		if(errors.isEmpty()) {
-			require.save(context, revisedData);
-		}
-		else {
-			errors.forEach(e -> {
-				require.add(ExternalImportError.of(revisedData.getRowNo(), context.getDomainId(), e));
-			});
-		}
+		return ValidateData.validate(require, context, revisedData)
+				.ifRight(validatedValue -> require.save(context, validatedValue))
+				.ifLeft(errors ->{
+					errors.forEach(e -> {
+						require.add(ExternalImportError.of(revisedData.getRowNo(), context.getDomainId(), e));
+					});
+				})
+				.isRight();
 	}
 
 	public static interface RequireAssemble extends

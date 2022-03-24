@@ -373,7 +373,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 					sid, outData.getAppDate(), outData.getAppId());
 			if(domainDailySche.isPresent()) {
 				if(outData.getWorkTypeCode().isPresent()) {
-					WorkInfoOfDailyAttendance workAfter = CorrectDailyAttendanceService.correctFurikyu(impl, domainDailySche.get().getWorkInformation(),
+					WorkInfoOfDailyAttendance workAfter = CorrectDailyAttendanceService.correctFurikyu(impl, cid, domainDailySche.get().getWorkInformation(),
 							new WorkInfoOfDailyAttendance(
 									new WorkInformation(outData.getWorkTypeCode().get(),
 											outData.getWorkTimeCode().orElse(null)),
@@ -521,63 +521,52 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		}
 
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepository.findByPK(cid, workTypeCd);
-		}
-
-		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepository.findByCode(cid, workTimeCode);
-		}
-
-		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 			return service.checkNeededOfWorkTimeSetting(workTypeCode);
 		}
-
-		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			return fixedWorkSettingRepository.findByKey(cid, code.v()).get();
-		}
-
-		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			return flowWorkSettingRepository.find(cid, code.v()).get();
-		}
-
-		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			return flexWorkSettingRepository.find(cid, code.v()).get();
-		}
-
-		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			return predetemineTimeSettingRepository.findByWorkTimeCode(cid, wktmCd.v()).get();
-		}
-
-		@Override
-		public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
-			return sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, baseDate);
-		}
 		
+
 		@Override
-		public Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId){
+		public Optional<WorkType> workType(String cid, WorkTypeCode workTypeCd) {
+			return workTypeRepository.findByPK(cid, workTypeCd.v());
+		}
+
+		@Override
+		public Optional<WorkTimeSetting> workTimeSetting(String cid, WorkTimeCode workTimeCode) {
+			return workTimeSettingRepository.findByCode(cid, workTimeCode.v());
+		}
+
+		@Override
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return fixedWorkSettingRepository.findByKey(companyId, workTimeCode.v());
+		}
+
+		// implements WorkInformation.Require
+		@Override
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flowWorkSettingRepository.find(companyId, workTimeCode.v());
+		}
+
+		// implements WorkInformation.Require
+		@Override
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flexWorkSettingRepository.find(companyId, workTimeCode.v());
+		}
+
+		// implements WorkInformation.Require
+		@Override
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode.v());
+		}
+
+		@Override
+		public Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId){
 			return Optional.ofNullable(compensLeaveComSetRepo.find(companyId));
 		}
 		
 		@Override
-		public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode){
+		public Optional<CompensatoryLeaveEmSetting> compensatoryLeaveEmSetting(String companyId, String employmentCode){
 			return Optional.ofNullable(compensLeaveEmSetRepo.find(companyId, employmentCode));
-		}
-
-		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
-			return workTimeSettingRepository.findByCode(cid, workTimeCode);
-		}
-
-		@Override
-		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
-			return compensLeaveComSetRepo.find(companyId);
 		}
 
 		@Override
@@ -591,19 +580,34 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		}
 
 		@Override
-		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
-			return getWorkType(workTypeCd);
-		}
-
-		@Override
 		public Optional<WorkingConditionItem> getWorkingConditionItemByEmpIDAndDate(String companyID, GeneralDate ymd,
 				String empID) {
 			return workingConditionItemRepo.getBySidAndStandardDate(empID, ymd);
 		}
 
 		@Override
+		public Optional<SEmpHistoryImport> getSEmpHistoryImport(String employeeId, GeneralDate baseDate) {
+			return sysEmploymentHisAdapter.findSEmpHistBySid(cid, employeeId, baseDate);
+		}
+
+		@Override
+		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+			return workTypeRepository.findByPK(companyId, workTypeCd);
+		}
+
+		@Override
 		public OptionLicense getOptionLicense() {
 			return AppContexts.optionLicense();
+		}
+
+		@Override
+		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
+			return this.workTimeSetting(cid, new WorkTimeCode(workTimeCode));
+		}
+
+		@Override
+		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+			return this.compensatoryLeaveComSetting(cid).orElse(null);
 		}
 
 	}
