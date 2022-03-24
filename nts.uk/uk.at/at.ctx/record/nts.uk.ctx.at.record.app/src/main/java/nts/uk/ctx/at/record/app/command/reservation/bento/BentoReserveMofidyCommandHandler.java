@@ -52,6 +52,7 @@ public class BentoReserveMofidyCommandHandler extends CommandHandler<BentoReserv
 		
 		BentoReserveCommand command = context.getCommand();
 		GeneralDate date = GeneralDate.fromString(command.getDate(), "yyyy/MM/dd");
+		int closingTimeFrameNo = command.getClosingTimeFrameNo();
 
 		// Get WorkLocationCode by Cid
 		Optional<WorkLocationCode> workLocationCode = command.getWorkLocationCode() != null?
@@ -67,30 +68,36 @@ public class BentoReserveMofidyCommandHandler extends CommandHandler<BentoReserv
 		RequireImpl require = new RequireImpl(bentoMenuRepository, bentoReservationRepository, reservationSettingRepository);
 		
 		GeneralDateTime datetime = GeneralDateTime.now();
-        AtomTask persist1 = BentoReserveModifyService.reserve(
-                require, 
-                reservationRegisterInfo, 
-                new ReservationDate(date, ReservationClosingTimeFrame.FRAME1), 
-                datetime,
-                command.getFrame1Bentos(),
-                1,
-                companyID,
-				workLocationCode);
+		if (closingTimeFrameNo == 1) {
+		    AtomTask persist1 = BentoReserveModifyService.reserve(
+		            require, 
+		            reservationRegisterInfo, 
+		            new ReservationDate(date, ReservationClosingTimeFrame.FRAME1), 
+		            datetime,
+		            command.getFrame1Bentos(),
+		            1,
+		            companyID,
+		            workLocationCode);
+		    
+		    transaction.execute(() -> {
+		        persist1.run();
+		    });
+		}
         
-        AtomTask persist2 = BentoReserveModifyService.reserve(
-                require, 
-                reservationRegisterInfo, 
-                new ReservationDate(date, ReservationClosingTimeFrame.FRAME2),
-                datetime,
-                command.getFrame2Bentos(),
-                2,
-                companyID,
-				workLocationCode);
-		
-		transaction.execute(() -> {
-            persist1.run();
-            persist2.run();
-		});
+		if (closingTimeFrameNo == 2) {
+		    AtomTask persist2 = BentoReserveModifyService.reserve(
+		            require, 
+		            reservationRegisterInfo, 
+		            new ReservationDate(date, ReservationClosingTimeFrame.FRAME2),
+		            datetime,
+		            command.getFrame2Bentos(),
+		            2,
+		            companyID,
+		            workLocationCode);
+		    transaction.execute(() -> {
+		        persist2.run();
+		    });
+		}
 	}
 	
 	@AllArgsConstructor

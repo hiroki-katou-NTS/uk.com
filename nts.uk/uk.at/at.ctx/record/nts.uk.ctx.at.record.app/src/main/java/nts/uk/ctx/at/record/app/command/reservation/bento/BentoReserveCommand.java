@@ -15,6 +15,8 @@ public class BentoReserveCommand {
 	private String workLocationCode;
 
 	private String date;
+	
+	private int closingTimeFrameNo;
 
 	private List<BentoReservationDetailCommand> details;
 	
