@@ -176,7 +176,8 @@ public class InfomationInitScreenProcess {
 			
 			changeEmployeeIds = initDto.getParam().getEmployeeIds().isEmpty() ? initDto.getLstEmpId() : initDto.getParam().getEmployeeIds();
 		} else {
-			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
+			//changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
+			changeEmployeeIds = initDto.getParam().getEmployeeIds();
 			changeEmployeeIds.addAll(initDto.getParam().getLstEmpsSupport());
 			changeEmployeeIds = changeEmployeeIds.stream().distinct().collect(Collectors.toList());
 		}
