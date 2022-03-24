@@ -5,6 +5,11 @@
   height: 60px;
   padding-bottom: 10px;
 }
+
+#multi-list-nopanel_container{
+	height: 267px !important;
+}
+
 /*hr {*/
 	/*margin-left: 30px;*/
 	/*margin-right: 30px;*/

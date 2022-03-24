@@ -161,6 +161,7 @@ table.exp-date-options tr {
 
 .top-lbl-hint {
 	width: 360px;
+  word-break: keep-all;
 }
 
 table.condition-set-tbl {

@@ -441,7 +441,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 
 
 	@Override
-	public InfoWithDateApplication getInfoAppDate(
+	public InfoWithDateAppOutput getInfoAppDate(
 			String companyId,
 			Optional<GeneralDate> dateOp,
 			Optional<Integer> startTimeSPR,
@@ -487,7 +487,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		output.setWorkTimeCD(Optional.ofNullable(initWkTypeWkTimeOutput.getWorkTimeCD()));
 		
 		
-		return output;
+		return new InfoWithDateAppOutput(output, initWkTypeWkTimeOutput.getOpErrorMsg());
 		
 	}
 
@@ -1135,7 +1135,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		}
 		
 		// 申請日に関する情報を取得する
-		InfoWithDateApplication infoWithDateApplication = this.getInfoAppDate(
+		InfoWithDateAppOutput infoWithDateApplication = this.getInfoAppDate(
 				companyId,
 				Optional.ofNullable(date),
 				Optional.empty(),
@@ -1143,6 +1143,9 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				displayInfoOverTime.getInfoBaseDateOutput().getWorktypes(),
 				appDispInfoStartup,
 				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet());
+		if(infoWithDateApplication.getOpErrorMsg().isPresent()) {
+			appDispInfoStartup.getAppDispInfoWithDateOutput().getErrorMsgLst().add(infoWithDateApplication.getOpErrorMsg().get());
+		}
 		
 		boolean isCalUse = displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getApplicationDetailSetting().getTimeCalUse() == NotUseAtr.USE;
 		if (isCalUse && CollectionUtil.isEmpty(displayInfoOverTime.getInfoBaseDateOutput().getWorktypes())) {
@@ -1152,7 +1155,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			throw new BusinessException("Msg_1568");
 		}
 		
-		displayInfoOverTime.setInfoWithDateApplicationOp(Optional.ofNullable(infoWithDateApplication));
+		displayInfoOverTime.setInfoWithDateApplicationOp(Optional.ofNullable(infoWithDateApplication.getInfoWithDateApplication()));
 		displayInfoOverTime.setCalculatedFlag(CalculatedFlag.UNCALCULATED);
 		
 		return displayInfoOverTime;

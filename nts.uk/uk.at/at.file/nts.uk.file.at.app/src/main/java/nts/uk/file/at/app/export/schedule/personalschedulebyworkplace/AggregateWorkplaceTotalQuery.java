@@ -1,5 +1,22 @@
 package nts.uk.file.at.app.export.schedule.personalschedulebyworkplace;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
@@ -18,7 +35,6 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.laborcostandtime.Work
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timescounting.TimesNumberCounterSelection;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timescounting.TimesNumberCounterSelectionRepo;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timescounting.TimesNumberCounterType;
-import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTableAttendanceItem;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
@@ -49,24 +65,15 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.bs.employee.dom.classification.Classification;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * 職場計を集計する
@@ -208,36 +215,36 @@ public class AggregateWorkplaceTotalQuery {
                 case POSITION_PEOPLE:
                     // 属性ごとに人数を集計する
                     CountNumberOfPeopleByAttributeService.Require require = new CountNumberOfPeopleByAttributeService.Require() {
-                        @Override
-                        @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-                        public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-                            return fixedWorkSettingRepo.findByKey(companyId, code.v()).orElse(null);
-                        }
-                        @Override
-                        @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-                        public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-                            return flowWorkSettingRepo.find(companyId, code.v()).orElse(null);
-                        }
-                        @Override
-                        @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-                        public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-                            return flexWorkSettingRepo.find(companyId, code.v()).orElse(null);
-                        }
-                        @Override
-                        @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-                        public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-                            return predetemineTimeSettingRepo.findByWorkTimeCode(companyId, wktmCd.v()).orElse(null);
-                        }
-                        @Override
-                        @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-                        public Optional<WorkType> getWorkType(String workTypeCd) {
-                            return workTypeRepo.findByPK(companyId, workTypeCd);
-                        }
-                        @Override
-                        @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-                        public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-                            return workTimeSettingRepo.findByCode(companyId, workTimeCode);
-                        }
+
+                		@Override
+                		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+                			return workTimeSettingRepo.findByCode(companyId, workTimeCode.v());
+                		}
+
+                		@Override
+                		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+                			return fixedWorkSettingRepo.findByKey(companyId, workTimeCode.v());
+                		}
+
+                		@Override
+                		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+                			return flowWorkSettingRepo.find(companyId, workTimeCode.v());
+                		}
+
+                		@Override
+                		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+                			return flexWorkSettingRepo.find(companyId, workTimeCode.v());
+                		}
+
+                		@Override
+                		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+                			return predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode.v());
+                		}
+
+                		@Override
+                		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+                			return workTypeRepo.findByPK(companyId, workTypeCode.v());
+                		}
                         @Override
                         @TransactionAttribute(TransactionAttributeType.SUPPORTS)
                         public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -245,7 +252,7 @@ public class AggregateWorkplaceTotalQuery {
                         }
                     };
                     if (counter == WorkplaceCounterCategory.EMPLOYMENT_PEOPLE) {
-                        Map<GeneralDate, Map<EmploymentCode, BigDecimal>> countEmploymentMap = CountNumberOfPeopleByAttributeService.countingEachEmployments(require, integrationOfDailyMap.get(scheRecGettingAtr));
+                        Map<GeneralDate, Map<EmploymentCode, BigDecimal>> countEmploymentMap = CountNumberOfPeopleByAttributeService.countingEachEmployments(require, companyId, integrationOfDailyMap.get(scheRecGettingAtr));
                         // 雇用コード（List）から雇用を取得する
                         Set<String> employmentCodes = new HashSet<>();
                         countEmploymentMap.forEach((key, value) -> {
@@ -263,7 +270,7 @@ public class AggregateWorkplaceTotalQuery {
                         });
                         result.put(WorkplaceCounterCategory.EMPLOYMENT_PEOPLE, (Map<GeneralDate, T>) resultMap);
                     } else if (counter == WorkplaceCounterCategory.CLASSIFICATION_PEOPLE) {
-                        Map<GeneralDate, Map<ClassificationCode, BigDecimal>> countClassificationMap = CountNumberOfPeopleByAttributeService.countingEachClassification(require, integrationOfDailyMap.get(scheRecGettingAtr));
+                        Map<GeneralDate, Map<ClassificationCode, BigDecimal>> countClassificationMap = CountNumberOfPeopleByAttributeService.countingEachClassification(require, companyId, integrationOfDailyMap.get(scheRecGettingAtr));
                         // 分類コード（List）から分類を取得する
                         Set<String> classificationCodes = new HashSet<>();
                         countClassificationMap.forEach((key, value) -> {
@@ -281,7 +288,7 @@ public class AggregateWorkplaceTotalQuery {
                         });
                         result.put(WorkplaceCounterCategory.CLASSIFICATION_PEOPLE, (Map<GeneralDate, T>) resultMap);
                     } else {
-                        Map<GeneralDate, Map<String, BigDecimal>> countJobMap = CountNumberOfPeopleByAttributeService.countingEachJobTitle(require, integrationOfDailyMap.get(scheRecGettingAtr));
+                        Map<GeneralDate, Map<String, BigDecimal>> countJobMap = CountNumberOfPeopleByAttributeService.countingEachJobTitle(require, companyId, integrationOfDailyMap.get(scheRecGettingAtr));
                         // 職位IDから職位を取得する
                         Set<String> jobIds = new HashSet<>();
                         countJobMap.forEach((key, value) -> {

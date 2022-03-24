@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcution;
 
 @AllArgsConstructor
@@ -23,9 +24,11 @@ public class ExecutionCommand {
 
 	private int presenceOfError;
 
-	public AggrPeriodExcution toDomain(String companyId, String executionEmpId, String aggrId, GeneralDateTime startDateTime, GeneralDateTime endDateTime) {
+	public AggrPeriodExcution toDomain(String companyId, String executionEmpId, String aggrId,
+									   GeneralDateTime startDateTime, GeneralDateTime endDateTime,
+									   String name, DatePeriod datePeriod) {
 		return AggrPeriodExcution.createFromJavaType(companyId, executionEmpId, this.aggrFrameCode, aggrId,
-				startDateTime, endDateTime, this.executionAtr, this.executionStatus, this.presenceOfError);
+				startDateTime, endDateTime, this.executionAtr, this.executionStatus, this.presenceOfError,name,datePeriod);
 
 	}
 }

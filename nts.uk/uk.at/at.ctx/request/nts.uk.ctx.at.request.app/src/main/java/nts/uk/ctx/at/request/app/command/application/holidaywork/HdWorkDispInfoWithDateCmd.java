@@ -85,6 +85,11 @@ public class HdWorkDispInfoWithDateCmd {
 	 */
 	private Integer actualMonthlyAgreeTimeStatus;
 	
+	/**
+	 * エラーメッセージ
+	 */
+	private String opErrorMsg;
+	
 	public HdWorkDispInfoWithDateOutput toDomain() {
 		String companyId = AppContexts.user().companyId();
 		return new HdWorkDispInfoWithDateOutput(this.subHdManage, 
@@ -99,7 +104,7 @@ public class HdWorkDispInfoWithDateCmd {
 				Optional.ofNullable(this.overtimeStatus != null ? this.overtimeStatus.toDomain() : null), 
 				Optional.ofNullable(this.actualApplicationTime != null ? this.actualApplicationTime.toDomain() : null),
 				Optional.ofNullable(this.actualMonthlyAgreeTimeStatus != null ? 
-						EnumAdaptor.valueOf(this.actualMonthlyAgreeTimeStatus, AgreementTimeStatusOfMonthly.class) : null)
-				);
+						EnumAdaptor.valueOf(this.actualMonthlyAgreeTimeStatus, AgreementTimeStatusOfMonthly.class) : null),
+				Optional.ofNullable(opErrorMsg));
 	}
 }

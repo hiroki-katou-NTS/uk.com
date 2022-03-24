@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
@@ -20,6 +22,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public abstract class TimeVacationOffSetItem extends CalculationTimeSheet {
 
 	/** 控除相殺時間 */
+	@Setter
 	protected Optional<TimevacationUseTimeOfDaily> deductionOffSetTime = Optional.empty();
 
 	/**
@@ -94,6 +97,27 @@ public abstract class TimeVacationOffSetItem extends CalculationTimeSheet {
 			calcTime = this.rounding.round(calcTime);
 		}
 		return new AttendanceTime(calcTime);
+	}
+
+	/**
+	 * 相殺時間休暇使用時間の算算
+	 * 
+	 * @param priorityOrder 時間休暇相殺優先順位
+	 * @return AttendanceTime 勤怠時間
+	 */
+	public TimevacationUseTimeOfDaily calcTotalOffsetTimeVacationUseTime(CompanyHolidayPriorityOrder priorityOrder,
+			TimevacationUseTimeOfDaily useTime) {
+		
+		/** ○控除時間の計算 */
+		val deductTime = this.deductionTimeSheet.stream()
+				.mapToInt(d -> d.calcTotalTime(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE).valueAsMinutes())
+				.sum();
+		
+		// 全ての控除時間を控除する
+		val calcTime = this.timeSheet.getTimeSpan().lengthAsMinutes() - deductTime;
+		
+		/** パラメータ。時間休暇使用時間で相殺時間休暇使用を作る */
+		return useTime.create(priorityOrder, new AttendanceTime(calcTime));
 	}
 	
 	/**

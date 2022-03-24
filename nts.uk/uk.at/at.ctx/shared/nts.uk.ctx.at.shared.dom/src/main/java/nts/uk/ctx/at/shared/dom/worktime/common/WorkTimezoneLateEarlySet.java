@@ -22,7 +22,7 @@ public class WorkTimezoneLateEarlySet extends WorkTimeDomainObject implements Cl
 
 	/** The common set. */
 	//共通設定
-	private EmTimezoneLateEarlyCommonSet commonSet;
+	private TreatLateEarlyTime commonSet;
 	
 	/** The other class set. */
 	//区分別設定
@@ -38,7 +38,7 @@ public class WorkTimezoneLateEarlySet extends WorkTimeDomainObject implements Cl
 		this.otherClassSets = memento.getOtherClassSet();
 	}
 	
-	public WorkTimezoneLateEarlySet(EmTimezoneLateEarlyCommonSet commonSet,List<OtherEmTimezoneLateEarlySet> otherClassSets) {
+	public WorkTimezoneLateEarlySet(TreatLateEarlyTime commonSet,List<OtherEmTimezoneLateEarlySet> otherClassSets) {
 		this.commonSet = commonSet;
 		this.otherClassSets = otherClassSets;
 	}
@@ -66,11 +66,11 @@ public class WorkTimezoneLateEarlySet extends WorkTimeDomainObject implements Cl
 	}
 	
 	/**
-	 * 共通設定をtrueに変更した「就業時間帯の遅刻・早退設定」を返す
+	 * 共通設定を変更した「就業時間帯の遅刻・早退設定」を返す
 	 * @return
 	 */
-	public WorkTimezoneLateEarlySet changeCommonSet(boolean flag) {
-		return new WorkTimezoneLateEarlySet(new EmTimezoneLateEarlyCommonSet(flag),this.otherClassSets);
+	public WorkTimezoneLateEarlySet changeCommonSet(boolean include, boolean includeByApp) {
+		return new WorkTimezoneLateEarlySet(new TreatLateEarlyTime(include, includeByApp),this.otherClassSets);
 	}
 	
 	@Override
@@ -92,7 +92,7 @@ public class WorkTimezoneLateEarlySet extends WorkTimeDomainObject implements Cl
 	 */
 	public static WorkTimezoneLateEarlySet generateDefault(){
 		WorkTimezoneLateEarlySet domain = new WorkTimezoneLateEarlySet();
-		domain.commonSet = new EmTimezoneLateEarlyCommonSet(true);
+		domain.commonSet = new TreatLateEarlyTime(false, false);
 		domain.otherClassSets = new ArrayList<>();
 		domain.otherClassSets.add(OtherEmTimezoneLateEarlySet.generateDefault(LateEarlyAtr.LATE));
 		domain.otherClassSets.add(OtherEmTimezoneLateEarlySet.generateDefault(LateEarlyAtr.EARLY));

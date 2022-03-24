@@ -127,7 +127,10 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                               FROM               WWFDT_APP_INST_ROUTE SRI " +
 				"                               INNER JOIN         WWFDT_APP_INST_PHASE SFI " +
 				"                               ON                 SRI.ROOT_STATE_ID = SFI.ROOT_STATE_ID " +
+				"								INNER JOIN         KRQDT_APP_REFLECT_STATE HEJ " +
+				"								ON                 SRI.ROOT_STATE_ID = HEJ.APP_ID " +
 				"                               WHERE              SFI.APP_PHASE_ATR IN ('0','3','4') " +
+				"								AND                HEJ.REFLECT_PER_STATE <> '3' " +
 				"                               AND                @startDate <= SRI.APPROVAL_RECORD_DATE " +
 				"                               AND                SRI.APPROVAL_RECORD_DATE <= @endDate " +
 				"                               ) MSNSNS " +
@@ -591,7 +594,10 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                        FROM               WWFDT_APP_INST_ROUTE SRI " +
 				"                        INNER JOIN         WWFDT_APP_INST_PHASE SFI " +
 				"                        ON                 SRI.ROOT_STATE_ID = SFI.ROOT_STATE_ID " +
+				"						 INNER JOIN         KRQDT_APP_REFLECT_STATE HEJ " +
+				"			 			 ON                 SRI.ROOT_STATE_ID = HEJ.APP_ID " +
 				"                        WHERE              SFI.APP_PHASE_ATR IN ('0','3','4') " +
+				"						 AND                HEJ.REFLECT_PER_STATE <> '3' " +
 				"                        AND                @startDate <= SRI.APPROVAL_RECORD_DATE " +
 				"                        AND                SRI.APPROVAL_RECORD_DATE <= @endDate " +
 				"                        ) MSNSNS " +

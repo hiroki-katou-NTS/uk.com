@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ApprovalStatusActualResult extends ConfirmStatusActualResult{
 	
 	/**

@@ -50,7 +50,8 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 		if(!CollectionUtil.isEmpty(lstPsRoots)) {
 			List<ApprovalPhase> lstPhase = new ArrayList<>();
 			lstPsRoots.stream().forEach(y -> {
-				phaseRespoitory.getAllIncludeApprovers(y.getApprovalId()).stream().forEach(z -> {
+				phaseRespoitory.getAllIncludeApprovers(y.getApprRoot().getHistoryItems().isEmpty()
+						? "" : y.getApprRoot().getHistoryItems().get(0).getApprovalId()).stream().forEach(z -> {
 					lstPhase.add(z);
 				});
 				
@@ -60,19 +61,19 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 				List<ApprovalRootCommonOutput> rootOutputs = lstPsRoots
 						.stream()
 						.map(x -> new ApprovalRootCommonOutput(x.getCompanyId(),
-								x.getApprovalId(), 
+								x.getApprRoot().getHistoryItems().isEmpty() ? "" : x.getApprRoot().getHistoryItems().get(0).getApprovalId(), 
 								x.getEmployeeId(), 
 								"",
 								x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
-								x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+								x.getApprRoot().getApplicationType().map(v -> v.value).orElse(99),
 								x.getApprRoot().getHistoryItems().get(0).start(),
 								x.getApprRoot().getHistoryItems().get(0).end(),
 								// x.getApprRoot().getBranchId(),
 								// x.getApprRoot().getAnyItemApplicationId(),
-								x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+								x.getApprRoot().getConfirmationRootType().map(v -> v.value).orElse(null),
 								x.getApprRoot().getEmploymentRootAtr().value,
-								x.getApprRoot().getNoticeId(),
-								x.getApprRoot().getBusEventId()))
+								x.getApprRoot().getNoticeId().orElse(null),
+								x.getApprRoot().getBusEventId().orElse(null)))
 						.collect(Collectors.toList());
 				return rootOutputs;
 			}			
@@ -113,15 +114,15 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 									"", 
 									x.getWorkplaceId(),
 									x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
-									x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+									x.getApprRoot().getApplicationType().map(v -> v.value).orElse(99),
 									x.getApprRoot().getHistoryItems().get(0).start(),
 									x.getApprRoot().getHistoryItems().get(0).end(),
 									// x.getApprRoot().getBranchId(),
 									// x.getApprRoot().getAnyItemApplicationId(),
-									x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+									x.getApprRoot().getConfirmationRootType().map(v -> v.value).orElse(null),
 									x.getApprRoot().getEmploymentRootAtr().value,
-									x.getApprRoot().getNoticeId(),
-									x.getApprRoot().getBusEventId()))
+									x.getApprRoot().getNoticeId().orElse(null),
+									x.getApprRoot().getBusEventId().orElse(null)))
 							.collect(Collectors.toList());
 					return rootOutputs;
 				}				
@@ -156,15 +157,15 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 									"", 
 									"",
 									x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
-									x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+									x.getApprRoot().getApplicationType().map(v -> v.value).orElse(99),
 									x.getApprRoot().getHistoryItems().get(0).start(),
 									x.getApprRoot().getHistoryItems().get(0).end(),
 									// x.getApprRoot().getBranchId(),
 									// x.getApprRoot().getAnyItemApplicationId(),
-									x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+									x.getApprRoot().getConfirmationRootType().map(v -> v.value).orElse(null),
 									x.getApprRoot().getEmploymentRootAtr().value,
-									x.getApprRoot().getNoticeId(),
-									x.getApprRoot().getBusEventId()))
+									x.getApprRoot().getNoticeId().orElse(null),
+									x.getApprRoot().getBusEventId().orElse(null)))
 							.collect(Collectors.toList());
 					return rootOutputs;
 				}
@@ -189,7 +190,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			List<ApprovalRootCommonOutput> rootOutputs = lstPsCommonRoots
 					.stream()
 					.map(x -> new ApprovalRootCommonOutput(x.getCompanyId(),
-							x.getApprovalId(), 
+							x.getApprRoot().getHistoryItems().isEmpty() ? "" : x.getApprRoot().getHistoryItems().get(0).getApprovalId(), 
 							x.getEmployeeId(), 
 							"",
 							x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
@@ -200,8 +201,8 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 							// x.getApprRoot().getAnyItemApplicationId(),
 							null,
 							x.getApprRoot().getEmploymentRootAtr().value,
-							x.getApprRoot().getNoticeId(),
-							x.getApprRoot().getBusEventId()))
+							x.getApprRoot().getNoticeId().orElse(null),
+							x.getApprRoot().getBusEventId().orElse(null)))
 					.collect(Collectors.toList());
 			return rootOutputs;
 		}
@@ -225,15 +226,15 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 								"", 
 								x.getWorkplaceId(),
 								x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
-								x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+								x.getApprRoot().getApplicationType().map(v -> v.value).orElse(99), 
 								x.getApprRoot().getHistoryItems().get(0).start(),
 								x.getApprRoot().getHistoryItems().get(0).end(),
 								// x.getApprRoot().getBranchId(),
 								// x.getApprRoot().getAnyItemApplicationId(),
-								x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+								x.getApprRoot().getConfirmationRootType().map(v -> v.value).orElse(null),
 								x.getApprRoot().getEmploymentRootAtr().value,
-								x.getApprRoot().getNoticeId(),
-								x.getApprRoot().getBusEventId()))
+								x.getApprRoot().getNoticeId().orElse(null),
+								x.getApprRoot().getBusEventId().orElse(null)))
 						.collect(Collectors.toList());
 				return rootOutputs;
 			}
@@ -252,15 +253,15 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 							"", 
 							"",
 							x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
-							x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+							x.getApprRoot().getApplicationType().map(v -> v.value).orElse(99), 
 							x.getApprRoot().getHistoryItems().get(0).start(),
 							x.getApprRoot().getHistoryItems().get(0).end(),
 							// x.getApprRoot().getBranchId(),
 							// x.getApprRoot().getAnyItemApplicationId(),
-							x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+							x.getApprRoot().getConfirmationRootType().map(v -> v.value).orElse(null),
 							x.getApprRoot().getEmploymentRootAtr().value,
-							x.getApprRoot().getNoticeId(),
-							x.getApprRoot().getBusEventId()))
+							x.getApprRoot().getNoticeId().orElse(null),
+							x.getApprRoot().getBusEventId().orElse(null)))
 					.collect(Collectors.toList());
 			return rootOutputs;
 		}
@@ -293,19 +294,19 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 
 	private String typeS(ApprovalRoot apprRoot) {
 		if(apprRoot.getEmploymentRootAtr().equals(EmploymentRootAtr.BUS_EVENT)) {
-			return apprRoot.getBusEventId();
+			return apprRoot.getBusEventId().map(x -> x).orElse(null);
 		}
 		return null;
 	}
 	private Integer typeV(ApprovalRoot apprRoot) {
 		if(apprRoot.getEmploymentRootAtr().equals(EmploymentRootAtr.APPLICATION)) {
-			return apprRoot.getApplicationType().value;
+			return apprRoot.getApplicationType().map(x -> x.value).orElse(null);
 		}
 		if(apprRoot.getEmploymentRootAtr().equals(EmploymentRootAtr.CONFIRMATION)) {
-			return apprRoot.getConfirmationRootType().value;
+			return apprRoot.getConfirmationRootType().map(x -> x.value).orElse(null);
 		}
 		if(apprRoot.getEmploymentRootAtr().equals(EmploymentRootAtr.NOTICE)) {
-			return apprRoot.getNoticeId();
+			return apprRoot.getNoticeId().map(x -> x).orElse(null);
 		}
 		return null;
 	}

@@ -32,6 +32,11 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 
 	private static final String SELECT = "SELECT c FROM KrcmtWorkLocation c";
 	private static final String SELECT_SINGLE = "SELECT c FROM KrcmtWorkLocation c WHERE c.kwlmtWorkLocationPK.contractCode = :contractCode AND c.kwlmtWorkLocationPK.workLocationCD = :workLocationCD";
+	private static final String SELECT_POSSIBLE_BY_CID = 
+			"SELECT p FROM KrcmtWorkplacePossible p"
+			+ " WHERE p.krcmtWorkplacePossiblePK.contractCode = :contractCode"
+			+ " AND p.krcmtWorkplacePossiblePK.workLocationCD = :workLocationCD"
+			+ " AND p.krcmtWorkplacePossiblePK.cid = :cid";
 	private static final String SELECT_ALL_BY_COMPANY = SELECT
 			+ " WHERE c.kwlmtWorkLocationPK.contractCode = :contractCode order by c.kwlmtWorkLocationPK.workLocationCD asc";
 	private static final String SELECT_CODE_AND_NAME = "SELECT c.kwlmtWorkLocationPK.workLocationCD, c.workLocationName FROM KrcmtWorkLocation c"
@@ -63,7 +68,16 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 			+ " WHERE c.kwlmtWorkLocationPK.contractCode = :contractCode"
 			+ " AND c.kwlmtWorkLocationPK.workLocationCD = :workLocationCD"
 			+ " AND p.krcmtWorkplacePossiblePK.cid = :cid";
-
+	
+	private static final String SELECT_IDENTIFY_WORKLOCATION_BY_ADDRESS = SELECT 
+			+ " INNER JOIN KrcmtIP4Address p ON p.krcmtIP4AddressPK.workLocationCD = c.kwlmtWorkLocationPK.workLocationCD"
+			+ " AND p.krcmtIP4AddressPK.contractCode = c.kwlmtWorkLocationPK.contractCode"
+			+ " WHERE c.kwlmtWorkLocationPK.contractCode = :contractCode"
+			+ " AND p.krcmtIP4AddressPK.net1 = :net1"
+			+ " AND p.krcmtIP4AddressPK.net2 = :net2"
+			+ " AND p.krcmtIP4AddressPK.host1 = :host1"
+			+ " AND p.krcmtIP4AddressPK.host2 = :host2";
+	
 	@Override
 	public List<WorkLocation> findAll(String contractCode) {
 		List<WorkLocation> test = this.queryProxy().query(SELECT_ALL_BY_COMPANY, KrcmtWorkLocation.class)
@@ -72,10 +86,36 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 	}
 
 	@Override
+	public List<WorkLocation> findAll(String contractCode, String cId) {
+		List<WorkLocation> test = this.queryProxy().query(SELECT_ALL_BY_COMPANY, KrcmtWorkLocation.class)
+				.setParameter("contractCode", contractCode).getList(c -> c.toDomain());
+		
+		test.forEach(wl -> {
+			this.findPossibleByCid(contractCode, wl.getWorkLocationCD().v(), cId).ifPresent(wp -> {
+				wl.setWorkplace(Optional.of(wp));
+			});
+		});
+		
+		return test;
+	}
+
+	@Override
 	public Optional<WorkLocation> findByCode(String contractCode, String workPlaceCD) {
 		Optional<WorkLocation> test = this.queryProxy().query(SELECT_SINGLE, KrcmtWorkLocation.class)
 				.setParameter("contractCode", contractCode).setParameter("workLocationCD", workPlaceCD)
 				.getSingle(c -> c.toDomain());
+		return test;
+	}
+	
+	@Override
+	public Optional<WorkplacePossible> findPossibleByCid(String contractCode, String workLocationCD, String cId) {
+		
+		Optional<WorkplacePossible> test = this.queryProxy().query(SELECT_POSSIBLE_BY_CID, KrcmtWorkplacePossible.class)
+				.setParameter("contractCode", contractCode)
+				.setParameter("workLocationCD", workLocationCD)
+				.setParameter("cid", cId)
+				.getSingle(c -> c.toDomain());
+		
 		return test;
 	}
 
@@ -134,6 +174,7 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 			}
 			
 			oldData.get().krcmtIP4Address = newData.krcmtIP4Address;
+			oldData.get().regionalCd = newData.regionalCd;
 			this.commandProxy().update(oldData.get());
 
 			if (newData.krcmtWorkplacePossible != null) {
@@ -230,6 +271,16 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 		}
 		
 		return result;
+	}
+
+	@Override
+	public Optional<WorkLocation> identifyWorkLocationByAddress(String contractCode, Ipv4Address ipv4Address) {
+		return this.queryProxy().query(SELECT_IDENTIFY_WORKLOCATION_BY_ADDRESS, KrcmtWorkLocation.class)
+		.setParameter("contractCode", contractCode)
+		.setParameter("net1", ipv4Address.getNet1())
+		.setParameter("net2", ipv4Address.getNet2())
+		.setParameter("host1", ipv4Address.getHost1())
+		.setParameter("host2", ipv4Address.getHost2()).getSingle(c -> c.toDomain());
 	}
 
 }

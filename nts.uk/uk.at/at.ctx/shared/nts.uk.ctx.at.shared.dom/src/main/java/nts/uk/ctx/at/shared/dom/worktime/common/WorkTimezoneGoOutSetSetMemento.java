@@ -10,11 +10,11 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 public interface WorkTimezoneGoOutSetSetMemento {
 
 	/**
-	 * Sets the total rounding set.
+	 * Sets the rounding method.
 	 *
-	 * @param set the new total rounding set
+	 * @param set the new rounding method
 	 */
-	 void setTotalRoundingSet(TotalRoundingSet set);
+	 void setRoundingMethod(GoOutTimeRoundingMethod set);
 
 	/**
 	 * Sets the diff timezone setting.

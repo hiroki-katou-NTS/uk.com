@@ -90,6 +90,7 @@ public class FlexTimeByPeriodDto implements ItemConst, AttendanceItemDataGate {
         switch (path) {
             case TIME:
                 flexTime = value.valueOrDefault(0);
+                break;
             case (EXCESS + TIME):
                 flexExcessTime = value.valueOrDefault(0);
                 break;

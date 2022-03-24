@@ -30,8 +30,7 @@ public class ExecutionLogRequestImportImpl implements ExecutionLogRequestImport 
 		SetInforReflAprResultImport outputData = new SetInforReflAprResultImport(EnumAdaptor.valueOf(exportData.getExecutionContent().value, 
 					ExecutionContentImport.class),
 				EnumAdaptor.valueOf(exportData.getExecutionType().value, ExecutionTypeExImport.class),
-				exportData.getCalExecutionSetInfoID(),
-				exportData.isForciblyReflect());
+				exportData.getCalExecutionSetInfoID());
 		return Optional.of(outputData);
 	}
 	@Override

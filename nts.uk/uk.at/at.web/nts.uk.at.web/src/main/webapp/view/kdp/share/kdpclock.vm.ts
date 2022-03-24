@@ -187,68 +187,77 @@ module nts.uk.at.view.kdp.share {
 
 		events!: ClickEvent;
 		settings!: KnockoutComputed<StampColor>;
+		regionalTime: KnockoutObservable<number> = ko.observable(0);
 
-		created(params?: StampClocParam) {
-			const vm = this;
+        created(params?: StampClocParam) {
+            const vm = this;
 
-			if (params) {
-				const { setting, events } = params;
+            if (params) {
+                const {regionalTime } = params;
 
-				if (events) {
-					// convert setting event to binding object
-					if (_.isFunction(events.setting)) {
-						const click = events.setting;
+                if (regionalTime) {
+                    vm.regionalTime = regionalTime;
+                } else {
+                    vm.$window.storage("workLocationInfo").then((workLocInfo) => {
+                        vm.regionalTime = workLocInfo.regional;
+                    });
+                }
+                vm.initStart(params);
 
-						events.setting = {
-							click,
-							show: true
-						} as any;
-					}
+            }
+            let time = moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate();
+            vm.time(time);
 
-					// convert company event to binding object
-					if (_.isFunction(events.company)) {
-						const click = events.company;
+            setInterval(() => vm.time(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate()), 300);
+        }
+        initStart(params) {
+            let vm = this;
+            let { setting, events, regionalTime } = params;
+            if (events) {
+                // convert setting event to binding object
+                if (_.isFunction(events.setting)) {
+                    const click = events.setting;
 
-						events.company = {
-							click,
-							show: true
-						} as any;
-					}
+                    events.setting = {
+                        click,
+                        show: true
+                    } as any;
+                }
 
-					vm.events = events;
-				} else {
-					vm.events = {
-						company: {
-							show: false,
-							click: () => { }
-						} as any,
-						setting: {
-							show: false,
-							click: () => { }
-						} as any
-					};
-				}
+                // convert company event to binding object
+                if (_.isFunction(events.company)) {
+                    const click = events.company;
 
-				vm.settings = ko.computed(() => {
-					const { textColor } = ko.toJS(setting || {});
+                    events.company = {
+                        click,
+                        show: true
+                    } as any;
+                }
 
-					if (textColor) {
-						return { textColor };
-					} else {
-						return { textColor: '#7F7F7F' };
-					}
-				});
-			}
+                vm.events = events;
+            } else {
+                vm.events = {
+                    company: {
+                        show: false,
+                        click: () => { }
+                    } as any,
+                    setting: {
+                        show: false,
+                        click: () => { }
+                    } as any
+                };
+            }
 
-			vm.$ajax('at', '/server/time/now')
-				.then((c) => {
-					const date = moment(c, 'YYYY-MM-DDTHH:mm:ss').toDate();
+            vm.settings = ko.computed(() => {
+                const { textColor } = ko.toJS(setting || {});
 
-					vm.time(date);
-				});
-
-			setInterval(() => vm.time(vm.$date.now()), 300);
-		}
+                if (textColor) {
+                    return { textColor };
+                } else {
+                    return { textColor: '#7F7F7F' };
+                }
+            });
+        }
 
 		mounted() {
 			const vm = this;
@@ -260,6 +269,7 @@ module nts.uk.at.view.kdp.share {
 	export interface StampClocParam {
 		events?: ClickEvent;
 		setting?: StampColor;
+		regionalTime?: KnockoutObservable<number>;
 	}
 
 	export interface ClickEvent {

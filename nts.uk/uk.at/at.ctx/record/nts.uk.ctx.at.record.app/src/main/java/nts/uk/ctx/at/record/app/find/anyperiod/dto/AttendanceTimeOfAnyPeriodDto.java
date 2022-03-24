@@ -20,10 +20,12 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.shr.com.context.AppContexts;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Data
@@ -90,7 +92,7 @@ public class AttendanceTimeOfAnyPeriodDto extends AttendanceItemCommon {
         );
     }
 
-    public static AttendanceTimeOfAnyPeriodDto fromDomain(AttendanceTimeOfAnyPeriod domain) {
+    public static AttendanceTimeOfAnyPeriodDto fromDomain(AttendanceTimeOfAnyPeriod domain, Map<Integer, OptionalItem> optionalItems) {
         return new AttendanceTimeOfAnyPeriodDto(
                 domain.getEmployeeId(),
                 domain.getAnyAggrFrameCode().v(),
@@ -99,7 +101,7 @@ public class AttendanceTimeOfAnyPeriodDto extends AttendanceItemCommon {
                 AgreementTimeByPeriodDto.from(domain.getAgreementTime()),
                 VerticalTotalOfMonthlyDto.from(domain.getVerticalTotal()),
                 TotalCountByPeriodDto.from(domain.getTotalCount()),
-                AnyItemByPeriodDto.fromDomain(domain.getAnyItem())
+                AnyItemByPeriodDto.fromDomain(domain.getAnyItem(), optionalItems)
         );
     }
 

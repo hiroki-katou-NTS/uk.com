@@ -45,7 +45,7 @@ public class RefectActualResultCommand {
 				Optional.empty(), 
 				Optional.empty(),
 				this.workLocationCD    == null ? Optional.empty() : Optional.of(new WorkLocationCD(this.workLocationCD)),
-				this.cardNumberSupport == null ? Optional.empty() : Optional.of(new SupportCardNumber(Integer.valueOf(this.cardNumberSupport))));
+				this.cardNumberSupport == null ? Optional.empty() : Optional.of(new SupportCardNumber(this.cardNumberSupport)));
 		return new RefectActualResult(workInformationStamp,
 				workTimeCode != null ? new WorkTimeCode(workTimeCode) : null,
 				overtimeDeclaration != null ? overtimeDeclaration.toDomainValue() : null,

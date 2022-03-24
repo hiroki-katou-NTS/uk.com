@@ -42,7 +42,8 @@ public class KscdtSchTask extends ContractUkJpaEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "SID", referencedColumnName = "SID"),
 			@PrimaryKeyJoinColumn(name = "YMD", referencedColumnName = "YMD") })
-	public KscdtSchTime kscdtSchTime;
+//	public KscdtSchTime kscdtSchTime;
+	public KscdtSchBasicInfo kscdtSchBasicInfo;
 
 	@Override
 	protected Object getKey() {

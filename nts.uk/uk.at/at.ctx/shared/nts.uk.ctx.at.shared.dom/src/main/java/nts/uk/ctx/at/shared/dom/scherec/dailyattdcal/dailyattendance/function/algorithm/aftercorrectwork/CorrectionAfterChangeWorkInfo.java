@@ -47,6 +47,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 /**
@@ -100,14 +101,14 @@ public class CorrectionAfterChangeWorkInfo {
 		/** 日別勤怠の何が変更されたか.勤務情報=true　＆＆　日別勤怠の何が変更されたか。勤務予定から移送した値も補正する＝True */
 		if (changeDailyAttendance.workInfo && changeDailyAttendance.correctValCopyFromSche) {
 			/** 始業終業時刻の補正 */
-			domainDaily.setWorkInformation(CorrectStartEndWorkForWorkInfo.correctStartEndWork(require, domainDaily.getWorkInformation(), domainDaily.getEditState()));
+			domainDaily.setWorkInformation(CorrectStartEndWorkForWorkInfo.correctStartEndWork(require, companyId, domainDaily.getWorkInformation(), domainDaily.getEditState()));
 		}
 		
 		//時刻の補正
 		timeCorrectionProcess.process(companyId, workCondition, domainDaily, changeDailyAttendance.getClassification());
 		
 		/** 勤務回数の補正 */
-		AttendanceTimesCorrector.correct(require, domainDaily);
+		AttendanceTimesCorrector.correct(require, companyId, domainDaily);
 		
 		// fix 111738
 		// remove TODO: ドメインモデル「予実反映」を取得 - mock new domain
@@ -125,33 +126,33 @@ public class CorrectionAfterChangeWorkInfo {
 		return new Require() {
 			
 			@Override
-			public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-				return predetemineTimeSettingRepo.findByWorkTimeCode(companyId, wktmCd.v()).get();
+			public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+				return fixedWorkSettingRepo.findByKey(companyId, workTimeCode.v());
 			}
 			
 			@Override
-			public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-				return flowWorkSettingRepo.find(companyId, code.v()).get();
+			public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+				return flowWorkSettingRepo.find(companyId, workTimeCode.v());
 			}
 			
 			@Override
-			public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-				return flexWorkSettingRepo.find(companyId, code.v()).get();
+			public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+				return flexWorkSettingRepo.find(companyId, workTimeCode.v());
 			}
 			
 			@Override
-			public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-				return fixedWorkSettingRepo.findByKey(companyId, code.v()).get();
+			public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+				return predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode.v());
 			}
 			
 			@Override
-			public Optional<WorkType> getWorkType(String workTypeCd) {
-				return workTypeRepo.findByPK(companyId, workTypeCd);
+			public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+				return workTypeRepo.findByPK(companyId, workTypeCode.v());
 			}
-			
+
 			@Override
-			public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-				return workTimeSettingRepo.findByCode(companyId, workTimeCode);
+			public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+				return workTimeSettingRepo.findByCode(companyId, workTimeCode.v());
 			}
 			
 			@Override

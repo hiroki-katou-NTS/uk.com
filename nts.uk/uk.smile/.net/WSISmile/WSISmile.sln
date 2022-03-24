@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WSISmile", "WSISmile.csproj", "{35AB56B7-5B26-4B3D-8EC1-1605735E45A8}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WSISmile.Business", "WSISmile.Business\WSISmile.Business.csproj", "{AFDC4B05-D5A5-4AA5-8D96-D05656EE4040}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{35AB56B7-5B26-4B3D-8EC1-1605735E45A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35AB56B7-5B26-4B3D-8EC1-1605735E45A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35AB56B7-5B26-4B3D-8EC1-1605735E45A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35AB56B7-5B26-4B3D-8EC1-1605735E45A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFDC4B05-D5A5-4AA5-8D96-D05656EE4040}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFDC4B05-D5A5-4AA5-8D96-D05656EE4040}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFDC4B05-D5A5-4AA5-8D96-D05656EE4040}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFDC4B05-D5A5-4AA5-8D96-D05656EE4040}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -30,8 +30,8 @@ public class CreateWorkMaxTimeZone {
 			return converter.setData(dailyRecord).toDomain();
 
 		// 日別勤怠(work）の勤務情報をもとに所定時間設定を取得する
-		Optional<PredetemineTimeSetting> predeteminate = require.findByWorkTimeCode(cid,
-				dailyRecord.getWorkInformation().getRecordInfo().getWorkTimeCode().v());
+		Optional<PredetemineTimeSetting> predeteminate = require.predetemineTimeSetting(cid,
+				dailyRecord.getWorkInformation().getRecordInfo().getWorkTimeCode());
 		if (!predeteminate.isPresent())
 			return converter.setData(dailyRecord).toDomain();
 
@@ -65,10 +65,7 @@ public class CreateWorkMaxTimeZone {
 
 	}
 
-	public static interface Require {
-
-		// PredetemineTimeSettingRepository
-		Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode);
+	public static interface Require extends PredetemineTimeSetting.Require {
 
 		// DailyRecordConverter
 		DailyRecordToAttendanceItemConverter createDailyConverter();

@@ -194,6 +194,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					
 				}).then((successData: any) => {
 					if (successData) {
+						let errorMsgLst = successData.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorMsgLst;
+						if(!_.isEmpty(errorMsgLst)) {
+							vm.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
+		 								
+							});
+						}
 						vm.dataSource = successData;
 						vm.itemControlHandler();
 						vm.bindOverTimeWorks(vm.dataSource);
@@ -519,7 +525,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						};
 						return vm.$ajax('at', API.register, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								nts.uk.request.ajax("at", API.reflectApp, successData.reflectAppIdLst);
 								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, false, vm.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst);
 							});
 						});
@@ -548,6 +553,13 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					});
 				})
 				return $.Deferred().resolve(false);	
+			}
+			if (failData.messageId == "Msg_3267") {
+				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
+					.then(() => {
+						$('#kaf000-a-component4-singleDate').focus();
+					});
+				return $.Deferred().resolve(false);
 			}
 			if(failData.messageId == "Msg_750"
 			|| failData.messageId == "Msg_1654"
@@ -649,7 +661,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						};
 						return vm.$ajax('at', API.registerMulti, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								nts.uk.request.ajax("at", API.reflectApp, successData.reflectAppIdLst);
 								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, true, vm.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst);
 							});
 						});
@@ -1628,6 +1639,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			self.$blockui('show');
 			self.$ajax(API.changeAppDate, param)
 				.done((res: AppHdWorkDispInfo) => { 
+					let errorMsgLst = res.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorMsgLst;
+					if(!_.isEmpty(errorMsgLst)) {
+						self.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
+	 							
+						});
+					}
 					self.dataSource = res;
 					self.itemControlHandler();
 					self.bindOverTimeWorks(self.dataSource);
@@ -1636,7 +1653,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					self.bindHolidayTime(self.dataSource, 1);
 					self.bindOverTime(self.dataSource, 1);
 				})
-				.fail(() => {})
+				.fail((failData) => { self.$dialog.error(failData); })
 				.always(() => self.$blockui('hide'));
 		}
 
@@ -1830,8 +1847,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		checkBeforeRegister: "at/request/application/holidaywork/checkBeforeRegister",
 		register: "at/request/application/holidaywork/register",
 		checkBeforeRegisterMulti: "at/request/application/holidaywork/checkBeforeRegisterMulti",
-		registerMulti: "at/request/application/holidaywork/registerMulti",
-		reflectApp: "at/request/application/reflect-app"
+		registerMulti: "at/request/application/holidaywork/registerMulti"
 	}
 	interface AppHdWorkDispInfo {
 		dispFlexTime: boolean;
