@@ -31,6 +31,7 @@ import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.TemporaryDoubl
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.TemporaryStampOrderChecking;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -97,7 +98,7 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 		WorkInfoOfDailyPerformance workInfoOfDailyPerformance = new WorkInfoOfDailyPerformance(empId, targetDate,
 				integrationOfDaily.getWorkInformation());
 		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = new TimeLeavingOfDailyPerformance(empId,
-				targetDate, integrationOfDaily.getAttendanceLeave().orElse(null));
+				targetDate, integrationOfDaily.getAttendanceLeave().orElse(new TimeLeavingOfDailyAttd()));
 		// 出勤系打刻漏れをチェックする - (出退勤打刻漏れ(sót chấm công vào-tan làm))
 		this.lackOfStamping.lackOfStamping(companyId, empId, targetDate, workInfoOfDailyPerformance,timeLeavingOfDailyPerformance).ifPresent(c -> {
 			returnList.add(c);
@@ -131,7 +132,7 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 		// 出勤系打刻漏れをチェックする
 		WorkInfoOfDailyPerformance workInfo = new WorkInfoOfDailyPerformance(empId, targetDate, integrationOfDaily.getWorkInformation());
 		TimeLeavingOfDailyPerformance timeLeaving = new TimeLeavingOfDailyPerformance(empId,
-				targetDate, integrationOfDaily.getAttendanceLeave().orElse(null));
+				targetDate, integrationOfDaily.getAttendanceLeave().orElse(new TimeLeavingOfDailyAttd()));
 		// 出勤系打刻漏れをチェックする
 		this.lackOfStamping.lackOfStamping(companyId, empId, targetDate, workInfo,timeLeaving).ifPresent(c -> {
 			returnList.add(c);
