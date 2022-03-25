@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.application.ApproveA
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApproveAppProcedureOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementEarly;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
@@ -64,6 +65,21 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 		} else {
 //			ドメインモデル「打刻申請」を登録する
 			if (appStamp.isPresent()) {
+				// 応援が1回め勤務か2回目勤務のどちらの時間帯なのか判断してセットする
+				appStamp.get().determineTheSupportTimeAndSet(
+						appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles(),
+						appStampOutput
+						.getAppDispInfoStartupOutput()
+						.getAppDispInfoWithDateOutput()
+						.getOpActualContentDisplayLst()
+						.map(t -> {
+							if (t.size() > 0 && t.get(0).getOpAchievementDetail().isPresent()) {
+								return t.get(0).getOpAchievementDetail().get().getAchievementEarly();
+							}
+							return new AchievementEarly(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+						}
+						).orElse(new AchievementEarly(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()))
+				);
 				appAprrovalRepository.insertApp(application, 
 						appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().isPresent() ? appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().get() : null
 						);
@@ -105,8 +121,12 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 		return processResult;
 	}
 	@Override
-	public ProcessResult updateAppStamp(Application application, Optional<AppStamp> appStampOptional,
-			Optional<AppRecordImage> appRecoderImageOptional, Boolean recoderFlag, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+	public ProcessResult updateAppStamp(Application application
+									  , Optional<AppStamp> appStampOptional
+									  , Optional<AppRecordImage> appRecoderImageOptional
+									  , Boolean recoderFlag
+									  , AppDispInfoStartupOutput appDispInfoStartupOutput
+									  , AppStampOutput appStampOutput) {
 		
 		appRepository.update(application);
 		if (recoderFlag) {
@@ -115,6 +135,23 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 				
 			}
 		} else {
+			// 応援が1回め勤務か2回目勤務のどちらの時間帯なのか判断してセットする
+			appStampOptional.get().determineTheSupportTimeAndSet(
+					appStampOutput
+						.getAppDispInfoStartupOutput()
+						.getAppDispInfoNoDateOutput()
+						.isManagementMultipleWorkCycles(),
+					appStampOutput
+						.getAppDispInfoStartupOutput()
+						.getAppDispInfoWithDateOutput()
+						.getOpActualContentDisplayLst()
+						.map(t -> {
+							if (t.size() > 0 && t.get(0).getOpAchievementDetail().isPresent()) {
+								return t.get(0).getOpAchievementDetail().get().getAchievementEarly();
+							}
+							return new AchievementEarly(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+						}).orElse(new AchievementEarly(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()))
+			);
 			if (appStampOptional.isPresent()) {
 				appStampRepo.updateStamp(appStampOptional.get());
 				

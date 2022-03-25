@@ -28,7 +28,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.stampsettingofRICOHcopier.StampSettingOfRICOHCopierRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampinputfunctionsettings.notificationmessagesettings.NoticeSetRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class TimeStampInputSettingsCommandHandler {
@@ -96,7 +95,7 @@ public class TimeStampInputSettingsCommandHandler {
 			}
 			commonSettingsStampInputRepo.update(commonDomain.get());
 		} else {
-			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(companyId, command.getGoogleMap() == 1, Optional.of(new MapAddress("https://www.google.co.jp/maps/place/")), NotUseAtr.NOT_USE));
+			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(companyId, command.getGoogleMap() == 1, Optional.of(new MapAddress("https://www.google.co.jp/maps/place/")),null));
 		}
 	}
 	
@@ -155,10 +154,9 @@ public class TimeStampInputSettingsCommandHandler {
 		}
 		Optional<CommonSettingsStampInput> c= commonSettingsStampInputRepo.get(cid);
 		if(c.isPresent()) {
-			c.get().setSupportUseArt(NotUseAtr.valueOf(command.getSupportUseArt()));
 			commonSettingsStampInputRepo.update(c.get());
 		}else {
-			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(cid, false, Optional.of(new MapAddress("https://www.google.co.jp/maps/place/")), NotUseAtr.valueOf(command.getSupportUseArt())));
+			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(cid, false, Optional.of(new MapAddress("https://www.google.co.jp/maps/place/")), null));
 		}
 	}
 	

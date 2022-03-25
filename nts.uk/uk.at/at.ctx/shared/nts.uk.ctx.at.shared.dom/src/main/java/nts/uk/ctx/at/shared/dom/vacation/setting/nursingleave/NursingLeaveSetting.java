@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -112,6 +113,20 @@ public class NursingLeaveSetting extends AggregateRoot {
 		this.maxPersonSetting = new ArrayList<>();
 		this.specialHolidayFrame = Optional.empty();
 		this.workAbsence = Optional.empty();
+	}
+	
+	public NursingLeaveSetting(String companyId, ManageDistinct manageType, NursingCategory nursingCategory,
+			MonthDay startMonthDay, List<MaxPersonSetting> maxPersonSetting, Optional<Integer> specialHolidayFrame,
+			Optional<Integer> workAbsence, TimeVacationDigestUnit timeCareNursingSetting) {
+		super();
+		this.companyId = companyId;
+		this.manageType = manageType;
+		this.nursingCategory = nursingCategory;
+		this.startMonthDay = startMonthDay;
+		this.maxPersonSetting = maxPersonSetting;
+		this.specialHolidayFrame = specialHolidayFrame;
+		this.workAbsence = workAbsence;
+		this.timeVacationDigestUnit = timeCareNursingSetting;
 	}
 
 	/**
@@ -463,20 +478,92 @@ public class NursingLeaveSetting extends AggregateRoot {
     }
     
     /**
-     * [8]利用する休暇時間の消化単位をチェックする
-     * @param require
-     * @param time
-     */
-    public boolean checkVacationTimeUnitUsed(TimeVacationDigestUnit.Require require, AttendanceTime time) {
-    	return this.timeVacationDigestUnit.checkDigestUnit(require, time, this.manageType);
-    }
-    
-    /**
-     * [13] 時間休暇を管理するか
-     */
-    public boolean isManageTimeVacation(TimeVacationDigestUnit.Require require) {
-    	return this.timeVacationDigestUnit.isVacationTimeManage(require, this.manageType);
-    }
+	 * [9] 対応する日次の勤怠項目を取得する
+	 */
+	public List<Integer> getCorrespondDailyAttendanceItems() {
+		if (this.nursingCategory == NursingCategory.Nursing)
+			// 介護に対応する日次の勤怠項目
+			return Arrays.asList(1126, 1130, 1134, 1138, 1141, 1143);
+		// 子の看護に対応する日次の勤怠項目
+		return Arrays.asList(1125, 1129, 1133, 1137, 1140, 1142);
+	}
+
+	/**
+	 * [10] 対応する月次の勤怠項目を取得する
+	 */
+	public List<Integer> getCorrespondMonthlyAttendanceItems() {
+		List<Integer> lstId = new ArrayList<>();
+
+		lstId.addAll(this.getMonthlyAttendanceItemsTime());
+		lstId.addAll(this.getMonthlyAttendanceItemsDay());
+
+		return lstId;
+	}
+
+	/**
+	 * [11] 利用できない日次の勤怠項目を取得する
+	 */
+	public List<Integer> getDailyAttendanceItems() {
+		// @管理区分 == しない
+		if (this.manageType == ManageDistinct.NO)
+			return this.getCorrespondDailyAttendanceItems();
+		return new ArrayList<>();
+	}
+
+	/**
+	 * [12] 利用できない月次の勤怠項目を取得する
+	 */
+	public List<Integer> getMonthlyAttendanceItems() {
+		// @管理区分 == 管理しない
+		if (this.manageType == ManageDistinct.NO)
+			return this.getCorrespondMonthlyAttendanceItems();
+		
+		// @時間介護看護設定.管理区分 == 管理しない
+		if (this.timeVacationDigestUnit.getManage() ==  ManageDistinct.NO)
+			return this.getMonthlyAttendanceItemsTime();
+			
+		return new ArrayList<>();
+	}
+
+	/**
+	 * [prv-1] 対応する時間系の月次の勤怠項目を取得する
+	 */
+	private List<Integer> getMonthlyAttendanceItemsTime() {
+		// @介護看護区分 == 介護
+		if (this.nursingCategory == NursingCategory.Nursing)
+			// 介護に対応する時間の月次の勤怠項目
+			return Arrays.asList(1673, 1674, 2254, 2255);
+		// 子の看護に対応する時間の月次の勤怠項目
+		return Arrays.asList(1671, 1672, 2250, 2251);
+	}
+
+	/**
+	 * [prv-2] 対応する日数系の月次の勤怠項目を取得する
+	 */
+	private List<Integer> getMonthlyAttendanceItemsDay() {
+		// @介護看護区分 == 介護
+		if (this.nursingCategory == NursingCategory.Nursing)
+			// 介護に対応する日数の月次の勤怠項目
+			return Arrays.asList(1279, 1280, 2252, 2253);
+		// 子の看護に対応する日数の月次の勤怠項目
+		return Arrays.asList(1275, 1276, 2248, 2249);
+	}
+	
+	/**
+		* [8]利用する休暇時間の消化単位をチェックする
+		* @param require
+		* @param time
+		*/
+	public boolean checkVacationTimeUnitUsed(TimeVacationDigestUnit.Require require, AttendanceTime time) {
+		return this.timeVacationDigestUnit.checkDigestUnit(require, time, this.manageType);
+	}
+	
+	/**
+		* [13] 時間休暇を管理するか
+		*/
+	public boolean isManageTimeVacation(TimeVacationDigestUnit.Require require) {
+		return this.timeVacationDigestUnit.isVacationTimeManage(require, this.manageType);
+	}
 
 	// Require
 	public static interface RequireM8 {

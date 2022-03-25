@@ -7,6 +7,7 @@ module nts.uk.at.view.kmk010.a {
     import PremiumExtra60HRateDto = service.model.PremiumExtra60HRateDto;
     import SuperHD60HConMedDto = service.model.SuperHD60HConMedDto;
     import OvertimeNameLangDto = service.model.OvertimeNameLangDto;
+    import getText = nts.uk.resource.getText;
 
     export module viewmodel {
 
@@ -458,8 +459,7 @@ module nts.uk.at.view.kmk010.a {
                 this.attendanceItemName = ko.observable('');
                 this.requiredText = ko.observable(true);
             }
-
-           public updateData(dto: OutsideOTBRDItemDto, isUpdate: boolean) {
+            public updateData(dto: OutsideOTBRDItemDto, isUpdate: boolean) {
                 var self = this;
                 this.useClassification(dto.useClassification);
                 this.breakdownItemNo(dto.breakdownItemNo);
@@ -467,18 +467,49 @@ module nts.uk.at.view.kmk010.a {
                 this.languageName(dto.name);
                 this.productNumber(dto.productNumber);
                 self.attendanceItemIds(dto.attendanceItemIds);
+                let listIdNotUse: Array<number> = [];
                 if (isUpdate && self.attendanceItemIds() && self.attendanceItemIds().length > 0) {
-                    nts.uk.at.view.kmk010.a.service.findAllMonthlyAttendanceItem().done(function(data) {
-                        var selectedName: string[] = [];
-                        for (var item of data) {
-                            for (var id of self.attendanceItemIds()) {
-                                if (id == item.attendanceItemId) {
-                                    selectedName.push(item.attendanceItemName);
-                                }
-                            }
-                        }
-                        self.attendanceItemName(selectedName.join(' + '));
-                    });
+                    service.findAllMonthlyAttendanceItem().done(function (data) {
+                        service.findAllAttendanceItemOvertime().done(function (dataCanSelecte: any) {
+                            dataCanSelecte = _.filter(dataCanSelecte, function (o: any) { return o.attendanceItemType == 2; }); // 時間外超過
+                            dataCanSelecte = dataCanSelecte.map(o => o.attendanceItemId);
+                            service.getMonthlyAttendanceDivergenceName(dataCanSelecte).done(function (lstItem: Array<any>) {
+                                //set source                              
+                                let listAllId = lstItem.map(x => x.attendanceItemId);
+                                listIdNotUse = _.difference(self.attendanceItemIds(), listAllId);
+
+                                var selectedName: string[] = [];
+                                for (var item of data) {
+                                    for (var id of self.attendanceItemIds()) {
+                                        if (id == item.attendanceItemId) {
+                                            let count = 0;
+                                            for (let i = 0; i < listIdNotUse.length; i++) {
+                                                if (listIdNotUse[i] === id) {
+                                                    count++;
+                                                    break;
+                                                }
+                                            }
+                                            if (count === 0) {
+                                                selectedName.push(item.attendanceItemName);
+                                            } else {
+                                                selectedName.push(getText('KMK010_90'));
+                                            }
+                                        }
+                                    }
+                                    self.attendanceItemName(selectedName.join(' + '));
+                                }).fail(function (res) {
+                                    nts.uk.ui.dialog.alert(res.message);
+                                });
+                        }).fail(function (error) {
+                            nts.uk.ui.dialog.alertError(error);
+                        });
+
+                    }).fail(function (error) {
+                        nts.uk.ui.dialog.alertError(error);
+                    }).always(function () {
+                        nts.uk.ui.block.clear();
+                    });                           
+
                 }
             }
 

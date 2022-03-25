@@ -5,6 +5,8 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -138,6 +140,46 @@ public class OutsideOTBRDItem extends DomainObject implements Serializable{
 		if (breakdownItemNo != other.breakdownItemNo)
 			return false;
 		return true;
+	}
+	
+	/**
+	 * 	[1] 時間外超過の内訳に対応する月次の勤怠項目を取得する
+	 * @return
+	 */
+	public List<Integer> getMonthlyAttendanceIdByNo() {
+		switch(this.breakdownItemNo.value) {
+		case 1:
+			return Arrays.asList(536,546,556,566,576,2069);
+		case 2: 
+			return Arrays.asList(537,547,557,567,577,2070);
+		case 3: 
+			return Arrays.asList(538,548,558,568,578,2071);
+		case 4: 
+			return Arrays.asList(539,549,559,569,579,2072);
+		case 5:
+			return Arrays.asList(540,550,560,570,580,2073);
+		case 6: 
+			return Arrays.asList(541,551,561,571,581,2074);
+		case 7: 
+			return Arrays.asList(542,552,562,572,582,2075);
+		case 8: 
+			return Arrays.asList(543,553,563,573,583,2076);
+		case 9:
+			return Arrays.asList(544,554,564,574,584,2077);
+		default : //10
+			return Arrays.asList(545,555,565,575,585,2078);
+		}
+	}
+	
+	/**
+	 * 	[2] 利用できない月次の勤怠項目を取得する
+	 * @return
+	 */
+	public List<Integer> getMonthlyAttendanceIdNotAvailable() {
+		if(this.useClassification == UseClassification.UseClass_NotUse) {
+			return this.getMonthlyAttendanceIdByNo();
+		}
+		return new ArrayList<>();
 	}
 
 }

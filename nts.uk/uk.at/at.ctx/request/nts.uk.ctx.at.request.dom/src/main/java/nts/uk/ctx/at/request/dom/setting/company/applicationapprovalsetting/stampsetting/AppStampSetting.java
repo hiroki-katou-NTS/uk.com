@@ -8,15 +8,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.UseDivision;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * refactor 4
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請承認設定.打刻申請設定.打刻申請設定
  * @author Doan Duy Hung
- *
  */
 //打刻申請設定
 @Getter
@@ -29,11 +28,6 @@ public class AppStampSetting extends AggregateRoot {
 	 * 会社ID
 	 */
 	private String companyID;
-	
-	/**
-	 * 応援枠の表示件数
-	 */
-	private SupportFrameDispNO supportFrameDispNO;
 	
 	/**
 	 * 取消の機能の使用する
@@ -49,6 +43,16 @@ public class AppStampSetting extends AggregateRoot {
 	 * 外出種類の表示制御
 	 */
 	private List<GoOutTypeDispControl> goOutTypeDispControl;
+
+	/** 
+	 * 場所の選択を利用する
+	 */
+	private NotUseAtr useLocationSelection;
+
+	/**
+	 * 職場の選択を利用する
+	 */
+	private NotUseAtr wkpDisAtr;
 
 	@Override
 	public void validate() {

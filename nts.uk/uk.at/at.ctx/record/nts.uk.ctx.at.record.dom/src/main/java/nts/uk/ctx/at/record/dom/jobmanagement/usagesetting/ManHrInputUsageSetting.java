@@ -45,6 +45,7 @@ public class ManHrInputUsageSetting extends AggregateRoot {
 	
 	public static interface Require {
 
+		//TaskOperationSettingRepository.taskOperationSetting
 		Optional<TaskOperationSetting> taskOperationSetting(String cid);
 	}
 }

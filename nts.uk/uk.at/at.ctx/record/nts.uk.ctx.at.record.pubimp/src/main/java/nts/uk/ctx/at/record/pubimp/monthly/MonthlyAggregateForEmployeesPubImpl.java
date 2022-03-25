@@ -209,6 +209,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpComHisAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveMngSetRepository;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagementRepo;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -589,6 +590,8 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 	private FlexSetRepository flexSetRepo;
 	@Inject
 	private EmpComHisAdapter empComHisAdapter;
+	@Inject
+	private TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepository;
 
 	@Override
 	public List<AtomTask> aggregate(CacheCarrier cache, String cid, List<String> sids, boolean canAggrWhenLock) {
@@ -642,7 +645,7 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 				tempCareManagementRepo, nursingLeaveSettingRepo, executionLogRepo, workingConditionRepository,
 				transaction, employmentAdapter, creatingDailyResultsConditionRepo, getPeriodFromPreviousToNextGrantDate,
 				workDaysNumberOnLeaveCountRepo, calculateDailyRecordServiceCenter, workRegularAdditionSetRepo, addSetManageWorkHourRepo, 
-				workFlexAdditionSetRepo, workDeformedLaborAdditionSetRepo, flexSetRepo, empComHisAdapter);
+				workFlexAdditionSetRepo, workDeformedLaborAdditionSetRepo, flexSetRepo, empComHisAdapter, timeSpecialLeaveMngSetRepository);
 
 		return MonthlyAggregateForEmployees.aggregate(require, cid, sids, canAggrWhenLock);
 	}
@@ -785,7 +788,7 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 				CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter, 
 				WorkRegularAdditionSetRepository workRegularAdditionSetRepo, AddSetManageWorkHourRepository addSetManageWorkHourRepo, 
 				WorkFlexAdditionSetRepository workFlexAdditionSetRepo, WorkDeformedLaborAdditionSetRepository workDeformedLaborAdditionSetRepo,
-				FlexSetRepository flexSetRepo, EmpComHisAdapter empComHisAdapter) {
+				FlexSetRepository flexSetRepo, EmpComHisAdapter empComHisAdapter, TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepository) {
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter,
 					grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo,
 					specialLeaveBasicInfoRepo, interimRecAbasMngRepo, empSubstVacationRepo,
@@ -838,7 +841,7 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 					workingConditionRepository, transaction, employmentAdapter, creatingDailyResultsConditionRepo,
 					getPeriodFromPreviousToNextGrantDate, workDaysNumberOnLeaveCountRepo, calculateDailyRecordServiceCenter,
 					workRegularAdditionSetRepo, addSetManageWorkHourRepo,  workFlexAdditionSetRepo, workDeformedLaborAdditionSetRepo,
-					flexSetRepo, empComHisAdapter);
+					flexSetRepo, empComHisAdapter, timeSpecialLeaveMngSetRepository);
 			this.cache = cache;
 		}
 		

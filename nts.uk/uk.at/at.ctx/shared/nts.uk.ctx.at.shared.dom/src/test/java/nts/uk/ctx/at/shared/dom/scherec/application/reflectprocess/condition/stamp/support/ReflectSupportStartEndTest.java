@@ -72,7 +72,7 @@ public class ReflectSupportStartEndTest {
 		};
 		List<Integer> actualResult = ReflectSupportStartEnd.reflect(require, dailyApp, lstStampAppShare);
 
-		assertThat(actualResult).isEqualTo(Arrays.asList(929, 921));
+		assertThat(actualResult).isEqualTo(Arrays.asList(929, 922, 921));
 
 		assertThat(dailyApp.getOuenTimeSheet().get(0).getTimeSheet().getStart().get().getTimeWithDay().get().v())
 				.isEqualTo(666);// 時刻
@@ -111,7 +111,7 @@ public class ReflectSupportStartEndTest {
 
 		List<Integer> actualResult = ReflectSupportStartEnd.reflect(require, dailyApp, lstStampAppShare);
 
-		assertThat(actualResult).isEqualTo(Arrays.asList(939, 931));
+		assertThat(actualResult).isEqualTo(Arrays.asList(939, 931, 932));
 
 		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkNo().v()).isEqualTo(2);// 応援勤務枠No
 
@@ -159,7 +159,7 @@ public class ReflectSupportStartEndTest {
 		};
 		List<Integer> actualResult = ReflectSupportStartEnd.reflect(require, dailyApp, lstStampAppShare);
 
-		assertThat(actualResult).isEqualTo(Arrays.asList(930, 921));
+		assertThat(actualResult).isEqualTo(Arrays.asList(930, 922, 921));
 
 		assertThat(dailyApp.getOuenTimeSheet().get(0).getTimeSheet().getEnd().get().getTimeWithDay().get().v())
 				.isEqualTo(666);// 時刻
@@ -198,7 +198,7 @@ public class ReflectSupportStartEndTest {
 
 		List<Integer> actualResult = ReflectSupportStartEnd.reflect(require, dailyApp, lstStampAppShare);
 
-		assertThat(actualResult).isEqualTo(Arrays.asList(940, 931));
+		assertThat(actualResult).isEqualTo(Arrays.asList(940, 931, 932));
 
 		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkNo().v()).isEqualTo(2);// 応援勤務枠No
 

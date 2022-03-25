@@ -346,7 +346,7 @@ module nts.uk.at.view.kdp010.f {
 	       * アルゴリズム「勤怠項目に対応する名称を生成する」を実行する - Execute algorithm "Generate name corresponding to attendance item"
 	       * @param List<itemAttendanceId>
 	       */
-	        private generateNameCorrespondingToAttendanceItem(listAttendanceItemCode: Array<any>): JQueryPromise<any> {
+	        private generateNameCorrespondingToAttendanceItem(listCode: Array<any>): JQueryPromise<any> {
 	            let self = this,
 	                dfd = $.Deferred();
 	            if (self.dataKdl && self.dataKdl.length > 5) {
@@ -355,29 +355,21 @@ module nts.uk.at.view.kdp010.f {
 	                    });
 	                    return;
 	                }
-	            if (listAttendanceItemCode && listAttendanceItemCode.length > 0) {
-	                ajax("at", paths.getAttendNameByIds, listAttendanceItemCode).done((dailyAttendanceItemNames: any) => {
-	                    if (dailyAttendanceItemNames && dailyAttendanceItemNames.length > 0) {
-	                        var attendanceName: string = '';
-	                        var name = [];
-	                        dailyAttendanceItemNames = dailyAttendanceItemNames.sort((x,y) => {return x.attendanceItemDisplayNumber - y.attendanceItemDisplayNumber});
-	                        for (var i = 0; i < dailyAttendanceItemNames.length; i++) {
-	                            attendanceName = dailyAttendanceItemNames[i].attendanceItemName;
-	                            name.push(dailyAttendanceItemNames[i].attendanceItemName);
-	                        }
-	                        self.workTypeNames(name.join(" 、 "));
-	                        var workTypeCodes = _.map(dailyAttendanceItemNames, function(item: any) { return item.attendanceItemId; });
-	                        self.currentItem().dailyList(workTypeCodes);
-	                        dfd.resolve(attendanceName);
-	                    } else {
-	                        dfd.resolve('');
-	                    }
-	                }).always(() => {
-	                    dfd.resolve('');
-	                });
-	            } else {
-	                dfd.resolve('');
-	            }
+                if (listCode && listCode.length > 0) {
+                    ajax("at", paths.getAttendNameByIds, listCode).done((dItems: any) => {
+                        let attendanceName = _.get(dItems[dItems.length - 1], 'attendanceItemName', '');
+                        let name = _.map(listCode, code => {
+                            return _.get(_.find(dItems, dI => dI.attendanceItemId == code), 'attendanceItemName', getText("KDP010_347"));
+                        });
+                        self.workTypeNames(name.join(" 、 "));
+                        self.currentItem().dailyList(listCode);
+                        dfd.resolve(attendanceName);
+                    }).always(() => {
+                        dfd.resolve('');
+                    });
+                } else {
+                    dfd.resolve('');
+                }
 	            return dfd.promise();
 	        }
 	

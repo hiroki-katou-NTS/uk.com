@@ -12,22 +12,22 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.D
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.shr.com.context.AppContexts;
 
 public class BreakTimeSheetCorrector {
 
 	public final static List<Integer> BREAKTIME_ID = Arrays.asList(157, 159, 163, 165, 171, 169, 177, 175, 183, 181,
 			189, 187, 195, 193, 199, 201, 205, 207, 211, 213);
 			
-	public static void correct(RequireM1 require, IntegrationOfDaily dailyRecord, boolean correctValCopyFromSche) {
+	public static void correct(RequireM1 require, String cid, IntegrationOfDaily dailyRecord, boolean correctValCopyFromSche) {
 
-		val cid = AppContexts.user().companyId();
-		
-		val workType = require.workType(cid, dailyRecord.getWorkInformation().getRecordInfo().getWorkTypeCode()).orElse(null);
+		val workType = require.workType(cid, dailyRecord.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).orElse(null);
 		if (workType == null) {
 			return;
 		}
@@ -137,6 +137,14 @@ public class BreakTimeSheetCorrector {
 		
 		Optional<ManagePerPersonDailySet> managePerPersonDailySet(String sid, GeneralDate ymd, IntegrationOfDaily dailyRecord);
 		
-		DailyRecordToAttendanceItemConverter createDailyConverter();
+		DailyRecordToAttendanceItemConverter createDailyConverter(String cid);
+		
+		Optional<WorkType> workType(String companyId, String workTypeCd);
+		
+		Optional<WorkTimeSetting> workTimeSetting(String companyId, String workTimeCode);
+		
+		Optional<FlowWorkSetting> flowWorkSetting(String companyId, String workTimeCode);
+		
+		Optional<FlexWorkSetting> flexWorkSetting(String companyId,String workTimeCode);
 	}
 }
