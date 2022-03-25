@@ -2,11 +2,9 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-<<<<<<< HEAD
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-=======
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,7 +13,6 @@ import org.junit.runner.RunWith;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
->>>>>>> pj/at/release_ver4
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
@@ -27,9 +24,6 @@ public class AnnualPaidLeaveSettingTest {
 	
 	@Injectable
 	private Require require;
-<<<<<<< HEAD
-=======
-	
 	
 	@Test
 	public void getters() {
@@ -267,7 +261,6 @@ public class AnnualPaidLeaveSettingTest {
 		assertThat(lstId.containsAll(lstIdCanGet)).isTrue();
 		
 	}
->>>>>>> pj/at/release_ver4
 
 	/**
 	 * Test [9] 時間年休を管理するか
