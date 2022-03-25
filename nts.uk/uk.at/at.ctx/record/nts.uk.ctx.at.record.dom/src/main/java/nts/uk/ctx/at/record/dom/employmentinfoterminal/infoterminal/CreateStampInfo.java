@@ -95,7 +95,7 @@ public class CreateStampInfo implements DomainValue {
 	}
 
 	// [pvt-2] 外出理由を取得
-	private Optional<GoingOutReason> convertReason(LeaveCategory leavCategory, String shift) {
+	public Optional<GoingOutReason> convertReason(LeaveCategory leavCategory, String shift) {
 		// 外出理由
 		GoingOutReason goOutArt = null;
 		// if ＠設置場所コード.isPresent

@@ -48,10 +48,10 @@ public class EmpInfoTerminalExport {
 	private final String contractCode;
 
 	/**
-	 * 打刻情報の作成
+	 * 外出理由
 	 */
-//	@Getter
-//	private final CreateStampInfo createStampInfo;
+    @Getter
+	private final Optional<Integer> goOutReason;
 
 	/**
 	 * 機種
@@ -82,6 +82,7 @@ public class EmpInfoTerminalExport {
 		this.modelEmpInfoTer = builder.modelEmpInfoTer;
 		this.intervalTime = builder.intervalTime;
 		this.empInfoTerMemo = builder.empInfoTerMemo;
+		this.goOutReason = builder.goOutReason;
 	}
 
 	public static class EmpInfoTerminalBuilder {
@@ -114,6 +115,12 @@ public class EmpInfoTerminalExport {
 		 * 契約コード
 		 */
 		private String contractCode;
+		
+		/**
+		 * 外出理由
+		 */
+	    @Getter
+		private Optional<Integer> goOutReason;
 
 		/**
 		 * 機種
@@ -151,6 +158,11 @@ public class EmpInfoTerminalExport {
 			return this;
 		}
 
+		public EmpInfoTerminalBuilder goOutReason(Optional<Integer> goOutReason) {
+			this.goOutReason = goOutReason;
+			return this;
+		}
+		
 		public EmpInfoTerminalBuilder empInfoTerMemo(Optional<String> empInfoTerMemo) {
 			this.empInfoTerMemo = empInfoTerMemo;
 			return this;
