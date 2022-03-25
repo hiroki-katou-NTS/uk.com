@@ -136,13 +136,9 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 			/** 1.2: [not 勤務予定．isEmpty]:一日中に作業予定を作成する(Require, 作業コード)*/
 			if(optional.isPresent()) {
 				WorkSchedule workSchedule = optional.get();
-<<<<<<< HEAD
-				workSchedule.createTaskScheduleForWholeDay(require, new TaskCode(command.getTaskCode()));
-
-=======
+				
 				workSchedule.createTaskScheduleForWholeDay(require, companyId, new TaskCode(command.getTaskCode()));
 				
->>>>>>> pj/at/release_ver4
 				/** 2: persist*/
 				repository.update(workSchedule);
 			} else {
@@ -181,7 +177,6 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 		private WorkingConditionRepository workingConditionRepo;
 
 		private BusinessTypeEmpService businessTypeEmpService;
-<<<<<<< HEAD
 		
 	    @Inject
 		private SupportOperationSettingRepository supportOperationSettingRepo;
@@ -194,14 +189,8 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 		private NurseClassificationRepository nurseClassificationRepo;
 
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
-=======
-
-		@Override
 		public Optional<WorkType> workType(String cid, WorkTypeCode workTypeCd) {
 			return workTypeRepo.findByPK(cid, workTypeCd.v());
->>>>>>> pj/at/release_ver4
 		}
 
 		// implements WorkInformation.Require

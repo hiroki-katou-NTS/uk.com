@@ -183,7 +183,6 @@ public class TaskScheduleTimeZoneSaveCommandHandler extends CommandHandler<TaskS
 		private WorkingConditionRepository workingConditionRepo;
 
 		private BusinessTypeEmpService businessTypeEmpService;
-<<<<<<< HEAD
 		
 		@Inject
 		private SupportOperationSettingRepository supportOperationSettingRepo;
@@ -195,14 +194,8 @@ public class TaskScheduleTimeZoneSaveCommandHandler extends CommandHandler<TaskS
 		private NurseClassificationRepository nurseClassificationRepo;
 
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
-=======
-
-		@Override
 		public Optional<WorkType> workType(String cid, WorkTypeCode workTypeCd) {
 			return workTypeRepo.findByPK(cid, workTypeCd.v());
->>>>>>> pj/at/release_ver4
 		}
 
 		// implements WorkInformation.Require

@@ -168,8 +168,6 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 		
 		List<ResultOfRegisteringWorkSchedule> lstRsOfRegisWorkSchedule = new ArrayList<ResultOfRegisteringWorkSchedule>();
 		
-		String cid = AppContexts.user().companyId();
-		
 		// step 1
 		// loop:社員ID in 社員IDリスト
 		mapBySid.forEach((k, v) -> {
@@ -177,7 +175,6 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 			List<WorkScheduleSaveCommand<T>> scheduleOfEmps = v;
 			// loop:年月日 in 年月日リスト
 			for (WorkScheduleSaveCommand<T> data : scheduleOfEmps) {
-<<<<<<< HEAD
 				
 				// step 1.1 : 社員と期間を指定して取得する(社員ID, 期間：年月日): List<応援可能な社員>
 				List<SupportableEmployee> supportableEmpList = supportableEmployeeRepo
@@ -198,11 +195,6 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 						data.ymd, 
 						new ShiftMasterCode(data.shiftCode),
 						supportTicketList);
-=======
-				// step 1.1
-				ResultOfRegisteringWorkSchedule rsOfRegisteringWorkSchedule = CreateWorkScheduleByShift.create(
-						requireImpl, cid, sid, data.ymd, new ShiftMasterCode(data.shiftCode));
->>>>>>> pj/at/release_ver4
 				
 				lstRsOfRegisWorkSchedule.add(rsOfRegisteringWorkSchedule);
 			}

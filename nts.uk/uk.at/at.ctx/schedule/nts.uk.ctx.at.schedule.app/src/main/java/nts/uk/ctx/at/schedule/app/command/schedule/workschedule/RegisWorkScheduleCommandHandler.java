@@ -191,13 +191,7 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 				WorkInformation workInfo = new WorkInformation(data.workInfor.workTypeCd, data.workInfor.workTimeCd);
 				
 				ResultOfRegisteringWorkSchedule rsOfRegisteringWorkSchedule = CreateWorkSchedule.create(
-<<<<<<< HEAD
-						requireImpl, 
-						sid, 
-						data.ymd,
-=======
 						requireImpl, cid, sid, data.ymd,
->>>>>>> pj/at/release_ver4
 						workInfo,
 						data.isBreakByHand,
 						data.breakTimeList, 
