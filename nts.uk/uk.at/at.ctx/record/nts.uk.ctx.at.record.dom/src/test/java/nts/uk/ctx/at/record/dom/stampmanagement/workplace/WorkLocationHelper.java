@@ -12,6 +12,7 @@ public class WorkLocationHelper {
 
 	public static WorkLocation getDefault() {
 		
+
 		return new WorkLocation(
 				new ContractCode("ContractCode"), 
 				new WorkLocationCD("WorkLocationCD"),
