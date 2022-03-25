@@ -16,5 +16,6 @@ public interface ArrivedLateLeaveEarlyRepository {
 	void updateLateLeaveEarly(String cID, Application application, ArrivedLateLeaveEarly infoOutput);
 
 	void remove(String cID, String appId);
-
+	
+	public void add(String cid, ArrivedLateLeaveEarly lateOrLeaveEarly);
 }

@@ -175,4 +175,11 @@ public class JpaApplyForLeaveRepository extends JpaRepository implements ApplyFo
 					return dom;
 				});
 	}
+	
+	@Override
+	public void insert(String cid, String contractCode, ApplyForLeave domain) {
+		val entity = KrqdtAppHd.fromDomain(domain, cid, domain.getAppID());
+		this.commandProxy().insert(entity);
+		this.getEntityManager().flush();
+	}
 }

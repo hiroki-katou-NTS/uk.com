@@ -66,6 +66,7 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements AppWork
 	@Override
 	public void add(AppWorkChange appWorkChange) {
 		this.commandProxy().insert(toEntity(appWorkChange));
+		this.getEntityManager().flush();
 
 	}
 

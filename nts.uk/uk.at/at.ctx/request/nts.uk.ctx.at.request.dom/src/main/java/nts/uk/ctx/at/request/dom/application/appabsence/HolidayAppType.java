@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.appabsence;
 
 import lombok.AllArgsConstructor;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 
 /**
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.休暇申請.休暇申請の種類
@@ -42,4 +43,26 @@ public enum HolidayAppType {
 	public final int value;
 
 	public final String name;
+	
+	//勤務種類の分類からに変換する
+	public static HolidayAppType covertToHoldayType(WorkTypeClassification workType) {
+		switch (workType) {
+		case AnnualHoliday:
+			return HolidayAppType.ANNUAL_PAID_LEAVE;
+		case SubstituteHoliday:
+			return HolidayAppType.SUBSTITUTE_HOLIDAY;
+		case Absence:
+			return HolidayAppType.ABSENCE;
+		case SpecialHoliday:
+			return HolidayAppType.SPECIAL_HOLIDAY;
+		case YearlyReserved:
+			return HolidayAppType.YEARLY_RESERVE;
+		case Holiday:
+			return HolidayAppType.HOLIDAY;
+		case TimeDigestVacation:
+			return HolidayAppType.DIGESTION_TIME;
+		default:
+			return null;
+		}
+	}
 }

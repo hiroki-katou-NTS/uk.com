@@ -7,7 +7,7 @@ import nts.arc.layer.dom.objecttype.DomainValue;
 /**
  * @author ThanhNX
  *
- *         遅刻早退理由
+ *         時間年休申請受信データ
  */
 @Value
 @EqualsAndHashCode(callSuper = true)
