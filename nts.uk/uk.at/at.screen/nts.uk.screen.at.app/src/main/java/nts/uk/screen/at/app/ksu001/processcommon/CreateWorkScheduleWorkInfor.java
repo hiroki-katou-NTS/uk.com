@@ -112,33 +112,7 @@ public class CreateWorkScheduleWorkInfor {
 				String workTypeCode = workInformation.getWorkTypeCode() == null ? null : workInformation.getWorkTypeCode().toString();
 				workTypeInfor = lstWorkTypeInfor.stream().filter(i -> i.getWorkTypeCode().equals(workTypeCode)).findFirst();
 				
-<<<<<<< HEAD
 				//※就業時間帯：3のList<就業時間帯> filter:$就業時間帯コード＝＝勤務予定.勤務情報.就業時間帯コード
-=======
-				listWorkScheduleWorkInfor.add(dto);
-			} else {
-				// step 5.2.1
-				WorkSchedule workSchedule = value.get();
-				WorkInformation workInformation = workSchedule.getWorkInfo().getRecordInfo();
-
-				WorkInformation.Require require2 = new RequireWorkInforImpl(workTypeRepo,workTimeSettingRepo, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
-				Optional<WorkStyle> workStyle = Optional.empty();
-				if (workInformation.getWorkTypeCode() != null) {
-					workStyle = workInformation.getWorkStyle(require2, companyId); // workHolidayCls
-				}
-
-				String workTypeCode = workInformation.getWorkTypeCode() == null  ? null : workInformation.getWorkTypeCode().toString();
-				String workTypeName = null;
-				boolean workTypeIsNotExit  = false;
-
-				Optional<WorkTypeInfor> workTypeInfor = lstWorkTypeInfor.stream().filter(i -> i.getWorkTypeCode().equals(workTypeCode)).findFirst();
-				if (workTypeInfor.isPresent()) {
-					workTypeName = workTypeInfor.get().getAbbreviationName();
-				} else if (!workTypeInfor.isPresent() && workTypeCode != null){
-					workTypeIsNotExit = true;
-				}
-
->>>>>>> pj/at/release_ver4
 				String workTimeCode = workInformation.getWorkTimeCode() == null  ? null : workInformation.getWorkTimeCode().toString();
 				workTimeSetting = lstWorkTimeSetting.stream().filter(i -> i.getWorktimeCode().toString().equals(workTimeCode)).findFirst();
 			}
@@ -155,8 +129,6 @@ public class CreateWorkScheduleWorkInfor {
 	@AllArgsConstructor
 	private class RequireWorkInforImpl implements WorkInformation.Require {
 
-		private final String companyId = AppContexts.user().companyId();
-
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 			 return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -168,13 +140,8 @@ public class CreateWorkScheduleWorkInfor {
 		}
 
 		@Override
-<<<<<<< HEAD
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepo.findByCode(companyId, workTimeCode);
-=======
 		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
->>>>>>> pj/at/release_ver4
+			return workTimeSettingRepo.findByCode(companyId, workTimeCode.v());
 		}
 
 		@Override

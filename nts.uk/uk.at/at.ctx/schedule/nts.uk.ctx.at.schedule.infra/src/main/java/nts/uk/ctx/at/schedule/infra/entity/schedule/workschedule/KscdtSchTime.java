@@ -295,17 +295,6 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 	@JoinTable(name = "KSCDT_SCH_LEAVE_EARLY")
 	public List<KscdtSchLeaveEarly> kscdtSchLeaveEarly;
 
-<<<<<<< HEAD
-	@OneToMany(targetEntity = KscdtSchTask.class, mappedBy = "kscdtSchTime", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinTable(name = "KSCDT_SCH_TASK")
-	public List<KscdtSchTask> kscdtSchTask;
-	
-=======
-//	@OneToMany(targetEntity = KscdtSchTask.class, mappedBy = "kscdtSchTime", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//	@JoinTable(name = "KSCDT_SCH_TASK")
-//	public List<KscdtSchTask> kscdtSchTask;
-
->>>>>>> pj/at/release_ver4
 	/**
 	 * 
 	 * @param workingTime 勤務予定．勤怠時間．勤務時間
@@ -441,17 +430,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 				.stream()
 				.map(c -> KscdtSchLeaveEarly.toEntity(sID, yMD, cID, c.getWorkNo().v(), c.getTimePaidUseTime()))
 				.collect(Collectors.toList());
-<<<<<<< HEAD
-		AtomicInteger index = new AtomicInteger(1);
-		List<KscdtSchTask> lstKscdtSchTask = task.getDetails().stream()
-				.map(c -> KscdtSchTask.toEntity(sID, yMD, cID, c, index.getAndIncrement())).collect(Collectors.toList());
 		
-=======
-//		AtomicInteger index = new AtomicInteger(1);
-//		List<KscdtSchTask> lstKscdtSchTask = task.getDetails().stream()
-//				.map(c -> KscdtSchTask.toEntity(sID, yMD, cID, c, index.getAndIncrement())).collect(Collectors.toList());
-
->>>>>>> pj/at/release_ver4
 		KscdtSchTime kscdtSchTime = new KscdtSchTime(pk, cID, // cid
 				workingTime.getWorkTimes() == null ? 0 : workingTime.getWorkTimes().v(), // count
 				workingTime.getWorkTimes() == null ? 0 : workingTime.getTotalTime().v(), // totalTime
@@ -637,21 +616,8 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		ActualWorkingTimeOfDaily workingTimeOfDaily = new ActualWorkingTimeOfDaily(constraintDiffTime, constraintTime,
 				timeDiff, totalWorkingTime, divTime, premiumTime);
 
-		// Create Task
-<<<<<<< HEAD
-		List<TaskScheduleDetail> details = kscdtSchTask.stream()
-				.map(task -> new TaskScheduleDetail(new TaskCode(task.taskCode), new TimeSpanForCalc(new TimeWithDayAttr(task.startClock), new TimeWithDayAttr(task.endClock))))
-				.collect(Collectors.toList());
-		TaskSchedule taskSchedule = new TaskSchedule(details);
-		
-=======
-//		List<TaskScheduleDetail> details = kscdtSchTask.stream()
-//				.map(task -> new TaskScheduleDetail(new TaskCode(task.taskCode), new TimeSpanForCalc(new TimeWithDayAttr(task.startClock), new TimeWithDayAttr(task.endClock))))
-//				.collect(Collectors.toList());
-//		TaskSchedule taskSchedule = new TaskSchedule(details);
 		TaskSchedule taskSchedule = TaskSchedule.createWithEmptyList();
 
->>>>>>> pj/at/release_ver4
 		AttendanceTimeOfDailyAttendance optAttendanceTime = new AttendanceTimeOfDailyAttendance(null,
 				workingTimeOfDaily, null, null, null);
 
@@ -725,7 +691,6 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		this.kscdtSchComeLate = kscdtSchComeLate;
 		this.kscdtSchGoingOut = kscdtSchGoingOut;
 		this.kscdtSchLeaveEarly = kscdtSchLeaveEarly;
-//		this.kscdtSchTask = kscdtSchTask;
 		//ver5
 		this.prsWorkTimeAmount = prsWorkTimeAmount;
 		this.premiumWorkTimeTotal = premiumWorkTimeTotal;

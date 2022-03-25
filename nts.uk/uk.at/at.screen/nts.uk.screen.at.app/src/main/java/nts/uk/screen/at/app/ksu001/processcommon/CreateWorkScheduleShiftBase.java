@@ -181,13 +181,8 @@ public class CreateWorkScheduleShiftBase {
 		}
 
 		@Override
-<<<<<<< HEAD
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepo.findByCode(companyId, workTimeCode);
-=======
 		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
->>>>>>> pj/at/release_ver4
+			return workTimeSettingRepo.findByCode(companyId, workTimeCode.v());
 		}
 
 		@Override

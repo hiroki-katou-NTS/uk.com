@@ -120,7 +120,6 @@ public class CreateWorkScheduleWorkInforBase {
 		}
 		
 		@Override
-<<<<<<< HEAD
 		public List<SupportableEmployee> getSupportableEmployee(EmployeeId employeeId, GeneralDate date) {
 			return supportableEmpRepo.findByEmployeeIdWithPeriod(employeeId, DatePeriod.oneDay(date));
 		}
@@ -128,43 +127,16 @@ public class CreateWorkScheduleWorkInforBase {
 		@Override
 		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
 			return empAffiliationInforAdapter.getEmpOrganization(baseDate, lstEmpId);
-=======
-		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
-			return workTypeRepo.findByPK(companyId, workTypeCode.v());
 		}
-
+		
 		@Override
-		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
->>>>>>> pj/at/release_ver4
-		}
-
-		@Override
-<<<<<<< HEAD
 		public Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date) {
 			return workSchedule;
-=======
-		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
-			return fixedWorkSet.findByKey(companyId, workTimeCode.v());
 		}
+		
 		@Override
-		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
-			return flowWorkSet.find(companyId, workTimeCode.v());
-		}
-		@Override
-		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
-			return flexWorkSet.find(companyId, workTimeCode.v());
->>>>>>> pj/at/release_ver4
-		}
-
-		@Override
-<<<<<<< HEAD
 		public Optional<IntegrationOfDaily> getRecord(String employeeId, GeneralDate date) {
 			return integrationOfDaily;
-=======
-		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
-			return predetemineTimeSet.findByWorkTimeCode(companyId, workTimeCode.v());
->>>>>>> pj/at/release_ver4
 		}
 	}
 }

@@ -1764,7 +1764,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-that-day-v6-5"));
                     detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-that-day-v6-5"));
                 } else if (dateInfo.isSpecificDay) {
-<<<<<<< HEAD
                     detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date-v6-5"));
                     detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date-v6-5"));
                 } else if (dateInfo.isHoliday || dateInfo.dayOfWeek == 7) {
@@ -1777,36 +1776,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     detailHeaderDeco.push(new CellColor("_" + ymd, 0, "color-schedule-saturday"));
                     detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-saturday-v6-5"));
                     detailHeaderDeco.push(new CellColor("_" + ymd, 1, "color-schedule-saturday"));
-=======
-                    
-                    if (dateInfo.isHoliday) {
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date-color-schedule-sunday"));
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date-color-schedule-sunday"));
-                    } else if (dateInfo.dayOfWeek == 7) {
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date-color-schedule-sunday"));
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date-color-schedule-sunday"));
-                    } else if (dateInfo.dayOfWeek == 6) {
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date-color-schedule-saturday"));
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date-color-schedule-saturday"));
-                    } else if (dateInfo.dayOfWeek > 0 || dateInfo.dayOfWeek < 6) {
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date-color-schedule-weekdays"));
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date-color-schedule-weekdays"));
-                    } else {
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date"));
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date"));
-                    }
-                    
-                    
-                } else if (dateInfo.isHoliday) {
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday-color-schedule-sunday"));
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday-color-schedule-sunday"));
-                } else if (dateInfo.dayOfWeek == 7) {
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday-color-schedule-sunday"));
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday-color-schedule-sunday"));
-                } else if (dateInfo.dayOfWeek == 6) {
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-saturday-color-schedule-saturday"));
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-saturday-color-schedule-saturday"));
->>>>>>> pj/at/release_ver4
                 } else if (dateInfo.dayOfWeek > 0 || dateInfo.dayOfWeek < 6) {
                     // để màu default của grid
                 }
@@ -3796,7 +3765,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-that-day-v6-5"));
                         detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-that-day-v6-5"));
                     } else if (dateInfo.isSpecificDay) {
-<<<<<<< HEAD
                         detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date-v6-5"));
                         detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date-v6-5"));
                     } else if (dateInfo.isHoliday || dateInfo.dayOfWeek == 7) {
@@ -3809,36 +3777,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         detailHeaderDeco.push(new CellColor("_" + ymd, 0, "color-schedule-saturday"));
                         detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-saturday-v6-5"));
                         detailHeaderDeco.push(new CellColor("_" + ymd, 1, "color-schedule-saturday"));
-=======
 
-                        if (dateInfo.isHoliday) {
-                            detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date-color-schedule-sunday"));
-                            detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date-color-schedule-sunday"));
-                        } else if (dateInfo.dayOfWeek == 7) {
-                            detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date-color-schedule-sunday"));
-                            detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date-color-schedule-sunday"));
-                        } else if (dateInfo.dayOfWeek == 6) {
-                            detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date-color-schedule-saturday"));
-                            detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date-color-schedule-saturday"));
-                        } else if (dateInfo.dayOfWeek > 0 || dateInfo.dayOfWeek < 6) {
-                            detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date-color-schedule-weekdays"));
-                            detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date-color-schedule-weekdays"));
-                        } else {
-                            detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date"));
-                            detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date"));
-                        }
-
-
-                    } else if (dateInfo.isHoliday) {
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday-color-schedule-sunday"));
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday-color-schedule-sunday"));
-                    } else if (dateInfo.dayOfWeek == 7) {
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday-color-schedule-sunday"));
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday-color-schedule-sunday"));
-                    } else if (dateInfo.dayOfWeek == 6) {
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-saturday-color-schedule-saturday"));
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-saturday-color-schedule-saturday"));
->>>>>>> pj/at/release_ver4
                     } else if (dateInfo.dayOfWeek > 0 || dateInfo.dayOfWeek < 6) {
                         // để màu default của grid
                     }

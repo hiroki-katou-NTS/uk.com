@@ -173,15 +173,13 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 	@JoinTable(name = "KSCDT_SCH_GOING_OUT_TS")
 	public List<KscdtSchGoingOutTs> kscdtSchGoingOutTs;
 	
-<<<<<<< HEAD
 	@OneToMany(targetEntity = KscdtSchSupport.class, mappedBy = "kscdtSchBasicInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "KSCDT_SCH_SUPPORT")
 	public List<KscdtSchSupport> kscdtSchSupport;
-=======
+	
 	@OneToMany(targetEntity = KscdtSchTask.class, mappedBy = "kscdtSchBasicInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "KSCDT_SCH_TASK")
 	public List<KscdtSchTask> kscdtSchTask;
->>>>>>> pj/at/release_ver4
 
 	public static KscdtSchBasicInfo toEntity(WorkSchedule workSchedule, String cID) {
 
@@ -252,19 +250,15 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				.stream().map(c-> KscdtSchGoingOutTs.toEntity(sID, yMD, cID, c)).collect(Collectors.toList());
 			listKscdtSchGoingOutTs.addAll(listKscdtSchComeLate);
 		}
-<<<<<<< HEAD
 		
 		// QA122923
 		AtomicInteger index = new AtomicInteger(1);
 		List<KscdtSchSupport> lstKscdtSchSupport = workSchedule.getSupportSchedule().getDetails().stream()
 				.map(c -> KscdtSchSupport.toEntity(cID, sID, yMD, index.getAndIncrement(), c))
 				.collect(Collectors.toList());
-=======
 
-		AtomicInteger index = new AtomicInteger(1);
 		List<KscdtSchTask> lstKscdtSchTask = task.getDetails().stream()
 				.map(c -> KscdtSchTask.toEntity(sID, yMD, cID, c, index.getAndIncrement())).collect(Collectors.toList());
->>>>>>> pj/at/release_ver4
 
 		// null - QA 110800
 		KscdtSchBasicInfo basicInfo = new KscdtSchBasicInfo(basicInfoPK,
@@ -280,12 +274,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				workInfo.getIsNursingManager().isPresent()? workInfo.getIsNursingManager().get() : null,
                 workInfo.getBonusPaySettingCode().isPresent() ? workInfo.getBonusPaySettingCode().get().toString() : null,
 				kscdtSchTimes, kscdtEditStates, kscdtSchAtdLvwTimes,
-<<<<<<< HEAD
-				kscdtSchShortTimeTs, kscdtSchBreakTs,listKscdtSchGoingOutTs,
-				lstKscdtSchSupport);
-=======
-				kscdtSchShortTimeTs, kscdtSchBreakTs,listKscdtSchGoingOutTs, lstKscdtSchTask);
->>>>>>> pj/at/release_ver4
+				kscdtSchShortTimeTs, kscdtSchBreakTs,listKscdtSchGoingOutTs, lstKscdtSchSupport, lstKscdtSchTask);
 		return basicInfo;
 	}
 
@@ -391,7 +380,6 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			outingTime = new OutingTimeOfDailyAttd(outingTimeSheets);
 		}
 		
-<<<<<<< HEAD
 		// ver6 #122997
 		// SupportTime - ver6
 		SupportSchedule supportSchedule = SupportSchedule.createWithEmptyList();
@@ -409,9 +397,6 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 					return new SupportScheduleDetail(supportDestination, support.supportType == 0 ? SupportType.ALLDAY : SupportType.TIMEZONE, timeSpan);
 				}).collect(Collectors.toList());
 		supportSchedule = new SupportSchedule(supports);
-=======
-		
->>>>>>> pj/at/release_ver4
 		
 		return new WorkSchedule(
 				sID, 

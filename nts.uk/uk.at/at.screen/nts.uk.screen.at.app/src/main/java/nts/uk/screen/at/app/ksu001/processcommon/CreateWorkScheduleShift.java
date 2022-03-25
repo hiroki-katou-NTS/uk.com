@@ -91,16 +91,11 @@ public class CreateWorkScheduleShift {
 
 	public WorkScheduleShiftResult getWorkScheduleShift(
 			Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMap,
-<<<<<<< HEAD
 			List<ShiftMasterMapWithWorkStyle> listShiftMasterNotNeedGetNew,
 			TargetOrgIdenInfor targetOrg) {
 
-=======
-			List<ShiftMasterMapWithWorkStyle> listShiftMasterNotNeedGetNew) {
-		
 		String companyId = AppContexts.user().companyId();
 		
->>>>>>> pj/at/release_ver4
 		// step 1
 		List<WorkInfoOfDailyAttendance>  workInfoOfDailyAttendances = new ArrayList<WorkInfoOfDailyAttendance>();
 		mngStatusAndWScheMap.forEach((k, v) -> {
@@ -137,7 +132,7 @@ public class CreateWorkScheduleShift {
 		// step 3
 		// call loop：entry(Map.Entry) in 管理状態と勤務予定Map
 		List<ScheduleOfShiftDto> listWorkScheduleShift = new ArrayList<>();
-<<<<<<< HEAD
+
 		WorkInformation.Require requireWorkInformation = new RequireWorkInforImpl();
 		
 		mngStatusAndWScheMap.forEach((employeeWorkingStatus, workSchedule) -> {
@@ -145,121 +140,9 @@ public class CreateWorkScheduleShift {
 			GetSupportInfoOfEmployee.Require requireGetSupportInfo = new RequireGetSupportInfoImpl(workSchedule, Optional.empty());
 			
 			ScheduleOfShiftDto dto = new ScheduleOfShiftDto(employeeWorkingStatus, workSchedule, listShiftMaster, targetOrg, requireWorkInformation, requireGetSupportInfo);
+			
 			listWorkScheduleShift.add(dto);
-=======
-		mngStatusAndWScheMap.forEach((k, v) -> {
-			EmployeeWorkingStatus key = k;
-			Optional<WorkSchedule> value = v;
 
-			// step 3.1
-			boolean needToWork = key.getWorkingStatus().needCreateWorkSchedule();
-			if (value.isPresent()) {
-				WorkSchedule workSchedule = value.get();
-				WorkInformation workInformation = workSchedule.getWorkInfo().getRecordInfo();
-				// 3.2.1
-				WorkInformation.Require require2 = new RequireWorkInforImpl(workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService,fixedWorkSet,flowWorkSet,flexWorkSet, predetemineTimeSet);
-				Optional<WorkStyle> workStyle = Optional.empty();
-				if(workInformation.getWorkTypeCode() != null){
-					workStyle = workInformation.getWorkStyle(require2, companyId);
-				}
-
-				// 3.2.2
-				ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
-				ShiftEditStateDto shiftEditStateDto = ShiftEditStateDto.toDto(shiftEditState);
-
-				 String workTypeCode = workInformation.getWorkTypeCode() == null ? null : workInformation.getWorkTypeCode().toString().toString();
-				 String workTimeCode = workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().toString().toString();
-
-				Optional<ShiftMasterMapWithWorkStyle> shiftMaster = listShiftMaster.stream().filter(x -> {
-					boolean s = Objects.equals(x.workTypeCode, workTypeCode);
-					boolean y = Objects.equals(x.workTimeCode, workTimeCode);
-					return s&&y;
-				}).findFirst();
-
-				if(!shiftMaster.isPresent()){
-					System.out.println("Schedule : workType - workTime chua dc dang ky: " + workTypeCode + " - " + workTimeCode);
-				}
-
-				// 3.2.3
-				ScheduleOfShiftDto dto = ScheduleOfShiftDto.builder()
-						.employeeId(key.getEmployeeID())
-						.date(key.getDate())
-						.haveData(true)
-						.achievements(false)
-						.confirmed(workSchedule.getConfirmedATR().value == ConfirmedATR.CONFIRMED.value)
-						.needToWork(needToWork)
-						.supportCategory(SupportCategory.NotCheering.value)
-						.shiftCode(shiftMaster.isPresent() ? shiftMaster.get().shiftMasterCode : null)
-						.shiftName(shiftMaster.isPresent() ? shiftMaster.get().shiftMasterName : null)
-						.shiftEditState(shiftEditStateDto)
-						.workHolidayCls(workStyle.isPresent() ? workStyle.get().value : null)
-						.isEdit(true)
-						.isActive(true)
-						.conditionAa1(true)
-						.conditionAa2(true)
-						.build();
-
-				/**※Aa1
-				勤務予定（シフト）dto．実績か == true	           achievements	        ×	
-				勤務予定（シフト）dto．確定済みか == true          confirmed		        ×	
-				勤務予定（シフト）dto．勤務予定が必要か == false	   needToWork		    ×	
-				勤務予定（シフト）dto．応援か == 時間帯応援先               supportCategory		×	
-				対象の日 < A画面パラメータ. 修正可能開始日　の場合    targetDate		    ×	=> check dưới UI
-				上記以外									   other                ○	
-				*/
-				if(dto.achievements == true || dto.confirmed == true || dto.needToWork == false || dto.supportCategory == SupportCategory.TimeSupport.value){
-					dto.setEdit(false);
-					dto.setConditionAa1(false);
-				}
-				
-				/**
-				 * ※Aa2			シフト確定																					
-				勤務予定（シフト）dto．実績か == true               achievements		×	
-				勤務予定（シフト）dto．勤務予定が必要か == false     needToWork	 		×	
-				勤務予定（シフト）dto．応援か == 時間帯応援先	    supportCategory		×	
-				対象の日 < A画面パラメータ. 修正可能開始日　の場合	targetDate			×	=> check dưới UI
-				上記以外										other				○	
-				 */
-				if(dto.achievements == true || dto.needToWork == false || dto.supportCategory == SupportCategory.TimeSupport.value){
-					dto.setActive(false);
-					dto.setConditionAa2(false);
-				}
-				
-				listWorkScheduleShift.add(dto);
-
-			} else {
-				// 3.3
-				ScheduleOfShiftDto dto = ScheduleOfShiftDto.builder()
-						.employeeId(key.getEmployeeID())
-						.date(key.getDate())
-						.haveData(false)
-						.achievements(false)
-						.confirmed(false)
-						.needToWork(needToWork)
-						.supportCategory(SupportCategory.NotCheering.value)
-						.shiftCode(null)
-						.shiftName(null)
-						.shiftEditState(null)
-						.workHolidayCls(null)
-						.isEdit(true)
-						.isActive(true)
-						.conditionAa1(true)
-						.conditionAa2(true)
-						.build();
-				// ※Aa1
-				if(dto.achievements == true || dto.confirmed == true || dto.needToWork == false || dto.supportCategory == SupportCategory.TimeSupport.value){
-					dto.setEdit(false);
-					dto.setConditionAa1(false);
-				}
-				// ※Aa2
-				if(dto.achievements == true || dto.needToWork == false || dto.supportCategory == SupportCategory.TimeSupport.value){
-					dto.setActive(false);
-					dto.setConditionAa2(false);
-				}
-				
-				listWorkScheduleShift.add(dto);
-			}
->>>>>>> pj/at/release_ver4
 		});
 
 		// convert list to Map

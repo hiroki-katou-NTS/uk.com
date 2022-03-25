@@ -483,17 +483,11 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				this.getEntityManager().createQuery(delete).setParameter("sid", newData.pk.sid)
 									.setParameter("ymd", newData.pk.ymd)
 									.executeUpdate();
-<<<<<<< HEAD
-
-				oldData.get().kscdtSchTime.kscdtSchTask = new ArrayList<KscdtSchTask>();
-				this.commandProxy().insertAll(newData.kscdtSchTime.kscdtSchTask);
-=======
 				
 //				oldData.get().kscdtSchTime.kscdtSchTask = new ArrayList<KscdtSchTask>();				
 //				this.commandProxy().insertAll(newData.kscdtSchTime.kscdtSchTask);
 				oldData.get().kscdtSchTask = new ArrayList<KscdtSchTask>();
 				this.commandProxy().insertAll(newData.kscdtSchTask);
->>>>>>> pj/at/release_ver4
 
 			} else {
 //				oldData.get().kscdtSchTime.kscdtSchTask = newData.kscdtSchTime.kscdtSchTask;
@@ -859,11 +853,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			Map<Pair<String, GeneralDate>, List<KscdtSchComeLate>> mapPairComeLate = this.getKscdtSchComeLates(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchGoingOut>> mapPairGoingOut = this.getKscdtSchGoingOuts(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchLeaveEarly>> mapPairLeaveEarly = this.getKscdtSchLeaveEarlys(listEmp, period);
-<<<<<<< HEAD
-			Map<Pair<String, GeneralDate>, List<KscdtSchTask>> mapPairKscdtSchTask =  this.getKscdtSchTasks(listEmp, period);
-=======
-			
->>>>>>> pj/at/release_ver4
 			
 			// WorkSchedule
 			Map<Pair<String, GeneralDate>, KscdtSchBasicInfo> mapPairSchBasicInfo = this.getSchBasicInfo(listEmp, period);
@@ -872,13 +861,9 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			Map<Pair<String, GeneralDate>, List<KscdtSchShortTimeTs>> mapPairSchShortTimeTs = this.getSchShortTimeTs(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchBreakTs>> mapPairSchBreakTs = this.getKscdtSchBreakTs(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchGoingOutTs>> mapPairGoingOutTs = this.getKscdtSchGoingOutTs(listEmp, period);
-<<<<<<< HEAD
 			Map<Pair<String, GeneralDate>, List<KscdtSchSupport>> mapPairKscdtSchSupport =  this.getKscdtSchSupports(listEmp, period);
-
-=======
 			Map<Pair<String, GeneralDate>, List<KscdtSchTask>> mapPairKscdtSchTask =  this.getKscdtSchTasks(listEmp, period);
 			
->>>>>>> pj/at/release_ver4
 			for (int i = 0; i < subList.size(); i++) {
 				String sid = subList.get(i);
 				period.datesBetween().forEach(ymd -> {
@@ -887,21 +872,13 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 					if (mapPairSchBasicInfo.containsKey(key)) {
 
 						KscdtSchBasicInfo basicInfo = mapPairSchBasicInfo.get(key);
-<<<<<<< HEAD
-						basicInfo.editStates = mapPairSchEditState.getOrDefault(key, new ArrayList<>());
-						basicInfo.atdLvwTimes = mapPairSchAtdLvwTime.getOrDefault(key, new ArrayList<>());
-						basicInfo.schShortTimeTs = mapPairSchShortTimeTs.getOrDefault(key, new ArrayList<>());
-						basicInfo.breakTs = mapPairSchBreakTs.getOrDefault(key, new ArrayList<>());
-						basicInfo.kscdtSchGoingOutTs = mapPairGoingOutTs.getOrDefault(key, new ArrayList<>());
-						basicInfo.kscdtSchSupport = mapPairKscdtSchSupport.getOrDefault(key, new ArrayList<>());
-=======
 						basicInfo.editStates = mapPairSchEditState.getOrDefault(key, new ArrayList<>()); 
 						basicInfo.atdLvwTimes = mapPairSchAtdLvwTime.getOrDefault(key, new ArrayList<>()); 
 						basicInfo.schShortTimeTs = mapPairSchShortTimeTs.getOrDefault(key, new ArrayList<>()); 
 						basicInfo.breakTs = mapPairSchBreakTs.getOrDefault(key, new ArrayList<>()); 
 						basicInfo.kscdtSchGoingOutTs = mapPairGoingOutTs.getOrDefault(key, new ArrayList<>()); 
 						basicInfo.kscdtSchTask = mapPairKscdtSchTask.getOrDefault(key, new ArrayList<KscdtSchTask>());
->>>>>>> pj/at/release_ver4
+						basicInfo.kscdtSchSupport = mapPairKscdtSchSupport.getOrDefault(key, new ArrayList<>());
 						
 						if(mapPairSchTime.containsKey(key)){
 							KscdtSchTime scheTime = mapPairSchTime.get(key);
@@ -979,7 +956,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Boolean backStraightAtr = rs.getBoolean("BACK_STRAIGHT_ATR");
 				Integer treatAsSubstituteAtr = rs.getInt("TREAT_AS_SUBSTITUTE_ATR");
 				Double treatAsSubstituteDays = rs.getDouble("TREAT_AS_SUBSTITUTE_DAYS");
-<<<<<<< HEAD
 				String workplaceGroupId = rs.getString("WKP_GROUP_ID");
 				Integer nursingLicenseClass = rs.getInt("NURSE_LICENSE_ATR");
 				Boolean nursingManager = rs.getBoolean("IS_NURSE_ADMINISTRATOR");
@@ -990,16 +966,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 							, wktpCd, wktmCd, goStraightAtr, backStraightAtr, treatAsSubstituteAtr, treatAsSubstituteDays
 							, workplaceGroupId, nursingLicenseClass, nursingManager, bonusPaySettingCode
 							, null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>()
-							, new ArrayList<>()
+							, new ArrayList<>(), new ArrayList<>()
 						);
-=======
-
-				return new KscdtSchBasicInfo(new KscdtSchBasicInfoPK(sid, ymd), cid, confirmedATR,
-						empCd, jobId, wkpId, clsCd, busTypeCd, nurseLicense, wktpCd, wktmCd,
-						goStraightAtr, backStraightAtr, treatAsSubstituteAtr,
-						treatAsSubstituteDays, null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
-						new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
->>>>>>> pj/at/release_ver4
 			});
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -1263,10 +1231,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						hdHourlyShortageTime, absenceTime, vacationAddTime, staggeredWhTime,
 						new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 
 						new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), 
-<<<<<<< HEAD
-						new ArrayList<>(),
-=======
->>>>>>> pj/at/release_ver4
 						prsWorkTimeAmount, premiumWorkTimeTotal, premiumAmountTotal, useDailyHDSub);
 			});
 		} catch (SQLException ex) {

@@ -11,14 +11,14 @@ var nts;
                     get: function () {
                         return !this.landscapse;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "landscapse", {
                     get: function () {
                         return window.innerWidth > window.innerHeight;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mobile", {
@@ -31,7 +31,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "tablet", {
@@ -44,7 +44,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mp", {
@@ -54,7 +54,7 @@ var nts;
                     get: function () {
                         return this.mobile && this.portrait;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ml", {
@@ -64,28 +64,28 @@ var nts;
                     get: function () {
                         return this.mobile && this.landscapse;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ios", {
                     get: function () {
                         return /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "width", {
                     get: function () {
                         return window.innerWidth;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "height", {
                     get: function () {
                         return window.innerHeight;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "version", {
@@ -108,7 +108,7 @@ var nts;
                         }
                         return M.join(' ');
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "private", {
@@ -177,7 +177,7 @@ var nts;
                         not();
                         return d.promise();
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 return browser;
@@ -1897,10 +1897,12 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -7201,16 +7203,11 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="../reference.ts"/>
-<<<<<<< HEAD
-=======
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
 };
->>>>>>> pj/at/release_ver4
 var nts;
 (function (nts) {
     var uk;
@@ -7432,7 +7429,8 @@ var nts;
                         self.$container.tabIndex = -1;
                         $.data(self.$container, NAMESPACE, self);
                         var pTable = $.data(self.$container, NAMESPACE);
-                        pTable.owner = { headers: [], bodies: [], find: function (name, where) {
+                        pTable.owner = { headers: [], bodies: [],
+                            find: function (name, where) {
                                 var o = this;
                                 var elm = o[where].filter(function (e, i) { return e.classList.contains(name); });
                                 if (!elm || elm.length === 0)
@@ -14060,11 +14058,7 @@ var nts;
                                     var id = target.getAttribute("id");
                                     if (_.isNil(id))
                                         return;
-<<<<<<< HEAD
-                                    if (!rightClickFt.chartFilter.apply(rightClickFt, id.split('-').concat([target])))
-=======
-                                    if (!rightClickFt.chartFilter.apply(rightClickFt, __spreadArrays(id.split('-'), [target])))
->>>>>>> pj/at/release_ver4
+                                    if (!rightClickFt.chartFilter.apply(rightClickFt, __spreadArray(__spreadArray([], id.split('-')), [target])))
                                         return;
                                 }
                                 else {
@@ -14079,11 +14073,7 @@ var nts;
                                     ui = helper.getCellCoord(target);
                                 }
                                 else {
-<<<<<<< HEAD
-                                    _a = id.split('-').slice(), ui.rowIndex = _a[0], ui.id = _a[1];
-=======
-                                    _a = __spreadArrays(id.split('-')), ui.rowIndex = _a[0], ui.id = _a[1];
->>>>>>> pj/at/release_ver4
+                                    _a = __spreadArray([], id.split('-')), ui.rowIndex = _a[0], ui.id = _a[1];
                                 }
                                 ui.target = target;
                                 ui.contextMenu = function (items) {
@@ -17894,11 +17884,7 @@ var nts;
                                         else {
                                             var exist = _.find(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
                                             if (!exist) {
-<<<<<<< HEAD
-                                                accessor.checked(checkeds.concat([value_1]));
-=======
-                                                accessor.checked(__spreadArrays(checkeds, [value_1]));
->>>>>>> pj/at/release_ver4
+                                                accessor.checked(__spreadArray(__spreadArray([], checkeds), [value_1]));
                                             }
                                             else {
                                                 _.remove(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
@@ -20572,11 +20558,7 @@ var nts;
                             var delKeyCode = [46];
                             var dotWithNumpadKeyCodes = [110, 190]; //'.'
                             var minusWithNumpadKeyCodes = [109, 189]; //'-'
-<<<<<<< HEAD
-                            var allowedKeyCodes = numberKeyCodes.concat(numberNumpadKeyCodes, backspaceKeyCode, delKeyCode, dotWithNumpadKeyCodes, minusWithNumpadKeyCodes);
-=======
-                            var allowedKeyCodes = __spreadArrays(numberKeyCodes, numberNumpadKeyCodes, backspaceKeyCode, delKeyCode, dotWithNumpadKeyCodes, minusWithNumpadKeyCodes);
->>>>>>> pj/at/release_ver4
+                            var allowedKeyCodes = __spreadArray(__spreadArray(__spreadArray(__spreadArray(__spreadArray(__spreadArray([], numberKeyCodes), numberNumpadKeyCodes), backspaceKeyCode), delKeyCode), dotWithNumpadKeyCodes), minusWithNumpadKeyCodes);
                             if (allowedKeyCodes.indexOf(dorgi.keyCode) == -1) {
                                 $input.val(dval);
                                 $input.data(_kc, null);
@@ -21745,7 +21727,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: true,
+                        enumerable: false,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (value) {
@@ -23222,7 +23204,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: true,
+                        enumerable: false,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (parts, value) {
@@ -23941,12 +23923,7 @@ var nts;
                                         read: function () {
                                             var ds = ko.toJS(accessor.dataSource);
                                             return ds.filter(function (d) { return d.visible !== false; })
-<<<<<<< HEAD
-                                                .map(function (d) { return (__assign({}, d, { active: active,
-=======
-                                                .map(function (d) { return (__assign(__assign({}, d), { active: active,
->>>>>>> pj/at/release_ver4
-                                                tabindex: tabindex, dataBind: 'vertical-link' !== dir ? undefined : {
+                                                .map(function (d) { return (__assign(__assign({}, d), { active: active, tabindex: tabindex, dataBind: 'vertical-link' !== dir ? undefined : {
                                                     'btn-link': d.title,
                                                     icon: d.icon || 'CHECKBOX',
                                                     width: 40,
@@ -24299,7 +24276,8 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
+                                dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -34422,7 +34400,8 @@ var nts;
                                 var txt = td.querySelector(".mgrid-refer-text");
                                 if (!txt)
                                     return;
-                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]], relatedItemList: function (nama) {
+                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]],
+                                    relatedItemList: function (nama) {
                                         var ctrl = _mafollicle[SheetDef][_currentSheet].controlMap && _mafollicle[SheetDef][_currentSheet].controlMap[nama];
                                         if (ctrl && ctrl.pattern && ctrl.list) {
                                             return ctrl.pattern[ctrl.list[data.rowId]];
@@ -38832,11 +38811,7 @@ var nts;
                 Object.defineProperties($jump, {
                     self: {
                         value: function $to() {
-<<<<<<< HEAD
-                            $jump.apply(null, Array.prototype.slice.apply(arguments, []).slice());
-=======
-                            $jump.apply(null, __spreadArrays(Array.prototype.slice.apply(arguments, [])));
->>>>>>> pj/at/release_ver4
+                            $jump.apply(null, __spreadArray([], Array.prototype.slice.apply(arguments, [])));
                         }
                     },
                     blank: {
@@ -40534,8 +40509,7 @@ var nts;
                         var currentColumns = $grid.igGrid("option", "columns");
                         currentColumns.push({
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                            width: 60,
-                            formatter: function createButton(deleteField, row) {
+                            width: 60, formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
                                 var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);
@@ -40692,7 +40666,6 @@ var nts;
                         var HEADER_HEIGHT = 30;
                         var ROW_HEIGHT = 30;
                         var DIFF_NUMBER = 2;
-                        $grid.addClass("nts-gridlist");
                         var gridId = $grid.attr('id');
                         if (nts.uk.util.isNullOrUndefined(gridId)) {
                             throw new Error('the element NtsGridList must have id attribute.');
@@ -48184,7 +48157,8 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
+                                dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -48498,7 +48472,8 @@ var nts;
                                         }
                                     });
                                 }
-                            }, checkChildSiblings: function (source, key, childKey, primaryKey) {
+                            },
+                            checkChildSiblings: function (source, key, childKey, primaryKey) {
                                 var isAllCheck = _.isNil(_.find(source[childKey], function (c) {
                                     var controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + c[primaryKey], checkbox = $tree.find("." + controlCls).find("input[type='checkbox']");
                                     return !checkbox.is(":checked");
@@ -48509,7 +48484,8 @@ var nts;
                                     $checkbox.click();
                                 }
                                 return isAllCheck;
-                            }, checkSiblings: function (rowId, source, key, childKey, primaryKey) {
+                            },
+                            checkSiblings: function (rowId, source, key, childKey, primaryKey) {
                                 //let source = $tree.igTreeGrid("option", "dataSource");
                                 for (var i = 0; i < source.length; i++) {
                                     if (!_.isEmpty(source[i][childKey])) {
@@ -48528,10 +48504,12 @@ var nts;
                                     }
                                 }
                                 return { process: false, value: false };
-                            }, getTrueRowData: function (rowId, primaryKey, childKey) {
+                            },
+                            getTrueRowData: function (rowId, primaryKey, childKey) {
                                 var dataSource = $tree.data("igTreeGrid").dataSource._origDs, flatSource = helper.flatChild(dataSource, childKey);
                                 return _.find(flatSource, function (s) { return s[primaryKey] === rowId; });
-                            }, flatChild: function (dataSource, childKey) {
+                            },
+                            flatChild: function (dataSource, childKey) {
                                 var result = [];
                                 if (_.isEmpty(dataSource)) {
                                     return result;
@@ -48579,8 +48557,7 @@ var nts;
                                             if ($tree.data("igTreeGrid") !== null) {
                                                 $tree.data("igTreeGridUpdating").deleteRow(rowId);
                                             }
-                                        },
-                                        initValue: value,
+                                        }, initValue: value,
                                         rowObj: rowObj,
                                         showHeaderCheckbox: col.showHeaderCheckbox,
                                         enable: isRowEnable,
