@@ -87,7 +87,6 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 				workLocation.getStampRange().map(s -> s.getGeoCoordinate().getLatitude()).orElse(null),
 				workLocation.getStampRange().map(s -> s.getGeoCoordinate().getLongitude()).orElse(null),
 				workLocation.getRegionCode().map(m -> m.v()).orElse(null),
-
 				workLocation.getWorkplace().isPresent() ? KrcmtWorkplacePossible.toEntiy(
 						workLocation.getContractCode().v(),
 						workLocation.getWorkLocationCD().v(),
@@ -104,8 +103,9 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 				new ContractCode(this.kwlmtWorkLocationPK.contractCode),
 				new WorkLocationCD(this.kwlmtWorkLocationPK.workLocationCD), 
 				new WorkLocationName(this.workLocationName),
-				Optional.ofNullable(radius == null || latitude == null || longitude == null ?
-						null : new StampMobilePossibleRange(RadiusAtr.toEnum(radius), new GeoCoordinate(latitude, longitude))),
+				Optional.ofNullable((this.radius == null || this.latitude == null || this.longitude == null) ? null
+						: new StampMobilePossibleRange(RadiusAtr.toEnum(this.radius),
+								new GeoCoordinate(this.latitude.doubleValue(), this.longitude.doubleValue()))),
 				this.krcmtIP4Address.stream().map(c->c.toDomain()).collect(Collectors.toList()),
 				Optional.ofNullable(this.krcmtWorkplacePossible == null ? null : this.krcmtWorkplacePossible.toDomain()),
 				this.regionalCd == null ? Optional.empty() : Optional.of(new RegionCode(this.regionalCd)));

@@ -1,22 +1,26 @@
 package nts.uk.screen.at.app.reservation;
 
-import nts.arc.error.BusinessException;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTime;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationOrderMngAtr;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSetting;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSettingRepository;
 
 /**
  * 予約確認一覧
@@ -27,40 +31,34 @@ import java.util.stream.Collectors;
 public class ReservationConfirmationListScreenQuery {
 
     @Inject
-    private BentoReservationSettingRepository bentoReservationSettingRepository;
+    private ReservationSettingRepository bentoReservationSettingRepository;
 
     @Inject
-    private BentoMenuRepository bentoMenuRepo;
+    private BentoMenuHistRepository bentoMenuRepo;
 
     /**
      * 社員参照範囲を取得する
      * @param companyId
      * @return
      */
-    public ReservationConfirmationListDto getReservationConfirmationListStartupInfo(String companyId) {
+    public ReservationConfirmationListDto getReservationConfirmationListStartupInfo(String companyId, GeneralDate startDate, GeneralDate endDate) {
         ReservationConfirmationListDto dto = new ReservationConfirmationListDto();
-
         // 取得する(会社ID)
-        Optional<BentoReservationSetting> optBentoReservationSetting = bentoReservationSettingRepository.findByCId(companyId);
+        Optional<ReservationSetting> optBentoReservationSetting = bentoReservationSettingRepository.findByCId(companyId);
         //    取得したドメインモデル「弁当予約設定」がないの場合
         //　　エラーメッセージ「Msg_1847」を表示、A画面へ戻る
         if (optBentoReservationSetting.isPresent()) {
-            BentoReservationSetting bentoReservationSetting = optBentoReservationSetting.get();
+            ReservationSetting bentoReservationSetting = optBentoReservationSetting.get();
             dto.setOperationDistinction(bentoReservationSetting.getOperationDistinction());
+            dto.setOrderMngAtr(bentoReservationSetting.getCorrectionContent().getOrderMngAtr()==ReservationOrderMngAtr.CAN_MANAGE);
         } else {
-            throw new BusinessException("Msg_1847");
+            throw new BusinessException("Msg_3247");
         }
 
         // 取得する(会社ID、年月日) 会社ID＝ログイン会社ID,年月日＝9999/12/31
-        BentoMenu bentoMenu = bentoMenuRepo.getBentoMenuByEndDate(companyId, GeneralDate.max());
+        List<BentoMenuHistory> bentoMenuLst = bentoMenuRepo.findByCompanyPeriod(companyId, new DatePeriod(startDate, endDate));
 
-        // 取得したドメインモデル「弁当メニュー」がないの場合
-        //　　エラーメッセージ「Msg_1848」を表示、A画面へ戻る
-        if (bentoMenu == null) {
-            throw new BusinessException("Msg_1848");
-        }
-
-        List<Bento> menu = bentoMenu.getMenu();
+        List<Bento> menu = bentoMenuLst.stream().flatMap(x -> x.getMenu().stream()).collect(Collectors.toList());
         List<List<Bento>> partitions = new ArrayList<>(
                 menu.stream()
                         .collect(Collectors.partitioningBy(item -> item.getWorkLocationCode().isPresent()))
@@ -77,24 +75,23 @@ public class ReservationConfirmationListScreenQuery {
         List<BentoItemDto> bentoItemList = copyBentoItemList(menuByOperationType);
         dto.setMenu(bentoItemList);
 
-        BentoReservationClosingTime closingTime = bentoMenu.getClosingTime();
-        String reservationFrameName1 = closingTime.getClosingTime1().getReservationTimeName().v();
-        int reservationStartTime1 = closingTime.getClosingTime1().getStart().get().v();
-        int reservationEndTime1 = closingTime.getClosingTime1().getFinish().v();
-        Optional<ReservationClosingTime> closingTime2 = closingTime.getClosingTime2();
+        ReservationRecTimeZone reservationRecTimeZone1 = optBentoReservationSetting.get().getReservationRecTimeZoneLst()
+        		.stream().filter(x -> x.getFrameNo()==ReservationClosingTimeFrame.FRAME1).findAny().get();
+        
+        String reservationFrameName1 = reservationRecTimeZone1.getReceptionHours().getReceptionName().v();
+        int reservationStartTime1 = reservationRecTimeZone1.getReceptionHours().getStartTime().v();
+        int reservationEndTime1 = reservationRecTimeZone1.getReceptionHours().getEndTime().v();
 
         String reservationFrameName2 = "";
         Integer reservationStartTime2 = null;
         Integer reservationEndTime2 = null;
-        if (closingTime2.isPresent()){
-            ReservationClosingTime ct2 = closingTime2.get();
-            reservationFrameName2 = ct2.getReservationTimeName().v();
-            if (ct2.getStart().isPresent()){
-                reservationStartTime2 = ct2.getStart().get().v();
-            }
-            reservationEndTime2 = ct2.getFinish().v();
-        }
-
+    	Optional<ReservationRecTimeZone> opReservationRecTimeZone2 = optBentoReservationSetting.get().getReservationRecTimeZoneLst()
+        		.stream().filter(x -> x.getFrameNo()==ReservationClosingTimeFrame.FRAME2).findAny();
+    	if(opReservationRecTimeZone2.isPresent()) {
+    		reservationFrameName2 = opReservationRecTimeZone2.get().getReceptionHours().getReceptionName().v();
+            reservationStartTime2 = opReservationRecTimeZone2.get().getReceptionHours().getStartTime().v();
+            reservationEndTime2 = opReservationRecTimeZone2.get().getReceptionHours().getEndTime().v();
+    	}
 
 		ReservationClosingTimeDto timeFrame = new ReservationClosingTimeDto(
                 reservationFrameName1,

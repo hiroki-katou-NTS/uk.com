@@ -71,7 +71,7 @@ public class StampingAreaRestrictionTestHelp {
 		RadiusAtr atr = radius;
 		WorkLocationName workLocationName = new WorkLocationName(workLocaName);
 		GeoCoordinate geoCoordinate = getGeoCoordinateDefault();
-		StampMobilePossibleRange stampRange = Optional.of(new StampMobilePossibleRange(atr, geoCoordinate));
+		Optional<StampMobilePossibleRange> stampRange = Optional.of(new StampMobilePossibleRange(atr, geoCoordinate));
 		Optional<WorkplacePossible> workplace = Optional.of(new WorkplacePossible("dummy","dummy"));
 		List<Ipv4Address> listIPAddress = new ArrayList<>();
 		List<WorkLocation>listWork = new ArrayList<>();	

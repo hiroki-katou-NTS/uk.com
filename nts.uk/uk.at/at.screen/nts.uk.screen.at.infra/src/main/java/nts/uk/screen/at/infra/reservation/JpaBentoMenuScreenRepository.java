@@ -72,16 +72,6 @@ public class JpaBentoMenuScreenRepository extends JpaRepository implements Bento
     }
 
     @Override
-    public List<BentomenuJoinBentoDto> findDataBento(String companyId, GeneralDate date, BentoRequest request) {
-        if (request.getHistId() !=null){
-            return this.queryProxy().query(FIND_BENTO_BY_MAXDATE, BentomenuJoinBentoDto.class)
-                    .setParameter("companyID", companyId).setParameter("histId", request.getHistId()).getList();
-        }
-        return this.queryProxy().query(FIND_BENTO_BY_HIS, BentomenuJoinBentoDto.class)
-                .setParameter("companyID", companyId).setParameter("date", date).getList();
-    }
-
-    @Override
     public List<WorkLocationDto> findDataWorkLocation(String contractCode) {
         return this.queryProxy().query(SELECT_WORKLOCATION, WorkLocationDto.class)
                 .setParameter("contractCode", contractCode).getList();

@@ -21,6 +21,7 @@ public class AttItemWS {
 	@Inject
 	private AttItemFinder finder;
 
+
 	@POST
 	@Path("getDailyAttItem")
 	public List<AttItemName> getDailyAttItemByIdAndAtr(AttItemParam param) {
@@ -64,4 +65,8 @@ public class AttItemWS {
 	    
 	    return result;
 	}
+
+
+
+
 }

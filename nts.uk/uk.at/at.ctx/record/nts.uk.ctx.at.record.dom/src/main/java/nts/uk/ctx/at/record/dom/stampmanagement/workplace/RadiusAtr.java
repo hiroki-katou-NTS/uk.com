@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.stampmanagement.workplace;
 
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.ProductNumber;
 
 /**
  * Enum : 半径

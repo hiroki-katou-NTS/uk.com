@@ -8,7 +8,6 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionalTimeDifference;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionalTimeDifferenceRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * SQ: 地域別時差管理の情報を取得する
@@ -25,7 +24,7 @@ public class GetInfoOnTimeDifference {
 	
 	public List<GetInfoOnTimeDifferenceDto> getInfoOnTimeDifference() {
 		
-		List<RegionalTimeDifference> regionalTimeDifferences = regionalTimeDifferenceRepo.getAll(AppContexts.user().contractCode());
+		List<RegionalTimeDifference> regionalTimeDifferences = regionalTimeDifferenceRepo.getAll();
 		
 		return regionalTimeDifferences.stream().map(m -> {
 			return new GetInfoOnTimeDifferenceDto(m.getCode().v(), m.getName().v(), m.getRegionalTimeDifference().v());

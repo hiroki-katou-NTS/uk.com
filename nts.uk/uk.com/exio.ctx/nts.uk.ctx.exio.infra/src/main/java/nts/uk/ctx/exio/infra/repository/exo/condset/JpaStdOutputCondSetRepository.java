@@ -84,6 +84,8 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 			entity.setConditionSetName(newStdOutputCondSet.getConditionSetName());
 			entity.setConditionOutputName(newStdOutputCondSet.getConditionOutputName());
 			entity.setStringFormat(newStdOutputCondSet.getStringFormat());
+			entity.setEncodeType(newStdOutputCondSet.getEncodeType());
+			entity.setFileName(newStdOutputCondSet.getFileName());
 			this.commandProxy().update(entity);
 		}
 	}
