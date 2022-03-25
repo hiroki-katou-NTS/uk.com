@@ -156,6 +156,8 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 		
 		val asyncTask = context.asAsync();
 		
+		String companyId = AppContexts.user().companyId();
+		
         TaskDataSetter setter = asyncTask.getDataSetter();
 
 		Map<String, List<WorkScheduleSaveCommand<T>>> mapBySid = commands.stream().collect(Collectors.groupingBy(item -> item.getSid()));
@@ -190,7 +192,8 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 				
 				// step 1.3 call DomainService 勤務予定を作る
 				ResultOfRegisteringWorkSchedule rsOfRegisteringWorkSchedule = CreateWorkScheduleByShift.create(
-						requireImpl, 
+						requireImpl,
+						companyId,
 						sid, 
 						data.ymd, 
 						new ShiftMasterCode(data.shiftCode),
