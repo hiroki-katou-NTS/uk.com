@@ -47,6 +47,7 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.supportmanagement.SupportInfoOfEmployee;
 import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTicket;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -431,14 +432,9 @@ public class WorkSchedule implements DomainAggregate {
 	 */
 	public void updateTaskSchedule(Require require, String companyId, TaskSchedule newtaskSchedule ) {
 		
-<<<<<<< HEAD
-=======
 		this.checkWhetherTaskScheduleIsCorrect(require, companyId, newtaskSchedule);
 		
->>>>>>> pj/at/release_ver4
 		this.taskSchedule = newtaskSchedule;
-		
-		this.checkWhetherTaskScheduleIsCorrect(require);
 	}
 	
 	/**
@@ -647,11 +643,7 @@ public class WorkSchedule implements DomainAggregate {
 	 * @param targetTaskSchedule 作業予定
 	 * @return
 	 */
-<<<<<<< HEAD
-	private boolean checkWhetherTaskScheduleIsCorrect(Require require) {
-=======
 	private boolean checkWhetherTaskScheduleIsCorrect(Require require, String companyId, TaskSchedule targetTaskSchedule) {
->>>>>>> pj/at/release_ver4
 		
 		if( !this.workInfo.isAttendanceRate(require, companyId) ) {
 			throw new BusinessException( "Msg_2103" );
@@ -739,8 +731,9 @@ public class WorkSchedule implements DomainAggregate {
 			return;
 		}
 			
-			
-		if ( !this.workInfo.isAttendanceRate(require) ) {
+		// TODO resolve conflict, need to fix after
+		String companyId = AppContexts.user().companyId();
+		if ( !this.workInfo.isAttendanceRate(require, companyId) ) {
 			
 			throw new BusinessException("Msg_2275");
 		}

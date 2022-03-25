@@ -56,12 +56,8 @@ public class CreateWorkSchedule {
 		WorkSchedule workSchedule;
 		if ( isNewRegister || ! registedWorkSchedule.get().getWorkInfo().getRecordInfo().isSame(workInformation) ) {
 			try {
-<<<<<<< HEAD
-				workSchedule = WorkSchedule.createByHandCorrectionWithWorkInformation(require, employeeId, date, workInformation);
-				workSchedule.createSupportSchedule(require, supportTicketList);
-=======
 				workSchedule = WorkSchedule.createByHandCorrectionWithWorkInformation(require, companyId, employeeId, date, workInformation);
->>>>>>> pj/at/release_ver4
+				workSchedule.createSupportSchedule(require, supportTicketList);
 			} catch (BusinessException e) {
 				return ResultOfRegisteringWorkSchedule.createWithError( employeeId, date, e.getMessage() );
 			}
@@ -231,5 +227,7 @@ public class CreateWorkSchedule {
 		public final WorkNo workNo;
 
 	}
+
+	
 
 }

@@ -12,6 +12,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 作業予定を一括付与する
@@ -32,6 +33,8 @@ public class GrantListOfTaskSchedule {
 	public static List<AtomTask> grant(Require require, List<String> employeeIds, GeneralDate date, 
 			TaskCode taskCode, Optional<TimeSpanForCalc> timeSpan) {
 		
+		String companyId = AppContexts.user().companyId();
+		
 		List<WorkSchedule> listWorkSchedule = require.getWorkSchedule(employeeIds, date);
 		
 		boolean existTimeSpanSupportType = listWorkSchedule.stream().anyMatch( workSchedule -> {
@@ -51,9 +54,9 @@ public class GrantListOfTaskSchedule {
 		return listWorkSchedule.stream().map( workSchedule -> {
 			
 			if ( !timeSpan.isPresent() ) {
-				workSchedule.createTaskScheduleForWholeDay(require, taskCode);
+				workSchedule.createTaskScheduleForWholeDay(require, companyId, taskCode);
 			} else {
-				workSchedule.addTaskScheduleWithTimeSpan(require, timeSpan.get(), taskCode);
+				workSchedule.addTaskScheduleWithTimeSpan(require, companyId, timeSpan.get(), taskCode);
 			}
 			
 			return AtomTask.of(() -> require.updateWorkSchedule(workSchedule));

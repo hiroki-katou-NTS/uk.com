@@ -650,11 +650,7 @@ public class WorkScheduleTest {
 		}};
 		
 		NtsAssert.businessException("Msg_2103", () -> {
-<<<<<<< HEAD
-			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require);
-=======
 			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require, "cid", taskSchedule);
->>>>>>> pj/at/release_ver4
 		});
 		
 	}
@@ -683,11 +679,7 @@ public class WorkScheduleTest {
 		}};
 		
 		NtsAssert.businessException("Msg_2098", () -> {
-<<<<<<< HEAD
-			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require);
-=======
 			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require, "cid", taskSchedule);
->>>>>>> pj/at/release_ver4
 		});
 		
 	}
@@ -720,11 +712,7 @@ public class WorkScheduleTest {
 		}};
 		
 		NtsAssert.businessException("Msg_2099", () -> {
-<<<<<<< HEAD
-			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require);
-=======
 			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require, "cid", taskSchedule);
->>>>>>> pj/at/release_ver4
 		});
 		
 	}
@@ -761,11 +749,7 @@ public class WorkScheduleTest {
 		}};
 		
 		NtsAssert.businessException("Msg_2100", () -> {
-<<<<<<< HEAD
-			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require);
-=======
 			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require, "cid", taskSchedule);
->>>>>>> pj/at/release_ver4
 		});
 		
 	}
@@ -811,11 +795,7 @@ public class WorkScheduleTest {
 		}};
 		
 		NtsAssert.businessException("Msg_2101", () -> {
-<<<<<<< HEAD
-			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require);
-=======
 			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require, "cid", taskSchedule);
->>>>>>> pj/at/release_ver4
 		});
 		
 	}
@@ -867,7 +847,6 @@ public class WorkScheduleTest {
 		}};
 		
 		NtsAssert.businessException("Msg_2101", () -> {
-<<<<<<< HEAD
 			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require);
 		});
 		
@@ -912,7 +891,7 @@ public class WorkScheduleTest {
 						timevacationUseTimeOfDaily));
 		
 		new Expectations(workSchedule) {{
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = true;
 			
 			workSchedule.getTimeVacation();
@@ -929,10 +908,7 @@ public class WorkScheduleTest {
 		}};
 		
 		NtsAssert.businessException("Msg_3235", () -> {
-			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require);
-=======
 			invoke(workSchedule, "checkWhetherTaskScheduleIsCorrect", require, "cid", taskSchedule);
->>>>>>> pj/at/release_ver4
 		});
 		
 	}
@@ -983,11 +959,7 @@ public class WorkScheduleTest {
 			result = false;
 		}};
 		
-<<<<<<< HEAD
-		boolean result = NtsAssert.Invoke.privateMethod( workSchedule, "checkWhetherTaskScheduleIsCorrect", require );
-=======
 		boolean result = NtsAssert.Invoke.privateMethod( workSchedule, "checkWhetherTaskScheduleIsCorrect", require, "cid", taskSchedule );
->>>>>>> pj/at/release_ver4
 		
 		assertThat( result ).isTrue();
 		
@@ -1462,7 +1434,7 @@ public class WorkScheduleTest {
 		workSchedule.setWorkInfo(workInfo);
 		
 		new Expectations() {{
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = false;
 		}};
 		
@@ -1491,7 +1463,7 @@ public class WorkScheduleTest {
 		workSchedule.setOptTimeLeaving(Optional.of(timeLeaving));
 		
 		new Expectations() {{
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = true;
 			
 			timeLeaving.getTimeOfTimeLeavingAtt();
@@ -1532,7 +1504,7 @@ public class WorkScheduleTest {
 		workSchedule.setOptTimeLeaving(Optional.of(timeLeaving));
 		
 		new Expectations() {{
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = true;
 			
 			timeLeaving.getTimeOfTimeLeavingAtt();
@@ -1573,7 +1545,7 @@ public class WorkScheduleTest {
 		workSchedule.setOptTimeLeaving(Optional.of(timeLeaving));
 		
 		new Expectations() {{
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = true;
 			
 			timeLeaving.getTimeOfTimeLeavingAtt();
@@ -1805,7 +1777,7 @@ public class WorkScheduleTest {
 			require.getSupportOperationSetting();
 			result = new SupportOperationSetting( true, true, new MaximumNumberOfSupport(5) );
 			
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = false;
 		}};
 		
@@ -1849,7 +1821,7 @@ public class WorkScheduleTest {
 			require.getSupportOperationSetting();
 			result = new SupportOperationSetting( true, true, new MaximumNumberOfSupport(5) );
 			
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = true;
 			
 			timeLeaving.getTimeOfTimeLeavingAtt();
@@ -2033,7 +2005,7 @@ public class WorkScheduleTest {
 			require.getSupportOperationSetting();
 			result = new SupportOperationSetting( true, true, new MaximumNumberOfSupport(5) );
 			
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = false;
 		}};
 		
@@ -2075,7 +2047,7 @@ public class WorkScheduleTest {
 			require.getSupportOperationSetting();
 			result = new SupportOperationSetting( true, true, new MaximumNumberOfSupport(5) );
 			
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = true;
 			
 			timeLeaving.getTimeOfTimeLeavingAtt();
@@ -2490,7 +2462,7 @@ public class WorkScheduleTest {
 			require.getSupportOperationSetting();
 			result = new SupportOperationSetting( true, true, new MaximumNumberOfSupport(5) );
 			
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = true;
 			
 			timeLeaving.getTimeOfTimeLeavingAtt();
@@ -2545,7 +2517,7 @@ public class WorkScheduleTest {
 			require.getSupportOperationSetting();
 			result = new SupportOperationSetting( true, true, new MaximumNumberOfSupport(5) );
 			
-			workInfo.isAttendanceRate(require);
+			workInfo.isAttendanceRate(require, anyString);
 			result = true;
 			
 			timeLeaving.getTimeOfTimeLeavingAtt();

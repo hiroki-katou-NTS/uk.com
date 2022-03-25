@@ -50,11 +50,7 @@ public class CreateWorkScheduleByShiftTest {
 				Optional.empty()));
 		
 		ResultOfRegisteringWorkSchedule result = 
-<<<<<<< HEAD
-				CreateWorkScheduleByShift.create(require, "empId", GeneralDate.ymd(2020, 11, 1), new ShiftMasterCode("001"), supportTickets);
-=======
-				CreateWorkScheduleByShift.create(require, "cmpId", "empId", GeneralDate.ymd(2020, 11, 1), new ShiftMasterCode("001"));
->>>>>>> pj/at/release_ver4
+				CreateWorkScheduleByShift.create(require, "cmpId", "empId", GeneralDate.ymd(2020, 11, 1), new ShiftMasterCode("001"), supportTickets);
 		
 		assertThat( result.getAtomTask() ).isEmpty();
 		assertThat( result.isHasError() ).isTrue();
@@ -84,12 +80,8 @@ public class CreateWorkScheduleByShiftTest {
 			require.getShiftMaster( (ShiftMasterCode) any );
 			result = Optional.of(shiftMaster);
 			
-<<<<<<< HEAD
-			CreateWorkSchedule.create(require,  anyString, (GeneralDate) any, (WorkInformation )any, anyBoolean, 
+			CreateWorkSchedule.create(require, anyString, anyString, (GeneralDate) any, (WorkInformation )any, anyBoolean, 
 					(List<TimeSpanForCalc>) any, (List<SupportTicket>) any,(Map<Integer, T>) any);
-=======
-			CreateWorkSchedule.create(require, anyString, anyString, (GeneralDate) any, (WorkInformation )any, anyBoolean, (List<TimeSpanForCalc>) any, (Map<Integer, T>) any);
->>>>>>> pj/at/release_ver4
 			result = mockResult;
 		}};
 		
@@ -101,11 +93,7 @@ public class CreateWorkScheduleByShiftTest {
 				Optional.empty()));
 		
 		ResultOfRegisteringWorkSchedule result = 
-<<<<<<< HEAD
-				CreateWorkScheduleByShift.create(require, "empId", GeneralDate.ymd(2020, 11, 1), new ShiftMasterCode("001"), supportTickets);
-=======
-				CreateWorkScheduleByShift.create(require, "cmpId", "empId", GeneralDate.ymd(2020, 11, 1), new ShiftMasterCode("001"));
->>>>>>> pj/at/release_ver4
+				CreateWorkScheduleByShift.create(require, "cmpId", "empId", GeneralDate.ymd(2020, 11, 1), new ShiftMasterCode("001"), supportTickets);
 		
 		assertThat( result ).isEqualTo( mockResult );
 	}
