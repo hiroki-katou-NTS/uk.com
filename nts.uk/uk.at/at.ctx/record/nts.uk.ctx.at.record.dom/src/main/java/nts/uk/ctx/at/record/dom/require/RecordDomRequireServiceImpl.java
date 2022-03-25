@@ -1036,19 +1036,19 @@ public class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remain
 		return cache.getEmploymentHistImportMap().get(employeeId);
 	}
 
-<<<<<<< HEAD
 	@Override
 	public List<GrantHdTblSet> grantHdTblSets(String companyId) {
 		if (cache.getGrantHdTblSetCache().isEmpty()) {
 			cache.setGrantHdTblSetCache(yearHolidayRepo.findAll(companyId));
-=======
-		@Override
-		public List<LengthServiceTbl> lengthServiceTbl(String companyId, List<String> yearHolidayCode) {
-			return lengthServiceRepo.findByCode(companyId, yearHolidayCode);
->>>>>>> pj/at/release_ver4
 		}
 		return cache.getGrantHdTblSetCache();
 	}
+	
+	@Override
+	public List<LengthServiceTbl> lengthServiceTbl(String companyId, List<String> yearHolidayCode) {
+		return lengthServiceRepo.findByCode(companyId, yearHolidayCode);
+	}
+
 
 	@Override
 	public List<ScheRemainCreateInfor> scheRemainCreateInfor(String cid, String sid, DatePeriod dateData) {
@@ -1331,11 +1331,6 @@ public class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remain
 			cache.setFormulaDispOrderCache(formulaDispOrderRepo.findAll(companyId));
 		}
 		return cache.getFormulaDispOrderCache();
-	}
-
-	@Override
-	public Map<String, List<LengthServiceTbl>> lengthServiceTbl(String companyId, List<String> yearHolidayCode) {
-		return lengthServiceRepo.findByCode(companyId, yearHolidayCode);
 	}
 
 	@Override
