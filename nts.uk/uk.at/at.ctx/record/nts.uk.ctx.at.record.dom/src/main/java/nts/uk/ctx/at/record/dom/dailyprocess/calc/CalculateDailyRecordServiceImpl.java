@@ -381,9 +381,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if (attdStateList.stream().filter(c -> c.getStampLeakState() == TLWStampLeakState.EXIST).count() > 0) {
 			return true;
 		}
-		if (tempStateList.stream().filter(c -> c.getStampLeakState() == TLWStampLeakState.EXIST).count() > 0) {
-			return true;
-		}
+//		if (tempStateList.stream().filter(c -> c.getStampLeakState() == TLWStampLeakState.EXIST).count() > 0) {
+//			return true;
+//		}
 		return false;
 	}
 	

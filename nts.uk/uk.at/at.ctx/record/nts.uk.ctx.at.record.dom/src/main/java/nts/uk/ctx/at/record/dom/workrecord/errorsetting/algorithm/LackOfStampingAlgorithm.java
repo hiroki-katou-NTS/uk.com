@@ -66,11 +66,8 @@ public class LackOfStampingAlgorithm {
 					companyID, workTimeCode.get().v());
 		}
 		// 打刻漏れ状態チェック
-		List<StampLeakStateEachWork> stampLeakStateList = new ArrayList<>();
-		if (timeLeavingOfDailyPerformance.getAttendance() != null) {
-			stampLeakStateList =
-					timeLeavingOfDailyPerformance.getAttendance().checkStampLeakState(workType, predetemineTimeSet);
-		}
+		List<StampLeakStateEachWork> stampLeakStateList =
+				timeLeavingOfDailyPerformance.getAttendance().checkStampLeakState(workType, predetemineTimeSet);
 
 		List<Integer> attendanceItemIDList = new ArrayList<>();
 		if (stampLeakStateList.size() > 0) {

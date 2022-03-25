@@ -40,10 +40,10 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	// 1 ~ 2
 	/** 出退勤 */
 	@Getter
-	private List<TimeLeavingWork> timeLeavingWorks;
+	private List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
 	
 	/** 【削除予定】勤務回数 */
-	private WorkTimes workTimes;
+	private WorkTimes workTimes = new WorkTimes(0);
 	
 	public TimeLeavingOfDailyAttd(List<TimeLeavingWork> timeLeavingWorks, WorkTimes workTimes) {
 		super();
