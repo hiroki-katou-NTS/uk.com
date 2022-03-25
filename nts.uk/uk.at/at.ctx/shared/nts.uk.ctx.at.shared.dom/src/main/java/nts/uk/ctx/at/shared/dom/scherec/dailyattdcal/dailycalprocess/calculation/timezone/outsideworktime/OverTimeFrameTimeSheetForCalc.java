@@ -459,7 +459,6 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 			AddSettingOfWorkingTime addSetOfWorkTime,
 			WorkTimezoneGoOutSet goOutSet,
 			StatutoryAtr statutoryAtr) {
-		
 		boolean forceAtr = true;
 		AttendanceTime overTime = new AttendanceTime(0);
 		AttendanceTime transTime = new AttendanceTime(0);
