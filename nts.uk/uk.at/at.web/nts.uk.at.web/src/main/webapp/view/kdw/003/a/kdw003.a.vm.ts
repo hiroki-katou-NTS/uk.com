@@ -158,6 +158,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         comboItemsCalc: KnockoutObservableArray<any> = ko.observableArray([]);
         comboItemsCompact: KnockoutObservableArray<any> = ko.observableArray([]);
         comboTimeLimit: KnockoutObservableArray<any> = ko.observableArray([]);
+        comboNursingLicenseCls: KnockoutObservableArray<any> = ko.observableArray([]);
         showPrincipal: KnockoutObservable<any> = ko.observable(true);
         showSupervisor: KnockoutObservable<any> = ko.observable(true);
         dataAll: KnockoutObservable<any> = ko.observable(null);
@@ -1094,6 +1095,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.comboItemsDoWork(data.lstControlDisplayItem.comboItemDoWork);
             self.comboItemsCompact(data.lstControlDisplayItem.comboItemCalcCompact);
             self.comboTimeLimit(data.lstControlDisplayItem.comboTimeLimit);
+            self.comboNursingLicenseCls(data.lstControlDisplayItem.comboNursingLicenseCls);
 
             self.employmentCode(data.employmentCode);
             self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
@@ -2872,6 +2874,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             self.comboItemsDoWork(data.lstControlDisplayItem.comboItemDoWork);
                             self.comboItemsCompact(data.lstControlDisplayItem.comboItemCalcCompact);
                             self.comboTimeLimit(data.lstControlDisplayItem.comboTimeLimit);
+                            self.comboNursingLicenseCls(data.lstControlDisplayItem.comboNursingLicenseCls);
                             //self.showLock(self.showButton().available12());
                             //self.unLock(false);
                             if (data.lstControlDisplayItem.lstHeader.length == 0) {
@@ -4532,6 +4535,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 { name: 'ComboboxReason', options: self.comboItemsReason(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
                 { name: 'ComboItemsCompact', options: self.comboItemsCompact(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
                 { name: 'ComboboxTimeLimit', options: self.comboTimeLimit(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
+                { name: 'ComboboxNurseLicenseCLS', options: self.comboNursingLicenseCls(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
 
                 {
                     name: 'FlexImage', source: 'ui-icon ui-icon-locked', click: function(key, rowId, evt) {
@@ -4916,15 +4920,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         } else {
 
                             if (header.constraint.cDisplayType == "Primitive") {
-                                if (header.group == undefined || header.group.length == 0) {
+                                if ( header.group == undefined || header.group.length == 0) {
                                     delete header.constraint.cDisplayType;
-                                    if (header.constraint.primitiveValue.indexOf("AttendanceTime") != -1) {
-                                        header["columnCssClass"] = "halign-right";
+                                    if(header.constraint.primitiveValue) {
+                                        if (header.constraint.primitiveValue.indexOf("AttendanceTime") != -1) {
+                                            header["columnCssClass"] = "halign-right";
+                                        }
+                                        if (header.constraint.primitiveValue == "BreakTimeGoOutTimes" || header.constraint.primitiveValue == "WorkTimes" ||  header.constraint.primitiveValue == "AnyItemTimes" || header.constraint.primitiveValue == "AnyTimesMonth") {
+                                            header["columnCssClass"] = "halign-right";
+                                            header.constraint["decimallength"] = 2;
+                                        }
                                     }
-                                    if (header.constraint.primitiveValue == "BreakTimeGoOutTimes" || header.constraint.primitiveValue == "WorkTimes" ||  header.constraint.primitiveValue == "AnyItemTimes" || header.constraint.primitiveValue == "AnyTimesMonth") {
-                                        header["columnCssClass"] = "halign-right";
-                                        header.constraint["decimallength"] = 2;
-                                    }
+                                    
                                 } else {
                                     delete header.group[0].constraint.cDisplayType;
                                     delete header.group[0].values;

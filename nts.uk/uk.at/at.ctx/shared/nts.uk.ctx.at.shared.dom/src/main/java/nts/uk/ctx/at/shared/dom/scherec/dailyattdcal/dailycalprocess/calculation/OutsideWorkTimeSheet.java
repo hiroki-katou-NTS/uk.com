@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.TemporaryTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -33,14 +35,21 @@ public class OutsideWorkTimeSheet {
 	//休出時間帯
 	private Optional<HolidayWorkTimeSheet> holidayWorkTimeSheet;
 
+	/** 臨時時間帯 */
+	@Setter
+	private Optional<TemporaryTimeSheet> temporaryTimeSheet;
+	
 	/**
 	 * Constructor 
 	 */
-	public OutsideWorkTimeSheet(Optional<OverTimeSheet> overTimeWorkSheet,
-			Optional<HolidayWorkTimeSheet> holidayWorkTimeSheet) {
+	public OutsideWorkTimeSheet(
+			Optional<OverTimeSheet> overTimeWorkSheet,
+			Optional<HolidayWorkTimeSheet> holidayWorkTimeSheet,
+			Optional<TemporaryTimeSheet> temporaryTimeSheet) {
 		super();
 		this.overTimeWorkSheet = overTimeWorkSheet;
 		this.holidayWorkTimeSheet = holidayWorkTimeSheet;
+		this.temporaryTimeSheet = temporaryTimeSheet;
 	}
 	
 	/**
@@ -48,7 +57,7 @@ public class OutsideWorkTimeSheet {
 	 * @return 就業時間外時間帯
 	 */
 	public static OutsideWorkTimeSheet createEmpty() {
-		return new OutsideWorkTimeSheet(Optional.empty(), Optional.empty());
+		return new OutsideWorkTimeSheet(Optional.empty(), Optional.empty(), Optional.empty());
 	}
 	
 	
@@ -65,6 +74,7 @@ public class OutsideWorkTimeSheet {
 	 * @param timeLeavingWork 出退勤
 	 * @param previousAndNextDaily 前日と翌日の勤務
 	 * @param createdWithinWorkTimeSheet 就業時間内時間帯
+	 * @param oneDayOfRange 1日の範囲
 	 * @return 就業時間外時間帯
 	 */
 	public static OutsideWorkTimeSheet createOutsideWorkTimeSheet(
@@ -77,7 +87,8 @@ public class OutsideWorkTimeSheet {
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc,
 			TimeLeavingWork timeLeavingWork,
 			PreviousAndNextDaily previousAndNextDaily,
-			WithinWorkTimeSheet createdWithinWorkTimeSheet) {
+			WithinWorkTimeSheet createdWithinWorkTimeSheet,
+			TimeSpanForDailyCalc oneDayOfRange) {
 		
 		List<HolidayWorkFrameTimeSheetForCalc> holidayWorkFrameTimeSheetForCalc = new ArrayList<>();
 		List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheet = new ArrayList<>();
@@ -92,7 +103,8 @@ public class OutsideWorkTimeSheet {
 					predetermineTimeSetForCalc,
 					deductionTimeSheet,
 					timeLeavingWork,
-					createdWithinWorkTimeSheet);
+					createdWithinWorkTimeSheet,
+					oneDayOfRange);
 
 			/* 0時跨ぎ処理 */
 			if(companyCommonSetting.getZeroTime().isPresent()) {
@@ -112,14 +124,14 @@ public class OutsideWorkTimeSheet {
 		if(todayWorkType.isHolidayWork()) {
 			/* 休日出勤の処理 */
 			holidayWorkFrameTimeSheetForCalc = HolidayWorkFrameTimeSheetForCalc.createHolidayTimeWorkFrame(
+					companyCommonSetting,
+					personDailySetting,
+					integrationOfWorkTime,
+					integrationOfDaily,
 					timeLeavingWork,
-					integrationOfWorkTime.getHDWorkTimeSheetSettingList(),
 					todayWorkType,
-					personDailySetting.getBonusPaySetting(),
-					companyCommonSetting.getMidNightTimeSheet(),
 					deductionTimeSheet,
-					Optional.of(integrationOfWorkTime.getCommonSetting()),
-					integrationOfDaily.getSpecDateAttr());
+					oneDayOfRange);
 
 			/* 0時跨ぎ */
 			if(companyCommonSetting.getZeroTime().isPresent()) {
@@ -138,7 +150,8 @@ public class OutsideWorkTimeSheet {
 		}
 		return new OutsideWorkTimeSheet(
 				Optional.of(new OverTimeSheet(overTimeWorkFrameTimeSheet)),
-				Optional.of(new HolidayWorkTimeSheet(holidayWorkFrameTimeSheetForCalc)));
+				Optional.of(new HolidayWorkTimeSheet(holidayWorkFrameTimeSheetForCalc)),
+				Optional.empty());
 	}
 	
 	/**
@@ -169,6 +182,22 @@ public class OutsideWorkTimeSheet {
 		
 		if(this.holidayWorkTimeSheet.isPresent()) {
 			return this.holidayWorkTimeSheet.get().getDeductionTime(conditionAtr, dedAtr, goOutSet, canOffset);
+		}
+		return new AttendanceTime(0);
+	}
+	
+	/**
+	 * 臨時時間帯から控除時間を取得
+	 * @param conditionAtr 控除種別区分
+	 * @param dedAtr 控除区分
+	 * @param roundAtr 丸め区分
+	 * @return 控除時間
+	 */
+	public AttendanceTime getDeductionTimeFromTemporary(
+			ConditionAtr conditionAtr, DeductionAtr dedAtr, Optional<WorkTimezoneGoOutSet> goOutSet, NotUseAtr canOffset) {
+		
+		if(this.temporaryTimeSheet.isPresent()) {
+			return this.temporaryTimeSheet.get().calcDeductionTime(conditionAtr, dedAtr, goOutSet, canOffset);
 		}
 		return new AttendanceTime(0);
 	}
@@ -213,6 +242,7 @@ public class OutsideWorkTimeSheet {
 	 * @param createdWithinWorkTimeSheet 就業時間内時間帯
 	 * @param previousAndNextDaily 前日と翌日の勤務
 	 * @param timeLeavingOfDaily 日別勤怠の出退勤
+	 * @param oneDayOfRange 1日の範囲
 	 * @return 就業時間外時間帯
 	 */
 	public static OutsideWorkTimeSheet createOverTimeAsFlow(
@@ -225,7 +255,8 @@ public class OutsideWorkTimeSheet {
 			DeductionTimeSheet deductTimeSheet,
 			WithinWorkTimeSheet createdWithinWorkTimeSheet,
 			PreviousAndNextDaily previousAndNextDaily,
-			TimeLeavingOfDailyAttd timeLeavingOfDaily) {
+			TimeLeavingOfDailyAttd timeLeavingOfDaily,
+			TimeSpanForDailyCalc oneDayOfRange) {
 		
 		Optional<OverTimeSheet> overTimeSheet = OverTimeSheet.createAsFlow(
 				companyCommonSetting,
@@ -236,10 +267,11 @@ public class OutsideWorkTimeSheet {
 				predetermineTimeSetForCalc,
 				deductTimeSheet,
 				createdWithinWorkTimeSheet,
-				timeLeavingOfDaily);
+				timeLeavingOfDaily,
+				oneDayOfRange);
 		
 		if(!overTimeSheet.isPresent())
-			return new OutsideWorkTimeSheet(Optional.empty(), Optional.empty());
+			return new OutsideWorkTimeSheet(Optional.empty(), Optional.empty(), Optional.empty());
 		
 		//0時跨ぎの時間帯分割
 		OverDayEnd overDayEnd = OverDayEnd.forOverTime(
@@ -254,7 +286,8 @@ public class OutsideWorkTimeSheet {
 		
 		return new OutsideWorkTimeSheet(
 				Optional.of(new OverTimeSheet(overDayEnd.getOverTimeList())),
-				Optional.of(new HolidayWorkTimeSheet(overDayEnd.getHolList())));
+				Optional.of(new HolidayWorkTimeSheet(overDayEnd.getHolList())),
+				Optional.empty());
 	}
 	
 	/**
@@ -304,7 +337,8 @@ public class OutsideWorkTimeSheet {
 		
 		return new OutsideWorkTimeSheet(
 				Optional.of(new OverTimeSheet(overDayEnd.getOverTimeList())),
-				Optional.of(new HolidayWorkTimeSheet(overDayEnd.getHolList())));
+				Optional.of(new HolidayWorkTimeSheet(overDayEnd.getHolList())),
+				Optional.empty());
 	}
 	
 	/**
@@ -318,7 +352,7 @@ public class OutsideWorkTimeSheet {
 		Optional<OverTimeSheet> overTime = this.overTimeWorkSheet.flatMap(o -> o.recreateWithDuplicate(timeSpan, commonSet));
 		//休出時間帯を重複する時間帯で作り直す
 		Optional<HolidayWorkTimeSheet> holidayWorkTime = this.holidayWorkTimeSheet.flatMap(h -> h.recreateWithDuplicate(timeSpan, commonSet));
-		return new OutsideWorkTimeSheet(overTime, holidayWorkTime);
+		return new OutsideWorkTimeSheet(overTime, holidayWorkTime, this.temporaryTimeSheet);
 	}
 	
 	/**

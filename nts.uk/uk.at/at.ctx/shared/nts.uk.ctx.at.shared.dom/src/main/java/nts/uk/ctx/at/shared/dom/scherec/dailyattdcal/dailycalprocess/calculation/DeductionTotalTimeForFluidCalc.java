@@ -10,12 +10,10 @@ import lombok.Getter;
 import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.FluidFixedAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
@@ -25,7 +23,6 @@ import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestClockCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -122,11 +119,9 @@ public class DeductionTotalTimeForFluidCalc {
 			if (correctWithEndTime) {
 				
 				/** ○退勤が含まれている場合の補正 */
-				newTimeSpan.addAll(getLastLeave(timeLeave)
-						.map(tl -> correctBreakTime.getIncludeAttendanceOrLeaveDuplicateTimeSheet(
-																					tl, workTime.getCommonRestSetting().getCalculateMethod(),
-																					deductionAtr, correctBreakTime.getTimeSheet()))
-						.orElse(new ArrayList<>()));	
+				newTimeSpan.addAll(correctBreakTime.getIncludeAttendanceOrLeaveDuplicateTimeSheet(
+						timeLeave.getTimeLeavingWorks(), workTime.getCommonRestSetting().getCalculateMethod(),
+						deductionAtr, correctBreakTime.getTimeSheet()));	
 			} else {
 				newTimeSpan.add(correctBreakTime);
 			}
@@ -177,14 +172,6 @@ public class DeductionTotalTimeForFluidCalc {
 															Finally.of(BreakClassification.BREAK), 
 															Optional.empty(), DeductionClassification.BREAK, Optional.empty(),
 															false);
-	}
-	
-	private Optional<TimeLeavingWork> getLastLeave(TimeLeavingOfDailyAttd timeLeave) {
-		if (timeLeave.getTimeLeavingWorks().size() == 2) {
-			return timeLeave.getAttendanceLeavingWork(2);
-		}
-		
-		return timeLeave.getAttendanceLeavingWork(1);
 	}
 	
 	/**

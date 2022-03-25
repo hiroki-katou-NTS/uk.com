@@ -49,10 +49,10 @@ import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDate
 import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDateRepository;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDateDto;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassificationRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.EmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.EmployeeInfoWantToBeGet;
@@ -231,7 +231,7 @@ public class PersonalScheduleByWorkplaceExportQuery {
                 new GetPersonalInfoForScheduleTableService.Require() {
                     @Override
                     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-                    public List<EmpMedicalWorkFormHisItem> getEmpClassifications(List<String> listEmp, GeneralDate referenceDate) {
+                    public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp, GeneralDate referenceDate) {
                         return empMedicalWorkStyleHisRepo.get(listEmp, referenceDate);
                     }
                     @Override

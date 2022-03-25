@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BPTimeIte
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTimeSheet;
@@ -25,25 +24,34 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.Bon
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.TemporaryFrameTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.TemporaryTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.TimeSeriesDivision;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.service.ActualWorkTimeSheetListService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CheckDateForManageCmpLeaveService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.BreakoutFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.ExtraordTimeCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.GetSubHolOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneExtraordTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
@@ -578,7 +586,7 @@ public class HolidayWorkTimeSheet{
 			bonusPayList.addAll(timeFrame.calcBonusPay(ActualWorkTimeSheetAtr.HolidayWork, bpTimeItemSets, calcAtrOfDaily));
 		}
 		//同じNo同士はここで加算し、Listのサイズを減らす
-		return sumBonusPayTime(bonusPayList);
+		return BonusPayTime.sumBonusPayTimeList(bonusPayList);
 	}
 	
 	/**
@@ -594,42 +602,8 @@ public class HolidayWorkTimeSheet{
 			bonusPayList.addAll(timeFrame.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.HolidayWork, bpTimeItemSets, calcAtrOfDaily));
 		}
 		//同じNo同士はここで加算し、Listのサイズを減らす
-		return sumBonusPayTime(bonusPayList);
+		return BonusPayTime.sumBonusPayTimeList(bonusPayList);
 	}
-	
-	/**
-	 * 同じ加給時間Ｎｏを持つものを１つにまとめる
-	 * @param bonusPayTime　加給時間
-	 * @return　Noでユニークにした加給時間List
-	 */
-	private List<BonusPayTime> sumBonusPayTime(List<BonusPayTime> bonusPayTime){
-		List<BonusPayTime> returnList = new ArrayList<>();
-		List<BonusPayTime> refineList = new ArrayList<>();
-		for(int bonusPayNo = 1 ; bonusPayNo <= 10 ; bonusPayNo++) {
-			refineList = getByBonusPayNo(bonusPayTime, bonusPayNo);
-			if(refineList.size()>0) {
-				returnList.add(new BonusPayTime(bonusPayNo,
-												new AttendanceTime(refineList.stream().map(tc -> tc.getBonusPayTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
-												TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(refineList.stream().map(tc -> tc.getWithinBonusPay().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
-																							  new AttendanceTime(refineList.stream().map(tc -> tc.getWithinBonusPay().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)))),
-												TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(refineList.stream().map(tc -> tc.getExcessBonusPayTime().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
-																							  new AttendanceTime(refineList.stream().map(tc -> tc.getExcessBonusPayTime().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))))
-												));
-			}
-		}
-		return returnList;
-	}
-	
-	/**
-	 * 受け取った加給時間Ｎｏを持つ加給時間を取得
-	 * @param bonusPayTime 加給時間
-	 * @param bonusPayNo　加給時間Ｎｏ
-	 * @return　加給時間リスト
-	 */
-	private List<BonusPayTime> getByBonusPayNo(List<BonusPayTime> bonusPayTime,int bonusPayNo){
-		return bonusPayTime.stream().filter(tc -> tc.getBonusPayTimeItemNo() == bonusPayNo).collect(Collectors.toList());
-	}
-
 	
 	public AttendanceTime desictionUseUppserTime(AutoCalSetting autoCalcSet, HolidayWorkFrameTime loopHolidayTimeFrame,AttendanceTime attendanceTime) {
 		switch(autoCalcSet.getUpLimitORtSet()) {
@@ -907,6 +881,15 @@ public class HolidayWorkTimeSheet{
 				break;
 			}
 		}
+		// 臨時による休出時間帯の取得
+		holidayWorkFrameTimeSheets.addAll(HolidayWorkTimeSheet.getHolidayWorkTimeSheetFromTemporary(
+				companyCommonSetting,
+				personDailySetting,
+				integrationOfWorkTime,
+				integrationOfDaily,
+				todayWorkType,
+				oneDayOfRange));
+		// 休出枠時間帯を返す
 		return new HolidayWorkTimeSheet(holidayWorkFrameTimeSheets);
 	}
 	
@@ -988,6 +971,7 @@ public class HolidayWorkTimeSheet{
 	}
 	
 	/**
+<<<<<<< HEAD
 	 * 逆丸めにして取得する
 	 * @return 休日出勤時間帯
 	 */
@@ -995,5 +979,74 @@ public class HolidayWorkTimeSheet{
 		return new HolidayWorkTimeSheet(this.workHolidayTime.stream()
 				.map(f -> f.getReverseRounding())
 				.collect(Collectors.toList()));
+=======
+	 * 臨時による休出時間帯の取得
+	 * @param companySet 会社別設定管理
+	 * @param personDailySet 社員設定管理
+	 * @param integrationOfWorkTime 統合就業時間帯
+	 * @param integrationOfDaily 日別実績(WORK)
+	 * @param workType 勤務種類
+	 * @param oneDayOfRange 1日の範囲
+	 * @return 休出枠時間帯List
+	 */
+	public static List<HolidayWorkFrameTimeSheetForCalc> getHolidayWorkTimeSheetFromTemporary(
+			ManagePerCompanySet companySet,
+			ManagePerPersonDailySet personDailySet,
+			IntegrationOfWorkTime integrationOfWorkTime,
+			IntegrationOfDaily integrationOfDaily,
+			WorkType workType,
+			TimeSpanForDailyCalc oneDayOfRange) {
+		
+		// 計算方法を確認する
+		WorkTimezoneExtraordTimeSet extraordTimeSet = integrationOfWorkTime.getCommonSetting().getExtraordTimeSet();
+		if (extraordTimeSet.getCalculateMethod() == ExtraordTimeCalculateMethod.RECORD_TEMP_TIME) {
+			return new ArrayList<>();
+		}
+		// 休日出勤かどうか判断する
+		if (!workType.isHolidayWork()) {
+			return new ArrayList<>();
+		}
+		// 休日区分を取得
+		HolidayAtr holidayAtr = workType.getWorkTypeSetList().get(0).getHolidayAtr();
+		// 休出枠NOを判断する
+		BreakoutFrameNo frameNo = extraordTimeSet.getHolidayFrameSet().getInLegalBreakoutFrameNo();
+		switch (holidayAtr) {
+		case NON_STATUTORY_HOLIDAYS:
+			frameNo = extraordTimeSet.getHolidayFrameSet().getOutLegalBreakoutFrameNo();
+			break;
+		case PUBLIC_HOLIDAY:
+			frameNo = extraordTimeSet.getHolidayFrameSet().getOutLegalPubHolFrameNo();
+			break;
+		default:
+			break;
+		}
+		// 臨時時間帯を作成する
+		Optional<TemporaryTimeSheet> before = TemporaryTimeSheet.create(
+				companySet, personDailySet, integrationOfWorkTime, integrationOfDaily,
+				workType, oneDayOfRange);
+		if (!before.isPresent()) return new ArrayList<>();
+		// 休出枠時間帯Listに変換する
+		List<HolidayWorkFrameTimeSheetForCalc> after = new ArrayList<>();
+		for (TemporaryFrameTimeSheet temporaryFrame : before.get().getFrameTimeSheets()){
+			after.add(new HolidayWorkFrameTimeSheetForCalc(
+					temporaryFrame.getTimeSheet(),
+					temporaryFrame.getRounding(),
+					temporaryFrame.getRecordedTimeSheet(),
+					temporaryFrame.getDeductionTimeSheet(),
+					temporaryFrame.getBonusPayTimeSheet(),
+					temporaryFrame.getSpecBonusPayTimesheet(),
+					MidNightTimeSheetForCalcList.createEmpty(),
+					new HolidayWorkFrameTime(
+							new HolidayWorkFrameNo(frameNo.v()),
+							Finally.of(TimeDivergenceWithCalculation.emptyTime()),
+							Finally.of(TimeDivergenceWithCalculation.emptyTime()),
+							Finally.of(AttendanceTime.ZERO)),
+					false,
+					new EmTimezoneNo(1),
+					Finally.of(StaturoryAtrOfHolidayWork.deicisionAtrByHolidayAtr(holidayAtr))));
+		}
+		// 変換後Listを返す
+		return after;
+>>>>>>> pj/at/release_ver4
 	}
 }

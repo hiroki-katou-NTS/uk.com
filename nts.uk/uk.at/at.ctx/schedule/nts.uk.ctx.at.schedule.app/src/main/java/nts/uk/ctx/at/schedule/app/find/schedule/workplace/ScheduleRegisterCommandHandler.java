@@ -44,6 +44,10 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -52,6 +56,8 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterImportCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
@@ -132,9 +138,18 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
 
     @Inject
     private EmpEmployeeAdapter empEmployeeAdapter;
-    
+
     @Inject
     private ManagedParallelWithContext parallel;
+    
+    @Inject
+	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
+    
+	@Inject
+	private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
+	
+	@Inject
+	private NurseClassificationRepository nurseClassificationRepo;
 
 //    public List<RegisterWorkScheduleOutput> register(ScheduleRegisterCommand command) {
 //        List<RegisterWorkScheduleOutput> outputs = new ArrayList<RegisterWorkScheduleOutput>();
@@ -146,7 +161,7 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
 //        DatePeriod period = dates.size() > 0 ? new DatePeriod(dates.get(0), dates.get(dates.size() - 1)) : null;
 //        RequireImp requireImp = new RequireImp(importCodes, employeeList, period);
 //        ScheduleRegister sr =  command.toDomain();
-//        
+//
 //        Map<String, List<ScheduleRegisterTarget>> mapTargetBySid = sr.getTargets().stream().
 //                collect(Collectors.groupingBy(target -> target.getEmployeeId()));
 //        List<List<ScheduleRegisterTarget>> listTargetBySid = mapTargetBySid.entrySet().stream().map(x -> x.getValue())
@@ -154,17 +169,17 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
 //        List<String> employeeIds = new ArrayList<String>();
 //        this.parallel.forEach(listTargetBySid, targets -> {
 //            // 1.1: 作る(Require, 社員ID, 年月日, シフトマスタ取り込みコード, boolean)
-//            List<ResultOfRegisteringWorkSchedule> resultOfRegisteringWorkSchedule = 
+//            List<ResultOfRegisteringWorkSchedule> resultOfRegisteringWorkSchedule =
 //                    targets
 //                    .stream()
 //                    .map(x -> CreateWorkScheduleByImportCode.create(
-//                            requireImp, 
-//                            x.getEmployeeId(), 
-//                            x.getDate(), 
-//                            x.getImportCode(), 
+//                            requireImp,
+//                            x.getEmployeeId(),
+//                            x.getDate(),
+//                            x.getImportCode(),
 //                            sr.isOverWrite())
 //                            ).collect(Collectors.toList());
-//            
+//
 //            // 1.2: <call>
 ////            if (outputs.size() > 0) {
 ////                return;
@@ -172,12 +187,12 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
 //            resultOfRegisteringWorkSchedule.stream().filter(result -> !result.isHasError()).collect(Collectors.toList())
 //            .forEach(result -> {
 //                Optional<AtomTask> atomTaskOpt = result.getAtomTask();
-//                
+//
 //                if (atomTaskOpt.isPresent()) {
 //                    atomTaskOpt.get().run();
 //                }
 //            });
-//            
+//
 //            // 2: List<勤務予定の登録処理結果> : anyMatch $.エラーがあるか == true 社員IDを指定して社員を取得する(List<社員ID>)
 //            resultOfRegisteringWorkSchedule.stream().forEach(x -> {
 //                if (x.isHasError()) {
@@ -191,19 +206,19 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
 //                results.forEach(result -> {
 //                    outputs.add(new RegisterWorkScheduleOutput(
 //                            x.getEmployeeCode(),
-//                            x.getEmployeeName(), 
+//                            x.getEmployeeName(),
 //                            result.getErrorInformation().get(0).getDate().toString("yyyy/MM/dd"),
 //                            result.getErrorInformation().get(0).getAttendanceItemId().isPresent() ? result.getErrorInformation().get(0).getAttendanceItemId().get() : 0,
 //                                    result.getErrorInformation().get(0).getErrorMessage()));
 //                });
 //            });
 //        });
-//        
+//
 //
 //
 //        return outputs;
 //    }
-    
+
 
 
     @Override
@@ -211,7 +226,7 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
         ScheduleRegisterCommand command = context.getCommand();
         val asyncTask = context.asAsync();
         TaskDataSetter setter = asyncTask.getDataSetter();
-        
+
         List<String> importCodes = command.getTargets().stream().map(x -> x.getImportCode()).distinct().collect(Collectors.toList());
         // loop:社員ID in 社員IDリスト
         List<String> employeeList = command.getTargets().stream().map(x -> x.getEmployeeId()).distinct().collect(Collectors.toList());
@@ -220,12 +235,13 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
                 .map(x -> GeneralDate.fromString(x.getDate(), "yyyy/MM/dd"))
                 .distinct().sorted().collect(Collectors.toList());
         DatePeriod period = dates.size() > 0 ? new DatePeriod(dates.get(0), dates.get(dates.size() - 1)) : null;
-        RequireImp requireImp = new RequireImp(importCodes, employeeList, period);
+        RequireImp requireImp = new RequireImp(importCodes, employeeList, period, empAffiliationInforAdapter, empMedicalWorkStyleHistoryRepo, nurseClassificationRepo);
+
         String companyId = AppContexts.user().companyId();
         
         // 1.1: 作る(Require, 社員ID, 年月日, シフトマスタ取り込みコード, boolean)
         ScheduleRegisterDto sr =  command.toDomain();
-        List<ResultOfRegisteringWorkSchedule> resultOfRegisteringWorkSchedule = 
+        List<ResultOfRegisteringWorkSchedule> resultOfRegisteringWorkSchedule =
                 sr.getTargets()
                   .stream()
                   .map(x -> CreateWorkScheduleByImportCode.create(
@@ -236,18 +252,18 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
                             x.getImportCode(), 
                             sr.isOverWrite())
                   ).collect(Collectors.toList());
-        
+
         // 1.2: call()
         boolean isRegister = false;
         for (ResultOfRegisteringWorkSchedule result : resultOfRegisteringWorkSchedule) {
             Optional<AtomTask> atomTaskOpt = result.getAtomTask();
-            
+
             if (atomTaskOpt.isPresent()) {
                 isRegister = true;
                 atomTaskOpt.get().run();
             }
         }
-        
+
         // 2: List<勤務予定の登録処理結果> : anyMatch $.エラーがあるか == true 社員IDを指定して社員を取得する(List<社員ID>)
         List<String> employeeIds = new ArrayList<String>();
         resultOfRegisteringWorkSchedule.stream().forEach(x -> {
@@ -255,7 +271,7 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
                 employeeIds.add(x.getErrorInformation().get(0).getEmployeeId());
             }
         });
-        
+
         boolean isError = false;
         if (employeeIds.size() > 0) {
             isError = true;
@@ -264,7 +280,7 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
         for (int i = 0; i < employeeImports.size(); i++) {
             EmployeeImport employeeImport = employeeImports.get(i);
             List<ResultOfRegisteringWorkSchedule> results = resultOfRegisteringWorkSchedule.stream()
-                    .filter(y -> y.isHasError() ? 
+                    .filter(y -> y.isHasError() ?
                             y.getErrorInformation().get(0).getEmployeeId()
                             .equals(employeeImport.getEmployeeId()) : y.isHasError())
                     .collect(Collectors.toList());
@@ -282,74 +298,81 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
         setter.setData("STATUS_REGISTER", isRegister);
         setter.setData("STATUS_ERROR", isError);
     }
-    
+
     private class RequireImp implements CreateWorkScheduleByImportCode.Require {
-        
+
         private final MapCache<String, WorkType> workTypeCache;
-        
+
         private final MapCache<String, WorkTimeSetting> workTimeSettingCache;
-        
+
         private final MapCache<String, SetupType> basicScheduleCache;
-        
+
         private final MapCache<String, FixedWorkSetting> fixedWorkSettingCache;
-        
+
         private final MapCache<String, FlowWorkSetting> flowWorkSettingCache;
-        
+
         private final MapCache<String, FlexWorkSetting> flexWorkSettingCache;
-        
+
         private final MapCache<String, PredetemineTimeSetting> predetemineTimeSettingCache;
-        
+
         private final KeyDateHistoryCache<String, SharedSyEmploymentImport> employmentHisScheduleCache;
-        
+
         private final DateHistoryCache<SharedAffWorkPlaceHisImport> sharedAffWorkPlaceHisCache;
-        
+
         private final DateHistoryCache<SClsHistImport> syClassificationCache;
-        
+
         private final KeyDateHistoryCache<String, WorkingConditionItemWithPeriod> workingConditionCache;
-        
+
         private final Map<String, ShiftMaster> shiftMasterCache;
         
-        public RequireImp(List<String> importCodes, List<String> employeeIds, DatePeriod period) {
+        private EmpAffiliationInforAdapter empAffiliationInforAdapter;
+		
+		private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
+		
+		private NurseClassificationRepository nurseClassificationRepo;
+
+        public RequireImp(List<String> importCodes, List<String> employeeIds, DatePeriod period, EmpAffiliationInforAdapter empAffiliationInforAdapter,
+        		EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo, NurseClassificationRepository nurseClassificationRepo) {
             List<ShiftMaster> shiftMasters = shiftMasterRepository.getByListImportCodes(AppContexts.user().companyId(), importCodes);
             shiftMasterCache = shiftMasters.stream()
                     .collect(Collectors.toMap(
-                            shiftMaster -> shiftMaster.getImportCode().get().v(), 
-                            shiftMaster -> shiftMaster, 
+                            shiftMaster -> shiftMaster.getImportCode().get().v(),
+                            shiftMaster -> shiftMaster,
                             (value1, value2) -> {
                                 return value1;
                             }));
-            
+
             workTypeCache = MapCache.incremental(workTypeCd -> workTypeRepo.findByPK(AppContexts.user().companyId(), workTypeCd));
-            
+
             workTimeSettingCache = MapCache.incremental(workTimeCode -> workTimeSettingRepository.findByCode(AppContexts.user().companyId(), workTimeCode));
-            
+
             basicScheduleCache = MapCache.incremental(workTypeCode -> Optional.ofNullable(basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode)));
-            
+
             fixedWorkSettingCache = MapCache.incremental(code -> fixedWorkSettingRepository.findByKey(AppContexts.user().companyId(), code));
-                    
+
             flowWorkSettingCache = MapCache.incremental(code -> flowWorkSettingRepository.find(AppContexts.user().companyId(), code));
-            
+
             flexWorkSettingCache = MapCache.incremental(code -> flexWorkSettingRepository.find(AppContexts.user().companyId(), code));
-            
+
             predetemineTimeSettingCache = MapCache.incremental(code -> predetemineTimeSettingRepository.findByWorkTimeCode(AppContexts.user().companyId(), code));
-            
+
             List<EmploymentPeriodImported> listEmpHist = employmentHisScheduleAdapter
                     .getEmploymentPeriod(employeeIds, period);
             Map<String, List<SharedSyEmploymentImport>> data = listEmpHist.stream()
                     .map(x -> new SharedSyEmploymentImport(x.getEmpID(), x.getEmploymentCd(), "",x.getDatePeriod()))
                     .collect(Collectors.groupingBy(item -> item.getEmployeeId()));
             employmentHisScheduleCache = KeyDateHistoryCache.loaded(createEntries1(data));
-            
+
             sharedAffWorkPlaceHisCache = new DateHistoryCache<SharedAffWorkPlaceHisImport>();
-            
+
             syClassificationCache = new DateHistoryCache<SClsHistImport>();
-            
+
             List<WorkingConditionItemWithPeriod> workingConditionPeriod = workingConditionRepo.getWorkingConditionItemWithPeriod(AppContexts.user().companyId(), employeeIds, period);
             Map<String, List<WorkingConditionItemWithPeriod>> data2 = workingConditionPeriod.stream()
                     .collect(Collectors.groupingBy(item -> item.getWorkingConditionItem().getEmployeeId()));
             workingConditionCache = KeyDateHistoryCache.loaded(createEntries2(data2));
         }
-        
+
         private Map<String, List<DateHistoryCache.Entry<SharedSyEmploymentImport>>>  createEntries1(Map<String, List<SharedSyEmploymentImport>> data) {
             Map<String, List<DateHistoryCache.Entry<SharedSyEmploymentImport>>> rs = new HashMap<>();
             data.forEach( (k,v) -> {
@@ -362,7 +385,7 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
             });
             return rs;
         }
-        
+
         private Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>>  createEntries2(Map<String, List<WorkingConditionItemWithPeriod>> data) {
             Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>> rs = new HashMap<>();
             data.forEach( (k,v) -> {
@@ -428,16 +451,7 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
             if(listAffJobTitleHis.isEmpty())
                 return null;
             return listAffJobTitleHis.get(0);
-        }
-
-        @Override
-        public SharedAffWorkPlaceHisImport getAffWorkplaceHistory(String employeeId, GeneralDate standardDate) {
-//            Optional<SharedAffWorkPlaceHisImport> rs = sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, standardDate);
-//            return rs.isPresent() ? rs.get() : null;
-            return sharedAffWorkPlaceHisCache.get(standardDate, e -> 
-                sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, standardDate)
-                .map(h -> DateHistoryCache.Entry.of(h.getDateRange(), h))).orElse(null);
-        }
+        }    
 
         @Override
         public SClsHistImport getClassificationHistory(String employeeId, GeneralDate standardDate) {
@@ -447,9 +461,9 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
 //            }
 //            return new SClsHistImport(imported.get().getPeriod(), imported.get().getEmployeeId(),
 //                    imported.get().getClassificationCode(), imported.get().getClassificationName());
-            return syClassificationCache.get(standardDate, e -> 
+            return syClassificationCache.get(standardDate, e ->
                 syClassificationAdapter.findSClsHistBySid(AppContexts.user().companyId(), employeeId, standardDate)
-                .map(h -> DateHistoryCache.Entry.of(h.getPeriod(), 
+                .map(h -> DateHistoryCache.Entry.of(h.getPeriod(),
                         new SClsHistImport(h.getPeriod(), h.getEmployeeId(), h.getClassificationCode(), h.getClassificationName()))))
                     .orElse(null);
         }
@@ -511,6 +525,25 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
         public void registerTemporaryData(String employeeId, GeneralDate date) {
             interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(), employeeId, Arrays.asList(date));
         }
-        
+
+        @Override
+		public EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate) {
+			List<EmpOrganizationImport> results = empAffiliationInforAdapter.getEmpOrganization(standardDate, Arrays.asList(employeeId));
+			if(results.isEmpty())
+				return null;
+			return results.get(0);
+		}
+
+		@Override
+		public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp,
+				GeneralDate referenceDate) {
+			return empMedicalWorkStyleHistoryRepo.get(listEmp, referenceDate);
+		}
+
+		@Override
+		public List<NurseClassification> getListCompanyNurseCategory() {
+			String companyId = AppContexts.user().companyId();
+			return nurseClassificationRepo.getListCompanyNurseCategory(companyId);
+		}
     }
 }

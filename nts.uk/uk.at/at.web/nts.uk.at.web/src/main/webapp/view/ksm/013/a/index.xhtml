@@ -8,8 +8,8 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiCode
-				nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiName
+				nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassifiCode
+				nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassifiName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksm013.a.main.css" />
@@ -85,9 +85,15 @@
 						</div>
 						<div style="margin-top: 30px">
 							<div class ="label_left"
+								data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KSM013_12')}
+							</div>
+							<div tabindex="8" id ="nursingManager" data-bind="ntsCheckBox: { checked: nursingManager, enable: license() == 0, text: nts.uk.resource.getText('KSM013_10', [nts.uk.resource.getText('KSM013_12')]) }"></div>
+						</div>
+						<div style="margin-top: 30px">
+							<div class ="label_left"
 								data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KSM013_9')}
 							</div>
-							<div tabindex="8" id ="officeWorker" data-bind="ntsCheckBox: { checked: officeWorker, enable: license() == 2, text: nts.uk.resource.getText('KSM013_10', [nts.uk.resource.getText('KSM013_9')]) }"></div>
+							<div tabindex="9" id ="officeWorker" data-bind="ntsCheckBox: { checked: officeWorker, enable: license() == 2, text: nts.uk.resource.getText('KSM013_10', [nts.uk.resource.getText('KSM013_9')]) }"></div>
 						</div>
 					</div>
 

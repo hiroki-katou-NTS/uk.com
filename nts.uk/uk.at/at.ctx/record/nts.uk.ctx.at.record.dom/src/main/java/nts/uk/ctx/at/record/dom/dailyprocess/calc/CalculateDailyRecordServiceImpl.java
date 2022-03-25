@@ -39,6 +39,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.deviationtime.AutoCalcSetOfDivergenceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.StampLeakStateEachWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TLWStampLeakState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
@@ -52,6 +54,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.breaktime.BreakTimeSheetGetter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
@@ -62,6 +65,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.TimeSheetAt
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.OutsideWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PreviousAndNextDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.SchedulePerformance;
@@ -69,6 +73,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.TemporaryTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
@@ -234,17 +239,30 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			// 就業計算対象外処理
 			return ManageCalcStateAndResult.successCalcForNoCalc(integrationOfDaily, attendanceItemConvertFactory);
 		}
+
+		// 勤務種類の取得
+		Optional<WorkType> workType = this.getWorkTypeFromShareContainer(
+				companyCommonSetting.getShareContainer(),
+				companyCommonSetting.getCompanyId(),
+				integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 		
-		// 出退勤打刻順序不正のチェック
-		// ※他の打刻順序不正は計算処理を実施する必要があるため、ここでは弾かない
-		// 不正の場合、勤務情報の計算ステータス→未計算にしつつ、エラーチェックは行う必要有）
-		val stampIncorrectError = dailyRecordCreateErrorAlermService.stampIncorrect(integrationOfDaily);
-		val lackOfstampError = dailyRecordCreateErrorAlermService.lackOfTimeLeavingStamping(integrationOfDaily);
-		//if (stampIncorrectError != null || lackOfstampError != null) {
-		if (stampIncorrectError.isPresent() || (!lackOfstampError.isEmpty() && lackOfstampError.get(0) != null)) {
+		// 所定時間設定の取得
+		Optional<PredetemineTimeSetting> predetemineTimeSet = Optional.empty();
+		Optional<WorkTimeCode> workTimeCode = integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull();
+		if (workTimeCode.isPresent()) {
+			predetemineTimeSet = this.getPredetermineTimeSetFromShareContainer(
+					companyCommonSetting.getShareContainer(),
+					AppContexts.user().companyId(),
+					workTimeCode.get().v());
+		}
+		
+		// 計算条件のチェック
+		// ※　計算しない場合、勤務情報の計算ステータス→未計算にしつつ、エラーチェックは行う必要有
+		if (!this.checkCalculateCondition(integrationOfDaily, workType, predetemineTimeSet)) {
 			return ManageCalcStateAndResult.failCalc(integrationOfDaily, attendanceItemConvertFactory);
 		}
 		
+		// 予定時間帯の作成
 		Optional<SchedulePerformance> schedule = createSchedule(
 				integrationOfDaily, 
 				companyCommonSetting,
@@ -256,12 +274,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		//日別勤怠（Work）をcloneする
 		IntegrationOfDaily clonedIntegrationOfDaily = converter.setData(integrationOfDaily).toDomain();
-				
-		//勤務種類の取得
-		Optional<WorkType> workType = this.getWorkTypeFromShareContainer(
-				companyCommonSetting.getShareContainer(),
-				companyCommonSetting.getCompanyId(),
-				clonedIntegrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 		
 		//統合就業時間帯の作成
 		Optional<IntegrationOfWorkTime> integrationOfWorkTime = this.createIntegrationOfWorkTime(
@@ -324,6 +336,57 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		return ManageCalcStateAndResult.successCalc(calcResult);
 	}
 
+	/**
+	 * 計算条件のチェック
+	 * @param integrationOfDaily 日別実績(WORK)
+	 * @param workType 勤務種類
+	 * @param predetemineTimeSet 所定時間設定
+	 * @return 計算するかどうか(true:計算する,false:計算しない)
+	 */
+	private boolean checkCalculateCondition(
+			IntegrationOfDaily integrationOfDaily,
+			Optional<WorkType> workType,
+			Optional<PredetemineTimeSetting> predetemineTimeSet) {
+		
+		// 打刻順序不正
+		// ※　他の打刻順序不正は計算処理を実施する必要があるため、ここでは弾かない
+		Optional<EmployeeDailyPerError> stampIncorrectError =
+				this.dailyRecordCreateErrorAlermService.stampIncorrect(integrationOfDaily);
+		if (stampIncorrectError.isPresent()) return false;
+		// 打刻漏れ
+		List<EmployeeDailyPerError> lackOfstampError =
+				this.dailyRecordCreateErrorAlermService.lackOfTimeLeavingStamping(integrationOfDaily);
+		if (lackOfstampError.isEmpty()) return true;
+		// 打刻漏れ状態チェック
+		List<StampLeakStateEachWork> attdStateList = new ArrayList<>();
+		if (integrationOfDaily.getAttendanceLeave().isPresent()) {
+			attdStateList = integrationOfDaily.getAttendanceLeave().get().checkStampLeakState(workType, predetemineTimeSet);
+		}
+		List<StampLeakStateEachWork> tempStateList = new ArrayList<>();
+		if (integrationOfDaily.getTempTime().isPresent()) {
+			tempStateList = integrationOfDaily.getTempTime().get().checkStampLeakState();
+		}
+		if (attdStateList.stream().filter(c -> c.getStampLeakState() == TLWStampLeakState.NO_ATTENDANCE).count() > 0) {
+			return false;
+		}
+		if (attdStateList.stream().filter(c -> c.getStampLeakState() == TLWStampLeakState.NO_LEAVE).count() > 0) {
+			return false;
+		}
+		if (tempStateList.stream().filter(c -> c.getStampLeakState() == TLWStampLeakState.NO_ATTENDANCE).count() > 0) {
+			return false;
+		}
+		if (tempStateList.stream().filter(c -> c.getStampLeakState() == TLWStampLeakState.NO_LEAVE).count() > 0) {
+			return false;
+		}
+		if (attdStateList.stream().filter(c -> c.getStampLeakState() == TLWStampLeakState.EXIST).count() > 0) {
+			return true;
+		}
+//		if (tempStateList.stream().filter(c -> c.getStampLeakState() == TLWStampLeakState.EXIST).count() > 0) {
+//			return true;
+//		}
+		return false;
+	}
+	
 	/**
 	 * 時間帯の作成
 	 * @param integrationOfDaily 日別実績(Work)
@@ -523,6 +586,21 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				throw new RuntimeException(
 						"unknown workTimeMethodSet" + integrationOfWorkTime.get().getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet());
 		}
+		// 臨時時間帯の取得
+		Optional<TemporaryTimeSheet> temporaryTimeSheet = TemporaryTimeSheet.getTemporaryTimeSheet(
+				companyCommonSetting,
+				personCommonSetting,
+				integrationOfWorkTime.get(),
+				integrationOfDaily,
+				workType.get(),
+				oneRange.getOneDayOfRange());
+		if (oneRange.getOutsideWorkTimeSheet().isPresent()){
+			oneRange.getOutsideWorkTimeSheet().get().setTemporaryTimeSheet(temporaryTimeSheet);
+		}
+		else {
+			oneRange.setOutsideWorkTimeSheet(Finally.of(new OutsideWorkTimeSheet(
+					Optional.empty(), Optional.empty(), temporaryTimeSheet)));
+		}
 		// 勤務外短時間勤務時間帯の作成
 		oneRange.createShortTimeWSWithoutWork(
 				workType.get(),
@@ -537,7 +615,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	private boolean checkAttendanceLeaveState(Optional<TimeLeavingOfDailyAttd> attendanceLeave) {
 		if (attendanceLeave.isPresent()) {
 			for (TimeLeavingWork leavingWork : attendanceLeave.get().getTimeLeavingWorks()) {
-				if (leavingWork.checkLeakageStamp())
+				if (!leavingWork.checkLeakageStamp())
 					return true;
 			}
 		}
@@ -770,6 +848,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				c.getRecordedTimeSheet().removeIf(d -> d.getDeductionAtr().isGoOut());
 			});
 		});
+		
+		// 臨時時間帯を削除
+		if (returnResult.isPresent()) {
+			if (returnResult.get().getOutsideWorkTimeSheet().isPresent()) {
+				returnResult.get().getOutsideWorkTimeSheet().get().setTemporaryTimeSheet(Optional.empty());
+			}
+		}
 		
 		if(!returnResult.isPresent()) return Optional.empty();
 		
@@ -1051,7 +1136,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 */
 	private boolean shouldTimeALLZero(IntegrationOfDaily integrationOfDaily, WorkType workType) {
 		return (workType.getDailyWork().isWeekDayOrHolidayWork()
-				&& !checkAttendanceLeaveState(integrationOfDaily.getAttendanceLeave()));
+				&& checkAttendanceLeaveState(integrationOfDaily.getAttendanceLeave()));
 	}
 
 	/**

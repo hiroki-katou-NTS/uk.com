@@ -44,6 +44,10 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -51,6 +55,8 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
@@ -123,6 +129,13 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 	@Inject
 	private EmpEmployeeAdapter empAdapter;
 	
+	@Inject
+	private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
+	@Inject
+	private NurseClassificationRepository nurseClassificationRepo;
+	@Inject
+	private EmpAffiliationInforAdapter empAffInforAdapter;
+
 	private final String STATUS_REGISTER = "STATUS_REGISTER";
 	private final String STATUS_ERROR = "STATUS_ERROR";
 	private final String LIST_ERROR = "LIST_ERROR";
@@ -142,7 +155,7 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 				fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet, workScheduleRepo, correctWorkSchedule,
 				interimRemainDataMngRegisterDateChange, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
 				sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter,
-				shiftMasterRepo);
+				shiftMasterRepo, empMedicalWorkStyleHistoryRepo, nurseClassificationRepo, empAffInforAdapter);
 		List<ResultOfRegisteringWorkSchedule> lstRsOfRegisWorkSchedule = new ArrayList<ResultOfRegisteringWorkSchedule>();
 		
 		String cid = AppContexts.user().companyId();
@@ -255,6 +268,13 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 		@Inject
 		private ShiftMasterRepository shiftMasterRepo;
 		
+		@Inject
+		private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
+		@Inject
+		private NurseClassificationRepository nurseClassificationRepo;
+		@Inject
+		private EmpAffiliationInforAdapter empAffInforAdapter;
+		
 		// implements WorkInformation.Require
 		@Override
 		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
@@ -319,13 +339,6 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 		
 		// implements AffiliationInforOfDailyAttd.Require
 		@Override
-		public SharedAffWorkPlaceHisImport getAffWorkplaceHistory(String employeeId, GeneralDate standardDate) {
-			Optional<SharedAffWorkPlaceHisImport> rs = sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, standardDate);
-			return rs.isPresent() ? rs.get() : null;
-		}
-		
-		// implements AffiliationInforOfDailyAttd.Require
-		@Override
 		public SClsHistImport getClassificationHistory(String employeeId, GeneralDate standardDate) {
 			Optional<SClsHistImported> imported = syClassificationAdapter.findSClsHistBySid(companyId, employeeId, standardDate);
 			if (!imported.isPresent()) {
@@ -349,6 +362,13 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 		public Optional<WorkingConditionItem> getWorkingConditionHistory(String employeeId, GeneralDate standardDate) {
 			Optional<WorkingConditionItem> rs = workingConditionRepo.getWorkingConditionItemByEmpIDAndDate(companyId, standardDate, employeeId);
 			return rs;
+		}
+		
+		// implements AffiliationInforOfDailyAttd.Require
+		@Override
+		public EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate) {
+			List<EmpOrganizationImport> info = empAffInforAdapter.getEmpOrganization(standardDate, Arrays.asList(employeeId));
+			return info.isEmpty()? null: info.get(0);
 		}
 		
 		//implements EditStateOfDailyAttd.Require
@@ -393,6 +413,19 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 		public Optional<ShiftMaster> getShiftMaster(ShiftMasterCode shiftMasterCode) {
 			Optional<ShiftMaster> rs = shiftMasterRepo.getByShiftMaterCd(companyId, shiftMasterCode  == null ? null : shiftMasterCode.toString());
 			return rs;
+		}
+
+		// GetEmpLicenseClassificationService
+		@Override
+		public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp,
+				GeneralDate referenceDate) {
+			return empMedicalWorkStyleHistoryRepo.get(listEmp, referenceDate);
+		}
+		
+		// GetEmpLicenseClassificationService
+		@Override
+		public List<NurseClassification> getListCompanyNurseCategory() {
+			return nurseClassificationRepo.getListCompanyNurseCategory(AppContexts.user().companyId());
 		}
 	}
 }
