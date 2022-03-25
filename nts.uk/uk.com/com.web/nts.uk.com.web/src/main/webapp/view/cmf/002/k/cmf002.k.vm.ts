@@ -26,7 +26,7 @@ module nts.uk.com.view.cmf002.k.viewmodel {
         nullValueReplacementItems: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
         fixedValueItems: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
         formatSetting: any;
-
+        enable: KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             let self = this;
             let parameter = getShared('CMF002_K_PARAMS');
@@ -34,6 +34,15 @@ module nts.uk.com.view.cmf002.k.viewmodel {
                 self.formatSetting = parameter.formatSetting;
                 self.selectModeScreen(parameter.screenMode);
             }
+            self.dateDataFormatSetting().fixedValue.subscribe((value)=>{
+                if (value == self.notUse) {
+                    self.dateDataFormatSetting().valueOfFixedValue(null);
+                    self.enable(true);
+                } else {
+                    self.dateDataFormatSetting().valueOfNullValueSubs(null);
+                    self.enable(false);
+                }
+            })
         }
 
         start(): JQueryPromise<any> {
@@ -41,12 +50,12 @@ module nts.uk.com.view.cmf002.k.viewmodel {
             let dfd = $.Deferred();
 
             if (self.selectModeScreen() == dataformatSettingMode.INDIVIDUAL && self.formatSetting) {
-                self.dateDataFormatSetting(new model.DateDataFormatSetting(self.formatSetting));
+                self.dateDataFormatSetting().update(self.formatSetting);
                 dfd.resolve();
             } else {
                 service.getDateFormatSetting().done(function(data: any) {
                     if (data != null) {
-                        self.dateDataFormatSetting(new model.DateDataFormatSetting(data));
+                        self.dateDataFormatSetting().update(data);
                     }
                     dfd.resolve();
                 }).fail(function(error) {
@@ -56,18 +65,6 @@ module nts.uk.com.view.cmf002.k.viewmodel {
             }           
 
             return dfd.promise();
-        }
-
-        //enable component when not using fixed value
-        enable() {
-            let self = this;
-            if (self.dateDataFormatSetting().fixedValue() == self.notUse) {
-                self.dateDataFormatSetting().valueOfFixedValue(null);
-                return true;
-            } else {
-                self.dateDataFormatSetting().valueOfNullValueSubs(null);
-                return false;
-            }
         }
 
         //enable component replacement value editor
