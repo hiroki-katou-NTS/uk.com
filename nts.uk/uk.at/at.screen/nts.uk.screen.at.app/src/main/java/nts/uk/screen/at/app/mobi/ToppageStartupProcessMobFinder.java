@@ -1298,13 +1298,8 @@ public class ToppageStartupProcessMobFinder {
 		}
 
 		@Override
-<<<<<<< HEAD
-		public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
-			return sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, baseDate);
-=======
 		public Optional<SEmpHistoryImport> getSEmpHistoryImport(String employeeId, GeneralDate baseDate) {
-			return Optional.empty();
->>>>>>> pj/at/release_ver4
+			return sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, baseDate);
 		}
     }
 }
