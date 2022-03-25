@@ -9,7 +9,7 @@ module nts.uk.at.view.kaf000.b.component7.viewmodel {
 		        	<div class="cell valign-center" data-bind="ntsFormLabel: {required: appReasonCDRequired}, text: $i18n('KAF000_51')"></div>
 				</div>
 				<div class="cell valign-top">
-					<div id="combo-box" style="width: 472px"
+					<div id="kaf000-b-component7-comboReason" style="width: 472px"
 						data-bind="ntsComboBox: {
 		        						name: $i18n('KAF000_51'),
 		                                options: reasonTypeItemLst,
@@ -31,7 +31,7 @@ module nts.uk.at.view.kaf000.b.component7.viewmodel {
 						       		}"></div>
 		     	</div>
 		       	<div class="cell valign-top">
-		           	<textarea style="height: 80px;" id="inpReasonTextarea"
+		           	<textarea style="height: 80px;" id="kaf000-b-component7-textReason"
 		               	data-bind="ntsMultilineEditor: {
 		                  				name: $i18n('KAF000_52'),
 			                            value: opAppReason,

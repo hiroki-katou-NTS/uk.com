@@ -330,8 +330,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				'#kaf000-a-component5-textReason',
 				'#kaf000-b-component4 .nts-input', 
 				'#kaf000-b-component3-prePost', 
-				'#kaf000-b-component7 #combo-box', 
-				'#kaf000-b-component7 #inpReasonTextarea', 
+				'#kaf000-b-component7-comboReason', 
+				'#kaf000-b-component7-textReason', 
 				'#inpStartTime1', 
 				'#inpEndTime1')
 				.then(isValid => {

@@ -213,7 +213,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             vm.$blockui( "show" );
             vm.$validate([
                 '.ntsControl',
-                '.nts-input'
+                '.nts-input', '#kaf000-b-component7-textReason'
             ]).then((valid: boolean) => {
                 if (valid) {
                     vm.$ajax(API.checkBeforeRegister, command).done((res: any) => {

@@ -74,7 +74,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             vm.$blockui("show");
             let dfd = $.Deferred();
 			// validate chung KAF000
-			 vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+			 vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-b-component7-comboReason')
             .then((isValid) => {
                 if (isValid) {
 					// validate riêng cho màn hình

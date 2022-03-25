@@ -654,7 +654,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			vm.$blockui("show");
 			let dfd = $.Deferred();
 			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', 
-			'#kaf000-a-component5-comboReason', '#kaf000-a-component5-textReason', '#combo-box', '#inpReasonTextarea', '#work-type-combobox')
+			'#kaf000-b-component7-comboReason', '#kaf000-b-component7-textReason', '#combo-box', '#inpReasonTextarea', '#work-type-combobox')
 			.then((valid) => {
                 if (valid) {
                     if (vm.selectedType() === 3 && vm.condition6()) {

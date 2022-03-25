@@ -169,7 +169,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
             };
             vm.$blockui("show");
 
-            return vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+            return vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-b-component7-comboReason')
                 .then((valid: boolean) => {
                     if (valid) {
                         return vm.$ajax(PATH_API.update, command);
