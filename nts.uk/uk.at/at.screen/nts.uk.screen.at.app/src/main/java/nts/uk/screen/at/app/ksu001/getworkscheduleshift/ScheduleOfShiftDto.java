@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.supportmanagement.SupportInfoOfEmployee;
 import nts.uk.ctx.at.shared.dom.supportmanagement.SupportStatus;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
+import nts.uk.shr.com.context.AppContexts;
 
 
 /**
@@ -97,7 +98,7 @@ public class ScheduleOfShiftDto {
 			
 			Optional<WorkStyle> workStyle = Optional.empty();
 			if (workInformation.getWorkTypeCode() != null) {
-				workStyle = workInformation.getWorkStyle(require);
+				workStyle = workInformation.getWorkStyle(require, AppContexts.user().companyId());
 			}
 
 			// step 3.2  シフトの編集状態を判断する

@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.EditStateOfDailyAttdDto;
 import nts.uk.screen.at.app.ksu001.start.SupportCategory;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv
@@ -194,7 +195,7 @@ public class WorkScheduleWorkInforDto {
 			// step 3.1: 出勤・休日系の判定(@Require)
 			Optional<WorkStyle> workStyle = Optional.empty();
 			if (workInformation.getWorkTypeCode() != null) {
-				workStyle = workInformation.getWorkStyle(require); // workHolidayCls
+				workStyle = workInformation.getWorkStyle(require, AppContexts.user().companyId()); // workHolidayCls
 			}
 
 			String workTypeCode = workInformation.getWorkTypeCode() == null ? null : workInformation.getWorkTypeCode().toString();
