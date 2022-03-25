@@ -48,7 +48,7 @@ public class SendToNRLRemote extends NRLRequest<Frame> {
 		val xml = ConvertTimeRecordUpdateToXmlService.convertToXml(impl,
 				new ContractCode(context.getTerminal().getContractCode()), new EmpInfoTerminalCode(empInfoTerCode));
 		if (xml.isPresent()) {
-			payload = xml.get();
+			payload = Codryptofy.convertToShiftJIS(xml.get());
 		}
 		payload = Codryptofy.paddingWithByte(payload, 51200);
 		List<MapItem> items = NRContentList.createFieldForPadding2(Command.TR_REMOTE,

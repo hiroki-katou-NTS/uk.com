@@ -152,7 +152,7 @@ public class TimeRecordSettingInfoDto {
 			master.ifPresent(data -> builder.append(data.getRebootFlg().equals("1") ? ",1" : ""));
 			builder.append("\n");
 		});
-		return StringUtils.removeEnd(builder.toString(), "\n");
+		return builder.toString();
 	}
 
 	// [S-1] タイムレコード設定受信フォーマットリストを作る

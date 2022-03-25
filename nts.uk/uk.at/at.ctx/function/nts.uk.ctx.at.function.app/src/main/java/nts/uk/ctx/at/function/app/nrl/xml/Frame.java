@@ -216,8 +216,13 @@ public class Frame implements MeanCarryable {
 	        	if(lineNumber != 0) {
 	        	String row = line.trim();
 	        	if(row.length() >=2 && row.substring(row.length()-2, row.length()).endsWith("/>")) {
-	        		String endChar = row.substring(0, row.length()-2) + " />";
-	        		 result.append(endChar);
+	        		if(row.startsWith("<subitem")) {
+	        			String endChar = row.substring(0, row.length()-2) + " />";
+		        		 result.append(endChar);
+	        		}else {
+	        			String endChar = line.substring(0, line.length()-2) + " />";
+		        		result.append(endChar);
+	        		}
 	        	}else {
 	            result.append(row);
 	        	}

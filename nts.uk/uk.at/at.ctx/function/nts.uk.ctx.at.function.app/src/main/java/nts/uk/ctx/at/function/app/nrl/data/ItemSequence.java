@@ -102,8 +102,7 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			Element.BCC);
 
 	public static final List<String> TR_REMOTE = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
-			Element.PAYLOAD, Element.BCC);
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING, Element.BCC);
 	
 	public static final List<String> APP_REASON_REQ_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
 			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
@@ -200,7 +199,7 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			break;
 			
 		case TR_REMOTE:
-			orders = TR_REMOTE;
+			orders =  request ?TR_REMOTE : TR_REMOTE_SEND_SETTING;
 			break;
 			
 		case APPLICATION_INFO:

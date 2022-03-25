@@ -30,7 +30,7 @@ public class DefaultXDocument extends XDocument<Frame> {
 	 * @see nts.uk.ctx.at.function.app.nrl.xml.XDocument#dunmarshal(nts.arc.layer.infra.file.temp.ApplicationTemporaryFile)
 	 */
 	public Optional<Frame> dunmarshal(ApplicationTemporaryFile tmpFile) {
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(tmpFile.createInputStream()))) {
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(tmpFile.createInputStream(), "Shift_JIS"))) {
 			byte[] payload = null, origPl = null;
 			String line = null;
 			Frame frame = null;
