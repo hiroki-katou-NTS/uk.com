@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ScreenMode;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.kdw013.query.GetEmployeesCameToSupport;
@@ -22,7 +23,8 @@ public class GetDailySupportWorkers {
 		int mode = param.getDisplayMode().intValue();
 		if (mode == ScreenMode.APPROVAL.value || mode == ScreenMode.NORMAL.value) {
 			// 応援勤務に来た社員を取得する
-			List<String> lstEmpSupport = employeeSupport.getEmployeesCameToSupport(param.getPeriod(), param.getLstWrkplaceId());
+			DatePeriod period = new DatePeriod(param.getPeriod().getStartDate(), param.getPeriod().getEndDate());
+			List<String> lstEmpSupport = employeeSupport.getEmployeesCameToSupport(period, param.getLstWrkplaceId());
 			
 			// 「日別実績の修正の状態」を更新する
 			// $対象者リスト = INPUT「日別実績の修正の状態．対象社員」

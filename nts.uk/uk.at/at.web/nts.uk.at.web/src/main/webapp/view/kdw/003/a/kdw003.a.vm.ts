@@ -284,14 +284,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         checkUnLock: KnockoutObservable<boolean> = ko.observable(false);
 
-<<<<<<< HEAD
 		mode: KnockoutObservable<number> = ko.observable(1);
 		menuName: KnockoutObservable<string> = ko.observable("");
 
-        constructor(dataShare: any) {
-            var self = this;
-			
-=======
         //delete session
         screenDto : any;
         dataSessionDto : any;
@@ -305,7 +300,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.paramCommonAsync = null;
             self.dpStateParam = null;
 
->>>>>>> pj/at/release_ver4
             self.initLegendButton();
             self.initDateRanger();
             self.initDisplayFormat();
@@ -616,7 +610,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-<<<<<<< HEAD
 	            character.restore("characterKdw003a").done((obj: Characteristics) => {
 	                if (obj != undefined && __viewContext.user.employeeId == obj.employeeId && __viewContext.user.companyId == obj.companyId) {
 	                    self.characteristics = obj;
@@ -632,30 +625,31 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 	                }
 					let checkDisFormat : any = "";
 					service.getMenu().done((data)=>{
-						if(!_.isNil(data)){
-							let item = _.filter(data, (e)=>e.param.equals(_.last(window.location.href) == "0" ? "displayformat=0" : _.last(window.location.href) == "1" ? "displayformat=1" : "displayformat=2"));
-		                    let menuName : any = [];
-							if (item.length > 0)
-							menuName.push(item[0].param);
-							
-							if(menuName == '' || _.includes(menuName,"displayformat=0") || _.includes(menuName, "displayformat=2")){
+						if( _.isEmpty(self.shareObject())){
+							if(!_.isNil(data)){
+								let item = _.filter(data, (e)=>e.param.equals(_.last(window.location.href) == "0" ? "displayformat=0" : _.last(window.location.href) == "1" ? "displayformat=1" : "displayformat=2"));
+			                    let menuName : any = '';
+								if (item.length > 0)
+								menuName = item[0].param;
+								
+								if(menuName == '' || _.includes(menuName,"displayformat=0") || _.includes(menuName, "displayformat=2")){
+									checkDisFormat = 0;
+								}
+					
+								if(_.includes(menuName, "displayformat=1")) {
+									checkDisFormat = 1;
+								}
+							} else {
 								checkDisFormat = 0;
 							}
-				
-							if(_.includes(menuName, "displayformat=1")) {
-								checkDisFormat = 1;
-							}
-						} else {
-							checkDisFormat = 0;
-						}
-		            
+			            } 
 	
 	                var param = {
 	                    dateRange: dateRangeParam ? {
 	                        startDate: moment(dateRangeParam.startDate).utc().toISOString(),
 	                        endDate: moment(dateRangeParam.endDate).utc().toISOString()
 	                    } : null,
-	                    displayFormat: !_.isEqual(checkDisFormat, "")  ? checkDisFormat : _.isEmpty(self.shareObject()) ? (_.isEmpty(self.characteristics) ? 0 : self.characteristics.formatExtract) : self.shareObject().displayFormat,
+	                    displayFormat: !_.isEqual(checkDisFormat, '')  ? checkDisFormat : _.isEmpty(self.shareObject()) ? (_.isEmpty(self.characteristics) ? 0 : self.characteristics.formatExtract) : self.shareObject().displayFormat,
 	                    initScreen: (_.isEmpty(self.characteristics) || !_.isEmpty(self.shareObject())) ? 0 : 1,
 	                    mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
 	                    lstEmployee: [],

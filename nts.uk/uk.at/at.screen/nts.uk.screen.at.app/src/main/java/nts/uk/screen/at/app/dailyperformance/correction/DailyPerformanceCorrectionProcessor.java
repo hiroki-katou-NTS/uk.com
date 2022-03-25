@@ -172,11 +172,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.month.ErrorMonthProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
-<<<<<<< HEAD
 import nts.uk.screen.at.app.kdw013.query.GetEmployeesCameToSupport;
-=======
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ClosureDateDto;
->>>>>>> pj/at/release_ver4
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -1838,7 +1835,7 @@ public class DailyPerformanceCorrectionProcessor {
 		List<ResultRequest597Export> lstInfoEmp =  workplacePub.getLstEmpByWorkplaceIdsAndPeriod(lstWplId, period);
 		
 		InitialDisplayEmployeeDto result = screenDto.getStateParam() != null ? new InitialDisplayEmployeeDto(lstEmployeeId, screenDto.getStateParam()) :
-			new InitialDisplayEmployeeDto(lstEmployeeId, new DPCorrectionStateParam(period, employeeIds, mode, 
+			new InitialDisplayEmployeeDto(lstEmployeeId, new DPCorrectionStateParam(range, employeeIds, mode, 
 					new ArrayList<>(), null, null, isTranfer, new ArrayList<>(), new ArrayList<>()));
 		
 		if(mode == ScreenMode.APPROVAL.value || mode == ScreenMode.NORMAL.value) {
@@ -2272,7 +2269,8 @@ public class DailyPerformanceCorrectionProcessor {
 		int mode = param.getDisplayMode().intValue();
 		if (mode == ScreenMode.APPROVAL.value || mode == ScreenMode.NORMAL.value) {
 			// 応援勤務に来た社員を取得する
-			List<String> lstEmpSupport = employeeSupport.getEmployeesCameToSupport(param.getPeriod(), param.getLstWrkplaceId());
+			DatePeriod period = new DatePeriod(param.getPeriod().getStartDate(), param.getPeriod().getEndDate());
+			List<String> lstEmpSupport = employeeSupport.getEmployeesCameToSupport(period, param.getLstWrkplaceId());
 			
 			// 「日別実績の修正の状態」を更新する
 			// $対象者リスト = INPUT「日別実績の修正の状態．対象社員」

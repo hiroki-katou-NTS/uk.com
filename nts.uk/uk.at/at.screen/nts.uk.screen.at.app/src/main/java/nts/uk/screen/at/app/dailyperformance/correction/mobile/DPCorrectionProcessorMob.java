@@ -999,7 +999,7 @@ public class DPCorrectionProcessorMob {
 		DatePeriod period = new DatePeriod(range.getStartDate(), range.getEndDate());
 		List<ResultRequest597Export> lstInfoEmp = new ArrayList<>();
 		InitialDisplayEmployeeDto result = screenDto.getStateParam() != null ? new InitialDisplayEmployeeDto(lstEmployeeId, screenDto.getStateParam()) :
-			new InitialDisplayEmployeeDto(lstEmployeeId, new DPCorrectionStateParam(period, employeeIds, mode, 
+			new InitialDisplayEmployeeDto(lstEmployeeId, new DPCorrectionStateParam(range, employeeIds, mode, 
 					new ArrayList<>(), null, null, isTranfer, new ArrayList<>(), new ArrayList<>()));
 		if (mode == ScreenMode.NORMAL.value) {
 

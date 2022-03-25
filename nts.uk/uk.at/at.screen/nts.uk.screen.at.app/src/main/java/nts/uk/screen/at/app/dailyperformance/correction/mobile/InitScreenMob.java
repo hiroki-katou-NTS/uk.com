@@ -514,13 +514,9 @@ public class InitScreenMob {
 			}
 		}
 		screenDto.setLstData(lstData);
-<<<<<<< HEAD
 		setStateParam(screenDto, resultPeriod, displayFormat, false, allIds);
-=======
-		setStateParam(screenDto, resultPeriod, displayFormat, false);
 		List<ConfirmStatusActualResultKDW003Dto> lstConfirmStatusActualResultKDW003Dto = confirmResults.stream().map(c->ConfirmStatusActualResultKDW003Dto.fromDomain(c)).collect(Collectors.toList());
 		List<ApprovalStatusActualResultKDW003Dto> lstApprovalStatusActualResultKDW003Dto = approvalResults.stream().map(c->ApprovalStatusActualResultKDW003Dto.fromDomain(c)).collect(Collectors.toList());
->>>>>>> pj/at/release_ver4
 		screenDto.setApprovalConfirmCache(new ApprovalConfirmCache(sId, listEmployeeId,
 				dateRange, 0, lstConfirmStatusActualResultKDW003Dto, lstApprovalStatusActualResultKDW003Dto));
 		return screenDto;

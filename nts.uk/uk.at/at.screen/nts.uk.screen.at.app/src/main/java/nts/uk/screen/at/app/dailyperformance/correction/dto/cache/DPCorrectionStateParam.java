@@ -52,7 +52,7 @@ public class DPCorrectionStateParam implements Serializable{
 	//応援来た社員
 	private List<String> lstEmpsSupport;
 
-	public DPCorrectionStateParam(DatePeriod period, List<String> employeeIds, Integer displayMode,
+	public DPCorrectionStateParam(DateRange period, List<String> employeeIds, Integer displayMode,
 			List<String> lstEmpSelect, DPControlDisplayItem displayItem, DatePeriodInfo dateInfo,
 			Boolean transferDesScreen) {
 		super();
