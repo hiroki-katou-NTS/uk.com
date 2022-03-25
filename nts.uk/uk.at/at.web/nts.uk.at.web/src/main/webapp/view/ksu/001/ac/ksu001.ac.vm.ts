@@ -135,30 +135,30 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                             let workStyle = workInfo[0].workStyle;
                             if (workStyle == AttendanceHolidayAttr.FULL_TIME + '') {
                                 if (modeBackGround == 1) {
-                                    return { textColor: "#0000ff", background: "#" + workInfo[0].color }; // color-attendance
+                                    return { textColor: "#1973b5", background: "#" + workInfo[0].color }; // color-attendance
                                 } else {
-                                    return { textColor: "#0000ff" }; // color-attendance
+                                    return { textColor: "#1973b5" }; // color-attendance
                                 }
                             }
                             if (workStyle == AttendanceHolidayAttr.MORNING + '') {
                                 if (modeBackGround == 1) {
-                                    return { textColor: "#FF7F27", background: "#" + workInfo[0].color };// color-half-day-work
+                                    return { textColor: "#e6a322", background: "#" + workInfo[0].color };// color-half-day-work
                                 } else {
-                                    return { textColor: "#FF7F27" };// color-half-day-work
+                                    return { textColor: "#e6a322" };// color-half-day-work
                                 }
                             }
                             if (workStyle == AttendanceHolidayAttr.AFTERNOON + '') {
                                 if (modeBackGround == 1) {
-                                    return { textColor: "#FF7F27", background: "#" + workInfo[0].color };// color-half-day-work
+                                    return { textColor: "#e6a322", background: "#" + workInfo[0].color };// color-half-day-work
                                 } else {
-                                    return { textColor: "#FF7F27" };// color-half-day-work
+                                    return { textColor: "#e6a322" };// color-half-day-work
                                 }
                             }
                             if (workStyle == AttendanceHolidayAttr.HOLIDAY + '') {
                                 if (modeBackGround == 1) {
-                                    return { textColor: "#ff0000", background: "#" + workInfo[0].color };// color-holiday
+                                    return { textColor: "#db4f51", background: "#" + workInfo[0].color };// color-holiday
                                 } else {
-                                    return { textColor: "#ff0000" };// color-holiday
+                                    return { textColor: "#db4f51" };// color-holiday
                                 }
 
                             }
@@ -235,30 +235,30 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                             let workStyle = workInfo[0].workStyle;
                             if (workStyle == AttendanceHolidayAttr.FULL_TIME + '') {
                                 if (modeBackGround == 1) {
-                                    return { textColor: "#0000ff", background: "#" + workInfo[0].color }; // color-attendance
+                                    return { textColor: "#1973b5", background: "#" + workInfo[0].color }; // color-attendance
                                 } else {
-                                    return { textColor: "#0000ff" }; // color-attendance
+                                    return { textColor: "#1973b5" }; // color-attendance
                                 }
                             }
                             if (workStyle == AttendanceHolidayAttr.MORNING + '') {
                                 if (modeBackGround == 1) {
-                                    return { textColor: "#FF7F27", background: "#" + workInfo[0].color };// color-half-day-work
+                                    return { textColor: "#e6a322", background: "#" + workInfo[0].color };// color-half-day-work
                                 } else {
-                                    return { textColor: "#FF7F27" };// color-half-day-work
+                                    return { textColor: "#e6a322" };// color-half-day-work
                                 }
                             }
                             if (workStyle == AttendanceHolidayAttr.AFTERNOON + '') {
                                 if (modeBackGround == 1) {
-                                    return { textColor: "#FF7F27", background: "#" + workInfo[0].color };// color-half-day-work
+                                    return { textColor: "#e6a322", background: "#" + workInfo[0].color };// color-half-day-work
                                 } else {
-                                    return { textColor: "#FF7F27" };// color-half-day-work
+                                    return { textColor: "#e6a322" };// color-half-day-work
                                 }
                             }
                             if (workStyle == AttendanceHolidayAttr.HOLIDAY + '') {
                                 if (modeBackGround == 1) {
-                                    return { textColor: "#ff0000", background: "#" + workInfo[0].color };// color-holiday
+                                    return { textColor: "#db4f51", background: "#" + workInfo[0].color };// color-holiday
                                 } else {
-                                    return { textColor: "#ff0000" };// color-holiday
+                                    return { textColor: "#db4f51" };// color-holiday
                                 }
                             }
                             if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
