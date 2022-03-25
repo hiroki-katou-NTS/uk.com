@@ -52,8 +52,8 @@ public class TimeLeavingWorkTest {
 	public void checkStampLeakState_Exist(){
 		TimeLeavingWork timeLeavingWork = new TimeLeavingWork(
 				new WorkNo(1),
-				Helper.createStamp(TimeWithDayAttr.hourMinute(8, 30), null),
-				Helper.createStamp(TimeWithDayAttr.hourMinute(17, 30), null));
+				Helper.createStamp(TimeWithDayAttr.hourMinute(8, 30), TimeWithDayAttr.hourMinute(8, 30)),
+				Helper.createStamp(TimeWithDayAttr.hourMinute(17, 30), TimeWithDayAttr.hourMinute(17, 30)));
 		
 		// Execute & Assertion
 		assertThat(timeLeavingWork.checkStampLeakState()).isEqualTo(TLWStampLeakState.EXIST);
@@ -64,7 +64,7 @@ public class TimeLeavingWorkTest {
 		TimeLeavingWork timeLeavingWork = new TimeLeavingWork(
 				new WorkNo(1),
 				null,
-				Helper.createStamp(TimeWithDayAttr.hourMinute(17, 30), null));
+				Helper.createStamp(TimeWithDayAttr.hourMinute(17, 30), TimeWithDayAttr.hourMinute(17, 30)));
 		
 		// Execute & Assertion
 		assertThat(timeLeavingWork.checkStampLeakState()).isEqualTo(TLWStampLeakState.NO_ATTENDANCE);
@@ -74,7 +74,7 @@ public class TimeLeavingWorkTest {
 	public void checkStampLeakState_NoLeave(){
 		TimeLeavingWork timeLeavingWork = new TimeLeavingWork(
 				new WorkNo(1),
-				Helper.createStamp(TimeWithDayAttr.hourMinute(8, 30), null),
+				Helper.createStamp(TimeWithDayAttr.hourMinute(8, 30), TimeWithDayAttr.hourMinute(8, 30)),
 				null);
 		
 		// Execute & Assertion
