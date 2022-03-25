@@ -322,9 +322,16 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 			cell.get(rows, 8).setValue(stampList.getWorkingHour());
 			// 残業時間
 			cell.get(rows, 9).setStyle(overStyle);
-			cell.get(rows, 9).setValue(stampList.getOvertimeHour());
+			cell.get(rows, 9).setValue(deleteFirstZero(stampList.getOvertimeHour())); 
 			// 深夜時間
 			cell.get(rows, 10).setStyle(nightStyle);
-			cell.get(rows, 10).setValue(stampList.getNightTime());
+			cell.get(rows, 10).setValue(deleteFirstZero(stampList.getNightTime()));
+	}
+	
+	public String deleteFirstZero (String number) {
+		if (number.substring(0, 1).equals("0")) {
+			return number.substring(1);
+		}
+		return number;
 	}
 }
