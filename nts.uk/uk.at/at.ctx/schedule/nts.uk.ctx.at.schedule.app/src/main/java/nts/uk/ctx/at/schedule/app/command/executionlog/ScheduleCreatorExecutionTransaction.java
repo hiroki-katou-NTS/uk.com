@@ -51,6 +51,7 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.DateRegistedEmpSche;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.RegistrationListDateSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.createworkschedule.createschedulecommon.correctworkschedule.CorrectWorkSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ProcessingStatus;
@@ -603,10 +604,12 @@ public class ScheduleCreatorExecutionTransaction {
 					if (command.getContent().getConfirm()) {
 						atr = ConfirmedATR.CONFIRMED;
 					}
+					
 					WorkSchedule workSchedule = new WorkSchedule(integrationOfDaily.getEmployeeId(),
 							integrationOfDaily.getYmd(), atr, integrationOfDaily.getWorkInformation(),
 							integrationOfDaily.getAffiliationInfor(), integrationOfDaily.getBreakTime(),
 							integrationOfDaily.getEditState(), TaskSchedule.createWithEmptyList(),
+							SupportSchedule.createWithEmptyList(),
 							integrationOfDaily.getAttendanceLeave(),
 							integrationOfDaily.getAttendanceTimeOfDailyPerformance(), integrationOfDaily.getShortTime(),
 							integrationOfDaily.getOutingTime());
@@ -737,7 +740,9 @@ public class ScheduleCreatorExecutionTransaction {
 								nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek
 										.valueOf(dateInPeriod.dayOfWeek() - 1),
 								new ArrayList<>(), Optional.empty()),
-						null, new BreakTimeOfDailyAttd(), new ArrayList<>(), TaskSchedule.createWithEmptyList(),
+						null, new BreakTimeOfDailyAttd(), new ArrayList<>(), 
+						TaskSchedule.createWithEmptyList(),
+						SupportSchedule.createWithEmptyList(),
 						Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()),
 				workingConditionItem, scheManaStatuTempo);
 

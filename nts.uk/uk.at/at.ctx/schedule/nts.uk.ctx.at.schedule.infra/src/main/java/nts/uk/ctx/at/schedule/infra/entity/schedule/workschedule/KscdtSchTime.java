@@ -296,10 +296,6 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 	@JoinTable(name = "KSCDT_SCH_LEAVE_EARLY")
 	public List<KscdtSchLeaveEarly> kscdtSchLeaveEarly;
 
-//	@OneToMany(targetEntity = KscdtSchTask.class, mappedBy = "kscdtSchTime", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//	@JoinTable(name = "KSCDT_SCH_TASK")
-//	public List<KscdtSchTask> kscdtSchTask;
-
 	/**
 	 * 
 	 * @param workingTime 勤務予定．勤怠時間．勤務時間
@@ -435,10 +431,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 				.stream()
 				.map(c -> KscdtSchLeaveEarly.toEntity(sID, yMD, cID, c.getWorkNo().v(), c.getTimePaidUseTime()))
 				.collect(Collectors.toList());
-//		AtomicInteger index = new AtomicInteger(1);
-//		List<KscdtSchTask> lstKscdtSchTask = task.getDetails().stream()
-//				.map(c -> KscdtSchTask.toEntity(sID, yMD, cID, c, index.getAndIncrement())).collect(Collectors.toList());
-
+		
 		KscdtSchTime kscdtSchTime = new KscdtSchTime(pk, cID, // cid
 				workingTime.getWorkTimes() == null ? 0 : workingTime.getWorkTimes().v(), // count
 				workingTime.getWorkTimes() == null ? 0 : workingTime.getTotalTime().v(), // totalTime
@@ -624,17 +617,13 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		ActualWorkingTimeOfDaily workingTimeOfDaily = new ActualWorkingTimeOfDaily(constraintDiffTime, constraintTime,
 				timeDiff, totalWorkingTime, divTime, premiumTime);
 
-		// Create Task
-//		List<TaskScheduleDetail> details = kscdtSchTask.stream()
-//				.map(task -> new TaskScheduleDetail(new TaskCode(task.taskCode), new TimeSpanForCalc(new TimeWithDayAttr(task.startClock), new TimeWithDayAttr(task.endClock))))
-//				.collect(Collectors.toList());
-//		TaskSchedule taskSchedule = new TaskSchedule(details);
 		TaskSchedule taskSchedule = TaskSchedule.createWithEmptyList();
 
 		AttendanceTimeOfDailyAttendance optAttendanceTime = new AttendanceTimeOfDailyAttendance(null,
 				workingTimeOfDaily, null, null, null);
 
 		WorkSchedule workSchedule = new WorkSchedule(sID, yMD, null, null, null, null, null, taskSchedule,
+				null,
 				Optional.ofNullable(null), Optional.ofNullable(optAttendanceTime), Optional.ofNullable(null),
 				Optional.ofNullable(null));
 		return workSchedule;
@@ -703,7 +692,6 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		this.kscdtSchComeLate = kscdtSchComeLate;
 		this.kscdtSchGoingOut = kscdtSchGoingOut;
 		this.kscdtSchLeaveEarly = kscdtSchLeaveEarly;
-//		this.kscdtSchTask = kscdtSchTask;
 		//ver5
 		this.prsWorkTimeAmount = prsWorkTimeAmount;
 		this.premiumWorkTimeTotal = premiumWorkTimeTotal;

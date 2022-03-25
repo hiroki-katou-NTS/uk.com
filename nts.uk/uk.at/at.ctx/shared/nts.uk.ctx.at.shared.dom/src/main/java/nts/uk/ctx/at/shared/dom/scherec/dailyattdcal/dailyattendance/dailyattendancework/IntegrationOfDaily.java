@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.algorithm.CancelAppStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.GettingTimeVacactionService;
@@ -42,6 +43,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportInfoOfEmployee;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.GetAttendanceItemIdService;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.MaximumNumberOfSupport;
 
@@ -413,6 +416,39 @@ public class IntegrationOfDaily {
 				,	this.outingTime);
 	}
 	
+	/**
+	 * 社員の応援情報を取得する
+	 * @return
+	 */
+	public SupportInfoOfEmployee getSupportInfoOfEmployee() {
+		
+		if ( this.ouenTimeSheet.isEmpty() ) {
+			
+			return SupportInfoOfEmployee.createWithoutSupport(
+					new EmployeeId(this.employeeId), 
+					this.ymd, 
+					this.affiliationInfor.getAffiliationOrg() );
+		}
+		
+		if ( this.ouenTimeSheet.get(0).getSupportType() == SupportType.ALLDAY ) {
+			return SupportInfoOfEmployee.createWithAllDaySupport(
+					new EmployeeId(this.employeeId), 
+					this.ymd, 
+					this.affiliationInfor.getAffiliationOrg(),
+					this.ouenTimeSheet.get(0).getWorkContent().getWorkplace().getRecipientOrg() );
+		} else {
+			val recipientList = this.ouenTimeSheet.stream()
+					.map(timeSheet -> timeSheet.getWorkContent().getWorkplace().getRecipientOrg())
+					.collect(Collectors.toList());
+			
+			return SupportInfoOfEmployee.createWithTimezoneSupport(
+					new EmployeeId(this.employeeId), 
+					this.ymd, 
+					this.affiliationInfor.getAffiliationOrg(),
+					recipientList);
+		}
+	}
+		
 	/**
 	 * 応援別勤務職場の編集状態と応援別勤務場所の編集状態をクリアする
 	 * 

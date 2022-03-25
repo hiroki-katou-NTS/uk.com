@@ -10,18 +10,24 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.GetSupportInfoOfEmployee;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.GetListWtypeWtimeUseDailyAttendRecordService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkTypeWorkTimeUseDailyAttendanceRecord;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployee;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployeeRepository;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -37,8 +43,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.screen.at.app.ksu001.displayinworkinformation.EditStateOfDailyAttdDto;
-import nts.uk.screen.at.app.ksu001.start.SupportCategory;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -64,243 +68,66 @@ public class CreateWorkScheduleWorkInfor {
 	private FlexWorkSettingRepository flexWorkSet;
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSet;
+	@Inject 
+	private SupportableEmployeeRepository supportableEmpRepo;
+	@Inject
+	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 	
 	public List<WorkScheduleWorkInforDto> getDataScheduleOfWorkInfo(
-			Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMap) {		
+			Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMap, TargetOrgIdenInfor targetOrg) {		
 
 		String companyId = AppContexts.user().companyId();
 		List<WorkInfoOfDailyAttendance>  listWorkInfo = new ArrayList<WorkInfoOfDailyAttendance>();
 		mngStatusAndWScheMap.forEach((k,v)->{
 			if (v.isPresent()) {
-				WorkInfoOfDailyAttendance workInfo = v.get().getWorkInfo();
-				listWorkInfo.add(workInfo);
+				listWorkInfo.add(v.get().getWorkInfo());
 			}
 		});
 		
-		// call 日別勤怠の実績で利用する勤務種類と就業時間帯のリストを取得する
+		// step 1 call DomainService: 日別勤怠の実績で利用する勤務種類と就業時間帯のリストを取得する
 		WorkTypeWorkTimeUseDailyAttendanceRecord wTypeWTimeUseDailyAttendRecord = GetListWtypeWtimeUseDailyAttendRecordService.getdata(listWorkInfo);
 
-		// step 3
+		// step 2
 		List<WorkTypeCode> workTypeCodes = wTypeWTimeUseDailyAttendRecord.getLstWorkTypeCode().stream().filter(wt -> wt != null).collect(Collectors.toList());
 		List<String> lstWorkTypeCode     = workTypeCodes.stream().map(i -> i.toString()).collect(Collectors.toList());
 		//<<Public>> 指定した勤務種類をすべて取得する
 		List<WorkTypeInfor> lstWorkTypeInfor = this.workTypeRepo.getPossibleWorkTypeAndOrder(companyId, lstWorkTypeCode).stream().collect(Collectors.toList());
 
-		// step 4
+		// step 3
 		List<WorkTimeCode> workTimeCodes   = wTypeWTimeUseDailyAttendRecord.getLstWorkTimeCode().stream().filter(wt -> wt != null).collect(Collectors.toList());
 		List<String> lstWorkTimeCode       = workTimeCodes.stream().map(i -> i.toString()).collect(Collectors.toList());
 		List<WorkTimeSetting> lstWorkTimeSetting =  workTimeSettingRepo.getListWorkTime(companyId, lstWorkTimeCode);
 
-		// step 5
+		// step 4
 		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = new ArrayList<>();
-		mngStatusAndWScheMap.forEach((k, v) -> {
-			EmployeeWorkingStatus key = k;
-			Optional<WorkSchedule> value = v;
+		WorkInformation.Require requireWorkInfo = new RequireWorkInforImpl();
 
-			// step 5.1
-			boolean needToWork = key.getWorkingStatus().needCreateWorkSchedule();
-			if (!value.isPresent()) {
-				// step 5.2
-				WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder()
-						.employeeId(key.getEmployeeID())
-						.date(key.getDate())
-						.haveData(false)
-						.achievements(false)
-						.confirmed(false)
-						.needToWork(needToWork)
-						.supportCategory(SupportCategory.NotCheering.value)
-						.workTypeCode(null)
-						.workTypeName(null)
-						.workTypeEditStatus(null)
-						.workTimeCode(null)
-						.workTimeName(null)
-						.workTimeEditStatus(null)
-						.startTime(null)
-						.startTimeEditState(null)
-						.endTime(null)
-						.endTimeEditState(null)
-						.workHolidayCls(null)
-						.workTimeForm(null)
-						.conditionAbc1(true)
-						.conditionAbc2(true)
-						.build();
-
-				/*※Abc1
-				勤務予定（勤務情報）dto．実績か == true	Achievement						×	
-				勤務予定（勤務情報）dto．確定済みか == true Confirmed						×	
-				勤務予定（勤務情報）dto．勤務予定が必要か == false need a work				×	
-				勤務予定（勤務情報）dto．応援か == 時間帯応援先	 Support					× 
-				対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				× => check ở dưới UI	
-				上記以外																○	
-				*/
-				if(dto.achievements == true  || dto.confirmed == true || dto.needToWork == false || dto.supportCategory == SupportCategory.TimeSupport.value ){
-					dto.conditionAbc1 = false;
-				}
-
-				/* ※Abc2
-				 勤務予定（勤務情報）dto．実績か == true	Achievement						×	
-				勤務予定（勤務情報）dto．勤務予定が必要か == false	need a work				×	
-				勤務予定（勤務情報）dto．応援か == 時間帯応援先	 Support					×	
-				対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				× => check ở dưới UI
-				上記以外																○	
-				 */
-				if(dto.achievements == true  || dto.needToWork == false || dto.supportCategory == SupportCategory.TimeSupport.value ){
-					dto.conditionAbc2 = false;
-				}
+		mngStatusAndWScheMap.forEach((employeeWorkingStatus, workScheduleOpt) -> {
+			
+			Optional<WorkTypeInfor> workTypeInfor = Optional.empty();
+			Optional<WorkTimeSetting> workTimeSetting = Optional.empty();
+			if (workScheduleOpt.isPresent()) {
+				//※勤務種類：2のList<勤務種類> filter:$勤務種類コード＝＝勤務予定.勤務情報.勤務種類コード
+				WorkInformation workInformation = workScheduleOpt.get().getWorkInfo().getRecordInfo();
+				String workTypeCode = workInformation.getWorkTypeCode() == null ? null : workInformation.getWorkTypeCode().toString();
+				workTypeInfor = lstWorkTypeInfor.stream().filter(i -> i.getWorkTypeCode().equals(workTypeCode)).findFirst();
 				
-				listWorkScheduleWorkInfor.add(dto);
-			} else {
-				// step 5.2.1
-				WorkSchedule workSchedule = value.get();
-				WorkInformation workInformation = workSchedule.getWorkInfo().getRecordInfo();
-
-				WorkInformation.Require require2 = new RequireWorkInforImpl(workTypeRepo,workTimeSettingRepo, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
-				Optional<WorkStyle> workStyle = Optional.empty();
-				if (workInformation.getWorkTypeCode() != null) {
-					workStyle = workInformation.getWorkStyle(require2, companyId); // workHolidayCls
-				}
-
-				String workTypeCode = workInformation.getWorkTypeCode() == null  ? null : workInformation.getWorkTypeCode().toString();
-				String workTypeName = null;
-				boolean workTypeIsNotExit  = false;
-
-				Optional<WorkTypeInfor> workTypeInfor = lstWorkTypeInfor.stream().filter(i -> i.getWorkTypeCode().equals(workTypeCode)).findFirst();
-				if (workTypeInfor.isPresent()) {
-					workTypeName = workTypeInfor.get().getAbbreviationName();
-				} else if (!workTypeInfor.isPresent() && workTypeCode != null){
-					workTypeIsNotExit = true;
-				}
-
+				//※就業時間帯：3のList<就業時間帯> filter:$就業時間帯コード＝＝勤務予定.勤務情報.就業時間帯コード
 				String workTimeCode = workInformation.getWorkTimeCode() == null  ? null : workInformation.getWorkTimeCode().toString();
-				Optional<WorkTimeSetting> workTimeSetting = lstWorkTimeSetting.stream().filter(i -> i.getWorktimeCode().toString().equals(workTimeCode)).findFirst();
-				String workTimeName = null;
-
-				boolean workTimeIsNotExit  = false;
-				if (workTimeSetting.isPresent()) {
-					if (workTimeSetting.get().getWorkTimeDisplayName() != null && workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeAbName() != null ) {
-						workTimeName = workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeAbName().toString();
-					}
-				} else  if (!workTimeSetting.isPresent() && workTimeCode != null){
-					workTimeIsNotExit = true;
-				}
-
-				Integer startTime = null;
-				Integer endtTime = null;
-
-				if (workTimeCode != null) {
-					if (workSchedule.getOptTimeLeaving().isPresent()) {
-						Optional<TimeLeavingWork> timeLeavingWork = workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
-						if (timeLeavingWork.isPresent()) {
-							if(timeLeavingWork.get().getAttendanceStamp().isPresent()){
-								if(timeLeavingWork.get().getAttendanceStamp().get().getStamp().isPresent()){
-									if(timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay() != null){
-										if(timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()){
-											startTime = timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
-										}
-									}
-								}
-							}
-						}
-					}
-
-					if (workSchedule.getOptTimeLeaving().isPresent()) {
-						Optional<TimeLeavingWork> timeLeavingWork = workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
-						if (timeLeavingWork.isPresent()) {
-							if(timeLeavingWork.get().getLeaveStamp().isPresent()){
-								if(timeLeavingWork.get().getLeaveStamp().get().getStamp().isPresent()){
-									if(timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay() != null){
-										if(timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()){
-											endtTime = timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-
-				Optional<EditStateOfDailyAttd> workTypeEditStatus = workSchedule.getLstEditState().stream().filter(i -> i.getAttendanceItemId() == 28).findFirst();
-				Optional<EditStateOfDailyAttd> workTimeEditStatus = workSchedule.getLstEditState().stream().filter(i -> i.getAttendanceItemId() == 29).findFirst();
-				Optional<EditStateOfDailyAttd> startTimeEditStatus = workSchedule.getLstEditState().stream().filter(i -> i.getAttendanceItemId() == 31).findFirst();
-				Optional<EditStateOfDailyAttd> endTimeEditStatus = workSchedule.getLstEditState().stream().filter(i -> i.getAttendanceItemId() == 34).findFirst();
-
-				WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder()
-						.employeeId(key.getEmployeeID())
-						.date(key.getDate())
-						.haveData(true)
-						.achievements(false)
-						.confirmed(workSchedule.getConfirmedATR().value == ConfirmedATR.CONFIRMED.value)
-						.needToWork(needToWork)
-						.supportCategory(SupportCategory.NotCheering.value)
-						.workTypeCode(workTypeCode)
-						.workTypeName(workTypeName)
-						.workTypeEditStatus(workTypeEditStatus.isPresent() ? new EditStateOfDailyAttdDto(workTypeEditStatus.get().getAttendanceItemId(), workTypeEditStatus.get().getEditStateSetting().value) : null)
-						.workTimeCode(workTimeCode)
-						.workTimeName(workTimeName)
-						.workTimeEditStatus(workTimeEditStatus.isPresent() ? new EditStateOfDailyAttdDto(workTimeEditStatus.get().getAttendanceItemId(), workTimeEditStatus.get().getEditStateSetting().value) : null)
-						.startTime(startTime)
-						.startTimeEditState(startTimeEditStatus.isPresent() ? new EditStateOfDailyAttdDto(startTimeEditStatus.get().getAttendanceItemId(), startTimeEditStatus.get().getEditStateSetting().value) : null)
-						.endTime(endtTime)
-						.endTimeEditState(endTimeEditStatus.isPresent() ? new EditStateOfDailyAttdDto(endTimeEditStatus.get().getAttendanceItemId(), endTimeEditStatus.get().getEditStateSetting().value) : null)
-						.workHolidayCls(workStyle.isPresent() ? workStyle.get().value : null)
-						.workTypeIsNotExit(workTypeIsNotExit)
-						.workTimeIsNotExit(workTimeIsNotExit)
-						.workTypeNameKsu002(workTypeInfor.map(m -> m.getAbbreviationName()).orElse(workTypeCode == null ? null : workTypeCode + "{#KSU002_31}"))
-						.workTimeNameKsu002(workTimeSetting.map(m -> m.getWorkTimeDisplayName().getWorkTimeAbName().v()).orElse(workTimeCode == null ? null : workTimeCode + "{#KSU002_31}"))
-						.workTimeForm(workTimeSetting.map(m -> m.getWorkTimeDivision().getWorkTimeForm().value).orElse(null))
-						.conditionAbc1(true)
-						.conditionAbc2(true)
-						.build();
-
-				/*※Abc1
-				勤務予定（勤務情報）dto．実績か == true	Achievement						×	
-				勤務予定（勤務情報）dto．確定済みか == true Confirmed					    ×	
-				勤務予定（勤務情報）dto．勤務予定が必要か == false need a work				×	
-				勤務予定（勤務情報）dto．応援か == 時間帯応援先	 Support				    × 
-				対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				×	=> check ở dưới UI
-				上記以外															    ○	
-				*/
-				if(dto.achievements == true  || dto.confirmed == true || dto.needToWork == false || dto.supportCategory == SupportCategory.TimeSupport.value ){
-					dto.conditionAbc1 = false;
-				}
-
-				/* ※Abc2
-				 勤務予定（勤務情報）dto．実績か == true	Achievement						×	
-				勤務予定（勤務情報）dto．勤務予定が必要か == false	need a work				×	
-				勤務予定（勤務情報）dto．応援か == 時間帯応援先	 Support					×	
-				対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				× => check ở dưới UI
-				上記以外																○	
-				 */
-				if(dto.achievements == true  || dto.needToWork == false || dto.supportCategory == SupportCategory.TimeSupport.value ){
-					dto.conditionAbc2 = false;
-				}
-				
-				listWorkScheduleWorkInfor.add(dto);
+				workTimeSetting = lstWorkTimeSetting.stream().filter(i -> i.getWorktimeCode().toString().equals(workTimeCode)).findFirst();
 			}
+			
+			GetSupportInfoOfEmployee.Require requireGetSupportInfo = new RequireGetSupportInfoImpl(workScheduleOpt, Optional.empty());
+			
+			WorkScheduleWorkInforDto dto = new WorkScheduleWorkInforDto(employeeWorkingStatus, workScheduleOpt, workTypeInfor, workTimeSetting, targetOrg, wTypeWTimeUseDailyAttendRecord, requireWorkInfo, requireGetSupportInfo);
+			listWorkScheduleWorkInfor.add(dto);
 		});
 
 		return listWorkScheduleWorkInfor;
 	}
 	
 	@AllArgsConstructor
-	private static class RequireWorkInforImpl implements WorkInformation.Require {
-
-		private final String companyId = AppContexts.user().companyId();
-
-		@Inject
-		private WorkTypeRepository workTypeRepo;
-		@Inject
-		private WorkTimeSettingRepository workTimeSettingRepository;
-		@Inject
-		private BasicScheduleService basicScheduleService;
-		@Inject
-		private FixedWorkSettingRepository fixedWorkSet;
-		@Inject
-		private FlowWorkSettingRepository flowWorkSet;
-		@Inject
-		private FlexWorkSettingRepository flexWorkSet;
-		@Inject
-		private PredetemineTimeSettingRepository predetemineTimeSet;
+	private class RequireWorkInforImpl implements WorkInformation.Require {
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -314,7 +141,7 @@ public class CreateWorkScheduleWorkInfor {
 
 		@Override
 		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
+			return workTimeSettingRepo.findByCode(companyId, workTimeCode.v());
 		}
 
 		@Override
@@ -333,8 +160,36 @@ public class CreateWorkScheduleWorkInfor {
 		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
 			return predetemineTimeSet.findByWorkTimeCode(companyId, workTimeCode.v());
 		}
-
 	}
+	
+	private class RequireGetSupportInfoImpl implements GetSupportInfoOfEmployee.Require {
+		
+		private Optional<WorkSchedule> workSchedule;
+		private Optional<IntegrationOfDaily> integrationOfDaily;
+		
+		public RequireGetSupportInfoImpl(Optional<WorkSchedule> workSchedule, Optional<IntegrationOfDaily> integrationOfDaily) {
+			this.workSchedule = workSchedule;
+			this.integrationOfDaily = integrationOfDaily;
+		}
+		
+		@Override
+		public List<SupportableEmployee> getSupportableEmployee(EmployeeId employeeId, GeneralDate date) {
+			return supportableEmpRepo.findByEmployeeIdWithPeriod(employeeId, DatePeriod.oneDay(date));
+		}
 
+		@Override
+		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
+			return empAffiliationInforAdapter.getEmpOrganization(baseDate, lstEmpId);
+		}
 
+		@Override
+		public Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date) {
+			return workSchedule;
+		}
+
+		@Override
+		public Optional<IntegrationOfDaily> getRecord(String employeeId, GeneralDate date) {
+			return integrationOfDaily;
+		}
+	}
 }

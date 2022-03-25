@@ -2,6 +2,9 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,7 +24,6 @@ public class AnnualPaidLeaveSettingTest {
 	
 	@Injectable
 	private Require require;
-	
 	
 	@Test
 	public void getters() {
