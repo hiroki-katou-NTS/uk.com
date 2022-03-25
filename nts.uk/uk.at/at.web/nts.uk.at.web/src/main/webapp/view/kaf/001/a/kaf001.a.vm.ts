@@ -1,9 +1,6 @@
 module kaf001.a.viewmodel {
     import block  = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
-    import jump   = nts.uk.request.jump;
-    import getText = nts.uk.resource.getText;
-    import modal = nts.uk.ui.windows.sub.modal;
 	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
     export class ScreenModel {
 
@@ -340,7 +337,20 @@ module kaf001.a.viewmodel {
                         break;
                     }
                     case ApplicationType.OPTIONAL_ITEM_APPLICATION: {
-                        vm.$jump("/view/kaf/020/a/index.xhtml", transfer);
+                        nts.uk.request.ajax('ctx/at/request/application/optionalitem/optionalItemAppSetting').done((data: Array<any>) => {
+                            if (data.length == 1) {
+                                vm.$jump('/view/kaf/020/b/index.xhtml', {
+                                    optionalItem: data[0],
+                                    empLst: transfer.employeeIds,
+                                    dateLst: [transfer.baseDate],
+                                    isAgentMode: transfer.isAgentMode,
+                                    baseDate: transfer.baseDate,
+                                    // screenCode: vm.screenCode
+                                });
+                            } else {
+                                vm.$jump("/view/kaf/020/a/index.xhtml", transfer);
+                            }
+                        });
                         break;
                     }
                 }
