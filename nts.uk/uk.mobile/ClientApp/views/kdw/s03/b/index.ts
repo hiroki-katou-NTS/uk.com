@@ -91,7 +91,8 @@ export class KdwS03BComponent extends Vue {
             date: new Date(),
             rowData: {},
             paramData: {},
-            displayformat: 0
+            displayformat: 0,
+            dataSessionDto : null
         })
     })
     public readonly params!: {
@@ -100,7 +101,8 @@ export class KdwS03BComponent extends Vue {
         date: Date,
         rowData: any,
         paramData: any,
-        displayformat: number
+        displayformat: number,
+        dataSessionDto: any
     };
     public checked1s: Array<number> = [];
     public screenData: any = {};
@@ -1000,11 +1002,15 @@ export class KdwS03BComponent extends Vue {
             
             return;
         }
+        let param = {
+            dpMobileAdUpParam: registerParam,
+            dataSessionDto: self.params.dataSessionDto
+        };
         self.$mask('show');
-        self.$http.post('at', API.register, registerParam)
+        self.$http.post('at', API.register, param)
             .then((data: any) => {
                 self.$mask('hide');
-                let dataAfter = data.data;
+                let dataAfter = data.data.dataResultAfterIU;
                 if (dataAfter.optimisticLock === true) {
                     self.$modal.error('Msg_1528').then(() => {
                         self.$close({ reload: true });
@@ -1107,8 +1113,8 @@ export class KdwS03BComponent extends Vue {
             'dataCheckSign': dataCheckSign,
             'dataCheckApproval': [],
             'dateRange': {
-                'startDate': self.params.date,
-                'endDate': self.params.date
+                'startDate': moment(self.params.date).format('YYYY/MM/DD'),
+                'endDate': moment(self.params.date).format('YYYY/MM/DD')
             },
             'lstNotFoundWorkType': []
         };
@@ -1177,12 +1183,16 @@ export class KdwS03BComponent extends Vue {
                     _.remove(self.listAutoCalc, key);
                     let oldRow = self.oldData[key];
                     let notChangeCellValue = (JSON.stringify(oldRow).localeCompare(JSON.stringify(self.screenData[0][key])) == 0) ? true : false;
-                    let param = {
+                    let paramCal = {
                         dailyEdits: [],
                         itemEdits: itemValues,
                         changeSpr31: false,
                         changeSpr34: false,
                         notChangeCell: notChangeCellValue
+                    };
+                    let param = {
+                        calcTimeParam: paramCal,
+                        dataSessionDto: self.params.dataSessionDto
                     };
                     self.$mask('show');
                     self.$http.post('at', API.linkItemCalc, param)

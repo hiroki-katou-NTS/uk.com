@@ -91,19 +91,17 @@ public class ExcessOutsideWorkDetail {
 	 * @param flexAggrSet フレックス時間勤務の月の集計設定
 	 * @param outsideOTBDItems 時間外超過設定：内訳項目一覧（積上番号順）
 	 * @param roundingSet 月別実績の丸め設定
+	 * @param isMultiMonth 清算期間が複数月か
 	 */
-	public void setTotalTimeAfterRound(
-			AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			RegularAndIrregularTimeOfMonthly regAndIrgTimeOfMonthly,
-			FlexTimeOfMonthly flexTimeOfMonthly,
-			FlexMonthWorkTimeAggrSet flexAggrSet,
-			List<OutsideOTBRDItem> outsideOTBDItems,
-			RoundingSetOfMonthly roundingSet){
+	public void setTotalTimeAfterRound(AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			RegularAndIrregularTimeOfMonthly regAndIrgTimeOfMonthly, FlexTimeOfMonthly flexTimeOfMonthly,
+			FlexMonthWorkTimeAggrSet flexAggrSet, List<OutsideOTBRDItem> outsideOTBDItems,
+			RoundingSetOfMonthly roundingSet, boolean isMultiMonth) {
 		
 		// 丸め前合計時間にコピーする
 		TotalTimeBeforeRound totalTimeBeforeRound = new TotalTimeBeforeRound();
-		totalTimeBeforeRound.copyValues(aggregateTotalWorkingTime,
-				regAndIrgTimeOfMonthly, flexTimeOfMonthly, flexAggrSet, outsideOTBDItems);
+		totalTimeBeforeRound.copyValues(aggregateTotalWorkingTime, regAndIrgTimeOfMonthly, 
+				flexTimeOfMonthly, flexAggrSet, outsideOTBDItems, isMultiMonth);
 		
 		// 各合計時間を丸める
 		this.totalTimeAfterRound.setTotalTimeAfterRound(totalTimeBeforeRound, roundingSet);
@@ -142,7 +140,7 @@ public class ExcessOutsideWorkDetail {
 	}
 	
 	/**
-	 * 丸め時間を割り当てる
+	 * 時間外超過明細の作成
 	 * @param monthlyDetail 月次明細
 	 * @param datePeriod 期間
 	 * @param roundingSet 月別実績の丸め設定

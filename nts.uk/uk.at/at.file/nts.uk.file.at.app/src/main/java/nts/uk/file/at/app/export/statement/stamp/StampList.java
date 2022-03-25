@@ -33,6 +33,9 @@ public class StampList {
 	
 	public void setTime(String datetime) {
 		this.time = datetime.split(" ")[1].substring(0, 5);
+		if (this.time.substring(0, 1).equals("0")) {
+			this.time = this.time.substring(1);
+		}
 	}
 	
 	public int rowHeigth() {

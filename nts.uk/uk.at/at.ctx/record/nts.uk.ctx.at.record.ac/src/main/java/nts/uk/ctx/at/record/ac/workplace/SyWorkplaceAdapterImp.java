@@ -15,8 +15,9 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
-import nts.uk.ctx.at.record.dom.adapter.workplace.WorkplaceInformationImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.WorkplaceInforImport;
+import nts.uk.ctx.at.record.dom.adapter.workplace.WorkplaceInformationImport;
+import nts.uk.ctx.bs.employee.pub.workplace.WkpByEmpExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
 /**
@@ -92,6 +93,18 @@ public class SyWorkplaceAdapterImp implements SyWorkplaceAdapter {
 	public String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
 		// TODO Auto-generated method stub
 		return this.workplacePub.getAffWkpHistItemByEmpDate(employeeID, date).getWorkplaceId();
+	}
+	
+	@Override
+	public List<SWkpHistRcImported> findWpkBySIDandPeriod(String sID, DatePeriod datePeriod) {
+		WkpByEmpExport wkp = workplacePub.getLstHistByEmpAndPeriod(sID, datePeriod.start(), datePeriod.end());
+		return wkp.getLstWkpInfo().stream().map(x -> new SWkpHistRcImported(
+				x.getDatePeriod(), 
+				wkp.getEmployeeID(), 
+				x.getWpkID(), 
+				x.getWpkCD(), 
+				x.getWpkName(), 
+				"")).collect(Collectors.toList());
 	}
 
 }

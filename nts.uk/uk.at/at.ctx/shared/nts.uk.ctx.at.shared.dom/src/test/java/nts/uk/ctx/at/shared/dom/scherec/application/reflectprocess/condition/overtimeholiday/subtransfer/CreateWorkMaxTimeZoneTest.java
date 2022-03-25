@@ -59,7 +59,7 @@ public class CreateWorkMaxTimeZoneTest {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.addTimeLeavNo(2, 1050, 1200, dailyAppT);//  No2 (時間帯= 1050~1200)
 		new Expectations() {
 			{
-				require.findByWorkTimeCode(anyString, anyString);
+				require.predetemineTimeSetting(anyString, (WorkTimeCode)any);
 				result = Optional.of(create(480, 840));
 
 				converter.setData((IntegrationOfDaily) any).toDomain();

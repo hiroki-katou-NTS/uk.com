@@ -20,8 +20,8 @@ public class ButtonSettingsDto {
 	/** ボタンの表示設定 */
 	private ButtonDisSetDto buttonDisSet;
 
-	/** ボタン種類 */
-	private ButtonTypeDto buttonType;
+	/** 打刻種類 */
+	private StampTypeDto stampType;
 
 	/** 使用区分 */
 	private int usrArt;
@@ -38,7 +38,7 @@ public class ButtonSettingsDto {
 	public static ButtonSettingsDto fromDomain(ButtonSettings domain) {
 		StampTypeDto stampType = StampTypeDto.fromDomain(domain.getType());
 		return new ButtonSettingsDto(domain.getButtonPositionNo().v(),
-				ButtonDisSetDto.fromDomain(domain.getButtonDisSet()), new ButtonTypeDto(0, stampType), domain.getUsrArt().value,
+				ButtonDisSetDto.fromDomain(domain.getButtonDisSet()), stampType, domain.getUsrArt().value,
 				domain.getAudioType().value, toButtonValueType(stampType),
 				domain.getSupportWplSet().map(c->c.value).orElse(null),
 				domain.getTaskChoiceArt().map(m -> m.value).orElse(null));

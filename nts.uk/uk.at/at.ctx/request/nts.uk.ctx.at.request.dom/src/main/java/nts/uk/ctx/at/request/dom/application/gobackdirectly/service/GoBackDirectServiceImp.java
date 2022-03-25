@@ -84,6 +84,9 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		
 		// 直行直帰申請起動時初期データを取得する
 		InforWorkGoBackDirectOutput inforWorkGoBackDirectOutput = this.getInfoWorkGoBackDirect(companyId, sid, date, baseDate, appEmployment, lstWts, appDispInfoStartup);
+		if(inforWorkGoBackDirectOutput.getOpErrorMsg().isPresent()) {
+			appDispInfoStartup.getAppDispInfoWithDateOutput().getErrorMsgLst().add(inforWorkGoBackDirectOutput.getOpErrorMsg().get());
+		}
 		
 		// ドメインモデル「直行直帰申請の反映」より取得する 
 		Optional<GoBackReflect> goBackReflectOp = goBackDirectServiceImp.findByCompany(companyId);
@@ -133,6 +136,9 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		
 		// 直行直帰申請起動時初期データを取得する
 		InforWorkGoBackDirectOutput inforWorkGoBackDirectOutput = this.getInfoWorkGoBackDirect(companyId, sid, date, baseDate, appEmployment, lstWts, appDispInfoStartup);
+		if(inforWorkGoBackDirectOutput.getOpErrorMsg().isPresent()) {
+			appDispInfoStartup.getAppDispInfoWithDateOutput().getErrorMsgLst().add(inforWorkGoBackDirectOutput.getOpErrorMsg().get());
+		}
 		
 		// ドメインモデル「直行直帰申請の反映」より取得する 
 		Optional<GoBackReflect> goBackReflectOp = goBackDirectServiceImp.findByCompany(companyId);
@@ -188,6 +194,7 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		output.setWorkType(initWkTypeWkTimeOutput.getWorkTypeCD());
 		output.setWorkTime(initWkTypeWkTimeOutput.getWorkTimeCD());
 		output.setLstWorkType(lstWorkType);
+		output.setOpErrorMsg(initWkTypeWkTimeOutput.getOpErrorMsg());
 		return output;
 
 	}
@@ -241,6 +248,9 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 						: null,
 						inforGoBackCommonDirectOutput.getAppDispInfoStartup()		
 				);
+		if(inforWorkGoBackDirectOutput.getOpErrorMsg().isPresent()) {
+			appDispInfoWithDateOutput.getErrorMsgLst().add(inforWorkGoBackDirectOutput.getOpErrorMsg().get());
+		}
 		
 		inforGoBackCommonDirectOutput.setWorkType(inforWorkGoBackDirectOutput.getWorkType());
 		inforGoBackCommonDirectOutput.setWorkTime(inforWorkGoBackDirectOutput.getWorkTime());
@@ -379,6 +389,9 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 						: null,
 						inforGoBackCommonDirectOutput.getAppDispInfoStartup()		
 				);
+		if(inforWorkGoBackDirectOutput.getOpErrorMsg().isPresent()) {
+			appDispInfoWithDateOutput.getErrorMsgLst().add(inforWorkGoBackDirectOutput.getOpErrorMsg().get());
+		}
 		
 		inforGoBackCommonDirectOutput.setWorkType(inforWorkGoBackDirectOutput.getWorkType());
 		inforGoBackCommonDirectOutput.setWorkTime(inforWorkGoBackDirectOutput.getWorkTime());

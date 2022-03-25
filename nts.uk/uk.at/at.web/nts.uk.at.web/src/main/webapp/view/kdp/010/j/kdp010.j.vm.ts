@@ -62,7 +62,7 @@ module nts.uk.at.view.kdp010.j {
 	                ajax("at", paths.getData, param).done(function(data: any) {
 	                    if (data) {
 							_.forEach(data.lstButtonSet, (btn:any) => {
-								if(self.checkNotUseBtnSupport(btn.buttonType)){
+								if(self.checkNotUseBtnSupport(btn.stampType)){
 									btn.usrArt = 0;								
 								}
 							});
@@ -104,13 +104,13 @@ module nts.uk.at.view.kdp010.j {
             	}, 100);
 			}
 			
-			checkNotUseBtnSupport(buttonType: any): boolean{
+			checkNotUseBtnSupport(stampType: any): boolean{
 				let self = this;
-				let value: number = checkType(buttonType.stampType ? buttonType.stampType.changeClockArt: null, 
-								buttonType.stampType ? buttonType.stampType.changeCalArt : null, 
-								buttonType.stampType ? buttonType.stampType.setPreClockArt: null, 
-								buttonType.stampType ? buttonType.stampType.changeHalfDay: null, 
-								buttonType.reservationArt);
+				let value: number = checkType(stampType ? stampType.changeClockArt: null, 
+								stampType ? stampType.changeCalArt : null, 
+								stampType ? stampType.setPreClockArt: null, 
+								stampType ? stampType.changeHalfDay: null)
+								;
 				if(value == 14 || value == 15 || value == 16 || value == 17 || value == 18){
 					return !self.settingsStampUse.supportUse;
 				}
@@ -324,7 +324,7 @@ module nts.uk.at.view.kdp010.j {
         class ButtonSettings {
             buttonPositionNo: number;
             buttonDisSet = new ButtonDisSet();
-            buttonType: any = null;
+            stampType: any = null;
             usrArt = ko.observable(0);
             audioType = 0;
 			icon: KnockoutObservable<string> = ko.observable();
@@ -336,8 +336,8 @@ module nts.uk.at.view.kdp010.j {
                 if(param){
                     self.buttonPositionNo = param.buttonPositionNo;
                     self.buttonDisSet.update(param.buttonDisSet);
-                    self.buttonType = param.buttonType;
-					self.icon(self.getUrlImg(self.buttonType));
+                    self.stampType = param.stampType;
+					self.icon(self.getUrlImg(self.stampType));
                     self.usrArt(param.usrArt);
                     self.supportWplSet = param.supportWplSet;
                     self.taskChoiceArt = param.taskChoiceArt;
@@ -347,19 +347,19 @@ module nts.uk.at.view.kdp010.j {
 			clear(){
 				let self = this;
                 self.buttonDisSet.clear();
-                self.buttonType = null;
+                self.stampType = null;
 				self.icon("");
                 self.usrArt(0);
                 self.supportWplSet = null;
 			}
 
-			getUrlImg(buttonType: any/*ButtonType sample on server */): string{
-				if(buttonType == null) return "";
-				return window.location.origin + "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + getIcon(buttonType.stampType ? buttonType.stampType.changeClockArt: null, 
-								buttonType.stampType ? buttonType.stampType.changeCalArt : null, 
-								buttonType.stampType ? buttonType.stampType.setPreClockArt: null, 
-								buttonType.stampType ? buttonType.stampType.changeHalfDay: null, 
-								buttonType.reservationArt) + ".png";
+			getUrlImg(stampType: any/*ButtonType sample on server */): string{
+				if(stampType == null) return "";
+				return window.location.origin + "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + getIcon(stampType ? stampType.changeClockArt: null, 
+								stampType ? stampType.changeCalArt : null, 
+								stampType ? stampType.setPreClockArt: null, 
+								stampType ? stampType.changeHalfDay: null
+								) + ".png";
 			}
         }
         

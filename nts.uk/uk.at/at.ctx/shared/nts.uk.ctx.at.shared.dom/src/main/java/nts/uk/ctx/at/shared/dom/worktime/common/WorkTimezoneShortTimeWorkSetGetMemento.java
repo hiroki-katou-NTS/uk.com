@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+
 /**
  * The Interface WorkTimezoneShortTimeWorkSetGetMemento.
  */
@@ -17,16 +19,16 @@ public interface WorkTimezoneShortTimeWorkSetGetMemento {
 	 boolean getNursTimezoneWorkUse();
 
 	/**
-	 * Gets the employment time deduct.
-	 *
-	 * @return the employment time deduct
-	 */
-	 boolean getEmploymentTimeDeduct();
-
-	/**
 	 * Gets the child care work use.
 	 *
 	 * @return the child care work use
 	 */
 	 boolean getChildCareWorkUse();
+
+	/**
+	 * Gets the rouding setting.
+	 *
+	 * @return the rouding setting
+	 */
+	 TimeRoundingSetting getRoudingSet();
 }

@@ -1,5 +1,5 @@
 .bg-yellow{
-	width: 700px !important;
+	width: 90%;
 	height: 70px;
 	margin: auto !important;
 }
@@ -7,16 +7,16 @@
 .ntsRadioBox{
 	margin-top: 10px;
 	margin-left: 30px;
-    float: left;
+  float: left;
 }
 
 .itemName{
-	width: 150px;
+	width: 17%;
 	float: left;
 }
 
 .DayInWeekItem{
-	width: 150px;
+	width: 17%;
 	float: left;
 }
 
@@ -25,5 +25,8 @@
 }
 
 #radioButton{
-	width: 700px;
+	width: 100%;
+	display: inline-grid;
+	margin-left: 25px;
+	margin-top: 5px;
 }

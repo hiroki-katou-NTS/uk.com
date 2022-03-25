@@ -175,7 +175,7 @@ module nts.uk.at.view.kdp010.i {
 						self.letterColors(data.buttonDisSet.buttonNameSet.textColor);
 						self.simpleValue(data.buttonDisSet.buttonNameSet.buttonName);
 						self.backgroundColors(data.buttonDisSet.backGroundColor);
-						self.selectedStamping((data.buttonType.stampType == undefined || data.buttonType.stampType.goOutArt == null) ? 0 : data.buttonType.stampType.goOutArt);
+						self.selectedStamping((data.stampType == undefined || data.stampType.goOutArt == null) ? 0 : data.stampType.goOutArt);
 						self.selectedAudio(data.audioType);
 						self.selectedHighlight(data.usrArt);
 						self.getTypeButton(data);
@@ -221,16 +221,13 @@ module nts.uk.at.view.kdp010.i {
 						}),
 						backGroundColor: self.backgroundColors()
 					}),
-					buttonType: ({
-						reservationArt: self.lstData.reservationArt,
-						stampType: self.selectedDay() == 20 || self.selectedDay() == 19 ? ({}) : ({
+					stampType: self.selectedDay() == 20 || self.selectedDay() == 19 ? ({}) : ({
 							changeHalfDay: self.lstData.changeHalfDay,
 							goOutArt: self.selectedDay() == 8 ? self.selectedStamping() : null,
 							setPreClockArt: self.lstData.setPreClockArt,
 							changeClockArt: self.lstData.changeClockArt,
 							changeCalArt: self.lstData.changeCalArt
-						})
-					}),
+						}),
 					usrArt: self.selectedHighlight(),
 					audioType: self.selectedAudio(),
 					taskChoiceArt: taskChoiceArt,
@@ -257,12 +254,11 @@ module nts.uk.at.view.kdp010.i {
 			}
 			public getTypeButton(data: any): void {
 				let self = this,
-					changeClockArt = data.buttonType.stampType == null ? null : data.buttonType.stampType.changeClockArt,
-					changeCalArt = data.buttonType.stampType == null ? null : data.buttonType.stampType.changeCalArt,
-					setPreClockArt = data.buttonType.stampType == null ? null : data.buttonType.stampType.setPreClockArt,
-					changeHalfDay = data.buttonType.stampType == null ? null : data.buttonType.stampType.changeHalfDay,
-					reservationArt = data.buttonType.reservationArt;
-				let typeNumber = self.checkType(changeClockArt, changeCalArt, setPreClockArt, changeHalfDay, reservationArt);
+					changeClockArt = data.stampType == undefined ? null : data.stampType.changeClockArt,
+					changeCalArt = data.stampType == undefined ? null : data.stampType.changeCalArt,
+					setPreClockArt = data.stampType == undefined ? null : data.stampType.setPreClockArt,
+					changeHalfDay = data.stampType == undefined ? null : data.stampType.changeHalfDay;
+				let typeNumber = self.checkType(changeClockArt, changeCalArt, setPreClockArt, changeHalfDay, 0);
 				self.selectedDay(typeNumber);
 				self.selectedDayOld(typeNumber);
 			}

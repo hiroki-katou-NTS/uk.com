@@ -277,6 +277,14 @@ export class KafS08A2Component extends KafS00ShrComponent {
             returnTime: vm.returnTime,
             tripInfos,
         };
+        let errorMsgLst = vm.data.businessTripInfoOutput.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
+        if (!_.isEmpty(errorMsgLst)) {
+            vm.$modal.error({ messageId: errorMsgLst[0] }).then(() => {
+
+            });
+
+            return;
+        }
         vm.$mask('show');
         // check before registering application
         vm.$http.post('at', API.checkBeforeApply, {

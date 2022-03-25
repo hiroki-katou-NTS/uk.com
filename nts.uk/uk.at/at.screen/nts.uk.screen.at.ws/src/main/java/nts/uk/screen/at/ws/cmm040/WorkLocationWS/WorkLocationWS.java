@@ -22,11 +22,12 @@ import nts.uk.ctx.at.record.app.command.worklocation.InsertWorkLocationCmdHandle
 import nts.uk.ctx.at.record.app.command.worklocation.UpdateWorkLocationCmdHandler;
 import nts.uk.ctx.at.record.app.find.worklocation.Ipv4AddressDto;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.RadiusAtr;
-import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.screen.at.app.cmm040.worklocation.CheckWorkplace;
 import nts.uk.screen.at.app.cmm040.worklocation.CompanyAndWorkInfoOutput;
 import nts.uk.screen.at.app.cmm040.worklocation.GetCompanyAndWorkInfo;
 import nts.uk.screen.at.app.cmm040.worklocation.GetIPSettings;
+import nts.uk.screen.at.app.cmm040.worklocation.GetInfoOnTimeDifference;
+import nts.uk.screen.at.app.cmm040.worklocation.GetInfoOnTimeDifferenceDto;
 import nts.uk.screen.at.app.cmm040.worklocation.GetPlaceOfWork;
 import nts.uk.screen.at.app.cmm040.worklocation.GetPlaceOfWorkOutput;
 import nts.uk.shr.com.context.AppContexts;
@@ -54,9 +55,6 @@ public class WorkLocationWS extends WebService {
 	private DeleteIPAddressCmdHandler deleteIPAddressCmdHandler;
 
 	@Inject
-	private WorkLocationRepository repo;
-
-	@Inject
 	private GetIPSettings getIPSettings;
 
 	@Inject
@@ -64,6 +62,9 @@ public class WorkLocationWS extends WebService {
 	
 	@Inject
 	private CheckWorkplace checkWorkplace;
+	
+	@Inject
+	private GetInfoOnTimeDifference getInfoOnTimeDifference;
 
 	@POST
 	@Path("start")
@@ -142,5 +143,10 @@ public class WorkLocationWS extends WebService {
 	public boolean checkDelete() {
 		return AppContexts.user().roles().have().systemAdmin();
 	}
-
+	
+	@POST
+	@Path("get-info-on-time-difference")
+	public List<GetInfoOnTimeDifferenceDto> getInfoOnTimeDifference() {
+		return this.getInfoOnTimeDifference.getInfoOnTimeDifference();
+	}
 }

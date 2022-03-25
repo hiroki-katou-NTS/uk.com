@@ -52,6 +52,7 @@ public class DiagnoseExternalImportConstants {
 				val wiOpt = workspace.getItem(item.getItemNo());
 				if (!wiOpt.isPresent()) {
 					errors.add("ワークスペースに定義が無い：" + item);
+					return;
 				}
 				
 				WorkspaceItem wi = wiOpt.get();

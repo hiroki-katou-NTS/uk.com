@@ -470,18 +470,21 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			}
 
 			// List<KscdtSchTask> kscdtSchTask;
-			if (!oldData.get().kscdtSchTime.kscdtSchTask.isEmpty()) {
+			if (!oldData.get().kscdtSchTask.isEmpty()) {
 				// remove
 				String delete = "delete from KscdtSchTask o " + " where o.pk.sid = :sid " + " and o.pk.ymd = :ymd";
 				this.getEntityManager().createQuery(delete).setParameter("sid", newData.pk.sid)
 									.setParameter("ymd", newData.pk.ymd)
 									.executeUpdate();
 				
-				oldData.get().kscdtSchTime.kscdtSchTask = new ArrayList<KscdtSchTask>();
-				this.commandProxy().insertAll(newData.kscdtSchTime.kscdtSchTask);
+//				oldData.get().kscdtSchTime.kscdtSchTask = new ArrayList<KscdtSchTask>();				
+//				this.commandProxy().insertAll(newData.kscdtSchTime.kscdtSchTask);
+				oldData.get().kscdtSchTask = new ArrayList<KscdtSchTask>();
+				this.commandProxy().insertAll(newData.kscdtSchTask);
 
 			} else {
-				oldData.get().kscdtSchTime.kscdtSchTask = newData.kscdtSchTime.kscdtSchTask;
+//				oldData.get().kscdtSchTime.kscdtSchTask = newData.kscdtSchTime.kscdtSchTask;
+				oldData.get().kscdtSchTask = newData.kscdtSchTask;
 			}
 
 			// List<KscdtSchEditState> editStates;
@@ -827,7 +830,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			Map<Pair<String, GeneralDate>, List<KscdtSchComeLate>> mapPairComeLate = this.getKscdtSchComeLates(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchGoingOut>> mapPairGoingOut = this.getKscdtSchGoingOuts(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchLeaveEarly>> mapPairLeaveEarly = this.getKscdtSchLeaveEarlys(listEmp, period);
-			 Map<Pair<String, GeneralDate>, List<KscdtSchTask>> mapPairKscdtSchTask =  this.getKscdtSchTasks(listEmp, period);
+			
 			
 			// WorkSchedule
 			Map<Pair<String, GeneralDate>, KscdtSchBasicInfo> mapPairSchBasicInfo = this.getSchBasicInfo(listEmp, period);
@@ -836,6 +839,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			Map<Pair<String, GeneralDate>, List<KscdtSchShortTimeTs>> mapPairSchShortTimeTs = this.getSchShortTimeTs(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchBreakTs>> mapPairSchBreakTs = this.getKscdtSchBreakTs(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchGoingOutTs>> mapPairGoingOutTs = this.getKscdtSchGoingOutTs(listEmp, period);
+			Map<Pair<String, GeneralDate>, List<KscdtSchTask>> mapPairKscdtSchTask =  this.getKscdtSchTasks(listEmp, period);
 			
 			for (int i = 0; i < subList.size(); i++) {
 				String sid = subList.get(i);
@@ -850,6 +854,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						basicInfo.schShortTimeTs = mapPairSchShortTimeTs.getOrDefault(key, new ArrayList<>()); 
 						basicInfo.breakTs = mapPairSchBreakTs.getOrDefault(key, new ArrayList<>()); 
 						basicInfo.kscdtSchGoingOutTs = mapPairGoingOutTs.getOrDefault(key, new ArrayList<>()); 
+						basicInfo.kscdtSchTask = mapPairKscdtSchTask.getOrDefault(key, new ArrayList<KscdtSchTask>());
 						
 						if(mapPairSchTime.containsKey(key)){
 							KscdtSchTime scheTime = mapPairSchTime.get(key);
@@ -862,7 +867,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 							scheTime.kscdtSchComeLate = mapPairComeLate.getOrDefault(key, new ArrayList<>());
 							scheTime.kscdtSchGoingOut = mapPairGoingOut.getOrDefault(key, new ArrayList<>());
 							scheTime.kscdtSchLeaveEarly = mapPairLeaveEarly.getOrDefault(key, new ArrayList<>());
-							scheTime.kscdtSchTask = mapPairKscdtSchTask.getOrDefault(key, new ArrayList<>());
 							
 							basicInfo.kscdtSchTime = scheTime;
 						}
@@ -933,7 +937,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						empCd, jobId, wkpId, clsCd, busTypeCd, nurseLicense, wktpCd, wktmCd,
 						goStraightAtr, backStraightAtr, treatAsSubstituteAtr,
 						treatAsSubstituteDays, null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
-						new ArrayList<>(), new ArrayList<>());
+						new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 			});
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -1196,7 +1200,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						hdComHourlyTime, hd60hTime, hd60hHourlyTime, hdspTime, hdspHourlyTime, hdstkTime, hdHourlyTime,
 						hdHourlyShortageTime, absenceTime, vacationAddTime, staggeredWhTime,
 						new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 
-						new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+						new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), 
 						prsWorkTimeAmount, premiumWorkTimeTotal, premiumAmountTotal, useDailyHDSub);
 			});
 		} catch (SQLException ex) {

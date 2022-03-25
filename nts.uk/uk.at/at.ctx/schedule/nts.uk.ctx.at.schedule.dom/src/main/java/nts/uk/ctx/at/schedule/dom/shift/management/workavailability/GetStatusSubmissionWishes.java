@@ -12,7 +12,7 @@ import nts.arc.time.GeneralDate;
  */
 public class GetStatusSubmissionWishes {
 	
-	public static DesiredSubmissionStatus get(Require require, String empId, GeneralDate availabilityDate) {
+	public static DesiredSubmissionStatus get(Require require, String cid, String empId, GeneralDate availabilityDate) {
 		
 		// 1: get(社員ID, 年月日): Optional<一日分の勤務希望>
 		Optional<WorkAvailabilityOfOneDay> workAvailabilityOfOneDay = require.get(empId, availabilityDate);
@@ -23,7 +23,7 @@ public class GetStatusSubmissionWishes {
 		
 		// 2: [一日分の勤務希望.isPresent]: 休日の勤務希望である(require): boolean
 		// 3: return
-		return workAvailabilityOfOneDay.get().isHolidayAvailability(require) ? DesiredSubmissionStatus.HOLIDAY_HOPE : DesiredSubmissionStatus.COMMUTING_HOPE; 
+		return workAvailabilityOfOneDay.get().isHolidayAvailability(require, cid) ? DesiredSubmissionStatus.HOLIDAY_HOPE : DesiredSubmissionStatus.COMMUTING_HOPE; 
 	}
 	
 	

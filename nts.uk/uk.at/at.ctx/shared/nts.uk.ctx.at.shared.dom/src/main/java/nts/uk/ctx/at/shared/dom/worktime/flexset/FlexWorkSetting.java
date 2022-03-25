@@ -205,6 +205,10 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		return cloned;
 	}
 
+	public static interface Require {
+		Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode);
+	}
+
 	public List<EmTimeZoneSet> getEmTimeZoneSet(WorkType workType) {
 		return getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).isPresent()
 				? getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).get().getWorkTimezone()
@@ -320,7 +324,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 
 		// 半日⇒コアタイムを午前終了時刻/午後開始時刻で分割する
 		// ※コアタイムは必ず午前終了時刻/午後開始時刻を内包するため
-		val predetTimeStg = this.getPredetermineTimeSetting(require);
+		val predetTimeStg = this.getPredetermineTimeSetting(require).get();
 		switch (ampmAtr) {
 			case AM:
 				// 午前⇒終了時刻:午前終了時刻
@@ -374,7 +378,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	 */
 	private List<ChangeableWorkingTimeZonePerNo> createWorkOnDayOffTime(WorkSetting.Require require) {
 
-		val preTimeSetting =  this.getPredetermineTimeSetting(require);
+		val preTimeSetting =  this.getPredetermineTimeSetting(require).get();
 
 		val workOnDayOffTimeList = this.offdayWorkTime.getLstWorkTimezone().stream()
 				.map(c -> c.getTimezone().timeSpan())
@@ -392,12 +396,6 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		return Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
 				new WorkNo(1), workOnDayOffTime));
 	}
-
-
-
-	public static interface Require {
-	}
-
 	
 	/**
      * inv-1

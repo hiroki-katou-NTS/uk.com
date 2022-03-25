@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -358,7 +359,10 @@ public class KTG004Finder {
 		        checkDispHolidayType.getAccumulatedRestManagement().getAccumulatedManage().equals(ManageDistinct.YES), 
 		        checkDispHolidayType.getSubstituteLeaveManagement().getSubstituteLeaveManagement().equals(ManageDistinct.YES), 
 		        checkDispHolidayType.getSubstituteLeaveManagement().getTimeAllowanceManagement().equals(ManageDistinct.YES), 
-		        checkDispHolidayType.getAnnAnualLeaveManagement().getAnnualLeaveManageDistinct().equals(ManageDistinct.YES));
+		        checkDispHolidayType.getAnnAnualLeaveManagement().getAnnualLeaveManageDistinct().equals(ManageDistinct.YES), 
+		        checkDispHolidayType.getSpeHolidayRemainInfos().stream()
+		            .map(x -> new SpeHolidayRemainInfo(x.isManage(), x.getSpecialHolidayCode()))
+		            .collect(Collectors.toList()));
 		
 		return new GetVacationLeftOutput(remainNumber, setting);
 		

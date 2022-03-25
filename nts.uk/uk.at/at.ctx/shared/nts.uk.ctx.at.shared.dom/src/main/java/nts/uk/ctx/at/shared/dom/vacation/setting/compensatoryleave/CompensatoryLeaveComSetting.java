@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -134,6 +135,10 @@ public class CompensatoryLeaveComSetting extends AggregateRoot {
 		this.substituteHolidaySetting = substituteHolidaySetting;
 		this.timeVacationDigestUnit = compensatoryDigestiveTimeUnit;
 		this.linkingManagementATR = linkingManagementATR;
+	}
+	
+	public static interface Require {
+		Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId);
 	}
 	
 	/**

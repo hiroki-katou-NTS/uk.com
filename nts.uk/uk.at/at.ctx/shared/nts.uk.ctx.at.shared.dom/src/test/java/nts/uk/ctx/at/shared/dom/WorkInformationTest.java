@@ -95,18 +95,18 @@ public class WorkInformationTest {
 		workTimeSetting.setAbolishAtr(AbolishAtr.NOT_ABOLISH);
 		new Expectations() {
 			{
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType(anyString, workInformation.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
 				result = SetupType.REQUIRED;
 
-				require.getWorkTime(workInformation.getWorkTimeCode().v());
+				require.workTimeSetting(anyString, workInformation.getWorkTimeCode());
 				result = Optional.empty();
 				result = Optional.of(workTimeSetting);
 			}
 		};
-		assertThat(workInformation.checkNormalCondition(require)).isFalse();
+		assertThat(workInformation.checkNormalCondition(require, "companyId")).isFalse();
 	}
 
 	@Test
@@ -115,10 +115,10 @@ public class WorkInformationTest {
 
 		new Expectations() {
 			{
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType(anyString, workInformation.getWorkTypeCode());
 			}
 		};
-		assertThat(workInformation.checkNormalCondition(require)).isFalse();
+		assertThat(workInformation.checkNormalCondition(require, "companyId")).isFalse();
 	}
 
 	@Test
@@ -127,10 +127,10 @@ public class WorkInformationTest {
 
 		new Expectations() {
 			{
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType(anyString, workInformation.getWorkTypeCode());
 			}
 		};
-		assertThat(workInformation.checkErrorCondition(require)).isEqualTo(ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE);
+		assertThat(workInformation.checkErrorCondition(require, "companyId")).isEqualTo(ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE);
 	}
 
 	/**
@@ -144,7 +144,7 @@ public class WorkInformationTest {
 
 		new Expectations() {
 			{
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType(anyString, workInformation.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
@@ -153,7 +153,7 @@ public class WorkInformationTest {
 			}
 		};
 
-		assertThat(workInformation.checkErrorCondition(require)).isEqualTo(ErrorStatusWorkInfo.WORKTIME_ARE_REQUIRE_NOT_SET);
+		assertThat(workInformation.checkErrorCondition(require, "companyId")).isEqualTo(ErrorStatusWorkInfo.WORKTIME_ARE_REQUIRE_NOT_SET);
 	}
 	/**
 	 * if SetupType = REQUIRED
@@ -167,17 +167,17 @@ public class WorkInformationTest {
 		new Expectations() {
 			{
 
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType(anyString, workInformation.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
 				result = SetupType.REQUIRED;
 
-				require.getWorkTime(workInformation.getWorkTimeCode().v());
+				require.workTimeSetting(anyString, workInformation.getWorkTimeCode());
 			}
 		};
 
-		assertThat(workInformation.checkErrorCondition(require))
+		assertThat(workInformation.checkErrorCondition(require, "companyId"))
 				.isEqualTo(ErrorStatusWorkInfo.WORKTIME_WAS_DELETE);
 	}
 
@@ -198,19 +198,18 @@ public class WorkInformationTest {
 		workTimeSetting.setAbolishAtr(AbolishAtr.ABOLISH);
 		new Expectations() {
 			{
-
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType(anyString, workInformation.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
 				result = SetupType.REQUIRED;
 
-				require.getWorkTime(workInformation.getWorkTimeCode().v());
+				require.workTimeSetting(anyString, workInformation.getWorkTimeCode());
 				result = Optional.of(workTimeSetting);
 			}
 		};
 
-		assertThat(workInformation.checkErrorCondition(require))
+		assertThat(workInformation.checkErrorCondition(require, "companyId"))
 				.isEqualTo(ErrorStatusWorkInfo.WORKTIME_HAS_BEEN_ABOLISHED);
 	}
 
@@ -231,18 +230,18 @@ public class WorkInformationTest {
 		new Expectations() {
 			{
 
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType(anyString, workInformation.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
 				result = SetupType.REQUIRED;
 
-				require.getWorkTime(workInformation.getWorkTimeCode().v());
+				require.workTimeSetting(anyString, workInformation.getWorkTimeCode());
 				result = Optional.of(workTimeSetting);
 			}
 		};
 
-		assertThat(workInformation.checkErrorCondition(require))
+		assertThat(workInformation.checkErrorCondition(require, "companyId"))
 				.isEqualTo(ErrorStatusWorkInfo.NORMAL);
 	}
 
@@ -257,17 +256,17 @@ public class WorkInformationTest {
 		new Expectations() {
 			{
 
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType(anyString, workInformation.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
 				result = SetupType.OPTIONAL;
 
-				require.getWorkTime(workInformation.getWorkTimeCode().v());
+				require.workTimeSetting(anyString, workInformation.getWorkTimeCode());
 			}
 		};
 
-		assertThat(workInformation.checkErrorCondition(require))
+		assertThat(workInformation.checkErrorCondition(require, "companyId"))
 				.isEqualTo(ErrorStatusWorkInfo.WORKTIME_WAS_DELETE);
 	}
 
@@ -284,13 +283,12 @@ public class WorkInformationTest {
 		workType.setDeprecate(DeprecateClassification.Deprecated);
 		new Expectations() {
 			{
-
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType(anyString, workInformation.getWorkTypeCode());
 				result = Optional.of(workType);
 			}
 		};
 
-		assertThat(workInformation.checkErrorCondition(require))
+		assertThat(workInformation.checkErrorCondition(require, "companyId"))
 				.isEqualTo(ErrorStatusWorkInfo.WORKTYPE_WAS_ABOLISHED);
 	}
 
@@ -310,19 +308,18 @@ public class WorkInformationTest {
 		workTimeSetting.setAbolishAtr(AbolishAtr.ABOLISH);
 		new Expectations() {
 			{
-
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType(anyString, workInformation.getWorkTypeCode());
 				result = Optional.of(workType);
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
 				result = SetupType.OPTIONAL;
 
-				require.getWorkTime(workInformation.getWorkTimeCode().v());
+				require.workTimeSetting(anyString, workInformation.getWorkTimeCode());
 				result = Optional.of(workTimeSetting);
 			}
 		};
 
-		assertThat(workInformation.checkErrorCondition(require))
+		assertThat(workInformation.checkErrorCondition(require, "companyId"))
 				.isEqualTo(ErrorStatusWorkInfo.WORKTIME_HAS_BEEN_ABOLISHED);
 	}
 
@@ -342,19 +339,18 @@ public class WorkInformationTest {
 		workTimeSetting.setAbolishAtr(AbolishAtr.NOT_ABOLISH);
 		new Expectations() {
 			{
-
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType(anyString, workInformation.getWorkTypeCode());
 				result = Optional.of(workType);
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
 				result = SetupType.OPTIONAL;
 
-				require.getWorkTime(workInformation.getWorkTimeCode().v());
+				require.workTimeSetting(anyString, workInformation.getWorkTimeCode());
 				result = Optional.of(workTimeSetting);
 			}
 		};
 
-		assertThat(workInformation.checkErrorCondition(require))
+		assertThat(workInformation.checkErrorCondition(require, "companyId"))
 				.isEqualTo(ErrorStatusWorkInfo.NORMAL);
 	}
 
@@ -370,8 +366,7 @@ public class WorkInformationTest {
 		WorkType workType = new WorkType();
 		new Expectations() {
 			{
-
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType(anyString, workInformation.getWorkTypeCode());
 				result = Optional.of(workType);
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
@@ -380,7 +375,7 @@ public class WorkInformationTest {
 			}
 		};
 
-		assertThat(workInformation.checkErrorCondition(require))
+		assertThat(workInformation.checkErrorCondition(require, "companyId"))
 				.isEqualTo(ErrorStatusWorkInfo.NORMAL);
 	}
 
@@ -402,8 +397,7 @@ public class WorkInformationTest {
 		workTimeSetting.setAbolishAtr(AbolishAtr.NOT_ABOLISH);
 		new Expectations() {
 			{
-
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType(anyString, workInformation.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
@@ -411,7 +405,7 @@ public class WorkInformationTest {
 			}
 		};
 
-		assertThat(workInformation.checkErrorCondition(require))
+		assertThat(workInformation.checkErrorCondition(require, "companyId"))
 				.isEqualTo(ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY);
 	}
 
@@ -424,8 +418,7 @@ public class WorkInformationTest {
 		WorkInformation workInformation = new WorkInformation("workTypeCode", null);
 		new Expectations() {
 			{
-
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType(anyString, workInformation.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
@@ -434,7 +427,7 @@ public class WorkInformationTest {
 			}
 		};
 
-		assertThat(workInformation.checkErrorCondition(require))
+		assertThat(workInformation.checkErrorCondition(require, "companyId"))
 				.isEqualTo(ErrorStatusWorkInfo.NORMAL);
 	}
 
@@ -451,12 +444,12 @@ public class WorkInformationTest {
 		new Expectations() {{
 
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 
 		}};
 
 		// Execute
-		val result = new WorkInformation("WktpCd", "WktmCd").getWorkStyle( require );
+		val result = new WorkInformation("WktpCd", "WktmCd").getWorkStyle( require, "cid" );
 
 		// Assertion
 		assertThat( result ).isEmpty();
@@ -479,13 +472,13 @@ public class WorkInformationTest {
 		new Expectations() {{
 
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of( workType );
 
 		}};
 
 		// Execute
-		val result = new WorkInformation(workType.getWorkTypeCode().v(), "WktmCd").getWorkStyle( require );
+		val result = new WorkInformation(workType.getWorkTypeCode().v(), "WktmCd").getWorkStyle( require, "cid" );
 
 		// Assertion
 		assertThat( result ).isPresent();
@@ -512,13 +505,13 @@ public class WorkInformationTest {
 		new Expectations() {{
 
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of( workType );
 
 		}};
 
 		// Execute
-		val result = new WorkInformation(workType.getWorkTypeCode().v(), "WktmCd").getWorkStyle( require );
+		val result = new WorkInformation(workType.getWorkTypeCode().v(), "WktmCd").getWorkStyle( require, "cid" );
 
 		// Assertion
 		assertThat( result ).isPresent();
@@ -545,13 +538,13 @@ public class WorkInformationTest {
 		new Expectations() {{
 
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of( workType );
 
 		}};
 
 		// Execute
-		val result = new WorkInformation(workType.getWorkTypeCode().v(), "WktmCd").getWorkStyle( require );
+		val result = new WorkInformation(workType.getWorkTypeCode().v(), "WktmCd").getWorkStyle( require, "cid" );
 
 		// Assertion
 		assertThat( result ).isPresent();
@@ -569,12 +562,11 @@ public class WorkInformationTest {
 
 		new Expectations() {
 			{
-				require.getWorkType(workInformation.getWorkTypeCode().v());
-
+				require.workType(anyString, workInformation.getWorkTypeCode());
 			}
 		};
 
-		assertThat( workInformation.getWorkInfoAndTimeZone(require) ).isEmpty();
+		assertThat( workInformation.getWorkInfoAndTimeZone(require, "cid") ).isEmpty();
 	}
 
 	/**
@@ -587,12 +579,11 @@ public class WorkInformationTest {
 		workType.setWorkTypeCode(workInformation.getWorkTypeCode());
 		new Expectations() {
 			{
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType(anyString, workInformation.getWorkTypeCode());
 				result = Optional.of(workType);
-
 			}
 		};
-		Optional<WorkInfoAndTimeZone>  result = workInformation.getWorkInfoAndTimeZone(require);
+		Optional<WorkInfoAndTimeZone>  result = workInformation.getWorkInfoAndTimeZone(require, "cid");
 		assertThat(result.get().getTimeZones().isEmpty()).isTrue();
 		assertThat(result.get().getWorkTime().isPresent()).isFalse();
 		assertThat(result.get().getWorkType().getWorkTypeCode()).isEqualTo(workInformation.getWorkTypeCode());
@@ -607,15 +598,14 @@ public class WorkInformationTest {
 
 		new Expectations() {
 			{
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType(anyString, workInformation.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 
-				require.getWorkTime(anyString);
-
+				require.workTimeSetting(anyString, (WorkTimeCode)any);
 			}
 		};
 
-		assertThat( workInformation.getWorkInfoAndTimeZone(require) ).isEmpty();
+		assertThat( workInformation.getWorkInfoAndTimeZone(require, "cid") ).isEmpty();
 	}
 	
 	/**
@@ -634,24 +624,24 @@ public class WorkInformationTest {
 
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(workType);
 				
-				require.getWorkTime( anyString );
+				require.workTimeSetting(anyString, (WorkTimeCode)any);
 				result = Optional.of(workTimeSetting);
 				
 				workTimeSetting.getWorkSetting(require);
 				result = workSetting;
 				
 				workSetting.getPredetermineTimeSetting(require);
-				result = predetemineTimeSetting;
+				result = Optional.of(predetemineTimeSetting);
 				
 				workType.chechAttendanceDay();
 				result = AttendanceDayAttr.HOLIDAY;
 			}
 		};
 
-		Optional<WorkInfoAndTimeZone> result = workInformation.getWorkInfoAndTimeZone(require);
+		Optional<WorkInfoAndTimeZone> result = workInformation.getWorkInfoAndTimeZone(require, "cid");
 		
 		assertThat( result.get().getWorkType() ).isEqualTo( workType );
 		assertThat( result.get().getWorkTime().get() ).isEqualTo( workTimeSetting );
@@ -675,26 +665,26 @@ public class WorkInformationTest {
 		
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(workType);
 				
 				workType.chechAttendanceDay();
 				result = AttendanceDayAttr.HALF_TIME_AM;
 
-				require.getWorkTime(anyString);
+				require.workTimeSetting(anyString, (WorkTimeCode)any);
 				result = Optional.of(workTimeSetting);
 				
 				workTimeSetting.getWorkSetting(require);
 				result = workSetting;
 				
 				workSetting.getPredetermineTimeSetting(require);
-				result = predetemineTimeSetting;
+				result = Optional.of(predetemineTimeSetting);
 				
 				predetemineTimeSetting.getTimezoneByAmPmAtr(AmPmAtr.AM);
 				result = listTimezoneUse;
 			}
 		};
-		Optional<WorkInfoAndTimeZone> result = workInformation.getWorkInfoAndTimeZone(require);
+		Optional<WorkInfoAndTimeZone> result = workInformation.getWorkInfoAndTimeZone(require, "cid");
 		
 		assertThat( result.get().getWorkType() ).isEqualTo(workType );
 		assertThat( result.get().getWorkTime().get() ).isEqualTo( workTimeSetting );
@@ -723,11 +713,11 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 		}};
 
 		// Execute
-		val result = instance.getChangeableWorkingTimezones(require);
+		val result = instance.getChangeableWorkingTimezones(require, "cid");
 
 		// Assertion
 		assertThat( result ).isEmpty();
@@ -747,15 +737,15 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of(workType);
 
 			// 就業時間帯を取得する
-			require.getWorkTime( anyString );
+			require.workTimeSetting(anyString, (WorkTimeCode)any);
 		}};
 
 		// Execute
-		val result = instance.getChangeableWorkingTimezones(require);
+		val result = instance.getChangeableWorkingTimezones(require, "cid");
 
 		// Assertion
 		assertThat( result ).isEmpty();
@@ -778,11 +768,11 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of(workType);
 
 			// 就業時間帯を取得する
-			require.getWorkTime( anyString );
+			require.workTimeSetting(anyString, (WorkTimeCode)any);
 			result = Optional.of(workTime);
 			// 勤務設定を取得する
 			workTime.getWorkSetting( require );
@@ -794,7 +784,7 @@ public class WorkInformationTest {
 		}};
 
 		// Execute
-		val result = instance.getChangeableWorkingTimezones(require);
+		val result = instance.getChangeableWorkingTimezones(require, "cid");
 
 		// Assertion
 		assertThat( result ).isEmpty();
@@ -825,11 +815,11 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of(workType);
 
 			// 就業時間帯を取得する
-			require.getWorkTime( anyString );
+			require.workTimeSetting(anyString, (WorkTimeCode)any);
 			result = Optional.of(workTime);
 			// 勤務設定を取得する
 			workTime.getWorkSetting( require );
@@ -849,7 +839,7 @@ public class WorkInformationTest {
 		}};
 
 		// Execute
-		val result = instance.getChangeableWorkingTimezones(require);
+		val result = instance.getChangeableWorkingTimezones(require, "cid");
 
 		// Assertion
 		assertThat( result ).containsExactlyInAnyOrderElementsOf( chgWrkTz.getByAtr( atdDayAtr ) );
@@ -887,11 +877,11 @@ public class WorkInformationTest {
 		new Expectations() {{
 			// 変更可能な勤務時間帯を取得する
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of(workType);
 
 			// 就業時間帯を取得する
-			require.getWorkTime( anyString );
+			require.workTimeSetting(anyString, (WorkTimeCode)any);
 			result = Optional.of(workTime);
 			// 勤務設定を取得する
 			workTime.getWorkSetting( require );
@@ -909,7 +899,7 @@ public class WorkInformationTest {
 		// Pattern: 指定された勤務NOがリストに存在しない
 		{
 			// Execute
-			val result = instance.containsOnChangeableWorkingTime(require, checkTarget, new WorkNo(3), time);
+			val result = instance.containsOnChangeableWorkingTime(require, "cid", checkTarget, new WorkNo(3), time);
 
 			// Assertion
 			assertThat( result.isContains() ).isFalse();
@@ -919,7 +909,7 @@ public class WorkInformationTest {
 		// Pattern: 指定された勤務NOがリストに存在する
 		{
 			// Execute
-			val result = instance.containsOnChangeableWorkingTime(require, checkTarget, cwtzPerNoList.get(1).getWorkNo(), time);
+			val result = instance.containsOnChangeableWorkingTime(require, "cid", checkTarget, cwtzPerNoList.get(1).getWorkNo(), time);
 
 			// Assertion
 			assertThat( result ).isEqualTo( cwtzPerNoList.get(1).contains(time, checkTarget) );
@@ -941,11 +931,11 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 		}};
 
 		// Execute
-		val result = instance.getBreakTimeZone(require);
+		val result = instance.getBreakTimeZone(require, "cid");
 
 		// Assertion
 		assertThat( result ).isEmpty();
@@ -965,15 +955,15 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of(workType);
 
 			// 就業時間帯を取得する
-			require.getWorkTime( anyString );
+			require.workTimeSetting(anyString, (WorkTimeCode)any);
 		}};
 
 		// Execute
-		val result = instance.getBreakTimeZone(require);
+		val result = instance.getBreakTimeZone(require, "cid");
 
 		// Assertion
 		assertThat( result ).isEmpty();
@@ -997,11 +987,11 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of(workType);
 
 			// 就業時間帯を取得する
-			require.getWorkTime( anyString );
+			require.workTimeSetting(anyString, (WorkTimeCode)any);
 			result = Optional.of(workTime);
 			// 勤務設定を取得する
 			workTime.getWorkSetting( require );
@@ -1013,7 +1003,7 @@ public class WorkInformationTest {
 		}};
 
 		// Execute
-		val result = instance.getBreakTimeZone(require);
+		val result = instance.getBreakTimeZone(require, "cid");
 
 		// Assertion
 		assertThat( result ).isEmpty();
@@ -1042,11 +1032,11 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of(workType);
 
 			// 就業時間帯を取得する
-			require.getWorkTime( anyString );
+			require.workTimeSetting(anyString, (WorkTimeCode)any);
 			result = Optional.of(workTime);
 			// 勤務設定を取得する
 			workTime.getWorkSetting( require );
@@ -1062,7 +1052,7 @@ public class WorkInformationTest {
 		}};
 
 		// Execute
-		val result = instance.getBreakTimeZone(require);
+		val result = instance.getBreakTimeZone(require, "cid");
 
 		// Assertion
 		assertThat( result ).isPresent();
@@ -1088,6 +1078,7 @@ public class WorkInformationTest {
 		val result = (Optional<WorkSetting>)NtsAssert.Invoke.privateMethod(instance
 							, "getWorkSetting"
 							, require
+							, "companyId"
 						);
 
 		// Assertion
@@ -1108,7 +1099,7 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 就業時間帯を取得する
-			require.getWorkTime( anyString );
+			require.workTimeSetting(anyString, (WorkTimeCode)any);
 		}};
 
 		// Execute
@@ -1116,6 +1107,7 @@ public class WorkInformationTest {
 		val result = (Optional<WorkSetting>)NtsAssert.Invoke.privateMethod(instance
 							, "getWorkSetting"
 							, require
+							, "companyId"
 						);
 
 		// Assertion
@@ -1137,7 +1129,7 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 就業時間帯を取得する
-			require.getWorkTime( anyString );
+			require.workTimeSetting(anyString, (WorkTimeCode)any);
 			result = Optional.of(workTime);
 			// 勤務設定を取得する
 			workTime.getWorkSetting( require );
@@ -1149,6 +1141,7 @@ public class WorkInformationTest {
 		val result = (Optional<WorkSetting>)NtsAssert.Invoke.privateMethod(instance
 							, "getWorkSetting"
 							, require
+							, "companyId"
 						);
 
 		// Assertion
@@ -1211,12 +1204,12 @@ public class WorkInformationTest {
 		val workInfo = new WorkInformation("01", "01");
 		new Expectations(workInfo) {
 			{				
-				workInfo.getWorkStyle(require);
+				workInfo.getWorkStyle(require, anyString);
 				result = Optional.of(WorkStyle.ONE_DAY_WORK);
 			}
 		};
 		
-		assertThat(workInfo.isAttendanceRate(require)).isTrue();
+		assertThat(workInfo.isAttendanceRate(require, "cid")).isTrue();
 
 	}
 	
@@ -1229,12 +1222,12 @@ public class WorkInformationTest {
 		val workInfo = new WorkInformation("01", "01");
 		new Expectations(workInfo) {
 			{
-				workInfo.getWorkStyle(require);
+				workInfo.getWorkStyle(require, anyString);
 				result = Optional.of(WorkStyle.ONE_DAY_REST);
 			}
 		};
 		
-		assertThat(workInfo.isAttendanceRate(require)).isFalse();
+		assertThat(workInfo.isAttendanceRate(require, "cid")).isFalse();
 
 	}
 	
@@ -1247,11 +1240,11 @@ public class WorkInformationTest {
 		val workInfo = new WorkInformation("01", "01");
 		new Expectations(workInfo) {
 			{
-				workInfo.getWorkStyle(require);
+				workInfo.getWorkStyle(require, anyString);
 			}
 		};
 		
-		assertThat(workInfo.isAttendanceRate(require)).isFalse();
+		assertThat(workInfo.isAttendanceRate(require, "cid")).isFalse();
 
 	}
 	
@@ -1260,11 +1253,11 @@ public class WorkInformationTest {
 		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
 		
 		new Expectations() {{
-			require.getWorkType(target.getWorkTypeCode().v());
+			require.workType(anyString, target.getWorkTypeCode());
 			
 		}};
 		
-		assertThat(target.isGoStraight(require)).isFalse();
+		assertThat(target.isGoStraight(require, "cid")).isFalse();
 	}
 	
 	@Test
@@ -1272,14 +1265,14 @@ public class WorkInformationTest {
 		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
 		
 		new Expectations() {{
-			require.getWorkType(target.getWorkTypeCode().v());
+			require.workType(anyString, target.getWorkTypeCode());
 			result = Optional.of(workType);
 			
 			workType.isAttendanceTimeAutoSet();
 			result = false;
 		}};
 		
-		assertThat(target.isGoStraight(require)).isFalse();
+		assertThat(target.isGoStraight(require, "cid")).isFalse();
 	}
 	
 	@Test
@@ -1287,14 +1280,14 @@ public class WorkInformationTest {
 		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
 		
 		new Expectations() {{
-			require.getWorkType(target.getWorkTypeCode().v());
+			require.workType(anyString, target.getWorkTypeCode());
 			result = Optional.of(workType);
 			
 			workType.isAttendanceTimeAutoSet();
 			result = true;
 		}};
 		
-		assertThat(target.isGoStraight(require)).isTrue();
+		assertThat(target.isGoStraight(require, "cid")).isTrue();
 	}
 	
 	@Test
@@ -1302,11 +1295,11 @@ public class WorkInformationTest {
 		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
 		
 		new Expectations() {{
-			require.getWorkType(target.getWorkTypeCode().v());
+			require.workType(anyString, target.getWorkTypeCode());
 			
 		}};
 		
-		assertThat(target.isBackStraight(require)).isFalse();
+		assertThat(target.isBackStraight(require, "cid")).isFalse();
 	}
 	
 	@Test
@@ -1314,14 +1307,14 @@ public class WorkInformationTest {
 		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
 		
 		new Expectations() {{
-			require.getWorkType(target.getWorkTypeCode().v());
+			require.workType(anyString, target.getWorkTypeCode());
 			result = Optional.of(workType);
 			
 			workType.isLeaveTimeAutoSet();
 			result = false;
 		}};
 		
-		assertThat(target.isBackStraight(require)).isFalse();
+		assertThat(target.isBackStraight(require, "cid")).isFalse();
 	}
 	
 	@Test
@@ -1329,14 +1322,25 @@ public class WorkInformationTest {
 		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
 		
 		new Expectations() {{
-			require.getWorkType(target.getWorkTypeCode().v());
+			require.workType(anyString, target.getWorkTypeCode());
 			result = Optional.of(workType);
 			
 			workType.isLeaveTimeAutoSet();
 			result = true;
 		}};
 		
-		assertThat(target.isBackStraight(require)).isTrue();
+		assertThat(target.isBackStraight(require, "cid")).isTrue();
 	}
 	
+	@Test
+	public void testExsistsWorkTime_true() {
+		WorkInformation target = new WorkInformation(new WorkTypeCode("001"), new WorkTimeCode("001"));
+		assertThat(target.exsistsWorkTime()).isTrue();
+	}
+	
+	@Test
+	public void testExsistsWorkTime_false() {
+		WorkInformation target = new WorkInformation(new WorkTypeCode("001"), null);
+		assertThat(target.exsistsWorkTime()).isFalse();
+	}
 }

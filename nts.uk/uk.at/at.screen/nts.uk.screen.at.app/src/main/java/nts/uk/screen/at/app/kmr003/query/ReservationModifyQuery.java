@@ -12,17 +12,16 @@ import nts.uk.ctx.at.record.app.find.reservation.bento.dto.*;
 import nts.uk.ctx.at.record.app.find.reservation.bento.query.ListBentoResevationQuery;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.reservation.bento.*;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationStateService;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentomenuAdapter;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.SWkpHistExport;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSetting;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
@@ -50,7 +49,7 @@ import java.util.stream.Collectors;
 public class ReservationModifyQuery {
 
     @Inject
-    private BentoReservationSettingRepository bentoReservationSettingRepo;
+    private ReservationSettingRepository bentoReservationSettingRepo;
 
     @Inject
     private GetStampCardQuery getStampCardQuery;
@@ -59,7 +58,7 @@ public class ReservationModifyQuery {
     private PersonEmpBasicInfoPub personEmpBasicInfoPub;
 
     @Inject
-    private BentoMenuRepository bentoMenuRepo;
+    private BentoMenuHistRepository bentoMenuRepo;
 
     @Inject
     private ListBentoResevationQuery listBentoResevationQuery;
@@ -78,13 +77,13 @@ public class ReservationModifyQuery {
      */
     public ReservationModifyDto getReservations(List<String> empIds,
                                                 ReservationDate reservationDate,
-                                                BentoReservationSearchConditionDto searchCondition) {
+                                                BentoReservationSearchCondition searchCondition) {
         ReservationModifyDto result = new ReservationModifyDto();
         List<ReservationModifyError> errors = new ArrayList<>();
 
         // 1:運用区分を取得
         String cid = AppContexts.user().companyId();
-        BentoReservationSetting bentoReservationSetting = getBentoReservationSetting(cid);
+        ReservationSetting bentoReservationSetting = getBentoReservationSetting(cid);
         if (bentoReservationSetting == null) return null;
 
         // 2:勤務場所を取得
@@ -102,7 +101,7 @@ public class ReservationModifyQuery {
         List<PersonEmpBasicInfoDto> empBasicInfos = personEmpBasicInfoPub.getPerEmpBasicInfo(empIds);
 
         // UI処理[16]
-        if (searchCondition == BentoReservationSearchConditionDto.NEW_ORDER) {
+        if (searchCondition == BentoReservationSearchCondition.NEW_ORDER) {
             for (String empId : empIds) {
                 if (stampCards.containsKey(empId)) {
                     continue;
@@ -120,32 +119,32 @@ public class ReservationModifyQuery {
 
         // 4: 取得する
         // 弁当メニュー
-        List<BentoMenu> bentoMenus = bentoMenuRepo.getBentoMenu(cid, reservationDate.getDate(),
+        List<BentoMenuHistory> bentoMenus = bentoMenuRepo.getBentoMenu(cid, reservationDate.getDate(),
                 reservationDate.getClosingTimeFrame());
         if (!CollectionUtil.isEmpty(bentoMenus)) {
-            BentoMenu bentoMenu = bentoMenus.get(0);
-            BentoMenuByClosingTime menu;
+            BentoMenuHistory bentoMenu = bentoMenus.get(0);
+            BentoMenuByClosingTime menu = null;
             if (bentoReservationSetting.getOperationDistinction() == OperationDistinction.BY_COMPANY) {
                 // 4.2: 会社ごと締め時刻別のメニュー
-                menu = bentoMenu.getByClosingTime(Optional.empty());
+                // menu = bentoMenu.getByClosingTime(Optional.empty());
             } else {
                 // 4.1: 場所より締め時刻別のメニュー(勤務場所コード)
-                menu = bentoMenu.getByClosingTime(workLocationCodeOpt);
+                // menu = bentoMenu.getByClosingTime(workLocationCodeOpt);
             }
 
             // 4.3: 締め時刻を作る
             List<ClosingTimeDto> bentoClosingTimes = new ArrayList<>();
-            BentoReservationClosingTime closingTime = menu.getClosingTime();
-            ReservationClosingTime closingTime1 = closingTime.getClosingTime1();
-            Integer start1 = closingTime1.getStart().isPresent() ? closingTime1.getStart().get().v() : null;
-            bentoClosingTimes.add(new ClosingTimeDto(ReservationClosingTimeFrame.FRAME1.value, closingTime1.getReservationTimeName().v(), closingTime1.getFinish().v(), start1));
-
-            Optional<ReservationClosingTime> closingTime2Opt = closingTime.getClosingTime2();
-            if (closingTime2Opt.isPresent()) {
-                ReservationClosingTime closingTime2 = closingTime2Opt.get();
-                Integer start2 = closingTime2.getStart().isPresent() ? closingTime2.getStart().get().v() : null;
-                bentoClosingTimes.add(new ClosingTimeDto(ReservationClosingTimeFrame.FRAME2.value, closingTime2.getReservationTimeName().v(), closingTime2.getFinish().v(), start2));
-            }
+//            BentoReservationClosingTime closingTime = menu.getClosingTime();
+//            ReservationClosingTime closingTime1 = closingTime.getClosingTime1();
+//            Integer start1 = closingTime1.getStart().isPresent() ? closingTime1.getStart().get().v() : null;
+//            bentoClosingTimes.add(new ClosingTimeDto(ReservationClosingTimeFrame.FRAME1.value, closingTime1.getReservationTimeName().v(), closingTime1.getFinish().v(), start1));
+//
+//            Optional<ReservationClosingTime> closingTime2Opt = closingTime.getClosingTime2();
+//            if (closingTime2Opt.isPresent()) {
+//                ReservationClosingTime closingTime2 = closingTime2Opt.get();
+//                Integer start2 = closingTime2.getStart().isPresent() ? closingTime2.getStart().get().v() : null;
+//                bentoClosingTimes.add(new ClosingTimeDto(ReservationClosingTimeFrame.FRAME2.value, closingTime2.getReservationTimeName().v(), closingTime2.getFinish().v(), start2));
+//            }
 
             result.setBentoClosingTimes(bentoClosingTimes);
 
@@ -165,7 +164,7 @@ public class ReservationModifyQuery {
         }
 
         List<ReservationModifyEmployeeDto> reservationModifyEmps = new ArrayList<>();
-        if (searchCondition != BentoReservationSearchConditionDto.NEW_ORDER) {
+        if (searchCondition != BentoReservationSearchCondition.NEW_ORDER) {
             // 6: 一覧弁当予約を取得する(検索条件, 期間, List<予約登録情報>, 勤務場所コード, 予約締め時刻枠)
             reservationModifyEmps = getReservationModifyEmps(reservationRegisterInfos, reservationDate,
                     workLocationCodeOpt, searchCondition, stampCards, empBasicInfos);
@@ -191,15 +190,15 @@ public class ReservationModifyQuery {
     /**
      * 運用区分を取得
      */
-    private BentoReservationSetting getBentoReservationSetting(String cid) {
-        Optional<BentoReservationSetting> bentoReservationSettingOpt = bentoReservationSettingRepo.findByCId(cid);
+    private ReservationSetting getBentoReservationSetting(String cid) {
+        Optional<ReservationSetting> bentoReservationSettingOpt = bentoReservationSettingRepo.findByCId(cid);
         return bentoReservationSettingOpt.orElse(null);
     }
 
     /**
      * 勤務場所を取得
      */
-    private Optional<WorkLocationCode> getWorkLocationCode(BentoReservationSetting bentoReservationSetting, ReservationDate reservationDate) {
+    private Optional<WorkLocationCode> getWorkLocationCode(ReservationSetting bentoReservationSetting, ReservationDate reservationDate) {
         Optional<WorkLocationCode> workLocationCodeOpt = Optional.empty();
         if (bentoReservationSetting.getOperationDistinction() == OperationDistinction.BY_LOCATION) {
             String empId = AppContexts.user().employeeId();
@@ -221,7 +220,7 @@ public class ReservationModifyQuery {
     private List<ReservationModifyEmployeeDto> getReservationModifyEmps(List<ReservationRegisterInfo> reservationRegisterInfos,
                                                                         ReservationDate reservationDate,
                                                                         Optional<WorkLocationCode> workLocationCodeOpt,
-                                                                        BentoReservationSearchConditionDto searchCondition,
+                                                                        BentoReservationSearchCondition searchCondition,
                                                                         Map<String, StampNumber> stampCards,
                                                                         List<PersonEmpBasicInfoDto> empBasicInfos) {
         // List<予約登録情報>.size > 0 AND Input．検索条件!=新規条件
@@ -324,7 +323,7 @@ public class ReservationModifyQuery {
      */
     private List<EmployeeInfoMonthFinishDto> getEmpFinishs(List<PersonEmpBasicInfoDto> empBasicInfos,
                                                            ReservationDate reservationDate,
-                                                           BentoReservationSearchConditionDto searchCondition,
+                                                           BentoReservationSearchCondition searchCondition,
                                                            List<ReservationModifyEmployeeDto> reservationModifyEmps) {
         List<EmployeeInfoMonthFinishDto> empFinishs = new ArrayList<>();
         RequireImpl require = new RequireImpl(requireService);
@@ -339,7 +338,7 @@ public class ReservationModifyQuery {
                     PersonEmpBasicInfoDto empBasicInfo = empBasicInfoOpt.get();
 
                     // 8.2: 月締め処理が済んでいる社員情報を作る
-                    if (searchCondition == BentoReservationSearchConditionDto.NEW_ORDER) {
+                    if (searchCondition == BentoReservationSearchCondition.NEW_ORDER) {
                         empFinishs.add(new EmployeeInfoMonthFinishDto(empBasicInfo.getEmployeeCode(),
                                 empBasicInfo.getBusinessName()));
                     }

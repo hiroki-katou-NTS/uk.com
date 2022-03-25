@@ -166,7 +166,7 @@
 									<div class="content ui-iggrid">
 										<table class="space-between-table clickable-row left-aligned">
 											<tbody>
-												<tr data-bind="click: $parent.openKDL009">
+												<tr data-bind="click: $vm.openKDL009.bind(this, $vm)">
 													<td><div data-bind="text: name"></div></td>
 													<td><span data-bind="text: content"></span></td>
 												</tr>

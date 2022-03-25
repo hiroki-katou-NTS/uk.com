@@ -14,8 +14,6 @@ public enum EmploymentRootAtr {
 	APPLICATION(1),
 	/** 確認*/
 	CONFIRMATION(2),
-	/** 任意項目*/
-	ANYITEM(3),
 	/**届出*/
 	NOTICE(4),
 	/**各業務エベント*/

@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.OperationMode;
 /**
  * 個人別承認ルート
  * @author hoatt
@@ -21,12 +23,15 @@ import nts.arc.time.calendar.period.DatePeriod;
 public class PersonApprovalRoot extends AggregateRoot{
 	/**会社ID*/
 	private String companyId;
-	/**承認ID*/
-	public String approvalId;
+	
 	/**社員ID*/
 	private String employeeId;
+	
 	/**承認ルート*/
 	public ApprovalRoot apprRoot;
+	
+	/**	運用モード*/
+	private OperationMode operationMode;
 	
 	public static PersonApprovalRoot createSimpleFromJavaType(String companyId,
 			String approvalId,
@@ -40,20 +45,44 @@ public class PersonApprovalRoot extends AggregateRoot{
 			Integer confirmationRootType,
 			int employmentRootAtr, int sysAtr, Integer noticeId, String busEventId){
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
-		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(GeneralDate.fromString(startDate, "yyyy-MM-dd"), GeneralDate.fromString(endDate, "yyyy-MM-dd")));
+		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(GeneralDate.fromString(startDate, "yyyy-MM-dd"), GeneralDate.fromString(endDate, "yyyy-MM-dd")), approvalId);
 		employmentAppHistorys.add(employmentAppHistory);
 		return new PersonApprovalRoot(companyId,
-			approvalId,
 			employeeId,
 			new ApprovalRoot(EnumAdaptor.valueOf(sysAtr, SystemAtr.class),
 					EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
 					// branchId, 
 					employmentAppHistorys,
-					applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
-					confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
+					Optional.ofNullable(applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class)), 
+					Optional.ofNullable(confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class)),
 					// anyItemApplicationId,
-					noticeId, busEventId));
+					Optional.ofNullable(noticeId), Optional.ofNullable(busEventId)),
+			OperationMode.PERSON_IN_CHARGE);
 	}
+	
+	/**
+	 * [C-1] 就業システムで 期間と種類により作成する
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param datePeriod 期間
+	 * @param employmentRootAtr 承認ルート区分
+	 * @param applicationType 申請種類
+	 * @param confirmationRootType 確認ルート種類
+	 */
+	public PersonApprovalRoot(String companyId,
+			String employeeId,
+			DatePeriod datePeriod,
+			EmploymentRootAtr employmentRootAtr,
+			Optional<ApplicationType> applicationType,
+			Optional<ConfirmationRootType> confirmationRootType) {
+		ApprovalRoot approvalRoot = new ApprovalRoot(datePeriod, employmentRootAtr, applicationType, confirmationRootType);
+		this.companyId = companyId;
+		this.employeeId = employeeId;
+		this.apprRoot = approvalRoot;
+		this.operationMode = OperationMode.SUPERIORS_EMPLOYEE;
+		
+	}
+	
 	public static PersonApprovalRoot convert(String companyId,
 			String approvalId,
 			String employeeId,
@@ -61,24 +90,28 @@ public class PersonApprovalRoot extends AggregateRoot{
 			Integer applicationType,
 			GeneralDate startDate,
 			GeneralDate endDate,
-			// String branchId,
-			// String anyItemApplicationId,
 			Integer confirmationRootType,
-			int employmentRootAtr, int sysAtr, Integer noticeId, String busEventId){
+			int employmentRootAtr,
+			int sysAtr,
+			Integer noticeId,
+			String busEventId,
+			Integer opeMode) {
+		OperationMode operationMode = opeMode == null ? null
+				: EnumAdaptor.valueOf(opeMode, OperationMode.class);
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
-		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(startDate,endDate));
+		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(startDate,endDate), approvalId);
 		employmentAppHistorys.add(employmentAppHistory);
 		return new PersonApprovalRoot(companyId,
-			approvalId,
 			employeeId,
 			new ApprovalRoot(EnumAdaptor.valueOf(sysAtr, SystemAtr.class),
 					EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
 					// branchId, 
 					employmentAppHistorys,
-					applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
-					confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
+					Optional.ofNullable(applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class)), 
+					Optional.ofNullable(confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class)),
 					// anyItemApplicationId,
-					noticeId, busEventId));
+					Optional.ofNullable(noticeId), Optional.ofNullable(busEventId)),
+			operationMode);
 	}
 	public static PersonApprovalRoot updateEdate(PersonApprovalRoot psApprovalRoot, String eDate){
 		PersonApprovalRoot ps = psApprovalRoot;
@@ -105,5 +138,9 @@ public class PersonApprovalRoot extends AggregateRoot{
 	}
 	public boolean isBusEvent(){
 		return this.apprRoot.getEmploymentRootAtr()  == EmploymentRootAtr.BUS_EVENT;
+	}
+	public String getApprovalId() {
+		return this.apprRoot.getHistoryItems().stream().map(EmploymentAppHistoryItem::getApprovalId)
+				.findFirst().orElse(null);
 	}
 }

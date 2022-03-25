@@ -17,9 +17,12 @@ public class ManHrInputUsageSettingDto {
 
 	/** 使用区分 */
 	private int usrAtr;
+	
+	/** 設備入力を利用する*/
+	private int equipmentUseAtr;
 
 	public static ManHrInputUsageSettingDto fromDomain(ManHrInputUsageSetting domain) {
-		return new ManHrInputUsageSettingDto(domain.getUsrAtr().value);
+		return new ManHrInputUsageSettingDto(domain.getUsrAtr().value, domain.getEquipmentUseAtr().value);
 	}
 
 }

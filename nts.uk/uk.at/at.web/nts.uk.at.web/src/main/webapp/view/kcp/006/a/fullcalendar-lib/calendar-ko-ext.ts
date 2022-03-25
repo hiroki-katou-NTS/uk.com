@@ -417,6 +417,7 @@ module nts.uk.at.view.kcp006.a {
                 if(optionDates[i].insertText != true)
                     continue;
                 let displayText = "";
+                let fullText = "";
                 for (let j = 0; j < optionDates[i].listText.length; j++) {
                     if (optionDates[i].listText.length <= 3) {
                         displayText += optionDates[i].listText[j] + '<br/>';
@@ -427,8 +428,10 @@ module nts.uk.at.view.kcp006.a {
                             displayText += "。。。";
                         }
                     }
+                    fullText += optionDates[i].listText[j] + '<br/>';
                 }
                 displayText = displayText.replace(new RegExp('\r?\n', 'g'), '<br/>');
+                fullText = fullText.replace(new RegExp('\r?\n', 'g'), '<br/>');
                 let $elementWrap = $(_.find($($("#" + currentCalendar + " .fc-widget-content[data-date='" + optionDates[i].start + "']")[0]).parents(), (parent) => {
                     return parent.className == 'fc-row fc-week fc-widget-content fc-rigid';
                 }))[0];
@@ -449,6 +452,23 @@ module nts.uk.at.view.kcp006.a {
                     $(targetTd).empty();
                     $(targetTd).append("<a class='fc-day-grid-event fc-h-event fc-event fc-start fc-end' style='background-color:" + optionDates[i].backgroundColor + ";border-color:" + optionDates[i].backgroundColor + "'><div class='fc-content'> <span class='fc-title' style='color:" + optionDates[i].textColor + "'>" + displayText + "</span></div></a>");
                 }  
+
+                //display event note
+                if (displayText.indexOf("。。。") >= 0) {
+                    $("#" + currentCalendar + " .fc-widget-content[data-date='" + optionDates[i].start + "']").hover(function() {
+                        $("#" + currentCalendar + " .event-note").empty();
+                        $("#" + currentCalendar + " .event-note").append("<div class='com-event-content'>" + fullText + "</div>").children().clone();
+                        $("#" + currentCalendar + " .event-note").css("top", $(this).offset().top + 50);
+                        $("#" + currentCalendar + " .event-note").css("left", $(this).offset().left + 47);
+                        $("#" + currentCalendar + " .event-note").css("min-height", "100px");
+                        $("#" + currentCalendar + " .event-note").css("height", "fit-content");
+                        $("#" + currentCalendar + " .event-note").css("background-color", "#F8EFD4");
+                        $("#" + currentCalendar + " .event-note").show();
+                    }, function() {
+                        $("#" + currentCalendar + " .event-note").hide();
+                    });
+                }
+
                 result = true;              
             }
             
@@ -493,6 +513,7 @@ module nts.uk.at.view.kcp006.a {
                 $("#" + currentCalendar + " .event-note").append($("#" + currentCalendar + " .event-data[data-date='" + $(this).attr("data-date") + "']").children().clone());
                 $("#" + currentCalendar + " .event-note").css("top", $(this).offset().top - 10);
                 $("#" + currentCalendar + " .event-note").css("left", $(this).offset().left + 27);
+                $("#" + currentCalendar + " .event-note").css("background-color", "#E8DEF8");
                 $("#" + currentCalendar + " .event-note").show();
             }, function() {
                 $("#" + currentCalendar + " .event-note").hide();
@@ -503,6 +524,7 @@ module nts.uk.at.view.kcp006.a {
                     $("#" + currentCalendar + " .fc-day-top[data-date='" + optionDates[i].start + "']").attr("style", 'background-color: ' + optionDates[i].headerBackgroundColor + '!important');
                 }
                 let displayText = "";
+                let fullText = "";
                 for (let j = 0; j < optionDates[i].listText.length; j++) {
                     if (optionDates[i].listText.length <= 3) {
                         displayText += optionDates[i].listText[j] + '<br/>';
@@ -513,8 +535,10 @@ module nts.uk.at.view.kcp006.a {
                             displayText += "。。。";
                         }
                     }
+                    fullText += optionDates[i].listText[j] + '<br/>';
                 }
                 displayText = displayText.replace(new RegExp('\r?\n', 'g'), '<br/>');
+                fullText = fullText.replace(new RegExp('\r?\n', 'g'), '<br/>');
                 let $elementWrap = $(_.find($($("#" + currentCalendar + " .fc-widget-content[data-date='" + optionDates[i].start + "']")[0]).parents(), (parent) => {
                     return parent.className == 'fc-row fc-week fc-widget-content fc-rigid';
                 }))[0];
@@ -532,6 +556,21 @@ module nts.uk.at.view.kcp006.a {
                     let targetTd = lstTd[currentIndex];
                     targetTd.className = "fc-event-container";
                     $(targetTd).append("<a class='fc-day-grid-event fc-h-event fc-event fc-start fc-end' style='background-color:" + optionDates[i].backgroundColor + ";border-color:" + optionDates[i].backgroundColor + "'><div class='fc-content'> <span class='fc-title' style='color:" + optionDates[i].textColor + "'>" + displayText + "</span></div></a>");
+                    //display event note
+                    if (displayText.indexOf("。。。") >= 0) {
+                        $("#" + currentCalendar + " .fc-widget-content[data-date='" + optionDates[i].start + "']").hover(function() {
+                            $("#" + currentCalendar + " .event-note").empty();
+                            $("#" + currentCalendar + " .event-note").append("<div class='com-event-content'>" + fullText + "</div>").children().clone();
+                            $("#" + currentCalendar + " .event-note").css("top", $(this).offset().top + 50);
+                            $("#" + currentCalendar + " .event-note").css("left", $(this).offset().left + 47);
+                            $("#" + currentCalendar + " .event-note").css("min-height", "100px");
+                            $("#" + currentCalendar + " .event-note").css("height", "fit-content");
+                            $("#" + currentCalendar + " .event-note").css("background-color", "#F8EFD4");
+                            $("#" + currentCalendar + " .event-note").show();
+                        }, function() {
+                            $("#" + currentCalendar + " .event-note").hide();
+                        });
+                    }
                 }
             }
         }

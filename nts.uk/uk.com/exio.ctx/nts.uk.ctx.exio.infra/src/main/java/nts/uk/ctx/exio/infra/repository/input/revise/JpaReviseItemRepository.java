@@ -1,11 +1,13 @@
 package nts.uk.ctx.exio.infra.repository.input.revise;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
@@ -48,6 +50,25 @@ public class JpaReviseItemRepository extends JpaRepository implements ReviseItem
 		val codeConvert = getCodeConvert(companyId, settingCode, domainId, importItemNumber);
 		
 		return Optional.of(entitiesOpt.get().toDomain(codeConvert));
+	}
+
+	public List<ReviseItem> get(String companyId, ExternalImportCode settingCode) {
+		String sql 	= " select f "
+				+ " from XimmtReviseItem f"
+				+ " where f.pk.companyId =:companyID "
+				+ " and f.pk.settingCode =:settingCD ";
+		
+		val entitiesOpt = this.queryProxy().query(sql, XimmtReviseItem.class)
+				.setParameter("companyID", companyId)
+				.setParameter("settingCD", settingCode.toString())
+				.getList();
+		
+		val reviseItems = new ArrayList<ReviseItem>();
+		entitiesOpt.forEach(entity-> {
+			val codeConvert = getCodeConvert(companyId, settingCode, EnumAdaptor.valueOf(entity.getPk().getDomainId(), ImportingDomainId.class), entity.getPk().getItemNo());
+			reviseItems.add(entity.toDomain(codeConvert));
+		});
+		return reviseItems; 
 	}
 	
 	// コード変換のDomainId追加は要否を検討中
@@ -106,6 +127,11 @@ public class JpaReviseItemRepository extends JpaRepository implements ReviseItem
 				commandProxy().insert(XimmtCodeConvertDetail.toEntity(parent.getPk(), detail));
 			});
 		});
+	}
+	
+	@Override
+	public void persist(List<ReviseItem> reviseItems) {
+		reviseItems.forEach(reviseItem -> this.persist(reviseItem));
 	}
 
 	@Override

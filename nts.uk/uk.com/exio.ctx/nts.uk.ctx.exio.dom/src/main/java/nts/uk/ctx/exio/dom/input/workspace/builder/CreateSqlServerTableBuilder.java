@@ -1,13 +1,12 @@
 package nts.uk.ctx.exio.dom.input.workspace.builder;
 
-import lombok.Value;
-import lombok.val;
-import nts.arc.layer.infra.data.database.DatabaseProduct;
-import nts.uk.ctx.exio.dom.input.workspace.datatype.DataTypeConfiguration;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import lombok.Value;
+import lombok.val;
+import nts.uk.ctx.exio.dom.input.workspace.datatype.DataTypeConfiguration;
 
 public class CreateSqlServerTableBuilder extends CreateTableBuilder {
 

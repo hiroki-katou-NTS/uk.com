@@ -1,0 +1,115 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{AFDC4B05-D5A5-4AA5-8D96-D05656EE4040}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WSISmile.Business</RootNamespace>
+    <AssemblyName>WSISmile.Business</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>dll\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Category\Accept\Base\AcceptCategoryBase.cs" />
+    <Compile Include="Category\Accept\EmployeeBase.cs" />
+    <Compile Include="Category\Accept\EmployeeInfo.cs" />
+    <Compile Include="Category\Accept\EmployeeSuspension.cs" />
+    <Compile Include="Category\Accept\Smile\SmileOrganization.cs" />
+    <Compile Include="Category\Accept\WorkplaceInfo.cs" />
+    <Compile Include="Category\Accept\Base\CsvWriter.cs" />
+    <Compile Include="Common\DataType.cs" />
+    <Compile Include="Common\Encode.cs" />
+    <Compile Include="Common\Format.cs" />
+    <Compile Include="Common\Toolbox.cs" />
+    <Compile Include="Enum\Accept\AcceptCategory.cs" />
+    <Compile Include="Enum\Output\TargetMonth.cs" />
+    <Compile Include="Enum\WebApi\ResponseType.cs" />
+    <Compile Include="Link\Linker\AcceptLinker.cs" />
+    <Compile Include="Enum\Output\Delimiter.cs" />
+    <Compile Include="Enum\Output\OutputStatus.cs" />
+    <Compile Include="Enum\Output\StringFormat.cs" />
+    <Compile Include="Enum\WebApi\WebApi.cs" />
+    <Compile Include="Enum\WebApi\WebApiEnumConverter.cs" />
+    <Compile Include="Link\Linker\Authenticator.cs" />
+    <Compile Include="Link\Linker\EmployeeLinker.cs" />
+    <Compile Include="Link\Linker\MonthlyCheckLinker.cs" />
+    <Compile Include="Link\Parameter\Accept\AcceptErrorInfo.cs" />
+    <Compile Include="Link\Parameter\Accept\AcceptPrepareParam.cs" />
+    <Compile Include="Link\Parameter\Accept\AcceptTaskInfo.cs" />
+    <Compile Include="Link\Parameter\Closure\ClosureInfo.cs" />
+    <Compile Include="Link\Parameter\Closure\ClosurePeriodInfo.cs" />
+    <Compile Include="Link\Parameter\Closure\EmploymentClosureInfo.cs" />
+    <Compile Include="Link\Parameter\Closure\MonthlyClosureInfo.cs" />
+    <Compile Include="Link\Parameter\Closure\MonthlyClosureParam.cs" />
+    <Compile Include="Link\Parameter\Cookie\CookieInfo.cs" />
+    <Compile Include="Link\Parameter\Login\LoginParam.cs" />
+    <Compile Include="Link\Parameter\Output\Monthly\ApproveStatusCheckParam.cs" />
+    <Compile Include="Link\Parameter\Output\Monthly\OutputEmployeeInfo.cs" />
+    <Compile Include="Link\Parameter\Output\Monthly\SelectEmployeesByEmpParam.cs" />
+    <Compile Include="Link\Parameter\Output\OutputStartingParam.cs" />
+    <Compile Include="Link\Linker\ClosureLinker.cs" />
+    <Compile Include="Link\Linker\OutputLinker.cs" />
+    <Compile Include="Link\Parameter\Accept\UploadFileInfo.cs" />
+    <Compile Include="Link\Parameter\Output\OutputSettingInfo.cs" />
+    <Compile Include="Link\Parameter\Output\OutputStatusInfo.cs" />
+    <Compile Include="Link\Linker\SettingLinker.cs" />
+    <Compile Include="Link\Parameter\Setting\SmileAcceptSetting.cs" />
+    <Compile Include="Link\Parameter\Setting\SmileOutputSetting.cs" />
+    <Compile Include="Link\UKCommunicator.cs" />
+    <Compile Include="Common\Logger.cs" />
+    <Compile Include="Enum\ProcessType\ProcessType.cs" />
+    <Compile Include="Enum\ProcessType\ProcessTypeEnumConverter.cs" />
+    <Compile Include="Category\Output\Monthly\MonthlyClosing.cs" />
+    <Compile Include="Link\Parameter\Output\Monthly\MonthlyClosingEmployInfo.cs" />
+    <Compile Include="Category\Output\SmileConverter.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Task\Class\Accept.cs" />
+    <Compile Include="Task\Class\Contract.cs" />
+    <Compile Include="Task\Class\Cookie.cs" />
+    <Compile Include="Task\Class\Setting.cs" />
+    <Compile Include="Task\Exception\StartingErrorInfo.cs" />
+    <Compile Include="Task\TaskInfo.cs" />
+    <Compile Include="Task\Class\Output.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

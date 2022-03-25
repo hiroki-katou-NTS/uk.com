@@ -354,7 +354,7 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 	}
 
 	export interface UnitModel {
-		id?: string;
+		id?: number;
 		code: string;
 		name?: string;
 		workplaceName?: string;

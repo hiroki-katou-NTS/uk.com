@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.ws.shift.specificdayset.company;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -32,7 +33,7 @@ public class CompanySpecificDateWebService extends WebService {
 
 	@POST
 	@Path("getcompanyspecificdaysetbydate")
-	public List<CompanySpecificDateDto> getCompanySpecificDateByCompany(String processDate) {
+	public Optional<CompanySpecificDateDto> getCompanySpecificDateByCompany(String processDate) {
 		return this.find.getComSpecByDate(processDate);
 	}
 
