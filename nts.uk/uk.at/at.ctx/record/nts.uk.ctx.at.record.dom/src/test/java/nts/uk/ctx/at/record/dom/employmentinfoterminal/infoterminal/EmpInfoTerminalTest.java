@@ -3,8 +3,6 @@
  */
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Optional;
 
 import org.junit.Before;
@@ -18,7 +16,6 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal.EmpInfoTerminalBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.ConvertTimeRecordReservationService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.net.Ipv4Address;

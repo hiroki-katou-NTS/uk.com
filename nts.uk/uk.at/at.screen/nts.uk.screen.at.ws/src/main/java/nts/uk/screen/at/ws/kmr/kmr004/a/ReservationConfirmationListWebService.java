@@ -1,6 +1,7 @@
 package nts.uk.screen.at.ws.kmr.kmr004.a;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.screen.at.app.reservation.ReservationConfirmationListDto;
 import nts.uk.screen.at.app.reservation.ReservationConfirmationListScreenQuery;
 import nts.uk.shr.com.context.AppContexts;
@@ -24,12 +25,14 @@ public class ReservationConfirmationListWebService extends WebService {
 
     @POST
     @Path("start")
-    public ReservationConfirmationListDto getReservationConfirmationListStartupInfo() {
+    public ReservationConfirmationListDto getReservationConfirmationListStartupInfo(ReserConfirmListParam param) {
 
         // 予約確認一覧
         LoginUserContext user = AppContexts.user();
         String companyId = user.companyId();
-        ReservationConfirmationListDto dto = reservationConfirmationListScreenQuery.getReservationConfirmationListStartupInfo(companyId);
+        GeneralDate startDate = GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd");
+        GeneralDate endDate = GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd");
+        ReservationConfirmationListDto dto = reservationConfirmationListScreenQuery.getReservationConfirmationListStartupInfo(companyId, startDate, endDate);
 
         return dto;
     }

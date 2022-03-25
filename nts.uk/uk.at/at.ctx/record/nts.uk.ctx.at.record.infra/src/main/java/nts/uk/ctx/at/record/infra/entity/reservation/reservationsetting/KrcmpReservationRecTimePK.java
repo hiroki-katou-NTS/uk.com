@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.reservation.bentomenu;
+package nts.uk.ctx.at.record.infra.entity.reservation.reservationsetting;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -9,12 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class KrcmtBentoMenuPK {
+public class KrcmpReservationRecTimePK {
 	
 	@Column(name = "CID")
-	public String companyID;
+    public String companyID;
 	
-	@Column(name = "HIST_ID")
-	public String histID;
-	
+	@Column(name = "TIME_NO")
+    public int timeNo;
 }

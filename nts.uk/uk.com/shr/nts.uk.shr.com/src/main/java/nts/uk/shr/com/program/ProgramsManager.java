@@ -2870,9 +2870,9 @@ public class ProgramsManager {
     /**
      * KMR001
      */
-    public static final Program KMR001A = new Program(WebAppId.AT, ProgramIdConsts.KMR001A, "KMR001_78",
+    public static final Program KMR001A = new Program(WebAppId.AT, ProgramIdConsts.KMR001A, "KMR001_1",
             "/view/kmr/001/a/index.xhtml");
-    public static final Program KMR001B = new Program(WebAppId.AT, ProgramIdConsts.KMR001B, "KMR001_1",
+    public static final Program KMR001B = new Program(WebAppId.AT, ProgramIdConsts.KMR001B, "KMR001_80",
             "/view/kmr/001/b/index.xhtml");
     public static final Program KMR001C = new Program(WebAppId.AT, ProgramIdConsts.KMR001C, "KMR001_2",
             "/view/kmr/001/c/index.xhtml");
@@ -2880,18 +2880,32 @@ public class ProgramsManager {
             "/view/kmr/001/d/index.xhtml");
 
     /**
+     * KMR002
+     */
+    public static final Program KMR002A = new Program(WebAppId.AT, ProgramIdConsts.KMR002A, "KMR002_15",
+            "/view/kmr/002/a/index.xhtml");
+    
+    /**
      * KMR003
      */
-    public static final Program KMR003A = new Program(WebAppId.AT, ProgramIdConsts.KMR003A, "KMR003_1",
+    public static final Program KMR003A = new Program(WebAppId.AT, ProgramIdConsts.KMR003A, "KMR003_35",
             "/view/kmr/003/a/index.xhtml");
-    public static final Program KMR003B = new Program(WebAppId.AT, ProgramIdConsts.KMR003B, "KMR003_26",
+    public static final Program KMR003B = new Program(WebAppId.AT, ProgramIdConsts.KMR003B, "KMR003_36",
             "/view/kmr/003/b/index.xhtml");
+    public static final Program KMR003C = new Program(WebAppId.AT, ProgramIdConsts.KMR003C, "KMR003_37",
+            "/view/kmr/003/c/index.xhtml");
 
     /**
      * KMR004
      */
     public static final Program KMR004A = new Program(WebAppId.AT, ProgramIdConsts.KMR004A, "KMR004_40",
             "/view/kmr/004/a/index.xhtml");
+    
+    /**
+     * KMR005
+     */
+    public static final Program KMR005A = new Program(WebAppId.AT, ProgramIdConsts.KMR005A, "KMR005_1",
+            "/view/kmr/005/a/index.xhtml");
 
     /**
      * KWR002
