@@ -842,7 +842,6 @@ public class OverTimeSheet {
 		}
 		return Optional.of(new OverTimeSheet(recreated));
 	}
-<<<<<<< HEAD
 	
 	/**
 	 * 逆丸めにして取得する
@@ -852,7 +851,7 @@ public class OverTimeSheet {
 		return new OverTimeSheet(this.frameTimeSheets.stream()
 				.map(f -> f.getReverseRounding())
 				.collect(Collectors.toList()));
-=======
+	}
 
 	/**
 	 * 臨時による残業時間帯の取得
@@ -913,6 +912,5 @@ public class OverTimeSheet {
 		}
 		// 変換後Listを返す
 		return after;
->>>>>>> pj/at/release_ver4
 	}
 }

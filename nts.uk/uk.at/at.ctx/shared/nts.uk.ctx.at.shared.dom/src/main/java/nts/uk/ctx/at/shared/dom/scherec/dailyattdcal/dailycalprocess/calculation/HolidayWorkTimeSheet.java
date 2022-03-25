@@ -971,7 +971,6 @@ public class HolidayWorkTimeSheet{
 	}
 	
 	/**
-<<<<<<< HEAD
 	 * 逆丸めにして取得する
 	 * @return 休日出勤時間帯
 	 */
@@ -979,7 +978,9 @@ public class HolidayWorkTimeSheet{
 		return new HolidayWorkTimeSheet(this.workHolidayTime.stream()
 				.map(f -> f.getReverseRounding())
 				.collect(Collectors.toList()));
-=======
+	}
+
+	/**
 	 * 臨時による休出時間帯の取得
 	 * @param companySet 会社別設定管理
 	 * @param personDailySet 社員設定管理
@@ -1047,6 +1048,5 @@ public class HolidayWorkTimeSheet{
 		}
 		// 変換後Listを返す
 		return after;
->>>>>>> pj/at/release_ver4
 	}
 }
