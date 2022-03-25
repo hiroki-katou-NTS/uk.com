@@ -109,9 +109,11 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpComHisAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
+import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveManagementSetting;
+import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveMngSetRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -248,6 +250,9 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	private EmpComHisAdapter empComHisAdapter;
 
 	private ClosureStatusManagementRepository closureStatusManagementRepo;
+	
+	private TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepository;
+
 	private CheckCareService checkCareService;
 
 	private WorkingConditionItemService workingConditionItemService;
@@ -287,7 +292,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 			LeaveComDayOffManaRepository leaveComDayOffManaRepo, CheckCareService checkChildCareService,
 			WorkingConditionItemService workingConditionItemService, RemainCreateInforByRecordData remainCreateInforByRecordData,
 			SysEmploymentHisAdapter sysEmploymentHisAdapter, ElapseYearRepository elapseYearRepository, EmpComHisAdapter empComHisAdapter,
-			ClosureStatusManagementRepository closureStatusManagementRepo) {
+			ClosureStatusManagementRepository closureStatusManagementRepo, TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepository) {
 		this.comSubstVacationRepo = comSubstVacationRepo;
 		this.compensLeaveComSetRepo = compensLeaveComSetRepo;
 		this.specialLeaveGrantRepo = specialLeaveGrantRepo;
@@ -346,6 +351,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		this.elapseYearRepository = elapseYearRepository;
 		this.empComHisAdapter = empComHisAdapter;
 		this.closureStatusManagementRepo = closureStatusManagementRepo;
+		this.timeSpecialLeaveMngSetRepository = timeSpecialLeaveMngSetRepository;
 	}
 
 	RequireImpCache cache = new RequireImpCache();
@@ -944,6 +950,9 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	}
 
 	@Override
+	public Optional<TimeSpecialLeaveManagementSetting> findByCompany(String companyId) {
+		return timeSpecialLeaveMngSetRepository.findByCompany(companyId);
+	}
 	public CompensatoryLeaveEmSetting findComLeavEmpSet(String companyId, String employmentCode) {
 		return this.compensatoryLeaveEmSetting(companyId, employmentCode).orElse(null);
 	}

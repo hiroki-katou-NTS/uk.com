@@ -157,7 +157,7 @@ public class DPControlDisplayItem {
 		});
 	}
 
-	public void setColumnsAccessModifier(List<DPBusinessTypeControl> lstDPBusinessTypeControl) {
+	public void setColumnsAccessModifier(List<DPBusinessTypeControl> lstDPBusinessTypeControl, Map<Integer, DPAttendanceItem> mapDP) {
 		lstDPBusinessTypeControl.stream().forEach(i -> {
 			Optional<DPHeaderDto> header = this.getLstHeader().stream()
 					.filter(h -> h.getKey().substring(1, h.getKey().length()).equals(String.valueOf(i.getAttendanceItemId()))).findFirst();
@@ -166,6 +166,14 @@ public class DPControlDisplayItem {
 				header.get().setChangedByYou(i.isChangedByYou());
 			}
 		});
+		Optional<DPHeaderDto> opApplicationHeader = this.getLstHeader().stream().filter(x -> x.getKey().equals("Application")).findAny();
+		if(opApplicationHeader.isPresent()) {
+			int applicationAttendanceID = mapDP.values().stream().filter(x -> x.getAttendanceAtr()==DailyAttendanceAtr.Application.value).findAny().map(x -> x.getId()).orElse(0);
+			lstDPBusinessTypeControl.stream().filter(x -> x.getAttendanceItemId()==applicationAttendanceID).findAny().ifPresent(x -> {
+				opApplicationHeader.get().setChangedByOther(x.isChangedByOther());
+				opApplicationHeader.get().setChangedByYou(x.isChangedByYou());
+			});
+		}
 	}
 
 }

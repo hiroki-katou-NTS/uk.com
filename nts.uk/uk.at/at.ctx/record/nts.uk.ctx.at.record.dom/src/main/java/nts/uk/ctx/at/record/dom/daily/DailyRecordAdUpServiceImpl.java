@@ -344,13 +344,16 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 		OuenWorkTimeSheetOfDaily domain = new OuenWorkTimeSheetOfDaily(sid, ymd, ouenTimeSheets);
 		List<OuenWorkTimeSheetOfDaily> update = new ArrayList<>();
 		update.add(domain);
+		ouenWorkTimeSheetOfDailyRepo.remove(sid, ymd);
 		ouenWorkTimeSheetOfDailyRepo.insert(update);
 	}
 
 	@Override
-	public void adUpOuenWorkTime(Optional<OuenWorkTimeOfDaily> ouen) {
+	public void adUpOuenWorkTime(String sid, GeneralDate ymd, Optional<OuenWorkTimeOfDaily> ouen) {
+		ouenWorkTimeOfDailyRepo.remove(sid, ymd);
 		if (!ouen.isPresent())
 			return;
-		ouenWorkTimeOfDailyRepo.update(ouen.get());
+		ouenWorkTimeOfDailyRepo.insert(ouen.get());
+		//ouenWorkTimeOfDailyRepo.update(ouen.get());
 	}
 }

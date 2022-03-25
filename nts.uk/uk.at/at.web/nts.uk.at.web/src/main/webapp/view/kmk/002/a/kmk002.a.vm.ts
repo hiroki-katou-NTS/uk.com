@@ -2736,7 +2736,8 @@ module nts.uk.at.view.kmk002.a {
                 let result = '';
                 let sortAttdanceItems = _.sortBy(dto.attendanceItems,item=>item.attendanceItemDisplayNumber);
                 sortAttdanceItems.forEach(item => {
-                    result += item.operatorText + ' ' + item.attendanceItemName + ' ';
+					let name = item.attendanceItemName != null?item.attendanceItemName:nts.uk.resource.getText('KMK002_173');
+                    result += item.operatorText + ' ' + name + ' ';
                 });
 
                 // remove first '+'

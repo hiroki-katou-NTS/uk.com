@@ -4,9 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 
 /**
  * The Class RetentionYearlySetting.
@@ -23,6 +28,60 @@ public class RetentionYearlySetting extends AggregateRoot {
 	
 	/** The management category. */
 	private ManageDistinct managementCategory;
+	
+	/**
+	 * [C-0] 積立年休設定
+	 */
+	public RetentionYearlySetting(String companyId, UpperLimitSetting upperLimitSetting,
+			ManageDistinct managementCategory) {
+		super();
+		this.companyId = companyId;
+		this.upperLimitSetting = upperLimitSetting;
+		this.managementCategory = managementCategory;
+	}
+	
+	/**
+	 * [1] 積立年休に対応する日次の勤怠項目を取得する
+	 */
+	public List<Integer> getDailyAttendanceItemsRetentionYearly() {
+		// 積立年休に対応する日次の勤怠項目
+		return Arrays.asList(547);
+	}
+	
+	/**
+	 * [2] 積立年休に対応する月次の勤怠項目を取得する
+	 */
+	public List<Integer> getMonthlyAttendanceItemsRetentionYearly() {
+		// 積立年休に対応する月次の勤怠項目
+		return Arrays.asList(187, 830, 831, 832, 834, 835, 836, 837, 838, 1790, 1791);
+	}
+	
+	/**
+	 * [3] 利用できない月次の勤怠項目を取得する
+	 */
+	public List<Integer> getMonthlyAttendanceItems(Require require) {
+		if (!this.isManageRetentionYearly(require))
+			return this.getMonthlyAttendanceItemsRetentionYearly();
+		return new ArrayList<>();
+	}
+	
+	/**
+	 * [4] 積立年休を管理するか
+	 */
+	public boolean isManageRetentionYearly(Require require) {
+		AnnualPaidLeaveSetting annualPaid = require.findByCid(companyId);
+		if (annualPaid == null || (annualPaid != null && annualPaid.getYearManageType() == ManageDistinct.NO) || managementCategory == ManageDistinct.NO)
+			return false;
+		return true;
+	}
+	
+	/**
+	 * [R-1] 年休設定を取得する
+	 */
+	public static interface Require {
+		// AnnualPaidLeaveSettingRepository
+		AnnualPaidLeaveSetting findByCid(String companyId);
+	}
 	
 	/**
 	 * Instantiates a new retention yearly setting.
@@ -77,5 +136,4 @@ public class RetentionYearlySetting extends AggregateRoot {
 			return false;
 		return true;
 	}
-	
 }

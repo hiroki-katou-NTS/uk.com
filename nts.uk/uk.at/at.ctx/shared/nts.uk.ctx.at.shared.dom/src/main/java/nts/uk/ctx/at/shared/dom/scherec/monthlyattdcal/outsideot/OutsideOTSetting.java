@@ -609,4 +609,46 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 	}
 	
 	public static interface Require extends WorkdayoffFrame.Require {}
+	
+	/**
+	 * 	[1] 時間外超過に対応する月次の勤怠項目を取得する
+	 * @return
+	 */
+	public List<Integer> getMonthlyAttendanceIdByNo() {
+		List<Integer> listAttdId = new ArrayList<>();
+		this.overtimes.forEach(item ->{
+			listAttdId.addAll(item.getMonthlyAttendanceIdByNo());
+		});
+		this.breakdownItems.forEach(item ->{
+			listAttdId.addAll(item.getMonthlyAttendanceIdByNo());
+		});
+		return listAttdId.stream().distinct().collect(Collectors.toList());
+	}
+	
+	/**
+	 * 	[2] 利用できない月次の勤怠項目を取得する
+	 * @return
+	 */
+	public List<Integer> getMonthlyAttendanceIdNotAvailable() {
+		List<Integer> listAttdId = new ArrayList<>();
+		this.overtimes.forEach(item ->{
+			listAttdId.addAll(item.getMonthlyAttendanceIdNotAvailable());
+		});
+		this.breakdownItems.forEach(item ->{
+			listAttdId.addAll(item.getMonthlyAttendanceIdNotAvailable());
+		});
+		return listAttdId.stream().distinct().collect(Collectors.toList());
+	}
+
+	public OutsideOTSetting(String companyId, OvertimeNote note, List<OutsideOTBRDItem> breakdownItems,
+			List<Overtime> overtimes) {
+		this.companyId = companyId;
+		this.note = note;
+		this.breakdownItems = breakdownItems;
+		this.overtimes = overtimes;
+	}
+	
+	
+	
+	
 }

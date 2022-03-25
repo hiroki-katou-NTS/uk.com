@@ -7,6 +7,7 @@
 .cell-left {
   width: 100px;
 }
+
 .table .cell-left {
   width: 120px;
   padding-left: 15px;
@@ -14,17 +15,21 @@
 
 .table .group .cell-left {
   width: 180px;
-} 
+}
+
 .sidebar-content {
   height: 100%;
 }
 
 .table .cell-left .form-label {
   line-height: 37px;
+  width: 300px;
 }
+
 .table.mb-5 {
   margin-bottom: 15px;
 }
+
 .table .cell-left .form-label.normal {
   line-height: normal;
 }
@@ -39,4 +44,8 @@ span.limited-label {
   width: 250px;
   padding: 6px 10px;
   margin-left: 5px;
+}
+
+input.inp-same-stamp-rance-in-minutes {
+  width: 15px;
 }

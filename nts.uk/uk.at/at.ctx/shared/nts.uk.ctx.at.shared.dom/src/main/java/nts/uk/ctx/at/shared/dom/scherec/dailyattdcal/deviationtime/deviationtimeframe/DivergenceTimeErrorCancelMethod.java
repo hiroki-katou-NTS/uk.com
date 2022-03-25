@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import lombok.Setter;
 //UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).日の勤怠計算.乖離時間.乖離時間枠
 @Getter
 @Setter
+@AllArgsConstructor
 public class DivergenceTimeErrorCancelMethod {
 
 	/** The reason inputed. */
