@@ -104,6 +104,11 @@ public class AppDispInfoWithDateDto {
 	 */
 	private List<WorkTimeSettingDto> opWorkTimeLst;
 	
+	/**
+	 * エラーメッセージ
+	 */
+	private List<String> errorMsgLst;
+	
 	public static AppDispInfoWithDateDto fromDomain(AppDispInfoWithDateOutput appDispInfoWithDateOutput) {
 		return new AppDispInfoWithDateDto(
 				ApprovalFunctionSetDto.fromDomain(appDispInfoWithDateOutput.getApprovalFunctionSet()), 
@@ -120,7 +125,8 @@ public class AppDispInfoWithDateDto {
 				appDispInfoWithDateOutput.getOpPreAppContentDisplayLst().map(x -> x.stream().map(y -> PreAppContentDispDto.fromDomain(y)).collect(Collectors.toList())).orElse(null), 
 				appDispInfoWithDateOutput.getOpAppDeadline().map(x -> x.toString()).orElse(null), 
 				appDispInfoWithDateOutput.getOpWorkTimeLst().map(x -> x.stream()
-					.map(y -> AppDispInfoWithDateDto.fromDomainWorkTime(y)).collect(Collectors.toList())).orElse(null));
+					.map(y -> AppDispInfoWithDateDto.fromDomainWorkTime(y)).collect(Collectors.toList())).orElse(null),
+				appDispInfoWithDateOutput.getErrorMsgLst());
 	}
 	
 	private static WorkTimeSettingDto fromDomainWorkTime(WorkTimeSetting workTimeSetting) {
@@ -170,6 +176,9 @@ public class AppDispInfoWithDateDto {
 		}
 		if(opWorkTimeLst != null) {
 			appDispInfoWithDateOutput.setOpWorkTimeLst(Optional.of(opWorkTimeLst.stream().map(x -> AppDispInfoWithDateDto.toDomainWorkTime(x)).collect(Collectors.toList())));
+		}
+		if(!CollectionUtil.isEmpty(errorMsgLst)) {
+			appDispInfoWithDateOutput.setErrorMsgLst(errorMsgLst);
 		}
 		return appDispInfoWithDateOutput;
 	}

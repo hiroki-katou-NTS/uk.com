@@ -82,7 +82,7 @@ module nts.uk.at.view.kdl009.a {
 					isShowWorkPlaceName: self.isShowWorkPlaceName(),
 					isShowSelectAllButton: self.isShowSelectAllButton(),
 					disableSelection: self.disableSelection(),
-					maxRows: 15,
+					maxRows: 15.51,
 					tabindex: -1
 
 				};

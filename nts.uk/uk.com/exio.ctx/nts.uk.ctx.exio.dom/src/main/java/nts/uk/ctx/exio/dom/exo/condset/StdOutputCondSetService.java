@@ -323,10 +323,10 @@ public class StdOutputCondSetService {
 
 	// 起動する
 	//外部出力取得設定一覧項目あり
-	public List<StdOutputCondSet> getListStandardOutputItem(String cndSetCd,String roleId) {
+	public List<StdOutputCondSet> getListStandardOutputItem(String cid, String cndSetCd,String roleId) {
 		List<String> listRoleId = new ArrayList<>();
 		listRoleId.add(roleId);
-		List<StdOutputCondSet> data = mAcquisitionExOutSetting.getExOutSetting("", StandardAtr.STANDARD, cndSetCd);
+		List<StdOutputCondSet> data = mAcquisitionExOutSetting.getExOutSetting(cid, "", StandardAtr.STANDARD, cndSetCd);
 		List<ExOutCtg> listExOutCtg =acquisitionExternalOutputCategory.getExternalOutputCategoryList(listRoleId);
 		List<StdOutputCondSet> arrTemp = new ArrayList<StdOutputCondSet>();
 		String userID = AppContexts.user().userId();

@@ -19,7 +19,7 @@ public class DateRevise implements ReviseValue {
 	private ExternalImportDateFormat dateFormat;
 	
 	@Override
-	public Either<ErrorMessage, ?> revise(String target) {
+	public Either<ErrorMessage, ?> revise(ReviseValue.Require require, String target) {
 		
 		if (StringUtil.isNullOrEmpty(target, false)) {
 			return Either.right(null);

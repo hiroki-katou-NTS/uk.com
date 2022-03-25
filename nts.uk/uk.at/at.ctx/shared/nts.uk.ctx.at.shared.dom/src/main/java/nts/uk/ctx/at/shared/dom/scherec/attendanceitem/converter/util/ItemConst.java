@@ -354,4 +354,9 @@ public interface ItemConst extends Cloneable {
 	public final String NEXT_YEAR = "翌年";
 	public final String NEXT_MONTH = "翌月";
 	public final String CARRIED_FORWARD = "繰越数";
+
+	public final String WKP_GROUP_ID = "職場グループID";
+	public final String NURSE_LICENSE_CLS = "看護免許区分";
+	public final String IS_NURSE_ADMINISTRATOR = "看護管理者か";
+
 }

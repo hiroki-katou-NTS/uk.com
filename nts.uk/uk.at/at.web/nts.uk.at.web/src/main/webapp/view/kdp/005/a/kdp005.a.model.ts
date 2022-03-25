@@ -9,6 +9,14 @@ interface StampSetting {
 	authcFailCnt:number;
 }
 
+interface IWorkPlaceRegionalTimeDto {
+
+    workPlaceId: string;
+    workLocationCD: string;
+    workLocationName: string;
+    regional: number;
+}
+
 interface PageLayout {
 	pageNo: number;
 	stampPageName: string;

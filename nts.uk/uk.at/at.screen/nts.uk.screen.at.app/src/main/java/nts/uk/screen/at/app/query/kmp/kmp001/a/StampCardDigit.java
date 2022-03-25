@@ -9,6 +9,8 @@ import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossingRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -25,6 +27,9 @@ public class StampCardDigit {
 	@Inject
 	private SettingsUsingEmbossingRepository settingsUsingEmbossingRepo;
 	
+	@Inject
+	private StampSetCommunalRepository stampSetCommunalRepo;
+	
 	public StampCardDigitDto get() {
 		String companyId = AppContexts.user().companyId();
 		
@@ -39,6 +44,10 @@ public class StampCardDigit {
 		cardDigitNumberDto.setIc_card(usingEmbossing.map(m -> m.isIc_card()).orElse(false));
 		
 //		StampCardDigitDto cardDigitNumberDto = new StampCardDigitDto(cardEditing.getDigitsNumber().v(), cardEditing.getStampMethod().value);
+		
+		// write more for ver29
+		Optional<StampSetCommunal> stampCommunal = this.stampSetCommunalRepo.gets(companyId);
+		cardDigitNumberDto.setQRCode(stampCommunal.map(m -> m.getAuthcMethod().value == 1 ? true : false).orElse(false));
 		
 		return cardDigitNumberDto;
 	}

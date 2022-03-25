@@ -1,0 +1,59 @@
+.flex-area {
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
+  margin-top: 10px;
+  align-items: center;
+}
+.flex-area > .item-1 {
+  flex: 1;
+}
+.flex-area > .item-2 {
+  flex: 2;
+}
+.flex-col {
+  flex-direction: column;
+}
+.flex-row {
+  flex-direction: row;
+}
+.padding-left-10 {
+  padding-left: 10px;
+}
+.padding-left-20 {
+  padding-left: 20px;
+}
+.padding-left-30 {
+  padding-left: 30px;
+}
+.text-center {
+  text-align: center !important;
+}
+.full-height .nts-combo-container {
+  height: 100% !important;
+  width: 100% !important;
+}
+.pos-relative {
+  position: relative;
+}
+.pos-absolute {
+  position: absolute;
+}
+.item-arrow-right {
+  position: absolute;
+  top: 6px;
+  right: -10px;
+}
+.flex.col-gap-10 {
+  column-gap: 10px;
+}
+.flex .ml-10 {
+  margin-left: 10px;
+}
+#contents-area {
+  display: flex;
+  column-gap: 30px;
+}
+#contents-area > div:first-child {
+  margin-left: 30px;
+}

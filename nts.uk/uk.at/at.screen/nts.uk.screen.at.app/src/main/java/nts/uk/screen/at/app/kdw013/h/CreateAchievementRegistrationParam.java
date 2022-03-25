@@ -25,6 +25,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalStatusActualResultKDW003Dto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ConfirmStatusActualResultKDW003Dto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
@@ -101,8 +103,10 @@ public class CreateAchievementRegistrationParam {
     	//[No.584]日の実績の確認状況を取得する（NEW）
     	List<ConfirmStatusActualResult> lstConfirm = confirmStatusActualDayChange.processConfirmStatus(loginUserContext.companyId(), loginUserContext.employeeId(), Arrays.asList(empTarget), Optional.of(new DatePeriod(targetDate, targetDate)), Optional.empty());
     	
+    	List<ConfirmStatusActualResultKDW003Dto> lstConfirmStatusActualResultKDW003Dto = lstConfirm.stream().map(c->ConfirmStatusActualResultKDW003Dto.fromDomain(c)).collect(Collectors.toList());
+    	List<ApprovalStatusActualResultKDW003Dto> lstApprovalStatusActualResultKDW003Dto = lstApproval.stream().map(c->ApprovalStatusActualResultKDW003Dto.fromDomain(c)).collect(Collectors.toList());
     	//approvalConfirmCacheを作成する
-    	ApprovalConfirmCache approvalConfirmCache = new ApprovalConfirmCache(loginUserContext.employeeId(), Arrays.asList(empTarget), new DatePeriod(targetDate, targetDate), 0, lstConfirm, lstApproval);
+    	ApprovalConfirmCache approvalConfirmCache = new ApprovalConfirmCache(loginUserContext.employeeId(), Arrays.asList(empTarget), new DateRange(targetDate, targetDate), 0, lstConfirmStatusActualResultKDW003Dto, lstApprovalStatusActualResultKDW003Dto);
     	
     	//「日別勤怠(Work)」を取得する
     	List<IntegrationOfDaily> integrationOfDailys = integrationOfDailyGetter.getIntegrationOfDaily(empTarget, new DatePeriod(targetDate, targetDate));

@@ -40,11 +40,10 @@ public class RecSpecificDateSettingAdapterImpl implements RecSpecificDateSetting
 	}
 
 	@Override
-	public List<RecSpecificDateSettingImport> getList(String companyID, List<String> workPlaceID,
-			DatePeriod datePeriod) {
+	public List<RecSpecificDateSettingImport> getList(String companyID, String workPlaceID, DatePeriod datePeriod) {
 		List<RecSpecificDateSettingImport> data = new ArrayList<>();
 		for(GeneralDate date : datePeriod.datesBetween() ) {
-			RecSpecificDateSettingImport recSpecificDateSettingImport = specificDateSettingServiceByListWpl(companyID, workPlaceID, date);
+			RecSpecificDateSettingImport recSpecificDateSettingImport = specificDateSettingService(companyID, workPlaceID, date);
 			if(recSpecificDateSettingImport!=null) {
 				data.add(recSpecificDateSettingImport);
 			}

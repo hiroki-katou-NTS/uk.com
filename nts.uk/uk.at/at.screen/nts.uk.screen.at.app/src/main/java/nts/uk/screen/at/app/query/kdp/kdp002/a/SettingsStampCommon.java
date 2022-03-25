@@ -5,12 +5,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInput;
-import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputRepository;
 import nts.uk.ctx.at.shared.app.query.task.GetTaskOperationSettingQuery;
 import nts.uk.ctx.at.shared.dom.entranceexit.ManageEntryExit;
 import nts.uk.ctx.at.shared.dom.entranceexit.ManageEntryExitRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsettings.TaskOperationSetting;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -24,9 +23,6 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class SettingsStampCommon {
-
-	@Inject
-	private CommonSettingsStampInputRepository settingStamp;
 	
 	@Inject
 	private TemporaryWorkUseManageRepository temporaryWorkUseManage;
@@ -37,18 +33,15 @@ public class SettingsStampCommon {
 	@Inject
 	private ManageEntryExitRepository manageEntryExitRepo;
 	
+	@Inject
+	private SupportOperationSettingRepository operationSetting;
+	
 	
 	public SettingsStampCommonDto getSettingCommonStamp() {
 		
 		SettingsStampCommonDto result = new SettingsStampCommonDto();
 		
 		String cid = AppContexts.user().companyId();
-		
-		Optional<CommonSettingsStampInput> commonSettingsStampInput = this.settingStamp.get(cid);
-
-		if (commonSettingsStampInput.isPresent()) {
-			result.setSupportUse(commonSettingsStampInput.get().getSupportUseArt().value == 1 ? true : false);
-		}
 		
 		Optional<TemporaryWorkUseManage> temporaryWorkUseManage = this.temporaryWorkUseManage.findByCid(cid);
 		
@@ -58,7 +51,13 @@ public class SettingsStampCommon {
 		
 		Optional<TaskOperationSetting> taskOperationSetting = gettask.getTasksOperationSetting(cid);
 		
-		result.setWorkUse(taskOperationSetting.map(m -> m.getTaskOperationMethod().value == 1 ? true : false).orElse(false));
+		result.setWorkUse(
+				taskOperationSetting.map(m -> m.getTaskOperationMethod().value == 1 ? true : false).orElse(false));
+		
+		result.setSupportUse(true);
+		operationSetting.getSupportOperationSetting(cid).ifPresent(os -> {
+			result.setSupportUse(os.isUsed());
+		});
 		
 		Optional<ManageEntryExit> manageEntryExitOpt = manageEntryExitRepo.findByID(cid);
 		

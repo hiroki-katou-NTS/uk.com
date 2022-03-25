@@ -495,7 +495,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             if ($("#grid").data("mGrid")) $("#grid").mGrid("destroy");
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
                 width: '1200px',
-                height: '600px',
+                height: '500px',
                 headerHeight: "45px",
                 subHeight: "140px",
                 subWidth: "100px",
@@ -618,7 +618,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
 
             _.forEach(listPersonEmp, (emp) => {
                 let record: any = { employeeId: emp.employeeId, employeeCode: emp.employeeCode, employeeName: emp.businessName, nameHeader: emp.employeeCode + ' ' + emp.businessName };
-                cellStates.push({rowId: emp.employeeId, columnKey: 'nameHeader', state: ['limited-label', 'padding-3']});
+                cellStates.push({rowId: emp.employeeId, columnKey: 'nameHeader', state: ['limited-label', 'padding-3','align-left']});
                 _.forEach(results, (result: ImportResultDetail) => {
                     if (result.employeeId === emp.employeeId) {
                         // record[result.ymd] = result.importCode;

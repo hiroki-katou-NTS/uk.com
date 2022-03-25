@@ -14,6 +14,4 @@ public class SetInforReflAprResultImport {
 	private ExecutionTypeExImport executionType;
 	/**	 */
 	private String calExecutionSetInfoID;
-	/**	確定済みの場合にも強制的に反映する */
-	private boolean forciblyReflect;
 }

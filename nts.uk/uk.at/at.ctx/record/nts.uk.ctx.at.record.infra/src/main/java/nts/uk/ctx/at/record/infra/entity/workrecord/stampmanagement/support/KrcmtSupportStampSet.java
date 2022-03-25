@@ -30,10 +30,6 @@ public class KrcmtSupportStampSet extends ContractUkJpaEntity implements Seriali
 	// 同一打刻とみなす範囲  
 	@Column(name = "SAME_STAMP_RANGE_IN_MINUTES")
 	public int sameStampRanceInMinutes;
-	
-	// 最大応援回数 
-	@Column(name = "SUPPORT_MAX_FRAME")
-	public int supportMaxFrame;
 
 	@Override
 	protected Object getKey() {
@@ -46,7 +42,6 @@ public class KrcmtSupportStampSet extends ContractUkJpaEntity implements Seriali
 		
 		entity.cid = domain.getCid().toString();
 		entity.sameStampRanceInMinutes = domain.getSameStampRanceInMinutes().v();		
-		entity.supportMaxFrame = domain.getSupportMaxFrame().v();
 		return entity;
 	}
 	

@@ -81,7 +81,9 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
         pageSetup.setHeader(2,
                 "&7&\"ＭＳ ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
-        pageSetup.setPrintArea("A1:Z" + dataSource.getLstAnnualWorkLedgerContent().size()*NUMBER_ROW_OF_PAGE);
+        // 2022.03.21 - 3S - chinh.hm - issues #123528      - 削除  START
+        //pageSetup.setPrintArea("A1:Z" + dataSource.getLstAnnualWorkLedgerContent().size()*NUMBER_ROW_OF_PAGE);
+        // 2022.03.21 - 3S - chinh.hm - issues #123528      - 削除  END
     }
 
     private void printContents(Worksheet worksheet, AnnualWorkLedgerExportDataSource dataSource) throws Exception {

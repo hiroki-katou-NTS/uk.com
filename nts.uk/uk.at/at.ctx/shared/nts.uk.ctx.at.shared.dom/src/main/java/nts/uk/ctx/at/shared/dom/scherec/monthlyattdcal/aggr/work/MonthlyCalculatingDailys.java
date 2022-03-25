@@ -113,6 +113,24 @@ public class MonthlyCalculatingDailys {
 		}).collect(Collectors.toList());
 	}
 
+	public List<IntegrationOfDaily> getDailyWorks(String sid, DatePeriod period) {
+
+		return workInfoOfDailyMap.entrySet().stream().filter(wk -> period.contains(wk.getKey())).map(wi -> {
+
+			return new IntegrationOfDaily(sid, wi.getKey(), wi.getValue(),
+					null, affiInfoOfDailyMap.get(wi.getKey()),
+					Optional.ofNullable(pcLogonInfoMap.get(wi.getKey())), new ArrayList<>(),
+					Optional.empty(), new BreakTimeOfDailyAttd(new ArrayList<>()),
+					Optional.ofNullable(attendanceTimeOfDailyMap.get(wi.getKey())),
+					Optional.ofNullable(timeLeaveOfDailyMap.get(wi.getKey())), Optional.empty(),
+					Optional.ofNullable(specificDateAttrOfDailyMap.get(wi.getKey())),
+					Optional.empty(), Optional.ofNullable(anyItemValueOfDailyList.get(wi.getKey())),
+					new ArrayList<>(), Optional.ofNullable(temporaryTimeOfDailyMap.get(wi.getKey())),
+					new ArrayList<>(), new ArrayList<>(),new ArrayList<>(),
+					Optional.ofNullable(snapshots.get(wi.getKey())));
+		}).collect(Collectors.toList());
+	}
+	
 	/**
 	 * データ取得
 	 * @param employeeId 社員ID
@@ -481,7 +499,6 @@ public class MonthlyCalculatingDailys {
 												beforeActualWork.getTotalWorkingTime().getOutingTimeOfDailyPerformance(),
 												beforeActualWork.getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor(),
 												beforeActualWork.getTotalWorkingTime().getWorkTimes(),
-												beforeActualWork.getTotalWorkingTime().getTemporaryTime(),
 												beforeActualWork.getTotalWorkingTime().getShotrTimeOfDaily(),
 												new HolidayOfDaily(
 														beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getAbsence(),

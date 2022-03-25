@@ -1,0 +1,653 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>
+            var dialogSize = {
+                width : 1210,
+                height :800
+            };
+        </script>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="ksu008.b.main.css"/>
+        <com:scriptfile path="ksu008.b.vm.js"/>
+        <com:ValidatorScript>
+            nts.uk.ctx.at.aggregation.dom.form9.Form9Code
+            nts.uk.ctx.at.aggregation.dom.form9.Form9Name
+            nts.uk.shr.com.primitive.OutputCell
+            nts.uk.ctx.at.aggregation.dom.form9.OutputColumn
+            nts.uk.ctx.at.aggregation.dom.form9.OutputRow
+            nts.uk.ctx.at.aggregation.dom.form9.OnePageDisplayNumerOfPeople
+        </com:ValidatorScript>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area">
+            <!--B1_1-->
+            <button data-bind="click: createNew, enable: layoutType() == 0">#{i18n.getText('KSU008_31')}</button>
+            <!--B1_2-->
+            <button class="proceed" data-bind="click: registerData, enable: $root.errors.isEmpty">#{i18n.getText('KSU008_32')}</button>
+            <!--B1_3-->
+            <button class="danger" data-bind="click: deleteData, enable: currentCode() != null &amp;&amp; layoutType() == 0">#{i18n.getText('KSU008_33')}</button>
+            <!--B1_4-->
+            <button data-bind="click: openKsu008C, enable: currentCode() != null">#{i18n.getText('KSU008_34')}</button>
+            <!--B1_5-->
+            <button data-bind="click: closeDialog">#{i18n.getText('KSU008_35')}</button>
+        </div>
+        <div id="contents-area">
+            <div class="two-panel">
+                <div class="left-panel" style="padding-left: 15px;">
+                    <div data-bind="ntsPanel:{width: '350px', height: '400px', direction: 'right', showIcon: true, visible: true}">
+                        <div class="control-group">
+                            <div style="display: inline-flex;"
+                                 data-bind="ntsSwitchButton: {
+                                                name: '#[KSU008_36]',
+                                                options: [
+                                                    {code: 1, name: $i18n('KSU008_37')},
+                                                    {code: 0, name: $i18n('KSU008_38')}
+                                                ],
+                                                optionsValue: 'code',
+                                                optionsText: 'name',
+                                                value: layoutType,
+                                                required: true,
+                                                enable: true
+                                        }">
+                            </div>
+                        </div>
+                        <!--B2_3-->
+                        <div style="width: 390px"
+                             data-bind="ntsSearchBox: {
+                                            searchMode: 'highlight',
+                                            targetKey: 'code',
+                                            comId: 'single-list',
+	                                        items: items,
+	                                        selected: currentCode,
+	                                        selectedKey: 'code',
+	                                        fields: ['name', 'code'],
+	                                        mode: 'igGrid'
+                                    }"/>
+                       <!--B2_4-->
+                        <table id="single-list"
+                               data-bind="ntsGridList: {
+                                            rows: 15,
+                                            options: items,
+                                            optionsValue: 'code',
+                                            columns: columns,
+                                            multiple: false,
+                                            value: currentCode
+                                        }">
+                        </table>
+                    </div>
+                </div>
+                <div class="right-panel">
+                    <div class="control-group valign-center">
+                        <!-- B3_1-->
+                        <div data-bind="ntsFormLabel: { constraint: ['Form9Code','Form9Name'], enable: false,required:true }">#{i18n.getText('KSU008_43')}</div>
+                        <!-- B3_2-->
+                        <input id="B3_2"
+                               data-bind="ntsTextEditor: {
+                                            value: layoutCode,
+                                            constraint: 'Form9Code',
+                                            name:'#[KSU008_44]',
+                                            required: true,
+                                            enable: currentCode() == null &amp;&amp; layoutType() == 0
+                                        } "/>
+                        <!-- B3_3-->
+                        <input id="B3_3"
+                               data-bind="ntsTextEditor: {
+                                            value: layoutName,
+                                            constraint: 'Form9Name',
+                                            name:'#[KSU008_45]',
+                                            required: true,
+                                            enable: layoutType() == 0
+                                        } "/>
+                    </div>
+                    <div class="control-group valign-center">
+                        <!-- B4_1-->
+                        <div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('KSU008_46')}</div>
+                        <!-- B4_2-->
+                        <div id="B4_2"
+                             style="display: inline-flex;"
+                             data-bind="ntsSwitchButton: {
+                                            name: '#[KSU008_47]',
+                                            options: [
+                                                {code: 1, name: $i18n('Enum_UseAtr_Use')},
+                                                {code: 0, name: $i18n('Enum_UseAtr_NotUse')}
+                                            ],
+                                            optionsValue: 'code',
+                                            optionsText: 'name',
+                                            value: useAtr,
+                                            required: true,
+                                            enable: true
+                                        }">
+                        </div>
+                    </div>
+                    <div class="control-group valign-center">
+                        <!-- B5_1-->
+                        <div class="has-help" data-bind="ntsFormLabel: {required:true }">#{i18n.getText('KSU008_48')}</div>
+                        <!-- B5_2-->
+                        <button data-bind="ntsHelpButton: {textId: 'KSU008_49', position: 'right center' }">？</button>
+                        <!-- B5_3-->
+                        <div id="file-upload"
+                             style="display: inline-flex;"
+                             data-bind="ntsFileUpload:{
+                                            filename: fileName,
+                                            text: 'KSU008_51',
+                                            enable: layoutType() == 0,
+                                            name: '#[KSU008_50]',
+                                            stereoType: 'output_template',
+                                            immediateUpload: true,
+                                            uploadFinished: uploadFinished.bind($vm),
+                                            onchange: onFileChange.bind($vm)
+                                        }" >
+                        </div>
+                        <!-- B5_4-->
+                        <button data-bind="click: downloadTemplate, enable: enableDownloadTemplate">#{i18n.getText('KSU008_52')}</button>
+                    </div>
+                    <div class="control-group valign-top">
+                        <!-- B6_0-->
+                        <div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU008_54')}</div>
+                        <!-- B6_1-->
+                        <table id="B6_1-table">
+                            <colgroup>
+                                <col width="100px" />
+                                <col width="100px" />
+                                <col width="150px" />
+                            </colgroup>
+                            <thead>
+                            <tr></tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <!-- B6_2-->
+                                <td class="ui-widget-header fixed-table-first-row" colspan="2">#{i18n.getText('KSU008_55')}</td>
+                                <td class="fixed-table-first-row">
+                                    <!-- B6_2_1-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: cellYear,
+                                                constraint: 'OutputCell',
+                                                name:'#[KSU008_56]',
+                                                enable: layoutType() == 0
+                                           }"/>
+                                    <!-- B6_2_2-->
+                                    <span class="label">#{i18n.getText('KSU008_57')}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- B6_3-->
+                                <td class="ui-widget-header" colspan="2">#{i18n.getText('KSU008_58')}</td>
+                                <td>
+                                    <!-- B6_3_1-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: cellMonth,
+                                                constraint: 'OutputCell',
+                                                name:'#[KSU008_59]',
+                                                enable: layoutType() == 0
+                                            }"/>
+                                    <!-- B6_3_2-->
+                                    <span class="label">#{i18n.getText('KSU008_60')}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- B6_4-->
+                                <td class="ui-widget-header" rowspan="2">#{i18n.getText('KSU008_61')}</td>
+                                <!-- B6_5-->
+                                <td class="ui-widget-header">#{i18n.getText('KSU008_62')}</td>
+                                <td>
+                                    <!-- B6_5_1-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: cellStartTime,
+                                                constraint: 'OutputCell',
+                                                name:'#[KSU008_63]',
+                                                enable: layoutType() == 0
+                                            }"/>
+                                    <!-- B6_5_2-->
+                                    <span class="label">#{i18n.getText('KSU008_64')}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- B6_6-->
+                                <td class="ui-widget-header">#{i18n.getText('KSU008_65')}</td>
+                                <td>
+                                    <!-- B6_6_1-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: cellEndTime,
+                                                constraint: 'OutputCell',
+                                                name:'#[KSU008_66]',
+                                                enable: layoutType() == 0
+                                            }"/>
+                                    <!-- B6_6_2-->
+                                    <span class="label">#{i18n.getText('KSU008_67')}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- B6_7-->
+                                <td class="ui-widget-header" rowspan="2">#{i18n.getText('KSU008_68')}</td>
+                                <!-- B6_8-->
+                                <td class="ui-widget-header">#{i18n.getText('KSU008_69')}</td>
+                                <td>
+                                    <!-- B6_8_1-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: cellTitle,
+                                                constraint: 'OutputCell',
+                                                name:'#[KSU008_70]',
+                                                enable: layoutType() == 0
+                                            }"/>
+                                    <!-- B6_8_2-->
+                                    <span class="label">#{i18n.getText('KSU008_71')}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- B6_9-->
+                                <td class="ui-widget-header">#{i18n.getText('KSU008_72')}</td>
+                                <td>
+                                    <!-- B6_9_1-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: cellPrintPeriod,
+                                                constraint: 'OutputCell',
+                                                name:'#[KSU008_73]',
+                                                enable: layoutType() == 0
+                                            }"/>
+                                    <!-- B6_9_2-->
+                                    <span class="label">#{i18n.getText('KSU008_74')}</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="valign-top control-group">
+                        <!-- B7_1-->
+                        <div data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KSU008_75')}</div>
+                        <table id="B7_2-table">
+                            <colgroup>
+                                <col width="50px" />
+                                <col width="150px" />
+                                <col width="150px" />
+                                <col width="150px" />
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <!-- B7_2-->
+                                <td class="ui-widget-header" colspan="2" style="height: 33px;"></td>
+                                <!-- B7_3-->
+                                <td class="ui-widget-header">#{i18n.getText('KSU008_76')}</td>
+                                <!-- B7_4-->
+                                <td class="ui-widget-header ">#{i18n.getText('KSU008_77')}</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <!-- B7_5-->
+                                <td class="ui-widget-header vertical-header" rowspan="10">#{i18n.getText('KSU008_78')}</td>
+                                <!-- B7_7_1-->
+                                <td class="ui-widget-header">#{i18n.getText('KSU008_80')}</td>
+                                <td>
+                                    <!-- B7_7_2-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: nursingStaffColumnSetting.license,
+                                                constraint: 'OutputColumn',
+                                                enable: layoutType() == 0,
+                                                name:'#[KSU008_81]'
+                                            }"/>
+                                    <!-- B7_7_3-->
+                                    <span class="label">#{i18n.getText('KSU008_82')}</span>
+                                </td>
+                                <td class="diagonalCross"></td>
+                            </tr>
+                            <tr>
+                                <!-- B7_8_1-->
+                                <td class="ui-widget-header">#{i18n.getText('KSU008_83')}</td>
+                                <td>
+                                    <!-- B7_8_2-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: nursingStaffColumnSetting.hospitalWardName,
+                                                constraint: 'OutputColumn',
+                                                enable: layoutType() == 0,
+                                                name:'#[KSU008_84]'
+                                            }"/>
+                                    <!-- B7_8_3-->
+                                    <span class="label">#{i18n.getText('KSU008_85')}</span>
+                                </td>
+                                <td>
+                                    <!-- B7_8_4-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: nursingAssistantColumnSetting.hospitalWardName,
+                                                constraint: 'OutputColumn',
+                                                enable: layoutType() == 0,
+                                                name:'#[KSU008_86]'
+                                            }"/>
+                                    <!-- B7_8_5-->
+                                    <span class="label">#{i18n.getText('KSU008_87')}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- B7_9_1-->
+                                <td class="yellow-header">#{i18n.getText('KSU008_88')}</td>
+                                <td>
+                                    <!-- B7_9_2-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: nursingStaffColumnSetting.fullName,
+                                                constraint: 'OutputColumn',
+                                                name:'#[KSU008_89]',
+                                                enable: layoutType() == 0,
+                                                required: true
+                                            }"/>
+                                    <!-- B7_9_3-->
+                                    <span class="label">#{i18n.getText('KSU008_90')}</span>
+                                </td>
+                                <td>
+                                    <!-- B7_9_4-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: nursingAssistantColumnSetting.fullName,
+                                                constraint: 'OutputColumn',
+                                                name:'#[KSU008_91]',
+                                                enable: layoutType() == 0,
+                                                required: true
+                                            } "/>
+                                    <!-- B7_9_5-->
+                                    <span class="label">#{i18n.getText('KSU008_92')}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- B7_10_1-->
+                                <td class="ui-widget-header">#{i18n.getText('KSU008_93')}</td>
+                                <td>
+                                    <!-- B7_10_2-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: nursingStaffColumnSetting.fullTime,
+                                                constraint: 'OutputColumn',
+                                                enable: layoutType() == 0,
+                                                name:'#[KSU008_94]'
+                                            }"/>
+                                    <!-- B7_10_3-->
+                                    <span class="label">#{i18n.getText('KSU008_95')}</span>
+                                </td>
+                                <td>
+                                    <!-- B7_8_4-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: nursingAssistantColumnSetting.fullTime,
+                                                constraint: 'OutputColumn',
+                                                enable: layoutType() == 0,
+                                                name:'#[KSU008_96]'
+                                            }"/>
+                                    <!-- B7_10_5-->
+                                    <span class="label">#{i18n.getText('KSU008_97')}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- B7_11_1-->
+                                <td class="ui-widget-header">#{i18n.getText('KSU008_98')}</td>
+                                <td>
+                                    <!-- B7_11_2-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: nursingStaffColumnSetting.shortTime,
+                                                constraint: 'OutputColumn',
+                                                enable: layoutType() == 0,
+                                                name:'#[KSU008_99]'
+                                            }"/>
+                                    <!-- B7_11_3-->
+                                    <span class="label">#{i18n.getText('KSU008_100')}</span>
+                                </td>
+                                <td>
+                                    <!-- B7_11_4-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: nursingAssistantColumnSetting.shortTime,
+                                                constraint: 'OutputColumn',
+                                                enable: layoutType() == 0,
+                                                name:'#[KSU008_101]'
+                                            }"/>
+                                    <!-- B7_11_5-->
+                                    <span class="label">#{i18n.getText('KSU008_102')}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- B7_12_1-->
+                                <td class="ui-widget-header">#{i18n.getText('KSU008_103')}</td>
+                                <td>
+                                    <!-- B7_12_2-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: nursingStaffColumnSetting.partTime,
+                                                constraint: 'OutputColumn',
+                                                enable: layoutType() == 0,
+                                                name:'#[KSU008_104]'
+                                            }"/>
+                                    <!-- B7_12_3-->
+                                    <span class="label">#{i18n.getText('KSU008_105')}</span>
+                                </td>
+                                <td>
+                                    <!-- B7_12_4-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: nursingAssistantColumnSetting.partTime,
+                                                constraint: 'OutputColumn',
+                                                enable: layoutType() == 0,
+                                                name:'#[KSU008_106]'
+                                            }"/>
+                                    <!-- B7_12_5-->
+                                    <span class="label">#{i18n.getText('KSU008_107')}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- B7_13_1-->
+                                <td class="ui-widget-header">#{i18n.getText('KSU008_108')}</td>
+                                <td>
+                                    <!-- B7_13_2-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: nursingStaffColumnSetting.concurrentPost,
+                                                constraint: 'OutputColumn',
+                                                enable: layoutType() == 0,
+                                                name:'#[KSU008_109]'
+                                            }"/>
+                                    <!-- B7_13_3-->
+                                    <span class="label">#{i18n.getText('KSU008_110')}</span>
+                                </td>
+                                <td>
+                                    <!-- B7_13_4-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: nursingAssistantColumnSetting.concurrentPost,
+                                                constraint: 'OutputColumn',
+                                                enable: layoutType() == 0,
+                                                name:'#[KSU008_111]'
+                                            }"/>
+                                    <!-- B7_13_5-->
+                                    <span class="label">#{i18n.getText('KSU008_112')}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- B7_14_1-->
+                                <td class="ui-widget-header">#{i18n.getText('KSU008_113')}</td>
+                                <td class="diagonalCross"></td>
+                                <td>
+                                    <!-- B7_14_4-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: nursingAssistantColumnSetting.officeWork,
+                                                constraint: 'OutputColumn',
+                                                enable: layoutType() == 0,
+                                                name:'#[KSU008_114]'
+                                            }"/>
+                                    <!-- B7_14_5-->
+                                    <span class="label">#{i18n.getText('KSU008_115')}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- B7_15_1-->
+                                <td class="ui-widget-header">#{i18n.getText('KSU008_116')}</td>
+                                <td>
+                                    <!-- B7_15_2-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: nursingStaffColumnSetting.nightShiftOnly,
+                                                constraint: 'OutputColumn',
+                                                enable: layoutType() == 0,
+                                                name:'#[KSU008_117]'
+                                            }"/>
+                                    <!-- B7_15_3-->
+                                    <span class="label">#{i18n.getText('KSU008_118')}</span>
+                                </td>
+                                <td>
+                                    <!-- B7_15_4-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: nursingAssistantColumnSetting.nightShiftOnly,
+                                                constraint: 'OutputColumn',
+                                                enable: layoutType() == 0,
+                                                name:'#[KSU008_119]'
+                                            }"/>
+                                    <!-- B7_15_5-->
+                                    <span class="label">#{i18n.getText('KSU008_120')}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- B7_16_1-->
+                                <td class="yellow-header">#{i18n.getText('KSU008_121')}</td>
+                                <td>
+                                    <!-- B7_16_2-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: nursingStaffColumnSetting.day1StartColumn,
+                                                constraint: 'OutputColumn',
+                                                enable: layoutType() == 0,
+                                                name:'#[KSU008_122]',
+                                                required: true
+                                            }"/>
+                                    <!-- B7_16_3-->
+                                    <span class="label">#{i18n.getText('KSU008_123')}</span>
+                                </td>
+                                <td>
+                                    <!-- B7_16_4-->
+                                    <input data-bind="ntsTextEditor: {
+                                                value: nursingAssistantColumnSetting.day1StartColumn,
+                                                constraint: 'OutputColumn',
+                                                name:'#[KSU008_124]',
+                                                enable: layoutType() == 0,
+                                                required: true
+                                            } "/>
+                                    <!-- B7_16_5-->
+                                    <span class="label">#{i18n.getText('KSU008_125')}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- B7_6-->
+                                <td rowspan="4" class="ui-widget-header vertical-header">#{i18n.getText('KSU008_79')}</td>
+                                <!-- B7_17_1-->
+                                <td class="yellow-header">#{i18n.getText('KSU008_126')}</td>
+                                <td>
+                                    <!-- B7_17_2-->
+                                    <input data-bind="ntsNumberEditor: {
+                                                value: nursingStaffDetailSetting.bodyStartRow,
+                                                constraint: 'OutputRow',
+                                                name:'#[KSU008_127]',
+                                                enable: layoutType() == 0,
+                                                required: true
+                                            }"/>
+                                    <!-- B7_17_3-->
+                                    <span class="label">#{i18n.getText('KSU008_128')}</span>
+                                </td>
+                                <td>
+                                    <!-- B7_17_4-->
+                                    <input data-bind="ntsNumberEditor: {
+                                                value: nursingAssistantDetailSetting.bodyStartRow,
+                                                constraint: 'OutputRow',
+                                                name:'#[KSU008_129]',
+                                                enable: layoutType() == 0,
+                                                required: true
+                                            }"/>
+                                    <!-- B7_17_5-->
+                                    <span class="label">#{i18n.getText('KSU008_130')}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- B7_18_1-->
+                                <td class="yellow-header">#{i18n.getText('KSU008_131')}</td>
+                                <td>
+                                    <!-- B7_18_2-->
+                                    <input data-bind="ntsNumberEditor: {
+                                                value: nursingStaffDetailSetting.maxNumerOfPeople,
+                                                constraint: 'OnePageDisplayNumerOfPeople',
+                                                name:'#[KSU008_132]',
+                                                enable: layoutType() == 0,
+                                                required: true
+                                            }"/>
+                                    <!-- B7_18_3-->
+                                    <span class="label">#{i18n.getText('KSU008_133')}</span>
+                                </td>
+                                <td>
+                                    <!-- B7_18_4-->
+                                    <input data-bind="ntsNumberEditor: {
+                                                value: nursingAssistantDetailSetting.maxNumerOfPeople,
+                                                constraint: 'OnePageDisplayNumerOfPeople',
+                                                name:'#[KSU008_134]',
+                                                enable: layoutType() == 0,
+                                                required: true
+                                            }"/>
+                                    <!-- B7_18_5-->
+                                    <span class="label">#{i18n.getText('KSU008_135')}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- B7_19_1-->
+                                <td class="yellow-header">#{i18n.getText('KSU008_136')}</td>
+                                <td>
+                                    <!-- B7_19_2-->
+                                    <input data-bind="ntsNumberEditor: {
+                                                value: nursingStaffDetailSetting.rowDate,
+                                                constraint: 'OutputRow',
+                                                name:'#[KSU008_137]',
+                                                enable: layoutType() == 0,
+                                                required: true
+                                            }"/>
+                                    <!-- B7_19_3-->
+                                    <span class="label">#{i18n.getText('KSU008_138')}</span>
+                                </td>
+                                <td>
+                                    <!-- B7_19_4-->
+                                    <input data-bind="ntsNumberEditor: {
+                                                value: nursingAssistantDetailSetting.rowDate,
+                                                constraint: 'OutputRow',
+                                                name:'#[KSU008_139]',
+                                                enable: layoutType() == 0,
+                                                required: true
+                                            }"/>
+                                    <!-- B7_19_5-->
+                                    <span class="label">#{i18n.getText('KSU008_140')}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- B7_20_1-->
+                                <td class="yellow-header">#{i18n.getText('KSU008_141')}</td>
+                                <td>
+                                    <!-- B7_20_2-->
+                                    <input data-bind="ntsNumberEditor: {
+                                                value: nursingStaffDetailSetting.rowDayOfWeek,
+                                                constraint: 'OutputRow',
+                                                name:'#[KSU008_142]',
+                                                enable: layoutType() == 0,
+                                                required: true
+                                            }"/>
+                                    <!-- B7_20_3-->
+                                    <span class="label">#{i18n.getText('KSU008_143')}</span>
+                                </td>
+                                <td>
+                                    <!-- B7_20_4-->
+                                    <input data-bind="ntsNumberEditor: {
+                                                value: nursingAssistantDetailSetting.rowDayOfWeek,
+                                                constraint: 'OutputRow',
+                                                name:'#[KSU008_144]',
+                                                enable: layoutType() == 0,
+                                                required: true
+                                            }"/>
+                                    <!-- B7_20_5-->
+                                    <span class="label">#{i18n.getText('KSU008_145')}</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

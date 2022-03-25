@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
@@ -20,7 +21,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Getter
-public class BonusPayTimeSheetForCalc extends CalculationTimeSheet{
+public class BonusPayTimeSheetForCalc extends CalculationTimeSheet implements Cloneable {
 
 	//sheet id
 	//加給時間項目No
@@ -99,5 +100,24 @@ public class BonusPayTimeSheetForCalc extends CalculationTimeSheet{
 		}
 	}
 	
+	public BonusPayTimeSheetForCalc clone() {
+		BonusPayTimeSheetForCalc clone = new BonusPayTimeSheetForCalc(
+				this.timeSheet,
+				this.rounding,
+				this.recordedTimeSheet,
+				this.deductionTimeSheet,
+				this.raiseSalaryTimeItemNo);
+		try {
+			clone.timeSheet = this.timeSheet.clone();
+			clone.rounding = this.rounding.clone();
+			clone.recordedTimeSheet = this.recordedTimeSheet.stream().map(r -> r.clone()).collect(Collectors.toList());
+			clone.deductionTimeSheet = this.deductionTimeSheet.stream().map(d -> d.clone()).collect(Collectors.toList());
+			clone.raiseSalaryTimeItemNo = new RaisingSalaryTimeItemNo(this.raiseSalaryTimeItemNo.v());
+		}
+		catch (Exception e) {
+			throw new RuntimeException("BonusPayTimeSheetForCalc clone error.");
+		}
+		return clone;
+	}
 }
 

@@ -28,16 +28,17 @@ public class WorkScheduleImportService {
 	 * 取り込む
 	 * @param require Require
 	 * @param rawData 取り込み内容
+	 * @param companyId 会社ID
 	 * @return 取り込み結果
 	 */
-	public static ImportResult importFrom(Require require, CapturedRawData rawData) {
+	public static ImportResult importFrom(Require require, CapturedRawData rawData, String companyId) {
 
 		// 取り込み可能な内容かチェックする
 		val importable = WorkScheduleImportService.checkIfIsImportableData( require, rawData );
 		// 取り込み対象の社員かチェックする
 		val targetEmployees = WorkScheduleImportService.checkIfEmployeeIsTarget( require, importable );
 		// 取り込み内容の整合性をチェックする
-		val integrated = WorkScheduleImportService.checkForContentIntegrity( require, targetEmployees );
+		val integrated = WorkScheduleImportService.checkForContentIntegrity( require, companyId, targetEmployees );
 		// 取り込み内容の勤務予定をチェックする
 		val corrected = WorkScheduleImportService.checkForExistingWorkSchedule( require, integrated );
 
@@ -167,10 +168,11 @@ public class WorkScheduleImportService {
 	/**
 	 * 取り込み内容の整合性をチェックする
 	 * @param require Require
+	 * @param companyId 会社ID
 	 * @param interimResult 取り込み結果(中間)
 	 * @return 取り込み結果
 	 */
-	private static ImportResult checkForContentIntegrity(Require require, ImportResult interimResult) {
+	private static ImportResult checkForContentIntegrity(Require require, String companyId, ImportResult interimResult) {
 
 		/* チェック対象の存在判定 */
 		if ( !interimResult.existsUncheckedResults() ) {
@@ -190,7 +192,7 @@ public class WorkScheduleImportService {
 		val shiftMasterStatuses = require.getShiftMasters(importCodes).stream()
 				.collect(Collectors.toMap(
 								detail -> detail.getImportCode().get()
-							,	detail -> detail.checkNormalCondition(require)
+							,	detail -> detail.checkNormalCondition(require, companyId)
 						));
 
 		// チェック結果

@@ -1,6 +1,7 @@
 
 .titleColor {
-	background-color: #CFF1A5;
+	background-color: #6A6A6A;
+    color: #fff;
 }
 .disableFlag .box {
 	background-color: #888 !important;
@@ -58,9 +59,37 @@ input {
 #kaf002TabPanel td :not(.titleColor) {
 	text-align: center !important;
 }
+#kaf002TabPanel td .btn_worklocation div,
+#kaf002TabPanel td .btn_workplace div {
+	text-align: left !important;
+}
+#kaf002TabPanel td .btn_worklocation > div,
+#kaf002TabPanel td .btn_workplace > div {
+	padding: 0 10px !important;
+}
 #kaf002TabPanel > div > label > span {
 	font-size: 110%;
 }
 .tabs-content {
 	padding-bottom: 8px !important;
+}
+.btn_workplace .nts-button-container,
+.btn_worklocation .nts-button-container {
+	min-width: 75px;
+}
+.btn_workplace .nts-button-container button,
+.btn_worklocation .nts-button-container button {
+	min-width: 75px !important;
+}
+.btn_workplace > div,
+.btn_worklocation > div {
+	display: flex;
+}
+.btn_workplace > div > div,
+.btn_worklocation > div > div {
+	white-space: nowrap;
+}
+
+#kaf002TabPanel > div.tabs-list > label.with-text.radio-wrapper > span {
+	min-width: 0 !important;
 }

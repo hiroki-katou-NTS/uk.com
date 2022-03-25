@@ -25,6 +25,7 @@ module nts.uk.at.view.kfp001.b {
             //
             enableNEW: KnockoutObservable<boolean>;
             enableDEL: KnockoutObservable<boolean>;
+            reintegration: KnockoutObservable<boolean> = ko.observable(false);
             peopleNo: KnockoutObservable<number>;
             peopleFromC: KnockoutObservable<number>;
 
@@ -32,9 +33,10 @@ module nts.uk.at.view.kfp001.b {
 
             mode: KnockoutObservable<number>;
 
-            enableText: KnockoutObservable<boolean>;
+            enableText: KnockoutObservable<boolean> = ko.observable(false);
 
             dateValue: KnockoutObservable<any>;
+            dateCurrentValue: KnockoutObservable<any>;
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
             peopleCount: KnockoutObservable<string> = ko.observable('');
@@ -53,6 +55,7 @@ module nts.uk.at.view.kfp001.b {
                 self.startDateString = ko.observable("");
                 self.endDateString = ko.observable("");
                 self.dateValue = ko.observable({});
+                self.dateCurrentValue = ko.observable({});
 
                 self.startDateString.subscribe(function(value) {
                     self.dateValue().startDate = value;
@@ -73,10 +76,13 @@ module nts.uk.at.view.kfp001.b {
                 self.activeStep = ko.observable(0);
                 self.mode = ko.observable(0);
                 self.activeStep.subscribe(newVal => {
+                    self.enableText(false);
                     if (newVal == 0) {
                         $('#hor-scroll-button-hide').hide();
                         _.defer(() => {
                             $('#hor-scroll-button-hide').show();
+                            // call api load table
+                            self.backStartKFP001B();
                         });
                         $('#NEW_BTN_B1_2').show();
                         $('#DELETE_BTN_B1_3').show();
@@ -106,10 +112,20 @@ module nts.uk.at.view.kfp001.b {
                     if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
                         self.enableNEW(true);
                         self.enableDEL(true);
-                        self.currentItem(self.findOptional(codeChanged));
+                        if (!_.isNil(self.findOptional(codeChanged))) {
+                          self.currentItem(self.findOptional(codeChanged));
+                        } else {
+                          self.currentItem().startDate(self.dateValue().startDate);
+                          self.currentItem().endDate(self.dateValue().endDate);
+                        }
                         self.currentItemExe(self.findExc(codeChanged))
                         self.getPeriod();
                         self.dateValue({
+                            startDate: self.currentItem().startDate(),
+                            endDate: self.currentItem().endDate()
+                        });
+
+                        self.dateCurrentValue({
                             startDate: self.currentItem().startDate(),
                             endDate: self.currentItem().endDate()
                         });
@@ -123,12 +139,17 @@ module nts.uk.at.view.kfp001.b {
                     }
                     $('.control-group').find('#code-text-d4-2').focus();
                 });
-
+                self.reintegration.subscribe((vl)=>{
+                    if(vl == false){
+                        self.dateValue({
+                            startDate: self.dateCurrentValue().startDate,
+                            endDate: self.dateCurrentValue().endDate
+                        });
+                    }
+                });
                 //
                 self.enableNEW = ko.observable(true);
                 self.enableDEL = ko.observable(true);
-                self.enableText = ko.observable(true);
-
                 //                self.aggrFrameCode = ko.observable("D01");
                 //                self.optionalAggrName = ko.observable("THANH DEP ZAI");
                 //                self.startDate = ko.observable('15062018');
@@ -143,7 +164,6 @@ module nts.uk.at.view.kfp001.b {
                     if (self.items().length > 0) {
                         self.currentCode(self.items()[0].aggrFrameCode());
                         self.mode(1);
-                        self.enableText(false);
                         self.getPeriod();
                         self.dateValue({
                             startDate: self.currentItem().startDate(),
@@ -169,6 +189,72 @@ module nts.uk.at.view.kfp001.b {
 
                     ko.computed(() => {
 
+                        self.dScreenmodel.listEmp(self.cScreenmodel.selectedEmployee());
+                        self.dScreenmodel.peopleNo(null);
+                        if (_.size(self.cScreenmodel.multiSelectedCode()) >= 418) {
+                            self.dScreenmodel.peopleNo(_.size(self.cScreenmodel.selectedEmployee()));
+                            self.dScreenmodel.peopleCount(nts.uk.resource.getText("KFP001_23", [_.size(self.cScreenmodel.selectedEmployee())]));
+                        } else {
+                            self.dScreenmodel.peopleNo(_.size(self.cScreenmodel.multiSelectedCode()));
+                            self.dScreenmodel.peopleCount(nts.uk.resource.getText("KFP001_23", [_.size(self.cScreenmodel.multiSelectedCode())]));
+                        }
+
+
+                        self.dScreenmodel.listSelect((self.cScreenmodel.multiSelectedCode()));
+                        if (!_.isNil(self.currentItem())) {
+                          self.dScreenmodel.aggrFrameCode(self.currentItem().aggrFrameCode());
+                          self.dScreenmodel.optionalAggrName(self.currentItem().optionalAggrName());
+                        }
+                        self.dScreenmodel.startDate(self.dateValue().startDate);
+                        self.dScreenmodel.endDate(self.dateValue().endDate);
+                        self.dScreenmodel.mode(self.mode());
+                        self.dScreenmodel.executionId(self.aggrId);
+                        self.dScreenmodel.listAggr(self.optionalList());
+                        self.dScreenmodel.presenceOfError(self.status());
+                        self.dScreenmodel.executionStatus(self.preOfError());
+                        if (self.mode() == 1){
+                            self.cScreenmodel.periodStartDate(self.currentItem().startDate());
+                            self.cScreenmodel.periodEndDate(self.currentItem().endDate());
+                        } else {
+                            self.cScreenmodel.periodStartDate(self.dateValue().startDate);
+                            self.cScreenmodel.periodEndDate(self.dateValue().endDate);
+                        }
+
+                    });
+
+                    dfd.resolve();
+                }).fail(function() {
+                    dfd.reject();
+                });
+                return dfd.promise();
+            }
+
+            //Display data in update module when back to screen
+            backStartKFP001B(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred();
+
+                $.when(self.getAllOptionalAggrPeriod()).done(function() {
+                    const isItemExist = _.find(self.items(), data => data.aggrFrameCode() === self.currentItem().aggrFrameCode());
+                    if (self.items().length > 0) {
+                        self.currentCode(self.currentItem().aggrFrameCode());
+                        self.mode(!!isItemExist ? 1 : 0);
+                        self.enableNEW(!!isItemExist);
+                        self.enableDEL(!!isItemExist);
+                        // self.enableText(!!isItemExist);
+                        self.getPeriod();
+                        $('#update-mode').show();
+                        $('#update-mode').focus();
+                        let period = {
+                            periodStartDate: self.currentItem().startDate(),
+                            periodEndDate: self.currentItem().endDate()
+                        }
+                        nts.uk.ui.windows.setShared("KFP001_DATAB", period);
+                    } else {
+                        self.initDataB();
+                    }
+
+                    ko.computed(() => {
                         self.dScreenmodel.listEmp(self.cScreenmodel.selectedEmployee());
                         self.dScreenmodel.peopleNo(null);
                         if (_.size(self.cScreenmodel.multiSelectedCode()) >= 418) {
@@ -213,13 +299,15 @@ module nts.uk.at.view.kfp001.b {
                 var dfd = $.Deferred();
 
                 $.when(service.findAggrCode(self.currentCode())).done(function(data) {
+                  if (!_.isEmpty(data)) {
                     service.findTargetPeriod(data[0].aggrId).done(function(dataTarget) {
-                        self.aggrId = data[0].aggrId;
-                        self.peopleNo(dataTarget.length);
-                        self.status(data[0].executionStatus);
-                        self.preOfError(data[0].presenceOfError);
-                        self.peopleCount(nts.uk.resource.getText("KFP001_23", [dataTarget.length]));
+                      self.aggrId = data[0].aggrId;
+                      self.peopleNo(dataTarget.length);
+                      self.status(data[0].executionStatus);
+                      self.preOfError(data[0].presenceOfError);
+                      self.peopleCount(nts.uk.resource.getText("KFP001_23", [dataTarget.length]));
                     })
+                  }
                 }).fail(function() {
                     dfd.reject();
                 });;
@@ -290,6 +378,7 @@ module nts.uk.at.view.kfp001.b {
                 if (self.items().length >= 100) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1151" });
                 } else {
+                    self.enableText(true);
                     self.currentItem(new model.OptionalAggrPeriodDto(emptyObject))
                     self.currentCode("");
                     self.peopleNo(0);
@@ -302,7 +391,6 @@ module nts.uk.at.view.kfp001.b {
                         endDate: new Date()
                     });
                     self.mode(0);
-                    self.enableText(true);
                 }
                 self.isFocus(true)
             }
@@ -350,7 +438,7 @@ module nts.uk.at.view.kfp001.b {
             opendScreenBorJ() {
                 let self = this;
                 var dfd = $.Deferred();
-
+                nts.uk.ui.windows.setShared("B_CHECKED", self.reintegration());
                 $("#code-text-d4-2").trigger("validate");
                 $("#code-text-d4-21").trigger("validate");
                 $("#start-date-B6-3").trigger("validate");
@@ -365,7 +453,47 @@ module nts.uk.at.view.kfp001.b {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_3" });
                 } else {
                     if (self.status() == model.ExecutionStatus.Processing) {
-                        nts.uk.ui.windows.sub.modal('/view/kfp/001/e/index.xhtml');
+                        let executionDto = {
+                            aggrFrameCode: self.currentItem().aggrFrameCode(),
+                            executionAtr: 1,
+                            executionStatus: 2,
+                            presenceOfError: 1,
+                            startDateTime: moment(self.currentItem().startDate()).utc(),
+                            endDateTime: moment(self.currentItem().endDate()).utc(),
+                        };
+                        let aggrPeriodDto = {
+                            aggrFrameCode: self.currentItem().aggrFrameCode(),
+                            optionalAggrName: self.currentItem().optionalAggrName(),
+                            startDate: moment(self.currentItem().startDate()).utc(),
+                            endDate: moment(self.currentItem().endDate()).utc(),
+                            peopleNo: self.peopleNo()
+
+                        }
+                        let targetDto = {
+                            executionEmpId: ko.observable(''),
+                            employeeId: [],
+                            state: 0
+                        }
+                        let addAggrPeriodCommand = {
+                            reintegration:self.reintegration(),//EA4209
+                            mode: self.mode(),
+                            aggrPeriodCommand: aggrPeriodDto,
+                            targetCommand: targetDto,
+                            executionCommand: executionDto
+                        }
+
+                        nts.uk.ui.windows.setShared("KFP001_DATAE", addAggrPeriodCommand);
+
+                        let period = {
+                            startDate: self.currentItem().startDate(),
+                            endDate: self.currentItem().endDate()
+                        }
+                        nts.uk.ui.windows.setShared("KFP001_PERIOD", period);
+                        let data  = {anyPeriodAggrLogId: self.aggrId , startDateTime: self.currentItem().startDate(), endDateTime:self.currentItem().endDate()}
+                        nts.uk.ui.windows.setShared("KFP001_DATAD", data);
+                        nts.uk.ui.windows.sub.modal('/view/kfp/001/e/index.xhtml').onClosed(() => {
+                            self.start();
+                        });
                     } else {
                         $("#wizard").ntsWizard("next").done(function() {
                             self.cScreenmodel.start();

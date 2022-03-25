@@ -156,15 +156,15 @@ public class TimeLeaveApplicationFinder {
         String companyId = AppContexts.user().companyId();
 
         // 申請日のスケジュールをチェックする
-        if (params.getAppDisplayInfo().getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst() == null
+        boolean condition = params.getAppDisplayInfo().getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst() == null
                 || params.getAppDisplayInfo().getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().isEmpty()
                 || params.getAppDisplayInfo().getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get(0).getOpAchievementDetail() == null
-                || StringUtils.isEmpty(params.getAppDisplayInfo().getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get(0).getOpAchievementDetail().getWorkTypeCD())) {
-            throw new BusinessException("Msg_1695", params.getAppDate().toString("yyyy/MM/dd"));
-        }
-        // 「承認ルートの基準日」をチェックする
-        if (params.getAppDisplayInfo().getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting().getRecordDate() == RecordDate.SYSTEM_DATE.value) {
-            return params.getAppDisplayInfo();
+                || StringUtils.isEmpty(params.getAppDisplayInfo().getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get(0).getOpAchievementDetail().getWorkTypeCD());
+        if(!condition) {
+	        // 「承認ルートの基準日」をチェックする
+	        if (params.getAppDisplayInfo().getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting().getRecordDate() == RecordDate.SYSTEM_DATE.value) {
+	            return params.getAppDisplayInfo();
+	        }
         }
         // 社員の労働条件を取得する
         Optional<WorkingCondition> workingCondition = workingConditionRepo.getBySidAndStandardDate(

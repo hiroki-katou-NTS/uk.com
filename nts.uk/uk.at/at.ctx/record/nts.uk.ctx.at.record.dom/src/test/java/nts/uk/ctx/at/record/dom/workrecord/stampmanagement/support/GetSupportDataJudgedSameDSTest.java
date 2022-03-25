@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.MaximumNumberOfSupport;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -82,7 +83,7 @@ public class GetSupportDataJudgedSameDSTest {
 		
 		StartAtr isStart = StartAtr.START_OF_SUPPORT;
 		
-		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
+		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10));
 		new Expectations() {
 			{
 				required.getCriteriaSameStampOfSupport();
@@ -125,7 +126,7 @@ public class GetSupportDataJudgedSameDSTest {
 		
 		StartAtr isStart = StartAtr.START_OF_SUPPORT;
 		
-		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
+		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10));
 		new Expectations() {
 			{
 				required.getCriteriaSameStampOfSupport();
@@ -168,7 +169,7 @@ public class GetSupportDataJudgedSameDSTest {
 		
 		StartAtr isStart = StartAtr.END_OF_SUPPORT;
 
-		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
+		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10));
 		new Expectations() {
 			{
 				required.getCriteriaSameStampOfSupport();
@@ -211,7 +212,7 @@ public class GetSupportDataJudgedSameDSTest {
 		
 		StartAtr isStart = StartAtr.END_OF_SUPPORT;
 
-		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
+		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10));
 		new Expectations() {
 			{
 				required.getCriteriaSameStampOfSupport();
@@ -259,7 +260,7 @@ public class GetSupportDataJudgedSameDSTest {
 
 		StartAtr isStart = StartAtr.START_OF_SUPPORT;
 
-		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
+		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10));
 		new Expectations() {
 			{
 				required.getCriteriaSameStampOfSupport();
@@ -305,7 +306,7 @@ public class GetSupportDataJudgedSameDSTest {
 
 		StartAtr isStart = StartAtr.END_OF_SUPPORT;
 
-		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
+		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10));
 		new Expectations() {
 			{
 				required.getCriteriaSameStampOfSupport();

@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRe
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageSetting;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.screen.at.app.kdw006.i.GetManHrInputUsageSetting;
+import nts.uk.screen.at.app.kdw006.i.ManHrInputUsageSettingDto;
 import nts.uk.screen.at.app.kdw013.query.GetManHrInputDisplayFormat;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -101,7 +102,8 @@ public class StartManHourInputScreenQuery {
 		
 		Optional<ManHrInputDisplayFormat> manHrInputDisplayFormat = this.getManHrInputDisplayFormat.get();
 
-		return new StartManHourInput(taskFrameUsageSetting, tasks, manHrInputDisplayFormat);
+		return new StartManHourInput(taskFrameUsageSetting, tasks, manHrInputDisplayFormat,
+				ManHrInputUsageSettingDto.fromDomain(manHrSettingOpt.get()));
 	}
 
 }

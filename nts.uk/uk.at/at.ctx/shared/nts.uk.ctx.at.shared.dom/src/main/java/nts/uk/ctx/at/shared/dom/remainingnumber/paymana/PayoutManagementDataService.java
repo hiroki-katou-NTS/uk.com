@@ -425,8 +425,19 @@ public class PayoutManagementDataService {
 				// 未使用日数を計算 Tính toán số ngày chưa sử dụng
 				unUseDay = oldUnUseDay - requiredDay >= 0 ? oldUnUseDay - requiredDay : 0d;
 
-				// ・振休消化区分　＝　消化済み
-				x.setStateAtr(DigestionAtr.USED.value);
+				GeneralDate today = GeneralDate.today();
+				if (unUseDay > 0) {
+					if (x.getExpiredDate().afterOrEquals(today)) {
+						// ・振休消化区分　= 未消化
+						x.setStateAtr(DigestionAtr.UNUSED.value);
+					} else {
+						// ・振休消化区分　= 消滅
+						x.setStateAtr(DigestionAtr.EXPIRED.value);
+					}
+				} else {
+					// ・振休消化区分　= 消化済み
+					x.setStateAtr(DigestionAtr.USED.value);
+				}
 				// ・未使用日数　＝　計算した振休管理データ
 				x.setRemainNumber(unUseDay);
 

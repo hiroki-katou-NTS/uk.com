@@ -22,12 +22,14 @@ public class NumberOfEmployeesByAttributeCountingService {
 	/**
 	 * 集計する
 	 * @param require Require
+	 * @param companyId 会社ID
 	 * @param unit 集計単位
 	 * @param infoList 勤務情報リスト
 	 * @return
 	 */
 	public static Map<String, BigDecimal> count(
-				Require require
+				Require require,
+				String companyId
 			,	AggregationUnitOfEmployeeAttribute unit
 			,	List<WorkInfoWithAffiliationInfo> infoList
 	) {
@@ -37,7 +39,7 @@ public class NumberOfEmployeesByAttributeCountingService {
 				.map( info -> {
 					return new AttributeToBeCounted<String>(
 								unit.getAttribute( info.getAffiliationInfo() )
-							,	info.getWorkInfo().isAttendanceRate( require )
+							,	info.getWorkInfo().isAttendanceRate( require, companyId )
 						);
 				} ).collect(Collectors.toList());
 

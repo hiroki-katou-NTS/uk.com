@@ -1,12 +1,16 @@
 package nts.uk.screen.at.app.reservation;
 
-import lombok.val;
-import nts.uk.ctx.at.record.dom.reservation.bento.IBentoMenuHistoryRepository;
-import nts.uk.shr.com.context.AppContexts;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
+
+import lombok.val;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * ScreenQuery :初期起動
@@ -15,22 +19,20 @@ import java.util.ArrayList;
 public class BentoMenuHistScreenQuery {
 
     @Inject
-    private IBentoMenuHistoryRepository bentoMenuHistoryRepository;
+    private BentoMenuHistRepository bentoMenuHistRepository;
 
     public BentoMenuHistDto getListBentoMenuHist() {
         val result = new BentoMenuHistDto();
         // Get companyId
         val cid = AppContexts.user().companyId();
         // Get list bentomenuhist by companyId
-        val bentoMenuHistory = bentoMenuHistoryRepository.findByCompanyId(cid);
-        val dateItem = new ArrayList<DateHistoryItemDto>();
-        if (bentoMenuHistory.isPresent()) {
-
-            bentoMenuHistory.get().getHistoryItems().stream().forEach(e ->
-                    dateItem.add(new DateHistoryItemDto(e.identifier(), e.start().toString(), e.end().toString()))
-            );
-            result.setCompanyId(cid);
-            result.setHistoryItems(dateItem);
+        List<BentoMenuHistory> bentoMenuHistoryLst = bentoMenuHistRepository.findByCompany(cid);
+        if(!CollectionUtil.isEmpty(bentoMenuHistoryLst)) {
+        	result.setCompanyId(cid);
+        	result.setHistoryItems(bentoMenuHistoryLst.stream().map(x -> new DateHistoryItemDto(
+        			x.getHistoryItem().identifier(), 
+        			x.getHistoryItem().start().toString(), 
+        			x.getHistoryItem().end().toString())).collect(Collectors.toList()));
         }
         return result;
 

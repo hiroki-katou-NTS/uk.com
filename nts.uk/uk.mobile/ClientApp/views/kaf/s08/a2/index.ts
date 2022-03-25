@@ -82,6 +82,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
             vm.businessTripActualContent = vm.data.businessTrip.tripInfos.map((item: any) => {
                 const workTime = vm.data.businessTripInfoOutput.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst.find((i: any) => i.worktimeCode == item.wkTimeCd);
                 const workType = vm.data.businessTripInfoOutput.infoBeforeChange.find((i: any) => i.date == item.date).workTypeDto;
+                const timeInfoTmp = vm.data.businessTripInfoOutput.infoBeforeChange.find((i: any) => i.date == item.date && i.workTimeSetting && item.wkTimeCd == i.workTimeSetting.workTimeCode);
                 
                 return {
                     date: item.date,
@@ -89,7 +90,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
                         workTypeCD: item.wkTypeCd,
                         workTimeCD: item.wkTimeCd,
                         opWorkTypeName: workType.name,
-                        opWorkTimeName: workTime ? workTime.workTimeDisplayName.workTimeName : null,
+                        opWorkTimeName: workTime ? workTime.workTimeDisplayName.workTimeName : (timeInfoTmp ? timeInfoTmp.workTimeSetting.workTimeName : null),
                         opWorkTime: item.startWorkTime,
                         opLeaveTime: item.endWorkTime
                     }
@@ -276,6 +277,14 @@ export class KafS08A2Component extends KafS00ShrComponent {
             returnTime: vm.returnTime,
             tripInfos,
         };
+        let errorMsgLst = vm.data.businessTripInfoOutput.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
+        if (!_.isEmpty(errorMsgLst)) {
+            vm.$modal.error({ messageId: errorMsgLst[0] }).then(() => {
+
+            });
+
+            return;
+        }
         vm.$mask('show');
         // check before registering application
         vm.$http.post('at', API.checkBeforeApply, {
@@ -351,7 +360,6 @@ export class KafS08A2Component extends KafS00ShrComponent {
             }).then((res: any) => {
                 //vm.appID = res.data.appID;
                 if (res) {
-                    vm.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
                     vm.$emit('nextToStepThree', res.data.appIDLst[0]);
                 } 
                 vm.$mask('hide');
@@ -383,7 +391,6 @@ const API = {
     startKAFS08: 'at/request/application/businesstrip/mobile/startMobile',
     checkBeforeApply: 'at/request/application/businesstrip/mobile/checkBeforeRegister',
     register: 'at/request/application/businesstrip/mobile/register',
-    updateBusinessTrip: 'at/request/application/businesstrip/mobile/updateBusinessTrip',
-    reflectApp: 'at/request/application/reflect-app'
+    updateBusinessTrip: 'at/request/application/businesstrip/mobile/updateBusinessTrip'
 };
 

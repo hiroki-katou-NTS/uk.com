@@ -22,11 +22,17 @@ public class NurseDetailCategoryDto extends NurseCategoryDto {
 	 * 事務的業務従事者か
 	 */
 	private boolean officeWorker;
+	
+	/**
+	 * 看護管理者か
+	 */
+	private boolean nursingManager;
 
-	public NurseDetailCategoryDto(String nurseCode, String nurseClassifiName, int license, boolean officeWorker) {
+	public NurseDetailCategoryDto(String nurseCode, String nurseClassifiName, int license, boolean officeWorker, boolean nursingManager) {
 		super(nurseCode, nurseClassifiName);
 		this.license = license;
 		this.officeWorker = officeWorker;
+		this.nursingManager = nursingManager;
 	}
 
 }

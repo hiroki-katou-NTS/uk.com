@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -22,14 +23,17 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskScheduleDetail;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -55,12 +59,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.FuriClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NumberOfDaySuspension;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.StayingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
@@ -105,9 +111,6 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 	/** 勤務種別コード **/
 	@Column(name = "BUSTYPE_CD")
 	public String busTypeCd;
-	/** 看護区分 **/
-	@Column(name = "NURSE_LICENSE")
-	public String nurseLicense;
 	/** 勤務種類コード **/
 	@Column(name = "WKTP_CD")
 	public String wktpCd;
@@ -126,6 +129,20 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 
 	@Column(name = "TREAT_AS_SUBSTITUTE_DAYS")
 	public Double treatAsSubstituteDays;
+	
+	// redmine 119637
+	// 職場グループID
+	@Column(name = "WKP_GROUP_ID")
+	public String workplaceGroupId;
+	// 看護免許区分
+	@Column(name = "NURSE_LICENSE_ATR")
+	public Integer nursingLicenseClass;
+	// 看護管理者か
+	@Column(name = "IS_NURSE_ADMINISTRATOR")
+	public Boolean nursingManager;
+	// 加給コード
+	@Column(name = "BONUS_PAY_CD")
+	public String bonusPaySettingCode;
 
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "basicInfo", orphanRemoval = true)
 	public KscdtSchTime kscdtSchTime;
@@ -149,12 +166,18 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 	@OneToMany(targetEntity = KscdtSchGoingOutTs.class, mappedBy = "kscdtSchBasicInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "KSCDT_SCH_GOING_OUT_TS")
 	public List<KscdtSchGoingOutTs> kscdtSchGoingOutTs;
+	
+	@OneToMany(targetEntity = KscdtSchTask.class, mappedBy = "kscdtSchBasicInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "KSCDT_SCH_TASK")
+	public List<KscdtSchTask> kscdtSchTask;
 
 	public static KscdtSchBasicInfo toEntity(WorkSchedule workSchedule, String cID) {
 
 		String sID = workSchedule.getEmployeeID();
 
 		GeneralDate yMD = workSchedule.getYmd();
+		
+		TaskSchedule task = workSchedule.getTaskSchedule();
 
 		// 勤務予定.所属情報
 		AffiliationInforOfDailyAttd workInfo = workSchedule.getAffInfo();
@@ -218,18 +241,25 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			listKscdtSchGoingOutTs.addAll(listKscdtSchComeLate);
 		}
 
+		AtomicInteger index = new AtomicInteger(1);
+		List<KscdtSchTask> lstKscdtSchTask = task.getDetails().stream()
+				.map(c -> KscdtSchTask.toEntity(sID, yMD, cID, c, index.getAndIncrement())).collect(Collectors.toList());
 
 		// null - QA 110800
 		KscdtSchBasicInfo basicInfo = new KscdtSchBasicInfo(basicInfoPK,
 				cID, workSchedule.getConfirmedATR().value == 1 ? true : false, workInfo.getEmploymentCode().v(),
 				workInfo.getJobTitleID(), workInfo.getWplID(), workInfo.getClsCode().v(),
-				!workInfo.getBusinessTypeCode().isPresent() ||workInfo.getBusinessTypeCode() ==null ?null:workInfo.getBusinessTypeCode().get().v(), null, workInformation.getWorkTypeCode().v(),
+				!workInfo.getBusinessTypeCode().isPresent() ||workInfo.getBusinessTypeCode() ==null ?null:workInfo.getBusinessTypeCode().get().v(), workInformation.getWorkTypeCode().v(),
 				workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().v(), workInfoOfDaily.getGoStraightAtr().value == 1 ? true : false,
 				workInfoOfDaily.getBackStraightAtr().value == 1 ? true : false,
 				classifiction,
 				days,
+				workInfo.getWorkplaceGroupId().isPresent() ? workInfo.getWorkplaceGroupId().get() : null,
+				workInfo.getNursingLicenseClass().isPresent()? workInfo.getNursingLicenseClass().get().value : null,
+				workInfo.getIsNursingManager().isPresent()? workInfo.getIsNursingManager().get() : null,
+                workInfo.getBonusPaySettingCode().isPresent() ? workInfo.getBonusPaySettingCode().get().toString() : null,
 				kscdtSchTimes, kscdtEditStates, kscdtSchAtdLvwTimes,
-				kscdtSchShortTimeTs, kscdtSchBreakTs,listKscdtSchGoingOutTs);
+				kscdtSchShortTimeTs, kscdtSchBreakTs,listKscdtSchGoingOutTs, lstKscdtSchTask);
 		return basicInfo;
 	}
 
@@ -254,7 +284,10 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		// create AffiliationInforOfDailyAttd
 		AffiliationInforOfDailyAttd affInfo = new AffiliationInforOfDailyAttd(new EmploymentCode(empCd), jobId, wkpId, new ClassificationCode(clsCd),
 				Optional.ofNullable(new BusinessTypeCode(busTypeCd)),
-				Optional.empty());
+				Optional.ofNullable(new BonusPaySettingCode(bonusPaySettingCode)), //  bonusPaySettingCode
+				Optional.ofNullable(workplaceGroupId), //  workplaceGroupId
+				EnumAdaptor.optionalOf(nursingLicenseClass, LicenseClassification.class), //  nursingLicenseClass
+				Optional.ofNullable(nursingManager)); //  isnursingLicenseManager
 
 		// create List<BreakTimeOfDailyAttd>
 		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
@@ -291,6 +324,10 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			timeLeavingWorks.add(timeLeavingWork);
 		});
 		optTimeLeaving = new TimeLeavingOfDailyAttd(timeLeavingWorks, new WorkTimes(0));
+		workInfo.setScheduleTimeSheets(timeLeavingWorks.stream()
+				.filter(x -> x.getAttendanceTime().isPresent() && x.getLeaveTime().isPresent())
+				.map(x -> new ScheduleTimeSheet(x.getWorkNo(), x.getAttendanceTime().get(), x.getLeaveTime().get()))
+				.collect(Collectors.toList()));
 
 		// create Optional<ShortTimeOfDailyAttd> optSortTimeWork
 		ShortTimeOfDailyAttd optSortTimeWork = null;
@@ -305,7 +342,11 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		WorkScheduleTimeOfDaily scheduleTimeOfDaily = new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0)), new AttendanceTime(0));
 		
 		AttendanceTimeOfDailyAttendance attendance = null;
-		TaskSchedule taskSchedule = TaskSchedule.createWithEmptyList();
+		// Create Task
+		List<TaskScheduleDetail> details = kscdtSchTask.stream()
+					.map(task -> new TaskScheduleDetail(new TaskCode(task.taskCode), new TimeSpanForCalc(new TimeWithDayAttr(task.startClock), new TimeWithDayAttr(task.endClock))))
+					.collect(Collectors.toList());
+		TaskSchedule taskSchedule = new TaskSchedule(details);
 		StayingTimeOfDaily stayingTime = new StayingTimeOfDaily(new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0), new AttendanceTime(0), new AttendanceTimeOfExistMinus(0));
 		MedicalCareTimeOfDaily medicalCareTime = new MedicalCareTimeOfDaily(WorkTimeNightShift.DAY_SHIFT, new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
 		
@@ -315,10 +356,6 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				stayingTime, new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0), medicalCareTime);
 		}
 		
-		if(workSch != null) {
-			taskSchedule = workSch.getTaskSchedule();
-		}
-
 		optSortTimeWork = new ShortTimeOfDailyAttd(shortWorkingTimeSheets);
 
 		//#114431
@@ -327,6 +364,8 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			List<OutingTimeSheet> outingTimeSheets = kscdtSchGoingOutTs.stream().map(c-> c.toDomain()).collect(Collectors.toList());
 			outingTime = new OutingTimeOfDailyAttd(outingTimeSheets);
 		}
+		
+		
 		
 		return new WorkSchedule(
 				sID, 

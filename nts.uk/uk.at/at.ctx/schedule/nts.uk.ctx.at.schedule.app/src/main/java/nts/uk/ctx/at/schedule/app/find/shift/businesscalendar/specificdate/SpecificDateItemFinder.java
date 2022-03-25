@@ -6,8 +6,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItemRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemNo;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -37,7 +38,7 @@ public class SpecificDateItemFinder {
 	 */
 	public List<SpecificDateItemDto> getSpecDateItemIsUse(int useAtr) {
 		String companyId = AppContexts.user().companyId();
-		List<SpecificDateItemDto> lst =  specificDateItemRepository.getSpecifiDateByUse(companyId, useAtr)
+		List<SpecificDateItemDto> lst =  specificDateItemRepository.getByUseAtr(companyId, useAtr)
 				.stream()
 				.map(c -> toSpecificDateItemDto(c))
 				.collect(Collectors.toList());
@@ -56,7 +57,11 @@ public class SpecificDateItemFinder {
 	 */
 	public List<SpecificDateItemDto> getSpecificDateItemByListCode(List<Integer> lstSpecificDateItem){
 		String companyId = AppContexts.user().companyId();
-		return specificDateItemRepository.getSpecifiDateByListCode(companyId, lstSpecificDateItem)
+		List<SpecificDateItemNo> lstSpecificDate = lstSpecificDateItem.stream()
+				.map(item -> new SpecificDateItemNo(item))
+				.collect(Collectors.toList());
+		
+		return specificDateItemRepository.getSpecifiDateByListCode(companyId, lstSpecificDate)
 				.stream()
 				.map(c-> toSpecificDateItemDto(c))
 				.collect(Collectors.toList());

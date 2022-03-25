@@ -28,6 +28,7 @@ public class CreateWorkSchedule {
 	/**
 	 * 作る
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param date 年月日
 	 * @param workInformation 勤務情報
@@ -37,7 +38,8 @@ public class CreateWorkSchedule {
 	 * @return
 	 */
 	public static <T> ResultOfRegisteringWorkSchedule create(
-			Require require, 
+			Require require,
+			String companyId,
 			String employeeId, 
 			GeneralDate date, 
 			WorkInformation workInformation,
@@ -51,7 +53,7 @@ public class CreateWorkSchedule {
 		WorkSchedule workSchedule;
 		if ( isNewRegister || ! registedWorkSchedule.get().getWorkInfo().getRecordInfo().isSame(workInformation) ) {
 			try {
-				workSchedule = WorkSchedule.createByHandCorrectionWithWorkInformation(require, employeeId, date, workInformation);
+				workSchedule = WorkSchedule.createByHandCorrectionWithWorkInformation(require, companyId, employeeId, date, workInformation);
 			} catch (BusinessException e) {
 				return ResultOfRegisteringWorkSchedule.createWithError( employeeId, date, e.getMessage() );
 			}
@@ -61,7 +63,7 @@ public class CreateWorkSchedule {
 		
 		// 時間帯チェック CheckTime Span
 		List<ErrorInfoOfWorkSchedule> errorList = 
-				CreateWorkSchedule.checkTimeSpan(require, employeeId, date, workInformation, updateInfoMap);
+				CreateWorkSchedule.checkTimeSpan(require, companyId, employeeId, date, workInformation, updateInfoMap);
 		if ( !errorList.isEmpty() ) {
 			return ResultOfRegisteringWorkSchedule.createWithErrorList(errorList);
 		}
@@ -89,6 +91,7 @@ public class CreateWorkSchedule {
 	/**
 	 * 時間帯のチェック
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param date 年月日
 	 * @param workInformation 勤務情報
@@ -97,6 +100,7 @@ public class CreateWorkSchedule {
 	 */
 	private static <T> List<ErrorInfoOfWorkSchedule> checkTimeSpan(
 			Require require,
+			String companyId,
 			String employeeId,
 			GeneralDate date,
 			WorkInformation workInformation,
@@ -104,7 +108,7 @@ public class CreateWorkSchedule {
 			) {
 		
 		return Stream.of ( WorkTimeZone.values() )
-					.map( workTimeZone -> getErrorInfoWithWorkTimeZone(require, employeeId, date, workInformation, workTimeZone, updateInfoMap) )
+					.map( workTimeZone -> getErrorInfoWithWorkTimeZone(require, companyId, employeeId, date, workInformation, workTimeZone, updateInfoMap) )
 					.flatMap( OptionalUtil::stream )
 					.collect( Collectors.toList() );
 	}
@@ -112,6 +116,7 @@ public class CreateWorkSchedule {
 	/**
 	 * 勤務時間帯に対するエラー情報を作成する
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param date 年月日
 	 * @param workInformation 勤務情報
@@ -121,6 +126,7 @@ public class CreateWorkSchedule {
 	 */
 	private static <T> Optional<ErrorInfoOfWorkSchedule> getErrorInfoWithWorkTimeZone(
 			Require require,
+			String companyId,
 			String employeeId, 
 			GeneralDate date, 
 			WorkInformation workInformation, 
@@ -134,7 +140,7 @@ public class CreateWorkSchedule {
 		
 		T time = updateInfoMap.get( workTimeZone.attendanceItemId );
 		ContainsResult stateOfTime = 
-				workInformation.containsOnChangeableWorkingTime(require, workTimeZone.clockArea , workTimeZone.workNo, (TimeWithDayAttr) time);
+				workInformation.containsOnChangeableWorkingTime(require, companyId, workTimeZone.clockArea , workTimeZone.workNo, (TimeWithDayAttr) time);
 		if ( stateOfTime.isContains() ) {
 			return Optional.empty();
 		}

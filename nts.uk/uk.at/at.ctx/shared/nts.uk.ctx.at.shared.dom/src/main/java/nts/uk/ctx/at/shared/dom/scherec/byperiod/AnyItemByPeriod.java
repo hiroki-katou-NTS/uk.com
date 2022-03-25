@@ -85,4 +85,16 @@ public class AnyItemByPeriod implements Cloneable {
 																	r.getValue().getAnyAmount()));
 		});
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(AnyItemByPeriod target){
+		
+		this.anyItemValues.entrySet().stream().forEach(item -> {
+			
+			 item.getValue().sum(target.anyItemValues.get(item.getKey()));
+		});
+	}
 }

@@ -829,7 +829,6 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			}).done((result) => {
 				if (result) {
 					return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
-						nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
 						return CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 					});	
 				}
@@ -1639,7 +1638,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         openKDL020() {
             let vm = this;
             nts.uk.ui.windows.setShared('KDL020_DATA', vm.application().employeeIDLst());
-            if (vm.application().employeeIDLst().length > 1) {
+            if (vm.application().employeeIDLst().length > 1)
                 nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 1040, height: 660 });
 			else
 				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 730, height: 660 });
@@ -1719,8 +1718,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         changeWorkType: 'at/request/application/appforleave/findChangeWorkType',
         changeWorkTime: 'at/request/application/appforleave/findChangeWorkTime',
         changeUseingWorkTime: 'at/request/application/appforleave/findChangeUsingWorkTime',
-        changeRela: 'at/request/application/appforleave/changeRela',
-		reflectApp: "at/request/application/reflect-app"
+        changeRela: 'at/request/application/appforleave/changeRela'
     }
 
     interface DataTransfer {

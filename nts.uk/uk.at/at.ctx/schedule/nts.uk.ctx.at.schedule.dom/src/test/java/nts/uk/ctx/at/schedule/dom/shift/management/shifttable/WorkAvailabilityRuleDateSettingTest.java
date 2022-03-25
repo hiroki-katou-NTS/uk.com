@@ -116,7 +116,7 @@ public class WorkAvailabilityRuleDateSettingTest {
 				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 3), AssignmentMethod.HOLIDAY)
 				);
 		
-		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(require, expectations);
+		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(require, "cid", expectations);
 		
 		assertThat(isOverHolidayMaxDays).isFalse();
 	}
@@ -139,7 +139,7 @@ public class WorkAvailabilityRuleDateSettingTest {
 				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 4), AssignmentMethod.HOLIDAY)
 				);
 		
-		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(require, expectations);
+		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(require, "cid", expectations);
 		
 		assertThat(isOverHolidayMaxDays).isTrue();
 	}
@@ -167,25 +167,25 @@ public class WorkAvailabilityRuleDateSettingTest {
 		
 		new Expectations() {
 			{
-				wAByShiftMaster1.isHolidayAvailability(require);
+				wAByShiftMaster1.isHolidayAvailability(require, anyString);
 				result = true;
 				
-				wAByShiftMaster2.isHolidayAvailability(require);
+				wAByShiftMaster2.isHolidayAvailability(require, anyString);
 				result = true;
 				
-				wAByShiftMaster3.isHolidayAvailability(require);
+				wAByShiftMaster3.isHolidayAvailability(require, anyString);
 				result = true;
 				
-				wAByShiftMaster4.isHolidayAvailability(require);
+				wAByShiftMaster4.isHolidayAvailability(require, anyString);
 				result = false;
 				
-				wAByShiftMaster5.isHolidayAvailability(require);
+				wAByShiftMaster5.isHolidayAvailability(require, anyString);
 				result = false;
 				
 			}
 		};
 		
-		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(require, expectations);
+		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(require, "cid", expectations);
 		
 		assertThat(isOverHolidayMaxDays).isFalse();
 		
@@ -213,25 +213,25 @@ public class WorkAvailabilityRuleDateSettingTest {
 		
 		new Expectations() {
 			{
-				wAByShiftMaster1.isHolidayAvailability(require);
+				wAByShiftMaster1.isHolidayAvailability(require, anyString);
 				result = true;
 				
-				wAByShiftMaster2.isHolidayAvailability(require);
+				wAByShiftMaster2.isHolidayAvailability(require, anyString);
 				result = true;
 				
-				wAByShiftMaster3.isHolidayAvailability(require);
+				wAByShiftMaster3.isHolidayAvailability(require, anyString);
 				result = true;
 				
-				wAByShiftMaster4.isHolidayAvailability(require);
+				wAByShiftMaster4.isHolidayAvailability(require, anyString);
 				result = true;
 				
-				wAByShiftMaster5.isHolidayAvailability(require);
+				wAByShiftMaster5.isHolidayAvailability(require, anyString);
 				result = false;
 				
 			}
 		};
 		
-		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(require, expectations);
+		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(require, "cid", expectations);
 		
 		assertThat(isOverHolidayMaxDays).isTrue();
 		

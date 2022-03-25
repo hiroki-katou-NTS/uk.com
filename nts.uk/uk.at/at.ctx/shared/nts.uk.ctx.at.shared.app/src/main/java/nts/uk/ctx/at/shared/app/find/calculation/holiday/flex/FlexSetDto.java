@@ -10,21 +10,21 @@ import lombok.Data;
 
 @Data
 public class FlexSetDto {
-	/** 不足計算 */
+	/** 半日休日の計算方法.不足計算 */
 	public int missCalcHd;
-
-	/** 割増計算 */
+	
+	/** 半日休日の計算方法.割増計算 */
 	public int premiumCalcHd;
-
-	/** 不足計算 */
-	public int missCalcSubhd;
-
-	/** 割増計算 */
+	
+	/** 代休取得時の計算方法.所定から控除するかどうか */
+	public int isDeductPred;
+	
+	/** 代休取得時の計算方法.割増計算 */
 	public int premiumCalcSubhd;
 	
-	/** 法定労働控除時間計算 */
-	public int flexDeductTimeCalc;
-	
-	/** 非勤務日計算 */
-	public int flexNonworkingDayCalc;
+	/** 代休取得時の計算方法.時間代休時の計算設定 */
+	public int calcSetTimeSubhd;
+
+	/** 非勤務日計算.設定 */
+	public int flexNoworkingCalc;
 }

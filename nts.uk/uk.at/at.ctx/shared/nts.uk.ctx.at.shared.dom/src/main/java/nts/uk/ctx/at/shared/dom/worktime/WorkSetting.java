@@ -1,11 +1,10 @@
 package nts.uk.ctx.at.shared.dom.worktime;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
@@ -17,9 +16,11 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
  */
 public interface WorkSetting {
 
+	/** 会社ID */
+	public String getCompanyId();
+	
 	/** 就業時間帯コード */
 	public WorkTimeCode getWorkTimeCode();
-
 
 	/**
 	 * 変更可能な勤務時間帯を取得する
@@ -42,22 +43,11 @@ public interface WorkSetting {
 	 * @param wktmCd 就業時間帯コード
 	 * @return 所定時間設定
 	 */
-	default PredetemineTimeSetting getPredetermineTimeSetting(Require require) {
-		return require.getPredetermineTimeSetting(this.getWorkTimeCode());
+	default Optional<PredetemineTimeSetting> getPredetermineTimeSetting(Require require) {
+		return require.predetemineTimeSetting(this.getCompanyId(), this.getWorkTimeCode());
 	}
 
-
-	public static interface Require
-		extends	FixedWorkSetting.Require
-			,	FlexWorkSetting.Require
-			,	FlowWorkSetting.Require
-	{
-		/**
-		 * 所定時間設定を取得する
-		 * @param wktmCd 就業時間帯コード
-		 * @return 所定時間設定
-		 */
-		PredetemineTimeSetting getPredetermineTimeSetting( WorkTimeCode wktmCd );
+	public static interface Require extends PredetemineTimeSetting.Require {
+		
 	}
-
 }

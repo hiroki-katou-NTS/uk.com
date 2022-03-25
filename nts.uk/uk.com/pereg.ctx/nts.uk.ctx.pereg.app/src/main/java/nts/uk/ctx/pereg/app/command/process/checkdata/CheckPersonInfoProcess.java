@@ -2046,6 +2046,13 @@ public class CheckPersonInfoProcess {
 		masterName.put("IS01087" , "単価8");
 		masterName.put("IS01088" , "単価9");
 		masterName.put("IS01089" , "単価10");
+		masterName.put("IS01090" , "期間");		
+		masterName.put("IS01091" , "開始日");		
+		masterName.put("IS01092" , "終了日");	
+		masterName.put("IS01093" , "夜勤専従者として扱う");		
+		masterName.put("IS01094" , "医療勤務形態");		
+		masterName.put("IS01095" , "他部署の兼務");	
+		masterName.put("IS01096" , "看護区分");
 
 		return masterName;
 			

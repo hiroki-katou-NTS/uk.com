@@ -601,6 +601,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 isLastDay: self.closeDate.lastDay
             };
             service.getDataOfShiftMode(param).done((data: IDataStartScreen) => {
+                $('#contain-view-left').css({'margin-top': '18px'});
                 self.saveModeGridToLocalStorege(ViewMode.SHIFT);
                 self.calculateDisPlayFormatA4Popup(data);
                 self.visibleShiftPalette(true);
@@ -687,6 +688,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
             
             service.getDataOfShortNameMode(param).done((data: IDataStartScreen) => {
+                $('#contain-view-left').css({'margin-top': '3px'});
                 self.visibleShiftPalette(false);
                 self.visibleBtnInput(false);
                 self.saveModeGridToLocalStorege(ViewMode.SHORTNAME);
@@ -746,6 +748,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
 
             service.getDataOfTimeMode(param).done((data: IDataStartScreen) => {
+                $('#contain-view-left').css({'margin-top': '3px'});
                 self.visibleShiftPalette(false);
                 self.visibleBtnInput(true);
                 self.saveModeGridToLocalStorege(ViewMode.TIME);
@@ -815,7 +818,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
         
         destroyAndCreateGrid(dataBindGrid, viewMode) {
-            let self = this;
+            let self = this; 
+            $("#cacheHeightGrid").append($('#heightGrid'));
             $("#cacheDiv").append($('#vertDiv'));
             $("#cacheDiv").append($('#horzDiv'));
             $("#extable").children().remove();
@@ -1004,7 +1008,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             self.tooltipShare = data.listDateInfo;
             self.listWorkTypeInfo = data.listWorkTypeInfo;
-            
             self.listTimeDisable = [];
 
             for (let i = 0; i < data.listEmpInfo.length; i++) {
@@ -1579,12 +1582,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if (innerIdx == 3) {
                         startTime = nts.uk.time.minutesBased.duration.parseString(cellData.startTime).toValue();
                         endTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
-                        if (endTime == '' || _.isNaN(endTime)) return dfd.reject();
+                        if (endTime == '' || _.isNil(endTime) ||  _.isNaN(endTime)) return dfd.reject();
 
                     } else if (innerIdx == 2) {
                         startTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
                         endTime = nts.uk.time.minutesBased.duration.parseString(cellData.endTime).toValue();
-                        if (startTime == '' || _.isNaN(startTime)) return dfd.reject();
+                        if (startTime == '' || _.isNil(startTime) || _.isNaN(startTime)) return dfd.reject();
 
                     }
 
@@ -1749,14 +1752,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     
                     
                 } else if (dateInfo.isHoliday) {
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday"));
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday-color-schedule-sunday"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday-color-schedule-sunday"));
                 } else if (dateInfo.dayOfWeek == 7) {
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday"));
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday-color-schedule-sunday"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday-color-schedule-sunday"));
                 } else if (dateInfo.dayOfWeek == 6) {
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-saturday"));
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-saturday"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-saturday-color-schedule-saturday"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-saturday-color-schedule-saturday"));
                 } else if (dateInfo.dayOfWeek > 0 || dateInfo.dayOfWeek < 6) {
                     detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-weekdays"));
                     detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-weekdays"));
@@ -1821,7 +1824,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.keyGrid = empLogin[0].sid;
                 self.rowIndexOfEmpLogin = _.indexOf(detailContentDs, empLogin[0]);
             } else {
-                self.keyGrid = '0';
+                self.keyGrid = 'NOTEXISTS';
                 self.rowIndexOfEmpLogin = 0;
             }
             return result;
@@ -2122,6 +2125,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             let data = self.buidDataReg(self.userInfor.disPlayFormat, cellsGroup);
             
+            if(data.length == 0){
+                nts.uk.ui.block.clear();
+                return;
+            }
+            
             service.regWorkSchedule(data).done((rs) => {
                 self.taskId = rs.taskInfor.id;
                 self.checkStateAsyncTask(isKsu003, detailContentDs);
@@ -2216,11 +2224,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let startTime = null, endTime = null;
                         let isChangeTime = false;
                         if (!_.isEmpty(cellStartTime) && !_.isNil(cellStartTime)) {
-                            startTime = duration.parseString(cellStartTime).toValue();
+                            startTime = self.getPrimitiveValue(cellStartTime);
                             isChangeTime = true;
                         }
                         if (!_.isEmpty(cellEndTime) && !_.isNil(cellEndTime)) {
-                            endTime = duration.parseString(cellEndTime).toValue();
+                            endTime = self.getPrimitiveValue(cellEndTime);
                             isChangeTime = true;
                         }
 
@@ -2516,10 +2524,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let startTime, endTime;
                 if (innerIdx === 2) {
                     startTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
-                    endTime = !_.isNil(obj.endTime) ? nts.uk.time.minutesBased.duration.parseString(obj.endTime).toValue() : 0;
+                    if (_.isNil(obj.endTime) || obj.endTime == '') {
+                        endTime = 0;
+                    } else {
+                        endTime = nts.uk.time.minutesBased.duration.parseString(obj.endTime).toValue();
+                    }
                 } else if (innerIdx === 3) {
-                    startTime = !_.isNil(obj.startTime) ? nts.uk.time.minutesBased.duration.parseString(obj.startTime).toValue() : 0;
                     endTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
+                    if (_.isNil(obj.startTime) || obj.startTime == '') {
+                        startTime = 0;
+                    } else {
+                        startTime = nts.uk.time.minutesBased.duration.parseString(obj.startTime).toValue();
+                    }
                 }
                 
                 if (startTime > endTime) {
@@ -2607,6 +2623,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             
             $("#extable").exTable("saveScroll");
+            
+            // append button A16
+            $("#extable").append($('#heightGrid'));
+            $('#heightGrid').css({'display':'', 'width': '30px', 'float' : 'right', 'margin-top': '1px'});
         }
 
         createVertSumData() {
@@ -3751,14 +3771,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
 
                     } else if (dateInfo.isHoliday) {
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday"));
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday-color-schedule-sunday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday-color-schedule-sunday"));
                     } else if (dateInfo.dayOfWeek == 7) {
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday"));
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday-color-schedule-sunday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday-color-schedule-sunday"));
                     } else if (dateInfo.dayOfWeek == 6) {
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-saturday"));
-                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-saturday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-saturday-color-schedule-saturday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-saturday-color-schedule-saturday"));
                     } else if (dateInfo.dayOfWeek > 0 || dateInfo.dayOfWeek < 6) {
                         detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-weekdays"));
                         detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-weekdays"));
@@ -4911,8 +4931,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // set lai starttime, endtime cua object stick
                 $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
 
-                let startTime = rs.startTime == null ? '' : formatById("Clock_Short_HM", rs.startTime);
-                let endTime = rs.endTime == null ? '' : formatById("Clock_Short_HM", rs.endTime);
+                let startTime = rs.startTime == null ? null : formatById("Clock_Short_HM", rs.startTime);
+                let endTime = rs.endTime == null ? null : formatById("Clock_Short_HM", rs.endTime);
                 $("#extable").exTable("stickData", {
                     workTypeCode: data.workTypeCode,
                     workTypeName: data.workTypeName,
@@ -4961,8 +4981,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if (!_.isNil(objWTime)) {
                         if (userInfor.disPlayFormat == ViewMode.TIME) {
                             if (data.workHolidayCls === 3) { // đi làm fulltime
-                                let startTime = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzStart1);
-                                let endTime   = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzEnd1);
+                                let startTime = _.isNil(objWTime) ? null : formatById("Clock_Short_HM", objWTime.tzStart1);
+                                let endTime   = _.isNil(objWTime) ? null : formatById("Clock_Short_HM", objWTime.tzEnd1);
 
                                 $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
                                 $("#extable").exTable("stickData", {
@@ -4993,8 +5013,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     // set lai starttime, endtime cua object stick
                                     $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
 
-                                    let startTime = rs.startTime == null ? '' : formatById("Clock_Short_HM", rs.startTime);
-                                    let endTime = rs.endTime == null ? '' : formatById("Clock_Short_HM", rs.endTime);
+                                    let startTime = rs.startTime == null ? null : formatById("Clock_Short_HM", rs.startTime);
+                                    let endTime = rs.endTime == null ? null : formatById("Clock_Short_HM", rs.endTime);
                                     $("#extable").exTable("stickData", {
                                         workTypeCode: data.workTypeCode,
                                         workTypeName: data.workTypeName,
@@ -5029,8 +5049,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 workTypeName: data.workTypeName,
                                 workTimeCode: cellData.workTimeCode,
                                 workTimeName: cellData.workTimeName,
-                                startTime: '',
-                                endTime: '',
+                                startTime: null,
+                                endTime: null,
                                 achievements: false,
                                 workHolidayCls: data.workHolidayCls
                             });
@@ -5068,8 +5088,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     // set lai starttime, endtime cua object stick
                                     $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
 
-                                    let startTime = rs.startTime == null ? '' : formatById("Clock_Short_HM", rs.startTime);
-                                    let endTime = rs.endTime == null ? '' : formatById("Clock_Short_HM", rs.endTime);
+                                    let startTime = rs.startTime == null ? null : formatById("Clock_Short_HM", rs.startTime);
+                                    let endTime = rs.endTime == null ? null : formatById("Clock_Short_HM", rs.endTime);
                                     $("#extable").exTable("stickData", {
                                         workTypeCode: data.workTypeCode,
                                         workTypeName: data.workTypeName,
@@ -5104,8 +5124,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 workTypeName: data.workTypeName,
                                 workTimeCode: cellData.workTimeCode,
                                 workTimeName: cellData.workTimeName,
-                                startTime: '',
-                                endTime: '',
+                                startTime: null,
+                                endTime: null,
                                 achievements: false,
                                 workHolidayCls: data.workHolidayCls
                             });
@@ -5259,7 +5279,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (userInfor.updateMode == UpdateMode.STICK) {
                 $("#extable").exTable("stickRedo", function(rowIdx, columnKey, innerIdx, cellData) {
                     if (userInfor.disPlayFormat == ViewMode.TIME) {
-                        if ((cellData.workHolidayCls === 0) || (cellData.startTime === '' && cellData.endTime === '')) {
+                        if ((cellData.workHolidayCls === 0) || ((cellData.startTime === ''||cellData.startTime == null)  && (cellData.endTime === ''||cellData.endTime == null))) {
                             self.diseableCellStartEndTime(rowIdx + '', columnKey);
                         } else {
                             self.enableCellStartEndTime(rowIdx + '', columnKey);
@@ -5269,7 +5289,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else if (userInfor.updateMode == UpdateMode.COPY_PASTE) {
                 $("#extable").exTable("copyRedo", function(rowIdx, columnKey, cellData) {
                     if (userInfor.disPlayFormat == ViewMode.TIME) {
-                        if ((cellData.workHolidayCls === 0) || (cellData.startTime === '' && cellData.endTime === '')) {
+                        if ((cellData.workHolidayCls === 0) || ((cellData.startTime === ''||cellData.startTime == null) && (cellData.endTime === ''||cellData.endTime == null))) {
                             self.diseableCellStartEndTime(rowIdx + '', columnKey);
                         } else {
                             self.enableCellStartEndTime(rowIdx + '', columnKey);
@@ -5804,6 +5824,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // btn A6_1, A6_2 職2    
             if (funcNo2_WorkPlace == false) {
                 $('#contain-view-left').empty();
+            } else if(self.userInfor.disPlayFormat == 'shift'){
+                $('#contain-view-left').css({'margin-top': '18px'});
+            } else if(self.userInfor.disPlayFormat != 'shift'){
+                $('#contain-view-left').css({'margin-top': '3px'});
             }
 
             // 職13
@@ -6244,6 +6268,33 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             setTimeout(() => {
                 $('.extable-header-detail a').css("pointer-events", "none");
             }, 500);
+        }
+        
+        getPrimitiveValue(value: any): string {
+            var self = this;
+            let valueResult: string = "";
+            // Time
+            valueResult = value == "" ? null : String(self.getHoursAll(value));
+            return valueResult;
+        }
+
+        getHours(value: any): number {
+            return Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]);
+        }
+
+        //time day
+        getHoursAll(value: any): number {
+            var self = this;
+            if (value.indexOf(":") != -1) {
+                if (value.indexOf("-") != -1) {
+                    let valueTemp = value.split('-')[1];
+                    return self.getHours(valueTemp) - 24 * 60;
+                } else {
+                    return self.getHours(value);
+                }
+            } else {
+                return value;
+            }
         }
     }
 

@@ -15,7 +15,9 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.url.UrlExecInfo;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -101,9 +103,22 @@ public class SgwdtUrlExecInfo extends ContractUkJpaEntity implements Serializabl
     }
     public static SgwdtUrlExecInfo toEntity(UrlExecInfo domain) {
     	
-        return new SgwdtUrlExecInfo(new SgwmtUrlExecInfoPk(domain.getEmbeddedId(), domain.getCid()), domain.getProgramId(), domain.getLoginId(), domain.getExpiredDate(), domain.getIssueDate(), domain.getScreenId(), domain.getSid(), domain.getScd(), domain.getTaskIncre().stream().map(x -> {
-    		return SgwdtUrlTaskIncre.toEntity(x);
-    	}).collect(Collectors.toList()));
+        val entity = new SgwdtUrlExecInfo(
+                new SgwmtUrlExecInfoPk(domain.getEmbeddedId(), domain.getCid()),
+                domain.getProgramId(),
+                domain.getLoginId(),
+                domain.getExpiredDate(),
+                domain.getIssueDate(),
+                domain.getScreenId(),
+                domain.getSid(),
+                domain.getScd(),
+                domain.getTaskIncre().stream().map(x -> {
+                    return SgwdtUrlTaskIncre.toEntity(x);
+                }).collect(Collectors.toList()));
+        if(AppContexts.user().contractCode() == null || AppContexts.user().contractCode().isEmpty()) {
+            entity.contractCd = domain.getContractCd(); // 未ログイン（パスワード忘れ等）から呼ばれた場合
+        }
+        return entity;
     }
 
 }
