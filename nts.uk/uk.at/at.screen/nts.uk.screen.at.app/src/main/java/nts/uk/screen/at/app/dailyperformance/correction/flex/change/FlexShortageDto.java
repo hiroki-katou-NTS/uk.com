@@ -73,8 +73,8 @@ public class FlexShortageDto {
 				}
 
 				if (errorFlex.annualHoliday != null) {
-					this.messageError.add(new MessageError(TextResource.localize("Msg_1292", redConditionMessage),"Msg_1292"));
 				}
+				this.messageError.add(new MessageError(TextResource.localize("Msg_1292", redConditionMessage),"Msg_1292"));
 			});
 			return this;
 		}
@@ -127,12 +127,6 @@ public class FlexShortageDto {
 	
 	public DateRange getRangeLock() {
 		return periodCheckLock == null ? null : new DateRange(periodCheckLock.start(), periodCheckLock.end());
-	}
-	@AllArgsConstructor
-	@Data
-	public class MessageError{
-		private String message;
-		private String messageId;
 	}
 }
 

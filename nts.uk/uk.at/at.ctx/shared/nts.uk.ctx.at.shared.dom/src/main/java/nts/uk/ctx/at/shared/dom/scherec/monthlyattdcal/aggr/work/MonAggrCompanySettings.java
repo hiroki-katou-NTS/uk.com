@@ -189,7 +189,7 @@ public class MonAggrCompanySettings {
 	private ConcurrentMap<String, GrantHdTblSet> grantHdTblSetMap;
 	/** 勤続年数テーブル */
 	@Getter
-	private ConcurrentMap<String, List<LengthServiceTbl>> lengthServiceTblListMap;
+	private ConcurrentMap<String, Optional<LengthServiceTbl>> lengthServiceTblListMap;
 	/** 積立年休設定 */
 	@Getter
 	private Optional<RetentionYearlySetting> retentionYearlySet;
@@ -763,9 +763,9 @@ public class MonAggrCompanySettings {
 		AnnualPaidLeaveSetting annualPaidLeaveSetting(String companyId);
 		
 		List<GrantHdTblSet> grantHdTblSets(String companyId);
-		
-		List<LengthServiceTbl> lengthServiceTbl(String companyId, String yearHolidayCode);
-		
+
+		Optional<LengthServiceTbl> lengthServiceTbl(String companyId, String yearHolidayCode);
+
 		Optional<RetentionYearlySetting> retentionYearlySetting(String companyId);
 		
 		List<EmptYearlyRetentionSetting> emptYearlyRetentionSet(String companyId);

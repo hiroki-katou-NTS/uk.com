@@ -36,4 +36,6 @@ public class DPCorrectionInitParam {
 	public Integer closureId;
 	
 	public List<String> formatCodes;
+	
+	public DPCorrectionStateParam dpStateParamSession;
 }

@@ -35,7 +35,10 @@ module nts.uk.at.view.kdp005.a {
 			NOTICE: 'at/record/stamp/notice/getStampInputSetting',
 			GET_LOCATION: 'at/record/stamp/employment_system/get_location_stamp_input',
 			SETTING_STAMP_COMMON: 'at/record/stamp/settings_stamp_common',
-			getContractCode: "at/record/stamp/finger/get-contractCode"
+			getContractCode: "at/record/stamp/finger/get-contractCode",
+            GET_WORKLOCATION:'at/record/kdp/common/get-work-location-regional-time',
+            GET_REGION_TIME:'at/record/kdp/common/get-work-place-regional-time',
+            GET_IP_URL:'at/record/stamp/finger/get-ip-address'
 		};
 
 		export class ScreenModel {
@@ -75,6 +78,7 @@ module nts.uk.at.view.kdp005.a {
 			supportUse: KnockoutObservable<boolean> = ko.observable(false);
 			pageComment: KnockoutObservable<string> = ko.observable('');
 			commentColor: KnockoutObservable<string> = ko.observable('');
+            workLocationInfo: KnockoutObservable<IWorkPlaceRegionalTimeDto> = ko.observable('');
 
 			totalOpenViewR: number = 0;
 			saveDefault: Boolean = false;
@@ -136,7 +140,7 @@ module nts.uk.at.view.kdp005.a {
 										contractCode: data.code,
 										contractPassword: ''
 									})
-									.done(() => self.startScreen().then(() => dfd.resolve()));
+										.done(() => self.startScreen().then(() => dfd.resolve()));
 								});
 						} else {
 							// Step3: テナント認証する
@@ -213,39 +217,43 @@ module nts.uk.at.view.kdp005.a {
 
 									} else {
 										self.btnChangeCompany(self.listCompany.length > 0);
-										characteristics.restore("loginKDP005").done(function (loginInfo: ILoginInfo) {
+										characteristics.restore("loginKDP005").done(function(loginInfo: ILoginInfo) {
 											if (loginInfo) {
-												self.loginInfo = loginInfo;
+                                                self.getWorkLocationInfo(loginInfo).done(() => {
+                                                    self.loginInfo = loginInfo;
+                                                    if (ko.unwrap(self.modeBasyo)) {
+                                                        self.loginInfo.selectedWP = self.workplace;
+                                                        nts.uk.characteristics.save(KDP005_SAVE_DATA, self.loginInfo);
+                                                    }
 
-												if (ko.unwrap(self.modeBasyo)) {
-													self.loginInfo.selectedWP = self.workplace;
-													nts.uk.characteristics.save(KDP005_SAVE_DATA, self.loginInfo);
-												}
-
-												if (__viewContext.user.companyId != loginInfo.companyId || __viewContext.user.employeeCode != loginInfo.employeeCode) {
-													self.login(self.loginInfo).done(() => {
-														self.reloadView()
-													}).fail(() => {
-														dfd.resolve();
-													});
-												} else {
-													self.login(self.loginInfo).done(() => {
-														$.when(self.doFirstLoad(), self.loadNotice(self.loginInfo)).done(() => {
-															dfd.resolve();
-														});
-													}).fail(() => {
-														dfd.resolve();
-													});
-												}
+                                                    if (__viewContext.user.companyId != loginInfo.companyId || __viewContext.user.employeeCode != loginInfo.employeeCode) {
+                                                        self.login(self.loginInfo).done(() => {
+                                                            self.reloadView()
+                                                        }).fail(() => {
+                                                            dfd.resolve();
+                                                        });
+                                                    } else {
+                                                        self.login(self.loginInfo).done(() => {
+                                                            $.when(self.doFirstLoad(), self.loadNotice(self.loginInfo)).done(() => {
+                                                                dfd.resolve();
+                                                            });
+                                                        }).fail(() => {
+                                                            dfd.resolve();
+                                                        });
+                                                    }
+                                                });
 											} else {
 												self.setLoginInfo().done((loginResult) => {
 													if (!loginResult) {
 														self.isUsed(false);
 														dfd.resolve();
 													} else {
-														$.when(self.doFirstLoad(), self.loadNotice(self.loginInfo)).done(() => {
-															dfd.resolve();
-														});
+                                                        self.getWorkLocationInfo(loginResult).done(() => {
+                                                            $.when(self.doFirstLoad(), self.loadNotice(self.loginInfo)).done(() => {
+                                                                dfd.resolve();
+                                                            });
+                                                        });
+														
 													}
 												});
 											}
@@ -360,12 +368,15 @@ module nts.uk.at.view.kdp005.a {
 											self.loginInfo.selectedWP = result;
 											self.saveSuccess = true;
 											characteristics.save("loginKDP005", self.loginInfo).done(() => {
-												if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
-													self.reloadView()
-													dfd.resolve();
-												} else {
-													dfd.resolve(self.loginInfo);
-												}
+                                                self.getWorkLocationInfo(self.loginInfo).done(() => {
+                                                    if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
+                                                        self.reloadView();
+                                                        dfd.resolve();
+                                                    } else {
+                                                        dfd.resolve(self.loginInfo);
+                                                    }
+                                                });
+
 											});
 										}
 									});
@@ -384,13 +395,55 @@ module nts.uk.at.view.kdp005.a {
 				});
 				return dfd.promise();
 			}
+        
+            public getWorkLocationInfo(loginInfo) : JQueryPromise<any> {
+                let dfd = $.Deferred<any>();
+                let self = this;
+                const vm = new ko.ViewModel();
+                vm.$window.storage("contractInfo").then(info => {
+                    vm.$ajax(API.GET_IP_URL, { contractCode: info.contractCode }) .done((response) => {
+                        let getWkLocParam = { contractCode: info.contractCode, workLocationCode: self.worklocationCode, ipv4Address: response.ipaddress };
+
+                        vm.$ajax(API.GET_WORKLOCATION, getWkLocParam).done((workLoc: IWorkPlaceRegionalTimeDto) => {
+
+                            let {regional, workLocationCD, workLocationName, workPlaceId } = workLoc;
+
+                            if (workLoc && workLocationCD != null && workLocationName != null) {
+								self.worklocationCode = workLoc.workLocationCD;
+
+                                self.workLocationInfo(workLoc);
+                                vm.$window.storage("workLocationInfo", workLoc);
+
+                                dfd.resolve();
+
+                            } else {
+
+                                let workregionParam = { contractCode: info.contractCode, cid: loginInfo.companyId, sid: null, workPlaceId: loginInfo.selectedWP[0] };
+
+                                vm.$ajax(API.GET_REGION_TIME, workregionParam).done((workLoc: IWorkPlaceRegionalTimeDto) => {
+
+									if (workLoc.workLocationCD != null) {
+										self.worklocationCode = workLoc.workLocationCD;
+									}
+
+                                    self.workLocationInfo(workLoc);
+                                    vm.$window.storage("workLocationInfo", workLoc);
+
+                                    dfd.resolve();
+                                });
+                            }
+                        });
+                    });
+                });
+                return dfd.promise();
+            }
 
 
 
 			public openDialogF(param): JQueryPromise<any> {
 				let vm = new ko.ViewModel();
 				let dfd = $.Deferred<any>();
-				vm.$window.modal('at', '/view/kdp/003/f/index.xhtml', param).then(function (loginResult): any {
+                vm.$window.modal('at', DIALOG.F, param).then(function(loginResult): any {
 					if (loginResult && loginResult.em) {
 						dfd.resolve(loginResult);
 					} else {
@@ -446,22 +499,50 @@ module nts.uk.at.view.kdp005.a {
 				const vm = this;
 				const mVm = new ko.ViewModel();
 				vm.getWorkPlacesInfo();
-				let stampTime = moment(mVm.$date.now()).format("HH:mm");
-				let stampDateTime = moment(mVm.$date.now()).format();
 
-				modal('/view/kdp/005/h/index.xhtml').onClosed(function (): any {
-					let ICCard = getShared('ICCard');
-					if (ICCard && ICCard != '') {
-						block.grayout();
-						vm.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
-							vm.registerData(btn, layout, ICCard, employeeId, stampTime, stampDateTime);
-						}).fail(() => {
-							vm.openIDialog();
-						}).always(() => {
-							block.clear();
-						});
-					}
-				});
+                    mVm.$window.storage("workLocationInfo").then((workLocInfo) => {
+                        let stampTime = moment(mVm.$date.now()).add(workLocInfo.regional, 'minutes').format("HH:mm");
+                        let stampDateTime = moment(mVm.$date.now()).add(workLocInfo.regional, 'minutes').format();
+						
+						// ※ICカードチェック
+						const authcMethod = ko.unwrap(vm.fingerStampSetting).stampSetting.authcMethod;
+						
+						// QRコード　の場合
+						if (authcMethod == 1) {
+							modal('at', '/view/kdp/005/h2/index.xhtml').onClosed(function(): any {
+								let ICCard = getShared('ICCardFromQRCode');
+								if (ICCard && ICCard != '') {
+									block.grayout();
+									vm.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
+										vm.registerData(btn, layout, ICCard, employeeId, stampTime, stampDateTime);
+									}).fail(() => {
+										vm.openIDialog();
+									}).always(() => {
+										block.clear();
+									});
+								}
+							});
+						}
+
+						// ICカード　の場合
+						if (authcMethod == 0) {
+							modal('/view/kdp/005/h/index.xhtml').onClosed(function(): any {
+								let ICCard = getShared('ICCard');
+								if (ICCard && ICCard != '') {
+									block.grayout();
+									vm.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
+										vm.registerData(btn, layout, ICCard, employeeId, stampTime, stampDateTime);
+									}).fail(() => {
+										vm.openIDialog();
+									}).always(() => {
+										block.clear();
+									});
+								}
+							});
+						}
+                        
+                    });
+                
 			}
 
 			public openIDialog() {
@@ -504,19 +585,45 @@ module nts.uk.at.view.kdp005.a {
 
 			checkHis(self: ScreenModel) {
 				let vm = new ko.ViewModel();
-				modal('/view/kdp/005/h/index.xhtml').onClosed(function (): any {
+				
+				// ※ICカードチェック
+				const authcMethod = ko.unwrap(self.fingerStampSetting).stampSetting.authcMethod;
+
+				// QRコード　の場合
+				if (authcMethod == 1) {
+					modal('at', '/view/kdp/005/h2/index.xhtml').onClosed(function(): any {
+						let ICCard = getShared('ICCardFromQRCode');
+						if (ICCard && ICCard != '') {
+							block.grayout();
+							self.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
+								vm.$window.modal('at', '/view/kdp/003/s/index.xhtml', { employeeId: employeeId });
+							}).fail(() => {
+								self.openIDialog();
+							}).always(() => {
+								block.clear();
+							});
+						}
+					});
+				}
+					
+				// ICカード　の場合
+				if (authcMethod == 0) {
+					modal('/view/kdp/005/h/index.xhtml').onClosed(function(): any {
 					let ICCard = getShared('ICCard');
 					if (ICCard && ICCard != '') {
 						block.grayout();
-						self.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
-							vm.$window.modal('at', '/view/kdp/003/s/index.xhtml', { employeeId: employeeId });
-						}).fail(() => {
+                        self.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
+                            vm.$window.storage("workLocationInfo").then((workLocInfo) => {
+                                vm.$window.modal('at', '/view/kdp/003/s/index.xhtml', { employeeId: employeeId, regionalTime: workLocInfo.regional });
+                            });
+                        }).fail(() => {
 							self.openIDialog();
 						}).always(() => {
 							block.clear();
 						});
 					}
-				});
+					});
+				}
 			}
 
 			settingUser(self: ScreenModel) {
@@ -535,7 +642,10 @@ module nts.uk.at.view.kdp005.a {
 											self.loginInfo = loginResult.em;
 											self.loginInfo.selectedWP = result;
 											characteristics.save("loginKDP005", self.loginInfo).done(() => {
-												self.reloadView()
+                                                self.getWorkLocationInfo(self.loginInfo).done(() => {
+                                                    self.reloadView();
+                                                });
+												
 											});
 										} else {
 											self.reloadView()
@@ -812,14 +922,20 @@ module nts.uk.at.view.kdp005.a {
 				setShared("infoEmpToScreenB", {
 					employeeId: employeeIdRegister,
 					mode: Mode.Personal,
-					workPlaceId: self.workPlaceId
+					workPlaceId: self.workPlaceId,
+                    regionalTime: _.get(self.workLocationInfo(),'regional')
 				});
+            
 				setShared("screenB", {
 					screen: "KDP005"
 				});
-				vm.$window.modal('/view/kdp/002/b/index.xhtml', { stampTime: stampTime }).then(() => {
-					self.openKDP002T(button, layout);
-				});
+            
+                vm.$window.storage("workLocationInfo").then((workLocInfo) => {
+                    vm.$window.modal('/view/kdp/002/b/index.xhtml', { stampTime: stampTime, regionalTime: workLocInfo.regional }).then(() => {
+                        self.openKDP002T(button, layout);
+                    });
+                });
+				
 			}
 
 			public openScreenC(button, layout, employeeIdRegister) {
@@ -829,12 +945,13 @@ module nts.uk.at.view.kdp005.a {
 				setShared("infoEmpToScreenC", {
 					employeeId: employeeIdRegister,
 					mode: Mode.Personal,
-					workPlaceId: self.workPlaceId
+					workPlaceId: self.workPlaceId,
+                    regionalTime: _.get(self.workLocationInfo(),'regional')
 				});
 				setShared("screenC", {
 					screen: "KDP005"
 				});
-				modal('/view/kdp/002/c/index.xhtml', { screen: "KDP005" }).onClosed(function (): any {
+				modal('/view/kdp/002/c/index.xhtml', { screen: "KDP005" }).onClosed(function(): any {
 					self.openKDP002T(button, layout);
 				});
 			}
@@ -847,7 +964,7 @@ module nts.uk.at.view.kdp005.a {
 				service.getError(data).done((res) => {
 					if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
 						setShared('KDP010_2T', res, true);
-						modal('/view/kdp/002/t/index.xhtml').onClosed(function (): any {
+						modal('/view/kdp/002/t/index.xhtml').onClosed(function(): any {
 							let returnData = getShared('KDP010_T');
 							if (!returnData.isClose && returnData.errorDate) {
 								let transfer = returnData.btn.transfer;
@@ -861,8 +978,11 @@ module nts.uk.at.view.kdp005.a {
 			shoNoti() {
 				const self = this;
 				let vm = new ko.ViewModel();
-				const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP005' };
-				vm.$window.modal(DIALOG.R, param);
+				vm.$window.storage("workLocationInfo").then((workLocInfo) => {
+					const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP005', regionalTime: workLocInfo.regional };
+
+					vm.$window.modal(DIALOG.R, param);
+				});
 			}
 
 			settingNoti() {
@@ -876,102 +996,111 @@ module nts.uk.at.view.kdp005.a {
 							vm.$window.modal('at', DIALOG.F, { mode, companyId })
 								.then((output: string) => {
 									if (output === 'loginSuccess') {
-										vm.$window.modal('at', DIALOG.P)
-											.then(() => {
-												// self.loadNotice(self.loginInfo);
-												self.reloadView()
-											})
+                                        
+                                        vm.$window.storage("workLocationInfo").then((workLocInfo) => {
+                                            vm.$window.modal('at', DIALOG.P, { regionalTime: workLocInfo.regional })
+                                                .then(() => {
+                                                    // self.loadNotice(self.loginInfo);
+                                                    self.reloadView()
+                                                })
+                                        });
+										
 									}
 								});
 						}
 					});
 			}
 
-			loadNotice(loginInfo?: any): JQueryPromise<any> {
-				let vm = new ko.ViewModel();
-				const self = this;
-				let dfd = $.Deferred<any>();
-				let startDate = vm.$date.now();
-				// startDate.setDate(startDate.getDate() - 3);
-				var wkpIds: string[];
+            loadNotice(loginInfo ?: any): JQueryPromise < any > {
+                let vm = new ko.ViewModel();
+                const self = this;
+                let dfd = $.Deferred<any>();
+                vm.$window.storage("workLocationInfo").then((workLocInfo) => {
 
-				if (loginInfo) {
-					wkpIds = loginInfo.selectedWP;
-				} else {
-					vm.$window
-						.storage('loginKDP005')
-						.then((data: any) => {
-							if (data.selectedWP.length > 0) {
-								wkpIds = data.selectedWP;
-							}
-						})
-						.then(() => {
-							if (wkpIds && wkpIds.length > 0) {
-								const param = {
-									periodDto: {
-										startDate: startDate,
-										endDate: vm.$date.now()
-									},
-									wkpIds: wkpIds
-								}
+                    vm.$ajax("at", "server/time/now").done((time: any) => {
+                        let diff = moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment());
+                        let startDate = moment().add(diff, 'ms').add(ko.unwrap(workLocInfo.regional), 'm').toDate();
+                        // startDate.setDate(startDate.getDate() - 3);
+                        var wkpIds: string[];
+                        if (loginInfo) {
+                            wkpIds = loginInfo.selectedWP;
+                        } else {
+                            vm.$window
+                                .storage('loginKDP005')
+                                .then((data: any) => {
+                                    if (data.selectedWP.length > 0) {
+                                        wkpIds = data.selectedWP;
+                                    }
+                                })
+                                .then(() => {
+                                    if (wkpIds && wkpIds.length > 0) {
+                                        const param = {
+                                            periodDto: {
+                                                startDate: startDate,
+                                                endDate: startDate
+                                            },
+                                            wkpIds: wkpIds
+                                        }
+                                        vm.$ajax(API.NOTICE, param)
+                                            .done((data: IMessage) => {
+                                                self.messageNoti(data);
 
-								vm.$ajax(API.NOTICE, param)
-									.done((data: IMessage) => {
-										self.messageNoti(data);
+                                                if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
+                                                    if (self.totalOpenViewR === 0) {
 
-										if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
-											if (self.totalOpenViewR === 0) {
+                                                        setTimeout(() => {
+                                                            self.totalOpenViewR++;
+															vm.$window.storage("workLocationInfo").then((workLocInfo) => {
+																const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP005', regionalTime: workLocInfo.regional };
+											
+																vm.$window.modal(DIALOG.R, param);
+															});
+                                                        }, 1000);
+                                                    }
+                                                }
+                                            });
+                                    }
+                                });
+                        }
+                        if (wkpIds && wkpIds.length > 0) {
+                            const param = {
+                                periodDto: {
+                                    startDate: startDate,
+                                    endDate: startDate
+                                },
+                                wkpIds: loginInfo.selectedWP
+                            }
 
-												setTimeout(() => {
-													self.totalOpenViewR++;
-													const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP004' };
+                            vm.$blockui('invisible')
+                                .then(() => {
+                                    vm.$ajax(API.NOTICE, param)
+                                        .done((data: IMessage) => {
+                                            self.messageNoti(data);
 
-													vm.$window.modal(DIALOG.R, param);
-												}, 1000);
-											}
-										}
-									});
-							}
-						});
-				}
+                                            if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
+                                                if (self.totalOpenViewR === 0) {
 
-
-
-				if (wkpIds && wkpIds.length > 0) {
-					const param = {
-						periodDto: {
-							startDate: startDate,
-							endDate: vm.$date.now()
-						},
-						wkpIds: loginInfo.selectedWP
-					}
-
-					vm.$blockui('invisible')
-						.then(() => {
-							vm.$ajax(API.NOTICE, param)
-								.done((data: IMessage) => {
-									self.messageNoti(data);
-
-									if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
-										if (self.totalOpenViewR === 0) {
-
-											setTimeout(() => {
-												self.totalOpenViewR++;
-												const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP004' };
-
-												vm.$window.modal(DIALOG.R, param);
-											}, 1000);
-										}
-									}
-								});
-						})
-						.always(() => {
-							dfd.resolve();
-							vm.$blockui('clear');
-						});
-				}
-				return dfd.promise();
-			}
+                                                    setTimeout(() => {
+                                                        self.totalOpenViewR++;
+														vm.$window.storage("workLocationInfo").then((workLocInfo) => {
+															const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP005', regionalTime: workLocInfo.regional };
+										
+															vm.$window.modal(DIALOG.R, param);
+														});
+                                                    }, 1000);
+                                                }
+                                            }
+                                        });
+                                })
+                                .always(() => {
+                                    dfd.resolve();
+                                    vm.$blockui('clear');
+                                });
+                        }
+                    });
+                });  
+                return dfd.promise();
+            }
 
 			getWorkPlacesInfo() {
 				let vm = new ko.ViewModel();
@@ -988,7 +1117,7 @@ module nts.uk.at.view.kdp005.a {
 			basyo(): JQueryPromise<any> {
 				let dfd = $.Deferred<any>();
 
-				$.urlParam = function (name) {
+				$.urlParam = function(name) {
 					var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
 					if (results == null) {
 						return null;
@@ -1004,41 +1133,57 @@ module nts.uk.at.view.kdp005.a {
 
 				// URLOption basyoが存在している場合
 				if (locationCd) {
+                    vm.$window.storage("contractInfo")
+                        .then((info: any) => {
+                            if (info) {
+                                vm.$ajax(API.GET_IP_URL, { contractCode: info.contractCode }).done((response) => {
+                                    let getWkLocParam = { contractCode: info.contractCode, workLocationCode: locationCd, ipv4Address: response.ipaddress };
 
-					vm.$window.storage("contractInfo")
-						.then((data: any) => {
-							if (data) {
-								const param = {
-									contractCode: data.contractCode,
-									workLocationCode: locationCd
-								}
-								vm.$ajax(API.GET_LOCATION, param)
-									.done((data: IBasyo) => {
-										if (data) {
-											if (data.workLocationName != null || data.workpalceId != null) {
-												self.worklocationCode = locationCd;
-												dfd.resolve();
-											}
+                                    vm.$ajax(API.GET_WORKLOCATION, getWkLocParam).done((workLoc: IWorkPlaceRegionalTimeDto) => {
 
-											if (data.workpalceId) {
-												if (data.workpalceId.length > 0) {
-													self.modeBasyo(true);
-													self.workplace = data.workpalceId;
+                                        let {regional, workLocationCD, workLocationName, workPlaceId } = workLoc;
+
+                                        if (workLoc && workLocationCD != null && workLocationName != null) {
+
+                                            self.worklocationCode = workLoc.workLocationCD;
+                                            
+                                            
+                                            if (workPlaceId) {
+                                                self.workplace = [workPlaceId];
+												self.modeBasyo(true);
+                                                dfd.resolve();
+                                            } else {
+                                                characteristics.restore("loginKDP005").done(function(loginInfo: ILoginInfo) {
+
+													if(!loginInfo){
+														dfd.resolve();
+													}else{
+														
+                                                    if (!_.get(loginInfo, 'selectedWP')) {
+                                                        self.openDialogK().done((result) => {
+                                                            self.workplace = result;
+															self.modeBasyo(true);
+                                                            dfd.resolve();
+                                                        });
+                                                    } else {
+                                                        self.workplace = loginInfo.selectedWP;
+														self.modeBasyo(true);
+                                                        dfd.resolve();
+                                                    }
 												}
+                                                });
+                                            }
+                                        } else {
 
-												if (data.workpalceId.length == 0) {
-													self.modeBasyo(false);
-												}
-												dfd.resolve();
-											}
-										} else {
-											dfd.resolve();
-										}
-									});
-							} else {
-								dfd.resolve();
-							}
-						});
+                                            self.modeBasyo(false);
+                                            dfd.resolve();
+                                        }
+                                    });
+                                });
+                            } else {
+                                dfd.resolve();
+                            }
+                        });
 				} else {
 					dfd.resolve();
 				}

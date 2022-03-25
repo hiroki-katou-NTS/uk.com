@@ -29,6 +29,8 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
+import nts.uk.ctx.bs.employee.dom.setting.code.EmployeeCESetting;
+import nts.uk.ctx.bs.employee.dom.setting.code.IEmployeeCESettingRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfiguration;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfigurationRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
@@ -157,6 +159,8 @@ public class ExternalImportPrepareRequire {
 	@Inject
 	private StampDakokuRepository stampDakokuRepo;
 
+	@Inject
+	private IEmployeeCESettingRepository iEmployeeCESettingRepo;
 
 
 	public class RequireImpl implements Require {
@@ -173,6 +177,8 @@ public class ExternalImportPrepareRequire {
 		
 		private final MapCache<ExternalImportCode, ExternalImportSetting> cacheImportSetting;
 
+		private final MapCache<String, EmployeeCESetting> cacheEmployeeCESetting;
+		
 		public RequireImpl(String companyId) {
 			this.contractCode = CompanyId.getContractCodeOf(companyId);
 			this.companyId = companyId;
@@ -188,9 +194,11 @@ public class ExternalImportPrepareRequire {
 			this.cacheImportingUserCondition = MapCache.incremental(key -> {
 				return importingUserConditionRepo.get(companyId, key.getLeft(), key.getRight());
 			});
-			
 			this.cacheImportSetting = MapCache.incremental(key -> {
-				return settingRepo.get(null, companyId, key);
+				return settingRepo.get(companyId, key);
+			});
+			this.cacheEmployeeCESetting = MapCache.incremental(key->{
+				return iEmployeeCESettingRepo.getByComId(companyId);
 			});
 		}
 
@@ -231,6 +239,11 @@ public class ExternalImportPrepareRequire {
 		@Override
 		public Optional<ReviseItem> getReviseItem(ExternalImportCode importCode, ImportingDomainId domainId, int importItemNumber) {
 			return cacheReviseItem.get(Triple.of(importCode, domainId, importItemNumber));
+		}
+		
+		@Override
+		public Optional<EmployeeCESetting> getEmployeeCESetting(String companyId) {
+			return cacheEmployeeCESetting.get(companyId);
 		}
 
 		@Override

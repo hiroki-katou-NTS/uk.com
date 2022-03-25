@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 import java.time.format.DateTimeParseException;
 
 import nts.arc.i18n.I18NText;
-import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.gul.util.Either;
+import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.date.ExternalImportDateFormat;
 
 /**
  * 
@@ -71,7 +71,7 @@ public enum ItemType {
 					.mapLeft(ex -> new ErrorMessage("数値ではありません。"));
 		case DATE:
 			if (StringUtil.isNullOrEmpty(value, false)) return Either.right(null);
-			return Either.tryCatch(() -> GeneralDate.fromString(value, "yyyy/MM/dd"), DateTimeParseException.class)
+			return Either.tryCatch(() -> ExternalImportDateFormat.YYYY_MM_DD.fromString(value), DateTimeParseException.class)
 					.mapLeft(ex -> new ErrorMessage("日付データはYYYY/MM/DDの形式にしてください。"));
 		case STRING:
 			return Either.right(value);

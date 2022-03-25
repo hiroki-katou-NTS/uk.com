@@ -37,12 +37,12 @@ public class BentoMenuExport {
 	private String unit;
 	
 	/**
-	 * 締め時刻1で予約可能
+	 * 受付時間帯NO
 	 */
-	private boolean reservationTime1Atr;
+	private int receptionTimezoneNo;
 	
 	/**
-	 * 締め時刻2で予約可能
+	 * 勤務場所コード
 	 */
-	private boolean reservationTime2Atr;
+	private String workLocationCode;
 }

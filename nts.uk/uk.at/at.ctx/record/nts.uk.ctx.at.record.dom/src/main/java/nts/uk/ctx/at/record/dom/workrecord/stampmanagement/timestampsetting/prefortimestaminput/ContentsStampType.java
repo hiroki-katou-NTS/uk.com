@@ -55,19 +55,19 @@ public enum ContentsStampType {
 	END_SUPPORT(15, TextResource.localize("KDP010_264"), "Enum_ContentsStampType_END_SUPPORT"),
 	
 	/** 出勤＋応援 */
-	WORK_SUPPORT(16, TextResource.localize("KDP010_265"), "Enum_ContentsStampType_WORK_SUPPORT"),
+	//WORK_SUPPORT(16, TextResource.localize("KDP010_265"), "Enum_ContentsStampType_WORK_SUPPORT"),
 
 	/** 応援開始＋早出 */
-	START_SUPPORT_EARLY_APPEARANCE(17, TextResource.localize("KDP010_266"), "Enum_ContentsStampType_START_SUPPORT_EARLY_APPEARANCE"),
+	START_SUPPORT_EARLY_APPEARANCE(16, TextResource.localize("KDP010_266"), "Enum_ContentsStampType_START_SUPPORT_EARLY_APPEARANCE"),
 	
 	/** 応援開始＋休出 */
-	START_SUPPORT_BREAK(18, TextResource.localize("KDP010_267"), "Enum_ContentsStampType_START_SUPPORT_BREAK"),
+	START_SUPPORT_BREAK(17, TextResource.localize("KDP010_267"), "Enum_ContentsStampType_START_SUPPORT_BREAK");
 	
 	/** 予約 */
-	RESERVATION(19, TextResource.localize("KDP010_268"), "Enum_ContentsStampType_RESERVATION"),
+	//RESERVATION(19, TextResource.localize("KDP010_268"), "Enum_ContentsStampType_RESERVATION"),
 	
 	/** 予約取消  */
-	CANCEL_RESERVATION(20, TextResource.localize("KDP010_269"), "Enum_ContentsStampType_CANCEL_RESERVATION");
+	//CANCEL_RESERVATION(20, TextResource.localize("KDP010_269"), "Enum_ContentsStampType_CANCEL_RESERVATION");
 	
 	/** The value. */
 	public int value;

@@ -48,7 +48,7 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerf
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetPeriodFromPreviousToNextGrantDate;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireServiceImpl;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
@@ -500,7 +500,7 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 	@Inject
 	private BentoReservationRepository bentoReservationRepo;
 	@Inject
-	private BentoMenuRepository bentoMenuRepo;
+	private BentoMenuHistRepository bentoMenuRepo;
 	@Inject
 	private WeekRuleManagementRepo weekRuleManagementRepo;
 	@Inject
@@ -754,7 +754,7 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 				WkpRegulaMonthActCalSetRepo wkpRegulaMonthActCalSetRepo, MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo,
 				VerticalTotalMethodOfMonthlyRepository verticalTotalMethodOfMonthlyRepo,
 				StampCardRepository stampCardRepo, BentoReservationRepository bentoReservationRepo,
-				BentoMenuRepository bentoMenuRepo, IntegrationOfDailyGetter integrationOfDailyGetter,
+				BentoMenuHistRepository bentoMenuRepo, IntegrationOfDailyGetter integrationOfDailyGetter,
 				WeekRuleManagementRepo weekRuleManagementRepo,
 				SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter, GetProcessingDate getProcessingDate,
 				ElapseYearRepository elapseYearRepo, SyCompanyRecordAdapter syCompanyRecordAdapter,

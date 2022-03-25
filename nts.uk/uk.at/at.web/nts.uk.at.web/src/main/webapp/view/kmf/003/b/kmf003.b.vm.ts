@@ -302,7 +302,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                                 limitedHalfHdCnt: res[i].limitDayYear,
                                 grantReferenceDate: res[i].standGrantDay,
                                 grantSimultaneity: res[i].allowStatus,
-                                grantDate: res[i].grantDate
+                                grantDate: _.isEmpty(res[i].grantDate)?'次回が優先です':res[i].grantDate
                             };
                             
                             results.push(new Item(item));

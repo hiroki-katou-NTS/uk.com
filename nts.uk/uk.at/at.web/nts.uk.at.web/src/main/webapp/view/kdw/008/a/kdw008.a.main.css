@@ -56,6 +56,9 @@
 #swap-list2_container, #swap-list_container {
 	display: inline-block;;
 }
+#swap-list4_container, #swap-list_container {
+	display: inline-block;;
+}
 
 #swap-list2 .ui-icon-triangle-1-e {
 	margin-top: 1px;
@@ -68,9 +71,13 @@
 #swap-list3 .ui-icon-triangle-1-e {
 	margin-top: 1px;
 }
+#swap-list4 .ui-icon-triangle-1-e {
+	margin-top: 1px;
+}
 
 #swap-list-grid2_horizontalScrollContainer, #swap-list-grid1_horizontalScrollContainer,
 #swap-list2-grid2_horizontalScrollContainer, #swap-list2-grid1_horizontalScrollContainer,
+#swap-list4-grid2_horizontalScrollContainer, #swap-list4-grid1_horizontalScrollContainer,
 #swap-list3-grid2_horizontalScrollContainer, #swap-list3-grid1_horizontalScrollContainer {
 	height: 0px !important;
 	overflow: hidden !important;
@@ -97,6 +104,9 @@ html {
 #swap-list2-search-area {
 	margin-bottom: 0px;
 }
+#swap-list4-search-area {
+	margin-bottom: 0px;
+}
 .nts-searchbbox-wrapper {
 	margin-bottom: 0px;
 }
@@ -112,12 +122,14 @@ html {
 
 .ntsSwapSearchLeft #swap-list2-search-area-input,
 .ntsSwapSearchLeft #swap-list-search-area-input,
+.ntsSwapSearchLeft #swap-list4-search-area-input,
 .ntsSwapSearchLeft #swap-list3-search-area-input {
 	width: 171px !important;
 }
 
 .ntsSwapSearchRight #swap-list2-search-area-input,
 .ntsSwapSearchRight #swap-list-search-area-input,
+.ntsSwapSearchRight #swap-list4-search-area-input,
 .ntsSwapSearchRight #swap-list3-search-area-input {
 	width: 210px !important;
 }
@@ -130,10 +142,10 @@ html {
 	padding: 0 10px; 
 }
 
-#swap-list-gridArea1, #swap-list2-gridArea1, #swap-list3-gridArea1 {
+#swap-list-gridArea1, #swap-list2-gridArea1, #swap-list3-gridArea1,#swap-list4-gridArea1 {
   width: 320px !important;
 }
 
-#swap-list-gridArea2, #swap-list2-gridArea2, #swap-list3-gridArea2 {
+#swap-list-gridArea2, #swap-list2-gridArea2, #swap-list3-gridArea2,#swap-list4-gridArea2 {
 	width: 320px !important;
 }

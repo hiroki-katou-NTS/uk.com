@@ -1,6 +1,10 @@
 package nts.uk.file.at.app.export.bento;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
@@ -21,12 +25,14 @@ import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoAmountTotal;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoDetailsAmountTotal;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.query.pub.employee.EmployeeInformationExport;
 import nts.uk.query.pub.employee.EmployeeInformationPub;
 import nts.uk.query.pub.employee.EmployeeInformationQueryDto;
@@ -50,7 +56,7 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 	private BentoReservationRepository bentoReservationRepository;
 
 	@Inject
-	private BentoMenuRepository bentoMenuRepository;
+	private BentoMenuHistRepository bentoMenuRepository;
 
 	@Inject
 	private RegulationInfoEmployeeAdapter regulationInfoEmployeeAdapter;
@@ -60,6 +66,9 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 
 	@Inject
 	private StampCardRepository stampCardRepository;
+	
+	@Inject
+	private WorkplacePub workplacePub;
 
 	@Override
 	protected void handle(ExportServiceContext<ReservationMonthQuery> context) {
@@ -76,11 +85,21 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 
 	}
 
-	private ReservationMonthDataSource createReservationMonthLedger(List<String> empLst, DatePeriod period, boolean ordered, String title) {
+	public ReservationMonthDataSource createReservationMonthLedger(List<String> empLst, DatePeriod period, boolean ordered, String title) {
 		String companyID = AppContexts.user().companyId();
 
 		List<StampCard> stampCardLst = stampCardRepository.getLstStampCardByLstSidAndContractCd(empLst, AppContexts.user().contractCode());
-
+		// 2.1 対象社員リストを調整
+		List<String> stampCardEmpLst = stampCardLst.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
+		
+		// 2.2取得したList＜弁当メニュー履歴＞.Size＞1
+		List<BentoMenuHistory> bentoMenuHistoryLst = bentoMenuRepository.findByCompanyPeriod(companyID, period);
+		if(bentoMenuHistoryLst.size() > 1) {
+			List<DatePeriod> periodLst = bentoMenuHistoryLst.stream().map(x -> x.getHistoryItem().span()).sorted(Comparator.comparing(DatePeriod::start)).collect(Collectors.toList());
+			String param = periodLst.stream().map(x -> x.start().toString() + "～" + x.end().toString()).collect(Collectors.joining("\n"));
+			throw new BusinessException("Msg_3307", param);
+		}
+		
 		// get*(対象社員リスト,期間,注文済み)
 		List<BentoReservation> bentoReservationLst = bentoReservationRepository.findByOrderedPeriodEmpLst(
 				stampCardLst.stream().map(x -> new ReservationRegisterInfo(x.getStampNumber().v())).collect(Collectors.toList()),
@@ -92,14 +111,14 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 		}
 
 		// get(年月日)
-		BentoMenu bentoMenu = bentoMenuRepository.getBentoMenu(companyID, period.end());
+		BentoMenuHistory bentoMenu = bentoMenuRepository.getBentoMenu(companyID, period.end());
 
 		/*
 		// 社員を並べ替える
 		List<String> sortEmpLst = regulationInfoEmployeeAdapter.sortEmployee(companyID, empLst, 2, null, 1,
 				GeneralDateTime.fromString(period.end().toString("yyyy/MM/dd") + " 00:00", "yyyy/MM/dd HH:mm"));
 		*/
-		List<String> sortEmpLst = empLst;
+		List<String> sortEmpLst = stampCardEmpLst;
 		// <<Public>> 社員の情報を取得する
 		List<EmployeeInformationExport> empInfoLst = employeeInformationPub.find(
 				EmployeeInformationQueryDto
@@ -118,30 +137,35 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 		CompanyInfor companyInfo = company.getCurrentCompany().orElseGet(() -> {
 			throw new RuntimeException("System Error: Company Info");
 		});
+		
+		// 7.職場情報を取得
+		List<SWkpHistExport> sWkpHistExportLst = empInfoLst.stream().map(x -> workplacePub.findBySid(x.getEmployeeId(), GeneralDate.today()).get()).collect(Collectors.toList());
 
-		return createDataSource(period, bentoReservationLst, bentoMenu, empInfoLst, companyInfo, stampCardLst, title);
+		return createDataSource(period, bentoReservationLst, bentoMenu, empInfoLst, companyInfo, stampCardLst, title, sWkpHistExportLst);
 	}
 
-	private ReservationMonthDataSource createDataSource(DatePeriod period, List<BentoReservation> bentoReservationLst, BentoMenu bentoMenu,
-			List<EmployeeInformationExport> empInfoLst, CompanyInfor companyInfo, List<StampCard> stampCardLst, String title) {
+	private ReservationMonthDataSource createDataSource(DatePeriod period, List<BentoReservation> bentoReservationLst, BentoMenuHistory bentoMenu,
+			List<EmployeeInformationExport> empInfoLst, CompanyInfor companyInfo, List<StampCard> stampCardLst, String title, List<SWkpHistExport> sWkpHistExportLst) {
 		ReservationMonthDataSource dataSource = new ReservationMonthDataSource();
 		dataSource.setCompanyName(companyInfo.getCompanyName());
 		dataSource.setTitle(title);
 		dataSource.setPeriod(period);
 		Map<WorkplaceExport, List<EmployeeInformationExport>> wkpMap = empInfoLst.stream().collect(Collectors.groupingBy(EmployeeInformationExport::getWorkplace));
 		List<ReservationWkpLedger> reservationWkpLedgerLst = wkpMap.entrySet().stream()
-				.map(x -> createReservationWkpLedger(x, bentoReservationLst, bentoMenu, stampCardLst))
+				.map(x -> createReservationWkpLedger(x, bentoReservationLst, bentoMenu, stampCardLst, sWkpHistExportLst))
 				.filter(x -> !CollectionUtil.isEmpty(x.getEmpLedgerLst()))
 				.collect(Collectors.toList());
+		reservationWkpLedgerLst.sort(Comparator.comparing(ReservationWkpLedger::getHierarchyCode));
 		dataSource.setWkpLedgerLst(reservationWkpLedgerLst);
 		return dataSource;
 	}
 
 	private ReservationWkpLedger createReservationWkpLedger(Entry<WorkplaceExport, List<EmployeeInformationExport>> wkpEntry,
-			List<BentoReservation> bentoReservationLst, BentoMenu bentoMenu, List<StampCard> stampCardLst) {
+			List<BentoReservation> bentoReservationLst, BentoMenuHistory bentoMenu, List<StampCard> stampCardLst, List<SWkpHistExport> sWkpHistExportLst) {
 		ReservationWkpLedger wkpLedger = new ReservationWkpLedger();
 		wkpLedger.setWkpCD(wkpEntry.getKey().getWorkplaceCode());
 		wkpLedger.setWkpName(wkpEntry.getKey().getWorkplaceName());
+		wkpLedger.setHierarchyCode(sWkpHistExportLst.stream().filter(x -> x.getWorkplaceId().equals(wkpEntry.getKey().getWorkplaceId())).findAny().get().getHierarchyCode());
 		Map<String, List<EmployeeInformationExport>> empMap = wkpEntry.getValue().stream().collect(Collectors.groupingBy(EmployeeInformationExport::getEmployeeId));
 		List<ReservationEmpLedger> reservationEmpLedgerLst = empMap.entrySet().stream()
 				.map(x -> createReservationEmpLedger(
@@ -151,12 +175,13 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 						stampCardLst.stream().filter(y -> y.getEmployeeId().equals(x.getKey())).findAny().get().getStampNumber().toString()))
 				.filter(x -> !CollectionUtil.isEmpty(x.getBentoLedgerLst()))
 				.collect(Collectors.toList());
+		reservationEmpLedgerLst.sort(Comparator.comparing(ReservationEmpLedger::getEmpCD));
 		wkpLedger.setEmpLedgerLst(reservationEmpLedgerLst);
 		return wkpLedger;
 	}
 
 	private ReservationEmpLedger createReservationEmpLedger(Entry<String, List<EmployeeInformationExport>> empEntry,
-			List<BentoReservation> bentoReservationLst, BentoMenu bentoMenu, String cardNo) {
+			List<BentoReservation> bentoReservationLst, BentoMenuHistory bentoMenu, String cardNo) {
 		ReservationEmpLedger empLedger = new ReservationEmpLedger();
 		empLedger.setEmpID(empEntry.getKey());
 		empLedger.setEmpCD(empEntry.getValue().get(0).getEmployeeCode());

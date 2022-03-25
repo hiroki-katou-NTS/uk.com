@@ -2,7 +2,7 @@ module ksm002.b.viewmodel {
     import flat = nts.uk.util.flatArray;
     import bService = nts.uk.at.view.ksm002.b.service;
     export class ScreenModel {
-        checkBoxList: KnockoutObservableArray<CheckBoxItem> = ko.observableArray([]); 
+        checkBoxList: KnockoutObservableArray<SpecItem> = ko.observableArray([]); 
         selectedIds: KnockoutObservableArray<number> = ko.observableArray([]); 
         yearMonthPicked: KnockoutObservable<number> = ko.observable(Number(moment(new Date()).format('YYYYMM')));
         workPlaceText: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText('KSM002_61', [nts.uk.resource.getText('Com_Workplace')]));
@@ -42,20 +42,16 @@ module ksm002.b.viewmodel {
             
             // get new data when year month change
             self.yearMonthPicked.subscribe(value => {
-                if(!nts.uk.util.isNullOrEmpty(value)){
-                    nts.uk.ui.block.invisible();
-                    self.getCalendarWorkPlaceByCode()
-                    .done(()=>{ nts.uk.ui.block.clear(); })
-                    .fail((res) => {
-                        nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
-                    });
-                }        
+                self.start(false);
             });
             
             // calendar event handler 
             $("#calendar1").ntsCalendar("init", {
                 cellClick: function(date) {
-                    nts.uk.ui._viewModel.content.viewModelB.setListText(date, self.convertNumberToName(self.selectedIds()));
+                    const selectedIds = self.checkBoxList().filter((item) => item.choose() == 1).map((item) => item.id);
+                    if (selectedIds.length > 0) {
+                        nts.uk.ui._viewModel.content.viewModelB.setListText(date, self.convertNumberToName(selectedIds));
+                    }
                 },
                 buttonClick: function(date) {
                     let item = _.find(self.calendarPanel.optionDates(), o => o.start == date);
@@ -78,7 +74,22 @@ module ksm002.b.viewmodel {
                 self.currentWorkPlace().id.subscribe(value => {
                     nts.uk.ui.block.invisible();
                     let data: Array<any> = flat($('#tree-grid')['getDataList'](), 'childs');
-                    let item = _.find(data, m => m.workplaceId == value);
+                    let item: any = null;
+                    data.forEach((wpl) => {
+                        if (wpl.id == value) {
+                            item = wpl;
+                            return;
+                        }
+                        if (wpl.children.length > 0) {
+                            wpl.children.forEach((wplChild: any) => {
+                                if (wplChild.id == value) {
+                                    item = wplChild;
+                                    return;
+                                }
+                            });
+                        }
+                    })
+                    // let item = _.find(data, m => m.id == value);
                     if (item) {
                         self.currentWorkPlace().name(item.name);
                     } else {
@@ -96,28 +107,14 @@ module ksm002.b.viewmodel {
         /**
          * get required data
          */
-        start(value: boolean){
+        start(isResetBoxItemList: boolean = true){
             var self = this;  
             $('#tree-grid').focusTreeGridComponent();
             nts.uk.ui.block.invisible();
-//            self.showExportBtn();
-            $.when(
-                self.getAllSpecDate(), 
-                nts.uk.characteristics.restore("IndividualStartDay"),
-                bService.getCompanyStartDay(),
-                self.getSpecDateByIsUse(),
-                self.getCalendarWorkPlaceByCode()
-            ).done((data1, data2, data3, data4, data5)=>{            
-                if(!nts.uk.util.isNullOrUndefined(data3)) { 
-                    self.firstDay(data3.startDay); 
-                }
-                if(nts.uk.util.isNullOrEmpty(self.checkBoxList())){
-                    self.openDialogC();
-                }
-                nts.uk.ui.block.clear(); 
-            }).fail((res1,res2,res3,res4,res5) => {
-                nts.uk.ui.dialog.alertError(res1.message+res2.message+res3.message+res4.message+res4.message).then(()=>{nts.uk.ui.block.clear();});
-            });
+            self.getSpecDateByIsUse(isResetBoxItemList).done(() => {
+                self.getAllSpecDate();
+                self.getCalendarWorkPlaceByCode();
+            }).always(() => nts.uk.ui.block.clear());
         }
         
          showExportBtn() {
@@ -141,30 +138,30 @@ module ksm002.b.viewmodel {
             } else {
                 $(".yearMonthPicker").trigger("validate");
                 if (!nts.uk.ui.errors.hasError()) {
-                    if(nts.uk.util.isNullOrEmpty(self.selectedIds())){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_339" });     
+                    if(!self.hasItemInCalendarInsert()) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_139" });       
                     } else {
-                        if(!self.checkItemUse()) {
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_139" });       
-                        } else {
-                            nts.uk.ui.block.invisible();
-                            if(self.isUpdate()){
-                                self.updateCalendarWorkPlace().done(()=>{
-                                    nts.uk.ui.block.clear();        
-                                }).fail((res)=>{
-                                    nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
-                                }); 
-                            } else {
-                                self.insertCalendarWorkPlace().done(()=>{
-                                    nts.uk.ui.block.clear();        
-                                }).fail((res)=>{
-                                    nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
-                                }); 
-                            }    
-                        }
+                        nts.uk.ui.block.invisible();
+                        self.insertCalendarWorkPlace().done(()=>{
+                            nts.uk.ui.block.clear();        
+                        }).fail((res)=>{
+                            nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
+                        });
                     }
                 }
             }
+        }
+
+        hasItemInCalendarInsert() {
+            var self = this;
+            let hasItem = false;
+            _.forEach(self.calendarPanel.optionDates(), (processDay) => {
+                if (processDay.listText.length > 0) {
+                    hasItem = true;
+                    return;
+                };
+            });
+            return hasItem;
         }
         
         /**
@@ -178,6 +175,7 @@ module ksm002.b.viewmodel {
                     nts.uk.ui.block.invisible();
                     self.deleteCalendarWorkPlace().done(()=>{
                         nts.uk.ui.block.clear();        
+                        self.start(false);
                     }).fail((res)=>{
                         nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
                     });        
@@ -207,17 +205,24 @@ module ksm002.b.viewmodel {
         /**
          * get selectable item
          */
-        getSpecDateByIsUse(): JQueryPromise<any>{
+        getSpecDateByIsUse(isResetBoxItemList: boolean = true): JQueryPromise<any>{
             var self = this;
             var dfd = $.Deferred();
             bService.getSpecificDateByIsUse(1).done(data=>{
                 if(!nts.uk.util.isNullOrEmpty(data)){
-                    self.checkBoxList.removeAll();
                     let sortData = _.sortBy(data, o => o.specificDateItemNo);
                     let a = []
                     sortData.forEach(item => {
-                        a.push(new CheckBoxItem(item.specificDateItemNo, item.specificName));    
+                        let specItem = new SpecItem(item.specificDateItemNo, item.specificName);
+                        if (!isResetBoxItemList) {
+                            const hasItem = _.find(self.checkBoxList(), (boxItem) => boxItem.id == item.specificDateItemNo);
+                            if (hasItem) {
+                                specItem.choose(hasItem.choose());
+                            }
+                        }
+                        a.push(specItem);
                     });   
+                    self.checkBoxList.removeAll();
                     self.checkBoxList(a);
                 }
                 dfd.resolve();
@@ -241,17 +246,30 @@ module ksm002.b.viewmodel {
                 bService.getCalendarWorkPlaceByCode(workplaceParam).done(data=>{
                     self.rootList = data;
                     self.calendarPanel.optionDates.removeAll();
-                    let a = [];
-                    if(!nts.uk.util.isNullOrEmpty(data)) {
-                        data.forEach(item => {
-                            let sortItemNumber = _.sortBy(item.specificDateItemNo, o => o);
-                            a.push(new CalendarItem(item.specificDate, self.convertNumberToName(sortItemNumber)))                    
-                        });   
-                        self.isUpdate(true);
-                    } else {
-                        self.isUpdate(false);
-                    }
-                    self.calendarPanel.optionDates(a);
+                    let isEmpty = false;
+                    let arrName: Array<string> = [];
+                    let arrId: Array<number> = [];
+                    let arrOptionaDates: Array<CalendarItem> = [];
+                    let endOfMonth: number = moment(self.yearMonthPicked(), "YYYYMM").endOf('month').date();
+                    for (let j = 1; j < endOfMonth + 1; j++) {
+                        let processDay: string = self.yearMonthPicked() + _.padStart(j, 2, '0');
+                        processDay = moment(processDay).format("YYYY/MM/DD");
+                        arrName = [];
+                        arrId = [];
+                        //Loop in each Day
+                        _.forEach(data, function(comItem) {
+                            if (comItem.specificDate == processDay) {
+                                arrId = comItem.specificDateItemNo;
+                            };
+                        });
+                        arrName = self.convertNumberToName(arrId);
+                        if (arrName.length > 0) {
+                            isEmpty = true;
+                        }
+                        arrOptionaDates.push(new CalendarItem(moment(processDay).format("YYYY-MM-DD"), arrName));
+                    };
+                    self.isUpdate(isEmpty);
+                    self.calendarPanel.optionDates(arrOptionaDates);
                     self.calendarPanel.optionDates.valueHasMutated();
                     dfd.resolve();
                 }).fail(res => {
@@ -284,6 +302,7 @@ module ksm002.b.viewmodel {
             var dfd = $.Deferred();
             bService.updateCalendarWorkPlace(self.createCommand()).done(data=>{
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                self.start(false);
                 self.getCalendarWorkPlaceByCode().done(()=>{dfd.resolve();}).fail((res)=>{dfd.reject(res);});   
             }).fail(res => {
                 dfd.reject(res);
@@ -405,65 +424,25 @@ module ksm002.b.viewmodel {
          * check selected item is selectable
          */
         checkItemUse(): boolean {
-            var self = this;
-            let selectedUniqueCode = [];
-            let selectableUniqueCode = _.map(self.checkBoxList(), o => o.id);
-            self.calendarPanel.optionDates().forEach(item => {
-                selectedUniqueCode = _.concat(selectedUniqueCode, self.convertNameToNumber(item.listText));  
-            });        
-            selectedUniqueCode = _.uniq(selectedUniqueCode);
-            let result = 1;
-            selectedUniqueCode.forEach(item => {
-                if(_.includes(selectableUniqueCode,item)){
-                    result*=1;   
-                } else {
-                    result*=0;    
-                }    
-            });
-            if(result == 0) return false;
-            else return true;
+            const vm = this;
+            const selectedIds: any[] = vm.checkBoxList().filter((item) => item.choose() == 1);
+            return selectedIds.length > 0;
         }
         
         /**
          * create command data for insert/update
          */
         createCommand(){
-            var self = this;
-            let a = [];
-            if(self.isUpdate()){
-                // update case
-                self.calendarPanel.optionDates().forEach(item => {
-                    let before = _.find(self.rootList, o => o.specificDate == moment(item.start).format('YYYY/MM/DD')); 
-                    if(nts.uk.util.isNullOrUndefined(before)){
-                        a.push({
-                            workPlaceId: self.currentWorkPlace().id(),
-                            specificDate: moment(item.start).format('YYYY/MM/DD'),
-                            specificDateItemNo: self.convertNameToNumber(item.listText),
-                            isUpdate: false
-                        });
-                    } else {
-                        let current = {
-                            workPlaceId: self.currentWorkPlace().id(),
-                            specificDate: moment(item.start).format('YYYY/MM/DD'),
-                            specificDateItemNo: self.convertNameToNumber(item.listText)
-                        };   
-                        if(!_.isEqual(ko.mapping.toJSON(before),ko.mapping.toJSON(current))) {
-                            current["isUpdate"] = true;
-                            a.push(current);    
-                        }
-                    }
+            const vm = this;
+            let arrCommand: any[] = [];
+            vm.calendarPanel.optionDates().forEach(item => {
+                arrCommand.push({
+                    workPlaceId: vm.currentWorkPlace().id(),
+                    specificDate: moment(item.start).format('YYYY/MM/DD'),
+                    specificDateItemNo: vm.convertNameToNumber(item.listText)
                 });
-            } else {
-                // insert case
-                self.calendarPanel.optionDates().forEach(item => {
-                    a.push({
-                        workPlaceId: self.currentWorkPlace().id(),
-                        specificDate: moment(item.start).format('YYYY/MM/DD'),
-                        specificDateItemNo: self.convertNameToNumber(item.listText)
-                    })    
-                });  
-            }
-            return a;
+            });
+            return arrCommand;
         }
         
         /**
@@ -473,7 +452,7 @@ module ksm002.b.viewmodel {
             var self = this;   
             let a = [];
             inputArray.forEach(item => {
-                let rs = _.find(self.fullCheckBoxItem, o => {return o.id == item});
+                let rs = _.find(self.checkBoxList(), o => {return o.id == item});
                 a.push(rs.name);       
             });
             return a; 
@@ -486,7 +465,7 @@ module ksm002.b.viewmodel {
             var self = this;   
             let a = [];
             inputArray.forEach(item => {
-                let rs = _.find(self.fullCheckBoxItem, o => {return o.name == item});
+                let rs = _.find(self.checkBoxList(), o => {return o.name == item});
                 a.push(rs.id);       
             });
             return a; 
@@ -550,6 +529,18 @@ module ksm002.b.viewmodel {
             this.id = id;
             this.name = name;
         } 
+    }
+
+    class SpecItem {
+        id: number;
+        name: string;
+        choose: KnockoutObservable<number>;
+        constructor(specItemNo: number, specItemName: string) {
+            var self = this;
+            self.id = specItemNo;
+            self.name = specItemName;
+            self.choose = ko.observable(0);
+        }
     }
     
     class CalendarItem {

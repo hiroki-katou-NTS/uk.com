@@ -1,0 +1,60 @@
+<publishData>
+  <publishTarget publishUrl="C:\Work\Deploy\WSISmile\">
+    <file relUrl="bin/TracksLogOutPut.dll" publishTime="2013/07/18 20:05:46" />
+    <file relUrl="bin/WSISmile.Business.dll" publishTime="2022/03/21 11:09:16" />
+    <file relUrl="Web.config" publishTime="2022/03/21 9:31:02" />
+    <file relUrl="bin/WSISmile.pdb" publishTime="2022/03/21 11:09:17" />
+    <file relUrl="bin/WSISmile.dll" publishTime="2022/03/21 11:09:17" />
+    <file relUrl="DCService.asmx" publishTime="2011/08/01 17:53:09" />
+    <file relUrl="bin/Newtonsoft.Json.dll" publishTime="2015/07/01 9:53:39" />
+    <file relUrl="bin/WSISmile.Business.pdb" publishTime="2022/03/21 11:09:16" />
+  </publishTarget>
+  <publishTarget publishUrl="C:\Work\Deploy\">
+    <file relUrl="bin/TracksLogOutPut.dll" publishTime="2013/07/18 20:05:46" />
+    <file relUrl="bin/WSISmile.Business.pdb" publishTime="2022/03/10 10:15:44" />
+    <file relUrl="bin/WSISmile.Business.dll" publishTime="2022/03/10 10:15:45" />
+    <file relUrl="Web.config" publishTime="2022/03/09 11:27:16" />
+    <file relUrl="bin/WSISmile.pdb" publishTime="2022/03/10 10:15:45" />
+    <file relUrl="bin/WSISmile.dll" publishTime="2022/03/10 10:15:45" />
+    <file relUrl="DCService.asmx" publishTime="2011/08/01 17:53:09" />
+    <file relUrl="bin/Newtonsoft.Json.dll" publishTime="2015/07/01 9:53:39" />
+  </publishTarget>
+  <publishTarget publishUrl="C:\inetpub\wwwroot\UK\UKWSISmile\">
+    <file relUrl="bin/WSISmile.pdb" publishTime="2022/02/17 17:02:51" />
+    <file relUrl="bin/FarPoint.Web.SpreadJ.xml" publishTime="2007/08/07 12:00:00" />
+    <file relUrl="bin/KinErpCom.dll" publishTime="2013/07/18 20:05:43" />
+    <file relUrl="bin/Newtonsoft.Json.dll" publishTime="2015/07/01 9:53:39" />
+    <file relUrl="Web.config" publishTime="2022/02/17 13:31:03" />
+    <file relUrl="bin/FarPoint.CalcEngine.dll" publishTime="2007/08/07 12:00:00" />
+    <file relUrl="bin/WSISmile.Business.dll" publishTime="2022/02/17 17:02:51" />
+    <file relUrl="bin/TracksLogOutPut.dll" publishTime="2013/07/18 20:05:46" />
+    <file relUrl="DCService.asmx" publishTime="2011/08/01 17:53:09" />
+    <file relUrl="bin/FarPoint.Excel.xml" publishTime="2007/08/07 12:00:00" />
+    <file relUrl="bin/WSISmile.Business.pdb" publishTime="2022/02/17 17:02:51" />
+    <file relUrl="bin/WSISmile.dll" publishTime="2022/02/17 17:02:52" />
+    <file relUrl="bin/SQLCreator.dll" publishTime="2013/07/18 20:05:33" />
+    <file relUrl="bin/FarPoint.Excel.dll" publishTime="2007/08/07 12:00:00" />
+    <file relUrl="bin/NtsCom.dll" publishTime="2013/07/18 20:05:34" />
+    <file relUrl="bin/FarPoint.Web.SpreadJ.dll" publishTime="2007/08/07 12:00:00" />
+    <file relUrl="bin/FarPoint.CalcEngine.xml" publishTime="2007/08/07 12:00:00" />
+  </publishTarget>
+  <publishTarget publishUrl="C:\Work\temp\">
+    <file relUrl="bin/WSISmile.pdb" publishTime="2022/02/17 17:02:51" />
+    <file relUrl="bin/FarPoint.Web.SpreadJ.xml" publishTime="2007/08/07 12:00:00" />
+    <file relUrl="bin/KinErpCom.dll" publishTime="2013/07/18 20:05:43" />
+    <file relUrl="bin/Newtonsoft.Json.dll" publishTime="2015/07/01 9:53:39" />
+    <file relUrl="bin/SQLCreator.dll" publishTime="2013/07/18 20:05:33" />
+    <file relUrl="bin/FarPoint.CalcEngine.dll" publishTime="2007/08/07 12:00:00" />
+    <file relUrl="Web.config" publishTime="2022/02/17 13:31:03" />
+    <file relUrl="bin/WSISmile.dll" publishTime="2022/02/17 17:02:52" />
+    <file relUrl="bin/TracksLogOutPut.dll" publishTime="2013/07/18 20:05:46" />
+    <file relUrl="DCService.asmx" publishTime="2011/08/01 17:53:09" />
+    <file relUrl="bin/FarPoint.Excel.xml" publishTime="2007/08/07 12:00:00" />
+    <file relUrl="bin/WSISmile.Business.pdb" publishTime="2022/02/17 17:02:51" />
+    <file relUrl="bin/WSISmile.Business.dll" publishTime="2022/02/17 17:02:51" />
+    <file relUrl="bin/FarPoint.Web.SpreadJ.dll" publishTime="2007/08/07 12:00:00" />
+    <file relUrl="bin/FarPoint.Excel.dll" publishTime="2007/08/07 12:00:00" />
+    <file relUrl="bin/NtsCom.dll" publishTime="2013/07/18 20:05:34" />
+    <file relUrl="bin/FarPoint.CalcEngine.xml" publishTime="2007/08/07 12:00:00" />
+  </publishTarget>
+</publishData>

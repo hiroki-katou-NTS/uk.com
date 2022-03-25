@@ -37,7 +37,7 @@ public class AsposeStampEdittingExport extends AsposeCellsReportGenerator implem
 	
 	private final int ROW_TYPE_EDIT_CARD = 13;
 	private final int ROW_TIME = 4;
-	private final int ROW_NAME_COMPANY = 4;
+	private final int ROW_NAME_COMPANY = 2;
 	private final int ROW_MAX_LENGTH_CARD = 12;
 	private final int COLUMN_DATA = 1;
 
@@ -52,7 +52,7 @@ public class AsposeStampEdittingExport extends AsposeCellsReportGenerator implem
 			reportContext.getDesigner().setWorkbook(workbook);
 			reportContext.processDesigner();
 			reportContext.saveAsExcel(this.createNewFile(generatorContext,
-					"KMP001_" + "カードNOの登録" + "_" +  LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN))
+					"KMP001_" + "打刻カードの設定" + "_" +  LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN))
 							+ REPORT_FILE_EXTENSION));
 
 		} catch (Exception e) {
@@ -64,6 +64,7 @@ public class AsposeStampEdittingExport extends AsposeCellsReportGenerator implem
 		Cells cells = worksheet.getCells();
 		String companyId = AppContexts.user().companyId();
 		String companyName = companyRepository.find(companyId).get().getCompanyName().v();
+		String companyInfo = AppContexts.user().companyCode() + " " + companyName;
 
 		switch (dataSource.getStampMethod()) {
 		case 1:
@@ -81,8 +82,8 @@ public class AsposeStampEdittingExport extends AsposeCellsReportGenerator implem
 		default:
 			break;
 		}
-
-		cells.get(ROW_NAME_COMPANY, COLUMN_DATA).setValue(AppContexts.user().companyCode() + " " + companyName);
+		
+		cells.get(ROW_NAME_COMPANY, COLUMN_DATA).setValue(companyInfo);
 		cells.get(ROW_MAX_LENGTH_CARD, COLUMN_DATA).setValue(dataSource.getDigitsNumber());
 		cells.get(ROW_TIME, COLUMN_DATA).setValue(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss a")));
 	}

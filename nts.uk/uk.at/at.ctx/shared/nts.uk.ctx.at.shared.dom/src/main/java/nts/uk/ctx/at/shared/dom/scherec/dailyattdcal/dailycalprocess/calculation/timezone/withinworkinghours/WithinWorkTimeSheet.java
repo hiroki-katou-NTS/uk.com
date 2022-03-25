@@ -692,6 +692,39 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	}
 
 	/**
+	 * 同じ加給時間Ｎｏを持つものを１つにまとめる
+	 * @param bonusPayTime　加給時間
+	 * @return　Noでユニークにした加給時間List
+	 */
+	private List<BonusPayTime> sumBonusPayTime(List<BonusPayTime> bonusPayTime){
+		List<BonusPayTime> returnList = new ArrayList<>();
+		List<BonusPayTime> refineList = new ArrayList<>();
+		for(int bonusPayNo = 1 ; bonusPayNo <= 10 ; bonusPayNo++) {
+			refineList = getByBonusPayNo(bonusPayTime, bonusPayNo);
+			if(refineList.size()>0) {
+				returnList.add(new BonusPayTime(bonusPayNo,
+												new AttendanceTime(refineList.stream().map(tc -> tc.getBonusPayTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
+												TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(refineList.stream().map(tc -> tc.getWithinBonusPay().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
+																							  new AttendanceTime(refineList.stream().map(tc -> tc.getWithinBonusPay().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)))),
+												TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(refineList.stream().map(tc -> tc.getExcessBonusPayTime().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
+																							  new AttendanceTime(refineList.stream().map(tc -> tc.getExcessBonusPayTime().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))))
+												));
+			}
+		}
+		return returnList;
+	}
+
+	/**
+	 * 受け取った加給時間Ｎｏを持つ加給時間を取得
+	 * @param bonusPayTime 加給時間
+	 * @param bonusPayNo　加給時間Ｎｏ
+	 * @return　加給時間リスト
+	 */
+	private List<BonusPayTime> getByBonusPayNo(List<BonusPayTime> bonusPayTime,int bonusPayNo){
+		return bonusPayTime.stream().filter(tc -> tc.getBonusPayTimeItemNo() == bonusPayNo).collect(Collectors.toList());
+	}
+
+	/**
 	 * 法定内深夜時間の計算
 	 * @return　法定内深夜時間
 	 */

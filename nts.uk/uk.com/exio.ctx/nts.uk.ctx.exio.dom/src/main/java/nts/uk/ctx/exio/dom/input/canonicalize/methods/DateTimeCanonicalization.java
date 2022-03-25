@@ -6,10 +6,6 @@ import lombok.val;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
-import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
-
-import java.util.Optional;
 
 /**
  * 年月日と時刻を日時に正準化する
