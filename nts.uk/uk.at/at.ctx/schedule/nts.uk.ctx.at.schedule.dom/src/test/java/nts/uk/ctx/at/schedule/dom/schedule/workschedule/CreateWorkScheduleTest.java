@@ -36,8 +36,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTicket;
-import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.MaximumNumberOfSupport;
-import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ClockAreaAtr;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ContainsResult;
@@ -733,7 +731,7 @@ public class CreateWorkScheduleTest {
 				require.getWorkSchedule(anyString, (GeneralDate) any);
 				// result = empty
 				
-				WorkSchedule.createByHandCorrectionWithWorkInformation(require, employeeId, date, workInformation);
+				WorkSchedule.createByHandCorrectionWithWorkInformation(require, anyString, employeeId, date, workInformation);
 				result = workSchedule;
 				
 				workSchedule.createSupportSchedule(require, (List<SupportTicket>) any);
@@ -742,6 +740,7 @@ public class CreateWorkScheduleTest {
 			
 			ResultOfRegisteringWorkSchedule result = CreateWorkSchedule.create(
 					require, 
+					"companyId",
 					employeeId, 
 					date, 
 					workInformation, 
@@ -782,12 +781,13 @@ public class CreateWorkScheduleTest {
 				require.getWorkSchedule(anyString, (GeneralDate) any);
 				// result = empty
 				
-				WorkSchedule.createByHandCorrectionWithWorkInformation(require, employeeId, date, workInformation);
+				WorkSchedule.createByHandCorrectionWithWorkInformation(require, anyString, employeeId, date, workInformation);
 				result = workSchedule;
 			}};
 			
 			ResultOfRegisteringWorkSchedule result = CreateWorkSchedule.create(
 					require, 
+					"companyId",
 					employeeId, 
 					date, 
 					workInformation, 

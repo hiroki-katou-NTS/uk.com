@@ -96,9 +96,9 @@ public class GrantListOfTaskScheduleTest {
 			require.getWorkSchedule( (List<String>) any, (GeneralDate) any);
 			result = Arrays.asList(workSchedule1, workSchedule2);
 			
-			workSchedule1.createTaskScheduleForWholeDay(require, (TaskCode) any);
+			workSchedule1.createTaskScheduleForWholeDay(require, anyString, (TaskCode) any);
 			
-			workSchedule2.createTaskScheduleForWholeDay(require, (TaskCode) any);
+			workSchedule2.createTaskScheduleForWholeDay(require, anyString, (TaskCode) any);
 		}};
 		
 		val result = GrantListOfTaskSchedule.grant(require, 
@@ -108,10 +108,10 @@ public class GrantListOfTaskScheduleTest {
 		assertThat(result.size()).isEqualTo(2);
 
 		new Verifications() {{
-			workSchedule1.createTaskScheduleForWholeDay(require, (TaskCode) any);
+			workSchedule1.createTaskScheduleForWholeDay(require, anyString, (TaskCode) any);
 			times = 1;
 			
-			workSchedule2.createTaskScheduleForWholeDay(require, (TaskCode) any);
+			workSchedule2.createTaskScheduleForWholeDay(require, anyString, (TaskCode) any);
 			times = 1;
 			
 			require.updateWorkSchedule( (WorkSchedule) any);
@@ -156,9 +156,9 @@ public class GrantListOfTaskScheduleTest {
 			require.getWorkSchedule( (List<String>) any, (GeneralDate) any);
 			result = Arrays.asList(workSchedule1, workSchedule2);
 			
-			workSchedule1.addTaskScheduleWithTimeSpan(require, (TimeSpanForCalc) any, (TaskCode) any);
+			workSchedule1.addTaskScheduleWithTimeSpan(require, anyString, (TimeSpanForCalc) any, (TaskCode) any);
 			
-			workSchedule2.addTaskScheduleWithTimeSpan(require, (TimeSpanForCalc) any, (TaskCode) any);
+			workSchedule2.addTaskScheduleWithTimeSpan(require, anyString, (TimeSpanForCalc) any, (TaskCode) any);
 		}};
 		
 		val result = GrantListOfTaskSchedule.grant(require, 
@@ -172,10 +172,10 @@ public class GrantListOfTaskScheduleTest {
 		assertThat(result.size()).isEqualTo(2);
 
 		new Verifications() {{
-			workSchedule1.addTaskScheduleWithTimeSpan(require, (TimeSpanForCalc) any, (TaskCode) any);
+			workSchedule1.addTaskScheduleWithTimeSpan(require, anyString, (TimeSpanForCalc) any, (TaskCode) any);
 			times = 1;
 			
-			workSchedule2.addTaskScheduleWithTimeSpan(require, (TimeSpanForCalc) any, (TaskCode) any);
+			workSchedule2.addTaskScheduleWithTimeSpan(require, anyString, (TimeSpanForCalc) any, (TaskCode) any);
 			times = 1;
 			
 			require.updateWorkSchedule( (WorkSchedule) any);
