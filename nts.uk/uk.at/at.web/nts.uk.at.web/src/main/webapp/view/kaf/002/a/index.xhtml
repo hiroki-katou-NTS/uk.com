@@ -16,7 +16,7 @@
 					nts.uk.shr.com.primitive.sample.SampleTimeDuration
    				</com:ValidatorScript>
 			<com:ValidatorScript>
-					nts.uk.shr.com.time.TimeWithDayAttr
+        nts.uk.ctx.at.request.dom.application.holidayworktime.primitivevalue.HolidayAppPrimitiveTime
 				</com:ValidatorScript>
 			<com:stylefile
 				path="/view/kaf/000/a/component1/kaf000.a.component1.css" />
@@ -80,11 +80,14 @@
 			<div
 				style="display: inline-block; position: absolute; z-index: 10; margin-left: 70px;"
 				data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
-			<div id="contents-area" style="background-color: inherit;">
-				<div class="two-panel" style="height: 100%; width: 1260px">
+			<div id="contents-area" style="background-color: inherit; overflow-y: scroll;">
+				<div class="two-panel" style="height: 100%; display: inline-flex;">
 					<div class="left-panel"
-						style="padding-bottom: 5px; width: calc(1260px - 388px);">
-							<div class="table form-header">
+						style="padding-bottom: 5px; min-width: calc(1260px - 250px - 230px); height: inherit; padding-left: 0;">
+						<div
+							style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding: 0 10px; overflow-x: hidden; ">
+							<div class="table form-header"
+								style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
 								<div class="cell" style="vertical-align: middle;">
 									<div
 										data-bind="component: { name: 'kaf000-a-component2',
@@ -142,6 +145,8 @@
 											    selectedTab: selectedTab,
 											    comment1: comment1,
 											    comment2: comment2,
+												appDate: date,
+												kaf002Data: data
 										    }
 									    },"
 										id="componentM"></div>
@@ -172,9 +177,10 @@
 										style="display: inline-block;"></div>
 								</div>
 							</div>
+						</div>
 					</div>
 					<div class="right-panel"
-						style="width: 388px; padding-bottom: 5px; padding-right: 0px">
+						style="width: 385px; padding-bottom: 5px; padding-right: 0px">
 							<div
 								data-bind="component: { name: 'kaf000-a-component1', 
 														params: {

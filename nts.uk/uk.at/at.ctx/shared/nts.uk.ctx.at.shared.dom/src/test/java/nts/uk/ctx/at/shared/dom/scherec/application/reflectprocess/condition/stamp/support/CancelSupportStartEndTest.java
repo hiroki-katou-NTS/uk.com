@@ -45,7 +45,7 @@ public class CancelSupportStartEndTest {
 
 		List<Integer> actualResult = CancelSupportStartEnd.process(dailyApp, listDestinationTimeApp);
 
-		assertThat(actualResult).isEqualTo(Arrays.asList(929, 921));
+		assertThat(actualResult).isEqualTo(Arrays.asList(929, 921, 922));
 
 		assertThat(dailyApp.getOuenTimeSheet().get(0).getTimeSheet().getStart().get().getTimeWithDay())
 				.isEqualTo(Optional.empty());// 時刻
@@ -67,7 +67,7 @@ public class CancelSupportStartEndTest {
 
 		List<Integer> actualResult2 = CancelSupportStartEnd.process(dailyApp2, listDestinationTimeApp2);
 
-		assertThat(actualResult2).isEqualTo(Arrays.asList(930, 921));
+		assertThat(actualResult2).isEqualTo(Arrays.asList(930, 921, 922));
 
 		assertThat(dailyApp2.getOuenTimeSheet().get(0).getTimeSheet().getEnd().get().getTimeWithDay())
 				.isEqualTo(Optional.empty());// 時刻

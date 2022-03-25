@@ -233,6 +233,10 @@
 	color: #e51010;
 }
 
+.mgrid-schedule-support{
+	background-color: #fedfe6;
+}
+
 .ui-iggrid .ui-iggrid-tablebody td {
     height: 29px;
 }

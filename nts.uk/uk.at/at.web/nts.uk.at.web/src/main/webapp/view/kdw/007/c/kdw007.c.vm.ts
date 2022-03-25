@@ -39,12 +39,12 @@ module nts.uk.at.view.kdw007.c.viewmodel {
             if (param.lstAllItems.length > 0) {
                 if (param.attr == ATTR.MONTHLY) {
                     service.getMonthlyAttendanceItemByCodes(param.lstAllItems).done((lstItems) => {
-                        self.handleListResult(lstItems, 0);
+                        self.handleListResult(param.lstAllItems,lstItems, 0);
                         dfdLstAll.resolve();
                     });
                 } else {
                     service.getDailyAttendanceItemByCodes(param.lstAllItems).done((lstItems) => {
-                        self.handleListResult(lstItems, 0);
+                        self.handleListResult(param.lstAllItems,lstItems, 0);
                         dfdLstAll.resolve();
                     });
                 }
@@ -54,12 +54,12 @@ module nts.uk.at.view.kdw007.c.viewmodel {
             if (param.lstAddItems.length > 0) {
                 if (param.attr == ATTR.MONTHLY) {
                     service.getMonthlyAttendanceItemByCodes(param.lstAddItems).done((lstItems) => {
-                        self.handleListResult(lstItems, 1);
+                        self.handleListResult(param.lstAddItems,lstItems, 1);
                         dfdLstAdd.resolve();
                     });
                 } else {
                     service.getDailyAttendanceItemByCodes(param.lstAddItems).done((lstItems) => {
-                        self.handleListResult(lstItems, 1);
+                        self.handleListResult(param.lstAddItems,lstItems, 1);
                         dfdLstAdd.resolve();
                     });
                 }
@@ -69,12 +69,12 @@ module nts.uk.at.view.kdw007.c.viewmodel {
             if (param.lstSubItems.length > 0) {
                 if (param.attr == ATTR.MONTHLY) {
                     service.getMonthlyAttendanceItemByCodes(param.lstSubItems).done((lstItems) => {
-                        self.handleListResult(lstItems, 2);
+                        self.handleListResult(param.lstSubItems,lstItems, 2);
                         dfdLstSub.resolve();
                     });
                 } else {
                     service.getDailyAttendanceItemByCodes(param.lstSubItems).done((lstItems) => {
-                        self.handleListResult(lstItems, 2);
+                        self.handleListResult(param.lstSubItems,lstItems, 2);
                         dfdLstSub.resolve();
                     });
                 }
@@ -87,15 +87,25 @@ module nts.uk.at.view.kdw007.c.viewmodel {
             return dfdAll;
         }
         
-        handleListResult(lstItems: Array<any>, listType: number) {
+        handleListResult(lstItemId: Array<any>,lstItems: Array<any>, listType: number) {
             let self = this,
             listItems = [];
-            _.forEach(lstItems, (item) => {
-                let operator = "";
+			for(let i = 0;i<lstItemId.length;i++){
+				let checkExist = false;
+				let operator = "";
                 if (listType == 1) operator = "+";
                 if (listType == 2) operator = "-"
-                listItems.push(new ItemValue(item.attendanceItemId, operator, item.attendanceItemDisplayNumber, item.attendanceItemName));
-            });
+	            _.forEach(lstItems, (item) => {
+					if(lstItemId[i] == item.attendanceItemId ){
+		                listItems.push(new ItemValue(item.attendanceItemId, operator, item.attendanceItemDisplayNumber, item.attendanceItemName));
+						checkExist = true;
+						return;
+					}
+	            });
+				if(checkExist == false){
+					listItems.push(new ItemValue(lstItemId[i], operator, null, nts.uk.resource.getText("KDW007_113")));
+				}
+			}
             if (listType == 0) { // list All items
                 self.lstAllItems(listItems);
             } else { // list Add or Sub items

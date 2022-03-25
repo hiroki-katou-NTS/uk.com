@@ -45,6 +45,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ParamCommonAsync;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindAllEmployee;
+import nts.uk.screen.at.app.dailyperformance.support.GetDailySupportWorkers;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.license.option.OptionLicense;
 
@@ -75,6 +76,9 @@ public class InfomationInitScreenProcess {
 	
 	@Inject
 	private TaskOperationSettingRepository taskOperationSettingRepository;
+	
+	@Inject
+	private GetDailySupportWorkers dailySupportWorkers;
 
 	public Pair<DailyPerformanceCorrectionDto, ParamCommonAsync> initGetParam(DPParams param) {
 		
@@ -121,9 +125,9 @@ public class InfomationInitScreenProcess {
 		
 		// 作業運用設定を取得する
 		Optional<TaskOperationSetting> opTaskOperationSetting = taskOperationSettingRepository.getTasksOperationSetting(companyId);
-		
-		screenDto.setShowWorkLoad(opTaskOperationSetting.map(x -> x.getTaskOperationMethod()==TaskOperationMethod.USED_IN_ACHIEVENTS).orElse(false)
-				&& AppContexts.optionLicense().attendance().workload());
+		// EA No 4173
+		//screenDto.setShowWorkLoad(opTaskOperationSetting.map(x -> x.getTaskOperationMethod()==TaskOperationMethod.USED_IN_ACHIEVENTS).orElse(false)
+		//		&& AppContexts.optionLicense().attendance().workload());
 		
 		// アルゴリズム「休暇の管理状況をチェックする」を実行する | Get holiday setting data --休暇の管理状況をチェックする
 //		getHolidaySettingData(screenDto);
@@ -154,18 +158,33 @@ public class InfomationInitScreenProcess {
 		// tiên
 		// 対象社員の特定
 		List<String> changeEmployeeIds = new ArrayList<>();
+		InitialDisplayEmployeeDto initDto = null;
+		
+		val employeeIds = objectShare == null
+				? lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList())
+	                    : CollectionUtil.isEmpty(objectShare.getLstExtractedEmployee()) ?  objectShare.getLstEmployeeShare() : objectShare.getLstExtractedEmployee();
+        DateRange rangeMode = rangeInit;
+		if (displayFormat == 1)
+			rangeMode = new DateRange(rangeInit.getStartDate(), rangeInit.getStartDate());
+	                    
+		// 初期表示社員を取得する - EA修正履歴：No4280 & No4291
+		initDto = processor.changeListEmployeeId(employeeIds, rangeMode, mode,
+				objectShare != null, screenDto.getClosureId(), screenDto);
+		DPCorrectionStateParam stateParam = processor.getDailySupportWorkers(initDto.getParam());
+		initDto.setParam(stateParam);
+		
 		if (lstEmployee.isEmpty()) {
-			val employeeIds = objectShare == null
-					? lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList())
-		                    : CollectionUtil.isEmpty(objectShare.getLstExtractedEmployee()) ?  objectShare.getLstEmployeeShare() : objectShare.getLstExtractedEmployee();
 			if (employeeIds.isEmpty())
 				needSortEmp = true;
-			changeEmployeeIds = processor.changeListEmployeeId(employeeIds, rangeInit, mode,
-					objectShare != null, screenDto.getClosureId(), screenDto);
+			
+			changeEmployeeIds = initDto.getParam().getEmployeeIds().isEmpty() ? initDto.getLstEmpId() : initDto.getParam().getEmployeeIds();
 		} else {
-			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
+			//changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
+			changeEmployeeIds = initDto.getParam().getEmployeeIds();
+			changeEmployeeIds.addAll(initDto.getParam().getLstEmpsSupport());
+			changeEmployeeIds = changeEmployeeIds.stream().distinct().collect(Collectors.toList());
 		}
-
+		// 応援勤務者の特定 - No1291
 		List<String> employeeIdsOri = changeEmployeeIds;
 		//System.out.println("time get employeeId" + (System.currentTimeMillis() - timeStart));	
 		//<<Public>> パラメータに初期値を設定する
@@ -247,7 +266,7 @@ public class InfomationInitScreenProcess {
 		if(listEmployeeId.isEmpty()) {
 			//screenDto.setLstEmployee(Collections.emptyList());
 			screenDto.setErrorInfomation(DCErrorInfomation.NOT_EMP_IN_HIST.value);
-			setStateParam(screenDto, resultPeriod, displayFormat, initScreenOther);
+			setStateParam(screenDto, resultPeriod, displayFormat, initScreenOther, initDto);
 			return Pair.of(screenDto, null);
 		}
 		//System.out.println("time map data wplhis, date:" + (System.currentTimeMillis() - timeStart));
@@ -306,7 +325,7 @@ public class InfomationInitScreenProcess {
 		DisplayItem disItem = processor.getDisplayItems(correct, formatCodes, companyId, screenDto, listEmployeeId, showButton, dailyPerformanceDto);
 		if(disItem == null || !disItem.getErrors().isEmpty()) {
 			if(disItem != null) screenDto.setErrors(disItem.getErrors());
-			setStateParam(screenDto, resultPeriod, displayFormat, initScreenOther);
+			setStateParam(screenDto, resultPeriod, displayFormat, initScreenOther, initDto);
 			return Pair.of(screenDto,
 					listEmployeeId.isEmpty() ? null
 							: new ParamCommonAsync(listEmployeeId.get(0), dateRange, screenDto.getEmploymentCode(),
@@ -321,7 +340,7 @@ public class InfomationInitScreenProcess {
 		DPControlDisplayItem dPControlDisplayItem = processor.getItemIdNames(disItem, showButton);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 		screenDto.setDisItem(disItem);
-		setStateParam(screenDto, resultPeriod, displayFormat, initScreenOther);
+		setStateParam(screenDto, resultPeriod, displayFormat, initScreenOther, initDto);
 		//System.out.println("time init All" + (System.currentTimeMillis() - timeStart));
 		return Pair.of(screenDto,
 				listEmployeeId.isEmpty() ? null
@@ -330,10 +349,14 @@ public class InfomationInitScreenProcess {
 								screenDto.getStateParam(),  Optional.empty(), false));
 	}
 	
-	private void setStateParam(DailyPerformanceCorrectionDto screenDto, DatePeriodInfo info, int displayFormat, Boolean transferDesScreen) {
+	private void setStateParam(DailyPerformanceCorrectionDto screenDto, DatePeriodInfo info, int displayFormat, Boolean transferDesScreen, InitialDisplayEmployeeDto initDto) {
 		DPCorrectionStateParam cacheParam = new DPCorrectionStateParam(
 				new DateRange(screenDto.getDateRange().getStartDate(), screenDto.getDateRange().getEndDate()),
-				screenDto.getEmployeeIds(), displayFormat, screenDto.getEmployeeIds(), screenDto.getLstControlDisplayItem(), info, transferDesScreen);
+				screenDto.getEmployeeIds(), displayFormat, screenDto.getEmployeeIds(), 
+				screenDto.getLstControlDisplayItem(), info, transferDesScreen,
+				initDto != null && initDto.getParam() != null ? initDto.getParam().getLstWrkplaceId() : new ArrayList<>(),
+				initDto != null && initDto.getParam() != null ? initDto.getParam().getLstEmpsSupport() : new ArrayList<>());
+				
 		screenDto.setStateParam(cacheParam);
 
 	}

@@ -19,6 +19,8 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -32,6 +34,7 @@ import nts.uk.ctx.at.record.pub.workinformation.InfoCheckNotRegisterPubExport;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPub;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPubExport;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPubExport_New;
+import nts.uk.ctx.at.record.pub.workinformation.SupportTimeSheet;
 import nts.uk.ctx.at.record.pub.workinformation.WorkInfoOfDailyPerExport;
 import nts.uk.ctx.at.record.pub.workinformation.WrScheduleTimeSheetExport;
 import nts.uk.ctx.at.record.pub.workinformation.export.WrReasonTimeChangeExport;
@@ -47,7 +50,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayMidnightWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
@@ -57,6 +62,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.La
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
@@ -87,6 +93,10 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	
 	@Inject
 	private BreakTimeOfDailyPerformanceRepository breakTimeOfDailyPerformanceRepo;
+	
+	@Inject
+	private OuenWorkTimeSheetOfDailyRepo ouenWorkTimeSheetOfDailyRepo;
+	
 	/**
 	 * RequestList5
 	 */
@@ -601,6 +611,41 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 					.filter(x -> x.getChildCareAttr() == ChildCareAtr.CARE)
 					.collect(Collectors.toList()));
 		}
+		
+		// get 日別実績の応援作業別勤怠時間帯
+		OuenWorkTimeSheetOfDaily ouenWorkTimeSheetOfDaily = ouenWorkTimeSheetOfDailyRepo.find(employeeId, ymd);
+		List<SupportTimeSheet> supports = new ArrayList<SupportTimeSheet>();
+		if (ouenWorkTimeSheetOfDaily != null) {
+			List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = ouenWorkTimeSheetOfDaily.getOuenTimeSheet();
+			supports = ouenTimeSheet.stream().map(x -> {
+				SupportTimeSheet supportTimeSheet = new SupportTimeSheet();
+				// 日別実績の応援作業別勤怠時間帯.応援時間帯.応援勤務枠No
+				supportTimeSheet.setFrameNo(x.getWorkNo().v());
+				
+				Optional<WorkTimeInformation> start = x.getTimeSheet().getStart();
+				if (start.isPresent()) {
+					// 日別実績の応援作業別勤怠時間帯.応援時間帯.時間帯.開始.時刻
+					supportTimeSheet.setStart(start.get().getTimeWithDay().orElse(null));
+				}
+				
+				Optional<WorkTimeInformation> end = x.getTimeSheet().getEnd();
+				if (end.isPresent()) {
+					// 日別実績の応援作業別勤怠時間帯.応援時間帯.時間帯.終了.時刻
+					supportTimeSheet.setEnd(end.get().getTimeWithDay().orElse(null));
+				}
+				
+				// 日別実績の応援作業別勤怠時間帯.応援時間帯.作業内容.勤務先.場所
+				supportTimeSheet.setLocationCd(x.getWorkContent().getWorkplace()
+						.getWorkLocationCD().map(WorkLocationCD::v).orElse(null));
+				
+				// 日別実績の応援作業別勤怠時間帯.応援時間帯.作業内容.勤務先.職場
+				supportTimeSheet.setWorkplaceId(x.getWorkContent().getWorkplace().getWorkplaceId().v());
+				
+				return supportTimeSheet;
+			}).collect(Collectors.toList());
+
+		}
+		record.setSupportTimes(supports);
 		
 		return record;
 	}

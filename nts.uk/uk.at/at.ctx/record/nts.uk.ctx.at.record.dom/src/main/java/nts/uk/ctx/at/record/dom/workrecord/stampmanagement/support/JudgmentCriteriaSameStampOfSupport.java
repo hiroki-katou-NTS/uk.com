@@ -5,7 +5,6 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support;
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.MaximumNumberOfSupport;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -14,7 +13,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author laitv
  *
  */
-
 @Getter
 public class JudgmentCriteriaSameStampOfSupport implements DomainAggregate {
 
@@ -23,17 +21,12 @@ public class JudgmentCriteriaSameStampOfSupport implements DomainAggregate {
 
 	// 同一打刻とみなす範囲
 	private final RangeRegardedSupportStamp sameStampRanceInMinutes;
-
-	// 最大応援回数
-	private final MaximumNumberOfSupport supportMaxFrame;
 	
 	// [C-1] 応援の同一打刻の判断基準を作成する	
-	public JudgmentCriteriaSameStampOfSupport(String cid,
-			RangeRegardedSupportStamp sameStampRanceInMinutes,MaximumNumberOfSupport supportMaxFrame) {
+	public JudgmentCriteriaSameStampOfSupport(String cid, RangeRegardedSupportStamp sameStampRanceInMinutes) {
 		super();
 		this.cid = cid;
 		this.sameStampRanceInMinutes = sameStampRanceInMinutes;
-		this.supportMaxFrame = supportMaxFrame;
 	}
 	
 	/**

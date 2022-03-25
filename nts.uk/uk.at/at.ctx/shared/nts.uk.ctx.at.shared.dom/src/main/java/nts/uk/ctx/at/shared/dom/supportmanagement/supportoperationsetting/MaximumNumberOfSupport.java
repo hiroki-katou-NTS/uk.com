@@ -18,4 +18,8 @@ public class MaximumNumberOfSupport extends IntegerPrimitiveValue<PrimitiveValue
 		super(rawValue);
 	}
 	
+	public static int getMax() {
+		IntegerRange annotation = MaximumNumberOfSupport.class.getAnnotation(IntegerRange.class);
+		return annotation.max();
+	}
 }

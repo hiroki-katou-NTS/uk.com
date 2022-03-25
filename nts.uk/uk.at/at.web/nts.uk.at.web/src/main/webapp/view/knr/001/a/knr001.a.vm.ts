@@ -30,6 +30,10 @@ module nts.uk.at.view.knr001.a {
 
             goOutReason: KnockoutObservable<number> = ko.observable(0);
             entranceExit: KnockoutObservable<boolean> = ko.observable(false);
+            //	　応援の運用設定.利用するか
+            isUsedSupportOperationSetting: KnockoutObservable<boolean> = ko.observable(false);
+
+            todayStr:string = "";
 
             constructor(){
                 var self = this;
@@ -75,6 +79,8 @@ module nts.uk.at.view.knr001.a {
                     setTimeout(() => {
                         self.clearErrors();
                     }, 7);
+                    let today = new Date()
+                    self.empInfoTerminalModel().date(`${today.getFullYear()}/${self.fillZero(today.getMonth() + 1)}/${self.fillZero(today.getDate())}`);
                     if(empInfoTerminalCode){
                         self.enableBtnDelete(true);
                         self.loadEmpInfoTerminal(empInfoTerminalCode);
@@ -127,12 +133,15 @@ module nts.uk.at.view.knr001.a {
                 var self = this;										
                 var dfd = $.Deferred<void>();
                 blockUI.invisible();
+                let today = new Date();
+                self.empInfoTerminalModel().date(`${today.getFullYear()}/${self.fillZero(today.getMonth() + 1)}/${self.fillZero(today.getDate())}`);
                 service.getAll().done((data)=>{
-                    if(data.length <= 0){
+               		self.isUsedSupportOperationSetting(data.usedSupportOperationSetting);
+                    if(data.empInfoTerminalListDto.length <= 0){
                         self.createNewMode();
                     } else {
                         self.isUpdateMode(true);
-                        self.empInfoTerminalList(data);
+                        self.empInfoTerminalList(data.empInfoTerminalListDto);
                         self.selectedCode(self.empInfoTerminalList()[0].empInfoTerCode);
                         self.loadEmpInfoTerminal(self.selectedCode());
                     }
@@ -141,18 +150,26 @@ module nts.uk.at.view.knr001.a {
                 dfd.resolve();											
                 return dfd.promise();											
             }
+        /**
+         * fill '0' character to datetime
+         */
+            private fillZero(str: any): string{
+                return str.toString().length == 2 ? str : `0${str}`;
+            }
             /**
              * load Employment information terminal
              * 起動する／選択端末を変更する／削除ボタン押下後の表示処理
              */
             private loadEmpInfoTerminal(empInfoTerCode: string): void{
-                let self = this;          
+                let self = this;
+                let today = new Date();
+                self.empInfoTerminalModel().date(`${today.getFullYear()}/${self.fillZero(today.getMonth() + 1)}/${self.fillZero(today.getDate())}`);          
                 service.getDetails(empInfoTerCode).done(function(empInfoTer: any){
                     if(empInfoTer){
                         self.isUpdateMode(true);
                         self.enableBtnDelete(true);
                         self.selectedCode(empInfoTer.empInfoTerCode);
-                        self.empInfoTerminalModel().updateData(empInfoTer);
+                        self.empInfoTerminalModel().updateData(empInfoTer, self.isUsedSupportOperationSetting());
                         if (_.isNull(self.empInfoTerminalModel().nRConvertInfo())) {
                             self.empInfoTerminalModel().lstMSConversion()
                                 .forEach((item: MSConversionDto) => {
@@ -304,7 +321,7 @@ module nts.uk.at.view.knr001.a {
                             //Reload EmpList
                             service.getAll().done((data)=>{
                                     self.isUpdateMode(true);
-                                    self.empInfoTerminalList(data);
+                                    self.empInfoTerminalList(data.empInfoTerminalListDto);
                                     self.selectedCode(self.empInfoTerminalModel().empInfoTerCode());
                                     self.loadEmpInfoTerminal(self.selectedCode());
                                     self.empInfoTerminalModel().isEnableCode(false);
@@ -330,7 +347,7 @@ module nts.uk.at.view.knr001.a {
                             //Reload EmpList
                             service.getAll().done((data) => {
                                     self.isUpdateMode(true);
-                                    self.empInfoTerminalList(data);
+                                    self.empInfoTerminalList(data.empInfoTerminalListDto);
                                     self.selectedCode(self.empInfoTerminalModel().empInfoTerCode());
                                     self.loadEmpInfoTerminal(self.selectedCode());
                                     self.empInfoTerminalModel().isEnableCode(false);
@@ -387,15 +404,15 @@ module nts.uk.at.view.knr001.a {
             private reloadData(index: number) {
                 let self = this;
                 service.getAll().done((data)=>{
-                    if(data.length <= 0){
+                    if(data.empInfoTerminalListDto.length <= 0){
                         self.empInfoTerminalList([]);
                         self.clearErrors();
                         self.createNewMode();
                     } else {
                         self.isUpdateMode(true);
                         self.enableBtnDelete(true);
-                        self.empInfoTerminalList(data);
-                        let length = data.length;
+                        self.empInfoTerminalList(data.empInfoTerminalListDto);
+                        let length = data.empInfoTerminalListDto.length;
                         if(index === 0){
                             self.selectedCode(self.empInfoTerminalList()[0].empInfoTerCode);
                         } else if (index === length){
@@ -606,9 +623,17 @@ module nts.uk.at.view.knr001.a {
                                             ]); 
                 this.memo =  ko.observable('');  
                
-                this.isEnableCode =  ko.observable(true);     
-                
+                this.isEnableCode =  ko.observable(true);    
+                let today = new Date();
+                this.date = ko.observable(`${today.getFullYear()}/${this.fillZero(today.getMonth() + 1)}/${this.fillZero(today.getDate())}`);
             }
+            /**
+             * fill '0' character to datetime
+             */
+            private fillZero(str: any): string{
+                return str.toString().length == 2 ? str : `0${str}`;
+            }
+
             /**
              * reset Data
              */
@@ -633,11 +658,13 @@ module nts.uk.at.view.knr001.a {
                 this.workplaceId('');
                 this.workplaceName('');
                 this.nRConvertInfo(null);
+                let today = new Date()
+                this.date(`${today.getFullYear()}/${this.fillZero(today.getMonth() + 1)}/${this.fillZero(today.getDate())}`);
             }
             /**
              * update Data
              */
-            updateData(dto: any){
+            updateData(dto: any, useAtr: any){
                 this.empInfoTerCode(dto.empInfoTerCode);
                 this.empInfoTerName(dto.empInfoTerName);
                 this.modelEmpInfoTer(dto.modelEmpInfoTer);
@@ -655,7 +682,7 @@ module nts.uk.at.view.knr001.a {
                 this.lstMSConversion(dto.lstMSConversion);
                 this.nRConvertInfo(dto.nrconvertInfo);
                 
-                if (this.useAtr) {
+                if (useAtr) {
                     this.workplaceId(dto.workplaceId);
                     this.workplaceName(dto.workplaceName);
                 }

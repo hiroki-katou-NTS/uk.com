@@ -36,7 +36,7 @@ public class ReflectTemporaryAttLeav {
 			if (dailyApp.getTempTime().isPresent()) {
 				// 日別勤怠(work）の[臨時出退勤]をチェック
 				Optional<TimeLeavingWork> timeLeavOpt = dailyApp.getTempTime().get().getTimeLeavingWorks().stream()
-						.filter(x -> x.getWorkNo().v() == data.getDestinationTimeApp().getEngraveFrameNo().intValue())
+						.filter(x -> x.getWorkNo().v() == data.getDestinationTimeApp().getStampNo().intValue())
 						.findFirst();
 				if (!timeLeavOpt.isPresent()) {
 					// 該当の打刻枠NOをキーに[臨時出退勤]を作成する
@@ -72,18 +72,18 @@ public class ReflectTemporaryAttLeav {
 		if (start) {
 			itemIds.addAll(Arrays.asList(
 					//[臨時出勤時刻1～3]
-					CancelAppStamp.createItemId(51, data.getDestinationTimeApp().getEngraveFrameNo().intValue(), 8),
+					CancelAppStamp.createItemId(51, data.getDestinationTimeApp().getStampNo().intValue(), 8),
 					// [臨時出勤場所コード1～3]
-					CancelAppStamp.createItemId(50, data.getDestinationTimeApp().getEngraveFrameNo().intValue(), 8)));
+					CancelAppStamp.createItemId(50, data.getDestinationTimeApp().getStampNo().intValue(), 8)));
 		} else {
 			itemIds.addAll(Arrays.asList(
 					//[臨時退勤時刻1～3]
-					CancelAppStamp.createItemId(53, data.getDestinationTimeApp().getEngraveFrameNo().intValue(), 8),
+					CancelAppStamp.createItemId(53, data.getDestinationTimeApp().getStampNo().intValue(), 8),
 					// [臨時退勤場所コード1～3]
-					CancelAppStamp.createItemId(52, data.getDestinationTimeApp().getEngraveFrameNo().intValue(), 8)));
+					CancelAppStamp.createItemId(52, data.getDestinationTimeApp().getStampNo().intValue(), 8)));
 		}
 		return Pair.of(
-				new TimeLeavingWork(new WorkNo(data.getDestinationTimeApp().getEngraveFrameNo().intValue()),
+				new TimeLeavingWork(new WorkNo(data.getDestinationTimeApp().getStampNo().intValue()),
 						start ? createTimeActualStamp(data) : null, //
 						start ? null : createTimeActualStamp(data)), //
 				itemIds);//
@@ -110,13 +110,13 @@ public class ReflectTemporaryAttLeav {
 			val y = timeLeav.getAttendanceStamp().get().getStamp().get();
 			if (data.getWorkLocationCd().isPresent()) {
 				lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(50,
-						data.getDestinationTimeApp().getEngraveFrameNo().intValue(), 8)));
+						data.getDestinationTimeApp().getStampNo().intValue(), 8)));
 				y.setLocationCode(data.getWorkLocationCd());
 			}
 			y.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
 			y.getTimeDay().setTimeWithDay(Optional.ofNullable(data.getTimeOfDay()));
 			lstItemId.addAll(Arrays.asList(
-					CancelAppStamp.createItemId(51, data.getDestinationTimeApp().getEngraveFrameNo().intValue(), 8)));
+					CancelAppStamp.createItemId(51, data.getDestinationTimeApp().getStampNo().intValue(), 8)));
 		} else {
 			if (!timeLeav.getLeaveStamp().isPresent()) {
 				timeLeav.setLeaveStamp(
@@ -128,13 +128,13 @@ public class ReflectTemporaryAttLeav {
 			val y = timeLeav.getLeaveStamp().get().getStamp().get();
 			if (data.getWorkLocationCd().isPresent()) {
 				lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(52,
-						data.getDestinationTimeApp().getEngraveFrameNo().intValue(), 8)));
+						data.getDestinationTimeApp().getStampNo().intValue(), 8)));
 				y.setLocationCode(data.getWorkLocationCd());
 			}
 			y.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
 			y.getTimeDay().setTimeWithDay(Optional.ofNullable(data.getTimeOfDay()));
 			lstItemId.addAll(Arrays.asList(
-					CancelAppStamp.createItemId(53, data.getDestinationTimeApp().getEngraveFrameNo().intValue(), 8)));
+					CancelAppStamp.createItemId(53, data.getDestinationTimeApp().getStampNo().intValue(), 8)));
 		}
 		return lstItemId;
 	}

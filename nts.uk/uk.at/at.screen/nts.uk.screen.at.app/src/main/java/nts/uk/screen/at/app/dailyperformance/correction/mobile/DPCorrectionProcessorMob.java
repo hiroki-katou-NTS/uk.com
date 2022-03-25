@@ -67,7 +67,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeUseSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -83,6 +85,7 @@ import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.screen.at.app.dailymodify.command.common.ProcessCommonCalc;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
+import nts.uk.screen.at.app.dailyperformance.correction.InitialDisplayEmployeeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
 import nts.uk.screen.at.app.dailyperformance.correction.closure.FindClosureDateService;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
@@ -190,6 +193,10 @@ public class DPCorrectionProcessorMob {
 	
 	@Inject
 	private RecordDomRequireService requireService;
+	
+	@Inject
+	private CompanyDailyItemService companyDailyItemService;
+	
 
 	static final Integer[] DEVIATION_REASON = { 436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458,
 			459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822 };
@@ -787,6 +794,12 @@ public class DPCorrectionProcessorMob {
 			/// 対応するドメインモデル「勤務種別日別実績の修正のフォーマット」を取得する
 			String authorityDailyID = AppContexts.user().roles().forAttendance();
 			if (lstFormat.size() > 0) {
+				
+				//EA 4253
+				//会社の日次項目を取得する
+				List<AttItemName> listAttItemName = companyDailyItemService.getDailyItems(companyId, Optional.empty(), lstAtdItemUnique, new ArrayList<>());
+				lstAtdItemUnique = listAttItemName.stream().map(c->c.getAttendanceItemId()).collect(Collectors.toList());
+				
 				lstDPBusinessTypeControl = this.repo.getListBusinessTypeControl(companyId, authorityDailyID,
 						lstAtdItemUnique, true);
 				if (lstDPBusinessTypeControl.isEmpty()) {
@@ -976,25 +989,34 @@ public class DPCorrectionProcessorMob {
 ////		dailyPerformanceCorrectionDto.setCom60HVacationDto(this.repo.getCom60HVacationDto());
 	}
 
-	public List<String> changeListEmployeeId(List<String> employeeIds, DateRange range, int mode, boolean isTranfer,
+	public InitialDisplayEmployeeDto changeListEmployeeId(List<String> employeeIds, DateRange range, int mode, boolean isTranfer,
 			Integer closureId, DailyPerformanceCorrectionDto screenDto) {
 		// 初期表示社員を取得する
 		String companyId = AppContexts.user().companyId();
 		String employeeIdLogin = AppContexts.user().employeeId();
 		List<String> lstEmployeeId = new ArrayList<>();
+		List<String> lstWplId = new ArrayList<>();
+		DatePeriod period = new DatePeriod(range.getStartDate(), range.getEndDate());
+		List<ResultRequest597Export> lstInfoEmp = new ArrayList<>();
+		InitialDisplayEmployeeDto result = screenDto.getStateParam() != null ? new InitialDisplayEmployeeDto(lstEmployeeId, screenDto.getStateParam()) :
+			new InitialDisplayEmployeeDto(lstEmployeeId, new DPCorrectionStateParam(range, employeeIds, mode, 
+					new ArrayList<>(), null, null, isTranfer, new ArrayList<>(), new ArrayList<>()));
 		if (mode == ScreenMode.NORMAL.value) {
 
-			if (!employeeIds.isEmpty())
-				return employeeIds;
+			if (!employeeIds.isEmpty()){
+				result.setLstEmpId(employeeIds);
+				return result;
+			}
 			// 社員参照範囲を取得する
 			Optional<Role> role = roleRepository.findByRoleId(AppContexts.user().roles().forAttendance());
 			if (!role.isPresent() || role.get().getEmployeeReferenceRange() == null || role.get()
 					.getEmployeeReferenceRange() == nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange.ONLY_MYSELF) {
-				return Arrays.asList(employeeIdLogin);
+				result.setLstEmpId(Arrays.asList(employeeIdLogin));
+				return result;
 			}
-			DatePeriod period = new DatePeriod(range.getStartDate(), range.getEndDate());
-			List<String> lstWplId = workplacePub.getLstWorkplaceIdBySidAndPeriod(employeeIdLogin, period);
-			List<ResultRequest597Export> lstInfoEmp = workplacePub.getLstEmpByWorkplaceIdsAndPeriod(lstWplId, period);
+			
+			lstWplId = workplacePub.getLstWorkplaceIdBySidAndPeriod(employeeIdLogin, period);
+			lstInfoEmp = workplacePub.getLstEmpByWorkplaceIdsAndPeriod(lstWplId, period);
 
 //			List<RegulationInfoEmployeeQueryR> regulationRs = regulationInfoEmployeePub.search(
 //					createQueryEmployee(new ArrayList<>(), range.getStartDate(), range.getEndDate()));
@@ -1011,8 +1033,10 @@ public class DPCorrectionProcessorMob {
 //						new DateRange(range.getStartDate(), range.getEndDate()));
 //				
 //				lstEmployeeId = narrowEmployeeAdapter.findByEmpId(listEmp, 3);
-			if (lstInfoEmp.isEmpty())
-				return Arrays.asList(employeeIdLogin);
+			if (lstInfoEmp.isEmpty()){
+				result.setLstEmpId(Arrays.asList(employeeIdLogin));
+				return result;
+			}
 			lstEmployeeId = lstInfoEmp.stream().map(x -> x.getSid()).distinct().collect(Collectors.toList());
 			lstEmployeeId.add(employeeIdLogin);
 			lstEmployeeId = lstEmployeeId.stream().distinct().collect(Collectors.toList());
@@ -1032,7 +1056,6 @@ public class DPCorrectionProcessorMob {
 			if (lstEmployeeId.isEmpty()) {
 				// throw new BusinessException("Msg_1342");
 			}
-			return lstEmployeeId;
 		} else if (mode == ScreenMode.APPROVAL.value) {
 			ApprovalRootOfEmployeeImport approvalRoot = approvalStatusAdapter
 					.getApprovalRootOfEmloyee(range.getStartDate(), range.getEndDate(), employeeIdLogin, companyId, 1);
@@ -1050,9 +1073,19 @@ public class DPCorrectionProcessorMob {
 				// throw new BusinessException("Msg_916");
 				screenDto.setErrorInfomation(DCErrorInfomation.APPROVAL_NOT_EMP.value);
 			}
-			return lstEmployeeId;
 		}
-		return Collections.emptyList();
+		
+		// Code
+		if(mode == ScreenMode.APPROVAL.value || mode == ScreenMode.NORMAL.value) {
+			// 応援者の情報をOutputにセットする - No4281
+			result.getParam().setLstWrkplaceId(lstWplId);
+			
+			List<String> lstEmp597 = lstInfoEmp.stream().map(x -> x.getSid()).collect(Collectors.toList());
+			result.getParam().setEmployeeIds(lstEmp597);
+			
+			result.setLstEmpId(lstEmployeeId);
+		}
+		return result;
 	}
 
 	public void insertStampSourceInfo(String employeeId, GeneralDate date, Boolean stampSourceAt,

@@ -51,4 +51,7 @@ public interface OuenWorkTimeSheetOfDailyRepo {
 	 * @return 応援作業時間帯
 	 */
 	public List<OuenWorkTimeSheetOfDaily> get(String sId, List<GeneralDate> dates);
+	
+	List<String> getListEmp(String cid, List<String> wkplIdList, DatePeriod period);
 }
+
