@@ -336,12 +336,9 @@ module kaf001.a.viewmodel {
                         break;
                     }
                     case ApplicationType.OPTIONAL_ITEM_APPLICATION: {
-<<<<<<< HEAD
-                        nts.uk.request.jump("/view/kaf/020/a/index.xhtml", transfer);
-=======
                         nts.uk.request.ajax('ctx/at/request/application/optionalitem/optionalItemAppSetting').done((data: Array<any>) => {
                             if (data.length == 1) {
-                                vm.$jump('/view/kaf/020/b/index.xhtml', {
+                                nts.uk.request.jump('/view/kaf/020/b/index.xhtml', {
                                     optionalItem: data[0],
                                     empLst: transfer.employeeIds,
                                     dateLst: [transfer.baseDate],
@@ -350,10 +347,9 @@ module kaf001.a.viewmodel {
                                     // screenCode: vm.screenCode
                                 });
                             } else {
-                                vm.$jump("/view/kaf/020/a/index.xhtml", transfer);
+                                nts.uk.request.jump("/view/kaf/020/a/index.xhtml", transfer);
                             }
                         });
->>>>>>> pj/at/release_ver4
                         break;
                     }
                 }
