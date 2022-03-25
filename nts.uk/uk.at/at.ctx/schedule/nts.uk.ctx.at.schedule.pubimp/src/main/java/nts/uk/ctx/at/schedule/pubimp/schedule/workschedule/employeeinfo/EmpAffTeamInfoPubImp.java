@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRank;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRankRepository;
@@ -20,23 +19,11 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.GetSch
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.DisplayControlPersonalCondition;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.employeeinfo.EmpAffTeamInfoPub;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.employeeinfo.EmpTeamInfoExport;
-<<<<<<< HEAD
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.shr.com.context.AppContexts;
-=======
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassificationRepository;
-import nts.uk.shr.com.context.AppContexts;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
->>>>>>> pj/at/release_ver4
 
 @Stateless
 public class EmpAffTeamInfoPubImp implements EmpAffTeamInfoPub {
@@ -61,9 +48,7 @@ public class EmpAffTeamInfoPubImp implements EmpAffTeamInfoPub {
     public List<EmpTeamInfoExport> get(List<String> listEmpId) {
         //return DS_所属スケジュールチーム情報を取得する.取得する( require, 社員リスト ):
         //map 社員所属チーム情報Export( $.社員ID, $.チームコード, $.チーム名称)
-        RequireImplDispControlPerCond requireImplDispControlPerCond = new RequireImplDispControlPerCond(
-                belongScheduleTeamRepo, scheduleTeamRepo, employeeRankRepo, rankRepo, empMedicalWorkStyleHistoryRepo,
-                nurseClassificationRepo);
+        RequireImplDispControlPerCond requireImplDispControlPerCond = new RequireImplDispControlPerCond();
         return GetScheduleTeamInfoService.get(requireImplDispControlPerCond, listEmpId).stream().map(x -> new EmpTeamInfoExport(
                 x.getEmployeeID(),
                 x.getOptScheduleTeamCd().isPresent() ? x.getOptScheduleTeamCd().get().v() : "",
@@ -71,21 +56,8 @@ public class EmpAffTeamInfoPubImp implements EmpAffTeamInfoPub {
         )).collect(Collectors.toList());
     }
 
-    @AllArgsConstructor
-    private static class RequireImplDispControlPerCond implements DisplayControlPersonalCondition.Require {
-        @Inject
-        private BelongScheduleTeamRepository belongScheduleTeamRepo;
-        @Inject
-        private ScheduleTeamRepository scheduleTeamRepo;
-        @Inject
-        private EmployeeRankRepository employeeRankRepo;
-        @Inject
-        private RankRepository rankRepo;
-        @Inject
-        private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
-        @Inject
-        private NurseClassificationRepository nurseClassificationRepo;
-
+    private class RequireImplDispControlPerCond implements DisplayControlPersonalCondition.Require {
+    	
         @Override
         public List<BelongScheduleTeam> get(List<String> lstEmpId) {
             List<BelongScheduleTeam> data = belongScheduleTeamRepo.get(AppContexts.user().companyId(), lstEmpId);
