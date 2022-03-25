@@ -362,6 +362,6 @@ public class OutsideWorkTimeSheet {
 	public OutsideWorkTimeSheet getReverseRounding() {
 		return new OutsideWorkTimeSheet(
 				this.overTimeWorkSheet.map(o -> o.getReverseRounding()),
-				this.holidayWorkTimeSheet.map(h -> h.getReverseRounding()));
+				this.holidayWorkTimeSheet.map(h -> h.getReverseRounding()), Optional.empty());
 	}
 }

@@ -56,6 +56,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -328,15 +329,6 @@ public class RegisterSupportInforCommandHandler extends CommandHandlerWithResult
             return supportOperationSettingRepo.get(companyId);
         }
 
-        @Override
-        public Optional<WorkType> getWorkType(String workTypeCd) {
-            return workTypeRepo.findByPK(companyId, workTypeCd);
-        }
-
-        @Override
-        public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-            return workTimeSettingRepository.findByCode(companyId, workTimeCode);
-        }
 
         @Override
         public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -359,11 +351,6 @@ public class RegisterSupportInforCommandHandler extends CommandHandlerWithResult
             if (listAffJobTitleHis.isEmpty())
                 return null;
             return listAffJobTitleHis.get(0);
-        }
-
-        @Override
-        public SharedAffWorkPlaceHisImport getAffWorkplaceHistory(String employeeId, GeneralDate standardDate) {
-            return sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, standardDate).orElse(null);
         }
 
         @Override
@@ -403,26 +390,6 @@ public class RegisterSupportInforCommandHandler extends CommandHandlerWithResult
         }
 
         @Override
-        public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-            return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, wktmCd.v()).orElse(null);
-        }
-
-        @Override
-        public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-            return fixedWorkSettingRepository.findByKey(companyId, code.v()).orElse(null);
-        }
-
-        @Override
-        public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-            return flowWorkSettingRepository.find(companyId, code.v()).orElse(null);
-        }
-
-        @Override
-        public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-            return flexWorkSettingRepository.find(companyId, code.v()).orElse(null);
-        }
-
-        @Override
         public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp, GeneralDate referenceDate) {
             return empMedicalWorkStyleHistoryRepo.get(listEmp, referenceDate);
         }
@@ -431,5 +398,47 @@ public class RegisterSupportInforCommandHandler extends CommandHandlerWithResult
         public List<NurseClassification> getListCompanyNurseCategory() {
             return nurseClassificationRepo.getListCompanyNurseCategory(AppContexts.user().companyId());
         }
+
+		@Override
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			if(workTimeCode == null)
+				return Optional.empty();
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
+		}
+
+		@Override
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			if(workTimeCode == null)
+				return Optional.empty(); 
+			return fixedWorkSettingRepository.findByKey(companyId, workTimeCode.v());
+		}
+
+		@Override
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			if(workTimeCode == null)
+				return Optional.empty(); 
+			return flowWorkSettingRepository.find(companyId, workTimeCode.v());
+		}
+
+		@Override
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			if(workTimeCode == null)
+				return Optional.empty();
+			return flexWorkSettingRepository.find(companyId, workTimeCode.v());
+		}
+
+		@Override
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			if(workTimeCode == null)
+				return Optional.empty();
+			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode.v());
+		}
+
+		@Override
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			if(workTypeCode == null)
+				return Optional.empty();
+			return workTypeRepo.findByPK(companyId, workTypeCode.v());
+		}
     }
 }

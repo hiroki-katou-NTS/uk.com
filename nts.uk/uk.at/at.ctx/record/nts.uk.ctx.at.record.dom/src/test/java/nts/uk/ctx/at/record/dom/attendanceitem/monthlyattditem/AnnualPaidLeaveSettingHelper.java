@@ -30,7 +30,7 @@ public class AnnualPaidLeaveSettingHelper {
 	public static TimeAnnualSetting createTimeAnnualSetting() {
 		TimeAnnualMaxDay annualMaxDay = AnnualPaidLeaveSettingHelper.createTimeAnnualMaxDay();
 		return new TimeAnnualSetting(annualMaxDay, 
-				TimeAnnualRoundProcesCla.RoundUpToTheDay, null,
+				TimeAnnualRoundProcesCla.TruncateOnDay0, null,
 				new TimeVacationDigestUnit(ManageDistinct.NO, TimeDigestiveUnit.OneHour));
 	}
 	
@@ -72,7 +72,7 @@ public class AnnualPaidLeaveSettingHelper {
 	
 	public static TimeAnnualSetting createTimeAnnualSetting(TimeAnnualMaxDay annualMaxDay, ManageDistinct timeManageType) {
 		return new TimeAnnualSetting(annualMaxDay, 
-				TimeAnnualRoundProcesCla.RoundUpToTheDay, null,
+				TimeAnnualRoundProcesCla.TruncateOnDay0, null,
 				new TimeVacationDigestUnit(timeManageType, TimeDigestiveUnit.OneHour));
 	}
 	
