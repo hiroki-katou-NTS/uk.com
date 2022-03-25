@@ -261,7 +261,7 @@ public class WorkInformationStampTest {
 		//Optional<SupportCard> supportCard = Optional.of(new SupportCard("cid", new SupportCardNumber(9999), "workplaceId"));
 		new Expectations() {
 			{
-				supportCardRepo.get("cid", 9999);
+				supportCardRepo.get("cid", "9999");
 				//result = supportCard;
 			}
 		};
@@ -277,10 +277,10 @@ public class WorkInformationStampTest {
 		WorkInformationTemporary workTempo = new WorkInformationTemporary(Optional.of("workplaceIDTempo"), Optional.empty());
 		String cid = "cid";
 
-		Optional<SupportCard> supportCard = Optional.of(new SupportCard("cid", new SupportCardNumber(9999), "workplaceId"));
+		Optional<SupportCard> supportCard = Optional.of(new SupportCard("cid", new SupportCardNumber("9999"), "workplaceId"));
 		new Expectations() {
 			{
-				supportCardRepo.get("cid", 9999);
+				supportCardRepo.get("cid", "9999");
 				result = supportCard;
 			}
 		};

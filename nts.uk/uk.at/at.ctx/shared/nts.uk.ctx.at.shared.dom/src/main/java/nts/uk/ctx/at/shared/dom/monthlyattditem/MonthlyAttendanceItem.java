@@ -59,6 +59,11 @@ public class MonthlyAttendanceItem extends AggregateRoot {
 	// 2件存在した場合の表示方法【追加予定】
 	private DisplayMonthResultsMethod twoMonthlyDisplay;
 
+	// 任意期間で利用する
+	private  boolean useAnyPeriod;
+
+	// 月別実績で利用する
+	private  boolean useMonthResult;
 	/**
 	 * Instantiates a new monthly attendance item.
 	 *

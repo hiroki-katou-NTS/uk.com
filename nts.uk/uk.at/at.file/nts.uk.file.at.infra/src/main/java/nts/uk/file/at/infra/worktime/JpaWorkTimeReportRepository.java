@@ -948,18 +948,6 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormalNoOtherLang.append(" 			THEN ?isNotUpdStartTimeText");
 		sqlNormalNoOtherLang.append(" 		 ELSE NULL");
 		sqlNormalNoOtherLang.append(" 	END,");
-		// R1_162 外出.外出丸め設定.同じ枠内での丸め設定
-		sqlNormalNoOtherLang.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL");
-		sqlNormalNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_SAME_FRAME = ?isTrue THEN ?roudingAfterTotalText");
-		sqlNormalNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_SAME_FRAME = ?isFalse THEN ?roudingAfterEachTimePeriodText");
-		sqlNormalNoOtherLang.append(" 		 ELSE NULL");
-		sqlNormalNoOtherLang.append(" 	END,");
-		// R1_163 外出.外出丸め設定.枠を跨る場合の丸め設定
-		sqlNormalNoOtherLang.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL");
-		sqlNormalNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_CROSS_FRAME = ?isTrue THEN ?roudingAfterTotalText");
-		sqlNormalNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_CROSS_FRAME = ?isFalse THEN ?roudingAfterEachTimePeriodText");
-		sqlNormalNoOtherLang.append(" 		 ELSE NULL");
-		sqlNormalNoOtherLang.append(" 	END,");
 		// R1_164 外出.私用・組合外出時間.就業時間帯
 		sqlNormalNoOtherLang.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL");
 		sqlNormalNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND SPECIAL_ROUND_OUT1.PERSONAL_ROUNDING_METHOD = ?reverseTimezoneRounding THEN ?reverseTimezoneRoundingText");
@@ -2357,18 +2345,6 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlowNoOtherLang.append(" 						FORMAT(CAST(FLOW_RT_SET1.AFTER_REST_TIME AS INTEGER)%60,'0#')), NULL)");
 		sqlFlowNoOtherLang.append(" 		 ELSE NULL");
 		sqlFlowNoOtherLang.append(" 	END,");
-		// R2_143 外出.外出丸め設定.同じ枠内での丸め設定
-		sqlFlowNoOtherLang.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL");
-		sqlFlowNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_SAME_FRAME = ?isTrue THEN ?roudingAfterTotalText");
-		sqlFlowNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_SAME_FRAME = ?isFalse THEN ?roudingAfterEachTimePeriodText");
-		sqlFlowNoOtherLang.append(" 		 ELSE NULL");
-		sqlFlowNoOtherLang.append(" 	END,");
-		// R2_144 外出.外出丸め設定.枠を跨る場合の丸め設定
-		sqlFlowNoOtherLang.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL");
-		sqlFlowNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_CROSS_FRAME = ?isTrue THEN ?roudingAfterTotalText");
-		sqlFlowNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_CROSS_FRAME = ?isFalse THEN ?roudingAfterEachTimePeriodText");
-		sqlFlowNoOtherLang.append(" 		 ELSE NULL");
-		sqlFlowNoOtherLang.append(" 	END,");
 		// R2_145 外出.私用・組合外出時間.就業時間帯
 		sqlFlowNoOtherLang.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL");
 		sqlFlowNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND SPECIAL_ROUND_OUT1.PERSONAL_ROUNDING_METHOD = ?reverseTimezoneRounding THEN ?reverseTimezoneRoundingText");
@@ -3747,18 +3723,6 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlexNoOtherLang.append(" 			THEN IIF(FLEX_OD_RT_SET.AFTER_REST_TIME IS NOT NULL AND FLEX_OD_RT_SET.FIX_REST_TIME = ?isFalse AND FLEX_OD_RT_SET.USE_REST_AFTER_SET = ?isTrue, ");
 		sqlFlexNoOtherLang.append(" 					CONCAT(CAST(FLEX_OD_RT_SET.AFTER_REST_TIME AS INTEGER)/60, ':',");
 		sqlFlexNoOtherLang.append(" 						FORMAT(CAST(FLEX_OD_RT_SET.AFTER_REST_TIME AS INTEGER)%60,'0#')), NULL)");
-		sqlFlexNoOtherLang.append(" 		 ELSE NULL");
-		sqlFlexNoOtherLang.append(" 	END,");
-		// R3_184 外出.外出丸め設定.同じ枠内での丸め設定
-		sqlFlexNoOtherLang.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL");
-		sqlFlexNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_SAME_FRAME = ?isTrue THEN ?roudingAfterTotalText");
-		sqlFlexNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_SAME_FRAME = ?isFalse THEN ?roudingAfterEachTimePeriodText");
-		sqlFlexNoOtherLang.append(" 		 ELSE NULL");
-		sqlFlexNoOtherLang.append(" 	END,");
-		// R3_185 外出.外出丸め設定.枠を跨る場合の丸め設定
-		sqlFlexNoOtherLang.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL");
-		sqlFlexNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_CROSS_FRAME = ?isTrue THEN ?roudingAfterTotalText");
-		sqlFlexNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_CROSS_FRAME = ?isFalse THEN ?roudingAfterEachTimePeriodText");
 		sqlFlexNoOtherLang.append(" 		 ELSE NULL");
 		sqlFlexNoOtherLang.append(" 	END,");
 		// R3_186 外出.私用・組合外出時間.就業時間帯

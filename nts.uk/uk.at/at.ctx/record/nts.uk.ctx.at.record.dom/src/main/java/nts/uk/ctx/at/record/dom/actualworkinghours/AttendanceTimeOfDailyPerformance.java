@@ -10,7 +10,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.At
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.StayingTimeOfDaily;
 
 /**
- * 
  * @author nampt
  * 日別実績の勤怠時間 - root
  */

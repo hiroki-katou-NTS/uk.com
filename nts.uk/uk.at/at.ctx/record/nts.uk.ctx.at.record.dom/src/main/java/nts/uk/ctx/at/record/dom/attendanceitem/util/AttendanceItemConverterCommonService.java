@@ -112,8 +112,11 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 		if (this.mergeGroups.containsKey(type)) {
 			List<ItemValue> values = this.mergeGroups.get(type);
 			
-			dto = AttendanceItemUtilRes.merge(dto, values, 
-					isMonthly() ? AttendanceItemType.MONTHLY_ITEM : AttendanceItemType.DAILY_ITEM);
+			dto = AttendanceItemUtilRes.merge(
+					dto,
+					values,
+					isAnyPeriod() ? AttendanceItemType.ANY_PERIOD_ITEM : (isMonthly() ? AttendanceItemType.MONTHLY_ITEM : AttendanceItemType.DAILY_ITEM)
+			);
 			
 			this.mergeGroups.remove(type);
 			this.needMergeItems.removeAll(values);

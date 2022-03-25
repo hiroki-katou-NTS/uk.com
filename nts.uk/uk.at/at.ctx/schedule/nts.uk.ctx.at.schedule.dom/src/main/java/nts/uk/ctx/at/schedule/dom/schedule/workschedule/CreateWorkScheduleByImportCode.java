@@ -19,6 +19,7 @@ public class CreateWorkScheduleByImportCode {
 	/**
 	 * 作る
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param date 年月日
 	 * @param importCode 取り込みコード
@@ -27,6 +28,7 @@ public class CreateWorkScheduleByImportCode {
 	 */
 	public static ResultOfRegisteringWorkSchedule create(
 			Require require,
+			String companyId,
 			String employeeId,
 			GeneralDate date,
 			ShiftMasterImportCode importCode,
@@ -55,7 +57,7 @@ public class CreateWorkScheduleByImportCode {
 		// 取り込み結果から勤務予定を新規作成
 		WorkSchedule newWorkSchedule;
 		try {
-			newWorkSchedule = WorkSchedule.create(require, employeeId, date, shiftMaster.get());
+			newWorkSchedule = WorkSchedule.create(require, companyId, employeeId, date, shiftMaster.get());
 		} catch (BusinessException e) {
 
 			return ResultOfRegisteringWorkSchedule.createWithError(

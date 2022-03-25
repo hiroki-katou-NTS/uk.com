@@ -1252,13 +1252,13 @@ public class ToppageStartupProcessMobFinder {
         }
 
         @Override
-        public CompensatoryLeaveEmSetting compensatoryLeaveEmSetting(String companyId, String employmentCode) {
-            return compensLeaveEmSetRepo.find(companyId, employmentCode);
+        public Optional<CompensatoryLeaveEmSetting> compensatoryLeaveEmSetting(String companyId, String employmentCode) {
+            return Optional.ofNullable(compensLeaveEmSetRepo.find(companyId, employmentCode));
         }
 
         @Override
-        public CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId) {
-            return compensLeaveComSetRepo.find(companyId);
+        public Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId) {
+            return Optional.ofNullable(compensLeaveComSetRepo.find(companyId));
         }
 
         @Override
@@ -1294,18 +1294,8 @@ public class ToppageStartupProcessMobFinder {
 		}
 
 		@Override
-		public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
+		public Optional<SEmpHistoryImport> getSEmpHistoryImport(String employeeId, GeneralDate baseDate) {
 			return Optional.empty();
-		}
-
-		@Override
-		public Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId) {
-			return Optional.ofNullable(this.compensLeaveComSetRepo.find(companyId));
-		}
-
-		@Override
-		public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode) {
-			return Optional.ofNullable(this.compensLeaveEmSetRepo.find(companyId, employmentCode));
 		}
     }
 }

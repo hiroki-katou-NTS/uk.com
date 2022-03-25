@@ -829,7 +829,6 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			}).done((result) => {
 				if (result) {
 					return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
-						nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
 						return CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 					});	
 				}
@@ -1719,8 +1718,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         changeWorkType: 'at/request/application/appforleave/findChangeWorkType',
         changeWorkTime: 'at/request/application/appforleave/findChangeWorkTime',
         changeUseingWorkTime: 'at/request/application/appforleave/findChangeUsingWorkTime',
-        changeRela: 'at/request/application/appforleave/changeRela',
-		reflectApp: "at/request/application/reflect-app"
+        changeRela: 'at/request/application/appforleave/changeRela'
     }
 
     interface DataTransfer {

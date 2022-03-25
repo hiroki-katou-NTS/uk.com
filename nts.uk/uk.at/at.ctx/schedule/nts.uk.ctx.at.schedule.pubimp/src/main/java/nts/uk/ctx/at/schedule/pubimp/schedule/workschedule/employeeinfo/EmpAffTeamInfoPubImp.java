@@ -20,11 +20,23 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.GetSch
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.DisplayControlPersonalCondition;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.employeeinfo.EmpAffTeamInfoPub;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.employeeinfo.EmpTeamInfoExport;
+<<<<<<< HEAD
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.shr.com.context.AppContexts;
+=======
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassificationRepository;
+import nts.uk.shr.com.context.AppContexts;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.List;
+import java.util.stream.Collectors;
+>>>>>>> pj/at/release_ver4
 
 @Stateless
 public class EmpAffTeamInfoPubImp implements EmpAffTeamInfoPub {

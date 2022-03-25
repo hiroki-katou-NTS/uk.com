@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.arc.time.GeneralDate;
 
 /**
  * The Class UpperLimitSetting. 上限設定
@@ -40,4 +41,15 @@ public class UpperLimitSetting extends DomainObject {
 		memento.setMaxDaysRetention(this.maxDaysCumulation);
 		memento.setRetentionYearsAmount(this.retentionYearsAmount);
 	}
+	
+	/**
+	 * 付与日から期限日を計算
+	 * @param grantDate
+	 * @return
+	 */
+	public GeneralDate calcDeadlineByGrantDate(GeneralDate grantDate){
+		return retentionYearsAmount.calcDeadlineByGrantDate(grantDate);
+	}
+	
+	
 }

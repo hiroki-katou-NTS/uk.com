@@ -150,7 +150,7 @@ public class GetWorkDataMasterInformation {
     	boolean itemId9 = itemIds.contains(9);
     	if(itemId9) {
 	    	//勤務場所を取得する
-	    	workLocation.addAll(workLocationRepository.findAll(loginUserContext.contractCode()));
+	    	workLocation.addAll(workLocationRepository.findAll(loginUserContext.contractCode(),loginUserContext.companyId()));
     	}
     	
     	//3

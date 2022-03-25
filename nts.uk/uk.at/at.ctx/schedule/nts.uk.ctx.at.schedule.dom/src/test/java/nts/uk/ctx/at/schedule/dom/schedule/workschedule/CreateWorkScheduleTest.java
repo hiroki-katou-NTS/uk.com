@@ -59,7 +59,7 @@ public class CreateWorkScheduleTest {
 				) {
 
 			new Expectations() {{
-				workInformation.containsOnChangeableWorkingTime(require, ( ClockAreaAtr) any, (WorkNo) any, (TimeWithDayAttr) any);
+				workInformation.containsOnChangeableWorkingTime(require, anyString, (ClockAreaAtr) any, (WorkNo) any, (TimeWithDayAttr) any);
 				result = new ContainsResult( true, 
 						Optional.of(new TimeSpanForCalc(
 								new TimeWithDayAttr(1), 
@@ -72,6 +72,7 @@ public class CreateWorkScheduleTest {
 			
 			Optional<ErrorInfoOfWorkSchedule> result = NtsAssert.Invoke.staticMethod(CreateWorkSchedule.class, "getErrorInfoWithWorkTimeZone", 
 					require, 
+					"cmpId",
 					"empId", 
 					GeneralDate.ymd(2020, 11, 1), 
 					workInformation, 
@@ -91,7 +92,7 @@ public class CreateWorkScheduleTest {
 				) {
 			new Expectations() {{
 				
-				workInformation.containsOnChangeableWorkingTime(require, ( ClockAreaAtr) any, (WorkNo) any, (TimeWithDayAttr) any);
+				workInformation.containsOnChangeableWorkingTime(require, anyString, (ClockAreaAtr) any, (WorkNo) any, (TimeWithDayAttr) any);
 				result = new ContainsResult( false, 
 						Optional.of(new TimeSpanForCalc(
 								new TimeWithDayAttr(1), 
@@ -106,6 +107,7 @@ public class CreateWorkScheduleTest {
 			updateInfoMap.put( WS_AttendanceItem.StartTime1.ID, (T) new TimeWithDayAttr(31));
 			Optional<ErrorInfoOfWorkSchedule> result = NtsAssert.Invoke.staticMethod(CreateWorkSchedule.class, "getErrorInfoWithWorkTimeZone", 
 					require, 
+					"cmpId",
 					"empId", 
 					GeneralDate.ymd(2020, 11, 1), 
 					workInformation, 
@@ -140,12 +142,12 @@ public class CreateWorkScheduleTest {
 				
 				// 勤怠項目31
 				workInformation.containsOnChangeableWorkingTime(
-						require, WorkTimeZone.START_TIME_1.clockArea, WorkTimeZone.START_TIME_1.workNo, (TimeWithDayAttr) any);
+						require, anyString, WorkTimeZone.START_TIME_1.clockArea, WorkTimeZone.START_TIME_1.workNo, (TimeWithDayAttr) any);
 				times = 0; 
 				
 				// 勤怠項目34
 				workInformation.containsOnChangeableWorkingTime(
-						require, WorkTimeZone.END_TIME_1.clockArea, WorkTimeZone.END_TIME_1.workNo, (TimeWithDayAttr) any);
+						require, anyString, WorkTimeZone.END_TIME_1.clockArea, WorkTimeZone.END_TIME_1.workNo, (TimeWithDayAttr) any);
 				result = new ContainsResult( true, 
 						Optional.of(new TimeSpanForCalc(
 								new TimeWithDayAttr(1), 
@@ -154,7 +156,7 @@ public class CreateWorkScheduleTest {
 				
 				// 勤怠項目41
 				workInformation.containsOnChangeableWorkingTime(
-						require, WorkTimeZone.START_TIME_2.clockArea, WorkTimeZone.START_TIME_2.workNo, (TimeWithDayAttr) any);
+						require, anyString, WorkTimeZone.START_TIME_2.clockArea, WorkTimeZone.START_TIME_2.workNo, (TimeWithDayAttr) any);
 				result = new ContainsResult( false, 
 						Optional.of(new TimeSpanForCalc(
 								new TimeWithDayAttr(1), 
@@ -163,7 +165,7 @@ public class CreateWorkScheduleTest {
 				
 				// 勤怠項目44
 				workInformation.containsOnChangeableWorkingTime(
-						require, WorkTimeZone.END_TIME_2.clockArea, WorkTimeZone.END_TIME_2.workNo, (TimeWithDayAttr) any);
+						require, anyString, WorkTimeZone.END_TIME_2.clockArea, WorkTimeZone.END_TIME_2.workNo, (TimeWithDayAttr) any);
 				result = new ContainsResult( false, 
 						Optional.of(new TimeSpanForCalc(
 								new TimeWithDayAttr(1), 
@@ -176,6 +178,7 @@ public class CreateWorkScheduleTest {
 			
 			List<ErrorInfoOfWorkSchedule> result = NtsAssert.Invoke.staticMethod(CreateWorkSchedule.class, "checkTimeSpan", 
 					require,
+					"cmpId",
 					"empId",
 					GeneralDate.ymd(2020, 11, 1),
 					workInformation,
@@ -214,6 +217,7 @@ public class CreateWorkScheduleTest {
 
 			ResultOfRegisteringWorkSchedule result = CreateWorkSchedule.create(
 					require, 
+					"cmpId",
 					"empId", 
 					GeneralDate.ymd(2020, 11, 1), 
 					workInformation, 
@@ -269,6 +273,7 @@ public class CreateWorkScheduleTest {
 			new MockUp<WorkSchedule>() {
 				@Mock
 				public WorkSchedule createByHandCorrectionWithWorkInformation(Require require,
+						String companyId,
 						String employeeId,
 						GeneralDate date,
 						WorkInformation workInformation) {
@@ -281,12 +286,12 @@ public class CreateWorkScheduleTest {
 				
 				// 勤怠項目31
 				workInformation.containsOnChangeableWorkingTime(
-						require, WorkTimeZone.START_TIME_1.clockArea, WorkTimeZone.START_TIME_1.workNo, (TimeWithDayAttr) any);
+						require, anyString, WorkTimeZone.START_TIME_1.clockArea, WorkTimeZone.START_TIME_1.workNo, (TimeWithDayAttr) any);
 				times = 0; 
 				
 				// 勤怠項目34
 				workInformation.containsOnChangeableWorkingTime(
-						require, WorkTimeZone.END_TIME_1.clockArea, WorkTimeZone.END_TIME_1.workNo, (TimeWithDayAttr) any);
+						require, anyString, WorkTimeZone.END_TIME_1.clockArea, WorkTimeZone.END_TIME_1.workNo, (TimeWithDayAttr) any);
 				result = new ContainsResult( true, 
 						Optional.of(new TimeSpanForCalc(
 								new TimeWithDayAttr(1), 
@@ -295,7 +300,7 @@ public class CreateWorkScheduleTest {
 				
 				// 勤怠項目41
 				workInformation.containsOnChangeableWorkingTime(
-						require, WorkTimeZone.START_TIME_2.clockArea, WorkTimeZone.START_TIME_2.workNo, (TimeWithDayAttr) any);
+						require, anyString, WorkTimeZone.START_TIME_2.clockArea, WorkTimeZone.START_TIME_2.workNo, (TimeWithDayAttr) any);
 				result = new ContainsResult( false, 
 						Optional.of(new TimeSpanForCalc(
 								new TimeWithDayAttr(1), 
@@ -304,7 +309,7 @@ public class CreateWorkScheduleTest {
 				
 				// 勤怠項目44
 				workInformation.containsOnChangeableWorkingTime(
-						require, WorkTimeZone.END_TIME_2.clockArea, WorkTimeZone.END_TIME_2.workNo, (TimeWithDayAttr) any);
+						require, anyString, WorkTimeZone.END_TIME_2.clockArea, WorkTimeZone.END_TIME_2.workNo, (TimeWithDayAttr) any);
 				result = new ContainsResult( false, 
 						Optional.of(new TimeSpanForCalc(
 								new TimeWithDayAttr(1), 
@@ -323,6 +328,7 @@ public class CreateWorkScheduleTest {
 			
 			ResultOfRegisteringWorkSchedule result = CreateWorkSchedule.create(
 					require, 
+					"cmpId",
 					"empId", 
 					GeneralDate.ymd(2020, 11, 1), 
 					workInformation, 
@@ -371,12 +377,12 @@ public class CreateWorkScheduleTest {
 				
 				// 勤怠項目31
 				workInformation.containsOnChangeableWorkingTime(
-						require, WorkTimeZone.START_TIME_1.clockArea, WorkTimeZone.START_TIME_1.workNo, (TimeWithDayAttr) any);
+						require, anyString, WorkTimeZone.START_TIME_1.clockArea, WorkTimeZone.START_TIME_1.workNo, (TimeWithDayAttr) any);
 				times = 0; 
 				
 				// 勤怠項目34
 				workInformation.containsOnChangeableWorkingTime(
-						require, WorkTimeZone.END_TIME_1.clockArea, WorkTimeZone.END_TIME_1.workNo, (TimeWithDayAttr) any);
+						require, anyString, WorkTimeZone.END_TIME_1.clockArea, WorkTimeZone.END_TIME_1.workNo, (TimeWithDayAttr) any);
 				result = new ContainsResult( true, 
 						Optional.of(new TimeSpanForCalc(
 								new TimeWithDayAttr(1), 
@@ -385,7 +391,7 @@ public class CreateWorkScheduleTest {
 				
 				// 勤怠項目41
 				workInformation.containsOnChangeableWorkingTime(
-						require, WorkTimeZone.START_TIME_2.clockArea, WorkTimeZone.START_TIME_2.workNo, (TimeWithDayAttr) any);
+						require, anyString, WorkTimeZone.START_TIME_2.clockArea, WorkTimeZone.START_TIME_2.workNo, (TimeWithDayAttr) any);
 				result = new ContainsResult( false, 
 						Optional.of(new TimeSpanForCalc(
 								new TimeWithDayAttr(1), 
@@ -394,7 +400,7 @@ public class CreateWorkScheduleTest {
 				
 				// 勤怠項目44
 				workInformation.containsOnChangeableWorkingTime(
-						require, WorkTimeZone.END_TIME_2.clockArea, WorkTimeZone.END_TIME_2.workNo, (TimeWithDayAttr) any);
+						require, anyString, WorkTimeZone.END_TIME_2.clockArea, WorkTimeZone.END_TIME_2.workNo, (TimeWithDayAttr) any);
 				result = new ContainsResult( false, 
 						Optional.of(new TimeSpanForCalc(
 								new TimeWithDayAttr(1), 
@@ -413,6 +419,7 @@ public class CreateWorkScheduleTest {
 			
 			ResultOfRegisteringWorkSchedule result = CreateWorkSchedule.create(
 					require, 
+					"cmpId",
 					"empId", 
 					GeneralDate.ymd(2020, 11, 1), 
 					workInformation, 
@@ -461,12 +468,12 @@ public class CreateWorkScheduleTest {
 				
 				// 勤怠項目31
 				workInformation.containsOnChangeableWorkingTime(
-						require, WorkTimeZone.START_TIME_1.clockArea, WorkTimeZone.START_TIME_1.workNo, (TimeWithDayAttr) any);
+						require, anyString, WorkTimeZone.START_TIME_1.clockArea, WorkTimeZone.START_TIME_1.workNo, (TimeWithDayAttr) any);
 				times = 0; 
 				
 				// 勤怠項目34
 				workInformation.containsOnChangeableWorkingTime(
-						require, WorkTimeZone.END_TIME_1.clockArea, WorkTimeZone.END_TIME_1.workNo, (TimeWithDayAttr) any);
+						require, anyString, WorkTimeZone.END_TIME_1.clockArea, WorkTimeZone.END_TIME_1.workNo, (TimeWithDayAttr) any);
 				result = new ContainsResult( true, 
 						Optional.of(new TimeSpanForCalc(
 								new TimeWithDayAttr(1), 
@@ -475,7 +482,7 @@ public class CreateWorkScheduleTest {
 				
 				// 勤怠項目41
 				workInformation.containsOnChangeableWorkingTime(
-						require, WorkTimeZone.START_TIME_2.clockArea, WorkTimeZone.START_TIME_2.workNo, (TimeWithDayAttr) any);
+						require, anyString, WorkTimeZone.START_TIME_2.clockArea, WorkTimeZone.START_TIME_2.workNo, (TimeWithDayAttr) any);
 				result = new ContainsResult( false, 
 						Optional.of(new TimeSpanForCalc(
 								new TimeWithDayAttr(1), 
@@ -484,7 +491,7 @@ public class CreateWorkScheduleTest {
 				
 				// 勤怠項目44
 				workInformation.containsOnChangeableWorkingTime(
-						require, WorkTimeZone.END_TIME_2.clockArea, WorkTimeZone.END_TIME_2.workNo, (TimeWithDayAttr) any);
+						require, anyString, WorkTimeZone.END_TIME_2.clockArea, WorkTimeZone.END_TIME_2.workNo, (TimeWithDayAttr) any);
 				result = new ContainsResult( false, 
 						Optional.of(new TimeSpanForCalc(
 								new TimeWithDayAttr(1), 
@@ -503,6 +510,7 @@ public class CreateWorkScheduleTest {
 			
 			ResultOfRegisteringWorkSchedule result = CreateWorkSchedule.create(
 					require, 
+					"cmpId",
 					"empId", 
 					GeneralDate.ymd(2020, 11, 1), 
 					workInformation, 
@@ -556,6 +564,7 @@ public class CreateWorkScheduleTest {
 			
 			CreateWorkSchedule.create(
 					require, 
+					"cmpId",
 					"empId", 
 					GeneralDate.ymd(2020, 11, 1), 
 					workInformation, 
@@ -589,6 +598,7 @@ public class CreateWorkScheduleTest {
 			
 			CreateWorkSchedule.create(
 					require, 
+					"cmpId",
 					"empId", 
 					GeneralDate.ymd(2020, 11, 1), 
 					workInformation, 
@@ -615,12 +625,12 @@ public class CreateWorkScheduleTest {
 				
 				// 勤怠項目31
 				workInformation.containsOnChangeableWorkingTime(
-						require, WorkTimeZone.START_TIME_1.clockArea, WorkTimeZone.START_TIME_1.workNo, (TimeWithDayAttr) any);
+						require, anyString, WorkTimeZone.START_TIME_1.clockArea, WorkTimeZone.START_TIME_1.workNo, (TimeWithDayAttr) any);
 				times = 0; 
 				
 				// 勤怠項目34
 				workInformation.containsOnChangeableWorkingTime(
-						require, WorkTimeZone.END_TIME_1.clockArea, WorkTimeZone.END_TIME_1.workNo, (TimeWithDayAttr) any);
+						require, anyString, WorkTimeZone.END_TIME_1.clockArea, WorkTimeZone.END_TIME_1.workNo, (TimeWithDayAttr) any);
 				result = new ContainsResult( true, 
 						Optional.of(new TimeSpanForCalc(
 								new TimeWithDayAttr(1), 
@@ -636,6 +646,7 @@ public class CreateWorkScheduleTest {
 			
 			ResultOfRegisteringWorkSchedule result = CreateWorkSchedule.create(
 					require, 
+					"cmpId",
 					"empId", 
 					GeneralDate.ymd(2020, 11, 1), 
 					workInformation, 
@@ -664,11 +675,11 @@ public class CreateWorkScheduleTest {
 				result = Optional.of(workSchedule);
 				
 				// 勤怠項目31
-				workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(1), (TimeWithDayAttr) any);
+				workInformation.containsOnChangeableWorkingTime(require, anyString, ClockAreaAtr.START, new WorkNo(1), (TimeWithDayAttr) any);
 				times = 0; 
 				
 				// 勤怠項目34
-				workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), (TimeWithDayAttr) any);
+				workInformation.containsOnChangeableWorkingTime(require, anyString, ClockAreaAtr.END, new WorkNo(1), (TimeWithDayAttr) any);
 				result = new ContainsResult( true, 
 						Optional.of(new TimeSpanForCalc(
 								new TimeWithDayAttr(1), 
@@ -688,6 +699,7 @@ public class CreateWorkScheduleTest {
 			
 			ResultOfRegisteringWorkSchedule result = CreateWorkSchedule.create(
 					require, 
+					"cmpId",
 					"empId", 
 					GeneralDate.ymd(2020, 11, 1), 
 					workInformation, 

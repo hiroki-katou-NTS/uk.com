@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockHistory;
@@ -28,7 +29,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ActualLockFinder.
@@ -50,6 +50,9 @@ public class ActualLockFinder {
 
 	@Inject
 	private EmpEmployeeAdapter employeeAdapter;
+	
+	@Inject
+	private ActualLockRepository lockRep;
 
 	/**
 	 * Find all.
@@ -178,5 +181,18 @@ public class ActualLockFinder {
 			return dto;
 		}).collect(Collectors.toList());
 
+	}
+	
+	/**
+	 * find actual lock by companyId and closureId
+	 * @param companyId
+	 * @param closureId
+	 * @return
+	 */
+	public Integer findMonthState(String companyId, int closureId) {
+		Optional<ActualLock> actualLock = this.lockRep.findById(companyId, closureId);
+		if(actualLock.isPresent())
+			return actualLock.get().getMonthlyLockState().value;
+		return null;
 	}
 }

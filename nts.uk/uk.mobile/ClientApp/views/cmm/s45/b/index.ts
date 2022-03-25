@@ -4,11 +4,13 @@ import { component, Prop, Watch } from '@app/core/component';
 import { AppInfo } from '../shr';
 import { AppListExtractConditionDto } from '../shr/index.d';
 import { AppListExtractCondition, ApplicationListDtoMobile, ListOfApplication, ListOfAppTypes, Mode } from '../a/index';
+import { AppType } from 'views/kaf/s00/shr/index';
 
 import { TotopComponent } from '@app/components/totop';
 import { storage } from '@app/utils';
 import { CmmS45DComponent } from '../d/index';
 import { CmmS45EComponent } from '../e/index';
+import { CmmS45GComponent } from '../g/index';
 
 @component({
     name: 'cmms45b',
@@ -37,7 +39,8 @@ import { CmmS45EComponent } from '../e/index';
     components: {
         'to-top': TotopComponent,
         'cmms45d': CmmS45DComponent,
-        'cmms45e': CmmS45EComponent
+        'cmms45e': CmmS45EComponent,
+        'cmms45g': CmmS45GComponent
     }
 })
 
@@ -426,8 +429,8 @@ export class CmmS45BComponent extends Vue {
                     version: null,
                     opComplementLeaveApp: app.opComplementLeaveApp,
                     opAppStartDate: app.opAppStartDate,
-                    opAppEndDate: app.opAppEndDate
-                    
+                    opAppEndDate: app.opAppEndDate,
+                    opBackgroundColor: app.opBackgroundColor
                 }));
             }
         });
@@ -614,13 +617,13 @@ export class CmmS45BComponent extends Vue {
         let lstAppr = [];
         let lstApplicationTemp = self.data.appListInfoDto.appLst as ListOfApplication;
         let ListOfApplicationCmd = [];
-        lstAppID.forEach((id) => {
-            lstAppr.push({ appId: id, version: self.findVersion(id) });
-            let object = _.filter(lstApplicationTemp, (item) => item.appID == id);
-            if (object) {
-                ListOfApplicationCmd.push(object[0]);
+        let sortAppIDLst = _.chain(self.filterByAppType).map((x) => x.lstApp).flatten().map((x) => x.id).value();
+        _.forEach(sortAppIDLst, (appID) => {
+            if (_.includes(lstAppID, appID)) {
+                let app = _.find(lstApplicationTemp, (item) => item.appID == appID);
+                lstAppr.push({ appId: app.appID, version: app.application.version });
+                ListOfApplicationCmd.push(app);
             }
-
         });
 
         let paramCmd = {
@@ -630,16 +633,59 @@ export class CmmS45BComponent extends Vue {
         };
         self.$modal.confirm({ messageId: 'Msg_1551' }).then((value) => {
             if (value == 'yes') {
-                self.$http.post('at', servicePath.approvalBatchApp, paramCmd).then((result) => {
-                    return self.$http.post('at', servicePath.approverAfterConfirm, paramCmd.listOfApplicationCmds);
+                self.checkDialog(paramCmd.listOfApplicationCmds, [], false, false, false, false).then((listCmdAfterConfirm: any) => {
+                    paramCmd.listOfApplicationCmds = listCmdAfterConfirm;
+                    
+                    return self.$http.post('at', servicePath.approvalBatchApp, paramCmd);
                 }).then((result) => {
-                    self.$mask('hide');
-                    self.$modal.info({ messageId: 'Msg_220' }).then(() => {
+                    return self.$http.post('at', servicePath.approverAfterConfirm, paramCmd.listOfApplicationCmds);
+                }).then((result: any) => {
+                    if (result) {
+                        let isInfoDialog = true,
+                            displayMsg = '';
+                        if (!_.isEmpty(result.data.successMap)) {
+                            displayMsg += self.$i18n('Msg_220');
+                        } else {
+                            isInfoDialog = false;
+                        }
+                        if (!_.isEmpty(result.data.failMap)) {
+                            if (isInfoDialog) {
+                                displayMsg += ',';
+                                displayMsg += self.$i18n('Msg_1726');
+                            } else {
+                                displayMsg += self.$i18n('Msg_1725');
+                            }
+                            let itemFailMap = _.filter(ListOfApplicationCmd, (item) => _.includes(Object.keys(result.data.failMap), item.appID));
+                            if (!_.isEmpty(itemFailMap)) {
+                                displayMsg += '(';
+                                displayMsg += _.chain(itemFailMap).map((item) => {
+                                    let appInfo = _.find(self.appListExtractCondition.opListOfAppTypes, (o) => o.appType == item.appType),
+                                        appName = '';
+                                    if (!_.isUndefined(appInfo)) {
+                                        appName = appInfo.appName;
+                                    }
+
+                                    return item.applicantName  + ' ' + item.appDate + ' ' + appName + ': ' + result.data.failMap[item.appID];    
+                                }).join(',').value();
+                                displayMsg += ')';
+                            }
+                        }
+                        if (_.isEmpty(displayMsg)) {
+                            displayMsg += self.$i18n('Msg_1725');
+                        }
+                        if (isInfoDialog) {
+                            return self.$modal.info(displayMsg);
+                        } else {
+                            return self.$modal.error(displayMsg);
+                        }
+                    }
+                }).then((result: any) => {
+                    if (result) {
                         self.$mask('hide');
                         self.lstAppr = [];
                         self.modeAppr = false;
                         self.getData(true, false);
-                    });
+                    }
                 }).catch(() => {
                     self.$mask('hide');
                 });
@@ -771,6 +817,121 @@ export class CmmS45BComponent extends Vue {
     private appContent(appName: string, prePostAtr: number) {
         // return this.isDisPreP == 1 ? appName + ' ' + this.$i18n('CMMS45_24', prePostName) : appName;
         return appName + ' ' + this.$i18n('CMMS45_24', prePostAtr == 0 ? '事前' : '事後');
+    }
+
+    private checkDialog(itemLst: any, itemConfirmLst: any, confirmAllPreApp: boolean, notConfirmAllPreApp: boolean, confirmAllActual: boolean, notConfirmAllActual: boolean): any {
+        const self = this;
+        
+        return new Promise((resolve) => {
+            if (_.isEmpty(itemLst)) {
+                return resolve(itemConfirmLst);
+            }
+            let item = itemLst[0];
+            if (item.appType != AppType.OVER_TIME_APPLICATION && item.appType != AppType.LEAVE_TIME_APPLICATION) {
+                itemConfirmLst.push(item);
+                
+                return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
+                    
+                    return resolve(result);
+                });
+            }
+            if (_.isEmpty(item.opBackgroundColor)) {
+                itemConfirmLst.push(item);
+                
+                return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
+                    
+                    return resolve(result);
+                });
+            }
+            if (item.opBackgroundColor == 'bg-pre-application-excess') {
+                if (confirmAllPreApp) {
+                    itemConfirmLst.push(item);
+                    
+                    return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
+                        
+                        return resolve(result);
+                    });
+                }
+                if (notConfirmAllPreApp) {
+                    
+                    return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
+                        
+                        return resolve(result);
+                    });
+                }
+            } else {
+                if (confirmAllActual) {
+                    itemConfirmLst.push(item);
+                    
+                    return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
+                        
+                        return resolve(result);
+                    });
+                }
+                if (notConfirmAllActual) {
+                    
+                    return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
+                        
+                        return resolve(result);
+                    });
+                }
+            }
+            let appInfo = { appName: ''},
+                appName = '';
+            if (item.opAppTypeDisplay) {
+                appInfo = _.find(self.appListExtractCondition.opListOfAppTypes, (o: any) => o.appType == item.appType && o.opApplicationTypeDisplay == item.opAppTypeDisplay);
+            } else {
+                appInfo = _.find(self.appListExtractCondition.opListOfAppTypes, (o: any) => o.appType == item.appType);
+            }
+            if (_.isUndefined(appInfo)) {
+                appName = '';
+            } else {
+                appName = _.escape(appInfo.appName);
+            }
+            self.$modal('cmms45g', {
+                applicantName: item.applicantName,
+                appName,
+                appDate: item.appDate,
+                opBackgroundColor: item.opBackgroundColor,
+                appContent: item.appContent,
+                isMulti: itemLst.length > 1,
+                'confirmAllPreApp': confirmAllPreApp, 
+                'notConfirmAllPreApp': notConfirmAllPreApp, 
+                'confirmAllActual': confirmAllActual, 
+                'notConfirmAllActual': notConfirmAllActual
+            }).then((result: any) => {
+                if (result) {
+                    if (result.confirm) {
+                        itemConfirmLst.push(item);
+                        
+                        return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, 
+                                            result.confirmAllPreApp, 
+                                            result.notConfirmAllPreApp, 
+                                            result.confirmAllActual, 
+                                            result.notConfirmAllActual).then((result: any) => {
+                            
+                                                return resolve(result);
+                        });	
+                    }
+                }
+                
+                return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, 
+                                            result ? result.confirmAllPreApp : false, 
+                                            result ? result.notConfirmAllPreApp : false, 
+                                            result ? result.confirmAllActual : false, 
+                                            result ? result.notConfirmAllActual : false).then((result: any) => {
+                    
+                                                return resolve(result);
+                });
+            });
+        });
+    }
+
+    public toG() {
+        const self = this;
+        self.$modal('cmms45g').then(() => {
+
+        });
     }
 }
 interface IAppByEmp {

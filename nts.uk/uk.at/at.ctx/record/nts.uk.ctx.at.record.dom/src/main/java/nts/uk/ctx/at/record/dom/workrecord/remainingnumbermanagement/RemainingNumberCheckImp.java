@@ -29,10 +29,13 @@ public class RemainingNumberCheckImp implements RemainingNumberCheck {
     
     @Inject
     private SpecialHolidayRepository specialHolidayRepo;
+    
+    @Inject
+    private DetermineReferSetting determineReferSetting;
 
     @Override
     public RemainNumberClassification determineCheckRemain(String cId, List<String> workTypeCodes,
-            Optional<TimeDigestionParam> timeDigest) {
+            Optional<TimeDigestionParam> timeDigest, String sId) {
         // 「残数チェック区分」の初期値をセットする：全て「チェックしない」（false）にする
         RemainNumberClassification remainNumberClassification = new RemainNumberClassification();
         
@@ -143,8 +146,9 @@ public class RemainingNumberCheckImp implements RemainingNumberCheck {
                 }
             });
         }
-
-        return remainNumberClassification;
+        
+        // 設定を参照して、判断する
+        return determineReferSetting.algorithm(cId, sId, remainNumberClassification);
     }
     
     /**

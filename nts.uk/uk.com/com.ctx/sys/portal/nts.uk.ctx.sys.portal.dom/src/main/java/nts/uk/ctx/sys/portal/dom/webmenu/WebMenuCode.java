@@ -23,5 +23,4 @@ public class WebMenuCode extends StringPrimitiveValue<WebMenuCode> {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}
-
 }

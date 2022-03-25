@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.CheckIndentityMonth;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthParam;
@@ -61,7 +62,7 @@ public class ProcessMonthScreen {
 													: processor.getEmploymentCode(companyId,
 															param.dateRange.getEndDate(), param.employeeTarget),
 											dailyPerformanceDto, param.autBussCode, param.isLoadAfterCalc() ? param.getDomainMonthOpt() : Optional.empty(),
-											param.getStateParam().getPeriod())));
+											new DatePeriod(param.getStateParam().getPeriod().getStartDate(),param.getStateParam().getPeriod().getEndDate()) )));
 			if (param.employeeTarget.equals(sId)) {
 				// 社員に対応する締め期間を取得する
 				DatePeriod period = ClosureService.findClosurePeriod(

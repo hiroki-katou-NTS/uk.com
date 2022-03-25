@@ -242,16 +242,16 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	protected LeaveComDayOffManaRepository leaveComDayOffManaRepo;
 
 	protected RemainCreateInforByRecordData remainCreateInforByRecordData;
-	
+
 	protected ElapseYearRepository elapseYearRepository;
-	
+
 	private EmpComHisAdapter empComHisAdapter;
-	
+
 	private ClosureStatusManagementRepository closureStatusManagementRepo;
 	private CheckCareService checkCareService;
 
 	private WorkingConditionItemService workingConditionItemService;
-	
+
 	private SysEmploymentHisAdapter sysEmploymentHisAdapter;
 
 	public RequireImp(ComSubstVacationRepository comSubstVacationRepo,
@@ -286,9 +286,8 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 			GrantYearHolidayRepository grantYearHolidayRepo, PayoutSubofHDManaRepository payoutSubofHDManaRepo,
 			LeaveComDayOffManaRepository leaveComDayOffManaRepo, CheckCareService checkChildCareService,
 			WorkingConditionItemService workingConditionItemService, RemainCreateInforByRecordData remainCreateInforByRecordData,
-			SysEmploymentHisAdapter sysEmploymentHisAdapter,
-			ElapseYearRepository elapseYearRepository, EmpComHisAdapter empComHisAdapter, ClosureStatusManagementRepository closureStatusManagementRepo
-			) {
+			SysEmploymentHisAdapter sysEmploymentHisAdapter, ElapseYearRepository elapseYearRepository, EmpComHisAdapter empComHisAdapter,
+			ClosureStatusManagementRepository closureStatusManagementRepo) {
 		this.comSubstVacationRepo = comSubstVacationRepo;
 		this.compensLeaveComSetRepo = compensLeaveComSetRepo;
 		this.specialLeaveGrantRepo = specialLeaveGrantRepo;
@@ -348,19 +347,19 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		this.empComHisAdapter = empComHisAdapter;
 		this.closureStatusManagementRepo = closureStatusManagementRepo;
 	}
-	
+
 	RequireImpCache cache = new RequireImpCache();
 
 	@Override
 	public Optional<ComSubstVacation> comSubstVacation(String companyId) {
-		if(!cache.getComSubstVacationCache().isPresent()){
+		if (!cache.getComSubstVacationCache().isPresent()) {
 			cache.setComSubstVacationCache(comSubstVacationRepo.findById(companyId));
 		}
 		return cache.getComSubstVacationCache();
 	}
 
 	@Override
-	public List<InterimAbsMng> interimAbsMng(String absId , DatePeriod period) {
+	public List<InterimAbsMng> interimAbsMng(String absId, DatePeriod period) {
 		return interimRecAbasMngRepo.getAbsBySidDatePeriod(absId, period);
 	}
 
@@ -388,12 +387,12 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public List<InterimDayOffMng> interimDayOffMng(String dayOffManaId, DatePeriod period) {
-		return interimBreakDayOffMngRepo.getDayOffBySidPeriod(dayOffManaId,period);
+		return interimBreakDayOffMngRepo.getDayOffBySidPeriod(dayOffManaId, period);
 	}
 
 	@Override
 	public List<InterimBreakMng> interimBreakMng(String breakManaId, DatePeriod period) {
-		return interimBreakDayOffMngRepo.getBySidPeriod(breakManaId,period);
+		return interimBreakDayOffMngRepo.getBySidPeriod(breakManaId, period);
 	}
 
 	@Override
@@ -433,7 +432,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
-		if(!cache.getWorkingConditionItemMap().containsKey(historyId)){
+		if (!cache.getWorkingConditionItemMap().containsKey(historyId)) {
 			cache.getWorkingConditionItemMap().put(historyId, workingConditionItemRepo.getByHistoryId(historyId));
 		}
 		return cache.getWorkingConditionItemMap().get(historyId);
@@ -445,10 +444,9 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		return workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
 	}
 
-
 	@Override
 	public Optional<FlowWorkSetting> flowWorkSetting(String companyId, String workTimeCode) {
-		if(!cache.getFlowWorkSetMap().containsKey(workTimeCode)) {
+		if (!cache.getFlowWorkSetMap().containsKey(workTimeCode)) {
 			cache.getFlowWorkSetMap().put(workTimeCode, flowWorkSettingRepo.find(companyId, workTimeCode));
 		}
 		return cache.getFlowWorkSetMap().get(workTimeCode);
@@ -456,7 +454,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public Optional<FlexWorkSetting> flexWorkSetting(String companyId, String workTimeCode) {
-		if(!cache.getFlexWorkSetMap().containsKey(workTimeCode)) {
+		if (!cache.getFlexWorkSetMap().containsKey(workTimeCode)) {
 			cache.getFlexWorkSetMap().put(workTimeCode, flexWorkSettingRepo.find(companyId, workTimeCode));
 		}
 		return cache.getFlexWorkSetMap().get(workTimeCode);
@@ -464,7 +462,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, String workTimeCode) {
-		if(!cache.getFixedWorkSetMap().containsKey(workTimeCode)) {
+		if (!cache.getFixedWorkSetMap().containsKey(workTimeCode)) {
 			cache.getFixedWorkSetMap().put(workTimeCode, fixedWorkSettingRepo.findByKey(companyId, workTimeCode));
 		}
 		return cache.getFixedWorkSetMap().get(workTimeCode);
@@ -472,7 +470,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public Optional<DiffTimeWorkSetting> diffTimeWorkSetting(String companyId, String workTimeCode) {
-		if(!cache.getDiffTimeWorkSettingMap().containsKey(workTimeCode)){
+		if (!cache.getDiffTimeWorkSettingMap().containsKey(workTimeCode)) {
 			cache.getDiffTimeWorkSettingMap().put(workTimeCode, diffTimeWorkSettingRepo.find(companyId, workTimeCode));
 		}
 		return cache.getDiffTimeWorkSettingMap().get(workTimeCode);
@@ -480,23 +478,23 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public Optional<WorkTimeSetting> workTimeSetting(String companyId, String workTimeCode) {
-		if(!cache.getWorkTimeSetMap().containsKey(workTimeCode)) {
+		if (!cache.getWorkTimeSetMap().containsKey(workTimeCode)) {
 			cache.getWorkTimeSetMap().put(workTimeCode, workTimeSettingRepo.findByCode(companyId, workTimeCode));
 		}
 		return cache.getWorkTimeSetMap().get(workTimeCode);
 	}
 
 	@Override
-	public CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId) {
+	public Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId) {
 		if(cache.getCompensatoryLeaveComSettingCache() == null){
 			cache.setCompensatoryLeaveComSettingCache(compensLeaveComSetRepo.find(companyId));
 		}
-		return cache.getCompensatoryLeaveComSettingCache();
+		return Optional.ofNullable(cache.getCompensatoryLeaveComSettingCache());
 	}
 
 	@Override
 	public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, String workTimeCode) {
-		if(!cache.getPredetemineTimeSetting().containsKey(workTimeCode)) {
+		if (!cache.getPredetemineTimeSetting().containsKey(workTimeCode)) {
 			cache.getPredetemineTimeSetting().put(workTimeCode,
 					predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode));
 		}
@@ -505,22 +503,25 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public List<Integer> getSpecialHolidayNumber(String cid, int sphdSpecLeaveNo) {
-		if(!cache.getSpecialHolidayCodeBySpecLeaveNoMap().containsKey(sphdSpecLeaveNo)){
-			cache.getSpecialHolidayCodeBySpecLeaveNoMap().put(sphdSpecLeaveNo, specialHolidayRepo.findBySphdSpecLeave(cid, sphdSpecLeaveNo));
+		if (!cache.getSpecialHolidayCodeBySpecLeaveNoMap().containsKey(sphdSpecLeaveNo)) {
+			cache.getSpecialHolidayCodeBySpecLeaveNoMap().put(sphdSpecLeaveNo,
+					specialHolidayRepo.findBySphdSpecLeave(cid, sphdSpecLeaveNo));
 		}
 		return cache.getSpecialHolidayCodeBySpecLeaveNoMap().get(sphdSpecLeaveNo);
 	}
+
 	@Override
 	public List<Integer> getAbsenceNumber(String cid, int absenseNo) {
-		if(!cache.getSpecialHolidayCodeByAbsenseNoMap().containsKey(absenseNo)){
-			cache.getSpecialHolidayCodeByAbsenseNoMap().put(absenseNo, specialHolidayRepo.findByAbsframeNo(cid, absenseNo));
+		if (!cache.getSpecialHolidayCodeByAbsenseNoMap().containsKey(absenseNo)) {
+			cache.getSpecialHolidayCodeByAbsenseNoMap().put(absenseNo,
+					specialHolidayRepo.findByAbsframeNo(cid, absenseNo));
 		}
 		return cache.getSpecialHolidayCodeByAbsenseNoMap().get(absenseNo);
 	}
 
 	@Override
 	public Optional<Closure> closure(String companyId, int closureId) {
-		if(!cache.getClosureMap().containsKey(closureId)) {
+		if (!cache.getClosureMap().containsKey(closureId)) {
 			cache.getClosureMap().put(closureId, closureRepo.findById(companyId, closureId));
 		}
 		return cache.getClosureMap().get(closureId);
@@ -528,15 +529,16 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
-		if(!cache.getClosureEmploymentMap().containsKey(employmentCD)){
-			cache.getClosureEmploymentMap().put(employmentCD, closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD));
+		if (!cache.getClosureEmploymentMap().containsKey(employmentCD)) {
+			cache.getClosureEmploymentMap().put(employmentCD,
+					closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD));
 		}
 		return cache.getClosureEmploymentMap().get(employmentCD);
 	}
 
 	@Override
 	public Optional<WorkType> workType(String companyId, String workTypeCd) {
-		if(!cache.getWorkTypeMap().containsKey(workTypeCd)) {
+		if (!cache.getWorkTypeMap().containsKey(workTypeCd)) {
 			cache.getWorkTypeMap().put(workTypeCd, workTypeRepo.findByPK(companyId, workTypeCd));
 		}
 		return cache.getWorkTypeMap().get(workTypeCd);
@@ -548,32 +550,32 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 //	}
 	@Override
 	public Optional<EmpSubstVacation> empSubstVacation(String companyId, String contractTypeCode) {
-		if(!cache.getEmpSubstVacationMap().containsKey(contractTypeCode)){
-			cache.getEmpSubstVacationMap().put(contractTypeCode, empSubstVacationRepo.findById(companyId, contractTypeCode));
+		if (!cache.getEmpSubstVacationMap().containsKey(contractTypeCode)) {
+			cache.getEmpSubstVacationMap().put(contractTypeCode,
+					empSubstVacationRepo.findById(companyId, contractTypeCode));
 		}
 		return cache.getEmpSubstVacationMap().get(contractTypeCode);
 	}
 
 	@Override
-	public CompensatoryLeaveEmSetting compensatoryLeaveEmSetting(String companyId,
-			String employmentCode) {
+	public Optional<CompensatoryLeaveEmSetting> compensatoryLeaveEmSetting(String companyId, String employmentCode) {
 		if(!cache.getCompensatoryLeaveEmSettingMap().containsKey(employmentCode)){
 			cache.getCompensatoryLeaveEmSettingMap().put(employmentCode, Optional.ofNullable(compensLeaveEmSetRepo.find(companyId, employmentCode)));
 		}
-		return cache.getCompensatoryLeaveEmSettingMap().get(employmentCode).orElse(null);
+		return cache.getCompensatoryLeaveEmSettingMap().get(employmentCode);
 	}
 
 	@Override
 	public List<Closure> closure(String companyId) {
-		if(cache.getClosureCache().isEmpty()){
+		if (cache.getClosureCache().isEmpty()) {
 			cache.setClosureCache(closureRepo.findAll(companyId));
 		}
 		return cache.getClosureCache();
 	}
-	
+
 	@Override
 	public List<Closure> closureActive(String companyId, UseClassification useAtr) {
-		if(!cache.getClosurebyUseClassificationMap().containsKey(useAtr)){
+		if (!cache.getClosurebyUseClassificationMap().containsKey(useAtr)) {
 			cache.getClosurebyUseClassificationMap().put(useAtr, closureRepo.findAllActive(companyId, useAtr));
 		}
 		return cache.getClosurebyUseClassificationMap().get(useAtr);
@@ -586,7 +588,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public Optional<OutsideOTSetting> outsideOTSetting(String companyId) {
-		if(!cache.getOutsideOTSettingCache().isPresent()) {
+		if (!cache.getOutsideOTSettingCache().isPresent()) {
 			cache.setOutsideOTSettingCache(outsideOTSettingRepo.findById(companyId));
 		}
 		return cache.getOutsideOTSettingCache();
@@ -594,7 +596,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public List<WorkdayoffFrame> workdayoffFrames(String companyId) {
-		if(cache.getWorkdayoffFrameCache().isEmpty()){
+		if (cache.getWorkdayoffFrameCache().isEmpty()) {
 			cache.setWorkdayoffFrameCache(workdayoffFrameRepo.getAllWorkdayoffFrame(companyId));
 		}
 		return cache.getWorkdayoffFrameCache();
@@ -602,7 +604,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public AnnualPaidLeaveSetting annualPaidLeaveSetting(String companyId) {
-		if(cache.getAnnualPaidLeaveSettingCache() == null){
+		if (cache.getAnnualPaidLeaveSettingCache() == null) {
 			cache.setAnnualPaidLeaveSettingCache(annualPaidLeaveSettingRepo.findByCompanyId(companyId));
 		}
 		return cache.getAnnualPaidLeaveSettingCache();
@@ -611,15 +613,16 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	@Override
 	public Optional<EmptYearlyRetentionSetting> employmentYearlyRetentionSetting(String companyId,
 			String employmentCode) {
-		if(!cache.getEmptYearlyRetentionSettingMap().containsKey(employmentCode)){
-			cache.getEmptYearlyRetentionSettingMap().put(employmentCode, employmentSettingRepo.find(companyId, employmentCode));
+		if (!cache.getEmptYearlyRetentionSettingMap().containsKey(employmentCode)) {
+			cache.getEmptYearlyRetentionSettingMap().put(employmentCode,
+					employmentSettingRepo.find(companyId, employmentCode));
 		}
 		return cache.getEmptYearlyRetentionSettingMap().get(employmentCode);
 	}
 
 	@Override
 	public Optional<RetentionYearlySetting> retentionYearlySetting(String companyId) {
-		if(!cache.getRetentionYearlySettingCache().isPresent()){
+		if (!cache.getRetentionYearlySettingCache().isPresent()) {
 			cache.setRetentionYearlySettingCache(retentionYearlySettingRepo.findByCompanyId(companyId));
 		}
 		return cache.getRetentionYearlySettingCache();
@@ -627,7 +630,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public Optional<UsageUnitSetting> usageUnitSetting(String companyId) {
-		if(!cache.getUsageUnitSettingCache().isPresent()){
+		if (!cache.getUsageUnitSettingCache().isPresent()) {
 			cache.setUsageUnitSettingCache(usageUnitSettingRepo.findByCompany(companyId));
 		}
 		return cache.getUsageUnitSettingCache();
@@ -635,7 +638,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public Optional<RegularLaborTimeCom> regularLaborTimeByCompany(String companyId) {
-		if(!cache.getRegularLaborTimeComCache().isPresent()){
+		if (!cache.getRegularLaborTimeComCache().isPresent()) {
 			cache.setRegularLaborTimeComCache(regularLaborTimeComRepo.find(companyId));
 		}
 		return cache.getRegularLaborTimeComCache();
@@ -643,7 +646,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public Optional<DeforLaborTimeCom> deforLaborTimeByCompany(String companyId) {
-		if(!cache.getDeforLaborTimeComCache().isPresent()){
+		if (!cache.getDeforLaborTimeComCache().isPresent()) {
 			cache.setDeforLaborTimeComCache(deforLaborTimeComRepo.find(companyId));
 		}
 		return cache.getDeforLaborTimeComCache();
@@ -651,7 +654,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public Optional<RegularLaborTimeWkp> regularLaborTimeByWorkplace(String cid, String wkpId) {
-		if(!cache.getRegularLaborTimeWkpMap().containsKey(wkpId)){
+		if (!cache.getRegularLaborTimeWkpMap().containsKey(wkpId)) {
 			cache.getRegularLaborTimeWkpMap().put(wkpId, regularLaborTimeWkpRepo.find(cid, wkpId));
 		}
 		return cache.getRegularLaborTimeWkpMap().get(wkpId);
@@ -659,7 +662,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public Optional<DeforLaborTimeWkp> deforLaborTimeByWorkplace(String cid, String wkpId) {
-		if(!cache.getDeforLaborTimeWkpMap().containsKey(wkpId)){
+		if (!cache.getDeforLaborTimeWkpMap().containsKey(wkpId)) {
 			cache.getDeforLaborTimeWkpMap().put(wkpId, deforLaborTimeWkpRepo.find(cid, wkpId));
 		}
 		return cache.getDeforLaborTimeWkpMap().get(wkpId);
@@ -667,15 +670,16 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public Optional<RegularLaborTimeEmp> regularLaborTimeByEmployment(String cid, String employmentCode) {
-		if(!cache.getRegularLaborTimeEmpMap().containsKey(employmentCode)){
-			cache.getRegularLaborTimeEmpMap().put(employmentCode, regularLaborTimeEmpRepo.findById(cid, employmentCode));
+		if (!cache.getRegularLaborTimeEmpMap().containsKey(employmentCode)) {
+			cache.getRegularLaborTimeEmpMap().put(employmentCode,
+					regularLaborTimeEmpRepo.findById(cid, employmentCode));
 		}
 		return cache.getRegularLaborTimeEmpMap().get(employmentCode);
 	}
 
 	@Override
 	public Optional<DeforLaborTimeEmp> deforLaborTimeByEmployment(String cid, String employmentCode) {
-		if(!cache.getDeforLaborTimeEmpMap().containsKey(employmentCode)){
+		if (!cache.getDeforLaborTimeEmpMap().containsKey(employmentCode)) {
 			cache.getDeforLaborTimeEmpMap().put(employmentCode, deforLaborTimeEmpRepo.find(cid, employmentCode));
 		}
 		return cache.getDeforLaborTimeEmpMap().get(employmentCode);
@@ -683,7 +687,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public Optional<RegularLaborTimeSha> regularLaborTimeByEmployee(String Cid, String EmpId) {
-		if(!cache.getRegularLaborTimeShaMap().containsKey(EmpId)){
+		if (!cache.getRegularLaborTimeShaMap().containsKey(EmpId)) {
 			cache.getRegularLaborTimeShaMap().put(EmpId, regularLaborTimeShaRepo.find(Cid, EmpId));
 		}
 		return cache.getRegularLaborTimeShaMap().get(EmpId);
@@ -691,7 +695,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public Optional<DeforLaborTimeSha> deforLaborTimeByEmployee(String cid, String empId) {
-		if(!cache.getDeforLaborTimeShaMap().containsKey(empId)){
+		if (!cache.getDeforLaborTimeShaMap().containsKey(empId)) {
 			cache.getDeforLaborTimeShaMap().put(empId, deforLaborTimeShaRepo.find(cid, empId));
 		}
 		return cache.getDeforLaborTimeShaMap().get(empId);
@@ -700,19 +704,21 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	@Override
 	public List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId, String employeeId,
 			GeneralDate baseDate) {
-		return sharedAffWorkPlaceHisAdapter.findAffiliatedWorkPlaceIdsToRootRequire(cacheCarrier, companyId, employeeId, baseDate);
+		return sharedAffWorkPlaceHisAdapter.findAffiliatedWorkPlaceIdsToRootRequire(cacheCarrier, companyId, employeeId,
+				baseDate);
 	}
 
 	@Override
 	public CheckCareResult checkCare(WorkTypeSet wkSet, String cid) {
-		if(!cache.getCheckCareResultMap().containsKey(wkSet)){
+		if (!cache.getCheckCareResultMap().containsKey(wkSet)) {
 			cache.getCheckCareResultMap().put(wkSet, Optional.ofNullable(this.checkCareService.checkCare(wkSet, cid)));
 		}
 		return cache.getCheckCareResultMap().get(wkSet).orElse(null);
 	}
+
 	@Override
 	public Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId) {
-		if(!cache.getAnnualLeaveEmpBasicInfoMap().containsKey(employeeId)){
+		if (!cache.getAnnualLeaveEmpBasicInfoMap().containsKey(employeeId)) {
 			cache.getAnnualLeaveEmpBasicInfoMap().put(employeeId, this.annLeaEmpBasicInfoRepo.get(employeeId));
 		}
 		return cache.getAnnualLeaveEmpBasicInfoMap().get(employeeId);
@@ -720,29 +726,31 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public Optional<GrantHdTblSet> grantHdTblSet(String companyId, String yearHolidayCode) {
-		if(!cache.getGrantHdTblSetMap().containsKey(yearHolidayCode)){
+		if (!cache.getGrantHdTblSetMap().containsKey(yearHolidayCode)) {
 			cache.getGrantHdTblSetMap().put(yearHolidayCode, yearHolidayRepo.findByCode(companyId, yearHolidayCode));
 		}
 		return cache.getGrantHdTblSetMap().get(yearHolidayCode);
 	}
 
 	@Override
-	public List<LengthServiceTbl> lengthServiceTbl(String companyId, String yearHolidayCode) {
-		if(!cache.getLengthServiceTblMap().containsKey(yearHolidayCode)){
-			cache.getLengthServiceTblMap().put(yearHolidayCode,lengthServiceRepo.findByCode(companyId, yearHolidayCode));
+	public Optional<LengthServiceTbl> lengthServiceTbl(String companyId, String yearHolidayCode) {
+		if (!cache.getLengthServiceTblMap().containsKey(yearHolidayCode)) {
+			cache.getLengthServiceTblMap().put(yearHolidayCode,
+					lengthServiceRepo.findByCode(companyId, yearHolidayCode));
 		}
-		return cache.getLengthServiceTblMap().get(yearHolidayCode);
+			return cache.getLengthServiceTblMap().get(yearHolidayCode);
 	}
 
 	@Override
 	public Optional<GrantHdTbl> grantHdTbl(String companyId, int conditionNo, String yearHolidayCode, int grantNum) {
 		String key = companyId + "-" + conditionNo + "-" + yearHolidayCode + "-" + grantNum;
-		if(!cache.getGrantHdTblMap().containsKey(key)){
-			cache.getGrantHdTblMap().put(key, grantYearHolidayRepo.find(companyId, conditionNo, yearHolidayCode, grantNum));
+		if (!cache.getGrantHdTblMap().containsKey(key)) {
+			cache.getGrantHdTblMap().put(key,
+					grantYearHolidayRepo.find(companyId, conditionNo, yearHolidayCode, grantNum));
 		}
 		return cache.getGrantHdTblMap().get(key);
 	}
-	
+
 	@Override
 	public List<PayoutSubofHDManagement> getOccDigetByListSid(String sid, DatePeriod date) {
 		return payoutSubofHDManaRepo.getOccDigetByListSid(sid, date);
@@ -750,24 +758,27 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String sid) {
-		if(!cache.getSubstitutionOfHDManagementDataMap().containsKey(sid)){
-			cache.getSubstitutionOfHDManagementDataMap().put(sid, substitutionOfHDManaDataRepo.getBysiD(AppContexts.user().companyId(), sid));
+		if (!cache.getSubstitutionOfHDManagementDataMap().containsKey(sid)) {
+			cache.getSubstitutionOfHDManagementDataMap().put(sid,
+					substitutionOfHDManaDataRepo.getBysiD(AppContexts.user().companyId(), sid));
 		}
 		return cache.getSubstitutionOfHDManagementDataMap().get(sid);
 	}
 
 	@Override
 	public List<PayoutManagementData> getPayoutMana(String sid) {
-		if(!cache.getPayoutManagementDataMap().containsKey(sid)){
-			cache.getPayoutManagementDataMap().put(sid, payoutManagementDataRepo.getSid(AppContexts.user().companyId(), sid));
+		if (!cache.getPayoutManagementDataMap().containsKey(sid)) {
+			cache.getPayoutManagementDataMap().put(sid,
+					payoutManagementDataRepo.getSid(AppContexts.user().companyId(), sid));
 		}
 		return cache.getPayoutManagementDataMap().get(sid);
 	}
 
 	@Override
 	public List<EmploymentHistShareImport> findByEmployeeIdOrderByStartDate(String employeeId) {
-		if(!cache.getEmploymentHistShareImportMap().containsKey(employeeId)){
-			cache.getEmploymentHistShareImportMap().put(employeeId, shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(employeeId));
+		if (!cache.getEmploymentHistShareImportMap().containsKey(employeeId)) {
+			cache.getEmploymentHistShareImportMap().put(employeeId,
+					shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(employeeId));
 		}
 		return cache.getEmploymentHistShareImportMap().get(employeeId);
 	}
@@ -798,16 +809,6 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	}
 
 	@Override
-	public CompensatoryLeaveEmSetting findComLeavEmpSet(String companyId, String employmentCode) {
-		return this.compensatoryLeaveEmSetting(companyId, employmentCode);
-	}
-
-	@Override
-	public CompensatoryLeaveComSetting findComLeavComSet(String companyId) {
-		return this.compensatoryLeaveComSetting(companyId);
-	}
-
-	@Override
 	public List<LeaveComDayOffManagement> getDigestOccByListComId(String sid, DatePeriod period) {
 		return leaveComDayOffManaRepo.getDigestOccByListComId(sid, period);
 	}
@@ -819,8 +820,9 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public List<CompensatoryDayOffManaData> getFixByDayOffDatePeriod(String sid) {
-		if(!cache.getCompensatoryDayOffManaDataMap().containsKey(sid)){
-			cache.getCompensatoryDayOffManaDataMap().put(sid, comDayOffManaDataRepo.getBySid(AppContexts.user().companyId(), sid));
+		if (!cache.getCompensatoryDayOffManaDataMap().containsKey(sid)) {
+			cache.getCompensatoryDayOffManaDataMap().put(sid,
+					comDayOffManaDataRepo.getBySid(AppContexts.user().companyId(), sid));
 		}
 		return cache.getCompensatoryDayOffManaDataMap().get(sid);
 	}
@@ -832,7 +834,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public List<LeaveManagementData> getFixLeavByDayOffDatePeriod(String sid) {
-		if(!cache.getLeaveManagementDataMap().containsKey(sid)){
+		if (!cache.getLeaveManagementDataMap().containsKey(sid)) {
 			cache.getLeaveManagementDataMap().put(sid, leaveManaDataRepo.getBySid(AppContexts.user().companyId(), sid));
 		}
 		return cache.getLeaveManagementDataMap().get(sid);
@@ -840,7 +842,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public CompanyDto getFirstMonth(String companyId) {
-		if(cache.getCompanyDtoCache() == null){
+		if (cache.getCompanyDtoCache() == null) {
 			cache.setCompanyDtoCache(companyAdapter.getFirstMonth(companyId));
 		}
 		return cache.getCompanyDtoCache();
@@ -872,7 +874,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 			GeneralDate baseDate) {
 		return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
 	}
-	
+
     @Override
     public Optional<WorkInformation> getHolidayWorkScheduleNew(String companyId, String employeeId,
             GeneralDate baseDate, String workTypeCode, WorkingDayCategory workingDayCategory) {
@@ -881,53 +883,30 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
     }
 
 	@Override
-	public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
-		return this.workTimeSetting(cid, workTimeCode);
-	}
-	@Override
-	public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
-		return this.compensatoryLeaveComSetting(companyId);
+	public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+		return workTimeSetting(companyId, workTimeCode.v());
 	}
 
 	@Override
-	public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-		if(!cache.getFixedWorkSettingMap().containsKey(code)){
-			cache.getFixedWorkSettingMap().put(code, fixedWorkSettingRepo.findByKey(AppContexts.user().companyId(), code.v()));
-		}
-		return cache.getFixedWorkSettingMap().get(code).orElse(null);
+	public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+		return fixedWorkSettingRepo.findByKey(companyId, workTimeCode.v());
 	}
 
 	@Override
-	public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-		if(!cache.getFlowWorkSettingMap().containsKey(code)){
-			cache.getFlowWorkSettingMap().put(code, flowWorkSettingRepo.find(AppContexts.user().companyId(), code.v()));
-		}
-		return cache.getFlowWorkSettingMap().get(code).orElse(null);
+	public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+		return flowWorkSettingRepo.find(companyId, workTimeCode.v());
 	}
 
 	@Override
-	public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-		if(!cache.getFlexWorkSettingMap().containsKey(code)){
-			cache.getFlexWorkSettingMap().put(code, flexWorkSettingRepo.find(AppContexts.user().companyId(), code.v()));
-		}
-		return cache.getFlexWorkSettingMap().get(code).orElse(null);
+	public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+		return flexWorkSettingRepo.find(companyId, workTimeCode.v());
 	}
-
+	
 	@Override
-	public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
+	public Optional<SEmpHistoryImport> getSEmpHistoryImport(String employeeId, GeneralDate baseDate) {
 		return sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, baseDate);
 	}
 
-	@Override
-	public Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId){
-		return Optional.ofNullable(this.compensatoryLeaveComSetting(companyId));
-	}
-
-	@Override
-	public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode){
-		return Optional.ofNullable(this.compensatoryLeaveEmSetting(companyId, employmentCode));
-	}
-	
 	@Override
 	public Optional<ElapseYear> elapseYear(String companyId, int specialHolidayCode) {
 		return this.elapseYearRepository.findByCode(new CompanyId(companyId), new SpecialHolidayCode(specialHolidayCode));
@@ -953,15 +932,25 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	public Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode, String grantDateCode) {
 		return this.grantDateTblRepo.findByCode(companyId, specialHolidayCode, grantDateCode);
 	}
-	
+
 	@Override
 	public List<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode) {
 		return this.grantDateTblRepo.findBySphdCd(companyId, specialHolidayCode);
 	}
-	
+
 	@Override
 	public Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId) {
 		return closureStatusManagementRepo.getLatestByEmpId(employeeId);
+	}
+
+	@Override
+	public CompensatoryLeaveEmSetting findComLeavEmpSet(String companyId, String employmentCode) {
+		return this.compensatoryLeaveEmSetting(companyId, employmentCode).orElse(null);
+	}
+
+	@Override
+	public CompensatoryLeaveComSetting findComLeavComSet(String companyId) {
+		return this.compensatoryLeaveComSetting(companyId).orElse(null);
 	}
 
 	@Override
@@ -1009,4 +998,13 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		return interimBreakDayOffMngRepo.getDayOffDateList(sid, lstDate);
 	}
 
+	@Override
+	public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
+		return this.workTimeSetting(cid, new WorkTimeCode(workTimeCode));
+	}
+
+	@Override
+	public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+		return this.compensatoryLeaveComSetting(companyId).get();
+	}
 }

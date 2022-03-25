@@ -62,14 +62,14 @@ public class GetNextAnnualLeaveGrantProc {
 	 * @param period 期間
 	 * @param isSingleDay 単一日フラグ
 	 * @param grantHdTblSetParam 年休付与テーブル設定
-	 * @param lengthServiceTblsParam 勤続年数テーブルリスト
+	 * @param lengthServiceTblParam 勤続年数テーブル
 	 * @param closureStartDate 締め開始日
 	 * @return 次回年休付与リスト
 	 */
 	public static List<NextAnnualLeaveGrant> algorithm(RequireM1 require, CacheCarrier cacheCarrier,
 			String companyId, String employeeId, String grantTableCode, GeneralDate entryDate, GeneralDate criteriaDate,
 			DatePeriod period, boolean isSingleDay, Optional<GrantHdTblSet> grantHdTblSetParam,
-			Optional<List<LengthServiceTbl>> lengthServiceTblsParam, Optional<GeneralDate> closureStartDate
+			Optional<LengthServiceTbl> lengthServiceTblParam, Optional<GeneralDate> closureStartDate
 			){
 		
 		// ドメインモデル「年休設定」を取得する
@@ -128,20 +128,21 @@ public class GetNextAnnualLeaveGrantProc {
 			simultaneousGrantMDOpt = Optional.of(grantHdTblSet.getSimultaneousGrandMonthDays());
 		}
 
-		List<LengthServiceTbl> lengthServiceTbls;
 		// 「勤続年数テーブル」を取得する
-		if (lengthServiceTblsParam.isPresent()){
-			lengthServiceTbls = lengthServiceTblsParam.get();
+		Optional<LengthServiceTbl> lengthServiceTblOpt = Optional.empty();
+		if (lengthServiceTblParam.isPresent()){
+			lengthServiceTblOpt = lengthServiceTblParam;
 		}
 		else {
-			lengthServiceTbls = require.lengthServiceTbl(companyId, grantTableCode);
+			lengthServiceTblOpt = require.lengthServiceTbl(companyId, grantTableCode);
 		}
-		if (lengthServiceTbls.size() <= 0) return nextAnnualLeaveGrantList;
-
+		if(lengthServiceTblOpt.isPresent()) {
+			if (lengthServiceTblOpt.get().getLengthOfServicesSize() <= 0) return nextAnnualLeaveGrantList;
+		}
 		// 期間内に該当する付与年月日をListで取得
 		GetNextAnnualLeaveGrantProcKdm002.calcAnnualLeaveGrantDate(
 				require, companyId,
-				entryDate, criteriaDate, simultaneousGrantMDOpt, lengthServiceTbls,
+				entryDate, criteriaDate, simultaneousGrantMDOpt, lengthServiceTblOpt.map(c->c.getLengthOfServices()).orElse(new ArrayList<>()),
 				period, isSingleDay, nextAnnualLeaveGrantList);
 
 		// １日に相当する契約時間を取得する
@@ -192,7 +193,7 @@ public class GetNextAnnualLeaveGrantProc {
 
 		Optional<GrantHdTblSet> grantHdTblSet(String companyId, String yearHolidayCode);
 
-		List<LengthServiceTbl> lengthServiceTbl(String companyId, String yearHolidayCode);
+		Optional<LengthServiceTbl> lengthServiceTbl(String companyId, String yearHolidayCode);
 
 		Optional<GrantHdTbl> grantHdTbl(String companyId, int conditionNo, String yearHolidayCode, int grantNum);
 

@@ -27,7 +27,7 @@ public class GetCombinationrAndWorkHolidayAtrService {
 		//	$シフトマスタリスト = require.コードでシフトマスタ取得(会社ID, シフトマスタコードリスト)	
 		List<ShiftMaster> lstShiftMater = require.getByListEmp(companyID, lstShiftMasterCd);
 		// retrurn	[prv-1] 出勤休日区分をセット($シフトマスタリスト)
-		return setWorkHolidayClassification(require, lstShiftMater);		
+		return setWorkHolidayClassification(require, companyID, lstShiftMater);		
 	}
 	/**
 	 * [2] 勤務情報で取得する
@@ -38,19 +38,21 @@ public class GetCombinationrAndWorkHolidayAtrService {
 	 */
 	public static Map<ShiftMaster,Optional<WorkStyle>> getbyWorkInfo(Require require, String companyId , List<WorkInformation> lstWorkInformation){
 		List<ShiftMaster> listShiftMaster = require.getByListWorkInfo(companyId,lstWorkInformation);
-		return setWorkHolidayClassification(require, listShiftMaster);
+		return setWorkHolidayClassification(require, companyId, listShiftMaster);
 	}
 	
 	/**
 	 * [prv-1] 出勤休日区分をセット
 	 * @param require
+	 * @param companyId
 	 * @param listShiftMaster
 	 * @return
 	 */
-	private static Map<ShiftMaster,Optional<WorkStyle>> setWorkHolidayClassification(Require require , List<ShiftMaster> listShiftMaster){
+	private static Map<ShiftMaster,Optional<WorkStyle>> setWorkHolidayClassification(
+			Require require , String companyId, List<ShiftMaster> listShiftMaster){
 		Map<ShiftMaster,Optional<WorkStyle>> map = new HashMap<>();
 		for(ShiftMaster sm : listShiftMaster) {
-			map.put(sm, sm.getWorkStyle(require));
+			map.put(sm, sm.getWorkStyle(require, companyId));
 		}
 		return map;
 		

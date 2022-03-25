@@ -182,6 +182,23 @@ module nts.uk.com.view.cmf002.share.model {
             this.fixedValue(params ? params.fixedValue : null);
             this.valueOfFixedValue(params ? params.valueOfFixedValue : null);
         }
+        update(params: INumberDataFormatSetting) {
+            this.formatSelection(params ? params.formatSelection : null);
+            this.decimalDigit(params ? params.decimalDigit : null);
+            this.decimalPointClassification(params ? params.decimalPointClassification : null);
+            this.decimalFraction(params ? params.decimalFraction : null);
+            this.outputMinusAsZero(params ? params.outputMinusAsZero : null);
+            this.fixedValueOperation(params ? params.fixedValueOperation : null);
+            this.fixedValueOperationSymbol(params ? params.fixedValueOperationSymbol : null);
+            this.fixedCalculationValue(params ? params.fixedCalculationValue : null);
+            this.fixedLengthOutput(params ? params.fixedLengthOutput : null);
+            this.fixedLengthIntegerDigit(params ? params.fixedLengthIntegerDigit : null);
+            this.fixedLengthEditingMethod(params ? params.fixedLengthEditingMethod : null);
+            this.nullValueReplace(params ? params.nullValueReplace : null);
+            this.valueOfNullValueReplace(params ? params.valueOfNullValueReplace : null);
+            this.fixedValue(params ? params.fixedValue : null);
+            this.valueOfFixedValue(params ? params.valueOfFixedValue : null);
+        }
     }
 
     export interface ICharacterDataFormatSetting {
@@ -215,6 +232,21 @@ module nts.uk.com.view.cmf002.share.model {
         fixedValue: KnockoutObservable<number> = ko.observable(null);
         valueOfFixedValue: KnockoutObservable<string> = ko.observable(null);
         constructor(params: ICharacterDataFormatSetting) {
+            this.effectDigitLength(params.effectDigitLength);
+            this.startDigit(params.startDigit);
+            this.endDigit(params.endDigit);
+            this.cdEditting(params.cdEditting);
+            this.cdEditDigit(params.cdEditDigit);
+            this.cdEdittingMethod(params.cdEdittingMethod);
+            this.spaceEditting(params.spaceEditting);
+            this.cdConvertCd(params.cdConvertCd);
+            this.cdConvertName(params.cdConvertName);
+            this.nullValueReplace(params.nullValueReplace);
+            this.valueOfNullValueReplace(params.valueOfNullValueReplace);
+            this.fixedValue(params.fixedValue);
+            this.valueOfFixedValue(params.valueOfFixedValue);
+        }
+        update(params: ICharacterDataFormatSetting) {
             this.effectDigitLength(params.effectDigitLength);
             this.startDigit(params.startDigit);
             this.endDigit(params.endDigit);
@@ -266,6 +298,24 @@ module nts.uk.com.view.cmf002.share.model {
             this.valueOfNullValueSubs(params ? params.valueOfNullValueSubs : null);
             this.minuteFractionDigitProcessCls(params ? params.minuteFractionDigitProcessCls : null);
         }
+        update(params: ITimeDataFormatSetting) {
+            this.nullValueSubs(params ? params.nullValueSubs : null);
+            this.outputMinusAsZero(params ? params.outputMinusAsZero : null);
+            this.fixedValue(params ? params.fixedValue : null);
+            this.valueOfFixedValue(params ? params.valueOfFixedValue : null);
+            this.fixedLengthOutput(params ? params.fixedLengthOutput : null);
+            this.fixedLongIntegerDigit(params ? params.fixedLongIntegerDigit : null);
+            this.fixedLengthEditingMethod(params ? params.fixedLengthEditingMethod : null);
+            this.delimiterSetting(params ? params.delimiterSetting : null);
+            this.selectHourMinute(params ? params.selectHourMinute : null);
+            this.minuteFractionDigit(params ? params.minuteFractionDigit : null);
+            this.decimalSelection(params ? params.decimalSelection : null);
+            this.fixedValueOperationSymbol(params ? params.fixedValueOperationSymbol : null);
+            this.fixedValueOperation(params ? params.fixedValueOperation : null);
+            this.fixedCalculationValue(params ? params.fixedCalculationValue : null);
+            this.valueOfNullValueSubs(params ? params.valueOfNullValueSubs : null);
+            this.minuteFractionDigitProcessCls(params ? params.minuteFractionDigitProcessCls : null);
+        }
     }
 
     export class InTimeDataFormatSetting {
@@ -285,6 +335,23 @@ module nts.uk.com.view.cmf002.share.model {
         minuteFractionDigitProcessCls: KnockoutObservable<number> = ko.observable(null);
         valueOfNullValueSubs: KnockoutObservable<number> = ko.observable(null);
         constructor(params: IInTimeDataFormatSetting) {
+            this.nullValueSubs(params ? params.nullValueSubs : null);
+            this.outputMinusAsZero(params ? params.outputMinusAsZero : null);
+            this.fixedValue(params ? params.fixedValue : null);
+            this.valueOfFixedValue(params ? params.valueOfFixedValue : null);
+            this.timeSeletion(params ? params.timeSeletion : null);
+            this.fixedLengthOutput(params ? params.fixedLengthOutput : null);
+            this.fixedLongIntegerDigit(params ? params.fixedLongIntegerDigit : null);
+            this.fixedLengthEditingMethod(params ? params.fixedLengthEditingMethod : null);
+            this.delimiterSetting(params ? params.delimiterSetting : null);
+            this.previousDayOutputMethod(params ? params.previousDayOutputMethod : null);
+            this.nextDayOutputMethod(params ? params.nextDayOutputMethod : null);
+            this.minuteFractionDigit(params ? params.minuteFractionDigit : null);
+            this.decimalSelection(params ? params.decimalSelection : null);
+            this.minuteFractionDigitProcessCls(params ? params.minuteFractionDigitProcessCls : null);
+            this.valueOfNullValueSubs(params ? params.valueOfNullValueSubs : null);
+        }
+        update(params: IInTimeDataFormatSetting) {
             this.nullValueSubs(params ? params.nullValueSubs : null);
             this.outputMinusAsZero(params ? params.outputMinusAsZero : null);
             this.fixedValue(params ? params.fixedValue : null);
@@ -454,6 +521,14 @@ module nts.uk.com.view.cmf002.share.model {
         retirementOutput: KnockoutObservable<string> = ko.observable(null);
 
         constructor(params: IAtWorkDataOutputItem) {
+            this.closedOutput(params.closedOutput);
+            this.absenceOutput(params.absenceOutput);
+            this.fixedValue(params.fixedValue);
+            this.valueOfFixedValue(params.valueOfFixedValue);
+            this.atWorkOutput(params.atWorkOutput);
+            this.retirementOutput(params.retirementOutput);
+        }
+        update(params: IAtWorkDataOutputItem) {
             this.closedOutput(params.closedOutput);
             this.absenceOutput(params.absenceOutput);
             this.fixedValue(params.fixedValue);
@@ -640,6 +715,14 @@ module nts.uk.com.view.cmf002.share.model {
         valueOfFixedValue: KnockoutObservable<string> = ko.observable(null);
 
         constructor(params: IDateDataFormatSetting) {
+            this.formatSelection(params ? params.formatSelection : null);
+            this.nullValueSubstitution(params ? params.nullValueSubstitution : null);
+            this.valueOfNullValueSubs(params ? params.valueOfNullValueSubs : null);
+            this.fixedValue(params ? params.fixedValue : null);
+            this.valueOfFixedValue(params ? params.valueOfFixedValue : null);
+        }
+
+        update(params: IDateDataFormatSetting) {
             this.formatSelection(params ? params.formatSelection : null);
             this.nullValueSubstitution(params ? params.nullValueSubstitution : null);
             this.valueOfNullValueSubs(params ? params.valueOfNullValueSubs : null);

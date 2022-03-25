@@ -88,7 +88,7 @@ public class GetDaysForCalcAttdRate {
 			}
 		}
 		
-		return new CalYearOffWorkAttendRate(0.0, prescribedDays, workingDays, deductedDays);
+		return new CalYearOffWorkAttendRate(prescribedDays, workingDays, deductedDays, Optional.of(period));
 	}
 
 	/**
@@ -146,7 +146,7 @@ public class GetDaysForCalcAttdRate {
 			}
 		}
 		
-		return new CalYearOffWorkAttendRate(0.0, prescribedDays, workingDays, deductedDays);
+		return new CalYearOffWorkAttendRate(prescribedDays, workingDays, deductedDays, Optional.of(period));
 	}
 	
 	public static interface RequireM1 {

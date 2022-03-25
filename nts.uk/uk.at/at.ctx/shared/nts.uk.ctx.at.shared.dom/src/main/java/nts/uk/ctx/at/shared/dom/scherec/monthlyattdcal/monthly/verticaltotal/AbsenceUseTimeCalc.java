@@ -37,7 +37,7 @@ public class AbsenceUseTimeCalc {
 		}
 		
 		/** $1日の内訳 = $休暇加算時間設定.参照先.休暇加算時間の取得 */
-		val brdTimeDay = holAddSet.getReference().getVacationAddTime(require, cid, sid, workInfo.getWorkTimeCodeNotNull(), baseDate);
+		val brdTimeDay = holAddSet.getReference().getVacationAddTime(require, cid, sid, workInfo, baseDate);
 		
 		/** $１日の内訳.取得($欠勤の１日午前午後区分) */
 		return brdTimeDay.get(workAtr);

@@ -1,25 +1,12 @@
-table{
-  border-collapse: collapse;
-  margin-left: 20px;
-}
-
-.table-food-td{
-  border: 1px solid black;
-  
-}
-.table-menu-td{
-  vertical-align: text-top;
-}
-
-.style-table {
-	border: none;
+table, td, th {
+	border: 1px solid #dddddd;
 }
 
 .button-radius {
 	border-radius: 50%;
-	width:50px; 
-	height:50px; 
-	font-size:20px; 
+	width: 40px; 
+	height: 40px; 
+	font-size: 20px; 
 	text-align: center;
 	border: 1px solid black;
 	box-shadow: none;
@@ -28,45 +15,18 @@ table{
   	margin: 0;
   	padding-top: -5px !important;
 }
-.label.warning{
-    margin-top: 5px;
-    min-width: 325px;
-    min-height: 25px;
-    text-align: center;
-    padding: 0px;
-}
-button.nts-switch-button {
-	min-width: 100px;
-}
-.danger {
-	border: 0px solid #999999;
-	margin-bottom: 2px;
-	width: 260px;
-}
-.menu-order {
-	padding-top: 10px; 
-	overflow-y: scroll; 
-	height:320px; 
-	width:300px;
-}
-.button-food {
-	width: 200px; 
-	height: 50px; 
-	margin-bottom: 20px;
-	margin-right: 20px;
-	text-align: left;
-	vertical-align: text-top;
-}
+
 .button-radius:hover:enabled {
    background-color: #A4EEB0;
 }
-.fixed-flex-layout-left {
-    width: 880px;
+
+.kmr002-table tbody {
+  display: block;
+  height: 520px;
+  overflow-y: scroll;
 }
-#functions-area .ntsDatePickerButton {
-	min-width: 65px !important;
-}
-.custom-label label.with-text > span {
-	min-width: 100px;
-	text-align: center;
+
+.kmr002-table thead, .kmr002-table tbody tr, .kmr002-table tfoot {
+  display: table;
+  table-layout: fixed;
 }

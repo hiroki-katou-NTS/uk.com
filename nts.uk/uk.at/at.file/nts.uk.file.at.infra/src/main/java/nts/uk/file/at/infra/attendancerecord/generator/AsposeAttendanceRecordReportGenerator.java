@@ -503,7 +503,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 						pageSetup.setFitToPagesTall(1);
 						pageSetup.setFitToPagesWide(1);
 					}
-					pageSetup.setPrintArea(reportPageAddr + startNewPage);
 				}
 				
 			}

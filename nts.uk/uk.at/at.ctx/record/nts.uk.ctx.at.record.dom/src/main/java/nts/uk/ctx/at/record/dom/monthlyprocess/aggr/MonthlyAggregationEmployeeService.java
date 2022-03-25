@@ -168,28 +168,18 @@ public class MonthlyAggregationEmployeeService {
 		IgnoreFlagDuringLock ignoreFlagDuringLock = executionLog.flatMap(c -> c.getIsCalWhenLock())
 				.map(c -> c ? IgnoreFlagDuringLock.CAN_CAL_LOCK : IgnoreFlagDuringLock.CANNOT_CAL_LOCK)
 				.orElse(IgnoreFlagDuringLock.CANNOT_CAL_LOCK);
-
-//		List<BsEmploymentHistoryImport> employments = employeeSets.getEmployments();
 		
-		for (val aggrPeriod : aggrPeriods){
+		List<IntegrationOfMonthly> cacheMonthly = new ArrayList<>();
+		MonthlyAggregationEmployeeServiceRequireImpl requireCache = new MonthlyAggregationEmployeeServiceRequireImpl(cacheMonthly, require);
+		
+		for (val aggrPeriod : aggrPeriods) {
 			val yearMonth = aggrPeriod.getYearMonth();
 			val closureId = aggrPeriod.getClosureId();
 			val closureDate = aggrPeriod.getClosureDate();
 			val datePeriod = aggrPeriod.getPeriod();
-			//ConcurrentStopwatches.start("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
-
-			// 中断依頼が出されているかチェックする
-//			if (asyncContext.hasBeenRequestedToCancel()) {
-//				status.setState(ProcessState.INTERRUPTION);
-//				return status;
-//			}
 
 			// 「就業計算と集計実行ログ」を取得し、実行状況を確認する
 			val exeLogOpt = require.calAndSumExeLog(empCalAndSumExecLogID);
-//			if (!exeLogOpt.isPresent()){
-//				status.setState(ProcessState.INTERRUPTION);
-//				return AggregationResult.build(status);
-//			}
 			if (exeLogOpt.isPresent() && exeLogOpt.get().getExecutionStatus().isPresent()){
 				val executionStatus = exeLogOpt.get().getExecutionStatus().get();
 				if (executionStatus == ExeStateOfCalAndSum.START_INTERRUPTION){
@@ -218,7 +208,7 @@ public class MonthlyAggregationEmployeeService {
 				AggregateMonthlyRecordValue value = new AggregateMonthlyRecordValue();
 				try {
 					// 月別実績を集計する　（アルゴリズム）
-					value = AggregateMonthlyRecordService.aggregate(require, cacheCarrier, companyId, employeeId,
+					value = AggregateMonthlyRecordService.aggregate(requireCache, cacheCarrier, companyId, employeeId,
 							yearMonth, closureId, closureDate, periodNew,
 							prevAbsRecResultOpt, prevBreakDayOffresultOpt,
 							companySets, employeeSets, Optional.empty(), Optional.empty(), isRemainProc);
@@ -253,15 +243,11 @@ public class MonthlyAggregationEmployeeService {
 					break;
 				}
 	
-	//			// 前回集計結果の退避
-	//			prevAggrResult = value.getAggrResultOfAnnAndRsvLeave();
-	//			prevAbsRecResultOpt = value.getAbsRecRemainMngOfInPeriodOpt();
-	//			prevBreakDayOffresultOpt = value.getBreakDayOffRemainMngOfInPeriodOpt();
-	//			prevSpecialLeaveResultMap = value.getInPeriodOfSpecialLeaveResultInforMap();
-	
 				try {
 					// 月別実績(WORK)を登録する
-					atomTasks.add(mergeMonth(require, Arrays.asList(value.getIntegration()), periodNew.end()));
+					val monthlyData  = value.getIntegration();
+					cacheMonthly.add(monthlyData);
+					atomTasks.add(mergeMonth(require, Arrays.asList(monthlyData), periodNew.end()));
 				}
 				catch (Exception ex) {
 					boolean isOptimisticLock = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
@@ -276,9 +262,7 @@ public class MonthlyAggregationEmployeeService {
 				finally {
 					status.getOutAggrPeriod().add(aggrPeriod);
 				}
-			}//end for(DatePeriod periodNew : listPeriod) 
-
-			//ConcurrentStopwatches.stop("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
+			}
 		}
 		return AggregationResult.build(status, atomTasks);
 	}
@@ -453,7 +437,8 @@ public class MonthlyAggregationEmployeeService {
 
 	public static interface RequireM1 extends MonAggrEmployeeSettings.RequireM2,
 		GetClosurePeriod.RequireM1, AggregateMonthlyRecordService.RequireM2,
-		RequireM2, RequireM3, RequireM4, MonAggrCompanySettings.RequireM6,GetPeriodCanProcesse.Require {
+		RequireM2, RequireM3, RequireM4, MonAggrCompanySettings.RequireM6,
+		GetPeriodCanProcesse.Require {
 
 		Optional<EmpCalAndSumExeLog> calAndSumExeLog (String empCalAndSumExecLogID);
 

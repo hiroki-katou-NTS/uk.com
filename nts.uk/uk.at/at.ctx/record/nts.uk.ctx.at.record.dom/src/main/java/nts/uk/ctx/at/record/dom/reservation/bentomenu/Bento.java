@@ -13,7 +13,7 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoDetailsAmoun
 import java.util.Optional;
 
 /**
- * 弁当
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務実績.支給賞与額履歴.予約.弁当メニュー.弁当
  * @author Doan Duy Hung
  *
  */
@@ -50,18 +50,11 @@ public class Bento {
 	private BentoReservationUnitName unit;
 	
 	/**
-	 * 締め時刻1で予約可能
+	 * 受付時間帯NO
 	 */
 	@Getter
-	private boolean reservationTime1Atr;
+	private final ReservationClosingTimeFrame receptionTimezoneNo;
 	
-	/**
-	 * 締め時刻2で予約可能
-	 */
-	@Getter
-	private boolean reservationTime2Atr;
-
-
 	/**
 	 * 勤務場所コード
 	 */
@@ -69,14 +62,13 @@ public class Bento {
 	private Optional<WorkLocationCode> workLocationCode;
 
 	public Bento(int frameNo, BentoName name, BentoAmount amount1, BentoAmount amount2,
-				 BentoReservationUnitName unit, boolean reservationTime1Atr, boolean reservationTime2Atr,Optional<WorkLocationCode> workLocationCode) {
+				 BentoReservationUnitName unit, ReservationClosingTimeFrame receptionTimezoneNo, Optional<WorkLocationCode> workLocationCode) {
 		this.frameNo = frameNo; 
 		this.name = name; 
 		this.amount1 = amount1; 
 		this.amount2 = amount2;
-		this.unit = unit; 
-		this.reservationTime1Atr = reservationTime1Atr;
-		this.reservationTime2Atr = reservationTime2Atr;
+		this.unit = unit;
+		this.receptionTimezoneNo = receptionTimezoneNo;
 		this.workLocationCode = workLocationCode;
 	}
 	
@@ -88,10 +80,7 @@ public class Bento {
 	 * @return
 	 */
 	public BentoReservationDetail reserve(ReservationDate reservationDate, BentoReservationCount bentoCount, GeneralDateTime dateTime) {
-		if(reservationDate.getClosingTimeFrame()==ReservationClosingTimeFrame.FRAME1 && !reservationTime1Atr) {
-			throw new RuntimeException("System Error");
-		}
-		if(reservationDate.getClosingTimeFrame()==ReservationClosingTimeFrame.FRAME2 && !reservationTime2Atr) {
+		if(reservationDate.getClosingTimeFrame()!=this.receptionTimezoneNo) {
 			throw new RuntimeException("System Error");
 		}
 		return BentoReservationDetail.createNew(frameNo, bentoCount, dateTime);

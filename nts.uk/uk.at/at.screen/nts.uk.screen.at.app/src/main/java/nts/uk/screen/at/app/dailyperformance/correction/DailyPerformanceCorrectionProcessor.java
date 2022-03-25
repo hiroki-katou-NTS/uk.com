@@ -111,6 +111,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWit
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalStatusActualResultKDW003Dto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatInitialDisplayDto;
@@ -118,6 +119,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatSheet
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ChangeSPR;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ClosureDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ColumnSetting;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ConfirmStatusActualResultKDW003Dto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.CorrectionOfDailyPerformance;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DCMessageError;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
@@ -168,6 +170,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.month.ErrorMonthProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.ClosureDateDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -471,9 +474,11 @@ public class DailyPerformanceCorrectionProcessor {
 		screenDto.setDateRange(screenDto.getDatePeriodResult());
 		screenDto.resetDailyInit();
 		//System.out.println("end daily"+ (System.currentTimeMillis() - startTime));
+		List<ConfirmStatusActualResultKDW003Dto> lstConfirmStatusActualResultKDW003Dto = confirmResults.stream().map(c->ConfirmStatusActualResultKDW003Dto.fromDomain(c)).collect(Collectors.toList());
+		List<ApprovalStatusActualResultKDW003Dto> lstApprovalStatusActualResultKDW003Dto = approvalResults.stream().map(c->ApprovalStatusActualResultKDW003Dto.fromDomain(c)).collect(Collectors.toList());
 		screenDto.setApprovalConfirmCache(new ApprovalConfirmCache(sId, listEmployeeId,
-				new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), mode, confirmResults,
-				approvalResults));
+				dateRange, mode, lstConfirmStatusActualResultKDW003Dto,
+				lstApprovalStatusActualResultKDW003Dto));
 		return screenDto;
 	}
 
@@ -953,6 +958,8 @@ public class DailyPerformanceCorrectionProcessor {
 							cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 					} else if(attendanceAtr == DailyAttendanceAtr.NumbericValue.value){
 						cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
+					}else if(attendanceAtr == DailyAttendanceAtr.Application.value){
+						cellDatas.add(new DPCellDataDto(anyChar, appNameLst, attendanceAtrAsString, DPText.TYPE_LABEL));
 					} else {
 						cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 					}
@@ -1982,7 +1989,7 @@ public class DailyPerformanceCorrectionProcessor {
 			if(dpStateParam != null) {
 			DatePeriodInfo dateInfo = dpStateParam.getDateInfo();
 			dateInfo.setTargetRange(dateRange);
-			dateInfo.setClosureId(ClosureId.valueOf(closureId));
+			dateInfo.setClosureId(closureId);
 			return dateInfo;
 			}
 		}
@@ -2104,7 +2111,7 @@ public class DailyPerformanceCorrectionProcessor {
 								empTarget, dateRefer, ym));
 			}
 //			if(lstClosurePeriod.isEmpty()) return null;
-			if(lstClosurePeriod.isEmpty()) return new DatePeriodInfo(new ArrayList<>(), result, yearMonth == null ? 0 : yearMonth.v(), closureId, lstClosureCache, lstPeriod);
+			if(lstClosurePeriod.isEmpty()) return new DatePeriodInfo(new ArrayList<>(), result, yearMonth == null ? 0 : yearMonth.v(),closureId==null?null:closureId.value, lstClosureCache, lstPeriod);
 			
 			List<AggrPeriodEachActualClosure> lstAggrPeriod = lstClosurePeriod.stream().flatMap(x -> x.getAggrPeriods().stream())
 					    .sorted((x, y) -> x.getPeriod().start().compareTo(y.getPeriod().end()))
@@ -2128,7 +2135,7 @@ public class DailyPerformanceCorrectionProcessor {
 			result = DateRange.convertPeriod(dateAgg.getPeriod());
 			closureId = dateAgg.getClosureId();
 			lstClosureCache.addAll(lstClosurePeriod.stream().flatMap(x -> x.getAggrPeriods().stream()).map(
-					x -> new AggrPeriodClosure(x.getClosureId(), x.getClosureDate(), x.getYearMonth().v(), x.getPeriod()))
+					x -> new AggrPeriodClosure(x.getClosureId().value, ClosureDateDto.convertToDoamin(x.getClosureDate()), x.getYearMonth().v(), new DateRange(x.getPeriod().start(), x.getPeriod().end()) ))
 					.collect(Collectors.toList()));
 		
 		} else if (displayFormat == DisplayFormat.ByDate.value) {
@@ -2152,7 +2159,7 @@ public class DailyPerformanceCorrectionProcessor {
 			}
 		}
 				
-		return new DatePeriodInfo(new ArrayList<>(), result, yearMonth == null ? 0 : yearMonth.v(), closureId, lstClosureCache, lstPeriod);
+		return new DatePeriodInfo(new ArrayList<>(), result, yearMonth == null ? 0 : yearMonth.v(),closureId == null?null: closureId.value, lstClosureCache, lstPeriod);
 	}
 	
 	public void requestForFlush(){

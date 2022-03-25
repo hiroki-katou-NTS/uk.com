@@ -68,6 +68,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.setting.code.EmployeeCodeEditSettingExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.setting.code.IEmployeeCESettingPub;
@@ -175,7 +176,8 @@ public class ScreenQueryWorkPlaceCheckFile {
         long startImport = System.currentTimeMillis();
         System.out.println("Start import");
         CapturedRawData rawData = data.toDomain();
-        ImportResult importResult = WorkScheduleImportService.importFrom( new RequireImp( rawData ), rawData );
+        ImportResult importResult = WorkScheduleImportService.importFrom( new RequireImp( rawData ), rawData,
+        		AppContexts.user().companyId());
         long endImport = System.currentTimeMillis();
         System.out.println("Time Import File: " + (endImport - startImport));
 
@@ -553,40 +555,40 @@ public class ScreenQueryWorkPlaceCheckFile {
             return data;
         }
 
-        @Override
-        public Optional<WorkType> getWorkType(String workTypeCd) {
-            return workTypeCache.get(workTypeCd);
-        }
+		@Override
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeCache.get(workTypeCode.v());
+		}
 
-        @Override
-        public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-            return workTimeSettingCache.get(workTimeCode);
-        }
+		@Override
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return workTimeSettingCache.get(workTimeCode.v());
+		}
 
         @Override
         public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
             return basicScheduleCache.get(workTypeCode).orElse(null);
         }
 
-        @Override
-        public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-            return fixedWorkSettingCache.get(code).orElse(null);
-        }
+		@Override
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return fixedWorkSettingCache.get(workTimeCode);
+		}
 
-        @Override
-        public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-            return flowWorkSettingCache.get(code).orElse(null);
-        }
+		@Override
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flowWorkSettingCache.get(workTimeCode);
+		}
 
-        @Override
-        public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-            return flexWorkSettingCache.get(code).orElse(null);
-        }
+		@Override
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flexWorkSettingCache.get(workTimeCode);
+		}
 
-        @Override
-        public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-            return predetemineTimeSettingCache.get(wktmCd).orElse(null);
-        }
+		@Override
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return predetemineTimeSettingCache.get(workTimeCode);
+		}
 
         @Override
         public String getOwnAttendanceRoleId() {

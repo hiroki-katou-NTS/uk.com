@@ -4,13 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import lombok.Getter;
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
@@ -189,7 +193,7 @@ public class TimeVacationWork implements Cloneable {
 			PremiumAtr premiumAtr,
 			Optional<WorkTimezoneCommonSet> commonSetting,
 			HolidayAddtionSet holidayAddtionSet,
-			HolidayCalcMethodSet holidayCalcMethodSet,
+			AddSettingOfWorkingTime holidayCalcMethodSet,
 			TimeVacationWork offsetTime,
 			NotUseAtr lateEarlyMinusAtr){
 		
@@ -211,13 +215,112 @@ public class TimeVacationWork implements Cloneable {
 		totalMinutes += this.privateOuting.totalVacationAddTime();
 		// 組合外出
 		totalMinutes += this.unionOuting.totalVacationAddTime();
-		// 勤務NO毎の時間
-		for (TimeVacationWorkEachNo item : this.eachNo){
-			// 遅刻
-			totalMinutes += item.getLate().totalVacationAddTime();
-			// 早退
-			totalMinutes += item.getLeaveEarly().totalVacationAddTime();
-		}
+		// 遅刻
+		totalMinutes += this.eachNo.stream()
+				.map(c -> c.getLate().totalVacationAddTime()).mapToInt(Integer::intValue).sum();
+		// 早退
+		totalMinutes += this.eachNo.stream()
+				.map(c -> c.getLeaveEarly().totalVacationAddTime()).mapToInt(Integer::intValue).sum();
+		// 合計
 		return new AttendanceTime(totalMinutes);
+	}
+	
+	/**
+	 * 代休時間の合計
+	 * @return 代休時間合計
+	 */
+	public AttendanceTime totalCompLeaveTime(){
+		int totalMinutes = 0;
+		// 私用外出
+		totalMinutes += this.privateOuting.getTimeCompensatoryLeaveUseTime().valueAsMinutes();
+		// 組合外出
+		totalMinutes += this.unionOuting.getTimeCompensatoryLeaveUseTime().valueAsMinutes();
+		// 遅刻
+		totalMinutes += this.eachNo.stream().map(c -> c.getLate().getTimeCompensatoryLeaveUseTime())
+				.mapToInt(AttendanceTime::valueAsMinutes).sum();
+		// 早退
+		totalMinutes += this.eachNo.stream().map(c -> c.getLeaveEarly().getTimeCompensatoryLeaveUseTime())
+				.mapToInt(AttendanceTime::valueAsMinutes).sum();
+		// 代休時間合計
+		return new AttendanceTime(totalMinutes);
+	}
+	
+	/**
+	 * 就業時間に加算する時間のみ取得
+	 * @param holidayAddtionSet 休暇加算時間設定
+	 * @return 時間休暇WORK
+	 */
+	public TimeVacationWork getValueForAddWorkTime(HolidayAddtionSet holidayAddtionSet){
+		
+		return TimeVacationWork.of(
+				this.eachNo.stream().map(c -> c.getValueForAddWorkTime(holidayAddtionSet)).collect(Collectors.toList()),
+				this.privateOuting.getValueForAddWorkTime(holidayAddtionSet),
+				this.unionOuting.getValueForAddWorkTime(holidayAddtionSet));
+	}
+	
+	/** 月次集計用時間休暇WORKを作成する */
+	public static TimeVacationWork createForMonthlyAggregate(IntegrationOfDaily daily) {
+		
+		return daily.getAttendanceTimeOfDailyPerformance().map(c -> {
+
+			/** $総労働時間 = 日別勤怠.勤怠時間.勤務時間.総労働時間 */
+			val totalWork = c.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+			
+			/** 勤務NO毎の時間 */
+			/** 勤務NO１、２の勤務NO毎の時間休暇WORKを作成する */
+			val eachNo = IntStream.range(1, 3).mapToObj(no -> {
+				
+				return TimeVacationWorkEachNo.of(
+						new WorkNo(no), 
+						totalWork.getLateTimeNo(no).map(l -> l.getTimeOffsetUseTime())
+							.orElseGet(() -> TimevacationUseTimeOfDaily.defaultValue()), 
+						totalWork.getLeaveEarlyTimeNo(no).map(l -> l.getTimeOffsetUseTime())
+							.orElseGet(() -> TimevacationUseTimeOfDaily.defaultValue())); 
+			}).collect(Collectors.toList());
+			
+			/** 私用外出 */
+			val privateOut = totalWork.getOutingTimeByReason(GoingOutReason.PRIVATE)
+					.map(o -> o.getTimeOffsetUseTime())
+					.orElseGet(() -> TimevacationUseTimeOfDaily.defaultValue());
+			/** 組合外出 */
+			val unionOut = totalWork.getOutingTimeByReason(GoingOutReason.UNION)
+					.map(o -> o.getTimeOffsetUseTime())
+					.orElseGet(() -> TimevacationUseTimeOfDaily.defaultValue());
+			
+			return TimeVacationWork.of(eachNo, privateOut, unionOut);
+		}).orElseGet(() -> TimeVacationWork.defaultValue());
+	}
+	
+	/** 月次集計用時間休暇WORKを作成する */
+	public static TimeVacationWork create(IntegrationOfDaily daily) {
+		
+		return daily.getAttendanceTimeOfDailyPerformance().map(c -> {
+
+			/** $総労働時間 = 日別勤怠.勤怠時間.勤務時間.総労働時間 */
+			val totalWork = c.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+			
+			/** 勤務NO毎の時間 */
+			/** 勤務NO１、２の勤務NO毎の時間休暇WORKを作成する */
+			val eachNo = IntStream.range(1, 3).mapToObj(no -> {
+				
+				return TimeVacationWorkEachNo.of(
+						new WorkNo(no), 
+						totalWork.getLateTimeNo(no).map(l -> l.getTimePaidUseTime())
+							.orElseGet(() -> TimevacationUseTimeOfDaily.defaultValue()), 
+						totalWork.getLeaveEarlyTimeNo(no).map(l -> l.getTimePaidUseTime())
+							.orElseGet(() -> TimevacationUseTimeOfDaily.defaultValue())); 
+			}).collect(Collectors.toList());
+			
+			/** 私用外出 */
+			val privateOut = totalWork.getOutingTimeByReason(GoingOutReason.PRIVATE)
+					.map(o -> o.getTimeVacationUseOfDaily())
+					.orElseGet(() -> TimevacationUseTimeOfDaily.defaultValue());
+			/** 組合外出 */
+			val unionOut = totalWork.getOutingTimeByReason(GoingOutReason.UNION)
+					.map(o -> o.getTimeVacationUseOfDaily())
+					.orElseGet(() -> TimevacationUseTimeOfDaily.defaultValue());
+			
+			return TimeVacationWork.of(eachNo, privateOut, unionOut);
+		}).orElseGet(() -> TimeVacationWork.defaultValue());
 	}
 }

@@ -159,7 +159,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             // Lấy Content của ngày loop
             Optional<ActualContentDisplay> currentContent = opActualContentDisplayLst.get().stream().filter(i -> i.getDate().equals(date)).findFirst();
 
-            if (validApps.isEmpty()) {
+            if (validApps.isEmpty() || !currentContent.isPresent()) {
                 continue;
             } else {
                 // 対象年月日を含む申請が存在を確認
