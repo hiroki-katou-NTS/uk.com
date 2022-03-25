@@ -75,6 +75,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
@@ -259,6 +260,9 @@ public class ToppageStartupProcessMobFinder {
     
     @Inject
     private AnnLeaveRemainNumberAdapter annLeaveRemainNumberAdapter;
+    
+    @Inject
+    private SysEmploymentHisAdapter sysEmploymentHisAdapter;
 
 
 	public ToppageStartupDto startupProcessMob() {
@@ -1295,7 +1299,7 @@ public class ToppageStartupProcessMobFinder {
 
 		@Override
 		public Optional<SEmpHistoryImport> getSEmpHistoryImport(String employeeId, GeneralDate baseDate) {
-			return Optional.empty();
+			return sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, baseDate);
 		}
     }
 }
