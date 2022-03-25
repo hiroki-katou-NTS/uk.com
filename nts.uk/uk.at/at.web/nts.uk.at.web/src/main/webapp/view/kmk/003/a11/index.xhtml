@@ -34,7 +34,7 @@
 									checkedValue: 0,
 									checked: workdayOffTimeSubHolTransferSetAtr,
 									optionText: 'KMK003_106',
-									enable: workdayOffTimeUseDivision() &amp;&amp; isManageTime() }"></label>
+									enable: workdayOffTimeUseDivision() }"></label>
 							<div class="padding-time">
 								<div class="tab-inline-item" style="width: 60px; text-align: center;">
 									<label>#{i18n.getText('KMK003_42')}</label>
@@ -45,7 +45,7 @@
 									constraint:'OneDayTime',
 									mode: 'time',
 									inputFormat: 'time',
-									enable: workdayOffTimeUseDivision() &amp;&amp; workdayOffTimeSubHolTransferSetAtr() == 0 &amp;&amp; isManageTime(),
+									enable: workdayOffTimeUseDivision() &amp;&amp; workdayOffTimeSubHolTransferSetAtr() == 0,
 									required: false}" />
 							</div>
 							<div class="padding-time">
@@ -58,7 +58,7 @@
 									constraint:'OneDayTime',
 									mode: 'time',
 									inputFormat: 'time',
-									enable: workdayOffTimeUseDivision() &amp;&amp; workdayOffTimeSubHolTransferSetAtr() == 0 &amp;&amp; isManageTime(),
+									enable: workdayOffTimeUseDivision() &amp;&amp; workdayOffTimeSubHolTransferSetAtr() == 0,
 									required: false}" />
 							</div>
 						</div>
@@ -68,7 +68,7 @@
 									checkedValue: 1,
 									checked: workdayOffTimeSubHolTransferSetAtr,
 									optionText: 'KMK003_108',
-									enable: workdayOffTimeUseDivision() &amp;&amp; isManageTime() }"></label>
+									enable: workdayOffTimeUseDivision() }"></label>
 							<div class="padding-time">
 								<div class="tab-inline-item" style="width: 60px; text-align: center;">
 								</div>
