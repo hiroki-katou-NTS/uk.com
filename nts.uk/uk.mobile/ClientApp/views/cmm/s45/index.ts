@@ -4,5 +4,6 @@ import './c';
 import './d';
 import './e';
 import './f';
+import './g';
 import './shr';
 import './test';

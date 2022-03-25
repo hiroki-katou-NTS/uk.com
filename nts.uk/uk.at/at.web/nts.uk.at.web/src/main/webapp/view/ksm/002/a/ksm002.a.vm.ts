@@ -5,7 +5,7 @@ module ksm002.a.viewmodel {
         //MODE
         isNew: KnockoutObservable<boolean>;
         //PANE
-        boxItemList: KnockoutObservableArray<BoxModel>;
+        boxItemList: KnockoutObservableArray<SpecItem>;
         fullBoxItemList: KnockoutObservableArray<BoxModel>;
         selectedIds: KnockoutObservableArray<number>;
         enable: KnockoutObservable<boolean>;
@@ -58,8 +58,11 @@ module ksm002.a.viewmodel {
                     self.openKsm002EDialog(date);
                 },
                 cellClick: function(date) {
-                    let param: IData = { date: date, selectable: _.map(self.boxItemList(), 'id'), selecteds: self.selectedIds() };
-                    self.setSpecificItemToSelectedDate(param);
+                    const selectedIds = self.boxItemList().filter((item) => item.choose() == 1).map((item) => item.id);
+                    if (selectedIds.length > 0) {
+                        let param: IData = { date: date, selectable: _.map(self.boxItemList(), 'id'), selecteds: selectedIds };
+                        self.setSpecificItemToSelectedDate(param);
+                    }
                 }
             });
             //Side bar tab change
@@ -75,61 +78,47 @@ module ksm002.a.viewmodel {
             });
             //Change Month 
             self.yearMonthPicked.subscribe(function(value) {
-                let arrOptionaDates: Array<OptionalDate> = [];
-                self.getDataToOneMonth(value).done(function(arrOptionaDates) {
-                    if (arrOptionaDates.length > 0) {
-                        self.optionDates(arrOptionaDates);
-                        self.optionDates.valueHasMutated();
-                        self.isNew(false);
-                    } else {
-                        self.isNew(true);
-                    }
-                })
+                self.start(false);
             })
         }
 
         /** 
          *Start page 
          */
-        start(): JQueryPromise<any> {
+        start(isResetBoxItemList: boolean = true): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
             let isUse: number = 1;
             let arrOptionaDates: Array<OptionalDate> = [];
 //            self.showExportBtn();
             service.getSpecificDateByIsUse(isUse).done(function(lstSpecifiDate: any) {
-                if (lstSpecifiDate.length > 0) {
-                    //getAll SpecDate
-                    self.getAllSpecDate();
-                    //Set Start Day of Company
-                    nts.uk.characteristics.restore('IndividualStartDay').done(function(data) {
-                        if (nts.uk.util.isNullOrEmpty(data)) {
-                            self.getComStartDay().done(function(startDay: number) {
-                                self.firstDay(startDay);
-                            });
-                        } else {
-                            self.firstDay(data);
+                //getAll SpecDate
+                self.getAllSpecDate();
+                //set parameter to calendar
+                let lstBoxCheck: Array<SpecItem> = [];
+                _.forEach(lstSpecifiDate, (item) => {
+                    let specItem = new SpecItem(item.specificDateItemNo, item.specificName);
+                    if (!isResetBoxItemList) {
+                        const hasItem = _.find(self.boxItemList(), (boxItem) => boxItem.id == item.specificDateItemNo);
+                        if (hasItem) {
+                            specItem.choose(hasItem.choose());
                         }
-                    });
-                    //set parameter to calendar
-                    let lstBoxCheck: Array<BoxModel> = [];
-                    _.forEach(lstSpecifiDate, function(item) {
-                        lstBoxCheck.push(new BoxModel(item.specificDateItemNo, item.specificName));
-                    });
-                    self.boxItemList(_.orderBy(lstBoxCheck, ['id'], ['asc']));
-                    //Set data to calendar
-                    self.getDataToOneMonth(self.yearMonthPicked()).done(function(arrOptionaDates) {
-                        if (arrOptionaDates.length > 0) {
-                            self.optionDates(arrOptionaDates);
-                            self.optionDates.valueHasMutated();
-                            self.isNew(false);
-                        }
-                        dfd.resolve();
-                    })
-                } else {
-                    //In Case no Data, openCDialog                    self.openKsm002CDialog();
+                    }
+                    lstBoxCheck.push(specItem);
+                });
+                self.boxItemList(_.orderBy(lstBoxCheck, ['id'], ['asc']));
+                //Set data to calendar
+                self.getDataToOneMonth(self.yearMonthPicked() + '').done(function(arrOptionaDates) {
+                    if (arrOptionaDates.length > 0) {
+                        self.optionDates(arrOptionaDates);
+                        self.optionDates.valueHasMutated();
+                        // self.isNew(false);
+                    } else {
+                        self.optionDates(arrOptionaDates);
+                        self.optionDates.valueHasMutated();
+                    }
                     dfd.resolve();
-                };
+                })
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                 dfd.reject();
@@ -160,26 +149,33 @@ module ksm002.a.viewmodel {
             let root: Array<IOptionalDate> = [];
             //Array Name to fill on  one Date
             let arrName: Array<string> = [];
-            let arrId: Array<string> = [];
+            let arrId: Array<number> = [];
             let selectedDate = moment(processMonth, self.dateFormat);
             service.getCompanySpecificDateByCompanyDateWithName(selectedDate.format(self.dateFormat)).done(function(lstComSpecDate: any) {
-                if (lstComSpecDate.length > 0) {
-                    self.isNew(false);
-                    for (let j = 1; j < endOfMonth + 1; j++) {
-                        let processDay: string = processMonth + _.padStart(j, 2, '0');
-                        processDay = moment(processDay).format(self.dateFormat);
-                        arrName = [];
-                        arrId = [];
-                        //Loop in each Day
-                        _.forEach(_.orderBy(lstComSpecDate,'specificDateItemNo','asc'), function(comItem) {
-                            if (comItem.specificDate == processDay) {
-                                arrName.push(comItem.specificDateItemName);
-                                arrId.push(comItem.specificDateItemNo);
-                            };
-                        });
-                        arrOptionaDates.push(new OptionalDate(moment(processDay).format("YYYY-MM-DD"), arrName, arrId));
-                    };
-                }
+                let isEmpty = true;
+                for (let j = 1; j < endOfMonth + 1; j++) {
+                    let processDay: string = processMonth + _.padStart(j, 2, '0');
+                    processDay = moment(processDay).format(self.dateFormat);
+                    arrName = [];
+                    arrId = [];
+                    //Loop in each Day
+                    _.forEach(_.orderBy(lstComSpecDate,'specificDateItemNo','asc'), function(comItem) {
+                        if (comItem.specificDate == processDay) {
+                            // arrName.push(comItem.specificDateItemName);
+                            arrId = comItem.specificDateItemNo;
+                        };
+                    });
+                    arrName = self.boxItemList().filter(item => {
+                        if (arrId.indexOf(item.id) >= 0) {
+                            return item;
+                        }
+                    }).map(item => item.name);
+                    if (arrName.length > 0) {
+                        isEmpty = false;
+                    }
+                    arrOptionaDates.push(new OptionalDate(moment(processDay).format("YYYY-MM-DD"), arrName, arrId));
+                };
+                self.isNew(isEmpty);
                 //Return Array of Data in Month
                 self.serverSource = _.cloneDeep(arrOptionaDates);
                 dfd.resolve(arrOptionaDates);
@@ -228,7 +224,8 @@ module ksm002.a.viewmodel {
         setSpecificItemToSelectedDate(param: IData) {
             var self = this;
             //get process date
-            let selectedDate: string = moment(param.date).format("YYYY-MM-DD");            //find exist item 
+            let selectedDate: string = moment(param.date).format("YYYY-MM-DD");
+            //find exist item 
             let selectedOptionalDate: OptionalDate = _.find(self.optionDates(), function(o) { return o.start == selectedDate; });
 
             if (nts.uk.util.isNullOrUndefined(selectedOptionalDate)) {
@@ -240,7 +237,8 @@ module ksm002.a.viewmodel {
                 selectedOptionalDate.listText = self.getNamefromSpecId(param.selecteds);
                 self.optionDates.push(selectedOptionalDate);
             }
-        }
+        }
+
         /**
          * Insert Calendar data
          */
@@ -271,6 +269,7 @@ module ksm002.a.viewmodel {
                         //Set dataSource to Null
                         self.optionDates([]);
                         self.isNew(true);
+                        self.start();
                     });
                     nts.uk.ui.block.clear();
                     dfd.resolve();
@@ -291,26 +290,21 @@ module ksm002.a.viewmodel {
             var self = this;
             let dfd = $.Deferred<any>();
             //Check Is used item 
-            if (self.hasItemSpecNotUse()) {
+            if (!self.hasItemInCalendarInsert()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_139" });
             } else {
-                if (self.isNew()) {
-                    // INSERT
-                    self.insertCompanySpecDate(self.getInsertCommand())
-                } else {
-                    // UDPATE  
-                    service.updateComSpecificDate(self.getUpdateCommand()).done(function(res: Array<any>) {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                            if(_.flattenDeep(_.map(self.optionDates(), o => o.listId)).length == 0){
-                                self.isNew(true);    
-                            };
-                            self.start();
-                            nts.uk.ui.block.clear();
-                        });
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                // UDPATE
+                service.insertComSpecificDate(self.getInsertCommand()).done(function(res: Array<any>) {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        if(_.flattenDeep(_.map(self.optionDates(), o => o.listId)).length == 0){
+                            self.isNew(true);
+                        };
+                        self.start(false);
+                        nts.uk.ui.block.clear();
                     });
-                }
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                });
                 //focus the first CheckBox
                 $(".chkBox ").find("label").eq(0).focus();
                 return dfd.promise();
@@ -320,27 +314,20 @@ module ksm002.a.viewmodel {
          * get Update Command
          */
         getUpdateCommand() {
-            var self = this;
-            let arrCommand = [];
-            self.optionDates().forEach(item => {
-                let before = _.find(self.serverSource, o => o.start == item.start);
-                if (nts.uk.util.isNullOrUndefined(before)) {
-                    arrCommand.push({
-                        specificDate: moment(item.start, 'YYYYMMDD').format(self.dateFormat),
-                        specificDateItemNo: self.getSpecIdfromName(item.listText),
-                        isUpdate: false
-                    });
-                } else {
-                    let current = {
-                        specificDate: moment(item.start, 'YYYYMMDD').format(self.dateFormat),
-                        specificDateItemNo: self.getSpecIdfromName(item.listText)
-                    };
-                    if (!_.isEqual(ko.mapping.toJSON(before), ko.mapping.toJSON(current))) {
-                        current["isUpdate"] = true;
-                        arrCommand.push(current);
-                    }
-                }
-            });
+            const vm = this;
+            let arrCommand: any[] = [];
+            let startOfMonth = 1;
+            const endOfMonth: number = moment(vm.yearMonthPicked(), "YYYYMM").endOf('month').date();
+            const selectedIds: any[] = vm.boxItemList().filter((item) => item.choose() == 1).map(item => item.id);
+            while(startOfMonth <= endOfMonth) {
+                let processDay: string = vm.yearMonthPicked() + _.padStart(startOfMonth + '', 2, '0');
+                processDay = moment(processDay).format(vm.dateFormat);
+                arrCommand.push({
+                    specificDate: processDay,
+                    specificDateNo: selectedIds
+                });
+                startOfMonth++;
+            }
             return arrCommand;
         }
         /**
@@ -349,33 +336,32 @@ module ksm002.a.viewmodel {
          */
         getInsertCommand() {
             var self = this;
-            let lstComSpecificDateCommand: Array<ICompanySpecificDateCommand> = [];
+            let lstComSpecificDateCommand: Array<any> = [];
             _.forEach(self.optionDates(), function(processDay) {
-                if (processDay.listId.length > 0) {
-                    _.forEach(processDay.listId, function(id) {
-                        lstComSpecificDateCommand.push({ specificDate: moment(processDay.start, 'YYYYMMDD').format(self.dateFormat), specificDateNo: Number(id) });
-                    });
-                };
+                lstComSpecificDateCommand.push({ specificDate: moment(processDay.start, 'YYYYMMDD').format(self.dateFormat), specificDateNo: processDay.listId });
             });
             return lstComSpecificDateCommand;
         };
+
+        hasItemInCalendarInsert() {
+            var self = this;
+            let hasItem = false;
+            _.forEach(self.optionDates(), (processDay) => {
+                if (processDay.listId.length > 0) {
+                    hasItem = true;
+                    return;
+                };
+            });
+            return hasItem;
+        }
 
         /**
          * check spec item is Use
          */
         hasItemSpecNotUse(): boolean {
-            var self = this;
-            let allCode = [];
-            let isUseCode = _.map(self.boxItemList(), o => o.id);
-            _.forEach(self.optionDates(), function(k) {
-                allCode = _.concat(allCode, self.getSpecIdfromName(k.listText));
-            });
-            allCode = _.uniq(allCode);
-            let arrDiff: Array<string> = _.difference(allCode, isUseCode);
-            if (arrDiff.length > 0)
-                return true;
-            else
-                return false;
+            const vm = this;
+            const selectedIds: any[] = vm.boxItemList().filter((item) => item.choose() == 1);
+            return selectedIds.length == 0;
         }
 
         /**
@@ -506,12 +492,14 @@ module ksm002.a.viewmodel {
     }
 
     class SpecItem {
-        specItemNo: number;
-        specItemName: string;
-        constructor(specItemNo: string, specItemName: string) {
+        id: number;
+        name: string;
+        choose: KnockoutObservable<number>;
+        constructor(specItemNo: number, specItemName: string, choose: number = 0) {
             var self = this;
-            self.specItemNo = specItemNo;
-            self.specItemName = specItemName;
+            self.id = specItemNo;
+            self.name = specItemName;
+            self.choose = ko.observable(0);
         }
     }
 

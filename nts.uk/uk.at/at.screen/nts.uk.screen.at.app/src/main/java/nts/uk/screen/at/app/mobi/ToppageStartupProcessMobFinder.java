@@ -75,6 +75,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
@@ -259,6 +260,9 @@ public class ToppageStartupProcessMobFinder {
     
     @Inject
     private AnnLeaveRemainNumberAdapter annLeaveRemainNumberAdapter;
+    
+    @Inject
+    private SysEmploymentHisAdapter sysEmploymentHisAdapter;
 
 
 	public ToppageStartupDto startupProcessMob() {
@@ -1252,13 +1256,13 @@ public class ToppageStartupProcessMobFinder {
         }
 
         @Override
-        public CompensatoryLeaveEmSetting compensatoryLeaveEmSetting(String companyId, String employmentCode) {
-            return compensLeaveEmSetRepo.find(companyId, employmentCode);
+        public Optional<CompensatoryLeaveEmSetting> compensatoryLeaveEmSetting(String companyId, String employmentCode) {
+            return Optional.ofNullable(compensLeaveEmSetRepo.find(companyId, employmentCode));
         }
 
         @Override
-        public CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId) {
-            return compensLeaveComSetRepo.find(companyId);
+        public Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId) {
+            return Optional.ofNullable(compensLeaveComSetRepo.find(companyId));
         }
 
         @Override
@@ -1294,18 +1298,8 @@ public class ToppageStartupProcessMobFinder {
 		}
 
 		@Override
-		public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
-			return Optional.empty();
-		}
-
-		@Override
-		public Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId) {
-			return Optional.ofNullable(this.compensLeaveComSetRepo.find(companyId));
-		}
-
-		@Override
-		public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode) {
-			return Optional.ofNullable(this.compensLeaveEmSetRepo.find(companyId, employmentCode));
+		public Optional<SEmpHistoryImport> getSEmpHistoryImport(String employeeId, GeneralDate baseDate) {
+			return sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, baseDate);
 		}
     }
 }

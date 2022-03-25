@@ -1,14 +1,12 @@
 package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.createremain.subtransfer.OvertimeHdHourTransfer;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.createremain.subtransfer.TranferHdWorkCompensatory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * @author thanh_nx
@@ -40,7 +38,5 @@ public class TranferHdWorkCompensatoryApp {
 
 	}
 
-	public static interface Require extends TranferHdWorkCompensatory.Require {
-		Optional<WorkType> getWorkType(String workTypeCd);
-	}
+	public static interface Require extends TranferHdWorkCompensatory.Require {	}
 }

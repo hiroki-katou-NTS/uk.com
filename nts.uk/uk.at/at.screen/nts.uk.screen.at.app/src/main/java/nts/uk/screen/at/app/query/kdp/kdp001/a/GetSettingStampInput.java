@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampDataOfEmployeesDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampResultDisplayDto;
@@ -37,6 +38,8 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.screen.at.app.query.kdp.common.GetStampHistoryAndReservation;
+import nts.uk.screen.at.app.query.kdp.common.GetStampHistoryAndReservationInput;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -74,8 +77,11 @@ public class GetSettingStampInput {
 	
 	@Inject
 	private WorkingConditionRepository workingService;
+	
+	@Inject
+	private GetStampHistoryAndReservation getStampHistoryAndReservation;
 
-	public SettingPotalStampInputDto getSettingPotalStampInput() {
+	public SettingPotalStampInputDto getSettingPotalStampInput(SettingPotalStampInputParam input) {
 		// get ログイン会社ID
 		String comppanyID = AppContexts.user().companyId();
 		Optional<PortalStampSettings> settingOpt = this.potalSettingRepo.get(comppanyID);
@@ -134,6 +140,19 @@ public class GetSettingStampInput {
 				empInfos.add(infoPotal);
 			}
 		});
+		
+		boolean changeTime = GeneralDateTime.now().toDate()
+				.after(GeneralDateTime.now().addHours(input.getRegionalTimeDifference()).toDate()) ? true : false;
+
+		if (changeTime) {
+			GetStampHistoryAndReservationInput param = new GetStampHistoryAndReservationInput(
+					AppContexts.user().employeeId(), GeneralDate.today().addDays(-4), GeneralDate.today().addDays(-1));
+			result.setEmployeeStampInfo(this.getStampHistoryAndReservation.getStampHistoryAndReservation(param));
+		} else {
+			GetStampHistoryAndReservationInput param = new GetStampHistoryAndReservationInput(
+					AppContexts.user().employeeId(), GeneralDate.today().addDays(-3), GeneralDate.today());
+			result.setEmployeeStampInfo(this.getStampHistoryAndReservation.getStampHistoryAndReservation(param));
+		}
 
 		return result;
 	}
@@ -157,7 +176,6 @@ public class GetSettingStampInput {
 		public List<StampCard> getListStampCard(String sid) {
 			return this.stampCardRepo.getListStampCard(sid);
 		}
-
 	}
 
 	@AllArgsConstructor
@@ -235,9 +253,5 @@ public class GetSettingStampInput {
 		public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
 			return workingConditionRepo.getWorkingConditionItem(historyId);
 		}
-
-		
-
 	}
-
 }

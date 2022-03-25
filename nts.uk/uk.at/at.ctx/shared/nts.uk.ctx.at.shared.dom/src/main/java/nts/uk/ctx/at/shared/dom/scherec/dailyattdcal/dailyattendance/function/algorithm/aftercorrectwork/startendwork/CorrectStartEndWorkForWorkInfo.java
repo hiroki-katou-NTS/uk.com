@@ -17,7 +17,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 public class CorrectStartEndWorkForWorkInfo {
 	
 	/** 始業終業時刻の補正 */
-	public static WorkInfoOfDailyAttendance correctStartEndWork(Require require, WorkInfoOfDailyAttendance workInfo, List<EditStateOfDailyAttd> editState) {
+	public static WorkInfoOfDailyAttendance correctStartEndWork(Require require, String companyId,
+			WorkInfoOfDailyAttendance workInfo, List<EditStateOfDailyAttd> editState) {
 		
 		/** input.日別勤怠の勤務情報を取得 */
 		DailyRecordToAttendanceItemConverter converter = require.createDailyConverter().withWorkInfo(workInfo)
@@ -27,7 +28,7 @@ public class CorrectStartEndWorkForWorkInfo {
 		List<ItemValue> beforeItems = atendanceId.isEmpty() ? new ArrayList<>() : converter.convert(atendanceId);
 		
 		/** 勤務情報と始業終業を変更する */
-		workInfo.changeWorkSchedule(require, workInfo.getRecordInfo(), true, true);
+		workInfo.changeWorkSchedule(require, companyId, workInfo.getRecordInfo(), true, true);
 		
 		/**手修正を基に戻す*/
 		DailyRecordToAttendanceItemConverter afterConverter = require.createDailyConverter().withWorkInfo(workInfo)

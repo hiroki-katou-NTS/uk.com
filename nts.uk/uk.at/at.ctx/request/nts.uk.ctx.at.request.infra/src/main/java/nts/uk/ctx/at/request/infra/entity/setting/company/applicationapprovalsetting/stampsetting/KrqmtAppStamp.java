@@ -23,9 +23,9 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stam
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.GoOutTypeDispControl;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.SettingForEachType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.StampAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.SupportFrameDispNO;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.shr.com.color.ColorCode;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Getter
@@ -39,10 +39,7 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
     @Column(name = "CID")
     private String companyId;
 
-    @Column(name = "SUP_DISP_CNT")
-    private Integer supDispCnt;
-
-    @Column(name = "STAMP_PLACE_DISP_ATR")
+    @Column(name = "STAMP_PLACE_DISP_ATR", nullable = false)
     private boolean stampPlaceDispAtr;
 
     @Column(name = "CANCEL_DISP_ATR")
@@ -207,6 +204,10 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
     @Column(name = "EXTRA_WORK_TIME_REFLECT_ATR")
     private Integer extraWorkTimeReflectAtr;
 
+    /** 打刻職場を表示する */
+    @Column(name = "STAMP_WKP_DISP_ATR")
+    private boolean stampWkpDispAtr;
+
     @Override
     protected Object getKey() {
         return companyId;
@@ -215,7 +216,6 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
     public AppStampSetting toSettingDomain() {
         return new AppStampSetting(
                 companyId,
-                new SupportFrameDispNO(supDispCnt),
                 EnumAdaptor.valueOf(BooleanUtils.toInteger(cancelDispAtr), UseDivision.class),
                 Arrays.asList(
                         new SettingForEachType(
@@ -271,7 +271,9 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
                                 EnumAdaptor.valueOf(BooleanUtils.toInteger(stampOutUnionDispAtr), DisplayAtr.class),
                                 GoOutType.UNION
                         )
-                )
+                ),
+                EnumAdaptor.valueOf(stampPlaceDispAtr ? 1 : 0, NotUseAtr.class),
+                EnumAdaptor.valueOf(stampWkpDispAtr ? 1 : 0, NotUseAtr.class)
         );
     }
 
@@ -292,7 +294,8 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
         KrqmtAppStamp entity = new KrqmtAppStamp();
         entity.companyId = companyId;
         entity.cancelDispAtr = BooleanUtils.toBoolean(setting.getUseCancelFunction().value);
-        entity.supDispCnt = setting.getSupportFrameDispNO().v();
+        entity.stampPlaceDispAtr = setting.getUseLocationSelection().equals(NotUseAtr.USE);
+        entity.stampWkpDispAtr = setting.getWkpDisAtr().equals(NotUseAtr.USE);
         for (GoOutTypeDispControl t : setting.getGoOutTypeDispControl()) {
             switch (t.getGoOutType()) {
                 case PRIVATE:
@@ -385,7 +388,8 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
 
     public void updateSetting(AppStampSetting setting) {
         cancelDispAtr = BooleanUtils.toBoolean(setting.getUseCancelFunction().value);
-        supDispCnt = setting.getSupportFrameDispNO().v();
+        this.stampPlaceDispAtr = setting.getUseLocationSelection().equals(NotUseAtr.USE);
+        this.stampWkpDispAtr = setting.getWkpDisAtr().equals(NotUseAtr.USE);
         for (GoOutTypeDispControl t : setting.getGoOutTypeDispControl()) {
             switch (t.getGoOutType()) {
                 case PRIVATE:

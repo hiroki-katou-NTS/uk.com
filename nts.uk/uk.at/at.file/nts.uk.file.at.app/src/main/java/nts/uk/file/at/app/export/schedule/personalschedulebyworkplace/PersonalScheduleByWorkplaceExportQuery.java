@@ -40,13 +40,13 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEventRep
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItemRepository;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificDateItemNo;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.CompanySpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.CompanySpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemNo;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDateRepository;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDateDto;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
@@ -176,16 +176,20 @@ public class PersonalScheduleByWorkplaceExportQuery {
         List<PublicHoliday> publicHolidays = publicHolidayRepo.getHolidaysByListDate(companyId, targetDates);
         List<DateInformation> dateInformationList = targetDates.stream().map(date -> {
             return DateInformation.create(new DateInformation.Require() {
-                @Override
-                @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-                public List<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, GeneralDate specificDate) {
-                    return workplaceSpecificDateRepo.getWorkplaceSpecByDate(workplaceId, specificDate);
-                }
-                @Override
-                @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-                public List<CompanySpecificDateItem> getComSpecByDate(GeneralDate specificDate) {
-                    return companySpecificDateRepo.getComSpecByDate(companyId, specificDate);
-                }
+                
+				@Override
+				@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+				public Optional<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, GeneralDate specificDate) {
+					return workplaceSpecificDateRepo.get(workplaceId, specificDate);
+				}
+				
+				@Override
+				@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+				public Optional<CompanySpecificDateItem> getComSpecByDate(GeneralDate specificDate) {
+					return companySpecificDateRepo.get(AppContexts.user().companyId(), specificDate);
+				}
+                
+                
                 @Override
                 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
                 public Optional<WorkplaceEvent> findByPK(String workplaceId, GeneralDate date) {
@@ -204,9 +208,10 @@ public class PersonalScheduleByWorkplaceExportQuery {
                 @Override
                 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
                 public List<SpecificDateItem> getSpecifiDateByListCode(List<SpecificDateItemNo> lstSpecificDateItemNo) {
-                    if (lstSpecificDateItemNo.isEmpty()) return new ArrayList<>();
-                    List<Integer> _lstSpecificDateItemNo = lstSpecificDateItemNo.stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
-                    return specificDateItemRepo.getSpecifiDateByListCode(companyId, _lstSpecificDateItemNo);
+					if (lstSpecificDateItemNo.isEmpty()) {
+						return new ArrayList<>();
+					}
+					return specificDateItemRepo.getSpecifiDateByListCode(AppContexts.user().companyId(), lstSpecificDateItemNo);
                 }
             }, date, targetOrgIdenInfor);
         }).collect(Collectors.toList());

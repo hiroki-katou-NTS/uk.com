@@ -66,12 +66,12 @@ module nts.uk.at.view.kdp010.g {
                 let self = this;
                 if(data){
                     self.name_selection(data.name_selection);
-                    self.finger_authc(data.finger_authc);
+                    //self.finger_authc(data.finger_authc);
                     self.ic_card(data.ic_card);
                     self.indivition(data.indivition);
                     self.portal(data.portal);
                     self.smart_phone(data.smart_phone);
-					self.ricohStamp(data.ricohStamp);
+					//self.ricohStamp(data.ricohStamp);
                 }
             }
         }

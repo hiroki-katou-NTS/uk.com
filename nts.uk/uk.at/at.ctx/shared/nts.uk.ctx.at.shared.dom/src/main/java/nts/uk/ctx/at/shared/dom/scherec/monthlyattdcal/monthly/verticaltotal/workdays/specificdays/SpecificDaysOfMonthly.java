@@ -93,6 +93,7 @@ public class SpecificDaysOfMonthly implements Serializable{
 
 			} else {
 				aggrSpecDays = new AggregateSpecificDays(spe.getSpecificDateItemNo());
+				specificDays.put(spe.getSpecificDateItemNo(), aggrSpecDays);
 			}
 			
 			/** ○休出かどうかの判断 */

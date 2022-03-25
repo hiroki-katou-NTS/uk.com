@@ -366,18 +366,22 @@
 												data-bind="click: nextMonth, timeClick: -1">＞</button>
 										</div>
 									</div>
+									<div class="contents">
+										<div class="func-label">表示<br/>内容</div>
+										<div>
+											<button style="margin-left: 10px" id="A4" tabindex="29" data-bind="enable: true ">#{i18n.getText('KSU001_67')}</button>	
+											<button id="A5" tabindex="33">凡例</button>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 						<div id="content-main">
 							<div class="main-controls">
 								<div id="contain-view-left">
-									<button id="A6_1" tabindex="34" class="editMode" style="height: 38px;"
-										data-bind="click: editMode ">#{i18n.getText('KSU001_140')}</button>
-									<br />
-									<button id="A6_2" tabindex="35" class="confirmMode"
-										style="height: 38px; margin-top: 6px;"
-										data-bind="click: confirmMode ">#{i18n.getText('KSU001_141')}</button>
+										<button id="A6_1" tabindex="34" class="editMode" data-bind="click: editMode ">#{i18n.getText('KSU001_140')}</button>
+										<br />
+										<button id="A6_2" tabindex="35" class="confirmMode" style="margin-top: 6px;" data-bind="click: confirmMode ">#{i18n.getText('KSU001_141')}</button>
 								</div>
 								<div id="contain-view-right" class="inline">
 									<div id="group-bt">
@@ -411,11 +415,6 @@
 									</div>
 								</div>
 							</div>
-							<div class="right-end">
-								<button id="A5" tabindex="33">凡例</button>
-								<button id="A4" tabindex="29" data-bind="enable: true ">#{i18n.getText('KSU001_67')}</button>
-								<button class="settingHeightGrid"> <i data-bind="ntsIcon: { no: 3 }"></i> </button>
-							</div>
 							<div style="width: fit-content;">
 								<div id = "btnControlLeftRight">
 									<button id = "A13" class="toLeft inline" data-bind="click : toLeft"> <i class="iconToLeft" data-bind="ntsIcon : { no: 152, width: 15, height: 20 }"></i></button>
@@ -434,6 +433,9 @@
 							</div>
 						</div>
 					</div>
+				</div>
+				<div id="cacheHeightGrid">
+					<button style="display: none;" id = 'heightGrid' class="settingHeightGrid"> <i data-bind="ntsIcon: { no: 3 }"></i> </button>
 				</div>
 				<div id="cacheDiv">
 					<div id="vertDiv" style="display: none; text-align: left;">

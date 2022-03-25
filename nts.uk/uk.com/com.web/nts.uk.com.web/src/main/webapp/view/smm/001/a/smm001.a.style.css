@@ -1,0 +1,102 @@
+.d-flex {
+  display: flex;
+}
+
+#tab-panel-smile .tabs-panel.vertical>.tabs-content, .tabs-panel.vertical-link>.tabs-content, .tabs-panel.horizontal>.tabs-content {
+  padding: 0px 10px !important;
+}
+
+.al-c {
+  align-items: center;
+}
+
+.mb-1 {
+  margin-bottom: 1rem;
+}
+
+.ml-1 {
+  margin-left: 1rem;
+}
+
+.mb-5px {
+  margin-bottom: 5px;
+}
+
+.ml-2 {
+  margin-left: 2rem;
+}
+
+.d-flex .checkbox-wrapper {
+  width: 100px;
+}
+
+.smile-div {
+  min-height: 50px;
+  width: 1110px;
+  margin-top: 10px;
+  border: 1px solid;
+}
+
+.combo-box-info {
+  width: 300px !important;
+}
+
+.combo-box-payment-category {
+  width: 70px !important;
+}
+
+#component-left {
+  padding-right: 8px !important;
+}
+
+#component-right {
+  padding-left: 8px !important;
+}
+
+#component-right .ui-iggrid table tr {
+  line-height: 0px !important;
+}
+
+.mt-3px {
+  margin-top: 3px;
+}
+
+.ml-10px {
+  margin-left: 10px;
+}
+
+.mb-10px {
+  margin-bottom: 10px;
+}
+
+.group-check-lock-classification {
+  height: 22px;
+}
+
+.group-check-lock-classification .radio-wrapper input[type="radio"]+span::before {
+  top: 1px !important;
+}
+
+.group-check-lock-classification .radio-wrapper input[type="radio"]+span::after {
+  top: 5px !important;
+}
+
+.group-check-lock-classification .radio-wrapper input[type="radio"]+span {
+  line-height: 15px !important;
+}
+
+#swap-list-move-data {
+  padding: 0px !important;
+}
+
+.init-data-text {
+	margin-left: 20px;
+}
+
+.init-data-button {
+	margin-left: 10px;
+}
+
+.tab-content-2 {
+  height: 470px;
+}

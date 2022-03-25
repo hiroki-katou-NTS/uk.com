@@ -75,6 +75,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -239,8 +240,11 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
                 .map(x -> GeneralDate.fromString(x.getDate(), "yyyy/MM/dd"))
                 .distinct().sorted().collect(Collectors.toList());
         DatePeriod period = dates.size() > 0 ? new DatePeriod(dates.get(0), dates.get(dates.size() - 1)) : null;
+
         RequireImp requireImp = new RequireImp(importCodes, employeeList, period, empAffiliationInforAdapter, empMedicalWorkStyleHistoryRepo, nurseClassificationRepo);
 
+        String companyId = AppContexts.user().companyId();
+        
         // 1.1: 作る(Require, 社員ID, 年月日, シフトマスタ取り込みコード, boolean)
         ScheduleRegisterDto sr =  command.toDomain();
         List<ResultOfRegisteringWorkSchedule> resultOfRegisteringWorkSchedule =
@@ -248,9 +252,10 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
                   .stream()
                   .map(x -> CreateWorkScheduleByImportCode.create(
                            requireImp,
-                            x.getEmployeeId(),
-                            x.getDate(),
-                            x.getImportCode(),
+                           companyId,
+                            x.getEmployeeId(), 
+                            x.getDate(), 
+                            x.getImportCode(), 
                             sr.isOverWrite())
                   ).collect(Collectors.toList());
 
@@ -394,40 +399,40 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
             return rs;
         }
 
-        @Override
-        public Optional<WorkType> getWorkType(String workTypeCd) {
-            return workTypeCache.get(workTypeCd);
-        }
+		@Override
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeCache.get(workTypeCode.v());
+		}
 
-        @Override
-        public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-            return workTimeSettingCache.get(workTimeCode);
-        }
+		@Override
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return workTimeSettingCache.get(workTimeCode.v());
+		}
 
         @Override
         public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
             return basicScheduleCache.get(workTypeCode).orElse(null);
         }
 
-        @Override
-        public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-            return fixedWorkSettingCache.get(code.v()).orElse(null);
-        }
+		@Override
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return fixedWorkSettingCache.get(workTimeCode.v());
+		}
 
-        @Override
-        public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-            return flowWorkSettingCache.get(code.v()).orElse(null);
-        }
+		@Override
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flowWorkSettingCache.get(workTimeCode.v());
+		}
 
-        @Override
-        public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-            return flexWorkSettingCache.get(code.v()).orElse(null);
-        }
+		@Override
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flexWorkSettingCache.get(workTimeCode.v());
+		}
 
-        @Override
-        public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-            return predetemineTimeSettingCache.get(wktmCd.v()).orElse(null);
-        }
+		@Override
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return predetemineTimeSettingCache.get(workTimeCode.v());
+		}
 
         @Override
         public SharedSyEmploymentImport getAffEmploymentHistory(String employeeId, GeneralDate standardDate) {
@@ -446,16 +451,7 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
             if(listAffJobTitleHis.isEmpty())
                 return null;
             return listAffJobTitleHis.get(0);
-        }
-
-        @Override
-        public SharedAffWorkPlaceHisImport getAffWorkplaceHistory(String employeeId, GeneralDate standardDate) {
-//            Optional<SharedAffWorkPlaceHisImport> rs = sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, standardDate);
-//            return rs.isPresent() ? rs.get() : null;
-            return sharedAffWorkPlaceHisCache.get(standardDate, e ->
-                sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, standardDate)
-                .map(h -> DateHistoryCache.Entry.of(h.getDateRange(), h))).orElse(null);
-        }
+        }    
 
         @Override
         public SClsHistImport getClassificationHistory(String employeeId, GeneralDate standardDate) {

@@ -14,8 +14,8 @@ module nts.uk.com.view.cmm040.a.viewmodel {
         //
         currentBonusPaySetting: KnockoutObservable<BonusPaySetting>;
         //
-        itemList: KnockoutObservableArray<ItemModel>;
-        radius: KnockoutObservable<number> = ko.observable(1);
+        itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+        radius: KnockoutObservable<number> = ko.observable('');
         //
         // items: KnockoutObservableArray<ItemModel>;
         //
@@ -48,10 +48,13 @@ module nts.uk.com.view.cmm040.a.viewmodel {
 
         workplaceCode: KnockoutObservable<String> = ko.observable('');
         workplaceDisplayName: KnockoutObservable<String> = ko.observable('');
+        selectAreaCombobox: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectAreaCode: KnockoutObservable<String> = ko.observable('');
 
         changeWorkPlaceID: String = '';
         // Cần đạt như này để lưu đúng giá trị vào database.
-        defautValueLocation: String = '0.000000';
+        defautValueLocation: String = '';
+        DEFAUT_VALUE_RADIUS = 9999;
 
         constructor() {
             let self = this;
@@ -71,21 +74,6 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             self.enableA53 = ko.observable(false);
             //
             self.radiusEnum = ko.observableArray([]);
-            self.itemList = ko.observableArray([]);
-            self.itemList = ko.observableArray([
-                new ItemModel('0', 'M_50'),
-                new ItemModel('1', 'M_100'),
-                new ItemModel('2', 'M_200'),
-                new ItemModel('3', 'M_300'),
-                new ItemModel('4', 'M_400'),
-                new ItemModel('5', 'M_500'),
-                new ItemModel('6', 'M_600'),
-                new ItemModel('7', 'M_700'),
-                new ItemModel('8', 'M_800'),
-                new ItemModel('9', 'M_900'),
-                new ItemModel('10', 'M_1000')
-
-            ]);
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: nts.uk.resource.getText("CMM040_9"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-2', title: nts.uk.resource.getText("CMM040_10"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
@@ -104,7 +92,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 // if (value == null) return;
                 self.items = [];
                 self.selectWorkLocation(value);
-                self.listIpCancel();
+                self.listIpCancel([]);
 
             });
             self.valueA5_2.subscribe(function (value) {
@@ -117,23 +105,68 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             });
 
             self.longitude.subscribe(function (value) {
-                if (value.toString() == "" || (value > 180) || (value < -180)) {
-                    let temp = _.find(nts.uk.ui.errors.getErrorList(), function (o) { return o.errorCode == "Msg_2161"; });
-                    if (temp == null) {
-                        $('#validatelong').ntsError('set', { messageId: "Msg_2161" });
-                    }
+                
+                setTimeout(() => self.validate(), 100);
+                
+                if (!value || !value.toString()) {
+                    return;
                 }
+                
+               
+                    
+                setTimeout(() => {
+                    if ((value > 180) || (value < -180)) {
+                        let temp = _.find(nts.uk.ui.errors.getErrorList(), function(o) { return o.errorCode == "Msg_2161"; });
+                        if (temp == null) {
+                            $('#validatelong').ntsError('set', { messageId: "Msg_2162" })
+                        }
+                    }
+                }, 100);
+
+                
             });
 
+            
             self.latitude.subscribe(function (value) {
-                if (value.toString() == "" || (value > 90) || (value < -90)) {
-                    let temp = _.find(nts.uk.ui.errors.getErrorList(), function (o) { return o.errorCode == "Msg_2162"; });
-                    if (temp == null) {
-                        $('#validatelat').ntsError('set', { messageId: "Msg_2162" });
+                
+                setTimeout(() => self.validate(), 100);
+                
+                if (!value || !value.toString()) {
+                    return;
+                }
+                
+                
+                setTimeout(() => {
+                    if ((value > 90) || (value < -90)) {
+                        let temp = _.find(nts.uk.ui.errors.getErrorList(), function(o) { return o.errorCode == "Msg_2161"; });
+                        if (temp == null) {
+                            $('#validatelat').ntsError('set', { messageId: "Msg_2162" })
+                        }
                     }
+                }, 100);
+                
+            });
+            
+            self.radius.subscribe((value) => {
+                
+                setTimeout(() => self.validate(), 100);
+                
+                if (value != 9999) {
+                    $('#combo-box .ui-igcombo').ntsError('clear');
                 }
             });
 
+        }
+        
+        validate() {
+            let self = this;
+            $(".nts-input").ntsError("clear");
+            $(".nts-input").trigger("validate");
+            $('#combo-box .ui-igcombo').ntsError('clear');
+            if (( self.isNumberic(self.latitude()) || self.isNumberic(self.longitude())) && self.radius() == 9999) {
+                $('#combo-box .ui-igcombo').ntsError('set', { messageId: "MsgB_1" ,messageParams:[nts.uk.resource.getText("CMM040_39")] });
+                return;
+            }
         }
 
         startPage(): JQueryPromise<any> {
@@ -153,6 +186,23 @@ module nts.uk.com.view.cmm040.a.viewmodel {
 
             return dfd.promise();
         }
+        
+        latitudeRequired() {
+            let self = this;
+            return self.radius() != 9999 || self.isNumberic(self.longitude());
+
+        };
+        
+        isNumberic(value){
+            return !isNaN(parseFloat(value)) && isFinite(value);
+        }
+        
+        longitudeRequired() {
+            let self = this;
+            return self.radius() != 9999 || self.isNumberic(self.latitude());
+        }
+        
+        
 
         setDataWorkPlace(data: any) {
             const self = this;
@@ -209,11 +259,11 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                         self.workLocationCD(result.workLocationCD);
                         self.selectedWorkLocation(self.workLocationCD());
                         self.workLocationName(result.workLocationName);
-                        self.radius(result.radius);
+                        self.radius(result.radius == null ? 9999 : result.radius);
                         self.latitude(result.latitude);
                         self.longitude(result.longitude);
                         self.isCreate(false);
-
+                        self.selectAreaCode(result.regionCode);
                     }
                     //
                     let listWorkplaceS = _.filter(data.listWorkLocationDto, function (o) { return o.workLocationCD == self.workLocationCD() });
@@ -251,7 +301,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                             datagrid.push(new GridItem(data.listCompany[i].companyCode, data.listCompany[i].companyName, workPlaceCode, workPlaceName));
                         }
                         self.items = datagrid;
-                        dfd.resolve();
+                        
                     });
                 } else {
                     self.selectWorkLocation(null);
@@ -283,16 +333,47 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                         if (checkdata.length == 0) {
                             self.items.push(new GridItem(data.listCompany[0].companyCode, data.listCompany[0].companyName, '', ''));
                         }
-                        dfd.resolve();
                     });
                     $("#focus").focus();
                 }
+                
+                service.getInfoOnTimeDifference().done((result) => {
+                    let comboItems = _.chain(result)
+                        .map(({code, name, regionalTimeDifference}) => {
+                            let sign = regionalTimeDifference == 0 ? '±' : regionalTimeDifference > 0 ? '＋' : '－';
+                            return { code, name, regionalTimeDifference, text: nts.uk.resource.getText('CMM040_46', [sign + nts.uk.time.format.byId("Time_Short_HM", Math.abs(regionalTimeDifference))]) };
+                        })
+                        .orderBy(['code'])
+                        .value();
+                    self.selectAreaCombobox(comboItems);
+                    if (self.isCreate()) {
+                        self.setDefaultSelectAreaCode();
+                    }
+                    dfd.resolve();
+                }).fail(function(error) {
+                    dfd.fail();
+                    nts.uk.ui.dialog.alertError(error.message);
+                });
+                
             }).fail(function (error) {
                 dfd.fail();
                 nts.uk.ui.dialog.alertError(error.message);
             });
 
             return dfd.promise();
+        }
+        
+        private setDefaultSelectAreaCode() {
+            let self = this;
+            if (self.selectAreaCombobox().length) {
+                let codeOfZero = _.get(_.find(self.selectAreaCombobox(), ['regionalTimeDifference', 0]), 'code');
+                if (codeOfZero) {
+                    self.selectAreaCode(codeOfZero);
+                } else {
+                    let [first] = self.selectAreaCombobox();
+                    self.selectAreaCode(first.code);
+                }
+            }
         }
 
         private selectWorkLocation(workLocationCD: string) {
@@ -308,9 +389,10 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 self.isCreate(false);
                 self.workLocationCD(data.workLocationCD);
                 self.workLocationName(data.workLocationName);
-                self.radius(data.radius);
+                self.radius(data.radius == null ? 9999 : data.radius);
                 self.latitude(data.latitude);
                 self.longitude(data.longitude);
+                self.selectAreaCode(data.regionCode);
                 let listWorkplace = [];
                 let list1 = _.find(self.workPlacesList(), function (o) { return o.workLocationCD == workLocationCD; });
                 if (list1 != null && list1.workplace != null && list1.workplace.length > 0) {
@@ -394,10 +476,11 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 self.isCreate(true);
                 self.workLocationCD('');
                 self.workLocationName('');
-                self.radius(0);
+                self.radius(self.DEFAUT_VALUE_RADIUS);
                 self.longitude(self.defautValueLocation);
                 self.latitude(self.defautValueLocation);
                 self.selectedWorkLocation(null);
+                self.setDefaultSelectAreaCode();
                 $("#focus").focus();
                 errors.clearAll();
 
@@ -441,7 +524,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             self.workLocationCD('');
             self.workLocationName('');
             self.valueA5_2('');
-            self.radius(0);
+            self.radius(self.DEFAUT_VALUE_RADIUS);
             self.latitude(self.defautValueLocation);
             self.longitude(self.defautValueLocation);
             self.selectedWorkLocation(null);
@@ -473,10 +556,18 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             }
             $("#focus").focus();
             self.listIpCancel([]);
+
+
+            self.setDefaultSelectAreaCode();
         }
 
         add() {
             let self = this;
+            $('#combo-box .ui-igcombo').ntsError('clear');
+            if (( self.isNumberic(self.latitude()) || self.isNumberic(self.longitude())) && self.radius() == 9999) {
+                $('#combo-box .ui-igcombo').ntsError('set', { messageId: "MsgB_1" ,messageParams:[nts.uk.resource.getText("CMM040_39")] });
+                return;
+            }
             $(".nts-input").trigger("validate");
             if (!$(".nts-input").ntsError("hasError")) {
                 let listWorkplace = [];
@@ -485,11 +576,13 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 let param = {
                     workLocationCD: self.workLocationCD(),
                     workLocationName: self.workLocationName(),
-                    radius: self.radius(),
+                    radius: self.radius() == 9999 ? null : self.radius(),
                     latitude: self.latitude(),
                     longitude: self.longitude(),
-                    listIPAddress: self.listIpCancel(),
-                    workplace: self.listWorkPlaceIDs[0]
+                    //update không cần set lại list IP vì màn B thêm trực tiếp rồi
+                    listIPAddress: self.isCreate() ? self.listIpCancel() : [],
+                    workplace: self.listWorkPlaceIDs[0],
+                    regionCode: self.selectAreaCode()
                 }
                 // let select = 
                 if (self.isCreate() === true) {
@@ -688,6 +781,9 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             service.radiusEnum().done(function (res: Array<Enum>) {
                 self.radiusEnum(res);
                 self.itemList(res)
+                if(res.length){
+                    self.itemList().push({value: 9999, fieldName: "M_9999", localizedName: ""});
+                    }
                 dfd.resolve();
             }).fail(function (res) {
                 nts.uk.ui.dialog.alertError(res.message);

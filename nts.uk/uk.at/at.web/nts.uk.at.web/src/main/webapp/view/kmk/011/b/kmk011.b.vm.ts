@@ -1,6 +1,7 @@
 module nts.uk.at.view.kmk011.b {
     import blockUI = nts.uk.ui.block;
     import setShared = nts.uk.ui.windows.setShared;
+    import getText = nts.uk.resource.getText;    
     import modal = nts.uk.ui.windows.sub.modal;
     export module viewmodel {
 
@@ -244,7 +245,19 @@ module nts.uk.at.view.kmk011.b {
                     self.listItemSelected([]);
                 } else {
                     service.getNameItemSelected(listItemAttendanceId).done(function(lstName: Array<model.DivergenceItem>) {
-                        self.listItemSelected(lstName);
+                        if(lstName.length != listItemAttendanceId.length) {
+                            let listId: Array<number> = [];
+                            lstName.forEach(item => {
+                                listId.push(item.attendanceItemId);
+                            });
+
+                            let listTempId = _.difference(listItemAttendanceId, listId);
+                            listTempId.forEach(id => {
+                                // lstName.push(new model.DivergenceItem(id, getText('KMK011_85'),0,0,0));
+                                lstName.push({attendanceItemId: id, attendanceItemName: getText('KMK011_85'), displayNumber: 0, useAtr: 0, attendanceAtr: 0})
+                            })
+                        }
+                        self.listItemSelected(_.sortBy(lstName,['attendanceItemId']));
                         self.findTimeName(self.divergenceTimeId());
                     });
                 }

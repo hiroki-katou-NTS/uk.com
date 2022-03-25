@@ -150,7 +150,7 @@ module nts.uk.at.ksu008.b {
             const vm = this;
             vm.$blockui("show");
             vm.$ajax(API.getAll + isSystemFixed).done((data: Array<any>) => {
-                vm.items(data);
+                vm.items(_.sortBy(data, ["code"]));
                 if (!_.isEmpty(data)) {
                     if (code) {
                         vm.currentCode() == code ? vm.currentCode.valueHasMutated() : vm.currentCode(code);

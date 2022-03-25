@@ -14,6 +14,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemAuthority;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DisplayAndInputControl;
@@ -26,7 +28,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttd
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 //import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.DisplayAndInputMonthly;
-//import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority;
+//import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority; 会社の日次項目を取得する
 
 @Stateless
 public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
@@ -39,6 +41,9 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 
 	@Inject
 	private AtItemNameAdapter atItemNameAdapter;
+	
+	@Inject
+	private NarrowDownListDailyAttdItemPub pub;
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -74,9 +79,13 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 		if (dailyItem.isEmpty()) {
 			return Collections.emptyList();
 		}
+		List<Integer> lstAtdId = dailyItem.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList());
+		val lstId = pub.get(AppContexts.user().companyId(), lstAtdId);
+		List<DailyAttendanceItem> dailyItemNew = dailyItem.stream().filter(x -> lstId.contains(x.getAttendanceItemId())).collect(Collectors.toList());
+		
 		// 	勤怠項目に対応する名称を生成する
 		// to ver7
-		List<AttItemName> dailyAttItem = atItemNameAdapter.getNameOfDailyAttendanceItem(dailyItem);
+		List<AttItemName> dailyAttItem = atItemNameAdapter.getNameOfDailyAttendanceItem(dailyItemNew);
 		for (AttItemName att : dailyAttItem) {
 			int id = att.getAttendanceItemId();
 			if (authorityMap.containsKey(id)) {

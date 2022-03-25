@@ -9,6 +9,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 
@@ -241,5 +242,7 @@ public class WorkingConditionItem extends AggregateRoot {
 		this.employeeId = employeeId;
 	}
 
-
+	public static interface Require {
+		Optional<WorkingConditionItem> workingConditionItem(String sid, GeneralDate baseDate);
+	}
 }

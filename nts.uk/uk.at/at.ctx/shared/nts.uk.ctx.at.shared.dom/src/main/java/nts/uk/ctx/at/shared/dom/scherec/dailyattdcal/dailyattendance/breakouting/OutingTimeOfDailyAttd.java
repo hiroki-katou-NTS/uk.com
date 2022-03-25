@@ -16,10 +16,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTime;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetail;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 
 /**
  * 日別勤怠の外出時間帯
@@ -45,7 +44,7 @@ public class OutingTimeOfDailyAttd {
 	 * @return 不要な項目を削除した時間帯
 	 */
 	public List<TimeSheetOfDeductionItem> removeUnuseItemBaseOnAtr(DeductionAtr dedAtr,
-			WorkTimeMethodSet workTimeMethodSet,
+			WorkTimeDivision workTimeDivision,
 			Optional<FlowWorkRestTimezone> fluRestTime,
 			Optional<FlowWorkRestSettingDetail> flowDetail,
 			RoundingTime roundingTime) {
@@ -69,8 +68,8 @@ public class OutingTimeOfDailyAttd {
 															 .map(tc -> tc.toTimeSheetOfDeductionItem())
 															.collect(Collectors.toList());
 		
-		/** ○流動勤務かどうか判断 */
-		if(workTimeMethodSet.isFluidWork()) {
+		/** ○フレor流動勤務かどうか判断 */
+		if(workTimeDivision.isFlow() || workTimeDivision.isFlex()) {
 			//固定休憩である
 			val isFixBreak = fluRestTime.map(c -> c.isFixRestTime()).orElse(false);
 

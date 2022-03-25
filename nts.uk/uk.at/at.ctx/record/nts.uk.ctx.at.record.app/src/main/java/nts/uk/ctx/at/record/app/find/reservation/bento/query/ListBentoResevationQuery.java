@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.app.find.reservation.bento.query;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.app.find.reservation.bento.dto.BentoReservationSearchConditionDto;
 import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 
@@ -24,20 +23,20 @@ public class ListBentoResevationQuery {
     private final boolean ORDERED = true;
     private final boolean UN_ORDERED = false;
 
-    public List<BentoReservation> getListBentoResevationQuery(BentoReservationSearchConditionDto searchCondition,
+    public List<BentoReservation> getListBentoResevationQuery(BentoReservationSearchCondition searchCondition,
                                   DatePeriod period, List<ReservationRegisterInfo> reservationRegisterInfos,
                                   List<WorkLocationCode> workLocationCodes, ReservationClosingTimeFrame reservationClosingTimeFrame){
         /** 検索条件==１商品２件以上 */
-        if(searchCondition == BentoReservationSearchConditionDto.MORE_THAN_1_PRODUCT)
+        if(searchCondition == BentoReservationSearchCondition.MORE_THAN_1_PRODUCT)
             return bentoReservationRepository.acquireReservationDetails(reservationRegisterInfos,period,reservationClosingTimeFrame,workLocationCodes);
 
 
         /** 検索条件 == 注文済み */
-        if(searchCondition == BentoReservationSearchConditionDto.ORDERED)
+        if(searchCondition == BentoReservationSearchCondition.ORDERED)
             return getOrderedBentoReservationsDetail(reservationRegisterInfos, period, reservationClosingTimeFrame, workLocationCodes);
 
         /** 検索条件 == 未注文 */
-        if(searchCondition == BentoReservationSearchConditionDto.UN_ORDERED)
+        if(searchCondition == BentoReservationSearchCondition.UN_ORDERED)
             return getUnOrderedBentoReservationsDetail(reservationRegisterInfos, period, reservationClosingTimeFrame, workLocationCodes);
 
         /** 検索条件 == 新規注文 */
@@ -45,7 +44,7 @@ public class ListBentoResevationQuery {
             //return getNewOrderDetail(period,reservationRegisterInfos,reservationClosingTimeFrame);
 
         /** 検索条件 ==　全部 */
-        if(searchCondition == BentoReservationSearchConditionDto.ALL)
+        if(searchCondition == BentoReservationSearchCondition.ALL)
             return bentoReservationRepository.getAllReservationDetail(reservationRegisterInfos,period,reservationClosingTimeFrame,workLocationCodes);
 
         return Collections.EMPTY_LIST;

@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>    
+    <ui:composition template="../../../../master/dialog.xhtml">
+        <ui:define name="htmlHead">	
+            <script>var dialogSize = { width: 320, height: 480 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="kfp002.b.vm.js" />
+		</ui:define>
+
+		<!-- PAGE CONTENT -->
+        <ui:define name="content">        
+            <div id="contents-area" style="padding: 20px;">
+                <table id="single-list"
+                       data-bind="ntsGridList: {
+                                        name:'#[KFP002_14]',
+                                        rows: 10,
+                                        dataSource: formats,
+                                        primaryKey: 'code',
+                                        columns: [
+                                            { headerText: $i18n('KFP002_15'), key: 'code', width: 60 },
+                                            { headerText: $i18n('KFP002_16'), key: 'name', width: 200}
+                                        ],
+                                        multiple: false,
+                                        value: selectedFormatCode
+                                    }">
+                </table>
+            </div>    
+            <div id="functions-area-bottom">
+                <!--C3-1-->
+                <button tabindex="3" class="x-large proceed" id="B4_1" data-bind="click: changeFormat">#{i18n.getText('KFP002_17')}</button>
+                <!--C3-2-->
+                <button tabindex="4"  id="B4_2" data-bind="click: closeDialog">#{i18n.getText('KFP002_18')}</button>
+            </div>	 
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

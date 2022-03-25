@@ -1,4 +1,7 @@
 package nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting;
+
+import java.util.Optional;
+
 /**
  * 応援の運用設定Repository
  * @author lan_lt
@@ -19,5 +22,12 @@ public interface SupportOperationSettingRepository {
 	 * @return 応援の運用設定
 	 */
 	SupportOperationSetting get( String cid );
+	
+	/**
+	 * Get
+	 * @param cid 会社ID
+	 * @return 応援の運用設定
+	 */
+	Optional<SupportOperationSetting> getSupportOperationSetting( String cid );
 
 }

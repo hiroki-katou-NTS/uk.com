@@ -70,6 +70,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.ti
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.SettingDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
@@ -97,7 +98,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveManagementSetting;
 import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveMngSetRepository;
-import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrame;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrameRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -264,7 +264,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
             // ドメインモデル「特別休暇枠」を取得する
             List<SpecialHolidayFrame> listSpecialFrame = specialHolidayFrameRepo.findDataDisplay(companyId, 1, 1)
                     .stream()
-                    .filter(i -> i.getDeprecateSpecialHd() == DeprecateClassification.Deprecated && i.getTimeMngAtr() == NotUseAtr.USE)
+                    .filter(i -> i.getDeprecateSpecialHd() == ManageDistinct.YES && i.getTimeMngAtr() == NotUseAtr.USE)
                     .sorted(Comparator.comparing(SpecialHolidayFrame::getSpecialHdFrameNo))
                     .collect(Collectors.toList());
             timeSpecialLeaveMng.getListSpecialFrame().addAll(listSpecialFrame);

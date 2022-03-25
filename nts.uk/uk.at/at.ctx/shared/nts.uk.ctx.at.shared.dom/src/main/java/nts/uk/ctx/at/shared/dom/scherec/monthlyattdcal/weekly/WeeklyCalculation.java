@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.At
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.SettingRequiredByDefo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.SettingRequiredByReg;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceItemOfMonthly;
@@ -121,7 +122,7 @@ public class WeeklyCalculation implements Cloneable {
 			SettingRequiredByDefo settingsByDefo, AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			WeekStart weekStart, AttendanceTimeMonth premiumTimeOfPrevMonLast,
 			Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyMap,
-			MonAggrCompanySettings companySets){
+			MonAggrCompanySettings companySets, MonthlyCalculatingDailys monthlyCalcDailys) {
 		
 		if (workingSystem == WorkingSystem.EXCLUDED_WORKING_CALCULATE) return;
 		
@@ -140,7 +141,7 @@ public class WeeklyCalculation implements Cloneable {
 			this.regAndIrgTime.aggregatePremiumTime(require, companyId, employeeId, weekPeriod,
 					period, workingSystem, aggregateAtr, settingsByReg, settingsByDefo,
 					aggregateTotalWorkingTime, weekStart, premiumTimeOfPrevMonLast,
-					companySets.getVerticalTotalMethod());
+					companySets.getVerticalTotalMethod(), monthlyCalcDailys);
 			break;
 			
 		case FLEX_TIME_WORK:
@@ -345,6 +346,19 @@ public class WeeklyCalculation implements Cloneable {
 		}
 		
 		return notExistTime;
+	}
+
+	/**
+	 * 合算する
+	 * 
+	 * @param target 加算対象
+	 */
+	public void sum(WeeklyCalculation target) {
+
+		this.regAndIrgTime.sum(target.regAndIrgTime);
+		this.flexTime.sum(target.flexTime);
+		this.totalWorkingTime.sum(target.totalWorkingTime);
+		this.totalSpentTime.sum(target.totalSpentTime);
 	}
 	
 	/**

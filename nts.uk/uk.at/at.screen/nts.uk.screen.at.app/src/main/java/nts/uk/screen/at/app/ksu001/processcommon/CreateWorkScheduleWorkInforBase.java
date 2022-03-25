@@ -128,12 +128,12 @@ public class CreateWorkScheduleWorkInforBase {
 		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
 			return empAffiliationInforAdapter.getEmpOrganization(baseDate, lstEmpId);
 		}
-
+		
 		@Override
 		public Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date) {
 			return workSchedule;
 		}
-
+		
 		@Override
 		public Optional<IntegrationOfDaily> getRecord(String employeeId, GeneralDate date) {
 			return integrationOfDaily;

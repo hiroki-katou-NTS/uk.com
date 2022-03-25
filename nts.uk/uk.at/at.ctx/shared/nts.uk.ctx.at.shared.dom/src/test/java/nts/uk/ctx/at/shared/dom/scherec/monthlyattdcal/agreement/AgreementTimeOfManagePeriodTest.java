@@ -147,7 +147,7 @@ public class AgreementTimeOfManagePeriodTest {
         									Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), new AttendanceTime(0))), null),
         									new HolidayWorkFrameTime(new HolidayWorkFrameNo(2), 
         	    									Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(hwTime * 60), new AttendanceTime(hwTime * 60))),
-        	    									Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), new AttendanceTime(0))), null)), null, null))), null, null, null, null, null, null, null, null, null, null), null, null), null, null, null);
+        	    									Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), new AttendanceTime(0))), null)), null, null)), null), null, null, null, null, null, null, null, null, null, null), null, null), null, null, null);
         	dailyRecords.add(
         			new IntegrationOfDaily(sid, GeneralDate.ymd(ym, day), new WorkInfoOfDailyAttendance(new WorkInformation("aa", "aa"), null, null, null, null, null, null),
         					null, null, null, null, null, null, Optional.of(attendanceTime), null, null, null, null, null, null, null, new ArrayList<>(), new ArrayList<>(),  null, null));

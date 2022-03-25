@@ -25,6 +25,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportScheduleDetail;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskScheduleDetail;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.support.supportschedule.KscdtSchSupport;
@@ -68,6 +69,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedul
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.StayingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
@@ -174,12 +176,18 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 	@OneToMany(targetEntity = KscdtSchSupport.class, mappedBy = "kscdtSchBasicInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "KSCDT_SCH_SUPPORT")
 	public List<KscdtSchSupport> kscdtSchSupport;
+	
+	@OneToMany(targetEntity = KscdtSchTask.class, mappedBy = "kscdtSchBasicInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "KSCDT_SCH_TASK")
+	public List<KscdtSchTask> kscdtSchTask;
 
 	public static KscdtSchBasicInfo toEntity(WorkSchedule workSchedule, String cID) {
 
 		String sID = workSchedule.getEmployeeID();
 
 		GeneralDate yMD = workSchedule.getYmd();
+		
+		TaskSchedule task = workSchedule.getTaskSchedule();
 
 		// 勤務予定.所属情報
 		AffiliationInforOfDailyAttd workInfo = workSchedule.getAffInfo();
@@ -249,6 +257,9 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				.map(c -> KscdtSchSupport.toEntity(cID, sID, yMD, index.getAndIncrement(), c))
 				.collect(Collectors.toList());
 
+		List<KscdtSchTask> lstKscdtSchTask = task.getDetails().stream()
+				.map(c -> KscdtSchTask.toEntity(sID, yMD, cID, c, index.getAndIncrement())).collect(Collectors.toList());
+
 		// null - QA 110800
 		KscdtSchBasicInfo basicInfo = new KscdtSchBasicInfo(basicInfoPK,
 				cID, workSchedule.getConfirmedATR().value == 1 ? true : false, workInfo.getEmploymentCode().v(),
@@ -263,8 +274,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				workInfo.getIsNursingManager().isPresent()? workInfo.getIsNursingManager().get() : null,
                 workInfo.getBonusPaySettingCode().isPresent() ? workInfo.getBonusPaySettingCode().get().toString() : null,
 				kscdtSchTimes, kscdtEditStates, kscdtSchAtdLvwTimes,
-				kscdtSchShortTimeTs, kscdtSchBreakTs,listKscdtSchGoingOutTs,
-				lstKscdtSchSupport);
+				kscdtSchShortTimeTs, kscdtSchBreakTs,listKscdtSchGoingOutTs, lstKscdtSchSupport, lstKscdtSchTask);
 		return basicInfo;
 	}
 
@@ -347,7 +357,11 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		WorkScheduleTimeOfDaily scheduleTimeOfDaily = new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0)), new AttendanceTime(0));
 		
 		AttendanceTimeOfDailyAttendance attendance = null;
-		TaskSchedule taskSchedule = TaskSchedule.createWithEmptyList();
+		// Create Task
+		List<TaskScheduleDetail> details = kscdtSchTask.stream()
+					.map(task -> new TaskScheduleDetail(new TaskCode(task.taskCode), new TimeSpanForCalc(new TimeWithDayAttr(task.startClock), new TimeWithDayAttr(task.endClock))))
+					.collect(Collectors.toList());
+		TaskSchedule taskSchedule = new TaskSchedule(details);
 		StayingTimeOfDaily stayingTime = new StayingTimeOfDaily(new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0), new AttendanceTime(0), new AttendanceTimeOfExistMinus(0));
 		MedicalCareTimeOfDaily medicalCareTime = new MedicalCareTimeOfDaily(WorkTimeNightShift.DAY_SHIFT, new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
 		
@@ -357,10 +371,6 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				stayingTime, new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0), medicalCareTime);
 		}
 		
-		if(workSch != null) {
-			taskSchedule = workSch.getTaskSchedule();
-		}
-
 		optSortTimeWork = new ShortTimeOfDailyAttd(shortWorkingTimeSheets);
 
 		//#114431

@@ -39,4 +39,6 @@ public interface BPTimeItemRepository {
 	
 	List<BonusPayTimeItem> getListSpecialBonusPayTimeItemName(String companyId, List<Integer> timeItemNos);
 
+	List<BonusPayTimeItem> getListBonusPayTimeByCid(String companyId);
+
 }

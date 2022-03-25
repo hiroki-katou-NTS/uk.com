@@ -53,6 +53,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
@@ -93,6 +94,8 @@ public class CreateWorkScheduleShift {
 			List<ShiftMasterMapWithWorkStyle> listShiftMasterNotNeedGetNew,
 			TargetOrgIdenInfor targetOrg) {
 
+		String companyId = AppContexts.user().companyId();
+		
 		// step 1
 		List<WorkInfoOfDailyAttendance>  workInfoOfDailyAttendances = new ArrayList<WorkInfoOfDailyAttendance>();
 		mngStatusAndWScheMap.forEach((k, v) -> {
@@ -129,6 +132,7 @@ public class CreateWorkScheduleShift {
 		// step 3
 		// call loop：entry(Map.Entry) in 管理状態と勤務予定Map
 		List<ScheduleOfShiftDto> listWorkScheduleShift = new ArrayList<>();
+
 		WorkInformation.Require requireWorkInformation = new RequireWorkInforImpl();
 		
 		mngStatusAndWScheMap.forEach((employeeWorkingStatus, workSchedule) -> {
@@ -136,12 +140,13 @@ public class CreateWorkScheduleShift {
 			GetSupportInfoOfEmployee.Require requireGetSupportInfo = new RequireGetSupportInfoImpl(workSchedule, Optional.empty());
 			
 			ScheduleOfShiftDto dto = new ScheduleOfShiftDto(employeeWorkingStatus, workSchedule, listShiftMaster, targetOrg, requireWorkInformation, requireGetSupportInfo);
+			
 			listWorkScheduleShift.add(dto);
+
 		});
 
 		// convert list to Map
 		Map<ShiftMaster,Optional<WorkStyle>> mapShiftMasterWithWorkStyle2 = new HashMap<>();
-		String companyId = AppContexts.user().companyId();
 		for (ShiftMasterMapWithWorkStyle obj : listShiftMaster) {
 			ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(new ShiftMasterName(obj.shiftMasterName), new ColorCodeChar6(obj.color),new ColorCodeChar6(obj.color), Optional.of(new Remarks(obj.remark)));
 			ShiftMaster ShiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(obj.shiftMasterCode), displayInfor, obj.workTypeCode, obj.workTimeCode, Optional.empty());
@@ -162,37 +167,33 @@ public class CreateWorkScheduleShift {
 		}
 		
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeRepo.findByPK(companyId, workTypeCode.v());
 		}
 		
 		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
 		}
 
 		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			Optional<FixedWorkSetting> workSetting = fixedWorkSet.findByKey(companyId, code.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return fixedWorkSet.findByKey(companyId, workTimeCode.v());
 		}
 		
 		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			Optional<FlowWorkSetting> workSetting = flowWorkSet.find(companyId, code.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flowWorkSet.find(companyId, workTimeCode.v());
 		}
 		
 		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			Optional<FlexWorkSetting> workSetting = flexWorkSet.find(companyId, code.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flexWorkSet.find(companyId, workTimeCode.v());
 		}
 		
 		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			Optional<PredetemineTimeSetting> workSetting = predetemineTimeSet.findByWorkTimeCode(companyId, wktmCd.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return predetemineTimeSet.findByWorkTimeCode(companyId, workTimeCode.v());
 		}
 
 	}
@@ -218,34 +219,30 @@ public class CreateWorkScheduleShift {
 		}
 
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeRepo.findByPK(companyId, workTypeCode.v());
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
 		}
 
 		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			Optional<FixedWorkSetting> workSetting = fixedWorkSet.findByKey(companyId, code.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return fixedWorkSet.findByKey(companyId, workTimeCode.v());
 		}
 		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			Optional<FlowWorkSetting> workSetting = flowWorkSet.find(companyId, code.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flowWorkSet.find(companyId, workTimeCode.v());
 		}
 		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			Optional<FlexWorkSetting> workSetting = flexWorkSet.find(companyId, code.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flexWorkSet.find(companyId, workTimeCode.v());
 		}
 		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			Optional<PredetemineTimeSetting> workSetting = predetemineTimeSet.findByWorkTimeCode(companyId, wktmCd.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return predetemineTimeSet.findByWorkTimeCode(companyId, workTimeCode.v());
 		}
 	}
 	

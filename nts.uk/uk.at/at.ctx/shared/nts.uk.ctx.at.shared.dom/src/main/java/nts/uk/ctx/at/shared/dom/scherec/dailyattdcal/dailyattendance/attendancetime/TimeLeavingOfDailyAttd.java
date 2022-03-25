@@ -16,12 +16,16 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.worktime.TimeLeaveChangeEvent;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -37,15 +41,25 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	// 1 ~ 2
 	/** 出退勤 */
 	@Getter
-	private List<TimeLeavingWork> timeLeavingWorks;
+	private List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
 	
 	/** 【削除予定】勤務回数 */
-	private WorkTimes workTimes;
+	private WorkTimes workTimes = new WorkTimes(0);
 	
 	public TimeLeavingOfDailyAttd(List<TimeLeavingWork> timeLeavingWorks, WorkTimes workTimes) {
 		super();
 		this.timeLeavingWorks = timeLeavingWorks;
 		this.workTimes = workTimes;
+	}
+	
+	@Override
+	public void validate() {
+		// inv-1
+		this.timeLeavingWorks.stream().forEach(c -> {
+			if (c.getWorkNo().v() > 2){
+				throw new RuntimeException("TimeLeavingOfDailyAttd:validate WorkNo overflow.");
+			}
+		});
 	}
 	
 	/**
@@ -60,12 +74,14 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	/**
 	 * [C-1] 所定時間帯で作る
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param workInformation 勤務情報
 	 * @return
 	 */
-	public static TimeLeavingOfDailyAttd createByPredetermineZone(Require require, WorkInformation workInformation) {
+	public static TimeLeavingOfDailyAttd createByPredetermineZone(Require require, String companyId,
+			WorkInformation workInformation) {
 		
-		Optional<WorkInfoAndTimeZone> workInfoAndTimeZone = workInformation.getWorkInfoAndTimeZone(require);
+		Optional<WorkInfoAndTimeZone> workInfoAndTimeZone = workInformation.getWorkInfoAndTimeZone(require, companyId);
 		if (! workInfoAndTimeZone.isPresent() ) {
 			throw new RuntimeException("Invalid value!");
 		}
@@ -168,7 +184,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 			return this;
 		List<TimeLeavingWork> newAttendanceLeave = new ArrayList<>();
 		for (TimeLeavingWork attendanceLeave : this.timeLeavingWorks) {
-			newAttendanceLeave.add(attendanceLeave.correctJustTime(isJustTimeLateAttendance, isJustEarlyLeave));
+			newAttendanceLeave.add(attendanceLeave.correctJustTimeCalcStamp(isJustTimeLateAttendance, isJustEarlyLeave));
 		}
 
 		return new TimeLeavingOfDailyAttd(newAttendanceLeave, this.workTimes);
@@ -255,6 +271,39 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 		return timeOfTimeLeavingList.stream().anyMatch( timeLeaving -> timeLeaving.contains(target) );
 	} 
 	
+	/**
+	 * 打刻漏れ状態チェック
+	 * @param workType 勤務種類
+	 * @param predetemineTimeSet 所定時間設定
+	 * @return 打刻漏れ状態
+	 */
+	public List<StampLeakStateEachWork> checkStampLeakState(
+			Optional<WorkType> workType,
+			Optional<PredetemineTimeSetting> predetemineTimeSet){
+		
+		List<StampLeakStateEachWork> result = new ArrayList<>();
+
+		if (!workType.isPresent()) return result;
+		WorkStyle workStyle = workType.get().checkWorkDay();	// 出勤休日区分
+		if (workStyle == WorkStyle.ONE_DAY_REST) return result;
+
+		int predWorkCount = 0;		// 所定勤務回数
+		if (predetemineTimeSet.isPresent()) {
+			predWorkCount = predetemineTimeSet.get().getTimezoneByAmPmAtrForCalc(
+					workStyle.toAmPmAtr().orElse(AmPmAtr.ONE_DAY)).size();
+		}
+		
+		for (int workNo = 1; workNo <= predWorkCount; workNo++) {
+			Optional<TimeLeavingWork> timeLeavingWork = this.getAttendanceLeavingWork(new WorkNo(workNo));
+			if (timeLeavingWork.isPresent()) {
+				result.add(new StampLeakStateEachWork(new WorkNo(workNo), timeLeavingWork.get().checkStampLeakState()));
+			}
+		}
+		if (predWorkCount > 0 && result.isEmpty()) {
+			result.add(new StampLeakStateEachWork(new WorkNo(1), TLWStampLeakState.NOT_EXIST));
+		}
+		return result;
+	}
 	
 	public static interface Require extends WorkInformation.Require{
 		

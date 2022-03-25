@@ -20,13 +20,14 @@ public class UpdateShiftMasterService {
 	/**
 	 * 更新する
 	 * @param require Require
+	 * @param companyId 会社ID
 	 * @param shiftMasterCode コード
 	 * @param displayInfor 表示情報
 	 * @param workInformation 勤務情報
 	 * @param importCode 取り込みコード
 	 * @return
 	 */
-	public static AtomTask update(Require require
+	public static AtomTask update(Require require, String companyId
 			, ShiftMasterCode shiftMasterCode, ShiftMasterDisInfor displayInfor
 			, WorkInformation workInformation, Optional<ShiftMasterImportCode> importCode
 	) {
@@ -45,7 +46,7 @@ public class UpdateShiftMasterService {
 
 		// 変更→エラーチェック
 		shiftMaster.change(displayInfor, importCode, workInformation);
-		shiftMaster.checkError(require);
+		shiftMaster.checkError(require, companyId);
 
 
 		// 重複チェック：勤務種類＋就業時間帯

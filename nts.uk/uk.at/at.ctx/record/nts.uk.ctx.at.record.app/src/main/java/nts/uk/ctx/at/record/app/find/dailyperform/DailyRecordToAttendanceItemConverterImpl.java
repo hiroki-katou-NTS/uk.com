@@ -299,8 +299,7 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 	public DailyRecordToAttendanceItemConverter withOuenSheet(List<OuenWorkTimeSheetOfDailyAttendance> ouenSheet) {
 		//this.ouenSheets = new ArrayList<>(ouenSheet);
 		OuenWorkTimeSheetOfDaily daily = new OuenWorkTimeSheetOfDaily(this.employeeId,this.ymd, ouenSheet);
-			this.domainSource.put(ItemConst.DAILY_SUPPORT_TIMESHEET_NAME, daily);
-			this.dtoSource.put(ItemConst.DAILY_SUPPORT_TIMESHEET_NAME, null);
+			this.dtoSource.put(ItemConst.DAILY_SUPPORT_TIMESHEET_NAME, OuenWorkTimeSheetOfDailyDto.getDto(daily));
 			this.itemValues.put(ItemConst.DAILY_SUPPORT_TIMESHEET_NAME, null);
 		return this;
 	}

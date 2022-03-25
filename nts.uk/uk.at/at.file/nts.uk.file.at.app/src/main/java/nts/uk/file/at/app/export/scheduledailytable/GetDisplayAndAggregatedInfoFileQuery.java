@@ -29,6 +29,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -153,33 +154,40 @@ public class GetDisplayAndAggregatedInfoFileQuery {
         List<WorkType> workTypes = workTypeRepo.findByCompanyId(companyId);
         WorkInformation.Require require = new WorkInformation.Require() {
             @Override
-            public Optional<WorkType> getWorkType(String workTypeCd) {
-                return workTypes.stream().filter(i -> i.getWorkTypeCode().v().equals(workTypeCd)).findFirst();
+            public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+                return workTypeRepo.findByPK(companyId, workTypeCode.v());
             }
+
             @Override
-            public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
+            public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
                 return Optional.empty();
             }
+
+            @Override
+            public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+                return Optional.empty();
+            }
+
+            @Override
+            public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+                return Optional.empty();
+            }
+
+            @Override
+            public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+                return Optional.empty();
+            }
+
+            @Override
+            public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+                return Optional.empty();
+            }
+
             @Override
             public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
                 return null;
             }
-            @Override
-            public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-                return null;
-            }
-            @Override
-            public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-                return null;
-            }
-            @Override
-            public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-                return null;
-            }
-            @Override
-            public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-                return null;
-            }
+
         };
         List<ShiftDisplayInfoDto> shiftDisplayInfos = new ArrayList<>();
         dailyIntegrationMap.forEach((key, value) -> {
@@ -198,7 +206,7 @@ public class GetDisplayAndAggregatedInfoFileQuery {
                             .findFirst();
                     Optional<WorkStyle> workStyle = Optional.empty();
                     if (shiftMaster.isPresent()) {
-                        workStyle = integrationOfDaily.getWorkInformation().getRecordInfo().getWorkStyle(require);
+                        workStyle = integrationOfDaily.getWorkInformation().getRecordInfo().getWorkStyle(require,AppContexts.user().companyId());
                     }
                     shiftDisplayInfos.add(new ShiftDisplayInfoDto(
                             integrationOfDaily.getEmployeeId(),

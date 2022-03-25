@@ -19,6 +19,7 @@ import org.eclipse.persistence.annotations.Customizer;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AuthenticationMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.NumberAuthenfailures;
@@ -75,21 +76,21 @@ public class KrcmtStampCommunal extends ContractUkJpaEntity implements Serializa
 	 * 氏名選択利用する
 	 */
 	@Basic(optional = false)
-	@Column(name = "NAME_SELECT_ART")
+	@Column(name = "NAME_SELECT_ATR")
 	public boolean nameSelectArt;
 	
 	/**
 	 * パスワード必須区分
 	 */
 	@Basic(optional = false)
-	@Column(name = "PASSWORD_REQUIRED_ART")
+	@Column(name = "PASSWORD_REQUIRED_ATR")
 	public boolean passwordRequiredArt;
 	
 	/**
 	 * 社員コード認証利用するか
 	 */
 	@Basic(optional = false)
-	@Column(name = "EMPLOYEE_AUTHC_USE_ART")
+	@Column(name = "EMPLOYEE_AUTHC_USE_ATR")
 	public boolean employeeAuthcUseArt;
 	
 	/**
@@ -98,6 +99,13 @@ public class KrcmtStampCommunal extends ContractUkJpaEntity implements Serializa
 	@Basic(optional = true)
 	@Column(name = "AUTHC_FAIL_CNT")
 	public Integer authcFailCnt;
+	
+	/**
+	 * 認証方法
+	 */
+	@Basic(optional = false)
+	@Column(name = "AUTHENTICATION_METHOD")
+	public int authcMethod;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "krcmtStampCommunal",  orphanRemoval = true)
 	public List<KrcmtStampPageLayout> listKrcmtStampPageLayout;
@@ -122,7 +130,9 @@ public class KrcmtStampCommunal extends ContractUkJpaEntity implements Serializa
 				domain.isPasswordRequiredArt(), 
 				domain.isEmployeeAuthcUseArt(), 
 				domain.getAuthcFailCnt().isPresent()?domain.getAuthcFailCnt().get().v():null,
-				domain.getLstStampPageLayout().stream().map(c-> KrcmtStampPageLayout.toEntity(c, domain.getCid(), 0)).collect(Collectors.toList()));
+				domain.getAuthcMethod().value,
+				domain.getLstStampPageLayout().stream().map(c-> KrcmtStampPageLayout.toEntity(c, domain.getCid(), 0)).collect(Collectors.toList())
+				);
 	}
 	
 	public StampSetCommunal toDomain(){
@@ -137,7 +147,8 @@ public class KrcmtStampCommunal extends ContractUkJpaEntity implements Serializa
 					this.nameSelectArt,
 					this.passwordRequiredArt,
 					this.employeeAuthcUseArt,
-					this.authcFailCnt == null ? Optional.empty() : Optional.of(new NumberAuthenfailures(this.authcFailCnt))
+					this.authcFailCnt == null ? Optional.empty() : Optional.of(new NumberAuthenfailures(this.authcFailCnt)),
+					AuthenticationMethod.valueOf(this.authcMethod)
 				);
 	}
 

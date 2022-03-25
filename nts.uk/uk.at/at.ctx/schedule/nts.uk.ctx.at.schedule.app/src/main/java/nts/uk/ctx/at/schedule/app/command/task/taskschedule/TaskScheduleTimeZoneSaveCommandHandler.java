@@ -52,6 +52,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -140,7 +141,7 @@ public class TaskScheduleTimeZoneSaveCommandHandler extends CommandHandler<TaskS
 			if(optional.isPresent()) {
 				WorkSchedule workSchedule = optional.get();
 				workSchedule
-						.addTaskScheduleWithTimeSpan(require,
+						.addTaskScheduleWithTimeSpan(require, companyId,
 								new TimeSpanForCalc(new TimeWithDayAttr(command.getStartTime()), new TimeWithDayAttr(command.getEndTime())),
 													new TaskCode(command.getTaskCode()));
 
@@ -182,8 +183,7 @@ public class TaskScheduleTimeZoneSaveCommandHandler extends CommandHandler<TaskS
 		private WorkingConditionRepository workingConditionRepo;
 
 		private BusinessTypeEmpService businessTypeEmpService;
-		
-		@Inject
+
 		private SupportOperationSettingRepository supportOperationSettingRepo;
 		
 		private EmpAffiliationInforAdapter empAffiliationInforAdapter;
@@ -193,38 +193,43 @@ public class TaskScheduleTimeZoneSaveCommandHandler extends CommandHandler<TaskS
 		private NurseClassificationRepository nurseClassificationRepo;
 
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
+		public Optional<WorkType> workType(String cid, WorkTypeCode workTypeCd) {
+			return workTypeRepo.findByPK(cid, workTypeCd.v());
 		}
 
+		// implements WorkInformation.Require
 		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		public Optional<WorkTimeSetting> workTimeSetting(String cid, WorkTimeCode workTimeCode) {
+			return workTimeSettingRepository.findByCode(cid, workTimeCode.v());
+		}
+
+		// implements WorkInformation.Require
+		@Override
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return fixedWorkSettingRepository.findByKey(companyId, workTimeCode.v());
+		}
+
+		// implements WorkInformation.Require
+		@Override
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flowWorkSettingRepository.find(companyId, workTimeCode.v());
+		}
+
+		// implements WorkInformation.Require
+		@Override
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flexWorkSettingRepository.find(companyId, workTimeCode.v());
+		}
+
+		// implements WorkInformation.Require
+		@Override
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode.v());
 		}
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 			return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
-		}
-
-		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			return fixedWorkSettingRepository.findByKey(companyId, code.v()).get();
-		}
-
-		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			return flowWorkSettingRepository.find(companyId, code.v()).get();
-		}
-
-		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			return flexWorkSettingRepository.find(companyId, code.v()).get();
-		}
-
-		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, wktmCd.v()).get();
 		}
 
 		@Override
@@ -243,13 +248,7 @@ public class TaskScheduleTimeZoneSaveCommandHandler extends CommandHandler<TaskS
 			if(listAffJobTitleHis.isEmpty())
 				return null;
 			return listAffJobTitleHis.get(0);
-		}
-
-		@Override
-		public SharedAffWorkPlaceHisImport getAffWorkplaceHistory(String employeeId, GeneralDate standardDate) {
-			Optional<SharedAffWorkPlaceHisImport> rs = sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, standardDate);
-			return rs.isPresent() ? rs.get() : null;
-		}
+		}	
 
 		@Override
 		public SClsHistImport getClassificationHistory(String employeeId, GeneralDate standardDate) {

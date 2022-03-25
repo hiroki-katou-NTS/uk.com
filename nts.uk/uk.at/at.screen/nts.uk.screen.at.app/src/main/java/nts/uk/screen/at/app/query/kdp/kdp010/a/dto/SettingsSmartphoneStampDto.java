@@ -9,6 +9,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.record.app.find.stamp.management.StampPageLayoutDto;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.DisplaySettingsStampScreenDto;
+import nts.uk.screen.at.app.query.kdp.kdps01.a.StampingAreaRestrictionDto;
 
 @Getter
 @NoArgsConstructor
@@ -20,23 +21,17 @@ public class SettingsSmartphoneStampDto {
 	
 	private List<StampPageLayoutDto> pageLayoutSettings;
 	
-	private Integer buttonEmphasisArt;	
+	private Integer buttonEmphasisArt;
+	
+	private StampingAreaRestrictionDto stampingAreaRestriction;
 	
 	@Setter
 	private Integer googleMap;
-	
-	// 	位置情報を利用する
-	private Integer locationInfoUse;
-	
-	// 	打刻エリア制限する
-	private Integer areaLimitAtr;
-	
 	public void settingsSmartphoneStamp(SettingsSmartphoneStamp domain) {
 		this.cid = domain.getCid(); 
 		this.displaySettingsStampScreen = DisplaySettingsStampScreenDto.fromDomain(domain.getDisplaySettingsStampScreen()); 
 		this.pageLayoutSettings = domain.getPageLayoutSettings().stream().map(c->StampPageLayoutDto.fromDomain(c)).collect(Collectors.toList()); 
 		this.buttonEmphasisArt = domain.isButtonEmphasisArt()?1:0;
-		this.locationInfoUse = domain.getLocationInfoUse().value;
-		this.areaLimitAtr = domain.getAreaLimitAtr().value;
+		this.stampingAreaRestriction = StampingAreaRestrictionDto.fromDomain(domain.getStampingAreaRestriction());
 	}
 }

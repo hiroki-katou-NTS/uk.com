@@ -1,0 +1,47 @@
+
+#kcp005component {
+    margin-left: 70px;
+}
+.rd1 {
+    width: 84px;
+    display: flex;
+}
+.rd1 span {
+    width: 77px;
+   
+}
+.rd1 label span {
+    width: 185px;
+}
+.A_4{
+    padding-left: 7px;
+    border-top: 23px solid transparent;
+    border-bottom: 36px solid transparent;
+}
+.A_4 .spcode {
+    width: 100px;
+} 
+.A_4 .spname {
+    width: 200px;
+} 
+tr {
+    padding: 10px;
+}
+
+.disabled {
+	/* opacity: 0.3;
+	pointer-events: none; */
+    pointer-events: none;
+    
+}
+
+.content tr {
+    border-top: 17px solid transparent;
+    border-bottom: 14px solid transparent;
+}
+
+.rd2 label.radio-wrapper:nth-child(2) span {
+    width: 112px !important;
+}
+
+

@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetSetMemento;
@@ -17,8 +18,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetSetMemento;
 @Setter
 public class WorkTimezoneGoOutSetDto implements WorkTimezoneGoOutSetSetMemento{
 	
-	/** The total rounding set. */
-	private TotalRoundingSetDto totalRoundingSet;
+	/** The rounding method. */
+	private Integer roundingMethod;
 	
 	/** The diff timezone setting. */
 	private GoOutTimezoneRoundingSetDto diffTimezoneSetting;
@@ -27,7 +28,7 @@ public class WorkTimezoneGoOutSetDto implements WorkTimezoneGoOutSetSetMemento{
 	 * Instantiates a new work timezone go out set dto.
 	 */
 	public WorkTimezoneGoOutSetDto() {
-		this.totalRoundingSet = new TotalRoundingSetDto();
+		this.roundingMethod = 0;
 		this.diffTimezoneSetting = new GoOutTimezoneRoundingSetDto();
 	}
 	
@@ -35,14 +36,24 @@ public class WorkTimezoneGoOutSetDto implements WorkTimezoneGoOutSetSetMemento{
 	 * (non-Javadoc)
 	 * 
 	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetGetMemento#
+	 * getTotalRoundingSet()
+	 */
+	public TotalRoundingSetDto getTotalRoundingSet() {
+		return new TotalRoundingSetDto();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
 	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetSetMemento#
-	 * setTotalRoundingSet(nts.uk.ctx.at.shared.dom.worktime.common.
-	 * TotalRoundingSet)
+	 * setRoundingMethod(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * GoOutTimeRoundingMethod)
 	 */
 	@Override
-	public void setTotalRoundingSet(TotalRoundingSet set) {
-		set.saveToMemento(this.totalRoundingSet);
-		
+	public void setRoundingMethod(GoOutTimeRoundingMethod set) {
+		this.roundingMethod = set.value;
 	}
 
 	/*

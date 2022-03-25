@@ -152,4 +152,10 @@ public class RecordWorkInfoPubExport_New {
 	private List<ShortWorkingTimeSheet> childCareShortWorkingTimeList;
 	// 介護時間帯
 	private List<ShortWorkingTimeSheet> careShortWorkingTimeList;
+	
+	// 応援時間帯（List）
+	private List<SupportTimeSheet> supportTimes;
+	
+	// 出退勤(List)
+	private List<AttendanceExport> attendances;
 }

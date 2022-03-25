@@ -229,17 +229,8 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 		 * @param standardDate 基準日
 		 * @return
 		 */
-		SharedAffJobTitleHisImport getAffJobTitleHistory(String employeeId, GeneralDate standardDate);
-		
-		/**
-		 * [R-3] 所属職場履歴を取得する (社員ID, 年月日) : Single
-		 * @param employeeId 社員ID
-		 * @param standardDate 基準日
-		 * @return
-		 */
-		// TODO delete
-		SharedAffWorkPlaceHisImport getAffWorkplaceHistory(String employeeId, GeneralDate standardDate);
-		
+		SharedAffJobTitleHisImport getAffJobTitleHistory(String employeeId, GeneralDate standardDate);		
+			
 		/**
 		 * [R-4] 所属分類履歴を取得する (社員ID, 年月日) : Single
 		 * @param employeeId 社員ID

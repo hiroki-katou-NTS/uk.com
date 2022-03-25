@@ -1,8 +1,10 @@
 package nts.uk.ctx.exio.app.command.exo.condset;
 
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+@Data
+@NoArgsConstructor
 public class StdOutItemOrderCommand {
 	
 	/**
@@ -24,4 +26,13 @@ public class StdOutItemOrderCommand {
 	 * 順序
 	 */
 	private int order;
+
+	public StdOutItemOrderCommand(String cid, String outItemCd, String condSetCd, int order) {
+		super();
+		this.cid = cid;
+		this.outItemCd = outItemCd;
+		this.condSetCd = condSetCd;
+		this.order = order;
+	}
+	
 }

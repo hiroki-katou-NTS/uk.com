@@ -7,8 +7,9 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.app.command.reservation.bento.BentoMakeOrderCommand;
 import nts.uk.ctx.at.record.app.command.reservation.bento.BentoMakeOrderCommandHandler;
-import nts.uk.ctx.at.record.app.find.reservation.bento.dto.BentoReservationSearchConditionDto;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.OrderInfoDto;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationSearchCondition;
+import nts.uk.ctx.at.record.dom.reservation.bento.ReservationCorrect;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
@@ -40,10 +41,10 @@ public class CreateOrderInfoDataSource {
     private boolean extractionConditionChecked;
 
     public OrderInfoDto getGeneratorData(CreateOrderInfoFileQuery createOrderInfoFileQuery, BentoMakeOrderCommandHandler commandHandler){
-        Optional<BentoReservationSearchConditionDto> totalExtractCondition = this.getTotalExtractCondition() > -1
-                ?  Optional.of(EnumAdaptor.valueOf(this.getTotalExtractCondition(), BentoReservationSearchConditionDto.class)) : Optional.empty();
-        Optional<BentoReservationSearchConditionDto> itemExtractCondition = this.getItemExtractCondition() > -1
-                ?  Optional.of(EnumAdaptor.valueOf(this.getItemExtractCondition(), BentoReservationSearchConditionDto.class)) : Optional.empty();
+        Optional<ReservationCorrect> totalExtractCondition = this.getTotalExtractCondition() > -1
+                ?  Optional.of(EnumAdaptor.valueOf(this.getTotalExtractCondition(), ReservationCorrect.class)) : Optional.empty();
+        Optional<ReservationCorrect> itemExtractCondition = this.getItemExtractCondition() > -1
+                ?  Optional.of(EnumAdaptor.valueOf(this.getItemExtractCondition(), ReservationCorrect.class)) : Optional.empty();
         Optional<Integer> frameNo = this.getFrameNo() > -1 ? Optional.of(this.getFrameNo()) : Optional.empty();
         Optional<String> totalTitle = this.getTotalTitle() == null | "".equals(this.getTotalTitle())
                 ? Optional.empty() : Optional.of(this.getTotalTitle());

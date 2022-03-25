@@ -29,6 +29,7 @@ public class CreateWorkScheduleByShift {
 	 */
 	public static ResultOfRegisteringWorkSchedule create(
 			Require require, 
+			String companyId,
 			String employeeId, 
 			GeneralDate date, 
 			ShiftMasterCode shiftMasterCode, 
@@ -43,7 +44,7 @@ public class CreateWorkScheduleByShift {
 					new BusinessException("Msg_1705").getMessage() );
 		}
 		
-		return CreateWorkSchedule.create(require, employeeId, date, shiftMaster.get(), false, new ArrayList<>(), 
+		return CreateWorkSchedule.create(require, companyId, employeeId, date, shiftMaster.get(), false, new ArrayList<>(), 
 				supportTicketList, new HashMap<>());
 	}
 	

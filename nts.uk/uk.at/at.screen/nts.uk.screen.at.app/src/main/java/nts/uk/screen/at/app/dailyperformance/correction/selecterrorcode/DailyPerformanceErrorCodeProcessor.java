@@ -42,8 +42,10 @@ import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeNameType;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalStatusActualResultKDW003Dto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ColumnSetting;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ConfirmStatusActualResultKDW003Dto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.CorrectionOfDailyPerformance;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCellDataDto;
@@ -388,9 +390,11 @@ public class DailyPerformanceErrorCodeProcessor {
 		}
 		screenDto.setLstHideControl(lstCellHideControl);
 		screenDto.setLstData(lstData);
+		List<ConfirmStatusActualResultKDW003Dto> lstConfirmStatusActualResultKDW003Dto = confirmResults.stream().map(c->ConfirmStatusActualResultKDW003Dto.fromDomain(c)).collect(Collectors.toList());
+		List<ApprovalStatusActualResultKDW003Dto> lstApprovalStatusActualResultKDW003Dto = approvalResults.stream().map(c->ApprovalStatusActualResultKDW003Dto.fromDomain(c)).collect(Collectors.toList());
 		screenDto.setApprovalConfirmCache(new ApprovalConfirmCache(sId, listEmployeeId,
-				new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), mode, confirmResults,
-				approvalResults));
+				dateRange, mode, lstConfirmStatusActualResultKDW003Dto,
+				lstApprovalStatusActualResultKDW003Dto));
 		return screenDto;
 	}
 

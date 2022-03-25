@@ -131,7 +131,7 @@ public class StampAppReflect extends AggregateRoot {
 			PrePostAtrShare prePostAtr, List<TimeStampAppShare> listTimeStampApp, WorkNo workNo) {
 		// 開始、終了時刻を取得する
 		List<Pair<StartEndClassificationShare, Integer>> timeZoneWithWorkNoLst = listTimeStampApp.stream()
-				.filter(x -> x.getDestinationTimeApp().getEngraveFrameNo() == workNo.v()
+				.filter(x -> x.getDestinationTimeApp().getStampNo() == workNo.v()
 						&& x.getDestinationTimeApp()
 								.getTimeStampAppEnum() == TimeStampAppEnumShare.ATTEENDENCE_OR_RETIREMENT
 						&& x.getTimeOfDay() != null)

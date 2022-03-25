@@ -6,6 +6,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class AddAggrPeriodCommand{
+	private boolean reintegration;
 
 	private int mode;
 	

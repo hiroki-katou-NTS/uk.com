@@ -50,7 +50,7 @@ public class CreateWorkScheduleByShiftTest {
 				Optional.empty()));
 		
 		ResultOfRegisteringWorkSchedule result = 
-				CreateWorkScheduleByShift.create(require, "empId", GeneralDate.ymd(2020, 11, 1), new ShiftMasterCode("001"), supportTickets);
+				CreateWorkScheduleByShift.create(require, "cmpId", "empId", GeneralDate.ymd(2020, 11, 1), new ShiftMasterCode("001"), supportTickets);
 		
 		assertThat( result.getAtomTask() ).isEmpty();
 		assertThat( result.isHasError() ).isTrue();
@@ -80,7 +80,7 @@ public class CreateWorkScheduleByShiftTest {
 			require.getShiftMaster( (ShiftMasterCode) any );
 			result = Optional.of(shiftMaster);
 			
-			CreateWorkSchedule.create(require,  anyString, (GeneralDate) any, (WorkInformation )any, anyBoolean, 
+			CreateWorkSchedule.create(require, anyString, anyString, (GeneralDate) any, (WorkInformation )any, anyBoolean, 
 					(List<TimeSpanForCalc>) any, (List<SupportTicket>) any,(Map<Integer, T>) any);
 			result = mockResult;
 		}};
@@ -93,7 +93,7 @@ public class CreateWorkScheduleByShiftTest {
 				Optional.empty()));
 		
 		ResultOfRegisteringWorkSchedule result = 
-				CreateWorkScheduleByShift.create(require, "empId", GeneralDate.ymd(2020, 11, 1), new ShiftMasterCode("001"), supportTickets);
+				CreateWorkScheduleByShift.create(require, "cmpId", "empId", GeneralDate.ymd(2020, 11, 1), new ShiftMasterCode("001"), supportTickets);
 		
 		assertThat( result ).isEqualTo( mockResult );
 	}

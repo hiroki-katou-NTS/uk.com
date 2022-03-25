@@ -225,6 +225,8 @@ public class AsposeScheduleDailyTableExportGenerator extends AsposeCellsReportGe
                 cells.merge(START_HEADER_ROW, column - 1, 2, 2);
             column++;
         }
+
+        cells.hideColumn(column);
     }
 
     private void setShiftColor(Style style, Optional<ShiftDisplayInfoDto> shiftInfo) {

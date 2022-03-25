@@ -40,19 +40,7 @@
 	height: 525px;
 }
 
-#A6_1{
-	background-color : #007fff ; color : #ffffff;
-}
-
-#A6_2{
-	background-color : #ffffff ; color : #000000;
-}
-
-#A6_1:hover,#A6_2:hover, .A7_1:hover,.A7_2:hover, .A7_3:hover {
-	background-color : '' ; color : '';
-}
-
-.btnControlSelected{background-color : #258F7E !important; color : #ffffff !important}
+.btnControlSelected{background-color : #01956A !important; color : #ffffff !important}
 
 #functon-area-row2 *, #contain-view-right * {
 	vertical-align: middle;
@@ -277,7 +265,7 @@
 
 #contain-view-left{
 	margin-left: 0 !important;
-	margin-top: 14px;
+	margin-top: 3px;
     width: fit-content;
     height: fit-content;
     display: inline-block;
@@ -464,50 +452,7 @@ tbody a.x-link:hover {
 	position: relative;
 }
 
-.bg-schedule-that-day-color-schedule-sunday{
-	background-color: #ffff00 !important;
-	color: #ff0000 !important;
-}
 
-.bg-schedule-that-day-color-schedule-sunday a{
-	color: #ff0000 !important;
-}
-
-.bg-schedule-that-day-color-schedule-saturday{
-	background-color: #ffff00 !important;
-	color: #0000ff !important;
-}
-
-.bg-schedule-that-day-color-schedule-saturday a{
-	color: #0000ff !important;
-}
-
-.bg-schedule-that-day-color-schedule-weekdays{
-	background-color: #ffff00 !important;
-	color: #404040 !important;
-}
-
-.bg-schedule-that-day-color-schedule-weekdays a{
-	color: #404040 !important;
-}
-
-.bg-schedule-specific-date-color-schedule-sunday{
-	background-color: #ffc0cb !important;
-	color: #ff0000 !important;
-}
-
-.bg-schedule-specific-date-color-schedule-sunday a{
-	color: #ff0000 !important;
-}
-
-.bg-schedule-specific-date-color-schedule-saturday{
-	background-color: #ffc0cb !important;
-	color: #0000ff !important;
-}
-
-.bg-schedule-specific-date-color-schedule-saturday a{
-	color: #0000ff !important;
-}
 
 .right-content {
 	height: calc(100% - 80px);
@@ -555,8 +500,14 @@ html {
 	width: 70px;
 }
 
-#A3_1 .period {
+#A3_1 .period, #A3_1 .contents {
 	margin-left: 20px;
+}
+
+#A5,#A6 {
+	min-width: 100px;
+    font-size: 13px;
+    line-height: 14px;
 }
 
 #A3_1 .period .func-content span {
@@ -693,4 +644,3 @@ html {
 
 .extable div.other-edited, .extable td.other-edited { background-color: #4ca8f8 ; }
 .extable div.target-edited, .extable td.target-edited { background-color: #C1E6FE ;}
-

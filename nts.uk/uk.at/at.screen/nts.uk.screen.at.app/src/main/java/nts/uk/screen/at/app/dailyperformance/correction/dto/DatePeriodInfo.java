@@ -22,7 +22,8 @@ public class DatePeriodInfo implements Serializable {
 	
 	int yearMonth;
 	
-	ClosureId closureId;
+//	ClosureId closureId;
+	Integer closureId;
 	
 	List<AggrPeriodClosure> lstClosureCache;
 	
