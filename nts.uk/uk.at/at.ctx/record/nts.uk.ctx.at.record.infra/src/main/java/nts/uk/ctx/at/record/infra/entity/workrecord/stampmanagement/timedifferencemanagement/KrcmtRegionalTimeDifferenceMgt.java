@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_REGIONAL_TIME_DIFERENCE_MGT")
+@Table(name = "KRCCT_REGIONAL_TIME_DIFERENCE_MGT")
 public class KrcmtRegionalTimeDifferenceMgt extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -59,7 +59,7 @@ public class KrcmtRegionalTimeDifferenceMgt extends UkJpaEntity implements Seria
 
 	public KrcmtRegionalTimeDifferenceMgt toEntity(RegionalTimeDifference domain) {
 		return new KrcmtRegionalTimeDifferenceMgt(
-				new KrcmtRegionalTimeDifferenceMgtPk(AppContexts.user().contractCode(), domain.getCode().v()),
+				new KrcmtRegionalTimeDifferenceMgtPk(domain.getCode().v()),
 				domain.getName().v(), domain.getRegionalTimeDifference().v());
 	}
 
