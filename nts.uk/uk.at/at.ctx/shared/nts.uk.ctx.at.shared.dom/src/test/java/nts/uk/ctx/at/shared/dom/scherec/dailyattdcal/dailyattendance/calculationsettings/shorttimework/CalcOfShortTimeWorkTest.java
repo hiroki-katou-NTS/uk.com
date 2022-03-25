@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.junit.Test;
 
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
@@ -60,7 +61,7 @@ public class CalcOfShortTimeWorkTest {
 					null,
 					null,
 					null,
-					new WorkTimezoneShortTimeWorkSet(false, false, true),
+					new WorkTimezoneShortTimeWorkSet(false, true, new TimeRoundingSetting(0, 0)),
 					null,
 					null,
 					null,

@@ -14,11 +14,11 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.EventName;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.HolidayName;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificDateItemNo;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificName;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.CompanySpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemNo;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificName;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDateItem;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 
@@ -88,10 +88,10 @@ public class DateInformation {
 
 				workplaceEventName = Optional.of(workplaceEvent.get().getEventName());
 			}
-			List<WorkplaceSpecificDateItem> listWorkplaceSpecificDateItem = require
+			Optional<WorkplaceSpecificDateItem> workplaceSpecificDateItemOpt = require
 					.getWorkplaceSpecByDate(targetOrgIdenInfor.getWorkplaceId().get(), ymd);
 
-			if (!listWorkplaceSpecificDateItem.isEmpty()) {
+			if ( workplaceSpecificDateItemOpt.isPresent() ) {
 				/*
 				 * @特定日であるか = true
 				 * 
@@ -100,8 +100,9 @@ public class DateInformation {
 				 */
 				// @特定日であるか QA http://192.168.50.4:3000/issues/110662 - code
 				isSpecificDay = true;
-				List<SpecificDateItemNo> listSpecificDateItemNo = listWorkplaceSpecificDateItem.stream()
-						.map(c -> c.getSpecificDateItemNo()).collect(Collectors.toList());
+				List<SpecificDateItemNo> listSpecificDateItemNo = workplaceSpecificDateItemOpt.get()
+						.getOneDaySpecificItem()
+						.getSpecificDayItems();
 				List<SpecificDateItem> zlistSpecDayNameWorkplace = require
 						.getSpecifiDateByListCode(listSpecificDateItemNo);
 				lstSpecDayNameWorkplace = zlistSpecDayNameWorkplace.stream().map(c -> c.getSpecificName())
@@ -119,11 +120,12 @@ public class DateInformation {
 			 */
 			optCompanyEventName = Optional.of(optCompanyEvent.get().getEventName());
 		}
-		List<CompanySpecificDateItem> listCompanySpecificDateItem = require.getComSpecByDate(ymd);
-		if (!listCompanySpecificDateItem.isEmpty()) {
+		Optional<CompanySpecificDateItem> companySpecificDateItemOpt = require.getComSpecByDate(ymd);
+		if ( companySpecificDateItemOpt.isPresent() ) {
 			isSpecificDay = true;
-			List<SpecificDateItemNo> lstSpecificDateItemNo = listCompanySpecificDateItem.stream()
-					.map(c -> c.getSpecificDateItemNo()).collect(Collectors.toList());
+			List<SpecificDateItemNo> lstSpecificDateItemNo = companySpecificDateItemOpt.get()
+					.getOneDaySpecificItem()
+					.getSpecificDayItems();
 			List<SpecificDateItem> listSpecDayNameCompany = require.getSpecifiDateByListCode(lstSpecificDateItemNo);
 			lstSpecDayNameCom = listSpecDayNameCompany.stream().map(c -> c.getSpecificName())
 					.collect(Collectors.toList());
@@ -143,7 +145,7 @@ public class DateInformation {
 		 * @param specificDate
 		 * @return
 		 */
-		List<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, GeneralDate specificDate);
+		Optional<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, GeneralDate specificDate);
 
 		/**
 		 * CompanySpecificDateRepository [R-2] 会社の特定日設定を取得する
@@ -152,7 +154,7 @@ public class DateInformation {
 		 * @param specificDate
 		 * @return
 		 */
-		List<CompanySpecificDateItem> getComSpecByDate(GeneralDate specificDate);
+		Optional<CompanySpecificDateItem> getComSpecByDate(GeneralDate specificDate);
 
 		/**
 		 * WorkplaceEventRepository [R-3] 職場行事を取得する

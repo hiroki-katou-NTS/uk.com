@@ -72,8 +72,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
@@ -140,6 +142,7 @@ import nts.uk.screen.at.app.ktgwidget.find.dto.YearlyHolidayInfo;
 import nts.uk.screen.at.app.ktgwidget.ktg004.VacationSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 /**
  * @author hieult
@@ -257,6 +260,9 @@ public class ToppageStartupProcessMobFinder {
     
     @Inject
     private AnnLeaveRemainNumberAdapter annLeaveRemainNumberAdapter;
+    
+    @Inject
+    private SysEmploymentHisAdapter sysEmploymentHisAdapter;
 
 
 	public ToppageStartupDto startupProcessMob() {
@@ -1061,8 +1067,7 @@ public class ToppageStartupProcessMobFinder {
 			List<Application> listApplication = applicationRepository.findByListID(cid, listApplicationID);
 			/* 「申請」．申請種類＝Input．申請種類 & 「申請」．実績反映状態<>差し戻し に該当する申請が存在するかチェックする */
 			List<Application> listApplicationFilter = listApplication.stream()
-					.filter(c -> (c.getAppType() == ApplicationType.OVER_TIME_APPLICATION)
-							&& c.getAppReflectedState() != ReflectedState.REMAND)
+					.filter(c -> c.getAppReflectedState() != ReflectedState.REMAND && c.getAppReflectedState() != ReflectedState.CANCELED)
 					.collect(Collectors.toList());
 			if (listApplicationFilter.isEmpty()) {
 				return false;
@@ -1251,13 +1256,13 @@ public class ToppageStartupProcessMobFinder {
         }
 
         @Override
-        public CompensatoryLeaveEmSetting compensatoryLeaveEmSetting(String companyId, String employmentCode) {
-            return compensLeaveEmSetRepo.find(companyId, employmentCode);
+        public Optional<CompensatoryLeaveEmSetting> compensatoryLeaveEmSetting(String companyId, String employmentCode) {
+            return Optional.ofNullable(compensLeaveEmSetRepo.find(companyId, employmentCode));
         }
 
         @Override
-        public CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId) {
-            return compensLeaveComSetRepo.find(companyId);
+        public Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId) {
+            return Optional.ofNullable(compensLeaveComSetRepo.find(companyId));
         }
 
         @Override
@@ -1286,5 +1291,15 @@ public class ToppageStartupProcessMobFinder {
                 String employeeId, GeneralDate baseDate) {
             return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
         }
+
+		@Override
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
+		}
+
+		@Override
+		public Optional<SEmpHistoryImport> getSEmpHistoryImport(String employeeId, GeneralDate baseDate) {
+			return sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, baseDate);
+		}
     }
 }

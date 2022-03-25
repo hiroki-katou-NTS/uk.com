@@ -712,13 +712,13 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let self = this;
             self.legendOptions = {
                 items: [
-                    { colorCode: '#94B7FE', labelText: '手修正（本人）' },
-                    { colorCode: '#CEE6FF', labelText: '手修正（他人）' },
-					{ colorCode: '#F69164', labelText: getText("KMW003_42") },
-					{ colorCode: '#FFFF99', labelText: getText("KMW003_43") },
-					{ colorCode: '#FF99CC', labelText: getText("KMW003_44") },
+                    { colorCode: '#BFC5FF', labelText: '手修正（本人）' },
+                    { colorCode: '#C1E6FE', labelText: '手修正（他人）' },
+					{ colorCode: '#F9D4A9', labelText: getText("KMW003_42") },
+					{ colorCode: '#FFF1BF', labelText: getText("KMW003_43") },
+					{ colorCode: '#FFE5E5', labelText: getText("KMW003_44") },
 					{ colorCode: '#ff0000', labelText: getText("KMW003_45") },
-                    { colorCode: '#DDDDD2', labelText: getText("KMW003_33") },
+                    { colorCode: '#CCC', labelText: getText("KMW003_33") },
                 ]
             };
         }
@@ -1522,7 +1522,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     if (header.constraint.cDisplayType != null && header.constraint.cDisplayType != undefined) {
                         if (header.constraint.cDisplayType != "Primitive" && header.constraint.cDisplayType != "Combo") {
                             if (header.constraint.cDisplayType.indexOf("Currency") != -1) {
-                                header["columnCssClass"] = "currency-symbol halign-right";
+                                header["columnCssClass"] = "halign-right";
                                 header.constraint["min"] = header.constraint.min;
                                 header.constraint["max"] = header.constraint.max;
                             } else if (header.constraint.cDisplayType == "Clock") {

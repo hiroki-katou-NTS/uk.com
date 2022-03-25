@@ -47,8 +47,6 @@ import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPerio
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeYearImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.GetAgreementPeriodAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
-import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
-import nts.uk.ctx.at.function.dom.adapter.standardtime.TimeOverLimitTypeImport;
 import nts.uk.ctx.at.function.dom.annualworkschedule.CalculationFormulaOfItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.Employee;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemsOutputToBookTable;
@@ -107,41 +105,72 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	private GetAgreementPeriodAdapter getAgreementPeriodAdapter;
 
 	public static final String YM_FORMATER = "uuuu/MM";
-	
+
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	protected void handle(ExportServiceContext<AnnualWorkScheduleExportQuery> context) {
-		String companyId = AppContexts.user().companyId();
-		AnnualWorkScheduleExportQuery query = context.getQuery();
-		PrintFormat printFormat = EnumAdaptor.valueOf(query.getPrintFormat(), PrintFormat.class);
+		String                        companyId   = AppContexts.user().companyId();
+		AnnualWorkScheduleExportQuery query       = context.getQuery();
+		PrintFormat                   printFormat = EnumAdaptor.valueOf(query.getPrintFormat(), PrintFormat.class);
+
 		//・基準月（画面AのA11_2）
-		Integer baseMonth = query.getCurentMonth();
-		ExcludeEmp excludeEmp = EnumAdaptor.valueOf(query.getExcludeEmp(), ExcludeEmp.class);
-		List<Employee> employees = query.getEmployees().stream()
+		Integer        baseMonth  = query.getCurentMonth();
+		ExcludeEmp     excludeEmp = EnumAdaptor.valueOf(query.getExcludeEmp(), ExcludeEmp.class);
+		List<Employee> employees  = query.getEmployees().stream()
                 .distinct()
 				.map(m -> new Employee(m.getEmployeeId(), m.getCode(), m.getName(), m.getWorkplaceName()))
 				.collect(Collectors.toList());
-		Year fiscalYear = null;
-		YearMonth startYm = null;
-		YearMonth endYm = null;
-		Integer monthLimit;
+
+		Year      fiscalYear = null;
+		YearMonth startYm    = null;
+		YearMonth endYm      = null;
+		Integer   monthLimit;
 		GeneralDate baseDate = GeneralDate.fromString(query.getBaseDate(), "yyyy/MM/dd");
+
+		//=============================================================================================================
+		//2022.02.24 稲熊 削除 START
 		// ドメインモデル「３６協定運用設定」を取得する
-		Optional<AgreementOperationSettingImport> agreementSetObj = agreementOperationSettingAdapter.find(companyId);
+		//  Optional<AgreementOperationSettingImport> agreementSetObj = agreementOperationSettingAdapter.findForAlarm(companyId);
+		//2022.02.24 稲熊 削除 END
+		//=============================================================================================================
+
+		//36協定チェックリスト　開始年月～終了年月
 		if (PrintFormat.AGREEMENT_36.equals(printFormat)) {
+			//=============================================================================================================
+			//  2022.02.24 稲熊 変更 START
+			//fiscalYear = new Year(Integer.parseInt(query.getFiscalYear()));
+			//startYm    = this.getStartYearMonth(agreementSetObj, fiscalYear);
+			//endYm      = startYm.plusMonths(11);
+			//=============================================================================================================
+			//
+			//  画面入力年度(A9_2)
 			fiscalYear = new Year(Integer.parseInt(query.getFiscalYear()));
-			startYm = this.getStartYearMonth(agreementSetObj, fiscalYear);
-			endYm = startYm.plusMonths(11);
+			//
+			//年度を指定して36協定期間(年月日 From-To)を取得 - get RequestList554
+			// ドメインモデル「３６協定運用設定」を取得
+			Optional<DatePeriod> period = this.getAgreementPeriodAdapter.byYear(companyId, fiscalYear);
+			DatePeriod datePeriod = period.get();
+			startYm  = YearMonth.of(datePeriod.start().yearMonth().year(), datePeriod.start().yearMonth().month());
+			endYm    = YearMonth.of(datePeriod.end().yearMonth().year(), datePeriod.end().yearMonth().month());
+			//  2022.02.24 稲熊 変更 END
+			//=============================================================================================================
 		} else {
+		//勤怠チェックリスト　　開始年月～終了年月
 			startYm = YearMonth.parse(query.getStartYearMonth(), DateTimeFormatter.ofPattern("yyyyMM"));
-			endYm = YearMonth.parse(query.getEndYearMonth(), DateTimeFormatter.ofPattern("yyyyMM"));
+			endYm   = YearMonth.parse(query.getEndYearMonth(),   DateTimeFormatter.ofPattern("yyyyMM"));
 		}
-		// get ３６協定超過上限回数
-		if (agreementSetObj.isPresent()) {
-			monthLimit = agreementSetObj.get().getNumberTimesOverLimitType().value;
-		} else {
-			monthLimit = TimeOverLimitTypeImport.ZERO_TIMES.value;
-		}
+
+//=============================================================================================================
+//  2022.02.24 稲熊 削除 START
+//	// get ３６協定超過上限回数
+//	if (agreementSetObj.isPresent()) {
+//		monthLimit = agreementSetObj.get().getNumberTimesOverLimitType().value;
+//	} else {
+//		monthLimit = TimeOverLimitTypeImport.ZERO_TIMES.value;
+//	}
+//  2022.02.24 稲熊 削除 END
+//=============================================================================================================
+
 		ExportData data = this.outputProcess(companyId
 										   , query.getSetItemsOutputLayoutId()
 										   , fiscalYear
@@ -151,10 +180,12 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 										   , printFormat
 										   , query.getBreakPage()
 										   , excludeEmp
-										   , monthLimit
+//未使用								   , monthLimit					2022.02.24 稲熊 削除
 										   , baseMonth
 										   , baseDate);
-		val dataSetter = context.getDataSetter();
+
+		//エラー
+		val dataSetter             = context.getDataSetter();
 		List<String> employeeError = data.getEmployeeError();
 		if (!employeeError.isEmpty()) {
 			dataSetter.setData("messageId", "Msg_1344");
@@ -167,70 +198,87 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		this.generator.generate(context.getGeneratorContext(), data);
 	}
 
-	/**
-	 * Get startYm, endYm
-	 * @param startYm output
-	 * @param endYm output
-	 */
-	private YearMonth getStartYearMonth(Optional<AgreementOperationSettingImport> agreementSetObj, Year fiscalYear) {
-		String month = "01";
-		// 「36協定運用設定」．起算月から年度の期間を求める
-		if (agreementSetObj.isPresent()) {
-			switch (agreementSetObj.get().getStartingMonth()) {
-			case JANUARY:
-				month = "01";
-				break;
-			case FEBRUARY:
-				month = "02";
-				break;
-			case MARCH:
-				month = "03";
-				break;
-			case APRIL:
-				month = "04";
-				break;
-			case MAY:
-				month = "05";
-				break;
-			case JUNE:
-				month = "06";
-				break;
-			case JULY:
-				month = "07";
-				break;
-			case AUGUST:
-				month = "08";
-				break;
-			case SEPTEMBER:
-				month = "09";
-				break;
-			case OCTOBER:
-				month = "10";
-				break;
-			case NOVEMBER:
-				month = "11";
-				break;
-			case DECEMBER:
-				month = "12";
-				break;
-			}
-		}
-		StringBuilder ym = new StringBuilder();
-		ym.append(fiscalYear.toString());
-		ym.append('/');
-		ym.append(month);
-		return YearMonth.parse(ym.toString(), DateTimeFormatter.ofPattern("uuuu/MM"));
-	}
-	
+
+//=============================================================================================================
+//  2022.02.24 稲熊 削除 START
+//	/**
+//	 * Get startYm, endYm
+//	 * @param startYm output
+//	 * @param endYm output
+//	 */
+//	private YearMonth getStartYearMonth(Optional<AgreementOperationSettingImport> agreementSetObj, Year fiscalYear) {
+//		String month = "01";
+//		// 「36協定運用設定」．起算月から年度の期間を求める
+//		if (agreementSetObj.isPresent()) {
+//			switch (agreementSetObj.get().getStartingMonth()) {
+//			case JANUARY:
+//				month = "01";
+//				break;
+//			case FEBRUARY:
+//				month = "02";
+//				break;
+//			case MARCH:
+//				month = "03";
+//				break;
+//			case APRIL:
+//				month = "04";
+//				break;
+//			case MAY:
+//				month = "05";
+//				break;
+//			case JUNE:
+//				month = "06";
+//				break;
+//			case JULY:
+//				month = "07";
+//				break;
+//			case AUGUST:
+//				month = "08";
+//				break;
+//			case SEPTEMBER:
+//				month = "09";
+//				break;
+//			case OCTOBER:
+//				month = "10";
+//				break;
+//			case NOVEMBER:
+//				month = "11";
+//				break;
+//			case DECEMBER:
+//				month = "12";
+//				break;
+//			}
+//		}
+//		StringBuilder ym = new StringBuilder();
+//		ym.append(fiscalYear.toString());
+//		ym.append('/');
+//		ym.append(month);
+//		return YearMonth.parse(ym.toString(), DateTimeFormatter.ofPattern("uuuu/MM"));
+//	}
+//  2022.02.24 稲熊 削除 END
+//=============================================================================================================
+
 	/**
 	 * Create data export*/
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	private ExportData outputProcess(String cid, String layoutId, Year fiscalYear, YearMonth startYm, YearMonth endYm, List<Employee> employees, 
-			PrintFormat printFormat, int breakPage, ExcludeEmp excludeEmp, Integer monthLimit, Integer baseMonth, GeneralDate baseDate) {
+	private ExportData outputProcess(
+			String         cid, 
+			String         layoutId, 
+			Year           fiscalYear, 
+			YearMonth      startYm, 
+			YearMonth      endYm, 
+			List<Employee> employees, 
+			PrintFormat    printFormat, 
+			int            breakPage, 
+			ExcludeEmp     excludeEmp, 
+//未使用	Integer        monthLimit,				2022.02.24 稲熊 削除
+			Integer        baseMonth, 
+			GeneralDate    baseDate) {
+
 		ExportData exportData = new ExportData();
 		YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(
 			nts.arc.time.YearMonth.of(startYm.getYear(), startYm.getMonthValue()),
-			nts.arc.time.YearMonth.of(endYm.getYear(), endYm.getMonthValue())
+			nts.arc.time.YearMonth.of(endYm.getYear(),   endYm.getMonthValue())
 		);
 
 		// ドメインモデル「年間勤務表（36チェックリスト）の出力項目設定」を取得する
@@ -242,7 +290,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		}
 
 		SettingOutputItemOfAnnualWorkSchedule setOutItemsWoSc = domain.get();
-		
+
 		// 帳表出力前チェックをする
 		this.checkBeforOutput(startYm, endYm, employees, setOutItemsWoSc, printFormat);
 
@@ -250,7 +298,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		exportData.setPageBreak(EnumAdaptor.valueOf(breakPage, PageBreakIndicator.class));
 		LocalDate endYmd = LocalDate.of(endYm.getYear(), endYm.getMonthValue(), 1).plus(1, ChronoUnit.MONTHS).minus(1, ChronoUnit.DAYS);
 		List<String> employeeIds = employees.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
-		
+
 		// init map employees data
 		// <<Public>> 社員の情報を取得する
 		exportData.setEmployees(this.getEmployeeInfo(employees, employeeIds, endYmd));
@@ -309,11 +357,11 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 			// 36協定対象外者のチェック
 			employeeIds = this.checkExcludeEmp36Agreement(excludeEmp, employeeIds, endYmd);
 
-			// アルゴリズム「年間勤務表の作成」を実行する
+			// アルゴリズム「年間勤務表の作成」(36協定チェックリスト)を実行する
 			this.createAnnualWorkSchedule36Agreement(
-					cid
+					  cid
 					, exportData
-					, yearMonthPeriod
+//未使用			, yearMonthPeriod				2022.02.24 稲熊 削除
 					, employeeIds
 					, listItemOut
 					, fiscalYear
@@ -337,32 +385,33 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	}
 
 	/**
-	 * 年間勤務表の作成.
+	 * 年間勤務表の作成  (36協定チェックリスト)
 	 *
-	 * @param cid the cid
-	 * @param exportData the export data
+	 * @param cid             the cid
+	 * @param exportData      the export data
 	 * @param yearMonthPeriod the year month period
-	 * @param employeeIds: 対象社員ID（List）
-	 * @param listItemOut the list item out
-	 * @param fiscalYear: 年度
-	 * @param startYm the start ym
-	 * @param isOutNumExceed the is out num exceed
-	 * @param periodAtr the period atr
-	 * @param monthLimit the month limit
-	 * @param baseMonth the base month
+	 * @param employeeIds:    対象社員ID（List）
+	 * @param listItemOut     the list item out
+	 * @param fiscalYear:     年度
+	 * @param startYm         the start ym
+	 * @param isOutNumExceed  the is out num exceed
+	 * @param periodAtr       the period atr
+	 * @param monthLimit      the month limit
+	 * @param baseMonth       the base month
 	 * @param setOutItemsWoSc the set out items wo sc
-	 * @param baseDate the base date
+	 * @param baseDate        the base date
 	 */
-	private void createAnnualWorkSchedule36Agreement(String cid
-												   , ExportData exportData
-												   , YearMonthPeriod yearMonthPeriod
-												   , List<String> employeeIds
-												   , List<ItemsOutputToBookTable> listItemOut
-												   , Year fiscalYear
+	private void createAnnualWorkSchedule36Agreement(String                                cid
+												   , ExportData                            exportData
+//未使用										   , YearMonthPeriod                       yearMonthPeriod				2022.02.24 稲熊 削除
+												   , List<String>                          employeeIds
+												   , List<ItemsOutputToBookTable>          listItemOut
+												   , Year                                  fiscalYear
 												   , SettingOutputItemOfAnnualWorkSchedule setOutItemsWoSc
-												   , GeneralDate baseDate
-												   , Integer baseMonth
-												   , YearMonth startYm) {
+												   , GeneralDate                           baseDate
+												   , Integer                               baseMonth
+												   , YearMonth                             startYm) {
+
 		List<ItemsOutputToBookTable> outputAgreementTime36 = listItemOut.stream().filter(m -> m.getSortBy() <= 2).collect(Collectors.toList());
 
 		// ドメインモデル「集計可能な月次の勤怠項目」を取得する
@@ -381,7 +430,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		}
 		DatePeriod datePeriod = period.get(); 
 		YearMonthPeriod yearMonthPeriodRQL554 = new YearMonthPeriod(datePeriod.start().yearMonth(),datePeriod.end().yearMonth());
-		
+
 		// 社員の指定期間中の所属期間を取得する（年月）(Có được thời gian liên kết của nhân viên trong thời gian được chỉ định)
 		// RequestList 589
         EmpAffInfoExport empAffInfoExport = this.workRecordExport.getAffiliationPeriod(
@@ -434,30 +483,30 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		// 対象の社員IDをエラーリストに格納する
 		exportData.storeEmployeeError();
 	}
-	
+
 	/**
 	 * 36協定明細項目の作成 .
 	 *
-	 * @param lstItemsOut				 出力する項目の設定（List）
+	 * @param lstItemsOut				出力する項目の設定（List）
 	 * @param header the header
 	 * @param yearMonthPeriodRQ589 	 	年月期間（List）
-	 * @param employeeId 		    	 社員ID
+	 * @param employeeId 		    	社員ID
 	 * @param baseDate 			    	基準日(社員範囲選択の基準日)
-	 * @param non36Agreement 	   		 年度(36協定年度)
+	 * @param non36Agreement 	   		年度(36協定年度)
 	 * @return the map
 	 */
-	private Map<String, AnnualWorkScheduleData> create36AgreementTime(ExportData exportData
-																	, List<ItemsOutputToBookTable> lstItemsOut
-																	, List<String> header
-																	, List<YearMonthPeriod> yearMonthPeriodRQ589
-																	, String employeeId
-																	, GeneralDate baseDate
-																	, Year non36Agreement
-														  		 	, GeneralDate endDate
+	private Map<String, AnnualWorkScheduleData> create36AgreementTime(ExportData                            exportData
+																	, List<ItemsOutputToBookTable>          lstItemsOut
+																	, List<String>                          header
+																	, List<YearMonthPeriod>                 yearMonthPeriodRQ589
+																	, String                                employeeId
+																	, GeneralDate                           baseDate
+																	, Year                                  non36Agreement
+														  		 	, GeneralDate                           endDate
 														  		 	, SettingOutputItemOfAnnualWorkSchedule setting
-														  		 	, YearMonthPeriod yearMonthPeriodRQL554
-														  		 	, Integer baseMonth
-																    , YearMonth startYm) {
+														  		 	, YearMonthPeriod                       yearMonthPeriodRQL554
+														  		 	, Integer                               baseMonth
+																    , YearMonth                             startYm) {
 		Map<String, AnnualWorkScheduleData> data = new HashMap<>();
 
         val require = requireService.createRequire();
@@ -588,7 +637,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		}
 		return new ArrayList<>();
 	}
-	
+
 	/**
 	 * 任意項目の作成.
 	 *
@@ -601,13 +650,13 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	 * @param yearMonthPeriods the year month periods
 	 * @param atdIdCanBeAggregate the atd id can be aggregate
 	 */
-	private void createOptionalItems(ExportData exportData
-								   , String employeeId
-								   , List<ItemsOutputToBookTable> listItemOut
-								   , GeneralDate baseDate
-								   , List<YearMonthPeriod> yearMonthPeriods
-								   , List<Integer> atdIdCanBeAggregate
-								   , YearMonth startYm) {
+	private void createOptionalItems(ExportData						 exportData
+								   , String							 employeeId
+								   , List<ItemsOutputToBookTable>	 listItemOut
+								   , GeneralDate					 baseDate
+								   , List<YearMonthPeriod>			 yearMonthPeriods
+								   , List<Integer>					 atdIdCanBeAggregate
+								   , YearMonth						 startYm) {
 		
 		// 画面の出力項目一覧の並び順に従う
 		for (ItemsOutputToBookTable itemsOutputToBookTable : listItemOut) {
@@ -758,11 +807,11 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	 * @param lstAtdCanBeAggregate 集計可能な勤怠項目
 	 * @return the map
 	 */
-	private AnnualWorkScheduleData createOptionalItem(String employeeId
+	private AnnualWorkScheduleData createOptionalItem(String				 employeeId
 												    , ItemsOutputToBookTable itemOut
-												    , YearMonthPeriod period
-												    , List<Integer> lstAtdCanBeAggregate
-												    , YearMonth startYm) {
+												    , YearMonthPeriod		 period
+												    , List<Integer>			 lstAtdCanBeAggregate
+												    , YearMonth				 startYm) {
 
 		// [No.495]勤怠項目IDを指定して月別実績の値を取得（複数レコードは合算）
 		Map<String, List<MonthlyRecordValueImport>> monthlyValue = this.actualMultipleMonthAdapter.getActualMultipleMonth(
@@ -797,12 +846,12 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	 * @param listItemOut 「36協定時間」以外の出力対象の項目設定（List）
 	 * @param baseDate 社員範囲選択の基準日
 	 */
-	private void createAnnualWorkScheduleAttendance(ExportData exportData
-												  , YearMonthPeriod yearMonthPeriod
-												  , List<String> employeeIds
+	private void createAnnualWorkScheduleAttendance(ExportData					 exportData
+												  , YearMonthPeriod				 yearMonthPeriod
+												  , List<String>				 employeeIds
 												  , List<ItemsOutputToBookTable> listItemOut
-												  , GeneralDate baseDate
-												  , YearMonth startYm) {
+												  , GeneralDate					 baseDate
+												  , YearMonth					 startYm) {
 		
 		// ドメインモデル「集計可能な月次の勤怠項目」を取得する
 		List<Integer> atdCanbeAggregate = this.monthlyAttItemCanAggregateRepo.getMonthlyAtdItemCanAggregate(AppContexts.user().companyId())

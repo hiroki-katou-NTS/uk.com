@@ -4,8 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.remainingnumber.paymana;
 
+import java.util.Optional;
+
 import lombok.Builder;
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -40,6 +43,7 @@ public class SEmpHistoryImport {
 		this.period = period;
 	}
 	
-	
-
+	public static interface Require {
+		Optional<SEmpHistoryImport> getSEmpHistoryImport(String employeeId, GeneralDate baseDate);
+	}
 }

@@ -32,12 +32,12 @@ public class WorkMonthlySettingTest {
         WorkMonthlySettingGetMemento memento = new WorkMonthlySettingGetMementoImpl(CID);
         WorkMonthlySetting workMonthlySetting =  new WorkMonthlySetting(memento);
         new Expectations() {{
-            require.getWorkType(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
+            require.workType(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getWorkInformation().getWorkTypeCode());
             result = Optional.empty();
 
         }};
         NtsAssert.businessException("Msg_1608", () -> {
-                workMonthlySetting.checkForErrors(require);
+                workMonthlySetting.checkForErrors(require, CID);
             }
         );
     }
@@ -52,7 +52,7 @@ public class WorkMonthlySettingTest {
                 new DailyWork(), DeprecateClassification.NotDeprecated, CalculateMethod.DO_NOT_GO_TO_WORK
                 );
         new Expectations() {{
-            require.getWorkType(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
+            require.workType(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getWorkInformation().getWorkTypeCode());
             result = Optional.of(workType);
 
             require.checkNeededOfWorkTimeSetting(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
@@ -60,7 +60,7 @@ public class WorkMonthlySettingTest {
 
         }};
         NtsAssert.businessException("Msg_435", () -> {
-                    workMonthlySetting.checkForErrors(require);
+                    workMonthlySetting.checkForErrors(require, CID);
                 }
         );
     }
@@ -74,17 +74,17 @@ public class WorkMonthlySettingTest {
                 new DailyWork(), DeprecateClassification.NotDeprecated, CalculateMethod.DO_NOT_GO_TO_WORK
         );
         new Expectations() {{
-            require.getWorkType(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
+            require.workType(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getWorkInformation().getWorkTypeCode());
             result = Optional.of(workType);
 
             require.checkNeededOfWorkTimeSetting(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
             result = SetupType.REQUIRED;
 
-            require.getWorkTime(workMonthlySetting.getWorkInformation().getWorkTimeCode().v());
+            require.workTimeSetting(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getWorkInformation().getWorkTimeCode());
             result = Optional.empty();
         }};
         NtsAssert.businessException("Msg_1609", () -> {
-                    workMonthlySetting.checkForErrors(require);
+                    workMonthlySetting.checkForErrors(require, CID);
                 }
         );
     }
@@ -98,7 +98,7 @@ public class WorkMonthlySettingTest {
                 new DailyWork(), DeprecateClassification.NotDeprecated, CalculateMethod.DO_NOT_GO_TO_WORK
         );
         new Expectations() {{
-            require.getWorkType(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
+            require.workType(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getWorkInformation().getWorkTypeCode());
             result = Optional.of(workType);
 
             require.checkNeededOfWorkTimeSetting(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
@@ -106,7 +106,7 @@ public class WorkMonthlySettingTest {
 
         }};
         NtsAssert.businessException("Msg_434", () -> {
-                    workMonthlySetting.checkForErrors(require);
+                    workMonthlySetting.checkForErrors(require, CID);
                 }
         );
     }
@@ -120,16 +120,16 @@ public class WorkMonthlySettingTest {
                 new DailyWork(), DeprecateClassification.NotDeprecated, CalculateMethod.DO_NOT_GO_TO_WORK
         );
         new Expectations() {{
-            require.getWorkType(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
+            require.workType(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getWorkInformation().getWorkTypeCode());
             result = Optional.of(workType);
 
             require.checkNeededOfWorkTimeSetting(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
             result = SetupType.REQUIRED;
 
-            require.getWorkTime(workMonthlySetting.getWorkInformation().getWorkTimeCode().v());
+            require.workTimeSetting(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getWorkInformation().getWorkTimeCode());
             result = Optional.of(new WorkTimeSetting());
         }};
-        workMonthlySetting.checkForErrors(require);
+        workMonthlySetting.checkForErrors(require, CID);
     }
 
     @Test

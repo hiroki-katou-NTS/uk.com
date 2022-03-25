@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
@@ -28,13 +30,15 @@ public class AttendanceTimeOfWeekly extends AggregateRoot {
 	/** 締め日付 */
 	private final ClosureDate closureDate;
 	/** 週NO */
-	private final int weekNo;
+	@Setter
+	private int weekNo;
 
 	/** 期間 */
 	private DatePeriod period;
 	/** 週別の計算 */
 	private WeeklyCalculation weeklyCalculation;
 	/** 時間外超過 */
+	@Setter
 	private ExcessOutsideByPeriod excessOutside;
 	/** 縦計 */
 	private VerticalTotalOfMonthly verticalTotal;
@@ -112,5 +116,64 @@ public class AttendanceTimeOfWeekly extends AggregateRoot {
 		domain.anyItem = anyItem;
 		domain.aggregateDays = aggregateDays;
 		return domain;
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(AttendanceTimeOfWeekly target){
+
+		GeneralDate startDate = this.period.start();
+		GeneralDate endDate = this.period.end();
+		if (startDate.after(target.period.start())) startDate = target.period.start();
+		if (endDate.before(target.period.end())) endDate = target.period.end();
+		this.period = new DatePeriod(startDate, endDate);
+		
+		this.weeklyCalculation.sum(target.weeklyCalculation);
+		this.excessOutside.sum(target.excessOutside);
+		this.verticalTotal.sum(target.verticalTotal);
+		this.totalCount.sum(target.totalCount);
+		this.anyItem.sum(target.anyItem);
+		
+		this.aggregateDays = this.aggregateDays.addDays(target.aggregateDays.v());
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AttendanceTimeOfWeekly other = (AttendanceTimeOfWeekly) obj;
+		
+		if ((this.employeeId == null && other.employeeId != null) 
+				|| !this.employeeId.equals(other.employeeId)) 
+				return false;
+		if ((this.yearMonth == null && other.yearMonth != null) 
+				|| !this.yearMonth.equals(other.yearMonth)) 
+				return false;
+		if ((this.closureId == null && other.closureId != null) 
+				|| !this.closureId.equals(other.closureId)) 
+				return false;
+		if ((this.closureDate == null && other.closureDate != null) 
+				|| !this.closureDate.equals(other.closureDate)) 
+				return false;
+		
+		return this.weekNo == other.weekNo;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((this.employeeId == null) ? 0 : this.employeeId.hashCode());
+		result = prime * result + ((this.yearMonth == null) ? 0 : this.yearMonth.hashCode());
+		result = prime * result + ((this.closureId == null) ? 0 : this.closureId.hashCode());
+		result = prime * result + ((this.closureDate == null) ? 0 : this.closureDate.hashCode());
+		result = prime * result + this.weekNo;
+		return result;
 	}
 }

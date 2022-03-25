@@ -19,10 +19,10 @@ public class ConvertTimeRecordReservationAdapterImpl implements ConvertTimeRecor
 
 	@Override
 	public Optional<AtomTask> convertData(String empInfoTerCode, String contractCode,
-			ReservReceptDataImport reservReceptData) {
+			ReservReceptDataImport reservReceptData, String companyID) {
 		return timeRecordReservationPub.convertData(empInfoTerCode, contractCode,
 				new ReservReceptDataExport(reservReceptData.getIdNumber(), reservReceptData.getMenu(),
-						reservReceptData.getYmd(), reservReceptData.getTime(), reservReceptData.getQuantity()));
+						reservReceptData.getYmd(), reservReceptData.getTime(), reservReceptData.getQuantity()), companyID);
 	}
 
 }

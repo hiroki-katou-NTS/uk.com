@@ -51,7 +51,9 @@ public class StartProcess {
 
 		// 2. call($勤怠項目リスト)
 		List<Integer> attIds = collectItemList(manHourInput.getManHrInputDisplayFormat());
-		attIds.add(28);
+		
+		Collections.addAll(attIds, 28, 29, 31, 34, 157, 159, 163, 165, 169, 171, 175, 177, 181, 183, 187, 189, 193, 195,
+				199, 201, 205, 207, 211, 213);
 		AttendanceItemMasterInformationDto itemMasterInfo = this.getWorkDataMasterInformation.getAttendanceItemMasterInformation(attIds);
 
 		result.setItemMasterInfo(itemMasterInfo);

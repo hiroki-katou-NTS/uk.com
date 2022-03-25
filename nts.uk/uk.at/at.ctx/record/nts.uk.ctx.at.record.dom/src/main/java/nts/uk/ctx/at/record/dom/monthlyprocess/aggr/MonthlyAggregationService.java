@@ -65,11 +65,10 @@ public class MonthlyAggregationService {
 		// ※　実行しない時、終了状態＝正常終了
 		if (!executionLog.isPresent()) return AggregationResult.build(success);
 		if (executionLog.get().getExecutionContent() != ExecutionContent.MONTHLY_AGGREGATION) return AggregationResult.build(success);
-		if (!executionLog.get().getMonlyAggregationSetInfo().isPresent()) return AggregationResult.build(success);
 		val executionContent = executionLog.get().getExecutionContent();
 		
 		// 再実行の判断
-		ExecutionType reAggrAtr = executionLog.get().getMonlyAggregationSetInfo().get().getExecutionType();
+		ExecutionType reAggrAtr = executionLog.get().getExecutionType();
 		
 		// ログ情報（実行ログ）を更新する
 		atomTasks.add(AtomTask.of(() -> require.updateLogInfo(empCalAndSumExecLogID, executionContent.value,
@@ -148,7 +147,8 @@ public class MonthlyAggregationService {
 						ExecutionContent.MONTHLY_AGGREGATION.value, EmployeeExecutionStatus.COMPLETE.value)));
 				
 				/** 永続化 */
-				require.transaction(AtomTask.bundle(aggrStatus.getAtomTasks()));
+				aggrStatus.getAtomTasks().forEach(t -> require.transaction(t));
+//				require.transaction(AtomTask.bundle(aggrStatus.getAtomTasks()));
 				dataSetter.updateData("monthlyAggregateCount", stateHolder.count());
 			}
 			if (coStatus == ProcessState.INTERRUPTION){

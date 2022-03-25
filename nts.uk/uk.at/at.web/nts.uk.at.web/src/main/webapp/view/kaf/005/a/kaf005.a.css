@@ -1,0 +1,8 @@
+span.text {
+    font-size: 0.8rem;
+}
+
+td {
+	text-align: left !important;
+	height: 33px !important;
+}

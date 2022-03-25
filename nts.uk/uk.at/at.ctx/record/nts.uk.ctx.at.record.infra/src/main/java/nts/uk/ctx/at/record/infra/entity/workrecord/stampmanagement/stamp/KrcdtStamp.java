@@ -233,7 +233,7 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 		this.goOutArt = stamp.getType().getGoOutArt().isPresent() ? stamp.getType().getGoOutArt().get().value : null;
 		this.reflectedAtr = stamp.getImprintReflectionStatus().isReflectedCategory();
 		this.suportCard = (stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().isPresent())
-				? stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().get().v()
+				? Integer.parseInt(stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().get().v())
 				: null;
 		this.stampPlace = (stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().isPresent())
 				? stamp.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().get().v()
@@ -283,7 +283,7 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 				this.workplaceId  == null ? Optional.empty() : Optional.of(this.workplaceId), 
 				this.timeRecordCode == null ? Optional.empty() : Optional.of(new EmpInfoTerminalCode(this.timeRecordCode)),
 				this.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(this.stampPlace)), 
-				this.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(this.suportCard)));
+				this.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(String.valueOf(this.suportCard))));
 		
 		WorkGroup workGroup = null;
 		

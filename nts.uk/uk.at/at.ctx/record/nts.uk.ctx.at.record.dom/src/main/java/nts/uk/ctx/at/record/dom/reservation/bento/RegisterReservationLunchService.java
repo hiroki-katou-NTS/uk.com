@@ -2,16 +2,17 @@ package nts.uk.ctx.at.record.dom.reservation.bento;
 
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.Achievements;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSetting;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.CorrectionContent;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 弁当予約設定を登録する
+ * delete #120643
  *
  * @author Quang.nh1
  */
@@ -28,21 +29,21 @@ public class RegisterReservationLunchService {
         GeneralDate date = GeneralDate.max();
 
         // 1: get(会社ID)
-        BentoReservationSetting bentoReservationSetting = require.getReservationSettings(companyId);
+        ReservationSetting bentoReservationSetting = require.getReservationSettings(companyId);
 
         // 3: get(会社ID,’9999/12/31’)
-        BentoMenu bentoMenu = require.getBentoMenu(companyId, date);
+        BentoMenuHistory bentoMenu = require.getBentoMenu(companyId, date);
         String historyID = bentoMenu != null ? bentoMenu.getHistoryID() : null;
 
         return AtomTask.of(() -> {
             require.registerBentoMenu(historyID, bentoReservationClosingTime,operationDistinction);
-            BentoReservationSetting newSetting = new BentoReservationSetting(companyId, operationDistinction, correctionContent, arAchievements);
-
-            if (bentoReservationSetting == null) {
-                require.inSert(newSetting);
-            } else {
-                require.update(newSetting);
-            }
+//            ReservationSetting newSetting = new ReservationSetting(companyId, operationDistinction, correctionContent, arAchievements);
+//
+//            if (bentoReservationSetting == null) {
+//                require.inSert(newSetting);
+//            } else {
+//                require.update(newSetting);
+//            }
         });
     }
 
@@ -51,12 +52,12 @@ public class RegisterReservationLunchService {
         /**
          * 弁当予約設定を取得する
          */
-        BentoReservationSetting getReservationSettings(String cid);
+        ReservationSetting getReservationSettings(String cid);
 
         /**
          * 弁当メニュを取得する
          */
-        BentoMenu getBentoMenu(String cid, GeneralDate date);
+        BentoMenuHistory getBentoMenu(String cid, GeneralDate date);
 
         /**
          * 弁当メニューを登録する
@@ -66,12 +67,12 @@ public class RegisterReservationLunchService {
         /**
          * Insert（弁当予約設定）
          */
-        void inSert(BentoReservationSetting bentoReservationSetting);
+        void inSert(ReservationSetting bentoReservationSetting);
 
         /**
          * Update（弁当予約設定）
          */
-        void update(BentoReservationSetting bentoReservationSetting);
+        void update(ReservationSetting bentoReservationSetting);
 
     }
 

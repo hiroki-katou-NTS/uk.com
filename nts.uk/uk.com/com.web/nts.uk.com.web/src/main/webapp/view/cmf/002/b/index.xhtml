@@ -10,7 +10,11 @@
 			<com:ValidatorScript>
                     nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionCode
                     nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionName
+					nts.uk.ctx.exio.dom.exo.condset.ExternalOutputFileName
             </com:ValidatorScript>
+			<com:EnumScript>
+				nts.uk.ctx.exio.dom.exo.condset.EncodeType
+			</com:EnumScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf002.b.start.js" />
@@ -175,6 +179,32 @@
 														optionsText: 'name',
 														enable: true }"
 										tabindex="8" />
+								</div>
+								<div class="div-line">
+									<!--B16-->
+									<div id="B16" class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_554')}</div>
+									<!--B16_1-->
+									<div id="B16_1" style="width: 255px;"
+										 data-bind="ntsComboBox: {
+														name: '#{i18n.getText('CMF002_554')}',
+														options: $parent.listEndCoding,
+														optionsValue: 'value',
+														visibleItemsCount: 5,
+														value: encodeType,
+														optionsText: 'name',
+														enable: true }"
+										 tabindex="9" />
+								</div>
+								<div class="div-line">
+									<div id="B17" class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_559')}</div>
+									<input id="B17_1" style=""
+										   data-bind="ntsTextEditor: {
+													value: fileName,
+													name:'#{i18n.getText('CMF002_559')}',
+													constraint: 'ExternalOutputFileName',
+													required: false,
+												}"
+										   tabindex="10" />
 								</div>
 								<div class="div-line">
 									<!--B11 出力内容の設定-->

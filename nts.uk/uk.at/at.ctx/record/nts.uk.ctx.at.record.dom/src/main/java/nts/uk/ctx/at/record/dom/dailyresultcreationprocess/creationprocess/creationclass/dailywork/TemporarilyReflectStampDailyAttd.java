@@ -78,38 +78,20 @@ public class TemporarilyReflectStampDailyAttd {
 		switch (stamp.getType().getChangeClockArt()) {
 		case GOING_TO_WORK: // 出勤
 			// 組み合わせ区分＝直行？
-			if (stamp.getType().getSetPreClockArt() != SetPreClockArt.DIRECT) {
 				// 出勤を反映する (Phản ánh 出勤)
-				reflectWork.reflectWork(companyId, stamp, stampReflectRangeOutput, integrationOfDaily);
+				reflectWork.reflectWork(companyId, stamp, stampReflectRangeOutput, integrationOfDaily, changeDailyAtt);
 				if (!stamp.getImprintReflectionStatus().isReflectedCategory()) {
 					return listErrorMessageInfo;
 				}
-			} else {
-				/** 直行区分=ONにする */
-				integrationOfDaily.getWorkInformation().setGoStraightAtr(NotUseAttribute.Use);
-				// 打刻。反映区分＝反映済み
-				stamp.getImprintReflectionStatus().markAsReflected(integrationOfDaily.getYmd());
-			}
-
-			changeDailyAtt.setAttendance(true);
 
 			break;
 		case WORKING_OUT: // 退勤
 			// 組み合わせ区分＝直帰？
-			if (stamp.getType().getSetPreClockArt() != SetPreClockArt.BOUNCE) {
-				// 退勤を反映する （Phản ánh 退勤）
-				reflectLeavingWork.reflectLeaving(companyId, stamp, stampReflectRangeOutput, integrationOfDaily);
+			// 退勤を反映する （Phản ánh 退勤）
+				reflectLeavingWork.reflectLeaving(companyId, stamp, stampReflectRangeOutput, integrationOfDaily, changeDailyAtt);
 				if (!stamp.getImprintReflectionStatus().isReflectedCategory()) {
 					return listErrorMessageInfo;
 				}
-			} else {
-				/** 直帰区分=ONにする */
-				integrationOfDaily.getWorkInformation().setBackStraightAtr(NotUseAttribute.Use);
-				// 打刻。反映区分＝反映済み
-				stamp.getImprintReflectionStatus().markAsReflected(integrationOfDaily.getYmd());
-			}
-
-			changeDailyAtt.setAttendance(true);
 
 			break;
 		case GO_OUT:// 外出 or 戻り

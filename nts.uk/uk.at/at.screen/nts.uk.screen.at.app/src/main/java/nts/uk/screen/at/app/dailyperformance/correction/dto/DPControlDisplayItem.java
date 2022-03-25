@@ -46,6 +46,8 @@ public class DPControlDisplayItem {
 	
 	private List<EnumCodeName> comboTimeLimit;
 	
+	private List<EnumCodeName> comboNursingLicenseCls;
+	
 	private List<Integer> itemIds;
 	
 	Map<Integer, DPAttendanceItem> mapDPAttendance;

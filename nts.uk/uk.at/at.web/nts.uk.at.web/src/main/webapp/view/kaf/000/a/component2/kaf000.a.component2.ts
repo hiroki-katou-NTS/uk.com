@@ -3,7 +3,7 @@ module nts.uk.at.view.kaf000.a.component2.viewmodel {
 	@component({
 		name: 'kaf000-a-component2',
 		template: `
-            <div id="kaf000-a-component2">
+            <div id="kaf000-a-component2" style="max-width: 187px">
 				<div style="margin-top: 10px">
 				    <div class="col-1">
 						<div class="cell valign-center" data-bind="ntsFormLabel:{}, text: $i18n('KAF000_44')"></div>
@@ -35,6 +35,9 @@ module nts.uk.at.view.kaf000.a.component2.viewmodel {
 							</div>
 						</div>
 					</div>
+					<div style="width: 150px;" data-bind="if: isAgentMode">
+						<div class='inputPerson limited-label' data-bind="text: inputPerson"></div>
+					</div>
 				</div>
 			</div>
         `
@@ -45,16 +48,28 @@ module nts.uk.at.view.kaf000.a.component2.viewmodel {
 		employeeName: KnockoutObservable<string>;
 		employeeLst: KnockoutObservable<any>;
 		sumEmp: KnockoutObservable<string>;
-		isAgentMode: boolean = false;
+		isAgentMode: KnockoutObservable<boolean> = ko.observable(false);
+		inputPerson: KnockoutObservable<string> = ko.observable(null);
 
 		created(params: any) {
 			const vm = this;
+			const startFormInputPerson = '（入力者： ';
+			const endFormInputPerson = '）';
 			vm.appType = params.appType;
 			vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
 			vm.employeeName = ko.observable("employeeName");
 			vm.employeeLst = ko.observableArray([]);
 			vm.sumEmp = ko.observable("");
-			vm.isAgentMode = params.isAgentMode();
+			vm.isAgentMode(params.isAgentMode());
+			let inputPerson = 
+				_.isNil(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.opEmployeeInfo) ? 
+				null : 
+				(startFormInputPerson + vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.opEmployeeInfo.bussinessName + endFormInputPerson);
+			if (_.isNil(inputPerson)) {
+				vm.inputPerson(inputPerson);
+			} else {
+				vm.inputPerson(inputPerson);
+			}
 
 			vm.appDispInfoStartupOutput.subscribe((value: any) => {
 				vm.employeeName(value.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);
@@ -72,6 +87,15 @@ module nts.uk.at.view.kaf000.a.component2.viewmodel {
 						showOnStart: false,
 						dismissible: true
 					});
+				}
+				let inputPerson = 
+				_.isNil(value.appDispInfoNoDateOutput.opEmployeeInfo) ? 
+				null : 
+				(startFormInputPerson + value.appDispInfoNoDateOutput.opEmployeeInfo.bussinessName + endFormInputPerson);
+				if (_.isNil(inputPerson)) {	
+					vm.inputPerson(inputPerson);
+				} else {
+					vm.inputPerson(inputPerson);
 				}
 			});
 		}

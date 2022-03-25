@@ -20,6 +20,6 @@ public class WorkInformationStampHelper {
 				Optional.of("workplaceID"), 
 				Optional.of(new EmpInfoTerminalCode("emCD")), 
 				Optional.of(new WorkLocationCD("wkCD")), 
-				Optional.of(new SupportCardNumber(9999)));
+				Optional.of(new SupportCardNumber("9999")));
 	}
 }

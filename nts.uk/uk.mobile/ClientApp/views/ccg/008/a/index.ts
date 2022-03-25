@@ -14,10 +14,10 @@ const servicePath = {
     getVisibleConfig:'screen/at/mobile/ccgs08/visibleConfig'
 };
 
-enum SystemOperationMode {
-    RUNNING = 0,
-    IN_PROGESS = 1,
-    STOP = 2
+enum SystemStatusType {
+    RUNNING = 1,
+    IN_PROGESS = 2,
+    STOP = 3
 }
 
 enum User {
@@ -170,10 +170,10 @@ export class Ccg008AComponent extends Vue {
     public checkSystemStopSetting(setting: ServerAlertDto) { 
         let self = this; 
         if (setting.company) {
-            setting.company.visible = SystemOperationMode.IN_PROGESS === setting.company.systemStatus;    
+            setting.company.visible = SystemStatusType.IN_PROGESS === setting.company.systemStatus;    
         }
         if (setting.system) {
-            setting.system.visible = SystemOperationMode.IN_PROGESS === setting.system.systemStatus;
+            setting.system.visible = SystemStatusType.IN_PROGESS === setting.system.systemStatus;
         }
         setting.visible = (setting.company && setting.company.visible) || (setting.system && setting.system.visible);
 
@@ -250,7 +250,7 @@ export class Ccg008AComponent extends Vue {
         // 積立年休残数
         if (item.reservedYearsRemainNo && vacationSetting.accumAnnualManage) {
             if (item.reservedYearsRemainNo.showAfter) {
-                results.push({name:'積立年休残数', value: item.reservedYearsRemainNo.before, prefix: 'KTG029_60'});
+                results.push({name:'CCGS08_22', value: item.reservedYearsRemainNo.before, prefix: 'KTG029_60'});
             }
         }
         //setRemainAlternationNoDay
@@ -258,19 +258,19 @@ export class Ccg008AComponent extends Vue {
             if (item.vacationSetting.substituteTimeManage) {
                 let timeDisp = vm.$dt.timedr(item.remainAlternationNoDay);
                 if (timeDisp.startsWith('0')) {
-                    results.push({name:'代休残数', value: timeDisp.substr(1, timeDisp.length)});
+                    results.push({name:'CCGS08_23', value: timeDisp.substr(1, timeDisp.length)});
                 } else if (timeDisp.startsWith('-0')) {
-                    results.push({name:'代休残数', value: timeDisp.slice(0, 1) + timeDisp.slice(2)});
+                    results.push({name:'CCGS08_23', value: timeDisp.slice(0, 1) + timeDisp.slice(2)});
                 } else {
-                    results.push({name:'代休残数', value: timeDisp});
+                    results.push({name:'CCGS08_23', value: timeDisp});
                 }
             } else {
-                results.push({name:'代休残数', value: vm.$i18n('CCGS08_36', [item.remainAlternationDay.toString()])});
+                results.push({name:'CCGS08_23', value: vm.$i18n('CCGS08_36', [item.remainAlternationDay.toString()])});
             }
         }
         if (vacationSetting.accomoManage) {
             if (item.remainsLeft || item.remainsLeft === 0) {
-                results.push({name:'振休残数', value: item.remainsLeft, prefix: 'KTG029_60'});
+                results.push({name:'CCGS08_24', value: item.remainsLeft, prefix: 'KTG029_60'});
             }
         }
         // 子看護管理区分

@@ -205,8 +205,8 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 					info(nts.uk.resource.getMessage("Msg_15", []));
 					self.reloadPage();
 					self.selectedCode(self.settingCode());
-	            }).fail(function(error) {
-					nts.uk.ui.dialog.alert({ messageId: error.messageId })
+				}).fail(function(error) {
+					nts.uk.ui.dialog.alert(error);
 				});
 			}
 		}

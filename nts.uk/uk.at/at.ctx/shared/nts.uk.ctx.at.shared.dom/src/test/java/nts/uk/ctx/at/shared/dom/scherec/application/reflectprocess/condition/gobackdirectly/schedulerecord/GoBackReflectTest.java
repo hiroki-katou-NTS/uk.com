@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -55,7 +56,7 @@ public class GoBackReflectTest {
 		GoBackReflect reflect = new GoBackReflect("", ApplicationStatus.DO_NOT_REFLECT_1);
 		new Expectations() {
 			{
-				require.findByPK(anyString, anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(createWorkTypeReflect());
 			}
 		};
@@ -73,7 +74,7 @@ public class GoBackReflectTest {
 		GoBackReflect reflect2 = new GoBackReflect("", ApplicationStatus.DO_REFLECT);
 		new Expectations() {
 			{
-				require.findByPK(anyString, anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(createWorkTypeReflect());
 			}
 		};
@@ -119,7 +120,7 @@ public class GoBackReflectTest {
 		GoBackReflect reflect2 = new GoBackReflect("", ApplicationStatus.DO_REFLECT);
 		new Expectations() {
 			{
-				require.findByPK(anyString, anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(createWorkTypeNoReflect());
 			}
 		};

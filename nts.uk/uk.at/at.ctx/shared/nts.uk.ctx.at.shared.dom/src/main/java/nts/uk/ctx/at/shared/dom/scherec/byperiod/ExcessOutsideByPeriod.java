@@ -123,4 +123,16 @@ public class ExcessOutsideByPeriod implements Cloneable {
 					ExcessOutsideItemByPeriod.of(breakdownNo, breakdownItemTime));
 		}
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(ExcessOutsideByPeriod target) {
+		
+		this.excessOutsideItems.entrySet().stream().forEach(eoi -> {
+			
+			 eoi.getValue().sum(target.getExcessOutsideItems().get(eoi.getKey()));
+		});
+	}
 }

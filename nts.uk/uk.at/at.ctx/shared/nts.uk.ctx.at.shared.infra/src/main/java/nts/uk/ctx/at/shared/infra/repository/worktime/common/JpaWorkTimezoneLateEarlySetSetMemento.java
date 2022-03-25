@@ -9,7 +9,7 @@ import java.util.List;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneLateEarlyCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.TreatLateEarlyTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComLatetimeMng;
@@ -47,8 +47,8 @@ public class JpaWorkTimezoneLateEarlySetSetMemento implements WorkTimezoneLateEa
 	 * worktime.common.EmTimezoneLateEarlyCommonSet)
 	 */
 	@Override
-	public void setCommonSet(EmTimezoneLateEarlyCommonSet set) {		
-		this.parentEntity.getKshmtLateEarlySet().setIsDeducteFromTime(BooleanGetAtr.getAtrByBoolean(set.isDelFromEmTime()));
+	public void setCommonSet(TreatLateEarlyTime set) {		
+		this.parentEntity.getKshmtLateEarlySet().setIsDeducteFromTime(set.isInclude() == false ? 1 : 0);
 	}
 
 	/*

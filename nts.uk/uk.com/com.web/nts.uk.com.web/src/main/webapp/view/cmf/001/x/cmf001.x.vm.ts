@@ -77,7 +77,6 @@ module nts.uk.com.cmf001.x {
 		}
 
 		prepare(){
-
 			this.processStart();
 			// ファイルのアップロード
 			$("#file-upload").ntsFileUpload({ stereoType: "csvfile" }).done((res) => {
@@ -184,7 +183,6 @@ module nts.uk.com.cmf001.x {
 			let executeCommand = {
 				settingCode: this.selectedSettingCode()
 			};
-			
 			ajax("/exio/input/execute", executeCommand).done((executeResult) => {
 				// サーバーへタスクの進捗問い合わせ
 				nts.uk.deferred.repeat(conf => conf
@@ -223,10 +221,14 @@ module nts.uk.com.cmf001.x {
 			this.messageBox("");
 			this.executionError(false);
 			this.processing(true);
+			
+			nts.uk.ui.block.grayout();
 		}
 
 		processEnd(){
 			this.processing(false);
+			
+            nts.uk.ui.block.clear();
 		}
 		
 		canPrepare =  ko.computed(() => 

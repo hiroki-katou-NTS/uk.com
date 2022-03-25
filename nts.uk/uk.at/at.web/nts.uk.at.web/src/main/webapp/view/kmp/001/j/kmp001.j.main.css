@@ -1,0 +1,29 @@
+#radioGroup {
+	width: 300px;
+}
+
+.sizeInput {
+	width: 15px;
+}
+
+.labelJ2 {
+	width: 180px;
+	vertical-align: baseline;
+}
+
+#labelJ2_18 {
+    padding-top: 10px;
+}
+
+#right-side {
+	vertical-align: baseline;
+	padding-top: 18px;
+}
+
+.rightJ2 .ntsControl {
+	display: inline !important;
+}
+
+#left-side #com-kcp005 {
+	margin-left: 80px;
+}

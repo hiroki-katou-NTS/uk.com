@@ -7,7 +7,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
- * 
+ * 個人別承認ルートRepository
  * @author hoatt
  *
  */
@@ -30,7 +30,132 @@ public interface PersonApprovalRootRepository {
 	 * @return List<社員ID> 承認者リスト
 	 */
 	List<String> getListAppover(String sid, GeneralDate baseDate);
+	
+	/**
+	 * [3] 社員ID、利用する種類から基準日を含む上長・社員が行う承認ルート設定を取得する
+	 * @param cid 会社ID
+	 * @param sid 社員ID
+	 * @param baseDate 基準日
+	 * @param appTypes 申請種類List
+	 * @param confirmationRootTypes 確認ルート種類List
+	 * @return 個人別承認ルート
+	 */
+	List<PersonApprovalRoot> getPersonApprovalRoots(String cid, String sid, GeneralDate baseDate, List<ApplicationType> appTypes, List<ConfirmationRootType> confirmationRootTypes);
+	
+	/**
+	 * 	[4] 社員IDListから基準日を含む承認ルート設定を取得する
+	 * @param cid 会社ID
+	 * @param sids 社員IDList
+	 * @param baseDate 基準日
+	 * @param sysAtr システム区分
+	 * @return 承認者設定情報
+	 */
+	List<ApprovalSettingInformation> getApprovalSettingByEmployees(String cid, List<String> sids, GeneralDate baseDate, SystemAtr sysAtr);
 
+	/**
+	 * [5] 社員ID、承認IDListから承認ルート設定を取得する
+	 * @param cid 会社ID
+	 * @param sid 社員ID
+	 * @param approvalIds 承認IDList
+	 * @return 個人別承認ルート
+	 */
+	List<PersonApprovalRoot> getPsRootBySidAndApprovals(String cid, String sid, List<String> approvalIds);
+	
+	/**
+	 * [6] 基準日後の開始日がある履歴を取得する
+	 * @param cid 会社ID
+	 * @param sid 社員ID
+	 * @param baseDate 基準日
+	 * @return	個人別承認ルートList
+	 */
+	List<PersonApprovalRoot> getHistWithStartAfterBaseDate(String cid, String sid, GeneralDate baseDate);
+	
+	/**
+	 * 	[7] 承認IDListから履歴を削除する
+	 * @param approvalIds 承認IDList
+	 */
+	void deleteHistFromApprovals(List<String> approvalIds);
+	
+	/**
+	 * 	[8] 前の履歴を取得する
+	 * @param cid 会社ID
+	 * @param sid 社員ID
+	 * @param baseDate 基準日
+	 * @return 個人別承認ルートList
+	 */
+	List<PersonApprovalRoot> getPreviousHistory(String cid, String sid, GeneralDate baseDate);
+	
+	/**
+	 * [9] 基準日後の終了日がある履歴を取得する
+	 * @param cid 会社ID
+	 * @param sid 社員ID
+	 * @param baseDate 基準日
+	 * @return 個人別承認ルートList
+	 */
+	List<PersonApprovalRoot> getHistWithEndAfterBaseDate(String cid, String sid, GeneralDate baseDate);
+	
+	/**
+	 * [10] 基準日を含む以降の社員履歴を取得する
+	 * @param cid 会社ID
+	 * @param sid 社員ID
+	 * @param baseDate 基準日
+	 * @return 承認者設定情報List	
+	 */
+	List<ApprovalSettingInformation> getHistIncludeBaseDate(String cid, String sid, GeneralDate baseDate);
+	
+	/**
+	 * [11] 開始日が基準日より後の社員履歴を取得する
+	 * @param cid 会社ID
+	 * @param sids 社員IDList
+	 * @param baseDate 基準日
+	 * @return 個人別承認ルートList
+	 */
+	List<PersonApprovalRoot> getEmpHistWithStartAfterBaseDate(String cid, List<String> sids, GeneralDate baseDate);
+	
+	/**
+	 * [12] 全ての社員履歴を取得する
+	 * @param cid 会社ID
+	 * @param sid 社員ID
+	 * @param systemAtr システム区分
+	 * @return 個人別承認ルートList
+	 */
+	List<PersonApprovalRoot> getAllEmpHist(String cid, String sid, SystemAtr systemAtr);
+	
+	/**
+	 * [13] 最新の履歴の開始日を取得する
+	 * @param cid 会社ID
+	 * @param sid 社員ID
+	 * @return
+	 */
+	Optional<GeneralDate> getStartOfLastestHist(String cid, String sid);
+	
+	/**
+	 * 	[14] 基準日から一番小さい履歴を取得する
+	 * @param cid 会社ID
+	 * @param sid 社員ID
+	 * @param baseDate 基準日
+	 * @param appTypes 申請種類List
+	 * @param confirmTypes 確認ルート種類List
+	 * @return 個人別承認ルート
+	 */
+	Optional<PersonApprovalRoot> getSmallestHistFromBaseDate(String cid, String sid, GeneralDate baseDate, List<ApplicationType> appTypes, List<ConfirmationRootType> confirmTypes);
+
+	/**
+	 * [15] 期間から履歴を取得する
+	 * @param cid 会社ID
+	 * @param sid 社員ID
+	 * @param period 期間
+	 * @return 個人別承認ルート	
+	 */
+	List<PersonApprovalRoot> getHistFromBaseDate(String cid, String sid, DatePeriod period);
+	
+	/**
+	 * [16]個人別承認ルートと承認フェーズを insertする(個人別承認ルート,List<承認フェーズ>)	
+	 * @param personApprovalRoot
+	 * @param approvalPhases
+	 */
+	void insertPersonApprovalRootAndPhases(PersonApprovalRoot personApprovalRoot, List<ApprovalPhase> approvalPhases);
+	
 	/**
 	 * get all Person Approval Root
 	 * 

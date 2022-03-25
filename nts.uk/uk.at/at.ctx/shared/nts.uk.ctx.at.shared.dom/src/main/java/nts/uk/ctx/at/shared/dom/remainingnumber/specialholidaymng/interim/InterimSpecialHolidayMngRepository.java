@@ -43,4 +43,11 @@ public interface InterimSpecialHolidayMngRepository {
 	 * @param period
 	 */
 	void deleteBySidAndPeriod(String sid ,int specialCd,  DatePeriod period);
+	
+	/**
+	 *  年月日以前全て削除
+	 * @param sid
+	 * @param ymd
+	 */
+	public void deleteBySidBeforeTheYmd(String sid ,int specialCd, GeneralDate ymd);
 }

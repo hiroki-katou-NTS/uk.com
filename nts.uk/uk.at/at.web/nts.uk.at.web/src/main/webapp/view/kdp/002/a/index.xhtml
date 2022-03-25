@@ -26,7 +26,7 @@
       <div class="contents-area cf kdp002a">
         <!-- A1 -->
         <div id="kdp002a" class="cf" data-bind="css: { 'has-info': $vm.state() === 'state2' , 'has-info-work2': $vm.state() === 'state1'}">
-          <div data-bind="stamp-clock: { setting: stampSetting() }"></div>
+          <div data-bind="stamp-clock: { setting: stampSetting(), regionalTime: $vm.regionalTime }"></div>
           <com:ko-if bind="pageComment() != ''">
           		<div class="pageComent" data-bind="html: pageComment, style: {color: commentColor}"></div>
           </com:ko-if>
@@ -34,8 +34,7 @@
           <div id="stamp-input" class="pull-left" data-bind="
           css: stampGrid().displayMethod() == 1 ? 'pageScale1': 
           		stampGrid().displayMethod() == 2 ? 
-          			workManagementMultiple() ? 'pageScale2' : 'pageScale1' : 
-          		'', 
+          			workManagementMultiple() ? 'pageScale2' : 'pageScale1' :'pageScale3', 
           kdp-tab-button-panel: { 
             tabs: stampTab().tabs,
             stampToSuppress: $vm.stampToSuppress,
@@ -43,7 +42,8 @@
             commentColor: commentColor,
             click: function(btn, layout) { $vm.clickBtn1.apply($vm, [btn, layout]); },
             reCalGridWidthHeight: reCalGridWidthHeight,
-            marginBottom: 0
+            marginBottom: 0,
+            kdp002: $vm.kdp002
           }"></div> 
           <com:ko-if bind=" stampGrid().displayMethod() != 0 ">
           	<div class="pull-left" id="stamp-info" data-bind="style:{'padding-top':stampTab().tabs().length > 1 ? '42px' : '0'}">

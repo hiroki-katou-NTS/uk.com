@@ -36,6 +36,8 @@ public class FlexTimeOfExcessOutsideTimeDto implements ItemConst, AttendanceItem
 	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = CONVENIENCE, layout = LAYOUT_C)
 	private int forConvenienceTime;
+	
+	private FlexCurrentMonthDto currentMonth;
 
 	public FlexTimeOfExcessOutsideTime toDmain() {
 		return FlexTimeOfExcessOutsideTime.of(
@@ -43,7 +45,7 @@ public class FlexTimeOfExcessOutsideTimeDto implements ItemConst, AttendanceItem
 													? ExcessFlexAtr.FOR_CONVENIENCE : ExcessFlexAtr.PRINCIPLE,
 									new AttendanceTimeMonth(principleTime),
 									new AttendanceTimeMonth(forConvenienceTime),
-									new FlexTimeCurrentMonth());
+									currentMonth == null ? new FlexTimeCurrentMonth() : currentMonth.toDomain());
 	}
 	
 	public static FlexTimeOfExcessOutsideTimeDto from(FlexTimeOfExcessOutsideTime domain) {
@@ -52,6 +54,7 @@ public class FlexTimeOfExcessOutsideTimeDto implements ItemConst, AttendanceItem
 			dto.setExcessFlexAtr(domain.getExcessFlexAtr() == null ? 0 : domain.getExcessFlexAtr().value);
 			dto.setForConvenienceTime(domain.getForConvenienceTime() == null ? 0 : domain.getForConvenienceTime().valueAsMinutes());
 			dto.setPrincipleTime(domain.getPrincipleTime() == null ? 0 : domain.getPrincipleTime().valueAsMinutes());
+			dto.setCurrentMonth(FlexCurrentMonthDto.from(domain.getFlexTimeCurrentMonth()));
 		}
 		return dto;
 	}
@@ -93,6 +96,36 @@ public class FlexTimeOfExcessOutsideTimeDto implements ItemConst, AttendanceItem
 			break;
 		case CONVENIENCE:
 			forConvenienceTime = value.valueOrDefault(0);
+			break;
+		default:
+		}
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case CUR_MONTH:
+			return new FlexCurrentMonthDto();
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case CUR_MONTH:
+			return Optional.ofNullable(currentMonth);
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case CUR_MONTH:
+			currentMonth = (FlexCurrentMonthDto) value;
 			break;
 		default:
 		}

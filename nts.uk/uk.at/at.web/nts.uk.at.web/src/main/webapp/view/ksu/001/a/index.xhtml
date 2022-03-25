@@ -111,11 +111,11 @@
 					<table>
 						<tr style="height: 50px">
 							<td><button id="A1_7_2" class="compensation" tabindex="8" data-bind="enable: false">#{i18n.getText('KSU001_13')}</button></td>
-							<td><span id="A1_7_3_1" class="label" data-bind="text: A1_7_3_line1"></span><BR /><span id="A1_7_3_2" class="label" data-bind="text: A1_7_3_line2"></span></td>
+							<td style="padding-left: 15px" ><span id="A1_7_3_1" class="label" data-bind="text: A1_7_3_line1"></span><BR /><span id="A1_7_3_2" class="label" data-bind="text: A1_7_3_line2"></span></td>
 						</tr>
 						<tr style="height: 50px">
 							<td><button id="A1_7_4" class="substitute" tabindex="9" data-bind="click: openDialogG">#{i18n.getText('KSU001_15')}</button></td>
-							<td><span class="label" id="A1_7_5" style="">#{i18n.getText('KSU001_16', ['#Com_Person'])}</span></td>
+							<td style="padding-left: 15px"><span class="label" id="A1_7_5" style="">#{i18n.getText('KSU001_16', ['#Com_Person'])}</span></td>
 						</tr>
 					</table>
 				</div>
@@ -345,18 +345,22 @@
 												data-bind="click: nextMonth, timeClick: -1">＞</button>
 										</div>
 									</div>
+									<div class="contents">
+										<div class="func-label">表示<br/>内容</div>
+										<div>
+											<button style="margin-left: 10px" id="A4" tabindex="29" data-bind="enable: true ">#{i18n.getText('KSU001_67')}</button>	
+											<button id="A5" tabindex="33">凡例</button>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 						<div id="content-main">
 							<div class="main-controls">
 								<div id="contain-view-left">
-									<button id="A6_1" tabindex="34" class="editMode" style="height: 38px;"
-										data-bind="click: editMode ">#{i18n.getText('KSU001_140')}</button>
-									<br />
-									<button id="A6_2" tabindex="35" class="confirmMode"
-										style="height: 38px; margin-top: 6px;"
-										data-bind="click: confirmMode ">#{i18n.getText('KSU001_141')}</button>
+										<button id="A6_1" tabindex="34" class="editMode" data-bind="click: editMode ">#{i18n.getText('KSU001_140')}</button>
+										<br />
+										<button id="A6_2" tabindex="35" class="confirmMode" style="margin-top: 6px;" data-bind="click: confirmMode ">#{i18n.getText('KSU001_141')}</button>
 								</div>
 								<div id="contain-view-right" class="inline">
 									<div id="group-bt">
@@ -382,18 +386,13 @@
 										</div>
 									</div>
 									<div data-bind="if: visibleShiftPalette">
-										<div id="qViewModel" style="width: 100%;margin-left: 140px; margin-top: 5px;">
+										<div id="qViewModel" style="width: 100%; margin-top: 5px;">
 											<div data-bind="with: $parent.viewAC">
 												<ui:include src="../ac/index.xhtml" />
 											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-							<div class="right-end">
-								<button id="A5" tabindex="33">凡例</button>
-								<button id="A4" tabindex="29" data-bind="enable: true ">#{i18n.getText('KSU001_67')}</button>
-								<button class="settingHeightGrid"> <i data-bind="ntsIcon: { no: 3 }"></i> </button>
 							</div>
 							<div style="width: fit-content;">
 								<div id = "btnControlLeftRight">
@@ -413,6 +412,9 @@
 							</div>
 						</div>
 					</div>
+				</div>
+				<div id="cacheHeightGrid">
+					<button style="display: none;" id = 'heightGrid' class="settingHeightGrid"> <i data-bind="ntsIcon: { no: 3 }"></i> </button>
 				</div>
 				<div id="cacheDiv">
 					<div id="vertDiv" style="display: none; text-align: left;">

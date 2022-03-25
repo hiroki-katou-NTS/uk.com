@@ -1,7 +1,8 @@
 package nts.uk.ctx.at.schedule.app.command.shift.specificdayset.workplace;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -9,8 +10,11 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.OneDaySpecificItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemNo;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDateRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class InsertWorkplaceSpecificDateCommandHandler extends CommandHandler<List<WorkplaceSpecificDateCommand>> {
@@ -22,18 +26,24 @@ public class InsertWorkplaceSpecificDateCommandHandler extends CommandHandler<Li
 
 	@Override
 	protected void handle(CommandHandlerContext<List<WorkplaceSpecificDateCommand>> context) {
+		String companyId = AppContexts.user().companyId();
 		for(WorkplaceSpecificDateCommand workplaceSpecificDateCommand :  context.getCommand()){
 			GeneralDate date = GeneralDate.fromString(workplaceSpecificDateCommand.getSpecificDate(), DATE_FORMAT);
-			List<WorkplaceSpecificDateItem> listInsert = new ArrayList<WorkplaceSpecificDateItem>();
-			for(Integer specificDateNo : workplaceSpecificDateCommand.getSpecificDateItemNo()){
-				listInsert.add(WorkplaceSpecificDateItem.createFromJavaType(
+			List<SpecificDateItemNo> specificDayItems = workplaceSpecificDateCommand.getSpecificDateItemNo().stream()
+					.map(itemNo -> new SpecificDateItemNo(itemNo))
+					.collect(Collectors.toList());
+			
+			Optional<WorkplaceSpecificDateItem> oldWplSpecDateItem = this.repo.get(workplaceSpecificDateCommand.getWorkPlaceId(), date);
+			if (oldWplSpecDateItem.isPresent()) {
+				this.repo.delete(workplaceSpecificDateCommand.getWorkPlaceId(), date);
+			}
+			if (!specificDayItems.isEmpty()) {
+				WorkplaceSpecificDateItem workplaceSpecificDateItem = new WorkplaceSpecificDateItem(
 						workplaceSpecificDateCommand.getWorkPlaceId(),
 						date,
-						specificDateNo,
-						"empty")
-				);
+						OneDaySpecificItem.create(specificDayItems));
+				this.repo.insert(companyId, workplaceSpecificDateItem);
 			}
-			repo.InsertWpSpecDate(listInsert);
 		}
 	}
 

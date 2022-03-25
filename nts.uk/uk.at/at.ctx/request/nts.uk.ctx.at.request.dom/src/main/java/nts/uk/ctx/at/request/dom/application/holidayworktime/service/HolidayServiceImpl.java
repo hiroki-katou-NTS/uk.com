@@ -158,7 +158,9 @@ public class HolidayServiceImpl implements HolidayService {
 		  
 		HdWorkDispInfoWithDateOutput hdWorkDispInfoWithDateOutput = commonHolidayWorkAlgorithm.getHdWorkDispInfoWithDateOutput(companyId, applicantEmployeeId, 
 				applicationDate, baseDate, prePostAtr, employmentSet, workTimeList, holidayWorkSetting, hdWorkOvertimeReflect, actualContentDisplayList);
-		
+		if(hdWorkDispInfoWithDateOutput.getOpErrorMsg().isPresent()) {
+			appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getErrorMsgLst().add(hdWorkDispInfoWithDateOutput.getOpErrorMsg().get());
+		}
 		appHdWorkDispInfoOutput.setHdWorkDispInfoWithDateOutput(hdWorkDispInfoWithDateOutput);
 		
 		//01-03_休出時間枠を取得
@@ -244,6 +246,9 @@ public class HolidayServiceImpl implements HolidayService {
 				appDispInfoWithDateOutput.getOpWorkTimeLst().orElse(Collections.emptyList()), 
 				appHdWorkDispInfoOutput.getHolidayWorkAppSet(), appHdWorkDispInfoOutput.getHdWorkOvertimeReflect(), 
 				appDispInfoWithDateOutput.getOpActualContentDisplayLst().orElse(Collections.emptyList()));
+		if(hdWorkDispInfoWithDateOutput.getOpErrorMsg().isPresent()) {
+			appDispInfoWithDateOutput.getErrorMsgLst().add(hdWorkDispInfoWithDateOutput.getOpErrorMsg().get());
+		}
 		appHdWorkDispInfoOutput.setHdWorkDispInfoWithDateOutput(hdWorkDispInfoWithDateOutput);
 		
 		// 休憩時間帯を取得する
@@ -626,6 +631,9 @@ public class HolidayServiceImpl implements HolidayService {
 										appHdWorkDispInfo.getHolidayWorkAppSet(), 
 										appHdWorkDispInfo.getHdWorkOvertimeReflect(), 
 										appDispInfoWithDateOutput.getOpActualContentDisplayLst().orElse(Collections.emptyList()));
+		if(hdWorkDispInfoWithDateOutput.getOpErrorMsg().isPresent()) {
+			appDispInfoWithDateOutput.getErrorMsgLst().add(hdWorkDispInfoWithDateOutput.getOpErrorMsg().get());
+		}
 		//	休日出勤申請起動時の表示情報．休日出勤申請起動時の表示情報(申請対象日関係あり)=上記取得した「休日出勤申請起動時の表示情報(申請対象日関係あり)」
 		appHdWorkDispInfo.setHdWorkDispInfoWithDateOutput(hdWorkDispInfoWithDateOutput);
 		return appHdWorkDispInfo;

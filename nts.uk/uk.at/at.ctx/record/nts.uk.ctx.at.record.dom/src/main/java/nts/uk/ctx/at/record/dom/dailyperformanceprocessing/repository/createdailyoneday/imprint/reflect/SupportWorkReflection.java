@@ -98,7 +98,7 @@ public class SupportWorkReflection {
 
 		// 打刻データが応援開始・終了反映時間内かの確認を行う
 		boolean startAtr = this.checkStarEndSupport(param.getTimeDay(), stampReflectRangeOutput);
-		if (true || !startAtr) { /** TODO：　一旦動かないようにする、タスクデモで参照するように　*/
+		if (!startAtr) { /** TODO：　一旦動かないようにする、タスクデモで参照するように　*/
 			// 反映状態＝反映失敗を返す
 			return ReflectionAtr.REFLECT_FAIL;
 		}

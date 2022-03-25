@@ -41,6 +41,9 @@ public class StdOutputCondSetDto implements StdOutputCondSet.MementoSetter {
 	/** 文字列形式 */
 	private int stringFormat;
 
+	private int encodeType;
+
+	private String fileName;
 	/**
 	 * No args constructor.
 	 */

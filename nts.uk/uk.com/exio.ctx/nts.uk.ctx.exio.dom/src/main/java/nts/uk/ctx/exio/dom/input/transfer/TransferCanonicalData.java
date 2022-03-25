@@ -58,12 +58,21 @@ public class TransferCanonicalData {
 	
 	private static AtomTask transfer(Require require, ExecutionContext context, List<WhereSentence> whereList) {
 		
-		val importingDomain = require.getImportingDomain(context.getDomainId());
-		
+
+		String importingDomainName;
+		{
+			ImportingDomainId domainId = context.getDomainId().createCanonicalization().getTransferDomainId(context);
+			importingDomainName = require.getImportingDomain(domainId).getName();
+		}
+
 		val conversionTables = require.getConversionTable(
 				getConversionSource(require, context),
-				importingDomain.getName(),
+				importingDomainName,
 				context.getMode().getType());
+
+		if (conversionTables.isEmpty()) {
+			throw new RuntimeException("コンバート表がありません");
+		}
 
 		val itemNames = getImportingItemNames(require, context);
 		val sqls = conversionTables.stream()
@@ -132,8 +141,11 @@ public class TransferCanonicalData {
 	
 	private static ConversionSource getConversionSource(Require require, ExecutionContext context) {
 		
-		val importingDomain = require.getImportingDomain(context.getDomainId());
-		val base = require.getConversionSource(importingDomain.getName());
+		ImportingDomainId transferToDomain = context.getDomainId().createCanonicalization().getTransferDomainId(context);
+		
+		String imporingDomainName =  require.getImportingDomain(transferToDomain).getName();
+
+		val base = require.getConversionSource(imporingDomainName);
 		
 		val tableName = new WorkspaceTableName(context);
 		

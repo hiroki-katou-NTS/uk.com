@@ -39,6 +39,7 @@ export interface IAppInfo {
     opComplementLeaveApp?: any;
     opAppStartDate?: Date;
     opAppEndDate?: Date;
+    opBackgroundColor?: string;
 }
 
 export interface AppListExtractConditionDto {

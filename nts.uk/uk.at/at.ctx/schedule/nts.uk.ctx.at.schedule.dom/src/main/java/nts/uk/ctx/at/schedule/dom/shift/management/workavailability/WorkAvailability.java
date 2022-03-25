@@ -22,17 +22,21 @@ public interface WorkAvailability {
 	/**
 	 * 休日の勤務希望である
 	 * @param require
+	 * @param companyId 会社ID
 	 */
-	public boolean isHolidayAvailability(Require require);
+	public boolean isHolidayAvailability(Require require, String companyId);
 	
 	/**
 	 * 希望に沿っているか
 	 * @param require
+	 * @param companyId
 	 * @param workInformation
 	 * @param timeZoneList
 	 * @return
 	 */
-	public boolean isMatchingWorkAvailability(Require require, 
+	public boolean isMatchingWorkAvailability(
+			Require require,
+			String companyId,
 			WorkInformation workInformation,
 			List<TimeSpanForCalc> timeZoneList);
 	

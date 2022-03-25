@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1150, height: 555 };</script>
+			<script>var dialogSize = { width: 1150, height: 625 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf002.c.start.js" />
@@ -177,7 +177,7 @@
 							</div>
 							<div style="width: 70px; padding-top: 110px;">
 								<!--C9_1 ＆-->
-								<button data-bind="click: function() {$parent.clickSymbolAnd()}, enable: $parent.isActiveSymbolAnd()" style="margin: 0px 25px 5px 0px" class="small">#{i18n.getText('CMF002_91')}</button>
+								<button data-bind="click: function() {$parent.clickSymbolAnd()}, enable: $parent.isActiveSymbolAnd()" style="margin: 0px 27px 5px 0px" class="small">#{i18n.getText('CMF002_91')}</button>
 								<!--C9_2 ＋-->
 								<button data-bind="click: function() {$parent.clickSymbolPlus()}, enable: $parent.isActiveSymbolPlus()" class="small">#{i18n.getText('CMF002_92')}</button>
 								<!--C9_3 －-->

@@ -197,6 +197,11 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 			}
 		}
+		
+		// Fix bug 123498 (remove surplus ',' at last position)
+		if (query.toString().trim().endsWith(",")) {
+			query.deleteCharAt(query.lastIndexOf(","));
+		}
 
 		// From
 		query.append(" FROM ").append(tableList.getTableEnglishName()).append(" t");
