@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.record.dom.reservation.bento;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.error.BusinessException;
@@ -7,13 +11,8 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 /**
- * 弁当予約
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務実績.支給賞与額履歴.予約.弁当予約.弁当予約
  * @author Doan Duy Hung
  *
  */
@@ -32,7 +31,7 @@ public class BentoReservation extends AggregateRoot{
 	private final ReservationDate reservationDate;
 
 	/**
-	 * 注文済み
+	 * 発注済み
 	 */
 	@Getter
 	@Setter

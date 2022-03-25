@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.FluidFixedAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TLWStampLeakState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeVacationOffSetItem;
@@ -573,66 +574,84 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		if(!deplicateOneTimeRange.isPresent()) {
 			return Collections.emptyList();
 		}
-		List<TimeSheetOfDeductionItem> timesheets = new ArrayList<>();
-		for(TimeLeavingWork time : timeList) {
-			timesheets.addAll(getIncludeAttendanceOrLeaveDuplicateTimeSheet(time, calcMethod, dedAtr, deplicateOneTimeRange.get()));
-		}
-		return timesheets;
+		return this.getIncludeAttendanceOrLeaveDuplicateTimeSheet(timeList, calcMethod, dedAtr, deplicateOneTimeRange.get());
 	}
 	
 	/**
 	 * 休憩時間帯に出勤、退勤が含まれているかの判定ののち重複時間帯の取得
-	 * @param time 出退勤クラス
+	 * @param timeLeaveList 出退勤クラス
 	 * @param calcMethod　休憩時間中に退勤した場合の計算方法
 	 * @param oneDayRange 1日の範囲と控除時間帯の重複
 	 * @return
 	 */
 	public List<TimeSheetOfDeductionItem> getIncludeAttendanceOrLeaveDuplicateTimeSheet(
-			TimeLeavingWork time, RestTimeOfficeWorkCalcMethod calcMethod, DeductionAtr dedAtr,
+			List<TimeLeavingWork> timeLeaveList, RestTimeOfficeWorkCalcMethod calcMethod, DeductionAtr dedAtr,
 			TimeSpanForDailyCalc oneDayRange) {
 		
 		List<TimeSheetOfDeductionItem> result = new ArrayList<>();
 		TimeWithDayAttr newStart = oneDayRange.getStart();
 		TimeWithDayAttr newEnd = oneDayRange.getEnd();
 		
-		//控除の場合、出退勤との重複は見ない
+		// 控除の場合、出退勤との重複は見ない　（1日の範囲との重複だけ適用して、返す）
 		if (dedAtr == DeductionAtr.Deduction) {
 			result.add(cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(newStart, newEnd))));
 			return result;
 		}
-		//出勤時刻が含まれているか判断する
-		if(oneDayRange.getStart().lessThan(time.getTimespan().getStart())
-				&& time.getTimespan().getStart().lessThanOrEqualTo(oneDayRange.getEnd())
-				&& dedAtr.isAppropriate()) {
+		// 以下、計上の場合
+		// 打刻漏れのない出退勤を「降順」に整理する
+		List<TimeLeavingWork> timeLeaveListForCheck = new ArrayList<>(timeLeaveList.stream()
+				.filter(c -> c.checkStampLeakState() == TLWStampLeakState.EXIST)
+				.sorted((a, b) -> -a.getAttendanceTime().get().compareTo(b.getAttendanceTime().get()))
+				.collect(Collectors.toList()));
+		// 対象の出退勤がない場合、出退勤との重複は見ない
+		if (timeLeaveListForCheck.size() <= 0) {
+			result.add(cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(newStart, newEnd))));
 			return result;
 		}
-		//退勤時間を含んでいるかチェック
-		if(oneDayRange.contains(time.getTimespan().getEnd())) {
+		// 出勤時刻が含まれているか判断する　（いずれかの出勤が含まれていれば、Emptyを返す）
+		for (TimeLeavingWork timeLeave : timeLeaveListForCheck) {
+			// 控除開始 < 出勤 <= 控除終了　なら含む
+			if (oneDayRange.getStart().lessThan(timeLeave.getTimespan().getStart()) &&
+					timeLeave.getTimespan().getStart().lessThanOrEqualTo(oneDayRange.getEnd())) {
+				return result;
+			}
+		}
+		// 退勤時間を含んでいるかチェック　（最も遅い退勤に対してのみ判定する）
+		TimeLeavingWork time = timeLeaveListForCheck.get(0);
+		if (oneDayRange.contains(time.getTimespan().getEnd())) {
 			//出勤時間を含んでいるチェック
 			if(oneDayRange.contains(time.getTimespan().getStart())){
 				newStart = time.getTimespan().getStart();
 			}
 			switch(calcMethod) {
-				//計上しない
+				// 計上しない
 				case NOT_APPROP_ALL:
 					result.add(createNoRecord(Optional.empty()));
 					return result;
-				//全て計上
+				// 全て計上
 				case APPROP_ALL:
 					result.add(createRecordOutTime(new TimeSpanForDailyCalc(newStart, newEnd)));
 					return result;
-				//退勤時間まで計上
+				// 退勤時間まで計上
 				case OFFICE_WORK_APPROP_ALL:
 					result.add(cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(newStart, time.getTimespan().getEnd()))));
 					result.add(createNoRecord(Optional.of(new TimeSpanForDailyCalc(time.getTimespan().getEnd(), newEnd))));
 					return result;
-				//例外
+				// 例外
 				default:
 					throw new RuntimeException("unknown CalcMethodIfLeaveWorkDuringBreakTime:" + calcMethod);
 			}
 		} else {
-			//1日の計算範囲と出退勤の重複範囲取得
-			result.add(cloneWithNewTimeSpan(oneDayRange.getDuplicatedWith(new TimeSpanForDailyCalc(time.getTimespan()))));
+			// 最小の出勤～最大の退勤を出退勤範囲とする
+			TimeWithDayAttr minStart = timeLeaveListForCheck.get(0).getAttendanceTime().get();
+			TimeWithDayAttr maxEnd = timeLeaveListForCheck.get(0).getLeaveTime().get();
+			for (TimeLeavingWork timeLeave : timeLeaveListForCheck) {
+				if (minStart.greaterThan(timeLeave.getAttendanceTime().get())) minStart = timeLeave.getAttendanceTime().get();
+				if (maxEnd.lessThan(timeLeave.getLeaveTime().get())) maxEnd = timeLeave.getLeaveTime().get();
+			}
+			TimeSpanForDailyCalc timeLeaveSpan = new TimeSpanForDailyCalc(minStart, maxEnd);
+			// 1日の計算範囲と出退勤の重複範囲取得
+			result.add(cloneWithNewTimeSpan(oneDayRange.getDuplicatedWith(timeLeaveSpan)));
 			return result;
 		}
 	}

@@ -1,6 +1,5 @@
 package nts.uk.screen.at.app.query.knr.knr002.k;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -10,13 +9,10 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.TimeRecordReqSettingRepository;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoMenuHistory;
-import nts.uk.ctx.at.record.dom.reservation.bento.IBentoMenuHistoryRepository;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
  * 
@@ -31,10 +27,7 @@ public class GetBentoMenu {
 	private TimeRecordReqSettingRepository timeRecordReqSettingRepository;
 	//	弁当メニュー履歴Repository.getBentoMenu(String companyID, GeneralDate date)
 	@Inject
-	private IBentoMenuHistoryRepository bentoMenuHistoryRepository;
-	//	弁当メニューRepository.getBentoMenuByHistId(String companyID, String histId);
-    @Inject
-    private  BentoMenuRepository bentoMenuRepository;
+	private BentoMenuHistRepository bentoMenuHistRepository;
 	
 	/**
 	 * @param empInforTerCode
@@ -46,18 +39,10 @@ public class GetBentoMenu {
 		GeneralDate date = GeneralDate.today();
 		GetBentoMenuDto dto = new GetBentoMenuDto();
 		//	1. get(会社ID、日付): 履歴ID
-		 Optional<BentoMenuHistory> bentoMenuHist = this.bentoMenuHistoryRepository.findByCompanyId(companyId);
-		 if(bentoMenuHist.isPresent()) {
-			 List<DateHistoryItem> dateHistoryItem = bentoMenuHist.get().getHistoryItems()
-					 								 .stream().filter(e -> e.start().beforeOrEquals(date)&&e.end().afterOrEquals(date))
-					 								 .collect(Collectors.toList());
-			 if(!dateHistoryItem.isEmpty()) {
-				 BentoMenu bentoMenu = this.bentoMenuRepository
-						 				   .getBentoMenuByHistId(companyId, dateHistoryItem.get(0).identifier()); 
-				 dto.setBentoMenuList(bentoMenu.getMenu().stream().map(e -> new BentoMenuDto(e.getFrameNo(), e.getName().v()))
-						 										  .collect(Collectors.toList()));
-			 }
-		 }		 
+		Optional<BentoMenuHistory> opBentoMenuHistory = bentoMenuHistRepository.findByCompanyDate(companyId, date);
+		if(opBentoMenuHistory.isPresent()) {
+			dto.setBentoMenuList(opBentoMenuHistory.get().getMenu().stream().map(e -> new BentoMenuDto(e.getFrameNo(), e.getName().v())).collect(Collectors.toList()));
+		} 
 		//	2. get*(履歴ID): 枠番、弁当名
 		
 		//BentoMenu bentoMenu = this.bentoMenuRepository.getBentoMenu(companyId, GeneralDate.today());

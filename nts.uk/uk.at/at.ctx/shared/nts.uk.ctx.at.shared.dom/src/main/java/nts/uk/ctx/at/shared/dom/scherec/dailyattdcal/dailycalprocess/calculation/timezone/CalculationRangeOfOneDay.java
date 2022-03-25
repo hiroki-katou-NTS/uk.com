@@ -142,7 +142,7 @@ public class CalculationRangeOfOneDay {
 		return new CalculationRangeOfOneDay(
 				Finally.of(new FlexWithinWorkTimeSheet(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
 								Collections.emptyList(), Optional.empty())),
-				Finally.of(new OutsideWorkTimeSheet(Optional.empty(),Optional.empty())),
+				Finally.of(new OutsideWorkTimeSheet(Optional.empty(),Optional.empty(),Optional.empty())),
 				null,
 				integrationOfDaily.getAttendanceLeave().orElse(null),
 				null,
@@ -175,7 +175,7 @@ public class CalculationRangeOfOneDay {
 				integrationOfWorkTime,
 				integrationOfDaily,
 				this.oneDayOfRange,
-				this.attendanceLeavingWork,
+				this.attendanceLeavingWork.getTimeLeavingWorks(),
 				Optional.empty(),
 				companyCommonSetting,
 				personDailySetting);
@@ -253,7 +253,8 @@ public class CalculationRangeOfOneDay {
 					this.predetermineTimeSetForCalc,
 					timeLeavingWork,
 					previousAndNextDaily,
-					createWithinWorkTimeSheet);
+					createWithinWorkTimeSheet,
+					this.oneDayOfRange);
 			if(!outsideWorkTimeSheet.isPresent()) {
 				this.outsideWorkTimeSheet = Finally.of(createOutSideWorkTimeSheet);
 			}
@@ -264,7 +265,10 @@ public class CalculationRangeOfOneDay {
 					outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().getFrameTimeSheets().addAll(addOverList);
 				}
 				else {
-					this.outsideWorkTimeSheet = Finally.of(new OutsideWorkTimeSheet(createOutSideWorkTimeSheet.getOverTimeWorkSheet(),this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet()));
+					this.outsideWorkTimeSheet = Finally.of(new OutsideWorkTimeSheet(
+							createOutSideWorkTimeSheet.getOverTimeWorkSheet(),
+							this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet(),
+							this.outsideWorkTimeSheet.get().getTemporaryTimeSheet()));
 				}
 				//休出
 				if(outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
@@ -272,7 +276,10 @@ public class CalculationRangeOfOneDay {
 					outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().getWorkHolidayTime().addAll(addHolList);
 				}
 				else {
-					this.outsideWorkTimeSheet = Finally.of(new OutsideWorkTimeSheet(this.outsideWorkTimeSheet.get().getOverTimeWorkSheet(),createOutSideWorkTimeSheet.getHolidayWorkTimeSheet()));
+					this.outsideWorkTimeSheet = Finally.of(new OutsideWorkTimeSheet(
+							this.outsideWorkTimeSheet.get().getOverTimeWorkSheet(),
+							createOutSideWorkTimeSheet.getHolidayWorkTimeSheet(),
+							this.outsideWorkTimeSheet.get().getTemporaryTimeSheet()));
 				}
 			}
 		});
@@ -297,58 +304,81 @@ public class CalculationRangeOfOneDay {
 	}
 
 	/**
-	 * 加給時間を計算する(就内・残業・休出時間帯)
+	 * 加給時間を計算する(就内・残業・休出・臨時)
 	 * アルゴリズム：加給時間の計算
 	 * @param bpTimeItemSets 加給自動計算設定
 	 * @param calcAtrOfDaily 日別実績の計算区分
 	 * @return 加給時間(List)
 	 */
-	public List<BonusPayTime> calcBonusPayTime(List<BPTimeItemSetting> bpTimeItemSets, CalAttrOfDailyAttd calcAtrOfDaily) {
-		List<BonusPayTime> overTimeBonusPay = new ArrayList<>();
-		List<BonusPayTime> holidayWorkBonusPay = new ArrayList<>();
-		List<BonusPayTime> withinBonusPay = new ArrayList<>();
-		if(this.withinWorkingTimeSheet != null && withinWorkingTimeSheet.isPresent())
-			withinBonusPay = withinWorkingTimeSheet.get().calcBonusPayTimeInWithinWorkTime(bpTimeItemSets, calcAtrOfDaily);
+	public List<BonusPayTime> calcBonusPayTime(
+			List<BPTimeItemSetting> bpTimeItemSets,
+			CalAttrOfDailyAttd calcAtrOfDaily) {
 		
-		if(this.outsideWorkTimeSheet != null && this.outsideWorkTimeSheet.isPresent())
-		{
-			if(this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
-				overTimeBonusPay = outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().calcBonusPayTimeInOverWorkTime(bpTimeItemSets, calcAtrOfDaily);
+		List<BonusPayTime> bonusPayTimeList = new ArrayList<>();
+		
+		if (this.withinWorkingTimeSheet != null && withinWorkingTimeSheet.isPresent()) {
+			// 就業時間内時間帯の加給時間を計算
+			bonusPayTimeList.addAll(this.withinWorkingTimeSheet.get()
+					.calcBonusPayTimeInWithinWorkTime(bpTimeItemSets, calcAtrOfDaily));
+		}
+		if (this.outsideWorkTimeSheet != null && this.outsideWorkTimeSheet.isPresent()) {
+			// 残業時間帯の加給時間を計算
+			if (this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
+				bonusPayTimeList.addAll(this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().get()
+						.calcBonusPayTimeInOverWorkTime(bpTimeItemSets, calcAtrOfDaily));
 			}
-			
-			if(this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
-				holidayWorkBonusPay = outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().calcBonusPayTimeInHolidayWorkTime(bpTimeItemSets, calcAtrOfDaily);
+			// 休日出勤時間帯の加給時間を計算
+			if (this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
+				bonusPayTimeList.addAll(this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get()
+						.calcBonusPayTimeInHolidayWorkTime(bpTimeItemSets, calcAtrOfDaily));
+			}
+			// 臨時加給時間の計算
+			if (this.outsideWorkTimeSheet.get().getTemporaryTimeSheet().isPresent()) {
+				bonusPayTimeList.addAll(this.outsideWorkTimeSheet.get().getTemporaryTimeSheet().get()
+						.calcTemporaryBonusPayTime(false, bpTimeItemSets, calcAtrOfDaily));
 			}
 		}
-		return calcBonusPayTime(withinBonusPay,overTimeBonusPay,holidayWorkBonusPay);
+		// 加給時間Listの累計　～　加給時間Listを返す
+		return BonusPayTime.sumBonusPayTimeList(bonusPayTimeList);
 	}
 	
 	/**
-	 * 特定加給時間を計算する(就内・残業・休出時間帯)
+	 * 特定加給時間を計算する(就内・残業・休出・臨時)
 	 * アルゴリズム：加給時間の計算
 	 * @param bpTimeItemSets 加給自動計算設定
 	 * @param calcAtrOfDaily 日別実績の計算区分
 	 * @return 特定加給時間(List)
 	 */
-	public List<BonusPayTime> calcSpecBonusPayTime(List<BPTimeItemSetting> bpTimeItemSets, CalAttrOfDailyAttd calcAtrOfDaily){
-		List<BonusPayTime> overTimeBonusPay = new ArrayList<>();
-		List<BonusPayTime> holidayWorkBonusPay = new ArrayList<>();
-		List<BonusPayTime> withinBonusPay = new ArrayList<>();
+	public List<BonusPayTime> calcSpecBonusPayTime(
+			List<BPTimeItemSetting> bpTimeItemSets,
+			CalAttrOfDailyAttd calcAtrOfDaily) {
 		
-		if(withinWorkingTimeSheet.isPresent())
-			 withinBonusPay = withinWorkingTimeSheet.get().calcSpecifiedBonusPayTimeInWithinWorkTime(bpTimeItemSets, calcAtrOfDaily);
-
-		if(outsideWorkTimeSheet.isPresent())
-		{
-			if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
-				overTimeBonusPay = outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().calcSpecBonusPayTimeInOverWorkTime(bpTimeItemSets, calcAtrOfDaily);
+		List<BonusPayTime> bonusPayTimeList = new ArrayList<>();
+		
+		if (withinWorkingTimeSheet.isPresent()) {
+			// 就業時間内時間帯の加給時間を計算
+			 bonusPayTimeList.addAll(this.withinWorkingTimeSheet.get()
+					 .calcSpecifiedBonusPayTimeInWithinWorkTime(bpTimeItemSets, calcAtrOfDaily));
+		}
+		if (outsideWorkTimeSheet.isPresent()) {
+			// 残業時間帯の加給時間を計算
+			if (outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
+				bonusPayTimeList.addAll(this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().get()
+						.calcSpecBonusPayTimeInOverWorkTime(bpTimeItemSets, calcAtrOfDaily));
 			}
-			
-			if(outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
-				holidayWorkBonusPay = outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().calcSpecBonusPayTimeInHolidayWorkTime(bpTimeItemSets, calcAtrOfDaily);
+			// 休日出勤時間帯の加給時間を計算
+			if (outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
+				bonusPayTimeList.addAll(this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get()
+						.calcSpecBonusPayTimeInHolidayWorkTime(bpTimeItemSets, calcAtrOfDaily));
+			}
+			// 臨時加給時間の計算
+			if (this.outsideWorkTimeSheet.get().getTemporaryTimeSheet().isPresent()) {
+				bonusPayTimeList.addAll(this.outsideWorkTimeSheet.get().getTemporaryTimeSheet().get()
+						.calcTemporaryBonusPayTime(true, bpTimeItemSets, calcAtrOfDaily));
 			}
 		}
-		return calcBonusPayTime(withinBonusPay,overTimeBonusPay,holidayWorkBonusPay);
+		// 加給時間Listの累計　～　加給時間Listを返す
+		return BonusPayTime.sumBonusPayTimeList(bonusPayTimeList);
 	}
 	
 	/**
@@ -437,6 +467,7 @@ public class CalculationRangeOfOneDay {
 		AttendanceTime withinDeduct = AttendanceTime.ZERO;
 		AttendanceTime overTimeDeduct = AttendanceTime.ZERO;
 		AttendanceTime holidayWorkDeduct = AttendanceTime.ZERO;
+		AttendanceTime temporaryDeduct = AttendanceTime.ZERO;
 		// 法定内
 		if (statutoryAtr.isStatutory()) {
 			if (this.withinWorkingTimeSheet.isPresent()) {
@@ -453,6 +484,9 @@ public class CalculationRangeOfOneDay {
 				// 休出時間帯から控除時間を取得
 				holidayWorkDeduct = this.outsideWorkTimeSheet.get()
 						.getDeductionTimeFromHolidayWork(conditionAtr, dedAtr, goOutSet, canOffset);
+				// 臨時時間帯から控除時間を取得
+				temporaryDeduct = this.outsideWorkTimeSheet.get()
+						.getDeductionTimeFromTemporary(conditionAtr, dedAtr, goOutSet, canOffset);
 			}
 		}
 		if(withinDeduct.greaterThan(AttendanceTime.ZERO) && goOutSet.isPresent()) {
@@ -477,7 +511,8 @@ public class CalculationRangeOfOneDay {
 		total = total
 				.addMinutes(withinDeduct.valueAsMinutes())
 				.addMinutes(overTimeDeduct.valueAsMinutes())
-				.addMinutes(holidayWorkDeduct.valueAsMinutes());
+				.addMinutes(holidayWorkDeduct.valueAsMinutes())
+				.addMinutes(temporaryDeduct.valueAsMinutes());
 		// 控除時間を返す
 		return TimeWithCalculation.sameTime(total);
 	}
@@ -607,7 +642,7 @@ public class CalculationRangeOfOneDay {
 				integrationOfWorkTime,
 				integrationOfDaily,
 				this.oneDayOfRange,
-				this.attendanceLeavingWork,
+				this.attendanceLeavingWork.getTimeLeavingWorks(),
 				Optional.empty(),
 				companyCommonSetting,
 				personDailySetting);
@@ -663,7 +698,7 @@ public class CalculationRangeOfOneDay {
 				integrationOfWorkTime,
 				integrationOfDaily,
 				oneDayOfRange,
-				attendanceLeaveWork,
+				attendanceLeaveWork.map(c -> c.getTimeLeavingWorks()).orElse(new ArrayList<>()),
 				predetermineTimeSetForCalc, lateTimeSheet, 
 				this, correctWithEndTime, betweenWorkTimeSheets,
 				companyCommonSetting,
@@ -676,7 +711,7 @@ public class CalculationRangeOfOneDay {
 				integrationOfWorkTime,
 				integrationOfDaily,
 				oneDayOfRange,
-				attendanceLeaveWork,
+				attendanceLeaveWork.map(c -> c.getTimeLeavingWorks()).orElse(new ArrayList<>()),
 				predetermineTimeSetForCalc, lateTimeSheet, 
 				this, correctWithEndTime, betweenWorkTimeSheets,
 				companyCommonSetting,
@@ -791,7 +826,8 @@ public class CalculationRangeOfOneDay {
 							deductTimeSheet,
 							this.withinWorkingTimeSheet.get(),
 							previousAndNextDaily,
-							this.attendanceLeavingWork));
+							this.attendanceLeavingWork,
+							this.oneDayOfRange));
 		} else {
 			//休出の場合でも就業時間内時間帯を作成する必要がある為、空で作成
 			this.withinWorkingTimeSheet = Finally.of(WithinWorkTimeSheet.createEmpty());
@@ -856,7 +892,7 @@ public class CalculationRangeOfOneDay {
 				integrationOfWorkTime,
 				integrationOfDaily,
 				this.oneDayOfRange,
-				timeLeavingForCorrect,
+				timeLeavingForCorrect.getTimeLeavingWorks(),
 				betweenTimeSheet,
 				companyCommonSetting,
 				personDailySetting);
@@ -882,7 +918,7 @@ public class CalculationRangeOfOneDay {
 				integrationOfWorkTime,
 				integrationOfDaily,
 				this.oneDayOfRange,
-				timeLeavingForCorrect,
+				timeLeavingForCorrect.getTimeLeavingWorks(),
 				betweenTimeSheet,
 				companyCommonSetting,
 				personDailySetting);

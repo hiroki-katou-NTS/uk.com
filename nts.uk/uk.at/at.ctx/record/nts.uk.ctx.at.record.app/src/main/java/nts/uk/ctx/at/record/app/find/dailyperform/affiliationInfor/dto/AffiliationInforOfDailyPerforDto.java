@@ -6,9 +6,11 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
@@ -61,6 +63,18 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 	@AttendanceItemValue
 	private String businessTypeCode;
 	
+	@AttendanceItemLayout(layout = LAYOUT_G, jpPropertyName = WKP_GROUP_ID)
+	@AttendanceItemValue
+	private String workplaceGroupID;
+	
+	@AttendanceItemLayout(layout = LAYOUT_H, jpPropertyName = NURSE_LICENSE_CLS)
+	@AttendanceItemValue
+	private Integer nursingLicenseClass;
+	
+	@AttendanceItemLayout(layout = LAYOUT_I, jpPropertyName = IS_NURSE_ADMINISTRATOR)
+	@AttendanceItemValue
+	private Integer nursingManager;
+	
 	public static AffiliationInforOfDailyPerforDto getDto(AffiliationInforOfDailyPerfor domain){
 		AffiliationInforOfDailyPerforDto dto = new AffiliationInforOfDailyPerforDto();
 		if(domain != null){
@@ -74,6 +88,16 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setBusinessTypeCode(domain.getAffiliationInfor().getBusinessTypeCode().isPresent()?
 					domain.getAffiliationInfor().getBusinessTypeCode().get().v():null);
+			
+			dto.setWorkplaceGroupID(domain.getAffiliationInfor().getWorkplaceGroupId().isPresent()?
+					domain.getAffiliationInfor().getWorkplaceGroupId().get():null);
+			
+			dto.setNursingLicenseClass(domain.getAffiliationInfor().getNursingLicenseClass().isPresent()?
+					domain.getAffiliationInfor().getNursingLicenseClass().get().value:null);
+			
+			dto.setNursingManager(domain.getAffiliationInfor().getIsNursingManager().isPresent()?
+					(domain.getAffiliationInfor().getIsNursingManager().get() ? 1 : 0) :null);
+			
 			dto.exsistData();
 			
 		}
@@ -93,6 +117,16 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 			dto.setEmployeeId(employeeID);
 			dto.setBusinessTypeCode(domain.getBusinessTypeCode() != null && domain.getBusinessTypeCode().isPresent()?
 					domain.getBusinessTypeCode().get().v():null);
+			
+			dto.setWorkplaceGroupID(domain.getWorkplaceGroupId().isPresent()?
+					domain.getWorkplaceGroupId().get():null);
+			
+			dto.setNursingLicenseClass(domain.getNursingLicenseClass().isPresent()?
+					domain.getNursingLicenseClass().get().value:null);
+			
+			dto.setNursingManager(domain.getIsNursingManager().isPresent()?
+					(domain.getIsNursingManager().get() ? 1 : 0) :null);
+			
 			dto.exsistData();
 		}
 		return dto;
@@ -110,6 +144,10 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 		dto.setEmployeeId(employeeId());
 		dto.setEmploymentCode(employmentCode);
 		dto.setBusinessTypeCode(businessTypeCode);
+		dto.setWorkplaceGroupID(workplaceGroupID);
+		dto.setNursingLicenseClass(nursingLicenseClass);
+		dto.setNursingManager(nursingManager);
+		
 		if(this.isHaveData()){
 			dto.exsistData();
 		}
@@ -141,7 +179,10 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 												employeeId, this.jobId, this.workplaceID, date,
 												new ClassificationCode(this.clsCode),
 												this.subscriptionCode ==null?null:new BonusPaySettingCode(this.subscriptionCode),
-												this.businessTypeCode ==null?null:new BusinessTypeCode(this.businessTypeCode));
+												this.businessTypeCode ==null?null:new BusinessTypeCode(this.businessTypeCode),
+												this.workplaceGroupID,
+												this.nursingLicenseClass == null ? null : EnumAdaptor.valueOf(this.nursingLicenseClass, LicenseClassification.class),
+												this.nursingManager==null?null: this.nursingManager == 1 ? true : false	);
 		return domain.getAffiliationInfor();
 	}
 	
@@ -160,6 +201,12 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 			return Optional.of(ItemValue.builder().value(subscriptionCode).valueType(ValueType.CODE));
 		case BUSINESS_TYPE:
 			return Optional.of(ItemValue.builder().value(businessTypeCode).valueType(ValueType.CODE));
+		case WKP_GROUP_ID:
+			return Optional.of(ItemValue.builder().value(workplaceGroupID).valueType(ValueType.CODE));
+		case NURSE_LICENSE_CLS:
+			return Optional.of(ItemValue.builder().value(nursingLicenseClass).valueType(ValueType.ATTR));
+		case IS_NURSE_ADMINISTRATOR:
+			return Optional.of(ItemValue.builder().value(nursingManager).valueType(ValueType.ATTR));
 		default:
 			return Optional.empty();
 		}
@@ -190,6 +237,15 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 		case BUSINESS_TYPE:
 			this.businessTypeCode = value.valueOrDefault(null);
 			break;
+		case WKP_GROUP_ID:
+			this.workplaceGroupID = value.valueOrDefault(null);
+			break;
+		case NURSE_LICENSE_CLS:
+			this.nursingLicenseClass = value.valueOrDefault(null);
+			break;
+		case IS_NURSE_ADMINISTRATOR:
+			this.nursingManager = value.valueOrDefault(null);
+			break;
 		default:
 			break;
 		}
@@ -204,6 +260,9 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 		case CLASSIFICATION:
 		case RAISING_SALARY:
 		case BUSINESS_TYPE:
+		case WKP_GROUP_ID:
+		case NURSE_LICENSE_CLS:
+		case IS_NURSE_ADMINISTRATOR:
 			return PropType.VALUE;
 		default:
 			break;

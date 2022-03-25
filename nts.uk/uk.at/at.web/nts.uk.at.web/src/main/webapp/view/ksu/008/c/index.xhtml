@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = { width: 790, height: 260 };</script>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="ksu008.c.main.css"/>
+        <com:scriptfile path="ksu008.c.vm.js"/>
+        <com:ValidatorScript>
+            nts.uk.ctx.at.aggregation.dom.form9.Form9Code
+            nts.uk.ctx.at.aggregation.dom.form9.Form9Name
+        </com:ValidatorScript>
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area" style="padding-left: 20px;">
+            <div class="control-group valign-center">
+                <!--C1-1-->
+                <span class="label">#{i18n.getText('KSU008_146')}</span>
+                <!--C1-2-->
+                <div data-bind="ntsFormLabel:{}">#{i18n.getText('KSU008_147')} </div>
+                <!--C1-3-->
+                <span style="padding-left: 10px; width: 102px; display: inline-block;" data-bind="text: sourceCode"></span>
+                <!--C1-4-->
+                <span style="margin-left: 10px;" data-bind="text: sourceName"></span>
+            </div>
+            <div class="control-group valign-center">
+                <!--C2-1-->
+                <span class="label">#{i18n.getText('KSU008_148')}</span>
+                <!--C2-2-->
+                <div data-bind="ntsFormLabel:{required: true, constraint:['Form9Code', 'Form9Name']}">#{i18n.getText('KSU008_149')} </div>
+                <!--C2-3-->
+                <input tabindex="1"
+                       id="C2_3"
+                       data-bind="ntsTextEditor:{
+                                            name:'#[KSU008_150]',
+                                            required: true,
+                                            constraint: 'Form9Code',
+                                            value: destinationCode
+                                        }" />
+                <!--C2-4-->
+                <input tabindex="2"
+                       id="C2_4"
+                       data-bind="ntsTextEditor:{
+                                            name:'#[KSU008_151]',
+                                            required: true,
+                                            constraint: 'Form9Name',
+                                            value: destinationName
+                                        }" />
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <!--C3_1-->
+            <div class="table" style="width: 100%;margin-bottom: 10px">
+                <div class="cell valign-center">
+                    <div tabindex="3" data-bind="ntsCheckBox: { checked: isOverwrite, style: 'warnpanel'}">#{i18n.getText('KSU008_152')}</div>
+                </div>
+            </div>
+            <!--C3_2-->
+            <button tabindex="4" class="proceed x-large" data-bind="click: duplicate">#{i18n.getText('KSU008_153')}</button>
+            <!--C3_3-->
+            <button tabindex="5" data-bind="click: closeDialog">#{i18n.getText('KSU008_154')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

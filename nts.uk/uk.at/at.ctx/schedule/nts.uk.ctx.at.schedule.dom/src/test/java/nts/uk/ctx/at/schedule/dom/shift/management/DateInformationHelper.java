@@ -4,17 +4,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.EventName;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.HolidayName;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificName;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.CompanySpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.OneDaySpecificItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemNo;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificName;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDateItem;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 public class DateInformationHelper {
@@ -45,13 +50,17 @@ public class DateInformationHelper {
 
 	}
 
-	public static List<CompanySpecificDateItem> getListDefaultByNumberItem(int number) {
-		List<CompanySpecificDateItem> listData = new ArrayList<>();
-		for (int i = 1; i <= number; i++) {
-			listData.add(CompanySpecificDateItem.createFromJavaType("companyId", GeneralDate.today().addDays(i + 1), i,
-					"specificDateItemName" + i));
-		}
-		return listData;
+	public static CompanySpecificDateItem getDefaultByNumberItem(int number) {
+
+		val specificDayItems = IntStream.range(1, number)
+				.boxed()
+				.map( i -> new SpecificDateItemNo(i))
+				.collect(Collectors.toList());
+		
+		return new CompanySpecificDateItem( "companyId"
+				, GeneralDate.today()
+				, new OneDaySpecificItem( specificDayItems ) );
+		
 	}
 
 	public static List<SpecificDateItem> getListSpecificDateItemByNumberItem(int number) {
@@ -66,12 +75,16 @@ public class DateInformationHelper {
 		return WorkplaceEvent.createFromJavaType("workplaceId", GeneralDate.today(), "eventName");
 	}
 	
-	public static List<WorkplaceSpecificDateItem> getListWorkplaceSpecificDateItemByNumber(int number) {
-		List<WorkplaceSpecificDateItem> listData = new ArrayList<>();
-		for (int i = 1; i <= number; i++) {
-			listData.add(WorkplaceSpecificDateItem.createFromJavaType("companyId",GeneralDate.today(), i, "specificDateItemName" + i));
-		}
-		return listData;
+	public static WorkplaceSpecificDateItem getWorkplaceSpecificDateItemByNumber(int number) {
+		
+		val specificDayItems = IntStream.range(1, number)
+				.boxed()
+				.map( i -> new SpecificDateItemNo(i))
+				.collect(Collectors.toList());
+		
+		return new WorkplaceSpecificDateItem( "workplaceId"
+				, GeneralDate.today()
+				, new OneDaySpecificItem( specificDayItems ) );
 	}
 
 }

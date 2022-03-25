@@ -32,17 +32,20 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             autoExecution: 1,
             delimiter: 1,
             stringFormat: 0,
-            itemOutputName: 0
+            itemOutputName: 0,
+            encodeType: 1,
+            fileName: null
         }));
         checkFocusWhenCopy: boolean = false;
         isSetPeriodText: KnockoutObservable<string> = ko.observable('');
-
+        listEndCoding: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor() {
             block.invisible();
             let self = this;
             self.roleAuthority = getShared("CMF002B_PARAMS");
             self.index(0);
             block.clear();
+            self.listEndCoding = ko.observableArray(__viewContext.enums.EncodeType);
             self.selectedConditionSettingCode.subscribe((data) => {
                 if (data == '') {
                     self.createNewCondition();
@@ -62,6 +65,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                             } else {
                                 self.isSetPeriodText(getText('CMF002_531'));
                             }
+                        }).fail((error: any)=>{
+                            dialog.alertError(error);
                         })
                         .always(() => block.clear());
                 }
@@ -128,6 +133,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     } else {
                         self.createNewCondition();
                     }
+                }).fail((error:any)=>{
+                    dialog.alertError(error);
                 })
                 .always(() => block.clear());
         }
@@ -147,7 +154,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().conditionSetCode(condSet.conditionSetCode);
             self.conditionSetData().conditionSetName(condSet.conditionSetName);
             self.conditionSetData().categoryId(categoryId);
-
+            self.conditionSetData().encodeType(condSet.encodeType);
+            self.conditionSetData().fileName(condSet.fileName);
             if (self.listCategory() && self.listCategory().length > 0 && categoryName) {
                 self.categoryName(categoryId + "　" + categoryName);
             } else {
@@ -213,6 +221,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                             self.initScreen(null);
                         }
                     });
+                }).fail((error:any)=>{
+                    dialog.alertError(error);
                 });
              });
         }
@@ -244,7 +254,9 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                             autoExecution: self.conditionSetData().autoExecution(),
                                             delimiter: self.conditionSetData().delimiter(),
                                             itemOutputName: self.conditionSetData().itemOutputName(),
-                                            stringFormat: self.conditionSetData().stringFormat()
+                                            stringFormat: self.conditionSetData().stringFormat(),
+                                            encodeType: self.conditionSetData().encodeType(),
+                                            fileName: self.conditionSetData().fileName()
                     };
                     service.copy(copyParams).done(()=> {
                         dialog.info({ messageId: "Msg_15" }).then(() => {
@@ -254,6 +266,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                             self.checkFocusWhenCopy = true;
                             self.initScreen(destinationCode);
                         });
+                    }).fail((error:any)=>{
+                        dialog.alertError(error);
                     });
                 }
             });
@@ -348,6 +362,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().delimiter(1);
             self.conditionSetData().stringFormat(0);
             self.conditionSetData().itemOutputName(0);
+            self.conditionSetData().fileName(null);
+            self.conditionSetData().encodeType(1);
             self.setNewMode(true);
             self.isSetPeriodText(getText('CMF002_531'));
         }
@@ -376,7 +392,9 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                              conditionOutputName: self.conditionSetData().conditionOutputName(),
                              standType: self.standType(),
                              newMode: self.isNewMode(),
-                             listStandardOutputItem: self.outputItemList()
+                             listStandardOutputItem: self.outputItemList(),
+                             encodeType: self.conditionSetData().encodeType(),
+                             fileName: self.conditionSetData().fileName()
             };
             service.register(data).done(result => {
                 dialog.info({ messageId: "Msg_15" }).then(() => {
@@ -470,6 +488,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         delimiter: number;
         stringFormat: number;
         itemOutputName:string;
+        encodeType:number;
+        fileName:string;
     }
 
     export class ConditionSet {
@@ -482,6 +502,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         delimiter:            KnockoutObservable<number> = ko.observable(0);
         stringFormat:         KnockoutObservable<number> = ko.observable(0);
         itemOutputName:       KnockoutObservable<string> = ko.observable('');
+        encodeType:       KnockoutObservable<number> = ko.observable(1);
+        fileName:       KnockoutObservable<string> = ko.observable(null);
         constructor(param: IConditionSet) {
             let self = this;
             self.cId(param.cId);
@@ -493,6 +515,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.delimiter(param.delimiter || 0);
             self.stringFormat(param.stringFormat || 0);
             self.itemOutputName(param.itemOutputName || '');
+            self.encodeType(param.encodeType);
+            self.fileName(param.fileName);
         }
     }
 

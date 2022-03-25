@@ -16,6 +16,8 @@ import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.AddB
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.UpdateBusinessWorkTypeOfHistoryCommand;
 import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.add.AddStampCardCommand;
 import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.update.UpdateStampCardCommand;
+import nts.uk.ctx.at.shared.app.command.employeeworkway.medicalworkstyle.AddEmpMedicalWorkCommand;
+import nts.uk.ctx.at.shared.app.command.employeeworkway.medicalworkstyle.UpdateEmpMedicalWorkCommand;
 import nts.uk.ctx.at.shared.app.command.dailyattdcal.empunitpricehistory.AddEmployeeUnitPriceCommand;
 import nts.uk.ctx.at.shared.app.command.dailyattdcal.empunitpricehistory.UpdateEmployeeUnitPriceCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annleagrtremnum.AddAnnLeaGrantRemnNumPeregCommand;
@@ -244,7 +246,9 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			// CS00092 社員社会保険等級情報
 			new TypeLiteral<PeregAddListCommandHandler<AddEmpSocialInsGradeInforCommand>>(){},
 			// CS00097 単価
-			new TypeLiteral<PeregAddListCommandHandler<AddEmployeeUnitPriceCommand>>(){}
+			new TypeLiteral<PeregAddListCommandHandler<AddEmployeeUnitPriceCommand>>(){},
+			// CS00098 医療
+			new TypeLiteral<PeregAddListCommandHandler<AddEmpMedicalWorkCommand>>(){}
 			);
 	/** Update handlers */
 	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
@@ -330,10 +334,12 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpHealInsQualifiInfoCommand>>(){},
 			//CS00092 社員社会保険等級情報
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpSocialInsGradeInforCommand>>(){},
-			//CS00100 パスワード
-			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpLoginPasswordCommand>>(){},
 			//CS00097 単価
-			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmployeeUnitPriceCommand>>(){}
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmployeeUnitPriceCommand>>(){},
+			// CS00098 医療
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpMedicalWorkCommand>>(){},
+			//CS00100 パスワード
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpLoginPasswordCommand>>(){}
 			);
 	
 	@Override

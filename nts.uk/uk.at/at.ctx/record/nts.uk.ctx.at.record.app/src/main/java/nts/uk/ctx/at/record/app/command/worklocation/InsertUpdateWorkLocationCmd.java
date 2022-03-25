@@ -60,7 +60,7 @@ public class InsertUpdateWorkLocationCmd {
 	
 	public static InsertUpdateWorkLocationCmd toDto(WorkLocation domain) {
 		return new InsertUpdateWorkLocationCmd(
-				domain.getWorkLocationCD().v(), 
+				domain.getWorkLocationCD().v(),
 				domain.getWorkLocationName().v(),
 				domain.getStampRange().map(s -> s.getRadius().value).orElse(null),
 				domain.getStampRange().map(s -> s.getGeoCoordinate().getLatitude()).orElse(null),

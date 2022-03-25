@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +41,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.secondorder
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.HolidayOfDaily;
@@ -217,9 +215,6 @@ public class WorkingTimeCounterServiceHelper {
 		static WorkTimes workTimes;
 
 		@Mocked
-		static TemporaryTimeOfDaily temporaryTime;
-
-		@Mocked
 		static ShortWorkTimeOfDaily shortTime;
 
 		@Mocked
@@ -235,7 +230,7 @@ public class WorkingTimeCounterServiceHelper {
 			return new TotalWorkingTime(totalTime, totalCalcTime, actualTime,
 					WithinStatutoryTimeOfDailyHepler.createWithinStatutoryTimeOfDaily(workingWithin),
 					excessOfStatutoryTimeOfDaily, lateTimeOfDaily, leaveEarlyTimeOfDaily, breakTimeOfDaily,
-					outingTimeOfDailyPerformance, raiseSalaryTimeOfDailyPerfor, workTimes, temporaryTime, shortTime,
+					outingTimeOfDailyPerformance, raiseSalaryTimeOfDailyPerfor, workTimes, shortTime,
 					holidayOfDaily, intervalTime);
 		}
 	}

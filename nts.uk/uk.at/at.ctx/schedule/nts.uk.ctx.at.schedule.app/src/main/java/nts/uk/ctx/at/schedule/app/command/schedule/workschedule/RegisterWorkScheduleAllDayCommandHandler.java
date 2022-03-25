@@ -25,6 +25,10 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -33,6 +37,8 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -57,7 +63,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class RegisterWorkScheduleAllDayCommandHandler extends CommandHandler<RegisterWorkScheduleAllDayCommand> {
-	
+
 	@Inject
 	private WorkScheduleRepository repo;
 	@Inject
@@ -92,6 +98,13 @@ public class RegisterWorkScheduleAllDayCommandHandler extends CommandHandler<Reg
 	private BusinessTypeEmpService businessTypeEmpService;
 	@Inject
 	private SyClassificationAdapter syClassificationAdapter;
+	@Inject
+	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
+	@Inject
+	private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
+	@Inject
+	private NurseClassificationRepository nurseClassificationRepo;
+	
 	@Override
 	protected void handle(CommandHandlerContext<RegisterWorkScheduleAllDayCommand> context) {
 		RegisterWorkScheduleAllDayCommand command = context.getCommand();
@@ -101,7 +114,8 @@ public class RegisterWorkScheduleAllDayCommandHandler extends CommandHandler<Reg
 		Require require = new Require(basicScheduleService, workTypeRepo, workTimeSettingRepository, fixedWorkSet,
 				flowWorkSet, flexWorkSet, predetemineTimeSet, workScheduleRepo, correctWorkSchedule,
 				interimRemainDataMngRegisterDateChange, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
-				sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter);
+				sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter,
+				empAffiliationInforAdapter, empMedicalWorkStyleHistoryRepo, nurseClassificationRepo);
 		//2: not Optional<勤務予定>.isEmpty : 一日中に作業予定を作成する(Require, 作業コード)
 		if (!lstWorkSchedule.isEmpty()) {
 			for (WorkSchedule item : lstWorkSchedule) {
@@ -148,6 +162,12 @@ public class RegisterWorkScheduleAllDayCommandHandler extends CommandHandler<Reg
 		private BusinessTypeEmpService businessTypeEmpService;
 		@Inject
 		private SyClassificationAdapter syClassificationAdapter;
+		
+		private EmpAffiliationInforAdapter empAffiliationInforAdapter;
+		
+		private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
+		
+		private NurseClassificationRepository nurseClassificationRepo;
 
 
 		@Override
@@ -211,15 +231,7 @@ public class RegisterWorkScheduleAllDayCommandHandler extends CommandHandler<Reg
 				return null;
 			return listAffJobTitleHis.get(0);
 		}
-
-		// implements AffiliationInforOfDailyAttd.Require
-		@Override
-		public SharedAffWorkPlaceHisImport getAffWorkplaceHistory(String employeeId, GeneralDate standardDate) {
-			Optional<SharedAffWorkPlaceHisImport> rs = sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId,
-					standardDate);
-			return rs.isPresent() ? rs.get() : null;
-		}
-
+		
 		// implements AffiliationInforOfDailyAttd.Require
 		@Override
 		public SClsHistImport getClassificationHistory(String employeeId, GeneralDate standardDate) {
@@ -258,5 +270,24 @@ public class RegisterWorkScheduleAllDayCommandHandler extends CommandHandler<Reg
 			return AppContexts.user().employeeId();
 		}
 
+		@Override
+		public EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate) {
+			List<EmpOrganizationImport> results = empAffiliationInforAdapter.getEmpOrganization(standardDate, Arrays.asList(employeeId));
+			if(results.isEmpty())
+				return null;
+			return results.get(0);
+		}
+
+		@Override
+		public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp,
+				GeneralDate referenceDate) {
+			return empMedicalWorkStyleHistoryRepo.get(listEmp, referenceDate);
+		}
+
+		@Override
+		public List<NurseClassification> getListCompanyNurseCategory() {
+			String companyId = AppContexts.user().companyId();
+			return nurseClassificationRepo.getListCompanyNurseCategory(companyId);
+		}
 	}
 }

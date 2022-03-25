@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,7 +14,6 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -34,10 +32,6 @@ public class KrcdtDayTsTemporary extends ContractUkJpaEntity implements Serializ
 	@EmbeddedId
 	public KrcdtDaiTemporaryTimePK krcdtDaiTemporaryTimePK;
 
-	@Column(name = "WORK_TIMES")
-
-	public Integer workTimes;
-
 	@OneToMany(mappedBy = "daiTemporaryTime", cascade = CascadeType.ALL, fetch= FetchType.LAZY)
 	public List<KrcdtDayTsAtdStmp> timeLeavingWorks;
 
@@ -52,7 +46,7 @@ public class KrcdtDayTsTemporary extends ContractUkJpaEntity implements Serializ
 	
 	public static TemporaryTimeOfDailyPerformance toDomain(KrcdtDayTsTemporary entity, List<KrcdtDayTsAtdStmp> timeLeavingWorks) {
 		TemporaryTimeOfDailyPerformance domain = new TemporaryTimeOfDailyPerformance(
-				entity.krcdtDaiTemporaryTimePK.employeeId, new WorkTimes(entity.workTimes.intValue()),
+				entity.krcdtDaiTemporaryTimePK.employeeId,
 				KrcdtDayTsAtdStmp.toDomain(timeLeavingWorks.stream()
 						.filter(item -> item.krcdtTimeLeavingWorkPK.timeLeavingType == 1).collect(Collectors.toList())),
 				entity.krcdtDaiTemporaryTimePK.ymd);
@@ -61,7 +55,6 @@ public class KrcdtDayTsTemporary extends ContractUkJpaEntity implements Serializ
 
 	public static KrcdtDayTsTemporary toEntity(TemporaryTimeOfDailyPerformance domain) {
 		return new KrcdtDayTsTemporary(new KrcdtDaiTemporaryTimePK(domain.getEmployeeId(), domain.getYmd()),
-				domain.getAttendance().getWorkTimes().v(),
 				domain.getAttendance().getTimeLeavingWorks().stream()
 						.map(c -> KrcdtDayTsAtdStmp.toEntity(domain.getEmployeeId(), domain.getYmd(), c, 1))
 						.collect(Collectors.toList()));
