@@ -41,6 +41,9 @@ public class WorkScheduleHelper {
 			"Wpl-Id-001", 
 			new ClassificationCode("class-001"), 
 			Optional.empty(), 
+			Optional.empty(),
+			Optional.empty(),
+			Optional.empty(),
 			Optional.empty());
 	
 	

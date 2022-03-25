@@ -68,8 +68,8 @@ public class WorkplaceGroupWs extends WebService {
      */
     @POST
     @Path("getAll")
-    public WorkplaceGroupDto getWorkplaceGroup() {
-        return wkpGroupFinder.getWorkplaceGroup();
+    public WorkplaceGroupDto getWorkplaceGroup(WorkplaceGroupParamDto param) {
+        return wkpGroupFinder.getWorkplaceGroup(param.wkpGroupTypes);
     }
 
     @POST

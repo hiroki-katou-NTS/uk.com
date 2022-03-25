@@ -816,7 +816,7 @@ public class DailyPerformanceCorrectionProcessor {
 							} 
 						} else {
 							if (groupType != null) {
-								if (groupType == TypeLink.WORKPLACE.value || groupType == TypeLink.POSSITION.value) {
+								if (groupType == TypeLink.WORKPLACE.value || groupType == TypeLink.POSSITION.value || groupType == TypeLink.WKP_GROUP.value) {
 //									Optional<CodeName> optCodeName = dataDialogWithTypeProcessor
 //											.getCodeNameWithId(groupType, data.getDate(), value);
 									val mapCodeNameAll = mapGetName.get(groupType).get(value);
@@ -1745,6 +1745,7 @@ public class DailyPerformanceCorrectionProcessor {
 		result.setComboItemReason(EnumCodeName.getReasonGoOut());
 		result.setComboItemCalcCompact(EnumCodeName.getCalcCompact());
 		result.setComboTimeLimit(EnumCodeName.getComboTimeLimit());
+		result.setComboNursingLicenseCls(EnumCodeName.getNursingLicenseCls());
 		result.setItemIds(lstAtdItemUnique);
 		return result;
 	}

@@ -34,12 +34,15 @@ public class AffiliationInforOfDailyAttdCommand {
 	public AffiliationInforOfDailyAttd toDomain() {
 
 		return new AffiliationInforOfDailyAttd(
-				new EmploymentCode(this.getEmploymentCode()), 
-				this.getJobTitleID(), 
-				this.getWplID(), 
+				new EmploymentCode(this.getEmploymentCode()),
+				this.getJobTitleID(),
+				this.getWplID(),
 				new ClassificationCode(this.getClsCode()),
 				Optional.ofNullable(new BusinessTypeCode(this.getBusinessTypeCode())),
 				Optional.ofNullable(new BonusPaySettingCode(this.getBonusPaySettingCode()))
+				, Optional.empty()
+				, Optional.empty()
+				, Optional.empty()
 				);
 	}
 }
