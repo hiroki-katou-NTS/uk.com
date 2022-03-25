@@ -86,7 +86,7 @@ public class CorrectAnyPeriodResultsScreenCommandHandler extends CommandHandlerW
                 new AnyPeriodCorrectionLogRegisterService.Require() {
                     @Override
                     public List<MonthlyAttendanceItem> findByAttendanceItemId(String companyId, List<Integer> attendanceItemIds) {
-                        return monthlyItemRepo.findByAttendanceItemId(companyId, attendanceItemIds);
+                        return monthlyItemRepo.findByAttendancePeriodItemId(companyId, attendanceItemIds);
                     }
                     @Override
                     public Optional<AttendanceTimeOfAnyPeriod> find(String frameCode, String employeeId) {

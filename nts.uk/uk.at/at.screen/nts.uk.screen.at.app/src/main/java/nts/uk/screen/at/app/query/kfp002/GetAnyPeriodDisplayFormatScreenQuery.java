@@ -56,7 +56,7 @@ public class GetAnyPeriodDisplayFormatScreenQuery {
             });
 
             String companyId = AppContexts.user().companyId();
-            List<AttItemName> items = monthlyItemService.getMonthlyItems(
+            List<AttItemName> items = monthlyItemService.getAnyPeriodItems(
                     companyId,
                     Optional.empty(),
                     itemIds,

@@ -4375,6 +4375,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(2196, join(ANY_PERIOD_ATTENDANCE_TIME_NAME, VERTICAL_TOTAL, TIME, LABOR, ACTUAL));
 		temp.put(2197, join(ANY_PERIOD_ATTENDANCE_TIME_NAME, VERTICAL_TOTAL, TIME, LABOR, TOTAL_CALC));
 		temp.put(2198, join(ANY_PERIOD_ATTENDANCE_TIME_NAME, VERTICAL_TOTAL, TIME, LABOR, CALC + DIFF));
+		temp.put(2245, join(ANY_PERIOD_ATTENDANCE_TIME_NAME, VERTICAL_TOTAL, TIME, PREMIUM, PREMIUM + TOTAL));
+		temp.put(2246, join(ANY_PERIOD_ATTENDANCE_TIME_NAME, VERTICAL_TOTAL, AMOUNT, WORK_TIME));
 	}
 	
 	public static <V> Map<String, List<V>> groupItemByDomain(Collection<V> itemIds, Function<V, 
