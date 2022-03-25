@@ -943,7 +943,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 							, cid, confirmedATR, empCd, jobId, wkpId, clsCd, busTypeCd
 							, wktpCd, wktmCd, goStraightAtr, backStraightAtr, treatAsSubstituteAtr, treatAsSubstituteDays
 							, workplaceGroupId, nursingLicenseClass, nursingManager, bonusPaySettingCode
-							, null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>()
+							, null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>()
 						);
 			});
 		} catch (SQLException ex) {
@@ -1207,7 +1207,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						hdComHourlyTime, hd60hTime, hd60hHourlyTime, hdspTime, hdspHourlyTime, hdstkTime, hdHourlyTime,
 						hdHourlyShortageTime, absenceTime, vacationAddTime, staggeredWhTime,
 						new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
-						new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+						new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), new ArrayList<>(),
 						prsWorkTimeAmount, premiumWorkTimeTotal, premiumAmountTotal, useDailyHDSub);
 			});
 		} catch (SQLException ex) {
