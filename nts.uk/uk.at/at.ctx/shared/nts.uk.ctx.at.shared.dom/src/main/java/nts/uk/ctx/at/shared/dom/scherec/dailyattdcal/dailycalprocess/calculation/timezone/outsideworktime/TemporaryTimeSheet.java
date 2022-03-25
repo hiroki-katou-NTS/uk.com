@@ -37,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.ExtraordTimeCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneExtraordTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -113,7 +114,7 @@ public class TemporaryTimeSheet {
 		if (!integrationOfDaily.getTempTime().isPresent()) return new ArrayList<>();
 		// ジャスト遅刻、早退による時刻補正
 		RoundingTime roundingTime = integrationOfWorkTime.getCommonSetting().getStampSet().getRoundingTime();
-		List<TimeLeavingWork> justTimeLeavingWorks = roundingTime.justTImeCorrection(
+		List<TimeLeavingWork> justTimeLeavingWorks = roundingTime.justTImeCorrectionCalcStamp(
 				JustCorrectionAtr.USE, integrationOfDaily.getTempTime().get().getTimeLeavingWorks());
 		// 出退勤時刻を丸める
 		List<TimeLeavingWork> roundedTimeLeavingWorks = roundingTime.roundingttendance(justTimeLeavingWorks);
@@ -193,11 +194,11 @@ public class TemporaryTimeSheet {
 	public AttendanceTime calcDeductionTime(
 			ConditionAtr conditionAtr,
 			DeductionAtr dedAtr,
-			TimeSheetRoundingAtr roundAtr,
+			Optional<WorkTimezoneGoOutSet> goOutSet,
 			NotUseAtr canOffset) {
 		
 		// 控除時間の計算
-		return ActualWorkTimeSheetListService.calcDeductionTime(conditionAtr, dedAtr, roundAtr,
+		return ActualWorkTimeSheetListService.calcDeductionTime(ActualWorkTimeSheetAtr.OverTimeWork, conditionAtr, dedAtr, goOutSet,
 				this.frameTimeSheets.stream().map(tc -> (ActualWorkingTimeSheet)tc).collect(Collectors.toList()),
 				canOffset);
 	}

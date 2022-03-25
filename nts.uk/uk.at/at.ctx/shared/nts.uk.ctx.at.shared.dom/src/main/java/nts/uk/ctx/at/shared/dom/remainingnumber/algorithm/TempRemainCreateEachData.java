@@ -564,7 +564,7 @@ public class TempRemainCreateEachData {
 		//但し１月が期首月の場合
 		if(startMonth == 1){
 			//年 = 年 - 1
-			endPeriodYear = String.valueOf(date.addYears(-1).year());
+			endPeriodYear = String.valueOf(Integer.parseInt(endPeriodYear) -1);
 		}
 
 		return GeneralDate.fromString(endPeriodYear + "/" +  String.format("%02d", endPeriodMonth)  + "/" +  String.format("%02d", endPeriodDay) , "yyyy/MM/dd");

@@ -3,15 +3,14 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.employeebasic.PersonIdIdentifier;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
@@ -64,9 +63,8 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 			List<Container> targetContainers) {
 
 		List<Container> results = new ArrayList<>();
-		
-		val employee = require.getEmployeeDataMngInfoByEmployeeId(employeeId).get();
-		String personId = employee.getPersonId();
+
+		String personId = PersonIdIdentifier.getPersonId(require, context, employeeId);
 		
 		for (val container : targetContainers) {
 			
@@ -84,6 +82,9 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 		return results;
 	}
 	
+	public static interface RequireCanonicalizeExtends extends PersonIdIdentifier.GetPersonIdRequire{
+	}
+
 	@Override
 	protected List<IntermediateResult> canonicalizeHistory(
 			DomainCanonicalization.RequireCanonicalize require,
@@ -96,7 +97,5 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 		return super.canonicalizeHistory(require, context, addedRetireDay);
 	}
 	
-	public static interface RequireCanonicalizeExtends {
-		Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeId(String employeeId);
-	}
+
 }

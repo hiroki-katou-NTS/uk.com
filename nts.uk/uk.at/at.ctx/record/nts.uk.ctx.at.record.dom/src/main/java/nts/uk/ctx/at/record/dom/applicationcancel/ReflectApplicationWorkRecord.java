@@ -88,14 +88,14 @@ public class ReflectApplicationWorkRecord {
 				dailyRecordApp.getDomain(), changeAtt);
 
 		// 振休振出として扱う日数を補正する
-		WorkInfoOfDailyAttendance workInfoAfter = CorrectDailyAttendanceService.correctFurikyu(require,
+		WorkInfoOfDailyAttendance workInfoAfter = CorrectDailyAttendanceService.correctFurikyu(require, cid,
 				domainBeforeReflect.getWorkInformation(), domainCorrect.getWorkInformation());
 		domainCorrect.setWorkInformation(workInfoAfter);
 		dailyRecordApp.setDomain(domainCorrect);
 
 		// 日別実績の修正からの計算 -- co xu ly tinh toan khac ko hay cua lich
-		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(CalculateOption.asDefault(),
-				Arrays.asList(domainCorrect), Optional.empty(), ExecutionType.NORMAL_EXECUTION);
+		List<IntegrationOfDaily> lstAfterCalc = require.calculateForRecord(CalculateOption.asDefault(),
+				Arrays.asList(domainCorrect), Optional.empty());
 		if (!lstAfterCalc.isEmpty()) {
 			dailyRecordApp.setDomain(lstAfterCalc.get(0));
 		}
@@ -142,8 +142,8 @@ public class ReflectApplicationWorkRecord {
 		public DailyRecordToAttendanceItemConverter createDailyConverter();
 
 		// CalculateDailyRecordServiceCenter
-		public List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,
-				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet, ExecutionType reCalcAtr);
+		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
+				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet);
 
 		// DailyRecordAdUpService
 		public void addAllDomain(IntegrationOfDaily domain, boolean removeError);

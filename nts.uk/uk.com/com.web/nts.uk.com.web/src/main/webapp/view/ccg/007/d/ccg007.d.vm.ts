@@ -17,6 +17,10 @@
             contractCode: KnockoutObservable<string>;
             contractPassword: KnockoutObservable<string>;
             isSignOn: KnockoutObservable<boolean> = ko.observable(false);
+            isSamlAssociation: KnockoutObservable<boolean> = ko.observable(false);
+            useSaml: KnockoutObservable<boolean> = ko.observable(false);
+            samlIdpUserName: KnockoutObservable<string> = ko.observable(null);
+            samlMessage: KnockoutObservable<string> = ko.observable(null);
             displayLogin: KnockoutObservable<boolean> = ko.observable(false);
 
             constructor() {
@@ -56,6 +60,15 @@
                 if (!isSignOn) {
                     self.displayLogin(true);
                 }
+
+                sessionStorage.getItemAndRemove("nts.uk.saml.idpUserName").ifPresent(idpUserName => {
+                    self.isSamlAssociation(true);
+                    self.samlIdpUserName(idpUserName);
+                });
+
+                sessionStorage.getItemAndRemove("nts.uk.saml.message").ifPresent(message => {
+                    self.samlMessage(message);
+                });
 
                 var dfd = $.Deferred<void>();
                 let defaultContractCode: string = __viewContext.env.isOnPremise 
@@ -121,6 +134,10 @@
                         }
                     }
                 });
+
+                if (vm.samlMessage() !== null) {
+                    nts.uk.ui.dialog.info(vm.samlMessage());
+                }
             }
 
             //when invalid contract 
@@ -190,6 +207,14 @@
                                     }
                                 });
                             });
+
+                            service.getSamlOperation(contractCode).done(saml => {
+                                if (saml == null) {
+                                    return;
+                                }
+
+                                self.useSaml(saml.useSingleSignOn);
+                            })
                         }
                     }
                 });
@@ -310,14 +335,28 @@
                                     //Save LoginInfo
                                     nts.uk.characteristics.save("form3LoginInfo", { companyCode: self.selectedCompanyCode(), employeeCode: self.employeeCode() })
                                         .done(function () {
-                                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                                            self.gotoTopPage();
                                         });
                                 } else {
-                                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                                    self.gotoTopPage();
                                 }
                             });
                         }
                 }
+            }
+
+            private gotoTopPage() {
+
+                // dummy promise
+                let promiseAssoc: JQueryPromise<any> = $.Deferred().resolve().promise();
+                if (this.isSamlAssociation) {
+                    let command = { idpUserName: this.samlIdpUserName() };
+                    promiseAssoc = service.samlAssociate(command);
+                }
+
+                promiseAssoc.done(() => {
+                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                });
             }
 
             //open dialog E 

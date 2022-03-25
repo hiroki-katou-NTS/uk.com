@@ -48,11 +48,12 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 
 	@Override
 	public String registerEmbeddedForApp(String appId, int appType, int prePostAtr, String loginId, String employeeId) {
+		String contractCode = AppContexts.user().contractCode();
 		EmbeddedUrlScreenID embeddedUrlScreenID = this.getEmbeddedUrlRequestScreenID(appType, prePostAtr);
 		List<UrlTaskIncre> taskInce = new ArrayList<>();
 		taskInce.add(UrlTaskIncre.createFromJavaType(null, null, null, appId, appId));
 		return this.embeddedUrlInfoRegis(embeddedUrlScreenID.getProgramId(), embeddedUrlScreenID.getDestinationId(), 1, 1, 
-				employeeId, "000000000000", loginId, "", 0, taskInce);
+				employeeId, contractCode, loginId, "", 0, taskInce);
 	}
 
 	@Override
@@ -106,7 +107,7 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 				serverPath = serverPath.replaceFirst("3000", "8080");
 			}
 			String apiPath = "view/ccg/033/index.xhtml";
-			return (serverPath + apiPath +"?id="+ urlInfo.getEmbeddedId());
+			return (serverPath + apiPath +"?tcd=" + contractCD + "&id="+ urlInfo.getEmbeddedId());
 		}
 		return Strings.EMPTY;
 		

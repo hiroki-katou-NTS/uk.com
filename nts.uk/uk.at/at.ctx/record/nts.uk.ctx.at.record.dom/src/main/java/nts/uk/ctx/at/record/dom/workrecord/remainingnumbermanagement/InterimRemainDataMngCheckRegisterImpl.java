@@ -107,7 +107,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 				false, false, false);
 		
 		// 各残数をチェックするか判断する    #118506
-		RemainNumberClassification remainNumberClassification = remainingNumberCheck.determineCheckRemain(inputParam.getCid(), inputParam.getWorkTypeCds(), inputParam.getTimeDigestionUsageInfor());
+		RemainNumberClassification remainNumberClassification = remainingNumberCheck.determineCheckRemain(inputParam.getCid(), inputParam.getWorkTypeCds(), inputParam.getTimeDigestionUsageInfor(), inputParam.getSid());
 		
 		// 暫定管理データをメモリ上で作成する
 		Map<GeneralDate, DailyInterimRemainMngData> mapDataOutput = new HashMap<>();

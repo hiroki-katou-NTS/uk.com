@@ -126,7 +126,7 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 		if(justCorrectionAtr.isNotUse()) return this;
 		List<TimeLeavingWork> newAttendanceLeave = new ArrayList<>();
 		for(TimeLeavingWork attendanceLeave : this.attendance.getTimeLeavingWorks()) {
-			newAttendanceLeave.add(attendanceLeave.correctJustTime(isJustTimeLateAttendance, isJustEarlyLeave));
+			newAttendanceLeave.add(attendanceLeave.correctJustTimeCalcStamp(isJustTimeLateAttendance, isJustEarlyLeave));
 		}
 		
 		return new TimeLeavingOfDailyPerformance(this.getEmployeeId(), 

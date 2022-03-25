@@ -12,7 +12,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.DeductionTotalTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSheetRoundingAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.service.CalcDeductionTimeService;
@@ -108,7 +107,7 @@ public class BreakTimeOfDaily {
 			DeductionAtr dedAtr) {
 		
 		return CalcDeductionTimeService.calcTotalTime(
-				oneDay, ConditionAtr.BREAK, dedAtr, TimeSheetRoundingAtr.PerTimeSheet, Optional.empty(), NotUseAtr.NOT_USE);
+				oneDay, ConditionAtr.BREAK, dedAtr, Optional.empty(), NotUseAtr.NOT_USE);
 	}
 	
 	/**

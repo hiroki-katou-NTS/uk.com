@@ -24,8 +24,8 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -89,7 +89,7 @@ public class MonthlyPatternScreenProcessor {
             // 2. set WorkStyle
             // 2:出勤・休日系の判定(Require)
             WorkInformation information = new WorkInformation( x.getWorkTypeCode(),x.getWorkingCode());
-            int workStyle = information.getWorkStyle(require).isPresent() ? information.getWorkStyle(require).get().value : -1;
+            int workStyle = information.getWorkStyle(require, cid).isPresent() ? information.getWorkStyle(require, cid).get().value : -1;
             int typeColor = getInteger(workStyle);
             x.setTypeColor(typeColor);
 
@@ -111,9 +111,10 @@ public class MonthlyPatternScreenProcessor {
     public WorkStyleDto findDataWorkStype(WorkTypeRequestPrams requestPrams) {
 
         WorkInformation.Require require = new RequireImpl(workTypeRepository);
+        String cid = AppContexts.user().companyId();
 
         WorkInformation information = new WorkInformation(requestPrams.getWorkTypeCode(),requestPrams.getWorkingCode());
-        int workStyle = information.getWorkStyle(require).isPresent() ? information.getWorkStyle(require).get().value : -1;
+        int workStyle = information.getWorkStyle(require, cid).isPresent() ? information.getWorkStyle(require, cid).get().value : -1;
         int typeColor = getInteger(workStyle);
         return new WorkStyleDto(requestPrams.getWorkingCode(), requestPrams.getWorkTypeCode(),typeColor);
     }
@@ -137,15 +138,15 @@ public class MonthlyPatternScreenProcessor {
 		@Inject
 		private WorkTypeRepository workTypeRepository;
 
-        @Override
-        public Optional<WorkType> getWorkType(String workTypeCd) {
-            return workTypeRepository.findByPK(companyId, workTypeCd);
-        }
+		@Override
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeRepository.findByPK(companyId, workTypeCode.v());
+		}
 
-        @Override
-        public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-            return Optional.empty();
-        }
+		@Override
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return Optional.empty();
+		}
 
         @Override
         public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -159,25 +160,25 @@ public class MonthlyPatternScreenProcessor {
 //        }
 
 		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}
 
 		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}
 
 		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}
 
 		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}

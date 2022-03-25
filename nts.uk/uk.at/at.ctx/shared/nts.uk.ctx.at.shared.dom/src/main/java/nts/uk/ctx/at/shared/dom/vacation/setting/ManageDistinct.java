@@ -66,7 +66,12 @@ public enum ManageDistinct {
 		return null;
 	}
 	
+	public boolean isManaged() {
+		return this == YES;
+	}
+
 	public static ManageDistinct toEnum(int value){
 		return EnumAdaptor.valueOf(value, ManageDistinct.class);
 	} 
+
 }

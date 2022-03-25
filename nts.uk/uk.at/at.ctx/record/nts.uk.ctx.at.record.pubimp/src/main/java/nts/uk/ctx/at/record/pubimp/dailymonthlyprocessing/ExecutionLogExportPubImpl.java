@@ -12,7 +12,6 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Emp
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLogRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.SetInforReflAprResult;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
 import nts.uk.ctx.at.record.pub.dailymonthlyprocessing.ExeStateOfCalAndSumExport;
 import nts.uk.ctx.at.record.pub.dailymonthlyprocessing.ExecutionContentExport;
@@ -36,15 +35,9 @@ public class ExecutionLogExportPubImpl implements ExecutionLogExportPub{
 			return Optional.empty();
 		}
 		ExecutionLog exeLog = optExeLog.get();
-		Optional<SetInforReflAprResult> reflectApprovalSetInfo = exeLog.getReflectApprovalSetInfo();
-		if(!reflectApprovalSetInfo.isPresent()) {
-			return Optional.empty();
-		}
-		SetInforReflAprResult refInfo = reflectApprovalSetInfo.get();
-		SetInforReflAprResultExport output = new SetInforReflAprResultExport(EnumAdaptor.valueOf(refInfo.getExecutionContent().value, ExecutionContentExport.class),
-				EnumAdaptor.valueOf(refInfo.getExecutionType().value, ExecutionTypeExport.class),
-				refInfo.getCalExecutionSetInfoID(),
-				refInfo.isForciblyReflect());
+		SetInforReflAprResultExport output = new SetInforReflAprResultExport(EnumAdaptor.valueOf(exeLog.getExecutionContent().value, ExecutionContentExport.class),
+				EnumAdaptor.valueOf(exeLog.getExecutionType().value, ExecutionTypeExport.class),
+				exeLog.getEmpCalAndSumExecLogID());
 		return Optional.of(output);
 	}
 

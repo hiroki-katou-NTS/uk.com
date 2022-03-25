@@ -10,10 +10,10 @@ package nts.uk.ctx.at.shared.dom.vacation.setting;
 public enum TimeAnnualRoundProcesCla {
 		 
 	/** Truncate on day 0. */
-	TruncateOnDay0(0, "1日に切り上げる", "1日に切り上げる"),
+	RoundUpToOneDay(0, "1日に切り上げる", "1日に切り上げる"),
 
 	/** Round up to the day. */
-	RoundUpToTheDay(1, "0日に切り捨てる", "0日に切り捨てる");
+	TruncateOnDay0(1, "0日に切り捨てる", "0日に切り捨てる");
 	
 	/** The value. */
 	public int value;

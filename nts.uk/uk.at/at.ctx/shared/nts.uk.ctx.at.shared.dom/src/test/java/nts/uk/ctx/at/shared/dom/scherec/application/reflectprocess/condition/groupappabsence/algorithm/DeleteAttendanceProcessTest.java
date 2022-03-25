@@ -48,13 +48,13 @@ public class DeleteAttendanceProcessTest {
 
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(WorkType.createSimpleFromJavaType("003", "", "", "", "", 0, WorkTypeClassification.Holiday.value, // 休日
 						0, 0));
 				;
 			}
 		};
-		val resultActual = DeleteAttendanceProcess.process(require, Optional.of(new WorkTypeCode("003")), dailyApp);
+		val resultActual = DeleteAttendanceProcess.process(require, "cid", Optional.of(new WorkTypeCode("003")), dailyApp);
 
 		assertThat(resultActual.getDomainDaily().getAttendanceLeave().get().getTimeLeavingWorks())
 				.extracting(x -> x.getWorkNo().v(), // No
@@ -92,13 +92,13 @@ public class DeleteAttendanceProcessTest {
 
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(WorkType.createSimpleFromJavaType("003", "", "", "", "", 0, WorkTypeClassification.Attendance.value, // 出勤
 						0, 0));
 				;
 			}
 		};
-		val resultActual = DeleteAttendanceProcess.process(require, Optional.of(new WorkTypeCode("003")), dailyApp);
+		val resultActual = DeleteAttendanceProcess.process(require, "cid", Optional.of(new WorkTypeCode("003")), dailyApp);
 
 		assertThat(resultActual.getDomainDaily().getAttendanceLeave().get().getTimeLeavingWorks())
 				.extracting(x -> x.getWorkNo().v(), // No

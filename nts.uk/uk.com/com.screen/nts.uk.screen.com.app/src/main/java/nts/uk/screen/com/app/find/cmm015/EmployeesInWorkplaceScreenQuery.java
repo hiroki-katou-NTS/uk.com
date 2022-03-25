@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.employee.employeeindesignated.StatusOfEmployment;
+import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport3;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
@@ -43,6 +44,9 @@ public class EmployeesInWorkplaceScreenQuery {
 	@Inject
 	private WorkplacePub workplacePub;
 	
+	@Inject
+	private SyEmployeePub syEmployeePub;
+	
 	/**
 	 * 職場の所属社員一覧を取得する
 	 * @param wkpId 職場ID
@@ -56,7 +60,12 @@ public class EmployeesInWorkplaceScreenQuery {
 	public List<EmployeesInWorkplace> get(List<String> wkpIds, GeneralDate referDate, Boolean incumbent, Boolean closed, Boolean leave, Boolean retiree) {
 		//1: 職場（List）と基準日から所属職場履歴項目を取得する
 		List<AffWorkplaceHistoryItemExport3> wkHistoryItems = workplacePub.getWorkHisItemfromWkpIdsAndBaseDate(wkpIds, referDate);
+		
+		// 2: RQ596 削除された社員を取り除く
 		List<String> empInfos = wkHistoryItems.stream().map(x -> x.getEmployeeId()).distinct().collect(Collectors.toList());
+        List<String> deletedSids = syEmployeePub.getEmpDeletedLstBySids(empInfos).stream()
+        		.map(employee -> employee.getSid()).collect(Collectors.toList());
+        empInfos.removeAll(deletedSids);
         
         List<String> sids = new ArrayList<String>();
         
@@ -77,10 +86,10 @@ public class EmployeesInWorkplaceScreenQuery {
         if (retiree) {
         	paramStatus.add(StatusOfEmployment.RETIREMENT.value);
         }
-        // Param status .end
+        
         // Loop 社員ID　in　List<社員ID>
         empInfos.forEach(sid -> {
-        	//2: <call>在職状態を取得
+        	//3: 在職状態を取得
       		StatusOfEmploymentImport sttEmp = employeeAdapter.getStatusOfEmployment(sid, referDate);
       		
       		if (paramStatus.contains(sttEmp.getStatusOfEmployment().value)) {
@@ -98,7 +107,7 @@ public class EmployeesInWorkplaceScreenQuery {
         		.toGetDepartment(false)
         		.toGetEmployment(false)
         		.build();
-        // 3: <call> <<Public>> 社員の情報を取得する: Output List＜社員情報＞
+        // 4: <call> <<Public>> 社員の情報を取得する: Output List＜社員情報＞
         List<EmployeeInformationExport> empInfors = employeeInformationPub.find(param);
         
         // 職位IDリスト
@@ -113,7 +122,7 @@ public class EmployeesInWorkplaceScreenQuery {
         // Loop 　職位ID　in　職位IDリスト
         jtIds.forEach(jobID -> {
         	
-        	// 4: <call> 職位IDから序列の並び順を取得
+        	// 5: <call> 職位IDから序列の並び順を取得
         	Optional<Integer> order = collectApprovalRootService.getDisOrderFromJobID(jobID, AppContexts.user().companyId(), referDate);
         	
         	orders.put(jobID, order.orElse(null));

@@ -9,7 +9,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainRepository;
@@ -19,7 +18,6 @@ import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrorsRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
-import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -38,9 +36,6 @@ public class GetLatestExternalImportErrors {
 	private final int MAX_PAGE_SIZE = 1000;
 	
 	@Inject
-	private ExternalImportSettingRepository settingRepo;
-	
-	@Inject
 	private ExternalImportErrorsRepository errorsRepo;
 	
 	@Inject
@@ -57,7 +52,6 @@ public class GetLatestExternalImportErrors {
 	public ErrorsTextDto getTextPage(ExternalImportCode settingCode, int pageNo) {
 		
 		String companyId = AppContexts.user().companyId();
-		val context = ExecutionContext.createForErrorTableName(companyId);
 		
 		int startErrorNo = MAX_PAGE_SIZE * (pageNo - 1);
 		val errors = errorsRepo.find(companyId, startErrorNo, MAX_PAGE_SIZE);

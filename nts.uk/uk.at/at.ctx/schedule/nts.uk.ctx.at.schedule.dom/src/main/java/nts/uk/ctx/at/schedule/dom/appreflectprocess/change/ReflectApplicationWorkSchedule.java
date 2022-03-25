@@ -94,13 +94,13 @@ public class ReflectApplicationWorkSchedule {
 				dailyRecordApp.getDomain(), changeAtt);
 
 		// 振休振出として扱う日数を補正する
-		WorkInfoOfDailyAttendance workInfoAfter = CorrectDailyAttendanceService.correctFurikyu(require,
+		WorkInfoOfDailyAttendance workInfoAfter = CorrectDailyAttendanceService.correctFurikyu(require, companyId,
 				domainBeforeReflect.getWorkInformation(), domainCorrect.getWorkInformation());
 		domainCorrect.setWorkInformation(workInfoAfter);
 		dailyRecordApp.setDomain(domainCorrect);
 
 		// 日別実績の修正からの計算
-		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(ExecutionType.NORMAL_EXECUTION, CalculateOption.asDefault(),
+		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(CalculateOption.asDefault(),
 				Arrays.asList(domainCorrect));
 		if (!lstAfterCalc.isEmpty()) {
 			dailyRecordApp.setDomain(lstAfterCalc.get(0));
@@ -158,7 +158,7 @@ public class ReflectApplicationWorkSchedule {
 		public void insertSchedule(WorkSchedule workSchedule);
 
 		// CalculateDailyRecordServiceCenterNew
-		public List<IntegrationOfDaily> calculateForSchedule(ExecutionType type, CalculateOption calcOption,
+		public List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,
 				List<IntegrationOfDaily> integrationOfDaily);
 
 	}

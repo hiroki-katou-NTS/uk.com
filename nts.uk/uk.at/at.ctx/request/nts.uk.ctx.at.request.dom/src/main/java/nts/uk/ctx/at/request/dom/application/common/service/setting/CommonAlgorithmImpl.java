@@ -224,6 +224,17 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			appDispInfoNoDateOutput.setOpAdvanceReceptionHours(preAppAcceptLimit.getOpAvailableTime());
 		}
 		// 「申請表示情報(基準日関係なし)」を返す (Trả về 「Thông tin hiển thị application(kg liên quan base date)」)
+		String loginID = AppContexts.user().employeeId();
+		Optional<EmployeeInfoImport> opEmployeeInfo = Optional.empty();
+		if(applicantLst.contains(loginID)) {
+			// 取得した「申請者情報」から入力者社員情報を取得する
+			opEmployeeInfo = employeeInfoLst.stream().filter(x -> x.getSid().equals(loginID)).findAny();
+		} else {
+			// 入力者の社員情報を取得する
+			opEmployeeInfo = this.getEnterPersonInfor(applicantLst.stream().findFirst().orElse(""), loginID);
+		}
+		// 取得した「入力者社員情報」をセットする
+		appDispInfoNoDateOutput.setOpEmployeeInfo(opEmployeeInfo);
 		return appDispInfoNoDateOutput;
 	}
 
@@ -964,17 +975,17 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			}
 			
 			@Override
-			public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
+			public Optional<SEmpHistoryImport> getSEmpHistoryImport(String employeeId, GeneralDate baseDate) {
 				return sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, baseDate);
 			}
 			
 			@Override
-			public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode) {
+			public Optional<CompensatoryLeaveEmSetting> compensatoryLeaveEmSetting(String companyId, String employmentCode) {
 				return Optional.ofNullable(compensLeaveEmSetRepo.find(companyId, employmentCode));
 			}
 			
 			@Override
-			public Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId) {
+			public Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId) {
 				return Optional.ofNullable(compensLeaveComSetRepository.find(companyId));
 			}
 		};

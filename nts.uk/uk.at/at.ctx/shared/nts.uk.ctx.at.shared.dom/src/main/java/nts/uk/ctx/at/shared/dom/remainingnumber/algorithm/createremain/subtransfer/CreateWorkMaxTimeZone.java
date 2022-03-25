@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.D
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
@@ -31,8 +30,8 @@ public class CreateWorkMaxTimeZone {
 			return converter.setData(dailyRecord).toDomain();
 
 		// 日別勤怠(work）の勤務情報をもとに所定時間設定を取得する
-		Optional<PredetemineTimeSetting> predeteminate = require.findByWorkTimeCode(cid,
-				dailyRecord.getWorkInformation().getRecordInfo().getWorkTimeCode().v());
+		Optional<PredetemineTimeSetting> predeteminate = require.predetemineTimeSetting(cid,
+				dailyRecord.getWorkInformation().getRecordInfo().getWorkTimeCode());
 		if (!predeteminate.isPresent())
 			return converter.setData(dailyRecord).toDomain();
 
@@ -61,21 +60,17 @@ public class CreateWorkMaxTimeZone {
 		});
 
 		// 日別実績計算
-		return require.calculateForRecord(CalculateOption.asDefault(),
-				Arrays.asList(dailyCalc), Optional.empty(), ExecutionType.NORMAL_EXECUTION).get(0);
+		return require.calculateForRecordSchedule(CalculateOption.asDefault(),
+				Arrays.asList(dailyCalc), Optional.empty()).get(0);
 
 	}
 
-	public static interface Require {
-
-		// PredetemineTimeSettingRepository
-		Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode);
+	public static interface Require extends PredetemineTimeSetting.Require {
 
 		// DailyRecordConverter
 		DailyRecordToAttendanceItemConverter createDailyConverter();
 		
-		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
-				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
-				ExecutionType reCalcAtr);
+		public List<IntegrationOfDaily> calculateForRecordSchedule(CalculateOption calcOption,
+				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet);
 	}
 }

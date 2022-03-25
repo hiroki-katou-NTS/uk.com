@@ -126,19 +126,14 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeSe
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService.AggregationResult;
 import nts.uk.ctx.at.record.dom.monthlyprocess.byperiod.ByPeriodAggregationService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CalExeSettingInfor;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionTime;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ObjectPeriod;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.SetInforReflAprResult;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.SettingInforForDailyCreation;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.CalAndAggClassification;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.DailyRecreateClassification;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutedMenu;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionService;
@@ -365,9 +360,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		EmpCalAndSumExeLog empCalAndSumExeLog = null;
 		// ドメインモデル「就業計算と集計実行ログ」を追加する
 		empCalAndSumExeLog = new EmpCalAndSumExeLog(execId, command.getCompanyId(),
-				new YearMonth(GeneralDate.today().year() * 100 + 1), ExecutedMenu.SELECT_AND_RUN, GeneralDateTime.now(),
-				null, "", 1, IdentifierUtil.randomUniqueId(),
-				CalAndAggClassification.AUTOMATIC_EXECUTION);
+				new YearMonth(GeneralDate.today().year() * 100 + 1), GeneralDateTime.now(),
+				null, "", 1, CalAndAggClassification.AUTOMATIC_EXECUTION);
 		this.empCalSumRepo.add(empCalAndSumExeLog);
 		// }
 
@@ -986,15 +980,10 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		// ドメインモデル「実行ログ」を新規登録する
 		ExecutionLog dailyCreateLog = new ExecutionLog(execId, ExecutionContent.DAILY_CREATION, ErrorPresent.NO_ERROR,
 				new ExecutionTime(GeneralDateTime.now(), GeneralDateTime.now()), ExecutionStatus.INCOMPLETE,
-				new ObjectPeriod(period.end(), period.end()), Optional.empty());
-		dailyCreateLog.setDailyCreationSetInfo(
-				new SettingInforForDailyCreation(ExecutionContent.DAILY_CREATION, ExecutionType.NORMAL_EXECUTION,
-						IdentifierUtil.randomUniqueId(), DailyRecreateClassification.REBUILD, Optional.empty()));
+				new ObjectPeriod(period.end(), period.end()), Optional.empty(), ExecutionType.NORMAL_EXECUTION);
 		ExecutionLog dailyCalLog = new ExecutionLog(execId, ExecutionContent.DAILY_CALCULATION, ErrorPresent.NO_ERROR,
 				new ExecutionTime(GeneralDateTime.now(), GeneralDateTime.now()), ExecutionStatus.INCOMPLETE,
-				new ObjectPeriod(period.start(), period.end()), Optional.empty());
-		dailyCalLog.setDailyCalSetInfo(new CalExeSettingInfor(ExecutionContent.DAILY_CALCULATION,
-				ExecutionType.NORMAL_EXECUTION, IdentifierUtil.randomUniqueId()));
+				new ObjectPeriod(period.start(), period.end()), Optional.empty(), ExecutionType.NORMAL_EXECUTION);
 		this.executionLogRepository.addExecutionLog(dailyCreateLog);
 		this.executionLogRepository.addExecutionLog(dailyCalLog);
 
@@ -1599,11 +1588,9 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		GeneralDateTime now = GeneralDateTime.now();
 		ExecutionLog executionLog = new ExecutionLog(execId, ExecutionContent.REFLRCT_APPROVAL_RESULT,
 				ErrorPresent.NO_ERROR, new ExecutionTime(now, now), ExecutionStatus.INCOMPLETE,
-				new ObjectPeriod(period.start(), period.end()), Optional.empty());
-		executionLog.setReflectApprovalSetInfo(new SetInforReflAprResult(ExecutionContent.REFLRCT_APPROVAL_RESULT,
+				new ObjectPeriod(period.start(), period.end()), Optional.empty(),
 				processExecution.getExecutionType() == ProcessExecType.NORMAL_EXECUTION ? ExecutionType.NORMAL_EXECUTION
-						: ExecutionType.RERUN,
-				IdentifierUtil.randomUniqueId(), false));
+						: ExecutionType.RERUN);
 		this.executionLogRepository.addExecutionLog(executionLog);
 		// ドメインモデル「更新処理自動実行ログ」を更新する
 		if (ProcessExecutionLog.getEachProcPeriod() != null && ProcessExecutionLog.getEachProcPeriod().isPresent()) {
@@ -1800,9 +1787,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		GeneralDateTime now = GeneralDateTime.now();
 		ExecutionLog executionLog = new ExecutionLog(execId, ExecutionContent.MONTHLY_AGGREGATION,
 				ErrorPresent.NO_ERROR, new ExecutionTime(now, now), ExecutionStatus.INCOMPLETE,
-				new ObjectPeriod(period.start(), period.end()), Optional.empty());
-		executionLog.setMonlyAggregationSetInfo(new CalExeSettingInfor(ExecutionContent.MONTHLY_AGGREGATION,
-				ExecutionType.NORMAL_EXECUTION, IdentifierUtil.randomUniqueId()));
+				new ObjectPeriod(period.start(), period.end()), Optional.empty(), ExecutionType.NORMAL_EXECUTION);
 		this.executionLogRepository.addExecutionLog(executionLog);
 
 		boolean isHasException = false;
@@ -1869,7 +1854,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 										cacheCarrier, Optional.of(asyContext), companyId, item, date.get(), execId,
 										ExecutionType.NORMAL_EXECUTION, Optional.empty());
 								// 中断
-								transaction.allInOneTransaction(result.getAtomTasks());
+								transaction.separateForEachTask(result.getAtomTasks());
 
 								if (result.getStatus().getState().value == 0) {
 									// endStatusIsInterrupt = true;
@@ -2220,10 +2205,9 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		if ("日別作成".equals(typeExecution)) {
 			try {
 				// ⑤社員の日別実績を作成する
-				ExecutionTypeDaily executionTypeDaily = ExecutionTypeDaily.CREATE;
-				if (dailyCreateLog.getDailyCreationSetInfo().isPresent()
-						&& dailyCreateLog.getDailyCreationSetInfo().get().getExecutionType() == ExecutionType.RERUN) {
-					executionTypeDaily = ExecutionTypeDaily.DELETE_ACHIEVEMENTS;
+				ExecutionTypeDaily executionTypeDaily = ExecutionTypeDaily.IMPRINT;
+				if (dailyCreateLog.getExecutionType() == ExecutionType.RERUN) {
+					executionTypeDaily = ExecutionTypeDaily.CREATE;
 				}
 				OutputCreateDailyResult status = createDailyResultDomainServiceNew.createDataNewWithNoImport(asyContext,
 						employeeId, period, ExecutionAttr.AUTO, companyId, executionTypeDaily,
