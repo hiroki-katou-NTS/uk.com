@@ -134,7 +134,7 @@ public class TimeRecordSettingInfoDtoTest {
 
 		String actualResult = TimeRecordSettingInfoDto.createPayLoad(settingDto);
 
-		String expected = "sp_vol=1234,1\nsp_vol2=1268";
+		String expected = "sp_vol=1234,1\nsp_vol2=1268\n";
 		assertThat(actualResult).isEqualTo(expected);
 	}
 

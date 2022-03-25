@@ -23,7 +23,7 @@ public class YearAndPeriodAdapterImpl implements YearAndPeriodAdapter {
 
 	@Override
 	public YearAndPeriodImported get(String cid, DatePeriod period) {
-		return this.toImport(yearAndPeriodPub.get(period));
+		return this.toImport(yearAndPeriodPub.get(cid, period));
 	}
 
 	//YearAndPeriodExport -> YearAndPeriodImported へ変換
