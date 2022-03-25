@@ -283,7 +283,7 @@ module nts.uk.ui.at.kdw013.a {
 
 		reloadFlag: KnockoutObservable<Boolean> =  ko.observable(false);
         loaded: Boolean =  false;
-        equipmentInputEnable: KnockoutObservable<Boolean> =  ko.observable(false);
+        equipmentInputVisible: KnockoutObservable<Boolean> =  ko.observable(false);
 
         constructor() {
             super();
@@ -620,7 +620,7 @@ module nts.uk.ui.at.kdw013.a {
 
 
                     vm.$settings(new StartProcess(response));
-                    vm.equipmentInputEnable(_.get(response, 'manHrInputUsageSetting.equipmentUseAtr', 0) == 1);
+                    vm.equipmentInputVisible(_.get(response, 'manHrInputUsageSetting.equipmentUseAtr', 0) == 1);
                 })
                 .always(() => vm.$blockui('clear'));
 
@@ -794,7 +794,7 @@ module nts.uk.ui.at.kdw013.a {
                             }
                         });
 
-                    vm.equipmentInputEnable(_.get(response, 'manHrInputUsageSetting.equipmentUseAtr', 0) == 1);
+                    vm.equipmentInputVisible(_.get(response, 'manHrInputUsageSetting.equipmentUseAtr', 0) == 1);
                     vm.$settings(new StartProcess(response));
                 })
                 .always(() => vm.$blockui('clear'));
@@ -876,9 +876,9 @@ module nts.uk.ui.at.kdw013.a {
                         let {taskDetails} = _.get(e, 'extendedProps.taskBlock');
                         _.forEach(taskDetails, td => {
 
-//                            if (taskDetails.length == 1) {
-//                                _.remove(td.taskItemValues, ti => ti.itemId == 3);
-//                            }
+                            if (taskDetails.length == 1) {
+                                _.remove(td.taskItemValues, ti => ti.itemId == 3);
+                            }
 
                             _.forEach(td.taskItemValues, ti => {
                                 let start = (moment(e.start).hour() * 60) + moment(e.start).minute();
