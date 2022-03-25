@@ -7,10 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-<<<<<<< HEAD
-=======
 import java.util.stream.IntStream;
->>>>>>> pj/at/release_ver4
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,13 +43,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
-<<<<<<< HEAD
 import nts.uk.ctx.at.shared.dom.supportmanagement.SupportInfoOfEmployee;
 import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
-=======
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.GetAttendanceItemIdService;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.MaximumNumberOfSupport;
->>>>>>> pj/at/release_ver4
 
 /**
  * 日別勤怠(Work)
@@ -423,7 +417,6 @@ public class IntegrationOfDaily {
 	}
 	
 	/**
-<<<<<<< HEAD
 	 * 社員の応援情報を取得する
 	 * @return
 	 */
@@ -454,7 +447,9 @@ public class IntegrationOfDaily {
 					this.affiliationInfor.getAffiliationOrg(),
 					recipientList);
 		}
-=======
+	}
+		
+	/**
 	 * 応援別勤務職場の編集状態と応援別勤務場所の編集状態をクリアする
 	 * 
 	 * @param List<勤怠項目ID>
@@ -484,6 +479,5 @@ public class IntegrationOfDaily {
 			return Arrays.asList(CancelAppStamp.createItemId(921, x.getWorkNo().v(), 10),
 					CancelAppStamp.createItemId(922, x.getWorkNo().v(), 10)).stream();
 		}).collect(Collectors.toList());
->>>>>>> pj/at/release_ver4
 	}
 }
