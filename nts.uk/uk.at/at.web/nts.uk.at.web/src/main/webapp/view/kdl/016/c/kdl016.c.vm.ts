@@ -30,6 +30,7 @@ module nts.uk.at.view.kdl016.c {
         enableEditTimespan: KnockoutObservable<boolean> = ko.observable(false);
         timespanMin: KnockoutObservable<number> = ko.observable(undefined);
         timespanMax: KnockoutObservable<number> = ko.observable(undefined);
+        isAnyEmpSuccess: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(params: any) {
             super();
@@ -297,6 +298,12 @@ module nts.uk.at.view.kdl016.c {
                         vm.$window.close({reloadable: true});
                     });
                 } else {
+                    // Check if any execute is successful
+                    let empSuccessful = vm.selectedEmployees().filter((item: any) => !_.includes(_.map(data.errorResults, (i: any) => i.employeeCode), item));
+                    if (empSuccessful.length > 0) {
+                        vm.isAnyEmpSuccess(true);
+                    }
+
                     let errorResults = data.errorResults;
                     let dataError: any = [];
                     for (let i = 0; i < errorResults.length; i++) {
@@ -315,7 +322,7 @@ module nts.uk.at.view.kdl016.c {
                     };
 
                     vm.$window.modal("/view/kdl/016/f/index.xhtml", resultObj).then((result: any) => {
-                        // vm.$window.close({closeable: true});
+
                     });
                 }
             }).fail(error => {
@@ -329,7 +336,11 @@ module nts.uk.at.view.kdl016.c {
 
         closeDialog(): void {
             const vm = this;
-            vm.$window.close({reloadable: false});
+            if (vm.isAnyEmpSuccess()) {
+                vm.$window.close({reloadable: true});
+            } else {
+                vm.$window.close({reloadable: false});
+            }
         }
     }
 
