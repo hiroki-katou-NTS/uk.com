@@ -335,18 +335,19 @@ public class NarrowDownListMonthlyAttdItemImpl implements NarrowDownListMonthlyA
 		}
 
 		@Override
-		public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
-			return sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, baseDate);
+		public Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId) {
+			return Optional.ofNullable(compensLeaveComSetRepository.find(companyId));
 		}
-		
+
 		@Override
-		public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode) {
+		public Optional<CompensatoryLeaveEmSetting> compensatoryLeaveEmSetting(String companyId,
+				String employmentCode) {
 			return Optional.ofNullable(compensLeaveEmSetRepo.find(companyId, employmentCode));
 		}
-		
+
 		@Override
-		public Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId) {
-			return Optional.ofNullable(compensLeaveComSetRepository.find(companyId));
+		public Optional<SEmpHistoryImport> getSEmpHistoryImport(String employeeId, GeneralDate baseDate) {
+			return sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, baseDate);
 		}
 		
 	}

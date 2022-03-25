@@ -57,7 +57,6 @@ public class HalfDayManage implements Serializable {
 		return this.reference.equals(MaxDayReference.CompanyUniform)
 				? Optional.of(this.maxNumberUniformCompany.toLimitedTimeHdDays()) : fromGrantTableCount;
 	}
-<<<<<<< HEAD
 	
 	/**
 	 * [1] 半日回数上限に対応する月次の勤怠項目を取得する
@@ -85,8 +84,7 @@ public class HalfDayManage implements Serializable {
 		if (timeManageType == ManageDistinct.YES && manageType == ManageDistinct.YES)
 			return true;
 		return false;
-=======
-	 
+	}	 
 	/**
 	 * 積立年休の付与数を取得する
 	 */
@@ -100,6 +98,5 @@ public class HalfDayManage implements Serializable {
 			return MonthVacationGrantDay.createWithRoundUp(dayRemains);
 		}
 		return new MonthVacationGrantDay(dayRemains);
->>>>>>> pj/at/release_ver4
 	}
 }

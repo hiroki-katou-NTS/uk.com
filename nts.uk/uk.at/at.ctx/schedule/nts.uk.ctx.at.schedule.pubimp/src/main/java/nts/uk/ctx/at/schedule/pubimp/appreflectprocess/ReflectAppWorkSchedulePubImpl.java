@@ -300,14 +300,11 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		}
 
 		@Override
-<<<<<<< HEAD
 		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
 		@Override
-=======
->>>>>>> pj/at/release_ver4
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 			return service.checkNeededOfWorkTimeSetting(workTypeCode);
 		}
@@ -464,7 +461,6 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		}
 
 		@Override
-<<<<<<< HEAD
 		public Optional<AppStampShare> appStamp() {
 			if (applicationShare instanceof AppStampShare) {
 				return Optional.of((AppStampShare) applicationShare);
@@ -472,17 +468,10 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 			return Optional.empty();
 		}
 
-		public OptionLicense getOptionLicense() {
-			return AppContexts.optionLicense();
-=======
-		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
-			return this.workTimeSetting(cid, new WorkTimeCode(workTimeCode));
-		}
 
 		@Override
 		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
 			return compensLeaveComSetRepository.find(companyId);
->>>>>>> pj/at/release_ver4
 		}
 	}
 }

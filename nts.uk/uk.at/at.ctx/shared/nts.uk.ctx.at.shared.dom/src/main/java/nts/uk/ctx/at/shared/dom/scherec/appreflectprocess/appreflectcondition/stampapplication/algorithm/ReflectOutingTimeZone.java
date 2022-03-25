@@ -68,14 +68,9 @@ public class ReflectOutingTimeZone {
 		List<Integer> lstItemId = new ArrayList<>();
 		if (data.getDestinationTimeApp().getStartEndClassification() == StartEndClassificationShare.START) {
 			lstItemId.addAll(
-<<<<<<< HEAD
-					Arrays.asList(CancelAppStamp.createItemId(88, data.getDestinationTimeApp().getStampNo(), 7),
-							CancelAppStamp.createItemId(87, data.getDestinationTimeApp().getStampNo(), 7)));
-=======
-					Arrays.asList(CancelAppStamp.createItemId(88, data.getDestinationTimeApp().getEngraveFrameNo(), 7),//外出時刻
-							CancelAppStamp.createItemId(87, data.getDestinationTimeApp().getEngraveFrameNo(), 7),//外出場所
-							CancelAppStamp.createItemId(86, data.getDestinationTimeApp().getEngraveFrameNo(), 7)));//外出区分
->>>>>>> pj/at/release_ver4
+					Arrays.asList(CancelAppStamp.createItemId(88, data.getDestinationTimeApp().getStampNo(), 7),//外出時刻
+							CancelAppStamp.createItemId(87, data.getDestinationTimeApp().getStampNo(), 7),//外出場所
+							CancelAppStamp.createItemId(86, data.getDestinationTimeApp().getStampNo(), 7)));//外出区分
 			return Pair.of(
 					new OutingTimeSheet(new OutingFrameNo(data.getDestinationTimeApp().getStampNo().intValue()),
 							Optional.of(new WorkStamp(
@@ -87,14 +82,9 @@ public class ReflectOutingTimeZone {
 					lstItemId);
 		} else {
 			lstItemId.addAll(
-<<<<<<< HEAD
-					Arrays.asList(CancelAppStamp.createItemId(91, data.getDestinationTimeApp().getStampNo(), 7),
-							CancelAppStamp.createItemId(90, data.getDestinationTimeApp().getStampNo(), 7)));
-=======
-					Arrays.asList(CancelAppStamp.createItemId(91, data.getDestinationTimeApp().getEngraveFrameNo(), 7),//戻り時刻
-							CancelAppStamp.createItemId(90, data.getDestinationTimeApp().getEngraveFrameNo(), 7),//戻り場所
-							CancelAppStamp.createItemId(86, data.getDestinationTimeApp().getEngraveFrameNo(), 7)));//外出区分
->>>>>>> pj/at/release_ver4
+					Arrays.asList(CancelAppStamp.createItemId(91, data.getDestinationTimeApp().getStampNo(), 7),//戻り時刻
+							CancelAppStamp.createItemId(90, data.getDestinationTimeApp().getStampNo(), 7),//戻り場所
+							CancelAppStamp.createItemId(86, data.getDestinationTimeApp().getStampNo(), 7)));//外出区分
 			return Pair.of(new OutingTimeSheet(
 					new OutingFrameNo(data.getDestinationTimeApp().getStampNo().intValue()), Optional.empty(),
 					data.getAppStampGoOutAtr().map(x -> GoingOutReason.valueOf(x.value)).orElse(null),
@@ -110,45 +100,30 @@ public class ReflectOutingTimeZone {
 		List<Integer> lstItemId = new ArrayList<>();
 		if (data.getDestinationTimeApp().getStartEndClassification() == StartEndClassificationShare.START) {
 			sheet.setReasonForGoOut(data.getAppStampGoOutAtr().map(x -> GoingOutReason.valueOf(x.value)).orElse(null));
-			lstItemId.add(CancelAppStamp.createItemId(86, data.getDestinationTimeApp().getEngraveFrameNo(), 7));//外出区分
+			lstItemId.add(CancelAppStamp.createItemId(86, data.getDestinationTimeApp().getStampNo(), 7));//外出区分
 			if(!sheet.getGoOut().isPresent()) {
 				sheet.setGoOut(Optional.of(WorkStamp.createDefault()));
 			}
 			sheet.getGoOut().ifPresent(y -> {
 				data.getWorkLocationCd().ifPresent(code -> {
 					y.setLocationCode(Optional.of(code));
-<<<<<<< HEAD
 					lstItemId.add(CancelAppStamp.createItemId(87, data.getDestinationTimeApp().getStampNo(), 7));
-=======
-					lstItemId.add(CancelAppStamp.createItemId(87, data.getDestinationTimeApp().getEngraveFrameNo(), 7));//外出場所
->>>>>>> pj/at/release_ver4
 				});
 				y.getTimeDay().setTimeWithDay(Optional.of(data.getTimeOfDay()));
 				y.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
 			});
-<<<<<<< HEAD
 			lstItemId.add(CancelAppStamp.createItemId(88, data.getDestinationTimeApp().getStampNo(), 7));
 		} else {
 			lstItemId.add(CancelAppStamp.createItemId(91, data.getDestinationTimeApp().getStampNo(), 7));
-
-=======
-			lstItemId.add(CancelAppStamp.createItemId(88, data.getDestinationTimeApp().getEngraveFrameNo(), 7));//外出時刻
-		} else {
-			lstItemId.add(CancelAppStamp.createItemId(91, data.getDestinationTimeApp().getEngraveFrameNo(), 7));//戻り時刻
->>>>>>> pj/at/release_ver4
 			sheet.setReasonForGoOut(data.getAppStampGoOutAtr().map(x -> GoingOutReason.valueOf(x.value)).orElse(null));
-			lstItemId.add(CancelAppStamp.createItemId(86, data.getDestinationTimeApp().getEngraveFrameNo(), 7));
+			lstItemId.add(CancelAppStamp.createItemId(86, data.getDestinationTimeApp().getStampNo(), 7));
 			if(!sheet.getComeBack().isPresent()) {
 				sheet.setComeBack(Optional.of(WorkStamp.createDefault()));
 			}
 			sheet.getComeBack().ifPresent(y -> {
 				data.getWorkLocationCd().ifPresent(code -> {
 					y.setLocationCode(Optional.of(code));
-<<<<<<< HEAD
 					lstItemId.add(CancelAppStamp.createItemId(90, data.getDestinationTimeApp().getStampNo(), 7));
-=======
-					lstItemId.add(CancelAppStamp.createItemId(90, data.getDestinationTimeApp().getEngraveFrameNo(), 7));//戻り場所
->>>>>>> pj/at/release_ver4
 				});
 				y.getTimeDay().setTimeWithDay(Optional.of(data.getTimeOfDay()));
 				y.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);

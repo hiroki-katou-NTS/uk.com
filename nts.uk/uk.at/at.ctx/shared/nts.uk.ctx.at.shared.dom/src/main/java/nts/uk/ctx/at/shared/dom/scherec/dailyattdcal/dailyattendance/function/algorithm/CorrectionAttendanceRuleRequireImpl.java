@@ -43,6 +43,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -123,24 +124,6 @@ public class CorrectionAttendanceRuleRequireImpl implements CorrectionAttendance
 	}
 
 	@Override
-	public CalculationRangeOfOneDay createOneDayRange(Optional<PredetemineTimeSetting> predetemineTimeSet,
-			IntegrationOfDaily integrationOfDaily, Optional<WorkTimezoneCommonSet> commonSet, WorkType workType,
-			JustCorrectionAtr justCorrectionAtr, Optional<WorkTimeCode> workTimeCode) {
-		return createOneDayRangeCalc.createOneDayRange(predetemineTimeSet, integrationOfDaily, commonSet, workType,
-				justCorrectionAtr, workTimeCode);
-	}
-
-	@Override
-	public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, String workTimeCode) {
-		return fixWorkSetRepo.findByKey(companyId, workTimeCode);
-	}
-
-	@Override
-	public Optional<PredetemineTimeSetting> predetemineTimeSetting(String cid, String workTimeCode) {
-		return predetemineTimeSetRepo.findByWorkTimeCode(cid, workTimeCode);
-	}
-
-	@Override
 	public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
 		return workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
 	}
@@ -181,6 +164,44 @@ public class CorrectionAttendanceRuleRequireImpl implements CorrectionAttendance
 	public SupportDataWork correctSupportDataWork(IGetAppForCorrectionRuleRequire require,
 			IntegrationOfDaily integrationOfDaily, ScheduleRecordClassifi classification) {
 		return iCorrectSupportDataWork.correctSupportDataWork(require, integrationOfDaily, classification);
+	}
+
+	@Override
+	public CalculationRangeOfOneDay createOneDayRange(IntegrationOfDaily integrationOfDaily,
+			Optional<WorkTimezoneCommonSet> commonSet, WorkType workType, JustCorrectionAtr justCorrectionAtr,
+			Optional<WorkTimeCode> workTimeCode) {
+		return createOneDayRangeCalc.createOneDayRange(integrationOfDaily, commonSet, workType,
+				justCorrectionAtr, workTimeCode);
+	}
+
+	@Override
+	public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+		return workTimeSettingRepo.findByCode(companyId, workTimeCode.v());
+	}
+
+	@Override
+	public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+		return fixWorkSetRepo.findByKey(companyId, workTimeCode.v());
+	}
+
+	@Override
+	public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+		return flowWorkSettingRepo.find(companyId, workTimeCode.v());
+	}
+
+	@Override
+	public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+		return flexWorkSettingRepo.find(companyId, workTimeCode.v());
+	}
+
+	@Override
+	public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+		return predetemineTimeSetRepo.findByWorkTimeCode(companyId, workTimeCode.v());
+	}
+
+	@Override
+	public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+		return workTypeRepo.findByPK(companyId, workTypeCode.v());
 	}
 
 }

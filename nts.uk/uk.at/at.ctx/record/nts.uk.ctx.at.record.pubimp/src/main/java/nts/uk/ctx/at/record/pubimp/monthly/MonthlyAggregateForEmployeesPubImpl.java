@@ -644,12 +644,8 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 				careUsedNumberRepo, childCareLeaveRemInfoRepo, careLeaveRemainingInfoRepo, tempChildCareManagementRepo,
 				tempCareManagementRepo, nursingLeaveSettingRepo, executionLogRepo, workingConditionRepository,
 				transaction, employmentAdapter, creatingDailyResultsConditionRepo, getPeriodFromPreviousToNextGrantDate,
-<<<<<<< HEAD
-				workDaysNumberOnLeaveCountRepo, timeSpecialLeaveMngSetRepository);
-=======
 				workDaysNumberOnLeaveCountRepo, calculateDailyRecordServiceCenter, workRegularAdditionSetRepo, addSetManageWorkHourRepo, 
-				workFlexAdditionSetRepo, workDeformedLaborAdditionSetRepo, flexSetRepo, empComHisAdapter);
->>>>>>> pj/at/release_ver4
+				workFlexAdditionSetRepo, workDeformedLaborAdditionSetRepo, flexSetRepo, empComHisAdapter, timeSpecialLeaveMngSetRepository);
 
 		return MonthlyAggregateForEmployees.aggregate(require, cid, sids, canAggrWhenLock);
 	}
@@ -788,16 +784,11 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 				EmploymentAdapter employmentAdapter,
 				CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo,
 				GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate,
-<<<<<<< HEAD
-				WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo,
-				TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepository) {
-=======
 				WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo, 
 				CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter, 
 				WorkRegularAdditionSetRepository workRegularAdditionSetRepo, AddSetManageWorkHourRepository addSetManageWorkHourRepo, 
 				WorkFlexAdditionSetRepository workFlexAdditionSetRepo, WorkDeformedLaborAdditionSetRepository workDeformedLaborAdditionSetRepo,
-				FlexSetRepository flexSetRepo, EmpComHisAdapter empComHisAdapter) {
->>>>>>> pj/at/release_ver4
+				FlexSetRepository flexSetRepo, EmpComHisAdapter empComHisAdapter, TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepository) {
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter,
 					grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo,
 					specialLeaveBasicInfoRepo, interimRecAbasMngRepo, empSubstVacationRepo,
@@ -848,14 +839,9 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 					careUsedNumberRepo, childCareLeaveRemInfoRepo, careLeaveRemainingInfoRepo,
 					tempChildCareManagementRepo, tempCareManagementRepo, nursingLeaveSettingRepo, executionLogRepo,
 					workingConditionRepository, transaction, employmentAdapter, creatingDailyResultsConditionRepo,
-<<<<<<< HEAD
-					getPeriodFromPreviousToNextGrantDate, workDaysNumberOnLeaveCountRepo,
-					calculateDailyRecordServiceCenter, empComHisAdapter, timeSpecialLeaveMngSetRepository);
-=======
 					getPeriodFromPreviousToNextGrantDate, workDaysNumberOnLeaveCountRepo, calculateDailyRecordServiceCenter,
 					workRegularAdditionSetRepo, addSetManageWorkHourRepo,  workFlexAdditionSetRepo, workDeformedLaborAdditionSetRepo,
-					flexSetRepo, empComHisAdapter);
->>>>>>> pj/at/release_ver4
+					flexSetRepo, empComHisAdapter, timeSpecialLeaveMngSetRepository);
 			this.cache = cache;
 		}
 		

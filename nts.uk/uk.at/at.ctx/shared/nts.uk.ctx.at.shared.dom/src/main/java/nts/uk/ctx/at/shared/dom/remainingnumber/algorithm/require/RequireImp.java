@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.CacheCarrier;
@@ -254,20 +253,6 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	
 	private TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepository;
 
-	private Optional<OutsideOTSetting> outsideOTSettingCache = Optional.empty();
-
-	private Map<String, Optional<FlowWorkSetting>>  flowWorkSetMap = new ConcurrentHashMap<String, Optional<FlowWorkSetting>>();
-
-	private Map<String, Optional<FlexWorkSetting>>  flexWorkSetMap = new ConcurrentHashMap<String, Optional<FlexWorkSetting>>();
-
-	private Map<String, Optional<FixedWorkSetting>>  fixedWorkSetMap = new ConcurrentHashMap<String, Optional<FixedWorkSetting>>();
-
-	private Map<String, Optional<WorkTimeSetting>>  workTimeSetMap = new ConcurrentHashMap<String, Optional<WorkTimeSetting>>();
-
-	private Map<String, Optional<WorkType>>  workTypeMap = new ConcurrentHashMap<String, Optional<WorkType>>();
-
-	private Map<Integer, Optional<Closure>> closureMap = new ConcurrentHashMap<Integer, Optional<Closure>>();
-
 	private CheckCareService checkCareService;
 
 	private WorkingConditionItemService workingConditionItemService;
@@ -306,14 +291,8 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 			GrantYearHolidayRepository grantYearHolidayRepo, PayoutSubofHDManaRepository payoutSubofHDManaRepo,
 			LeaveComDayOffManaRepository leaveComDayOffManaRepo, CheckCareService checkChildCareService,
 			WorkingConditionItemService workingConditionItemService, RemainCreateInforByRecordData remainCreateInforByRecordData,
-<<<<<<< HEAD
-			SysEmploymentHisAdapter sysEmploymentHisAdapter,
-			ElapseYearRepository elapseYearRepository, EmpComHisAdapter empComHisAdapter, ClosureStatusManagementRepository closureStatusManagementRepo,
-			TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepository) {
-=======
 			SysEmploymentHisAdapter sysEmploymentHisAdapter, ElapseYearRepository elapseYearRepository, EmpComHisAdapter empComHisAdapter,
-			ClosureStatusManagementRepository closureStatusManagementRepo) {
->>>>>>> pj/at/release_ver4
+			ClosureStatusManagementRepository closureStatusManagementRepo, TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepository) {
 		this.comSubstVacationRepo = comSubstVacationRepo;
 		this.compensLeaveComSetRepo = compensLeaveComSetRepo;
 		this.specialLeaveGrantRepo = specialLeaveGrantRepo;
@@ -957,10 +936,9 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	}
 
 	@Override
-<<<<<<< HEAD
 	public Optional<TimeSpecialLeaveManagementSetting> findByCompany(String companyId) {
 		return timeSpecialLeaveMngSetRepository.findByCompany(companyId);
-=======
+	}
 	public CompensatoryLeaveEmSetting findComLeavEmpSet(String companyId, String employmentCode) {
 		return this.compensatoryLeaveEmSetting(companyId, employmentCode).orElse(null);
 	}
@@ -968,7 +946,6 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	@Override
 	public CompensatoryLeaveComSetting findComLeavComSet(String companyId) {
 		return this.compensatoryLeaveComSetting(companyId).orElse(null);
->>>>>>> pj/at/release_ver4
 	}
 
 	@Override

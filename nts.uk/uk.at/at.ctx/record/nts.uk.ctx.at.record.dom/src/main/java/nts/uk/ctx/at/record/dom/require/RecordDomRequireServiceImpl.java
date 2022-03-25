@@ -1,4 +1,5 @@
 package nts.uk.ctx.at.record.dom.require;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -405,58 +406,133 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
-public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RequireImp implements RecordDomRequireService.Require {
+public class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RequireImp
+		implements RecordDomRequireService.Require {
 
-		public RecordDomRequireServiceImpl(ComSubstVacationRepository comSubstVacationRepo, CompensLeaveComSetRepository compensLeaveComSetRepo, SpecialLeaveGrantRepository specialLeaveGrantRepo,
-				EmpEmployeeAdapter empEmployeeAdapter, GrantDateTblRepository grantDateTblRepo, AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo, SpecialHolidayRepository specialHolidayRepo,
-				InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo, SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo, InterimRecAbasMngRepository interimRecAbasMngRepo,
-				EmpSubstVacationRepository empSubstVacationRepo, SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepo, PayoutManagementDataRepository payoutManagementDataRepo, 
-				InterimBreakDayOffMngRepository interimBreakDayOffMngRepo, ComDayOffManaDataRepository comDayOffManaDataRepo, CompanyAdapter companyAdapter, ShareEmploymentAdapter shareEmploymentAdapter,
-				LeaveManaDataRepository leaveManaDataRepo, WorkingConditionItemRepository workingConditionItemRepo, WorkingConditionRepository workingConditionRepo, WorkTimeSettingRepository workTimeSettingRepo,
-				FixedWorkSettingRepository fixedWorkSettingRepo, FlowWorkSettingRepository flowWorkSettingRepo, DiffTimeWorkSettingRepository diffTimeWorkSettingRepo, FlexWorkSettingRepository flexWorkSettingRepo,
-				PredetemineTimeSettingRepository predetemineTimeSettingRepo, ClosureRepository closureRepo, ClosureEmploymentRepository closureEmploymentRepo, WorkTypeRepository workTypeRepo, 
-				RemainCreateInforByApplicationData remainCreateInforByApplicationData, CompensLeaveEmSetRepository compensLeaveEmSetRepo, EmploymentSettingRepository employmentSettingRepo, 
-				RetentionYearlySettingRepository retentionYearlySettingRepo, AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepo, OutsideOTSettingRepository outsideOTSettingRepo, 
-				WorkdayoffFrameRepository workdayoffFrameRepo, YearHolidayRepository yearHolidayRepo, TmpResereLeaveMngRepository tmpResereLeaveMngRepo, SysEmploymentHisAdapter sysEmploymentHisAdapter, 
-				RervLeaGrantRemDataRepository rervLeaGrantRemDataRepo, WorkInformationRepository workInformationRepo, AnnLeaRemNumEachMonthRepository annLeaRemNumEachMonthRepo, 
-				LengthServiceRepository lengthServiceRepo, GrantYearHolidayRepository grantYearHolidayRepo, TmpAnnualHolidayMngRepository tmpAnnualHolidayMngRepo, AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo,
-				OperationStartSetDailyPerformRepository operationStartSetDailyPerformRepo, AnnualLeaveRemainHistRepository annualLeaveRemainHistRepo, ClosureStatusManagementRepository closureStatusManagementRepo,
-				AnnLeaMaxDataRepository annLeaMaxDataRepo, AnnLeaGrantRemDataRepository annLeaGrantRemDataRepo, EmploymentHistAdapter employmentHistAdapter, RemainCreateInforByScheData remainCreateInforByScheData,
-				RemainCreateInforByRecordData remainCreateInforByRecordData, UsageUnitSettingRepository usageUnitSettingRepo, AffWorkplaceAdapter affWorkplaceAdapter, 
-				TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepo, TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDailyPerformanceRepo, SpecificDateAttrOfDailyPerforRepo specificDateAttrOfDailyPerforRepo,
-				EmployeeDailyPerErrorRepository employeeDailyPerErrorRepo, AnyItemValueOfDailyRepo anyItemValueOfDailyRepo, PCLogOnInfoOfDailyRepo pcLogOnInfoOfDailyRepo, AttendanceTimeRepository attendanceTimeRepo,
-				PayItemCountOfMonthlyRepository payItemCountOfMonthlyRepo, OptionalItemRepository optionalItemRepo, EmpConditionRepository empConditionRepo, FormulaRepository formulaRepo, FormulaDispOrderRepository formulaDispOrderRepo,
-				ActualLockRepository actualLockRepo, LegalTransferOrderSetOfAggrMonthlyRepository legalTransferOrderSetOfAggrMonthlyRepo, OvertimeWorkFrameRepository roleOvertimeWorkRepo, HolidayAddtionRepository holidayAddtionRepo,
-				MonthlyAggrSetOfFlexRepository monthlyAggrSetOfFlexRepo, InsufficientFlexHolidayMntRepository insufficientFlexHolidayMntRepo, FlexShortageLimitRepository flexShortageLimitRepo,
-				RoundingSetOfMonthlyRepository roundingSetOfMonthlyRepo, TotalTimesRepository totalTimesRepo, AgreementOperationSettingRepository agreementOperationSettingRepo,
-				ManagedParallelWithContext parallel, CheckBeforeCalcFlexChangeService checkBeforeCalcFlexChangeService, AnyItemOfMonthlyRepository anyItemOfMonthlyRepo,
-				EmpCalAndSumExeLogRepository empCalAndSumExeLogRepo, EditStateOfMonthlyPerRepository editStateOfMonthlyPerRepo, AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepo,
-				AttendanceItemConvertFactory converterFactory, GetPredWorkingDaysAdaptor predWorkingDaysAdaptor, UpdateAllDomainMonthService updateAllDomainMonthService,
-				AgreementUnitSettingRepository agreementUnitSetRepo, Workplace36AgreedHoursRepository agreementTimeWorkPlaceRepo, AffClassificationAdapter affClassficationAdapter, SyEmploymentAdapter syEmploymentAdapter,
-				Employment36HoursRepository agreementTimeOfEmploymentRepo, Classification36AgreementTimeRepository agreementTimeOfClassificationRepo, Company36AgreedHoursRepository agreementTimeCompanyRepo, RemainMergeRepository remainMergeRepo,
-				AgreementYearSettingRepository agreementYearSettingRepo, AgreementMonthSettingRepository agreementMonthSettingRepo, AgreementTimeOfManagePeriodRepository agreementTimeOfManagePeriodRepo, TargetPersonRepository targetPersonRepo,
-				ErrMessageInfoRepository errMessageInfoRepo, AnnualLeaveTimeRemainHistRepository annualLeaveTimeRemainHistRepo, AnnualLeaveMaxHistRepository annualLeaveMaxHistRepo,
-				RsvLeaveGrantRemainHistRepository rsvLeaveGrantRemainHistRepo, RsvLeaveGrantTimeRemainHistRepository rsvLeaveGrantTimeRemainHistRepo, InterimRemainOffMonthProcess interimRemainOffMonthProcess,
-				MonthlyClosureUpdateErrorInforRepository monthlyClosureUpdateErrorInforRepo, MonthlyClosureUpdateLogRepository monthlyClosureUpdateLogRepo, MonthlyClosureUpdatePersonLogRepository monthlyClosureUpdatePersonLogRepo,
-				OuenWorkTimeSheetOfDailyRepo ouenWorkTimeSheetOfDailyRepo, OuenWorkTimeOfDailyRepo ouenWorkTimeOfDailyRepo, OuenAggregateFrameSetOfMonthlyRepo ouenAggregateFrameSetOfMonthlyRepo, RegularLaborTimeComRepo regularLaborTimeComRepo,
-				DeforLaborTimeComRepo deforLaborTimeComRepo, RegularLaborTimeWkpRepo regularLaborTimeWkpRepo, DeforLaborTimeWkpRepo deforLaborTimeWkpRepo, RegularLaborTimeEmpRepo regularLaborTimeEmpRepo, DeforLaborTimeEmpRepo deforLaborTimeEmpRepo,
-				RegularLaborTimeShaRepo regularLaborTimeShaRepo, DeforLaborTimeShaRepo deforLaborTimeShaRepo, ShaFlexMonthActCalSetRepo shaFlexMonthActCalSetRepo, ComFlexMonthActCalSetRepo comFlexMonthActCalSetRepo, EmpFlexMonthActCalSetRepo empFlexMonthActCalSetRepo,
-				WkpFlexMonthActCalSetRepo wkpFlexMonthActCalSetRepo, EmpDeforLaborMonthActCalSetRepo empDeforLaborMonthActCalSetRepo, EmpRegulaMonthActCalSetRepo empRegulaMonthActCalSetRepo, ComDeforLaborMonthActCalSetRepo comDeforLaborMonthActCalSetRepo,
-				ComRegulaMonthActCalSetRepo comRegulaMonthActCalSetRepo, ShaDeforLaborMonthActCalSetRepo shaDeforLaborMonthActCalSetRepo, ShaRegulaMonthActCalSetRepo shaRegulaMonthActCalSetRepo, WkpDeforLaborMonthActCalSetRepo wkpDeforLaborMonthActCalSetRepo,
-				WkpRegulaMonthActCalSetRepo wkpRegulaMonthActCalSetRepo, MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo, VerticalTotalMethodOfMonthlyRepository verticalTotalMethodOfMonthlyRepo, StampCardRepository stampCardRepo,
-				BentoReservationRepository bentoReservationRepo, BentoMenuRepository bentoMenuRepo, IntegrationOfDailyGetter integrationOfDailyGetter, WeekRuleManagementRepo weekRuleManagementRepo, SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter,
-				GetProcessingDate getProcessingDate, ElapseYearRepository elapseYearRepository, SyCompanyRecordAdapter syCompanyRecordAdapter, DailySnapshotWorkAdapter snapshotAdapter,
-				SuperHD60HConMedRepository superHD60HConMedRepo, MonthlyAggregationRemainingNumber monthlyAggregationRemainingNumber, PayoutSubofHDManaRepository payoutSubofHDManaRepo,
-				LeaveComDayOffManaRepository leaveComDayOffManaRepo,CheckCareService checkChildCareService,WorkingConditionItemService workingConditionItemService, PublicHolidaySettingRepository publicHolidaySettingRepo, 
-				PublicHolidayManagementUsageUnitRepository publicHolidayManagementUsageUnitRepo, CompanyMonthDaySettingRepository companyMonthDaySettingRepo, TempPublicHolidayManagementRepository tempPublicHolidayManagementRepo,
-				PublicHolidayCarryForwardDataRepository publicHolidayCarryForwardDataRepo, EmploymentMonthDaySettingRepository employmentMonthDaySettingRepo, WorkplaceMonthDaySettingRepository workplaceMonthDaySettingRepo,
-				EmployeeMonthDaySettingRepository employeeMonthDaySettingRepo, PublicHolidayCarryForwardHistoryRepository publicHolidayCarryForwardHistoryRepo,ChildCareUsedNumberRepository childCareUsedNumberRepo,
-				CareUsedNumberRepository careUsedNumberRepo, ChildCareLeaveRemInfoRepository childCareLeaveRemInfoRepo, CareLeaveRemainingInfoRepository careLeaveRemainingInfoRepo, TempChildCareManagementRepository tempChildCareManagementRepo,
-				TempCareManagementRepository tempCareManagementRepo, NursingLeaveSettingRepository nursingLeaveSettingRepo,ExecutionLogRepository executionLogRepo,WorkingConditionRepository workingConditionRepository, TransactionService transaction,
-				EmploymentAdapter employmentAdapter, CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo, GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate, WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo,
-<<<<<<< HEAD
-				CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter, EmpComHisAdapter empComHisAdapter, TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepository) {
-			
+	public RecordDomRequireServiceImpl(ComSubstVacationRepository comSubstVacationRepo,
+			CompensLeaveComSetRepository compensLeaveComSetRepo, SpecialLeaveGrantRepository specialLeaveGrantRepo,
+			EmpEmployeeAdapter empEmployeeAdapter, GrantDateTblRepository grantDateTblRepo,
+			AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo, SpecialHolidayRepository specialHolidayRepo,
+			InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo,
+			SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo,
+			InterimRecAbasMngRepository interimRecAbasMngRepo, EmpSubstVacationRepository empSubstVacationRepo,
+			SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepo,
+			PayoutManagementDataRepository payoutManagementDataRepo,
+			InterimBreakDayOffMngRepository interimBreakDayOffMngRepo,
+			ComDayOffManaDataRepository comDayOffManaDataRepo, CompanyAdapter companyAdapter,
+			ShareEmploymentAdapter shareEmploymentAdapter, LeaveManaDataRepository leaveManaDataRepo,
+			WorkingConditionItemRepository workingConditionItemRepo, WorkingConditionRepository workingConditionRepo,
+			WorkTimeSettingRepository workTimeSettingRepo, FixedWorkSettingRepository fixedWorkSettingRepo,
+			FlowWorkSettingRepository flowWorkSettingRepo, DiffTimeWorkSettingRepository diffTimeWorkSettingRepo,
+			FlexWorkSettingRepository flexWorkSettingRepo, PredetemineTimeSettingRepository predetemineTimeSettingRepo,
+			ClosureRepository closureRepo, ClosureEmploymentRepository closureEmploymentRepo,
+			WorkTypeRepository workTypeRepo, RemainCreateInforByApplicationData remainCreateInforByApplicationData,
+			CompensLeaveEmSetRepository compensLeaveEmSetRepo, EmploymentSettingRepository employmentSettingRepo,
+			RetentionYearlySettingRepository retentionYearlySettingRepo,
+			AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepo,
+			OutsideOTSettingRepository outsideOTSettingRepo, WorkdayoffFrameRepository workdayoffFrameRepo,
+			YearHolidayRepository yearHolidayRepo, TmpResereLeaveMngRepository tmpResereLeaveMngRepo,
+			SysEmploymentHisAdapter sysEmploymentHisAdapter, RervLeaGrantRemDataRepository rervLeaGrantRemDataRepo,
+			WorkInformationRepository workInformationRepo, AnnLeaRemNumEachMonthRepository annLeaRemNumEachMonthRepo,
+			LengthServiceRepository lengthServiceRepo, GrantYearHolidayRepository grantYearHolidayRepo,
+			TmpAnnualHolidayMngRepository tmpAnnualHolidayMngRepo,
+			AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo,
+			OperationStartSetDailyPerformRepository operationStartSetDailyPerformRepo,
+			AnnualLeaveRemainHistRepository annualLeaveRemainHistRepo,
+			ClosureStatusManagementRepository closureStatusManagementRepo, AnnLeaMaxDataRepository annLeaMaxDataRepo,
+			AnnLeaGrantRemDataRepository annLeaGrantRemDataRepo, EmploymentHistAdapter employmentHistAdapter,
+			RemainCreateInforByScheData remainCreateInforByScheData,
+			RemainCreateInforByRecordData remainCreateInforByRecordData,
+			UsageUnitSettingRepository usageUnitSettingRepo, AffWorkplaceAdapter affWorkplaceAdapter,
+			TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepo,
+			TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDailyPerformanceRepo,
+			SpecificDateAttrOfDailyPerforRepo specificDateAttrOfDailyPerforRepo,
+			EmployeeDailyPerErrorRepository employeeDailyPerErrorRepo, AnyItemValueOfDailyRepo anyItemValueOfDailyRepo,
+			PCLogOnInfoOfDailyRepo pcLogOnInfoOfDailyRepo, AttendanceTimeRepository attendanceTimeRepo,
+			PayItemCountOfMonthlyRepository payItemCountOfMonthlyRepo, OptionalItemRepository optionalItemRepo,
+			EmpConditionRepository empConditionRepo, FormulaRepository formulaRepo,
+			FormulaDispOrderRepository formulaDispOrderRepo, ActualLockRepository actualLockRepo,
+			LegalTransferOrderSetOfAggrMonthlyRepository legalTransferOrderSetOfAggrMonthlyRepo,
+			OvertimeWorkFrameRepository roleOvertimeWorkRepo, HolidayAddtionRepository holidayAddtionRepo,
+			MonthlyAggrSetOfFlexRepository monthlyAggrSetOfFlexRepo,
+			InsufficientFlexHolidayMntRepository insufficientFlexHolidayMntRepo,
+			FlexShortageLimitRepository flexShortageLimitRepo, RoundingSetOfMonthlyRepository roundingSetOfMonthlyRepo,
+			TotalTimesRepository totalTimesRepo, AgreementOperationSettingRepository agreementOperationSettingRepo,
+			ManagedParallelWithContext parallel, CheckBeforeCalcFlexChangeService checkBeforeCalcFlexChangeService,
+			AnyItemOfMonthlyRepository anyItemOfMonthlyRepo, EmpCalAndSumExeLogRepository empCalAndSumExeLogRepo,
+			EditStateOfMonthlyPerRepository editStateOfMonthlyPerRepo,
+			AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepo,
+			AttendanceItemConvertFactory converterFactory, GetPredWorkingDaysAdaptor predWorkingDaysAdaptor,
+			UpdateAllDomainMonthService updateAllDomainMonthService,
+			AgreementUnitSettingRepository agreementUnitSetRepo,
+			Workplace36AgreedHoursRepository agreementTimeWorkPlaceRepo,
+			AffClassificationAdapter affClassficationAdapter, SyEmploymentAdapter syEmploymentAdapter,
+			Employment36HoursRepository agreementTimeOfEmploymentRepo,
+			Classification36AgreementTimeRepository agreementTimeOfClassificationRepo,
+			Company36AgreedHoursRepository agreementTimeCompanyRepo, RemainMergeRepository remainMergeRepo,
+			AgreementYearSettingRepository agreementYearSettingRepo,
+			AgreementMonthSettingRepository agreementMonthSettingRepo,
+			AgreementTimeOfManagePeriodRepository agreementTimeOfManagePeriodRepo,
+			TargetPersonRepository targetPersonRepo, ErrMessageInfoRepository errMessageInfoRepo,
+			AnnualLeaveTimeRemainHistRepository annualLeaveTimeRemainHistRepo,
+			AnnualLeaveMaxHistRepository annualLeaveMaxHistRepo,
+			RsvLeaveGrantRemainHistRepository rsvLeaveGrantRemainHistRepo,
+			RsvLeaveGrantTimeRemainHistRepository rsvLeaveGrantTimeRemainHistRepo,
+			InterimRemainOffMonthProcess interimRemainOffMonthProcess,
+			MonthlyClosureUpdateErrorInforRepository monthlyClosureUpdateErrorInforRepo,
+			MonthlyClosureUpdateLogRepository monthlyClosureUpdateLogRepo,
+			MonthlyClosureUpdatePersonLogRepository monthlyClosureUpdatePersonLogRepo,
+			OuenWorkTimeSheetOfDailyRepo ouenWorkTimeSheetOfDailyRepo, OuenWorkTimeOfDailyRepo ouenWorkTimeOfDailyRepo,
+			OuenAggregateFrameSetOfMonthlyRepo ouenAggregateFrameSetOfMonthlyRepo,
+			RegularLaborTimeComRepo regularLaborTimeComRepo, DeforLaborTimeComRepo deforLaborTimeComRepo,
+			RegularLaborTimeWkpRepo regularLaborTimeWkpRepo, DeforLaborTimeWkpRepo deforLaborTimeWkpRepo,
+			RegularLaborTimeEmpRepo regularLaborTimeEmpRepo, DeforLaborTimeEmpRepo deforLaborTimeEmpRepo,
+			RegularLaborTimeShaRepo regularLaborTimeShaRepo, DeforLaborTimeShaRepo deforLaborTimeShaRepo,
+			ShaFlexMonthActCalSetRepo shaFlexMonthActCalSetRepo, ComFlexMonthActCalSetRepo comFlexMonthActCalSetRepo,
+			EmpFlexMonthActCalSetRepo empFlexMonthActCalSetRepo, WkpFlexMonthActCalSetRepo wkpFlexMonthActCalSetRepo,
+			EmpDeforLaborMonthActCalSetRepo empDeforLaborMonthActCalSetRepo,
+			EmpRegulaMonthActCalSetRepo empRegulaMonthActCalSetRepo,
+			ComDeforLaborMonthActCalSetRepo comDeforLaborMonthActCalSetRepo,
+			ComRegulaMonthActCalSetRepo comRegulaMonthActCalSetRepo,
+			ShaDeforLaborMonthActCalSetRepo shaDeforLaborMonthActCalSetRepo,
+			ShaRegulaMonthActCalSetRepo shaRegulaMonthActCalSetRepo,
+			WkpDeforLaborMonthActCalSetRepo wkpDeforLaborMonthActCalSetRepo,
+			WkpRegulaMonthActCalSetRepo wkpRegulaMonthActCalSetRepo, MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo,
+			VerticalTotalMethodOfMonthlyRepository verticalTotalMethodOfMonthlyRepo, StampCardRepository stampCardRepo,
+			BentoReservationRepository bentoReservationRepo, BentoMenuRepository bentoMenuRepo,
+			IntegrationOfDailyGetter integrationOfDailyGetter, WeekRuleManagementRepo weekRuleManagementRepo,
+			SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter, GetProcessingDate getProcessingDate,
+			ElapseYearRepository elapseYearRepository, SyCompanyRecordAdapter syCompanyRecordAdapter,
+			DailySnapshotWorkAdapter snapshotAdapter, SuperHD60HConMedRepository superHD60HConMedRepo,
+			MonthlyAggregationRemainingNumber monthlyAggregationRemainingNumber,
+			PayoutSubofHDManaRepository payoutSubofHDManaRepo, LeaveComDayOffManaRepository leaveComDayOffManaRepo,
+			CheckCareService checkChildCareService, WorkingConditionItemService workingConditionItemService,
+			PublicHolidaySettingRepository publicHolidaySettingRepo,
+			PublicHolidayManagementUsageUnitRepository publicHolidayManagementUsageUnitRepo,
+			CompanyMonthDaySettingRepository companyMonthDaySettingRepo,
+			TempPublicHolidayManagementRepository tempPublicHolidayManagementRepo,
+			PublicHolidayCarryForwardDataRepository publicHolidayCarryForwardDataRepo,
+			EmploymentMonthDaySettingRepository employmentMonthDaySettingRepo,
+			WorkplaceMonthDaySettingRepository workplaceMonthDaySettingRepo,
+			EmployeeMonthDaySettingRepository employeeMonthDaySettingRepo,
+			PublicHolidayCarryForwardHistoryRepository publicHolidayCarryForwardHistoryRepo,
+			ChildCareUsedNumberRepository childCareUsedNumberRepo, CareUsedNumberRepository careUsedNumberRepo,
+			ChildCareLeaveRemInfoRepository childCareLeaveRemInfoRepo,
+			CareLeaveRemainingInfoRepository careLeaveRemainingInfoRepo,
+			TempChildCareManagementRepository tempChildCareManagementRepo,
+			TempCareManagementRepository tempCareManagementRepo, NursingLeaveSettingRepository nursingLeaveSettingRepo,
+			ExecutionLogRepository executionLogRepo, WorkingConditionRepository workingConditionRepository,
+			TransactionService transaction, EmploymentAdapter employmentAdapter,
+			CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo,
+			GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate,
+			WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo,
+			CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter,
+			WorkRegularAdditionSetRepository workRegularAdditionSetRepo,
+			AddSetManageWorkHourRepository addSetManageWorkHourRepo,
+			WorkFlexAdditionSetRepository workFlexAdditionSetRepo,
+			WorkDeformedLaborAdditionSetRepository workDeformedLaborAdditionSetRepo, FlexSetRepository flexSetRepo,
+			EmpComHisAdapter empComHisAdapter, TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepository) {
+
 		super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter, grantDateTblRepo,
 				annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo, specialLeaveBasicInfoRepo,
 				interimRecAbasMngRepo, empSubstVacationRepo, substitutionOfHDManaDataRepo, payoutManagementDataRepo,
@@ -468,2788 +544,2781 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 				retentionYearlySettingRepo, annualPaidLeaveSettingRepo, outsideOTSettingRepo, workdayoffFrameRepo,
 				yearHolidayRepo, usageUnitSettingRepo, regularLaborTimeComRepo, deforLaborTimeComRepo,
 				regularLaborTimeWkpRepo, deforLaborTimeWkpRepo, regularLaborTimeEmpRepo, deforLaborTimeEmpRepo,
-				regularLaborTimeShaRepo, deforLaborTimeShaRepo, sharedAffWorkPlaceHisAdapter, lengthServiceRepository,
+				regularLaborTimeShaRepo, deforLaborTimeShaRepo, sharedAffWorkPlaceHisAdapter, lengthServiceRepo,
 				grantYearHolidayRepo, payoutSubofHDManaRepo, leaveComDayOffManaRepo, checkChildCareService,
-				workingConditionItemService, remainCreateInforByRecordData, sysEmploymentHisAdapter, elapseYearRepo,
-				empComHisAdapter, closureStatusManagementRepo, timeSpecialLeaveMngSetRepository);
-=======
-				CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter, WorkRegularAdditionSetRepository workRegularAdditionSetRepo, AddSetManageWorkHourRepository addSetManageWorkHourRepo, WorkFlexAdditionSetRepository workFlexAdditionSetRepo,
-				WorkDeformedLaborAdditionSetRepository workDeformedLaborAdditionSetRepo, FlexSetRepository flexSetRepo, EmpComHisAdapter empComHisAdapter) {
-			
-			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, 
-					specialHolidayRepo, interimSpecialHolidayMngRepo, specialLeaveBasicInfoRepo, interimRecAbasMngRepo, empSubstVacationRepo, 
-					substitutionOfHDManaDataRepo, payoutManagementDataRepo, interimBreakDayOffMngRepo, comDayOffManaDataRepo, companyAdapter, shareEmploymentAdapter, leaveManaDataRepo,
-					workingConditionItemRepo, workingConditionRepo, workTimeSettingRepo, fixedWorkSettingRepo, flowWorkSettingRepo, diffTimeWorkSettingRepo, flexWorkSettingRepo,
-					predetemineTimeSettingRepo, closureRepo, closureEmploymentRepo, workTypeRepo, remainCreateInforByApplicationData, compensLeaveEmSetRepo, employmentSettingRepo,
-					retentionYearlySettingRepo, annualPaidLeaveSettingRepo, outsideOTSettingRepo, workdayoffFrameRepo, yearHolidayRepo, usageUnitSettingRepo,
-					regularLaborTimeComRepo, deforLaborTimeComRepo, regularLaborTimeWkpRepo, deforLaborTimeWkpRepo, regularLaborTimeEmpRepo, deforLaborTimeEmpRepo,
-					regularLaborTimeShaRepo, deforLaborTimeShaRepo, sharedAffWorkPlaceHisAdapter, lengthServiceRepo, grantYearHolidayRepo, payoutSubofHDManaRepo,
-					leaveComDayOffManaRepo, checkChildCareService, workingConditionItemService, remainCreateInforByRecordData, sysEmploymentHisAdapter,
-					elapseYearRepository, empComHisAdapter, closureStatusManagementRepo);
->>>>>>> pj/at/release_ver4
+				workingConditionItemService, remainCreateInforByRecordData, sysEmploymentHisAdapter,
+				elapseYearRepository, empComHisAdapter, closureStatusManagementRepo, timeSpecialLeaveMngSetRepository);
+		this.tmpResereLeaveMngRepo = tmpResereLeaveMngRepo;
+		this.sysEmploymentHisAdapter = sysEmploymentHisAdapter;
+		this.rervLeaGrantRemDataRepo = rervLeaGrantRemDataRepo;
+		this.workInformationRepo = workInformationRepo;
+		this.annLeaRemNumEachMonthRepo = annLeaRemNumEachMonthRepo;
+		this.tmpAnnualHolidayMngRepo = tmpAnnualHolidayMngRepo;
+		this.attendanceTimeOfMonthlyRepo = attendanceTimeOfMonthlyRepo;
+		this.operationStartSetDailyPerformRepo = operationStartSetDailyPerformRepo;
+		this.annualLeaveRemainHistRepo = annualLeaveRemainHistRepo;
+		this.closureStatusManagementRepo = closureStatusManagementRepo;
+		this.annLeaMaxDataRepo = annLeaMaxDataRepo;
+		this.annLeaGrantRemDataRepo = annLeaGrantRemDataRepo;
+		this.employmentHistAdapter = employmentHistAdapter;
+		this.remainCreateInforByScheData = remainCreateInforByScheData;
+		this.remainCreateInforByRecordData = remainCreateInforByRecordData;
+		this.remainCreateInforByApplicationData = remainCreateInforByApplicationData;
+		this.usageUnitSettingRepo = usageUnitSettingRepo;
+		this.affWorkplaceAdapter = affWorkplaceAdapter;
+		this.timeLeavingOfDailyPerformanceRepo = timeLeavingOfDailyPerformanceRepo;
+		this.temporaryTimeOfDailyPerformanceRepo = temporaryTimeOfDailyPerformanceRepo;
+		this.specificDateAttrOfDailyPerforRepo = specificDateAttrOfDailyPerforRepo;
+		this.employeeDailyPerErrorRepo = employeeDailyPerErrorRepo;
+		this.anyItemValueOfDailyRepo = anyItemValueOfDailyRepo;
+		this.pcLogOnInfoOfDailyRepo = pcLogOnInfoOfDailyRepo;
+		this.attendanceTimeRepo = attendanceTimeRepo;
+		this.payItemCountOfMonthlyRepo = payItemCountOfMonthlyRepo;
+		this.optionalItemRepo = optionalItemRepo;
+		this.empConditionRepo = empConditionRepo;
+		this.formulaRepo = formulaRepo;
+		this.formulaDispOrderRepo = formulaDispOrderRepo;
+		this.actualLockRepo = actualLockRepo;
+		this.legalTransferOrderSetOfAggrMonthlyRepo = legalTransferOrderSetOfAggrMonthlyRepo;
+		this.roleOvertimeWorkRepo = roleOvertimeWorkRepo;
+		this.holidayAddtionRepo = holidayAddtionRepo;
+		this.monthlyAggrSetOfFlexRepo = monthlyAggrSetOfFlexRepo;
+		this.insufficientFlexHolidayMntRepo = insufficientFlexHolidayMntRepo;
+		this.flexShortageLimitRepo = flexShortageLimitRepo;
+		this.roundingSetOfMonthlyRepo = roundingSetOfMonthlyRepo;
+		this.totalTimesRepo = totalTimesRepo;
+		this.agreementOperationSettingRepo = agreementOperationSettingRepo;
+		this.predetemineTimeSettingRepo = predetemineTimeSettingRepo;
+		this.parallel = parallel;
+		this.checkBeforeCalcFlexChangeService = checkBeforeCalcFlexChangeService;
+		this.companyAdapter = companyAdapter;
+		this.anyItemOfMonthlyRepo = anyItemOfMonthlyRepo;
+		this.empCalAndSumExeLogRepo = empCalAndSumExeLogRepo;
+		this.editStateOfMonthlyPerRepo = editStateOfMonthlyPerRepo;
+		this.affiliationInforOfDailyPerforRepo = affiliationInforOfDailyPerforRepo;
+		this.specialHolidayRepo = specialHolidayRepo;
+		this.converterFactory = converterFactory;
+		this.predWorkingDaysAdaptor = predWorkingDaysAdaptor;
+		this.updateAllDomainMonthService = updateAllDomainMonthService;
+		this.agreementUnitSetRepo = agreementUnitSetRepo;
+		this.agreementTimeWorkPlaceRepo = agreementTimeWorkPlaceRepo;
+		this.affClassficationAdapter = affClassficationAdapter;
+		this.syEmploymentAdapter = syEmploymentAdapter;
+		this.agreementTimeOfEmploymentRepo = agreementTimeOfEmploymentRepo;
+		this.agreementTimeOfClassificationRepo = agreementTimeOfClassificationRepo;
+		this.agreementTimeCompanyRepo = agreementTimeCompanyRepo;
+		this.agreementYearSettingRepo = agreementYearSettingRepo;
+		this.agreementMonthSettingRepo = agreementMonthSettingRepo;
+		this.agreementTimeOfManagePeriodRepo = agreementTimeOfManagePeriodRepo;
+		this.targetPersonRepo = targetPersonRepo;
+		this.errMessageInfoRepo = errMessageInfoRepo;
+		this.substitutionOfHDManaDataRepo = substitutionOfHDManaDataRepo;
+		this.payoutManagementDataRepo = payoutManagementDataRepo;
+		this.comDayOffManaDataRepo = comDayOffManaDataRepo;
+		this.leaveManaDataRepo = leaveManaDataRepo;
+		this.interimBreakDayOffMngRepo = interimBreakDayOffMngRepo;
+		this.specialLeaveGrantRepo = specialLeaveGrantRepo;
+		this.annualLeaveTimeRemainHistRepo = annualLeaveTimeRemainHistRepo;
+		this.annualLeaveMaxHistRepo = annualLeaveMaxHistRepo;
+		this.rsvLeaveGrantRemainHistRepo = rsvLeaveGrantRemainHistRepo;
+		this.rsvLeaveGrantTimeRemainHistRepo = rsvLeaveGrantTimeRemainHistRepo;
+		this.interimRecAbasMngRepo = interimRecAbasMngRepo;
+		this.interimSpecialHolidayMngRepo = interimSpecialHolidayMngRepo;
+		this.interimRemainOffMonthProcess = interimRemainOffMonthProcess;
+		this.monthlyClosureUpdateErrorInforRepo = monthlyClosureUpdateErrorInforRepo;
+		this.monthlyClosureUpdateLogRepo = monthlyClosureUpdateLogRepo;
+		this.monthlyClosureUpdatePersonLogRepo = monthlyClosureUpdatePersonLogRepo;
+		this.ouenWorkTimeSheetOfDailyRepo = ouenWorkTimeSheetOfDailyRepo;
+		this.ouenWorkTimeOfDailyRepo = ouenWorkTimeOfDailyRepo;
+		this.ouenAggregateFrameSetOfMonthlyRepo = ouenAggregateFrameSetOfMonthlyRepo;
+		this.regularLaborTimeComRepo = regularLaborTimeComRepo;
+		this.deforLaborTimeComRepo = deforLaborTimeComRepo;
+		this.regularLaborTimeWkpRepo = regularLaborTimeWkpRepo;
+		this.deforLaborTimeWkpRepo = deforLaborTimeWkpRepo;
+		this.regularLaborTimeEmpRepo = regularLaborTimeEmpRepo;
+		this.deforLaborTimeEmpRepo = deforLaborTimeEmpRepo;
+		this.regularLaborTimeShaRepo = regularLaborTimeShaRepo;
+		this.deforLaborTimeShaRepo = deforLaborTimeShaRepo;
+		this.shaFlexMonthActCalSetRepo = shaFlexMonthActCalSetRepo;
+		this.comFlexMonthActCalSetRepo = comFlexMonthActCalSetRepo;
+		this.empFlexMonthActCalSetRepo = empFlexMonthActCalSetRepo;
+		this.wkpFlexMonthActCalSetRepo = wkpFlexMonthActCalSetRepo;
+		this.empDeforLaborMonthActCalSetRepo = empDeforLaborMonthActCalSetRepo;
+		this.empRegulaMonthActCalSetRepo = empRegulaMonthActCalSetRepo;
+		this.comDeforLaborMonthActCalSetRepo = comDeforLaborMonthActCalSetRepo;
+		this.comRegulaMonthActCalSetRepo = comRegulaMonthActCalSetRepo;
+		this.shaDeforLaborMonthActCalSetRepo = shaDeforLaborMonthActCalSetRepo;
+		this.shaRegulaMonthActCalSetRepo = shaRegulaMonthActCalSetRepo;
+		this.wkpDeforLaborMonthActCalSetRepo = wkpDeforLaborMonthActCalSetRepo;
+		this.wkpRegulaMonthActCalSetRepo = wkpRegulaMonthActCalSetRepo;
+		this.monthlyWorkTimeSetRepo = monthlyWorkTimeSetRepo;
+		this.verticalTotalMethodOfMonthlyRepo = verticalTotalMethodOfMonthlyRepo;
+		this.stampCardRepo = stampCardRepo;
+		this.bentoReservationRepo = bentoReservationRepo;
+		this.bentoMenuRepo = bentoMenuRepo;
+		this.weekRuleManagementRepo = weekRuleManagementRepo;
+		this.integrationOfDailyGetter = integrationOfDailyGetter;
+		this.getProcessingDate = getProcessingDate;
+		this.snapshotAdapter = snapshotAdapter;
+		this.superHD60HConMedRepo = superHD60HConMedRepo;
+		this.monthlyAggregationRemainingNumber = monthlyAggregationRemainingNumber;
+		this.elapseYearRepository = elapseYearRepository;
+		this.leaveComDayOffManaRepo = leaveComDayOffManaRepo;
+		this.payoutSubofHDManaRepo = payoutSubofHDManaRepo;
+		this.publicHolidaySettingRepo = publicHolidaySettingRepo;
+		this.publicHolidayManagementUsageUnitRepo = publicHolidayManagementUsageUnitRepo;
+		this.companyMonthDaySettingRepo = companyMonthDaySettingRepo;
+		this.tempPublicHolidayManagementRepo = tempPublicHolidayManagementRepo;
+		this.publicHolidayCarryForwardDataRepo = publicHolidayCarryForwardDataRepo;
+		this.employmentMonthDaySettingRepo = employmentMonthDaySettingRepo;
+		this.workplaceMonthDaySettingRepo = workplaceMonthDaySettingRepo;
+		this.employeeMonthDaySettingRepo = employeeMonthDaySettingRepo;
+		this.publicHolidayCarryForwardHistoryRepo = publicHolidayCarryForwardHistoryRepo;
+		this.childCareUsedNumberRepo = childCareUsedNumberRepo;
+		this.careUsedNumberRepo = careUsedNumberRepo;
+		this.childCareLeaveRemInfoRepo = childCareLeaveRemInfoRepo;
+		this.careLeaveRemainingInfoRepo = careLeaveRemainingInfoRepo;
+		this.tempChildCareManagementRepo = tempChildCareManagementRepo;
+		this.tempCareManagementRepo = tempCareManagementRepo;
+		this.nursingLeaveSettingRepo = nursingLeaveSettingRepo;
+		this.executionLogRepo = executionLogRepo;
+		this.workingConditionRepository = workingConditionRepository;
+		this.workDaysNumberOnLeaveCountRepo = workDaysNumberOnLeaveCountRepo;
+		this.getPeriodFromPreviousToNextGrantDate = getPeriodFromPreviousToNextGrantDate;
+		this.transaction = transaction;
+		this.employmentAdapter = employmentAdapter;
+		this.creatingDailyResultsConditionRepo = creatingDailyResultsConditionRepo;
+		this.calculateDailyRecordServiceCenter = calculateDailyRecordServiceCenter;
+		this.remainMergeRepo = remainMergeRepo;
+		this.workRegularAdditionSetRepo = workRegularAdditionSetRepo;
+		this.addSetManageWorkHourRepo = addSetManageWorkHourRepo;
+		this.workFlexAdditionSetRepo = workFlexAdditionSetRepo;
+		this.workDeformedLaborAdditionSetRepo = workDeformedLaborAdditionSetRepo;
+		this.flexSetRepo = flexSetRepo;
+	}
 
-			this.tmpResereLeaveMngRepo = tmpResereLeaveMngRepo;
-			this.sysEmploymentHisAdapter = sysEmploymentHisAdapter;
-			this.rervLeaGrantRemDataRepo = rervLeaGrantRemDataRepo;
-			this.workInformationRepo = workInformationRepo;
-			this.annLeaRemNumEachMonthRepo = annLeaRemNumEachMonthRepo;
-			this.tmpAnnualHolidayMngRepo = tmpAnnualHolidayMngRepo;
-			this.attendanceTimeOfMonthlyRepo = attendanceTimeOfMonthlyRepo;
-			this.operationStartSetDailyPerformRepo = operationStartSetDailyPerformRepo;
-			this.annualLeaveRemainHistRepo = annualLeaveRemainHistRepo;
-			this.closureStatusManagementRepo = closureStatusManagementRepo;
-			this.annLeaMaxDataRepo = annLeaMaxDataRepo;
-			this.annLeaGrantRemDataRepo = annLeaGrantRemDataRepo;
-			this.employmentHistAdapter = employmentHistAdapter;
-			this.remainCreateInforByScheData = remainCreateInforByScheData;
-			this.remainCreateInforByRecordData = remainCreateInforByRecordData;
-			this.remainCreateInforByApplicationData = remainCreateInforByApplicationData;
-			this.usageUnitSettingRepo = usageUnitSettingRepo;
-			this.affWorkplaceAdapter = affWorkplaceAdapter;
-			this.timeLeavingOfDailyPerformanceRepo = timeLeavingOfDailyPerformanceRepo;
-			this.temporaryTimeOfDailyPerformanceRepo = temporaryTimeOfDailyPerformanceRepo;
-			this.specificDateAttrOfDailyPerforRepo = specificDateAttrOfDailyPerforRepo;
-			this.employeeDailyPerErrorRepo = employeeDailyPerErrorRepo;
-			this.anyItemValueOfDailyRepo = anyItemValueOfDailyRepo;
-			this.pcLogOnInfoOfDailyRepo = pcLogOnInfoOfDailyRepo;
-			this.attendanceTimeRepo = attendanceTimeRepo;
-			this.payItemCountOfMonthlyRepo = payItemCountOfMonthlyRepo;
-			this.optionalItemRepo = optionalItemRepo;
-			this.empConditionRepo = empConditionRepo;
-			this.formulaRepo = formulaRepo;
-			this.formulaDispOrderRepo = formulaDispOrderRepo;
-			this.actualLockRepo = actualLockRepo;
-			this.legalTransferOrderSetOfAggrMonthlyRepo = legalTransferOrderSetOfAggrMonthlyRepo;
-			this.roleOvertimeWorkRepo = roleOvertimeWorkRepo;
-			this.holidayAddtionRepo = holidayAddtionRepo;
-			this.monthlyAggrSetOfFlexRepo = monthlyAggrSetOfFlexRepo;
-			this.insufficientFlexHolidayMntRepo = insufficientFlexHolidayMntRepo;
-			this.flexShortageLimitRepo = flexShortageLimitRepo;
-			this.roundingSetOfMonthlyRepo = roundingSetOfMonthlyRepo;
-			this.totalTimesRepo = totalTimesRepo;
-			this.agreementOperationSettingRepo = agreementOperationSettingRepo;
-			this.predetemineTimeSettingRepo = predetemineTimeSettingRepo;
-			this.parallel = parallel;
-			this.checkBeforeCalcFlexChangeService = checkBeforeCalcFlexChangeService;
-			this.companyAdapter = companyAdapter;
-			this.anyItemOfMonthlyRepo = anyItemOfMonthlyRepo;
-			this.empCalAndSumExeLogRepo = empCalAndSumExeLogRepo;
-			this.editStateOfMonthlyPerRepo = editStateOfMonthlyPerRepo;
-			this.affiliationInforOfDailyPerforRepo = affiliationInforOfDailyPerforRepo;
-			this.specialHolidayRepo = specialHolidayRepo;
-			this.converterFactory = converterFactory;
-			this.predWorkingDaysAdaptor = predWorkingDaysAdaptor;
-			this.updateAllDomainMonthService = updateAllDomainMonthService;
-			this.agreementUnitSetRepo = agreementUnitSetRepo;
-			this.agreementTimeWorkPlaceRepo = agreementTimeWorkPlaceRepo;
-			this.affClassficationAdapter = affClassficationAdapter;
-			this.syEmploymentAdapter = syEmploymentAdapter;
-			this.agreementTimeOfEmploymentRepo = agreementTimeOfEmploymentRepo;
-			this.agreementTimeOfClassificationRepo = agreementTimeOfClassificationRepo;
-			this.agreementTimeCompanyRepo = agreementTimeCompanyRepo;
-			this.agreementYearSettingRepo = agreementYearSettingRepo;
-			this.agreementMonthSettingRepo = agreementMonthSettingRepo;
-			this.agreementTimeOfManagePeriodRepo = agreementTimeOfManagePeriodRepo;
-			this.targetPersonRepo = targetPersonRepo;
-			this.errMessageInfoRepo = errMessageInfoRepo;
-			this.substitutionOfHDManaDataRepo = substitutionOfHDManaDataRepo;
-			this.payoutManagementDataRepo = payoutManagementDataRepo;
-			this.comDayOffManaDataRepo = comDayOffManaDataRepo;
-			this.leaveManaDataRepo = leaveManaDataRepo;
-			this.interimBreakDayOffMngRepo = interimBreakDayOffMngRepo;
-			this.specialLeaveGrantRepo = specialLeaveGrantRepo;
-			this.annualLeaveTimeRemainHistRepo = annualLeaveTimeRemainHistRepo;
-			this.annualLeaveMaxHistRepo = annualLeaveMaxHistRepo;
-			this.rsvLeaveGrantRemainHistRepo = rsvLeaveGrantRemainHistRepo;
-			this.rsvLeaveGrantTimeRemainHistRepo = rsvLeaveGrantTimeRemainHistRepo;
-			this.interimRecAbasMngRepo = interimRecAbasMngRepo;
-			this.interimSpecialHolidayMngRepo = interimSpecialHolidayMngRepo;
-			this.interimRemainOffMonthProcess = interimRemainOffMonthProcess;
-			this.monthlyClosureUpdateErrorInforRepo = monthlyClosureUpdateErrorInforRepo;
-			this.monthlyClosureUpdateLogRepo = monthlyClosureUpdateLogRepo;
-			this.monthlyClosureUpdatePersonLogRepo = monthlyClosureUpdatePersonLogRepo;
-			this.ouenWorkTimeSheetOfDailyRepo = ouenWorkTimeSheetOfDailyRepo;
-			this.ouenWorkTimeOfDailyRepo = ouenWorkTimeOfDailyRepo;
-			this.ouenAggregateFrameSetOfMonthlyRepo = ouenAggregateFrameSetOfMonthlyRepo;
-			this.regularLaborTimeComRepo = regularLaborTimeComRepo;
-			this.deforLaborTimeComRepo = deforLaborTimeComRepo;
-			this.regularLaborTimeWkpRepo = regularLaborTimeWkpRepo;
-			this.deforLaborTimeWkpRepo = deforLaborTimeWkpRepo;
-			this.regularLaborTimeEmpRepo = regularLaborTimeEmpRepo;
-			this.deforLaborTimeEmpRepo = deforLaborTimeEmpRepo;
-			this.regularLaborTimeShaRepo = regularLaborTimeShaRepo;
-			this.deforLaborTimeShaRepo = deforLaborTimeShaRepo;
-			this.shaFlexMonthActCalSetRepo = shaFlexMonthActCalSetRepo;
-			this.comFlexMonthActCalSetRepo = comFlexMonthActCalSetRepo;
-			this.empFlexMonthActCalSetRepo = empFlexMonthActCalSetRepo;
-			this.wkpFlexMonthActCalSetRepo = wkpFlexMonthActCalSetRepo;
-			this.empDeforLaborMonthActCalSetRepo = empDeforLaborMonthActCalSetRepo;
-			this.empRegulaMonthActCalSetRepo = empRegulaMonthActCalSetRepo;
-			this.comDeforLaborMonthActCalSetRepo = comDeforLaborMonthActCalSetRepo;
-			this.comRegulaMonthActCalSetRepo = comRegulaMonthActCalSetRepo;
-			this.shaDeforLaborMonthActCalSetRepo = shaDeforLaborMonthActCalSetRepo;
-			this.shaRegulaMonthActCalSetRepo = shaRegulaMonthActCalSetRepo;
-			this.wkpDeforLaborMonthActCalSetRepo = wkpDeforLaborMonthActCalSetRepo;
-			this.wkpRegulaMonthActCalSetRepo = wkpRegulaMonthActCalSetRepo;
-			this.monthlyWorkTimeSetRepo = monthlyWorkTimeSetRepo;
-			this.verticalTotalMethodOfMonthlyRepo = verticalTotalMethodOfMonthlyRepo;
-			this.stampCardRepo = stampCardRepo;
-			this.bentoReservationRepo = bentoReservationRepo;
-			this.bentoMenuRepo = bentoMenuRepo;
-			this.weekRuleManagementRepo = weekRuleManagementRepo;
-			this.integrationOfDailyGetter = integrationOfDailyGetter;
-			this.getProcessingDate = getProcessingDate;
-			this.snapshotAdapter = snapshotAdapter;
-			this.superHD60HConMedRepo = superHD60HConMedRepo;
-			this.monthlyAggregationRemainingNumber = monthlyAggregationRemainingNumber;
-			this.elapseYearRepository = elapseYearRepository;
-			this.leaveComDayOffManaRepo = leaveComDayOffManaRepo;
-			this.payoutSubofHDManaRepo = payoutSubofHDManaRepo;
-			this.publicHolidaySettingRepo = publicHolidaySettingRepo;
-			this.publicHolidayManagementUsageUnitRepo = publicHolidayManagementUsageUnitRepo;
-			this.companyMonthDaySettingRepo = companyMonthDaySettingRepo;
-			this.tempPublicHolidayManagementRepo = tempPublicHolidayManagementRepo;
-			this.publicHolidayCarryForwardDataRepo = publicHolidayCarryForwardDataRepo;
-			this.employmentMonthDaySettingRepo = employmentMonthDaySettingRepo;
-			this.workplaceMonthDaySettingRepo = workplaceMonthDaySettingRepo;
-			this.employeeMonthDaySettingRepo = employeeMonthDaySettingRepo;
-			this.publicHolidayCarryForwardHistoryRepo = publicHolidayCarryForwardHistoryRepo;
-			this.childCareUsedNumberRepo = childCareUsedNumberRepo;
-			this.careUsedNumberRepo = careUsedNumberRepo;
-			this.childCareLeaveRemInfoRepo = childCareLeaveRemInfoRepo;
-			this.careLeaveRemainingInfoRepo = careLeaveRemainingInfoRepo;
-			this.tempChildCareManagementRepo = tempChildCareManagementRepo;
-			this.tempCareManagementRepo = tempCareManagementRepo;
-			this.nursingLeaveSettingRepo = nursingLeaveSettingRepo;
-			this.executionLogRepo = executionLogRepo;
-			this.workingConditionRepository = workingConditionRepository;
-			this.workDaysNumberOnLeaveCountRepo = workDaysNumberOnLeaveCountRepo;
-			this.getPeriodFromPreviousToNextGrantDate = getPeriodFromPreviousToNextGrantDate;
-			this.transaction = transaction;
-			this.employmentAdapter = employmentAdapter;
-			this.creatingDailyResultsConditionRepo = creatingDailyResultsConditionRepo;
-			this.calculateDailyRecordServiceCenter = calculateDailyRecordServiceCenter;
-			this.remainMergeRepo = remainMergeRepo;
-			this.workRegularAdditionSetRepo = workRegularAdditionSetRepo;
-			this.addSetManageWorkHourRepo = addSetManageWorkHourRepo;
-			this.workFlexAdditionSetRepo = workFlexAdditionSetRepo;
-			this.workDeformedLaborAdditionSetRepo = workDeformedLaborAdditionSetRepo;
-			this.flexSetRepo = flexSetRepo;
-		}
-		protected EmploymentAdapter employmentAdapter;
-		protected CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo;
-		private WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo;
+	protected EmploymentAdapter employmentAdapter;
+	protected CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo;
+	private WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo;
 
-		protected TransactionService transaction;
-		
-		private SuperHD60HConMedRepository superHD60HConMedRepo;
+	protected TransactionService transaction;
 
-		private DailySnapshotWorkAdapter snapshotAdapter;
+	private SuperHD60HConMedRepository superHD60HConMedRepo;
 
-		private GetProcessingDate getProcessingDate;
+	private DailySnapshotWorkAdapter snapshotAdapter;
 
-		private TmpResereLeaveMngRepository tmpResereLeaveMngRepo;
+	private GetProcessingDate getProcessingDate;
 
-		private SysEmploymentHisAdapter sysEmploymentHisAdapter;
+	private TmpResereLeaveMngRepository tmpResereLeaveMngRepo;
 
-		private RervLeaGrantRemDataRepository rervLeaGrantRemDataRepo;
+	private SysEmploymentHisAdapter sysEmploymentHisAdapter;
 
-		private WorkInformationRepository workInformationRepo;
+	private RervLeaGrantRemDataRepository rervLeaGrantRemDataRepo;
 
-		private AnnLeaRemNumEachMonthRepository annLeaRemNumEachMonthRepo;
+	private WorkInformationRepository workInformationRepo;
 
-		private TmpAnnualHolidayMngRepository tmpAnnualHolidayMngRepo;
+	private AnnLeaRemNumEachMonthRepository annLeaRemNumEachMonthRepo;
 
-		private AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo;
+	private TmpAnnualHolidayMngRepository tmpAnnualHolidayMngRepo;
 
-		private OperationStartSetDailyPerformRepository operationStartSetDailyPerformRepo;
+	private AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo;
 
-		private AnnualLeaveRemainHistRepository annualLeaveRemainHistRepo;
+	private OperationStartSetDailyPerformRepository operationStartSetDailyPerformRepo;
 
-		private ClosureStatusManagementRepository closureStatusManagementRepo;
+	private AnnualLeaveRemainHistRepository annualLeaveRemainHistRepo;
 
-		private AnnLeaMaxDataRepository annLeaMaxDataRepo;
+	private ClosureStatusManagementRepository closureStatusManagementRepo;
 
-		private AnnLeaGrantRemDataRepository annLeaGrantRemDataRepo;
+	private AnnLeaMaxDataRepository annLeaMaxDataRepo;
 
-		private EmploymentHistAdapter employmentHistAdapter;
+	private AnnLeaGrantRemDataRepository annLeaGrantRemDataRepo;
 
-		private RemainCreateInforByScheData remainCreateInforByScheData;
+	private EmploymentHistAdapter employmentHistAdapter;
 
-		private RemainCreateInforByRecordData remainCreateInforByRecordData;
+	private RemainCreateInforByScheData remainCreateInforByScheData;
 
-		private RemainCreateInforByApplicationData remainCreateInforByApplicationData;
+	private RemainCreateInforByRecordData remainCreateInforByRecordData;
 
-		private UsageUnitSettingRepository usageUnitSettingRepo;
+	private RemainCreateInforByApplicationData remainCreateInforByApplicationData;
 
-		private AffWorkplaceAdapter affWorkplaceAdapter;
+	private UsageUnitSettingRepository usageUnitSettingRepo;
 
-		private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepo;
+	private AffWorkplaceAdapter affWorkplaceAdapter;
 
-		private TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDailyPerformanceRepo;
+	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepo;
 
-		private SpecificDateAttrOfDailyPerforRepo specificDateAttrOfDailyPerforRepo;
+	private TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDailyPerformanceRepo;
 
-		private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepo;
+	private SpecificDateAttrOfDailyPerforRepo specificDateAttrOfDailyPerforRepo;
 
-		private AnyItemValueOfDailyRepo anyItemValueOfDailyRepo;
+	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepo;
 
-		private PCLogOnInfoOfDailyRepo pcLogOnInfoOfDailyRepo;
+	private AnyItemValueOfDailyRepo anyItemValueOfDailyRepo;
 
-		private AttendanceTimeRepository attendanceTimeRepo;
+	private PCLogOnInfoOfDailyRepo pcLogOnInfoOfDailyRepo;
 
-		private PayItemCountOfMonthlyRepository payItemCountOfMonthlyRepo;
+	private AttendanceTimeRepository attendanceTimeRepo;
 
-		private OptionalItemRepository optionalItemRepo;
+	private PayItemCountOfMonthlyRepository payItemCountOfMonthlyRepo;
 
-		private EmpConditionRepository empConditionRepo;
+	private OptionalItemRepository optionalItemRepo;
 
-		private FormulaRepository formulaRepo;
+	private EmpConditionRepository empConditionRepo;
 
-		private FormulaDispOrderRepository formulaDispOrderRepo;
+	private FormulaRepository formulaRepo;
 
-		private ActualLockRepository actualLockRepo;
+	private FormulaDispOrderRepository formulaDispOrderRepo;
 
-		private LegalTransferOrderSetOfAggrMonthlyRepository legalTransferOrderSetOfAggrMonthlyRepo;
+	private ActualLockRepository actualLockRepo;
 
-		private OvertimeWorkFrameRepository roleOvertimeWorkRepo;
+	private LegalTransferOrderSetOfAggrMonthlyRepository legalTransferOrderSetOfAggrMonthlyRepo;
 
-		private HolidayAddtionRepository holidayAddtionRepo;
+	private OvertimeWorkFrameRepository roleOvertimeWorkRepo;
 
-		private MonthlyAggrSetOfFlexRepository monthlyAggrSetOfFlexRepo;
+	private HolidayAddtionRepository holidayAddtionRepo;
 
-		private InsufficientFlexHolidayMntRepository insufficientFlexHolidayMntRepo;
+	private MonthlyAggrSetOfFlexRepository monthlyAggrSetOfFlexRepo;
 
-		private FlexShortageLimitRepository flexShortageLimitRepo;
+	private InsufficientFlexHolidayMntRepository insufficientFlexHolidayMntRepo;
 
-		private RoundingSetOfMonthlyRepository roundingSetOfMonthlyRepo;
+	private FlexShortageLimitRepository flexShortageLimitRepo;
 
-		private TotalTimesRepository totalTimesRepo;
+	private RoundingSetOfMonthlyRepository roundingSetOfMonthlyRepo;
 
-		private AgreementOperationSettingRepository agreementOperationSettingRepo;
+	private TotalTimesRepository totalTimesRepo;
 
-		private PredetemineTimeSettingRepository predetemineTimeSettingRepo;
+	private AgreementOperationSettingRepository agreementOperationSettingRepo;
 
-		private ManagedParallelWithContext parallel;
+	private PredetemineTimeSettingRepository predetemineTimeSettingRepo;
 
-		private CheckBeforeCalcFlexChangeService checkBeforeCalcFlexChangeService;
+	private ManagedParallelWithContext parallel;
 
-		private AnyItemOfMonthlyRepository anyItemOfMonthlyRepo;
+	private CheckBeforeCalcFlexChangeService checkBeforeCalcFlexChangeService;
 
-		private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepo;
+	private AnyItemOfMonthlyRepository anyItemOfMonthlyRepo;
 
-		private EditStateOfMonthlyPerRepository editStateOfMonthlyPerRepo;
+	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepo;
+
+	private EditStateOfMonthlyPerRepository editStateOfMonthlyPerRepo;
 
 //		private ManagedExecutorService executorService;
 
-		private AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepo;
+	private AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepo;
 
-		private SpecialHolidayRepository specialHolidayRepo;
+	private SpecialHolidayRepository specialHolidayRepo;
 
-		private AttendanceItemConvertFactory converterFactory;
+	private AttendanceItemConvertFactory converterFactory;
 
-		private GetPredWorkingDaysAdaptor predWorkingDaysAdaptor;
+	private GetPredWorkingDaysAdaptor predWorkingDaysAdaptor;
 
-		private UpdateAllDomainMonthService updateAllDomainMonthService;
+	private UpdateAllDomainMonthService updateAllDomainMonthService;
 
-		private AgreementUnitSettingRepository agreementUnitSetRepo;
+	private AgreementUnitSettingRepository agreementUnitSetRepo;
 
-		private Workplace36AgreedHoursRepository agreementTimeWorkPlaceRepo;
+	private Workplace36AgreedHoursRepository agreementTimeWorkPlaceRepo;
 
-		private AffClassificationAdapter affClassficationAdapter;
+	private AffClassificationAdapter affClassficationAdapter;
 
-		private SyEmploymentAdapter syEmploymentAdapter;
+	private SyEmploymentAdapter syEmploymentAdapter;
 
-		private Employment36HoursRepository agreementTimeOfEmploymentRepo;
+	private Employment36HoursRepository agreementTimeOfEmploymentRepo;
 
-		private Classification36AgreementTimeRepository agreementTimeOfClassificationRepo;
+	private Classification36AgreementTimeRepository agreementTimeOfClassificationRepo;
 
-		private Company36AgreedHoursRepository agreementTimeCompanyRepo;
+	private Company36AgreedHoursRepository agreementTimeCompanyRepo;
 
-		private AgreementYearSettingRepository agreementYearSettingRepo;
+	private AgreementYearSettingRepository agreementYearSettingRepo;
 
-		private AgreementMonthSettingRepository agreementMonthSettingRepo;
+	private AgreementMonthSettingRepository agreementMonthSettingRepo;
 
-		private AgreementTimeOfManagePeriodRepository agreementTimeOfManagePeriodRepo;
+	private AgreementTimeOfManagePeriodRepository agreementTimeOfManagePeriodRepo;
 
-		private TargetPersonRepository targetPersonRepo;
+	private TargetPersonRepository targetPersonRepo;
 
-		private ErrMessageInfoRepository errMessageInfoRepo;
+	private ErrMessageInfoRepository errMessageInfoRepo;
 
-		private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepo;
+	private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepo;
 
-		private PayoutManagementDataRepository payoutManagementDataRepo;
+	private PayoutManagementDataRepository payoutManagementDataRepo;
 
-		private ComDayOffManaDataRepository comDayOffManaDataRepo;
+	private ComDayOffManaDataRepository comDayOffManaDataRepo;
 
-		private LeaveManaDataRepository leaveManaDataRepo;
+	private LeaveManaDataRepository leaveManaDataRepo;
 
-		private SpecialLeaveGrantRepository specialLeaveGrantRepo;
+	private SpecialLeaveGrantRepository specialLeaveGrantRepo;
 
-		private AnnualLeaveTimeRemainHistRepository annualLeaveTimeRemainHistRepo;
+	private AnnualLeaveTimeRemainHistRepository annualLeaveTimeRemainHistRepo;
 
-		private AnnualLeaveMaxHistRepository annualLeaveMaxHistRepo;
+	private AnnualLeaveMaxHistRepository annualLeaveMaxHistRepo;
 
-		private RsvLeaveGrantRemainHistRepository rsvLeaveGrantRemainHistRepo;
+	private RsvLeaveGrantRemainHistRepository rsvLeaveGrantRemainHistRepo;
 
-		private RsvLeaveGrantTimeRemainHistRepository rsvLeaveGrantTimeRemainHistRepo;
+	private RsvLeaveGrantTimeRemainHistRepository rsvLeaveGrantTimeRemainHistRepo;
 
-		private InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo;
+	private InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo;
 
-		private InterimRemainOffMonthProcess interimRemainOffMonthProcess;
+	private InterimRemainOffMonthProcess interimRemainOffMonthProcess;
 
-		private MonthlyClosureUpdateErrorInforRepository monthlyClosureUpdateErrorInforRepo;
+	private MonthlyClosureUpdateErrorInforRepository monthlyClosureUpdateErrorInforRepo;
 
-		private MonthlyClosureUpdateLogRepository monthlyClosureUpdateLogRepo;
+	private MonthlyClosureUpdateLogRepository monthlyClosureUpdateLogRepo;
 
-		private MonthlyClosureUpdatePersonLogRepository monthlyClosureUpdatePersonLogRepo;
+	private MonthlyClosureUpdatePersonLogRepository monthlyClosureUpdatePersonLogRepo;
 
-		private OuenWorkTimeSheetOfDailyRepo ouenWorkTimeSheetOfDailyRepo;
+	private OuenWorkTimeSheetOfDailyRepo ouenWorkTimeSheetOfDailyRepo;
 
-		private OuenWorkTimeOfDailyRepo ouenWorkTimeOfDailyRepo;
+	private OuenWorkTimeOfDailyRepo ouenWorkTimeOfDailyRepo;
 
-		private OuenAggregateFrameSetOfMonthlyRepo ouenAggregateFrameSetOfMonthlyRepo;
+	private OuenAggregateFrameSetOfMonthlyRepo ouenAggregateFrameSetOfMonthlyRepo;
 
-		private RegularLaborTimeComRepo regularLaborTimeComRepo;
+	private RegularLaborTimeComRepo regularLaborTimeComRepo;
 
-		private DeforLaborTimeComRepo deforLaborTimeComRepo;
+	private DeforLaborTimeComRepo deforLaborTimeComRepo;
 
-		private RegularLaborTimeWkpRepo regularLaborTimeWkpRepo;
+	private RegularLaborTimeWkpRepo regularLaborTimeWkpRepo;
 
-		private DeforLaborTimeWkpRepo deforLaborTimeWkpRepo;
+	private DeforLaborTimeWkpRepo deforLaborTimeWkpRepo;
 
-		private RegularLaborTimeEmpRepo regularLaborTimeEmpRepo;
+	private RegularLaborTimeEmpRepo regularLaborTimeEmpRepo;
 
-		private DeforLaborTimeEmpRepo deforLaborTimeEmpRepo;
+	private DeforLaborTimeEmpRepo deforLaborTimeEmpRepo;
 
-		private RegularLaborTimeShaRepo regularLaborTimeShaRepo;
+	private RegularLaborTimeShaRepo regularLaborTimeShaRepo;
 
-		private DeforLaborTimeShaRepo deforLaborTimeShaRepo;
+	private DeforLaborTimeShaRepo deforLaborTimeShaRepo;
 
-		private ShaFlexMonthActCalSetRepo shaFlexMonthActCalSetRepo;
+	private ShaFlexMonthActCalSetRepo shaFlexMonthActCalSetRepo;
 
-		private ComFlexMonthActCalSetRepo comFlexMonthActCalSetRepo;
+	private ComFlexMonthActCalSetRepo comFlexMonthActCalSetRepo;
 
-		private EmpFlexMonthActCalSetRepo empFlexMonthActCalSetRepo;
+	private EmpFlexMonthActCalSetRepo empFlexMonthActCalSetRepo;
 
-		private WkpFlexMonthActCalSetRepo wkpFlexMonthActCalSetRepo;
+	private WkpFlexMonthActCalSetRepo wkpFlexMonthActCalSetRepo;
 
-		private EmpDeforLaborMonthActCalSetRepo empDeforLaborMonthActCalSetRepo;
+	private EmpDeforLaborMonthActCalSetRepo empDeforLaborMonthActCalSetRepo;
 
-		private EmpRegulaMonthActCalSetRepo empRegulaMonthActCalSetRepo;
+	private EmpRegulaMonthActCalSetRepo empRegulaMonthActCalSetRepo;
 
-		private ComDeforLaborMonthActCalSetRepo comDeforLaborMonthActCalSetRepo;
+	private ComDeforLaborMonthActCalSetRepo comDeforLaborMonthActCalSetRepo;
 
-		private ComRegulaMonthActCalSetRepo comRegulaMonthActCalSetRepo;
+	private ComRegulaMonthActCalSetRepo comRegulaMonthActCalSetRepo;
 
-		private ShaDeforLaborMonthActCalSetRepo shaDeforLaborMonthActCalSetRepo;
-
-		private ShaRegulaMonthActCalSetRepo shaRegulaMonthActCalSetRepo;
-
-		private WkpDeforLaborMonthActCalSetRepo wkpDeforLaborMonthActCalSetRepo;
-
-		private WkpRegulaMonthActCalSetRepo wkpRegulaMonthActCalSetRepo;
-
-		private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
-
-		private VerticalTotalMethodOfMonthlyRepository verticalTotalMethodOfMonthlyRepo;
-
-		private StampCardRepository stampCardRepo;
-
-		private BentoReservationRepository bentoReservationRepo;
-
-		private BentoMenuRepository bentoMenuRepo;
-
-		private WeekRuleManagementRepo weekRuleManagementRepo;
-
-		private IntegrationOfDailyGetter integrationOfDailyGetter;
-
-		private MonthlyAggregationRemainingNumber monthlyAggregationRemainingNumber;
-
-		private ElapseYearRepository elapseYearRepository;
-
-		private PayoutSubofHDManaRepository payoutSubofHDManaRepo;
-
-
-		private LeaveComDayOffManaRepository leaveComDayOffManaRepo;
-		
-		private PublicHolidaySettingRepository publicHolidaySettingRepo;
-		
-		private PublicHolidayManagementUsageUnitRepository publicHolidayManagementUsageUnitRepo;
-		
-		private CompanyMonthDaySettingRepository companyMonthDaySettingRepo;
-		
-		private TempPublicHolidayManagementRepository tempPublicHolidayManagementRepo;
-		
-		private PublicHolidayCarryForwardDataRepository publicHolidayCarryForwardDataRepo;
-		
-		private EmploymentMonthDaySettingRepository employmentMonthDaySettingRepo;
-		
-		private WorkplaceMonthDaySettingRepository workplaceMonthDaySettingRepo;
-		
-		private EmployeeMonthDaySettingRepository employeeMonthDaySettingRepo;
-		
-		private PublicHolidayCarryForwardHistoryRepository publicHolidayCarryForwardHistoryRepo;
-		
-		private ChildCareUsedNumberRepository childCareUsedNumberRepo;
-		
-		private CareUsedNumberRepository careUsedNumberRepo;
-		
-		private ChildCareLeaveRemInfoRepository childCareLeaveRemInfoRepo;
-		
-		private CareLeaveRemainingInfoRepository careLeaveRemainingInfoRepo;
-		
-		private TempChildCareManagementRepository tempChildCareManagementRepo;
-		
-		private TempCareManagementRepository tempCareManagementRepo;
-		
-		private NursingLeaveSettingRepository nursingLeaveSettingRepo;
-		
-		private ExecutionLogRepository executionLogRepo;
-		
-		private WorkingConditionRepository workingConditionRepository;
-
-		private GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate; 
-
-		private RemainMergeRepository remainMergeRepo;
-		
-		private  CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
-
-		private WorkRegularAdditionSetRepository workRegularAdditionSetRepo;
-		private AddSetManageWorkHourRepository addSetManageWorkHourRepo;
-		private WorkFlexAdditionSetRepository workFlexAdditionSetRepo;
-		private WorkDeformedLaborAdditionSetRepository workDeformedLaborAdditionSetRepo;
-		private FlexSetRepository flexSetRepo;
-
-		RecordDomRequireServiceCache cache = new RecordDomRequireServiceCache();
-
-		@Override
-		public Optional<SEmpHistoryImport> employeeEmploymentHis(CacheCarrier cacheCarrier, String companyId,
-				String employeeId, GeneralDate baseDate) {
-			return sysEmploymentHisAdapter.findSEmpHistBySidRequire(cacheCarrier, companyId, employeeId, baseDate);
-		}
-
-		@Override
-		public Map<GeneralDate, WorkInfoOfDailyAttendance> dailyWorkInfos(String employeeId, DatePeriod datePeriod) {
-			Map<GeneralDate, WorkInfoOfDailyAttendance> dataForResult = new ConcurrentHashMap<GeneralDate, WorkInfoOfDailyAttendance>();
-			Map<GeneralDate, WorkInfoOfDailyAttendance> dataByRepo = new ConcurrentHashMap<GeneralDate, WorkInfoOfDailyAttendance>();
-			
-			for(GeneralDate date : datePeriod.datesBetween()){
-				String keyForGet = employeeId + "-" + date.toString();	
-				if(cache.getWorkInfoOfDailyAttendanceMap().containsKey(keyForGet)){
-					dataForResult.put(date,cache.getWorkInfoOfDailyAttendanceMap().get(keyForGet));
-				}
-				else{
-					dataByRepo =workInformationRepo.findByPeriodOrderByYmd(employeeId, new DatePeriod(date,datePeriod.end()))
-							.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getWorkInformation()));
-					
-					dataByRepo.forEach((k, v) ->{
-						String keyForPut = employeeId + "-" + k.toString();
-						if(!cache.getWorkInfoOfDailyAttendanceMap().containsKey(keyForPut)){
-							cache.getWorkInfoOfDailyAttendanceMap().put(keyForPut, v);
-						}
-						dataForResult.put(k, v);
-					});
-					
-					break;
-				}
-			};
-
-			return dataForResult;
-		}
-
-		@Override
-		public Optional<OperationStartSetDailyPerform> dailyOperationStartSet(CompanyId companyId) {
-			if(!cache.getOperationStartSetDailyPerformCache().isPresent()){
-				cache.setOperationStartSetDailyPerformCache(operationStartSetDailyPerformRepo.findByCid(companyId));
-			}
-			return cache.getOperationStartSetDailyPerformCache();
-		}
-
-		@Override
-		public List<EmploymentHistImport> employmentHistories(String employeeId) {
-			if(!cache.getEmploymentHistImportMap().containsKey(employeeId)){
-				cache.getEmploymentHistImportMap().put(employeeId, employmentHistAdapter.findByEmployeeIdOrderByStartDate(employeeId));
-			}
-			return cache.getEmploymentHistImportMap().get(employeeId);
-		}
-
-		@Override
-		public List<GrantHdTblSet> grantHdTblSets(String companyId) {
-			if(cache.getGrantHdTblSetCache().isEmpty()){
-				cache.setGrantHdTblSetCache(yearHolidayRepo.findAll(companyId));
-			}
-			return cache.getGrantHdTblSetCache();
-		}
-
-		@Override
-		public List<ScheRemainCreateInfor> scheRemainCreateInfor(String cid, String sid,
-				DatePeriod dateData) {
-			
-			return remainCreateInforByScheData.createRemainInforNew(cid, sid, dateData.datesBetween());
-
-		}
-
-		@Override
-		public List<RecordRemainCreateInfor> recordRemainCreateInfor(CacheCarrier cacheCarrier, String cid, String sid,
-				DatePeriod dateData) {
-			return remainCreateInforByRecordData.lstRecordRemainData(cacheCarrier, cid, sid, dateData.datesBetween());
-		}
-
-		@Override
-		public List<AppRemainCreateInfor> appRemainCreateInfor(CacheCarrier cacheCarrier, String cid, String sid,
-				DatePeriod dateData) {
-			return remainCreateInforByApplicationData.lstRemainDataFromApp(cacheCarrier, cid, sid, dateData);
-		}
-
-		@Override
-		public Optional<UsageUnitSetting> usageUnitSetting(String companyId) {
-			if(!cache.getUsageUnitSettingCache().isPresent()) {
-				cache.setUsageUnitSettingCache(usageUnitSettingRepo.findByCompany(companyId));
-			}
-			return cache.getUsageUnitSettingCache();
-		}
-
-		@Override
-		public Map<GeneralDate, TimeLeavingOfDailyAttd> dailyTimeLeavings(String employeeId, DatePeriod datePeriod) {
-			
-			Map<GeneralDate, TimeLeavingOfDailyAttd> dataForResult = new ConcurrentHashMap<GeneralDate, TimeLeavingOfDailyAttd>();
-			Map<GeneralDate, TimeLeavingOfDailyAttd> dataByRepo = new ConcurrentHashMap<GeneralDate, TimeLeavingOfDailyAttd>();
-			
-			for(GeneralDate date : datePeriod.datesBetween()){
-				String keyForGet = employeeId + "-" + date.toString();	
-				if(cache.getTimeLeavingOfDailyAttdMap().containsKey(keyForGet)){
-					dataForResult.put(date,cache.getTimeLeavingOfDailyAttdMap().get(keyForGet));
-				}
-				else{
-					dataByRepo =timeLeavingOfDailyPerformanceRepo.findbyPeriodOrderByYmd(employeeId, new DatePeriod(date, datePeriod.end()))
-							.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getAttendance()));
-					
-					dataByRepo.forEach((k, v) ->{
-						String keyForPut = employeeId + "-" + k.toString();
-						if(!cache.getTimeLeavingOfDailyAttdMap().containsKey(keyForPut)){
-							cache.getTimeLeavingOfDailyAttdMap().put(keyForPut, v);
-						}
-						dataForResult.put(k, v);
-					});
-					
-					break;
-				}
-			};
-
-			return dataForResult;
-		}
-
-		@Override
-		public Map<GeneralDate, TemporaryTimeOfDailyAttd> dailyTemporaryTimes(String employeeId, DatePeriod datePeriod) {
-			
-			Map<GeneralDate, TemporaryTimeOfDailyAttd> dataForResult = new ConcurrentHashMap<GeneralDate, TemporaryTimeOfDailyAttd>();
-			Map<GeneralDate, TemporaryTimeOfDailyAttd> dataByRepo = new ConcurrentHashMap<GeneralDate, TemporaryTimeOfDailyAttd>();
-			
-			for(GeneralDate date : datePeriod.datesBetween()){
-				String keyForGet = employeeId + "-" + date.toString();	
-				if(cache.getTemporaryTimeOfDailyAttdMap().containsKey(keyForGet)){
-					dataForResult.put(date,cache.getTemporaryTimeOfDailyAttdMap().get(keyForGet));
-				}
-				else{
-					dataByRepo =temporaryTimeOfDailyPerformanceRepo.findbyPeriodOrderByYmd(employeeId,  new DatePeriod(date, datePeriod.end()))
-							.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getAttendance()));
-					
-					dataByRepo.forEach((k, v) ->{
-						String keyForPut = employeeId + "-" + k.toString();
-						if(!cache.getTemporaryTimeOfDailyAttdMap().containsKey(keyForPut)){
-							cache.getTemporaryTimeOfDailyAttdMap().put(keyForPut, v);
-						}
-						dataForResult.put(k, v);
-					});
-					
-					break;
-				}
-			};
-
-			return dataForResult;
-		}
-
-		@Override
-		public Map<GeneralDate, SpecificDateAttrOfDailyAttd> dailySpecificDates(String employeeId, DatePeriod datePeriod) {
-			
-			Map<GeneralDate, SpecificDateAttrOfDailyAttd> dataForResult = new ConcurrentHashMap<GeneralDate, SpecificDateAttrOfDailyAttd>();
-			Map<GeneralDate, SpecificDateAttrOfDailyAttd> dataByRepo = new ConcurrentHashMap<GeneralDate, SpecificDateAttrOfDailyAttd>();
-			
-			for(GeneralDate date : datePeriod.datesBetween()){
-				String keyForGet = employeeId + "-" + date.toString();	
-				if(cache.getSpecificDateAttrOfDailyAttdMap().containsKey(keyForGet)){
-					dataForResult.put(date,cache.getSpecificDateAttrOfDailyAttdMap().get(keyForGet));
-				}
-				else{
-					dataByRepo =specificDateAttrOfDailyPerforRepo.findByPeriodOrderByYmd(employeeId,  new DatePeriod(date, datePeriod.end()))
-							.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getSpecificDay()));
-					
-					dataByRepo.forEach((k, v) ->{
-						String keyForPut = employeeId + "-" + k.toString();
-						if(!cache.getSpecificDateAttrOfDailyAttdMap().containsKey(keyForPut)){
-							cache.getSpecificDateAttrOfDailyAttdMap().put(keyForPut, v);
-						}
-						dataForResult.put(k, v);
-					});
-					
-					break;
-				}
-			};
-
-			return dataForResult;
-			
-		}
-
-		@Override
-		public List<EmployeeDailyPerError> dailyEmpErrors(String employeeId, DatePeriod datePeriod) {
-			
-			List<EmployeeDailyPerError> dataForResult = new ArrayList<>();
-			List<EmployeeDailyPerError> dataByRepo =  new ArrayList<>();
-			
-			for(GeneralDate date : datePeriod.datesBetween()){
-				String keyForGet = employeeId + "-" + date.toString();	
-				if(cache.getEmployeeDailyPerErrorMap().containsKey(keyForGet)){
-					dataForResult.add(cache.getEmployeeDailyPerErrorMap().get(keyForGet));
-				}
-				else{
-					dataByRepo =employeeDailyPerErrorRepo.findByPeriodOrderByYmd(employeeId,  new DatePeriod(date, datePeriod.end()));
-					
-					dataByRepo.forEach((v) ->{
-						String keyForPut = employeeId + "-" + v.getDate().toString();
-						if(!cache.getEmployeeDailyPerErrorMap().containsKey(keyForPut)){
-							cache.getEmployeeDailyPerErrorMap().put(keyForPut, v);
-						}
-						dataForResult.add(v);
-					});
-					
-					break;
-				}
-			};
-
-			return dataForResult;
-		}
-
-		@Override
-		public Map<GeneralDate, AnyItemValueOfDailyAttd> dailyAnyItems(List<String> employeeIds, DatePeriod baseDate) {
-			
-			
-			Map<GeneralDate, AnyItemValueOfDailyAttd> dataForResult = new ConcurrentHashMap<GeneralDate, AnyItemValueOfDailyAttd>();
-			Map<GeneralDate, AnyItemValueOfDailyAttd> dataByRepo = new ConcurrentHashMap<GeneralDate, AnyItemValueOfDailyAttd>();
-		
-			for(String employeeId : employeeIds){
-				for(GeneralDate date : baseDate.datesBetween()){
-					String keyForGet = employeeId + "-" + date.toString();	
-					if(cache.getAnyItemValueOfDailyAttdMap().containsKey(keyForGet)){
-						dataForResult.put(date,cache.getAnyItemValueOfDailyAttdMap().get(keyForGet));
+	private ShaDeforLaborMonthActCalSetRepo shaDeforLaborMonthActCalSetRepo;
+
+	private ShaRegulaMonthActCalSetRepo shaRegulaMonthActCalSetRepo;
+
+	private WkpDeforLaborMonthActCalSetRepo wkpDeforLaborMonthActCalSetRepo;
+
+	private WkpRegulaMonthActCalSetRepo wkpRegulaMonthActCalSetRepo;
+
+	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
+
+	private VerticalTotalMethodOfMonthlyRepository verticalTotalMethodOfMonthlyRepo;
+
+	private StampCardRepository stampCardRepo;
+
+	private BentoReservationRepository bentoReservationRepo;
+
+	private BentoMenuRepository bentoMenuRepo;
+
+	private WeekRuleManagementRepo weekRuleManagementRepo;
+
+	private IntegrationOfDailyGetter integrationOfDailyGetter;
+
+	private MonthlyAggregationRemainingNumber monthlyAggregationRemainingNumber;
+
+	private ElapseYearRepository elapseYearRepository;
+
+	private PayoutSubofHDManaRepository payoutSubofHDManaRepo;
+
+	private LeaveComDayOffManaRepository leaveComDayOffManaRepo;
+
+	private PublicHolidaySettingRepository publicHolidaySettingRepo;
+
+	private PublicHolidayManagementUsageUnitRepository publicHolidayManagementUsageUnitRepo;
+
+	private CompanyMonthDaySettingRepository companyMonthDaySettingRepo;
+
+	private TempPublicHolidayManagementRepository tempPublicHolidayManagementRepo;
+
+	private PublicHolidayCarryForwardDataRepository publicHolidayCarryForwardDataRepo;
+
+	private EmploymentMonthDaySettingRepository employmentMonthDaySettingRepo;
+
+	private WorkplaceMonthDaySettingRepository workplaceMonthDaySettingRepo;
+
+	private EmployeeMonthDaySettingRepository employeeMonthDaySettingRepo;
+
+	private PublicHolidayCarryForwardHistoryRepository publicHolidayCarryForwardHistoryRepo;
+
+	private ChildCareUsedNumberRepository childCareUsedNumberRepo;
+
+	private CareUsedNumberRepository careUsedNumberRepo;
+
+	private ChildCareLeaveRemInfoRepository childCareLeaveRemInfoRepo;
+
+	private CareLeaveRemainingInfoRepository careLeaveRemainingInfoRepo;
+
+	private TempChildCareManagementRepository tempChildCareManagementRepo;
+
+	private TempCareManagementRepository tempCareManagementRepo;
+
+	private NursingLeaveSettingRepository nursingLeaveSettingRepo;
+
+	private ExecutionLogRepository executionLogRepo;
+
+	private WorkingConditionRepository workingConditionRepository;
+
+	private GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate;
+
+	private RemainMergeRepository remainMergeRepo;
+
+	private CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
+
+	private WorkRegularAdditionSetRepository workRegularAdditionSetRepo;
+	private AddSetManageWorkHourRepository addSetManageWorkHourRepo;
+	private WorkFlexAdditionSetRepository workFlexAdditionSetRepo;
+	private WorkDeformedLaborAdditionSetRepository workDeformedLaborAdditionSetRepo;
+	private FlexSetRepository flexSetRepo;
+
+	RecordDomRequireServiceCache cache = new RecordDomRequireServiceCache();
+
+	@Override
+	public Optional<SEmpHistoryImport> employeeEmploymentHis(CacheCarrier cacheCarrier, String companyId,
+			String employeeId, GeneralDate baseDate) {
+		return sysEmploymentHisAdapter.findSEmpHistBySidRequire(cacheCarrier, companyId, employeeId, baseDate);
+	}
+
+	@Override
+	public Map<GeneralDate, WorkInfoOfDailyAttendance> dailyWorkInfos(String employeeId, DatePeriod datePeriod) {
+		Map<GeneralDate, WorkInfoOfDailyAttendance> dataForResult = new ConcurrentHashMap<GeneralDate, WorkInfoOfDailyAttendance>();
+		Map<GeneralDate, WorkInfoOfDailyAttendance> dataByRepo = new ConcurrentHashMap<GeneralDate, WorkInfoOfDailyAttendance>();
+
+		for (GeneralDate date : datePeriod.datesBetween()) {
+			String keyForGet = employeeId + "-" + date.toString();
+			if (cache.getWorkInfoOfDailyAttendanceMap().containsKey(keyForGet)) {
+				dataForResult.put(date, cache.getWorkInfoOfDailyAttendanceMap().get(keyForGet));
+			} else {
+				dataByRepo = workInformationRepo
+						.findByPeriodOrderByYmd(employeeId, new DatePeriod(date, datePeriod.end())).stream()
+						.collect(Collectors.toMap(c -> c.getYmd(), c -> c.getWorkInformation()));
+
+				dataByRepo.forEach((k, v) -> {
+					String keyForPut = employeeId + "-" + k.toString();
+					if (!cache.getWorkInfoOfDailyAttendanceMap().containsKey(keyForPut)) {
+						cache.getWorkInfoOfDailyAttendanceMap().put(keyForPut, v);
 					}
-					else{
-						dataByRepo =anyItemValueOfDailyRepo.finds(Arrays.asList(employeeId), new DatePeriod(date, baseDate.end()))
-								.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getAnyItem()));
-						
-						dataByRepo.forEach((k, v) ->{
-							String keyForPut = employeeId + "-" + k.toString();
-							if(!cache.getAnyItemValueOfDailyAttdMap().containsKey(keyForPut)){
-								cache.getAnyItemValueOfDailyAttdMap().put(keyForPut, v);
-							}
-							dataForResult.put(k, v);
-						});
-						
-						break;
-					}
-				};
-			}
-			return dataForResult;
-		}
+					dataForResult.put(k, v);
+				});
 
-		@Override
-		public Map<GeneralDate, PCLogOnInfoOfDailyAttd> dailyPcLogons(List<String> employeeIds, DatePeriod baseDate) {
-			
-			Map<GeneralDate, PCLogOnInfoOfDailyAttd> dataForResult = new ConcurrentHashMap<GeneralDate, PCLogOnInfoOfDailyAttd>();
-			Map<GeneralDate, PCLogOnInfoOfDailyAttd> dataByRepo = new ConcurrentHashMap<GeneralDate, PCLogOnInfoOfDailyAttd>();
-		
-			for(String employeeId : employeeIds){
-				for(GeneralDate date : baseDate.datesBetween()){
-					String keyForGet = employeeId + "-" + date.toString();	
-					if(cache.getPCLogOnInfoOfDailyAttdMap().containsKey(keyForGet)){
-						dataForResult.put(date,cache.getPCLogOnInfoOfDailyAttdMap().get(keyForGet));
-					}
-					else{
-						dataByRepo =pcLogOnInfoOfDailyRepo.finds(Arrays.asList(employeeId), new DatePeriod(date, baseDate.end()))
-								.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTimeZone()));
-						
-						dataByRepo.forEach((k, v) ->{
-							String keyForPut = employeeId + "-" + k.toString();
-							if(!cache.getPCLogOnInfoOfDailyAttdMap().containsKey(keyForPut)){
-								cache.getPCLogOnInfoOfDailyAttdMap().put(keyForPut, v);
-							}
-							dataForResult.put(k, v);
-						});
-						
-						break;
-					}
-				};
+				break;
 			}
-			return dataForResult;
 		}
+		;
 
-		@Override
-		public Map<GeneralDate, AttendanceTimeOfDailyAttendance> dailyAttendanceTimes(String employeeId, DatePeriod datePeriod) {
-			Map<GeneralDate, AttendanceTimeOfDailyAttendance> dataForResult = new ConcurrentHashMap<GeneralDate, AttendanceTimeOfDailyAttendance>();
-			Map<GeneralDate, AttendanceTimeOfDailyAttendance> dataByRepo = new ConcurrentHashMap<GeneralDate, AttendanceTimeOfDailyAttendance>();
-			
-			for(GeneralDate date : datePeriod.datesBetween()){
-				String keyForGet = employeeId + "-" + date.toString();	
-				if(cache.getAttendanceTimeOfDailyAttendanceMap().containsKey(keyForGet)){
-					dataForResult.put(date,cache.getAttendanceTimeOfDailyAttendanceMap().get(keyForGet));
-				}
-				else{
-					dataByRepo =attendanceTimeRepo.findByPeriodOrderByYmd(employeeId, new DatePeriod(date, datePeriod.end()))
-							.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTime()));
-					
-					dataByRepo.forEach((k, v) ->{
+		return dataForResult;
+	}
+
+	@Override
+	public Optional<OperationStartSetDailyPerform> dailyOperationStartSet(CompanyId companyId) {
+		if (!cache.getOperationStartSetDailyPerformCache().isPresent()) {
+			cache.setOperationStartSetDailyPerformCache(operationStartSetDailyPerformRepo.findByCid(companyId));
+		}
+		return cache.getOperationStartSetDailyPerformCache();
+	}
+
+	@Override
+	public List<EmploymentHistImport> employmentHistories(String employeeId) {
+		if (!cache.getEmploymentHistImportMap().containsKey(employeeId)) {
+			cache.getEmploymentHistImportMap().put(employeeId,
+					employmentHistAdapter.findByEmployeeIdOrderByStartDate(employeeId));
+		}
+		return cache.getEmploymentHistImportMap().get(employeeId);
+	}
+
+	@Override
+	public List<GrantHdTblSet> grantHdTblSets(String companyId) {
+		if (cache.getGrantHdTblSetCache().isEmpty()) {
+			cache.setGrantHdTblSetCache(yearHolidayRepo.findAll(companyId));
+		}
+		return cache.getGrantHdTblSetCache();
+	}
+
+	@Override
+	public List<ScheRemainCreateInfor> scheRemainCreateInfor(String cid, String sid, DatePeriod dateData) {
+
+		return remainCreateInforByScheData.createRemainInforNew(cid, sid, dateData.datesBetween());
+
+	}
+
+	@Override
+	public List<RecordRemainCreateInfor> recordRemainCreateInfor(CacheCarrier cacheCarrier, String cid, String sid,
+			DatePeriod dateData) {
+		return remainCreateInforByRecordData.lstRecordRemainData(cacheCarrier, cid, sid, dateData.datesBetween());
+	}
+
+	@Override
+	public List<AppRemainCreateInfor> appRemainCreateInfor(CacheCarrier cacheCarrier, String cid, String sid,
+			DatePeriod dateData) {
+		return remainCreateInforByApplicationData.lstRemainDataFromApp(cacheCarrier, cid, sid, dateData);
+	}
+
+	@Override
+	public Optional<UsageUnitSetting> usageUnitSetting(String companyId) {
+		if (!cache.getUsageUnitSettingCache().isPresent()) {
+			cache.setUsageUnitSettingCache(usageUnitSettingRepo.findByCompany(companyId));
+		}
+		return cache.getUsageUnitSettingCache();
+	}
+
+	@Override
+	public Map<GeneralDate, TimeLeavingOfDailyAttd> dailyTimeLeavings(String employeeId, DatePeriod datePeriod) {
+
+		Map<GeneralDate, TimeLeavingOfDailyAttd> dataForResult = new ConcurrentHashMap<GeneralDate, TimeLeavingOfDailyAttd>();
+		Map<GeneralDate, TimeLeavingOfDailyAttd> dataByRepo = new ConcurrentHashMap<GeneralDate, TimeLeavingOfDailyAttd>();
+
+		for (GeneralDate date : datePeriod.datesBetween()) {
+			String keyForGet = employeeId + "-" + date.toString();
+			if (cache.getTimeLeavingOfDailyAttdMap().containsKey(keyForGet)) {
+				dataForResult.put(date, cache.getTimeLeavingOfDailyAttdMap().get(keyForGet));
+			} else {
+				dataByRepo = timeLeavingOfDailyPerformanceRepo
+						.findbyPeriodOrderByYmd(employeeId, new DatePeriod(date, datePeriod.end())).stream()
+						.collect(Collectors.toMap(c -> c.getYmd(), c -> c.getAttendance()));
+
+				dataByRepo.forEach((k, v) -> {
+					String keyForPut = employeeId + "-" + k.toString();
+					if (!cache.getTimeLeavingOfDailyAttdMap().containsKey(keyForPut)) {
+						cache.getTimeLeavingOfDailyAttdMap().put(keyForPut, v);
+					}
+					dataForResult.put(k, v);
+				});
+
+				break;
+			}
+		}
+		;
+
+		return dataForResult;
+	}
+
+	@Override
+	public Map<GeneralDate, TemporaryTimeOfDailyAttd> dailyTemporaryTimes(String employeeId, DatePeriod datePeriod) {
+
+		Map<GeneralDate, TemporaryTimeOfDailyAttd> dataForResult = new ConcurrentHashMap<GeneralDate, TemporaryTimeOfDailyAttd>();
+		Map<GeneralDate, TemporaryTimeOfDailyAttd> dataByRepo = new ConcurrentHashMap<GeneralDate, TemporaryTimeOfDailyAttd>();
+
+		for (GeneralDate date : datePeriod.datesBetween()) {
+			String keyForGet = employeeId + "-" + date.toString();
+			if (cache.getTemporaryTimeOfDailyAttdMap().containsKey(keyForGet)) {
+				dataForResult.put(date, cache.getTemporaryTimeOfDailyAttdMap().get(keyForGet));
+			} else {
+				dataByRepo = temporaryTimeOfDailyPerformanceRepo
+						.findbyPeriodOrderByYmd(employeeId, new DatePeriod(date, datePeriod.end())).stream()
+						.collect(Collectors.toMap(c -> c.getYmd(), c -> c.getAttendance()));
+
+				dataByRepo.forEach((k, v) -> {
+					String keyForPut = employeeId + "-" + k.toString();
+					if (!cache.getTemporaryTimeOfDailyAttdMap().containsKey(keyForPut)) {
+						cache.getTemporaryTimeOfDailyAttdMap().put(keyForPut, v);
+					}
+					dataForResult.put(k, v);
+				});
+
+				break;
+			}
+		}
+		;
+
+		return dataForResult;
+	}
+
+	@Override
+	public Map<GeneralDate, SpecificDateAttrOfDailyAttd> dailySpecificDates(String employeeId, DatePeriod datePeriod) {
+
+		Map<GeneralDate, SpecificDateAttrOfDailyAttd> dataForResult = new ConcurrentHashMap<GeneralDate, SpecificDateAttrOfDailyAttd>();
+		Map<GeneralDate, SpecificDateAttrOfDailyAttd> dataByRepo = new ConcurrentHashMap<GeneralDate, SpecificDateAttrOfDailyAttd>();
+
+		for (GeneralDate date : datePeriod.datesBetween()) {
+			String keyForGet = employeeId + "-" + date.toString();
+			if (cache.getSpecificDateAttrOfDailyAttdMap().containsKey(keyForGet)) {
+				dataForResult.put(date, cache.getSpecificDateAttrOfDailyAttdMap().get(keyForGet));
+			} else {
+				dataByRepo = specificDateAttrOfDailyPerforRepo
+						.findByPeriodOrderByYmd(employeeId, new DatePeriod(date, datePeriod.end())).stream()
+						.collect(Collectors.toMap(c -> c.getYmd(), c -> c.getSpecificDay()));
+
+				dataByRepo.forEach((k, v) -> {
+					String keyForPut = employeeId + "-" + k.toString();
+					if (!cache.getSpecificDateAttrOfDailyAttdMap().containsKey(keyForPut)) {
+						cache.getSpecificDateAttrOfDailyAttdMap().put(keyForPut, v);
+					}
+					dataForResult.put(k, v);
+				});
+
+				break;
+			}
+		}
+		;
+
+		return dataForResult;
+
+	}
+
+	@Override
+	public List<EmployeeDailyPerError> dailyEmpErrors(String employeeId, DatePeriod datePeriod) {
+
+		List<EmployeeDailyPerError> dataForResult = new ArrayList<>();
+		List<EmployeeDailyPerError> dataByRepo = new ArrayList<>();
+
+		for (GeneralDate date : datePeriod.datesBetween()) {
+			String keyForGet = employeeId + "-" + date.toString();
+			if (cache.getEmployeeDailyPerErrorMap().containsKey(keyForGet)) {
+				dataForResult.add(cache.getEmployeeDailyPerErrorMap().get(keyForGet));
+			} else {
+				dataByRepo = employeeDailyPerErrorRepo.findByPeriodOrderByYmd(employeeId,
+						new DatePeriod(date, datePeriod.end()));
+
+				dataByRepo.forEach((v) -> {
+					String keyForPut = employeeId + "-" + v.getDate().toString();
+					if (!cache.getEmployeeDailyPerErrorMap().containsKey(keyForPut)) {
+						cache.getEmployeeDailyPerErrorMap().put(keyForPut, v);
+					}
+					dataForResult.add(v);
+				});
+
+				break;
+			}
+		}
+		;
+
+		return dataForResult;
+	}
+
+	@Override
+	public Map<GeneralDate, AnyItemValueOfDailyAttd> dailyAnyItems(List<String> employeeIds, DatePeriod baseDate) {
+
+		Map<GeneralDate, AnyItemValueOfDailyAttd> dataForResult = new ConcurrentHashMap<GeneralDate, AnyItemValueOfDailyAttd>();
+		Map<GeneralDate, AnyItemValueOfDailyAttd> dataByRepo = new ConcurrentHashMap<GeneralDate, AnyItemValueOfDailyAttd>();
+
+		for (String employeeId : employeeIds) {
+			for (GeneralDate date : baseDate.datesBetween()) {
+				String keyForGet = employeeId + "-" + date.toString();
+				if (cache.getAnyItemValueOfDailyAttdMap().containsKey(keyForGet)) {
+					dataForResult.put(date, cache.getAnyItemValueOfDailyAttdMap().get(keyForGet));
+				} else {
+					dataByRepo = anyItemValueOfDailyRepo
+							.finds(Arrays.asList(employeeId), new DatePeriod(date, baseDate.end())).stream()
+							.collect(Collectors.toMap(c -> c.getYmd(), c -> c.getAnyItem()));
+
+					dataByRepo.forEach((k, v) -> {
 						String keyForPut = employeeId + "-" + k.toString();
-						if(!cache.getAttendanceTimeOfDailyAttendanceMap().containsKey(keyForPut)){
-							cache.getAttendanceTimeOfDailyAttendanceMap().put(keyForPut, v);
+						if (!cache.getAnyItemValueOfDailyAttdMap().containsKey(keyForPut)) {
+							cache.getAnyItemValueOfDailyAttdMap().put(keyForPut, v);
 						}
 						dataForResult.put(k, v);
 					});
-					
+
 					break;
 				}
-			};
-
-			return dataForResult;
-		}
-
-		@Override
-		public Optional<PayItemCountOfMonthly> monthPayItemCount(String companyId) {
-			if(!cache.getPayItemCountOfMonthlyCache().isPresent()){
-				cache.setPayItemCountOfMonthlyCache(payItemCountOfMonthlyRepo.find(companyId));
 			}
-			return cache.getPayItemCountOfMonthlyCache();
+			;
 		}
+		return dataForResult;
+	}
 
-		@Override
-		public List<OptionalItem> optionalItems(String companyId) {
-			if(cache.getOptionalItemCache().isEmpty()){
-				cache.setOptionalItemCache(optionalItemRepo.findAll(companyId));
-			}
-			return cache.getOptionalItemCache();
-		}
+	@Override
+	public Map<GeneralDate, PCLogOnInfoOfDailyAttd> dailyPcLogons(List<String> employeeIds, DatePeriod baseDate) {
 
-		@Override
-		public List<EmpCondition> employmentConditions(String companyId, List<Integer> optionalItemNoList) {
-			return empConditionRepo.findAll(companyId, optionalItemNoList);
-		}
+		Map<GeneralDate, PCLogOnInfoOfDailyAttd> dataForResult = new ConcurrentHashMap<GeneralDate, PCLogOnInfoOfDailyAttd>();
+		Map<GeneralDate, PCLogOnInfoOfDailyAttd> dataByRepo = new ConcurrentHashMap<GeneralDate, PCLogOnInfoOfDailyAttd>();
 
-		@Override
-		public List<Formula> formulas(String companyId) {
-			if(cache.getFormulaCache().isEmpty()){
-				cache.setFormulaCache(formulaRepo.find(companyId));
-			}
-			return cache.getFormulaCache();
-		}
+		for (String employeeId : employeeIds) {
+			for (GeneralDate date : baseDate.datesBetween()) {
+				String keyForGet = employeeId + "-" + date.toString();
+				if (cache.getPCLogOnInfoOfDailyAttdMap().containsKey(keyForGet)) {
+					dataForResult.put(date, cache.getPCLogOnInfoOfDailyAttdMap().get(keyForGet));
+				} else {
+					dataByRepo = pcLogOnInfoOfDailyRepo
+							.finds(Arrays.asList(employeeId), new DatePeriod(date, baseDate.end())).stream()
+							.collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTimeZone()));
 
-		@Override
-		public List<FormulaDispOrder> formulaDispOrder(String companyId) {
-			if(cache.getFormulaDispOrderCache().isEmpty()){
-				cache.setFormulaDispOrderCache(formulaDispOrderRepo.findAll(companyId));
-			}
-			return cache.getFormulaDispOrderCache();
-		}
+					dataByRepo.forEach((k, v) -> {
+						String keyForPut = employeeId + "-" + k.toString();
+						if (!cache.getPCLogOnInfoOfDailyAttdMap().containsKey(keyForPut)) {
+							cache.getPCLogOnInfoOfDailyAttdMap().put(keyForPut, v);
+						}
+						dataForResult.put(k, v);
+					});
 
-		@Override
-		public Map<String, List<LengthServiceTbl>> lengthServiceTbl(String companyId, List<String> yearHolidayCode) {
-			return lengthServiceRepo.findByCode(companyId, yearHolidayCode);
-		}
-
-		@Override
-		public List<EmptYearlyRetentionSetting> emptYearlyRetentionSet(String companyId) {
-			if(cache.getEmptYearlyRetentionSettingCache().isEmpty()){
-				cache.setEmptYearlyRetentionSettingCache(employmentSettingRepo.findAll(companyId));
-			}
-			return cache.getEmptYearlyRetentionSettingCache();
-		}
-
-		@Override
-		public Optional<LegalTransferOrderSetOfAggrMonthly> monthLegalTransferOrderCalcSet(String companyId) {
-			if(!cache.getLegalTransferOrderSetOfAggrMonthlyCache().isPresent()){
-				cache.setLegalTransferOrderSetOfAggrMonthlyCache(legalTransferOrderSetOfAggrMonthlyRepo.find(companyId));
-			}
-			return cache.getLegalTransferOrderSetOfAggrMonthlyCache();
-		}
-
-		@Override
-		public List<OvertimeWorkFrame> roleOvertimeWorks(String companyId) {
-			if(cache.getOvertimeWorkFrameCache().isEmpty()){
-				cache.setOvertimeWorkFrameCache(roleOvertimeWorkRepo.getOvertimeWorkFrameByFrameByCom(companyId, NotUseAtr.USE.value));
-			}
-			return cache.getOvertimeWorkFrameCache();
-		}
-
-		@Override
-		public Map<String, AggregateRoot> holidayAddtionSets(String companyId) {
-			return holidayAddtionRepo.findByCompanyId(companyId);
-		}
-
-		@Override
-		public Optional<MonthlyAggrSetOfFlex> monthFlexAggrSet(String companyId) {
-			if(!cache.getMonthlyAggrSetOfFlexCache().isPresent()){
-				cache.setMonthlyAggrSetOfFlexCache(monthlyAggrSetOfFlexRepo.find(companyId));
-			}
-			return cache.getMonthlyAggrSetOfFlexCache();
-		}
-
-		@Override
-		public Optional<InsufficientFlexHolidayMnt> insufficientFlexHolidayMnt(String cid) {
-			if(!cache.getInsufficientFlexHolidayMntCache().isPresent()){
-				cache.setInsufficientFlexHolidayMntCache(insufficientFlexHolidayMntRepo.findByCId(cid));
-			}
-			return cache.getInsufficientFlexHolidayMntCache();
-		}
-
-		@Override
-		public Optional<FlexShortageLimit> flexShortageLimit(String companyId) {
-			if(!cache.getFlexShortageLimitCache().isPresent()){
-				cache.setFlexShortageLimitCache(flexShortageLimitRepo.get(companyId));
-			}
-			return cache.getFlexShortageLimitCache();
-		}
-
-		@Override
-		public Optional<RoundingSetOfMonthly> monthRoundingSet(String companyId) {
-			if(!cache.getRoundingSetOfMonthlyCache().isPresent()) {
-				cache.setRoundingSetOfMonthlyCache(roundingSetOfMonthlyRepo.find(companyId));
-			}
-			return cache.getRoundingSetOfMonthlyCache();
-		}
-
-		@Override
-		public List<TotalTimes> totalTimes(String companyId) {
-			if(cache.getTotalTimesCache().isEmpty()){
-				cache.setTotalTimesCache(totalTimesRepo.getAllTotalTimes(companyId));
-			}
-			return cache.getTotalTimesCache();
-		}
-
-		@Override
-		public Optional<AgreementOperationSetting> agreementOperationSetting(String companyId) {
-			if(!cache.getAgreementOperationSettingCache().isPresent()) {
-				cache.setAgreementOperationSettingCache(agreementOperationSettingRepo.find(companyId));
-			}
-			return cache.getAgreementOperationSettingCache();
-		}
-
-		@Override
-		public Optional<SharedAffWorkPlaceHisImport> affWorkPlace(String employeeId, GeneralDate baseDate) {
-			
-			List<SharedAffWorkPlaceHisImport> byCache = new ArrayList<>();
-			cache.getSharedAffWorkPlaceHisImportMapMap().forEach((k,v)->{
-				if(k.getKey().equals(employeeId)){
-					byCache.add(v);	
+					break;
 				}
-			});
-			
-			Optional<SharedAffWorkPlaceHisImport> dataForResult = byCache.stream().filter(c->c.getDateRange().contains(baseDate)).findFirst();
-			if(dataForResult.isPresent())
-				return dataForResult;
-			
-			dataForResult = sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, baseDate);
-			if(dataForResult.isPresent() && !cache.getSharedAffWorkPlaceHisImportMapMap().containsKey(Pair.of(employeeId, dataForResult.get().getDateRange()))){
-				cache.getSharedAffWorkPlaceHisImportMapMap().put(Pair.of(employeeId, dataForResult.get().getDateRange()), dataForResult.get());
 			}
-				
+			;
+		}
+		return dataForResult;
+	}
+
+	@Override
+	public Map<GeneralDate, AttendanceTimeOfDailyAttendance> dailyAttendanceTimes(String employeeId,
+			DatePeriod datePeriod) {
+		Map<GeneralDate, AttendanceTimeOfDailyAttendance> dataForResult = new ConcurrentHashMap<GeneralDate, AttendanceTimeOfDailyAttendance>();
+		Map<GeneralDate, AttendanceTimeOfDailyAttendance> dataByRepo = new ConcurrentHashMap<GeneralDate, AttendanceTimeOfDailyAttendance>();
+
+		for (GeneralDate date : datePeriod.datesBetween()) {
+			String keyForGet = employeeId + "-" + date.toString();
+			if (cache.getAttendanceTimeOfDailyAttendanceMap().containsKey(keyForGet)) {
+				dataForResult.put(date, cache.getAttendanceTimeOfDailyAttendanceMap().get(keyForGet));
+			} else {
+				dataByRepo = attendanceTimeRepo
+						.findByPeriodOrderByYmd(employeeId, new DatePeriod(date, datePeriod.end())).stream()
+						.collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTime()));
+
+				dataByRepo.forEach((k, v) -> {
+					String keyForPut = employeeId + "-" + k.toString();
+					if (!cache.getAttendanceTimeOfDailyAttendanceMap().containsKey(keyForPut)) {
+						cache.getAttendanceTimeOfDailyAttendanceMap().put(keyForPut, v);
+					}
+					dataForResult.put(k, v);
+				});
+
+				break;
+			}
+		}
+		;
+
+		return dataForResult;
+	}
+
+	@Override
+	public Optional<PayItemCountOfMonthly> monthPayItemCount(String companyId) {
+		if (!cache.getPayItemCountOfMonthlyCache().isPresent()) {
+			cache.setPayItemCountOfMonthlyCache(payItemCountOfMonthlyRepo.find(companyId));
+		}
+		return cache.getPayItemCountOfMonthlyCache();
+	}
+
+	@Override
+	public List<OptionalItem> optionalItems(String companyId) {
+		if (cache.getOptionalItemCache().isEmpty()) {
+			cache.setOptionalItemCache(optionalItemRepo.findAll(companyId));
+		}
+		return cache.getOptionalItemCache();
+	}
+
+	@Override
+	public List<EmpCondition> employmentConditions(String companyId, List<Integer> optionalItemNoList) {
+		return empConditionRepo.findAll(companyId, optionalItemNoList);
+	}
+
+	@Override
+	public List<Formula> formulas(String companyId) {
+		if (cache.getFormulaCache().isEmpty()) {
+			cache.setFormulaCache(formulaRepo.find(companyId));
+		}
+		return cache.getFormulaCache();
+	}
+
+	@Override
+	public List<FormulaDispOrder> formulaDispOrder(String companyId) {
+		if (cache.getFormulaDispOrderCache().isEmpty()) {
+			cache.setFormulaDispOrderCache(formulaDispOrderRepo.findAll(companyId));
+		}
+		return cache.getFormulaDispOrderCache();
+	}
+
+	@Override
+	public Map<String, List<LengthServiceTbl>> lengthServiceTbl(String companyId, List<String> yearHolidayCode) {
+		return lengthServiceRepo.findByCode(companyId, yearHolidayCode);
+	}
+
+	@Override
+	public List<EmptYearlyRetentionSetting> emptYearlyRetentionSet(String companyId) {
+		if (cache.getEmptYearlyRetentionSettingCache().isEmpty()) {
+			cache.setEmptYearlyRetentionSettingCache(employmentSettingRepo.findAll(companyId));
+		}
+		return cache.getEmptYearlyRetentionSettingCache();
+	}
+
+	@Override
+	public Optional<LegalTransferOrderSetOfAggrMonthly> monthLegalTransferOrderCalcSet(String companyId) {
+		if (!cache.getLegalTransferOrderSetOfAggrMonthlyCache().isPresent()) {
+			cache.setLegalTransferOrderSetOfAggrMonthlyCache(legalTransferOrderSetOfAggrMonthlyRepo.find(companyId));
+		}
+		return cache.getLegalTransferOrderSetOfAggrMonthlyCache();
+	}
+
+	@Override
+	public List<OvertimeWorkFrame> roleOvertimeWorks(String companyId) {
+		if (cache.getOvertimeWorkFrameCache().isEmpty()) {
+			cache.setOvertimeWorkFrameCache(
+					roleOvertimeWorkRepo.getOvertimeWorkFrameByFrameByCom(companyId, NotUseAtr.USE.value));
+		}
+		return cache.getOvertimeWorkFrameCache();
+	}
+
+	@Override
+	public Map<String, AggregateRoot> holidayAddtionSets(String companyId) {
+		return holidayAddtionRepo.findByCompanyId(companyId);
+	}
+
+	@Override
+	public Optional<MonthlyAggrSetOfFlex> monthFlexAggrSet(String companyId) {
+		if (!cache.getMonthlyAggrSetOfFlexCache().isPresent()) {
+			cache.setMonthlyAggrSetOfFlexCache(monthlyAggrSetOfFlexRepo.find(companyId));
+		}
+		return cache.getMonthlyAggrSetOfFlexCache();
+	}
+
+	@Override
+	public Optional<InsufficientFlexHolidayMnt> insufficientFlexHolidayMnt(String cid) {
+		if (!cache.getInsufficientFlexHolidayMntCache().isPresent()) {
+			cache.setInsufficientFlexHolidayMntCache(insufficientFlexHolidayMntRepo.findByCId(cid));
+		}
+		return cache.getInsufficientFlexHolidayMntCache();
+	}
+
+	@Override
+	public Optional<FlexShortageLimit> flexShortageLimit(String companyId) {
+		if (!cache.getFlexShortageLimitCache().isPresent()) {
+			cache.setFlexShortageLimitCache(flexShortageLimitRepo.get(companyId));
+		}
+		return cache.getFlexShortageLimitCache();
+	}
+
+	@Override
+	public Optional<RoundingSetOfMonthly> monthRoundingSet(String companyId) {
+		if (!cache.getRoundingSetOfMonthlyCache().isPresent()) {
+			cache.setRoundingSetOfMonthlyCache(roundingSetOfMonthlyRepo.find(companyId));
+		}
+		return cache.getRoundingSetOfMonthlyCache();
+	}
+
+	@Override
+	public List<TotalTimes> totalTimes(String companyId) {
+		if (cache.getTotalTimesCache().isEmpty()) {
+			cache.setTotalTimesCache(totalTimesRepo.getAllTotalTimes(companyId));
+		}
+		return cache.getTotalTimesCache();
+	}
+
+	@Override
+	public Optional<AgreementOperationSetting> agreementOperationSetting(String companyId) {
+		if (!cache.getAgreementOperationSettingCache().isPresent()) {
+			cache.setAgreementOperationSettingCache(agreementOperationSettingRepo.find(companyId));
+		}
+		return cache.getAgreementOperationSettingCache();
+	}
+
+	@Override
+	public Optional<SharedAffWorkPlaceHisImport> affWorkPlace(String employeeId, GeneralDate baseDate) {
+
+		List<SharedAffWorkPlaceHisImport> byCache = new ArrayList<>();
+		cache.getSharedAffWorkPlaceHisImportMapMap().forEach((k, v) -> {
+			if (k.getKey().equals(employeeId)) {
+				byCache.add(v);
+			}
+		});
+
+		Optional<SharedAffWorkPlaceHisImport> dataForResult = byCache.stream()
+				.filter(c -> c.getDateRange().contains(baseDate)).findFirst();
+		if (dataForResult.isPresent())
 			return dataForResult;
-		}
-		
-		@Override
-		public Map<GeneralDate, Map<String, Optional<SharedAffWorkPlaceHisImport>>> affWorkPlace(String companyId, List<String> employeeId, DatePeriod baseDate) {
-			return sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHisClones(companyId, employeeId, baseDate);
+
+		dataForResult = sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, baseDate);
+		if (dataForResult.isPresent() && !cache.getSharedAffWorkPlaceHisImportMapMap()
+				.containsKey(Pair.of(employeeId, dataForResult.get().getDateRange()))) {
+			cache.getSharedAffWorkPlaceHisImportMapMap().put(Pair.of(employeeId, dataForResult.get().getDateRange()),
+					dataForResult.get());
 		}
 
-		@Override
-		public Optional<WorkingCondition> workingCondition(String historyId) {
-			if(!cache.getWorkingConditionMap().containsKey(historyId)){
-				cache.getWorkingConditionMap().put(historyId, workingConditionRepo.getByHistoryId(historyId));
-			}
-			return cache.getWorkingConditionMap().get(historyId);
-		}
+		return dataForResult;
+	}
 
-		@Override
-		public List<SharedSidPeriodDateEmploymentImport> employmentHistories(CacheCarrier cacheCarrier,
-				List<String> sids, DatePeriod datePeriod) {
-			return shareEmploymentAdapter.getEmpHistBySidAndPeriodRequire(cacheCarrier, sids, datePeriod);
-		}
+	@Override
+	public Map<GeneralDate, Map<String, Optional<SharedAffWorkPlaceHisImport>>> affWorkPlace(String companyId,
+			List<String> employeeId, DatePeriod baseDate) {
+		return sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHisClones(companyId, employeeId, baseDate);
+	}
 
-		@Override
-		public List<ClosureEmployment> employmentClosure(String companyId, List<String> employmentCDs) {
-			if(!cache.getEmploymentClosureCache().containsKey(companyId)) {
-				cache.getEmploymentClosureCache().put(companyId, closureEmploymentRepo.findAllByCid(companyId));
-			}
-			return cache.getEmploymentClosureCache().get(companyId).stream()
-					.filter(c -> employmentCDs.contains(c.getEmploymentCD())).collect(Collectors.toList());
+	@Override
+	public Optional<WorkingCondition> workingCondition(String historyId) {
+		if (!cache.getWorkingConditionMap().containsKey(historyId)) {
+			cache.getWorkingConditionMap().put(historyId, workingConditionRepo.getByHistoryId(historyId));
 		}
+		return cache.getWorkingConditionMap().get(historyId);
+	}
 
-		@Override
-		public DailyRecordToAttendanceItemConverter createDailyConverter() {
-			return converterFactory.createDailyConverter();
-		}
+	@Override
+	public List<SharedSidPeriodDateEmploymentImport> employmentHistories(CacheCarrier cacheCarrier, List<String> sids,
+			DatePeriod datePeriod) {
+		return shareEmploymentAdapter.getEmpHistBySidAndPeriodRequire(cacheCarrier, sids, datePeriod);
+	}
 
-		@Override
-		public ManagedParallelWithContext parallelContext() {
-			return parallel;
+	@Override
+	public List<ClosureEmployment> employmentClosure(String companyId, List<String> employmentCDs) {
+		if (!cache.getEmploymentClosureCache().containsKey(companyId)) {
+			cache.getEmploymentClosureCache().put(companyId, closureEmploymentRepo.findAllByCid(companyId));
 		}
+		return cache.getEmploymentClosureCache().get(companyId).stream()
+				.filter(c -> employmentCDs.contains(c.getEmploymentCD())).collect(Collectors.toList());
+	}
 
-		@Override
-		public ConditionCalcResult flexConditionCalcResult(CacheCarrier cacheCarrier, String companyId,
-				CalcFlexChangeDto calc) {
-			return checkBeforeCalcFlexChangeService.getConditionCalcFlexRequire(cacheCarrier, companyId, calc);
-		}
+	@Override
+	public DailyRecordToAttendanceItemConverter createDailyConverter() {
+		return converterFactory.createDailyConverter();
+	}
 
-		@Override
-		public Optional<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth,
-				ClosureId closureId, ClosureDate closureDate) {
-			return attendanceTimeOfMonthlyRepo.find(employeeId, yearMonth, closureId, closureDate);
-		}
+	@Override
+	public ManagedParallelWithContext parallelContext() {
+		return parallel;
+	}
 
-		@Override
-		public List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId,
-				YearMonth yearMonth) {
-			return attendanceTimeOfMonthlyRepo.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
-		}
+	@Override
+	public ConditionCalcResult flexConditionCalcResult(CacheCarrier cacheCarrier, String companyId,
+			CalcFlexChangeDto calc) {
+		return checkBeforeCalcFlexChangeService.getConditionCalcFlexRequire(cacheCarrier, companyId, calc);
+	}
 
-		@Override
-		public List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, DatePeriod period) {
-			return attendanceTimeOfMonthlyRepo.findByPeriodIntoEndYmd(employeeId, period);
-		}
+	@Override
+	public Optional<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth,
+			ClosureId closureId, ClosureDate closureDate) {
+		return attendanceTimeOfMonthlyRepo.find(employeeId, yearMonth, closureId, closureDate);
+	}
 
-		@Override
-		public List<AnyItemOfMonthly> anyItemOfMonthly(String employeeId, YearMonth yearMonth, ClosureId closureId,
-				ClosureDate closureDate) {
-			return anyItemOfMonthlyRepo.findByMonthlyAndClosure(employeeId, yearMonth, closureId, closureDate);
-		}
+	@Override
+	public List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth) {
+		return attendanceTimeOfMonthlyRepo.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
+	}
 
-		@Override
-		public List<AnnLeaRemNumEachMonth> annLeaRemNumEachMonth(String employeeId, DatePeriod closurePeriod) {
-			return annLeaRemNumEachMonthRepo.findByClosurePeriod(employeeId, closurePeriod);
-		}
+	@Override
+	public List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, DatePeriod period) {
+		return attendanceTimeOfMonthlyRepo.findByPeriodIntoEndYmd(employeeId, period);
+	}
 
-		@Override
-		public Optional<AnnLeaRemNumEachMonth> annLeaRemNumEachMonth(String employeeId, YearMonth yearMonth,
-				ClosureId closureId, ClosureDate closureDate) {
-			return remainMergeRepo.find(employeeId, yearMonth, closureId, closureDate)
-					.map(c -> c.getAnnLeaRemNumEachMonth());
-		}
+	@Override
+	public List<AnyItemOfMonthly> anyItemOfMonthly(String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate) {
+		return anyItemOfMonthlyRepo.findByMonthlyAndClosure(employeeId, yearMonth, closureId, closureDate);
+	}
 
-		@Override
-		public Optional<RsvLeaRemNumEachMonth> rsvLeaRemNumEachMonth(String employeeId, YearMonth yearMonth,
-				ClosureId closureId, ClosureDate closureDate) {
-			return remainMergeRepo.find(employeeId, yearMonth, closureId, closureDate)
-					.map(c -> c.getRsvLeaRemNumEachMonth());
-		}
+	@Override
+	public List<AnnLeaRemNumEachMonth> annLeaRemNumEachMonth(String employeeId, DatePeriod closurePeriod) {
+		return annLeaRemNumEachMonthRepo.findByClosurePeriod(employeeId, closurePeriod);
+	}
 
-		@Override
-		public Optional<AbsenceLeaveRemainData> absenceLeaveRemainData(String employeeId, YearMonth yearMonth,
-				ClosureId closureId, ClosureDate closureDate) {
-			return remainMergeRepo.find(employeeId, yearMonth, closureId, closureDate)
-					.map(c -> c.getAbsenceLeaveRemainData());
-		}
+	@Override
+	public Optional<AnnLeaRemNumEachMonth> annLeaRemNumEachMonth(String employeeId, YearMonth yearMonth,
+			ClosureId closureId, ClosureDate closureDate) {
+		return remainMergeRepo.find(employeeId, yearMonth, closureId, closureDate)
+				.map(c -> c.getAnnLeaRemNumEachMonth());
+	}
 
-		@Override
-		public Optional<MonthlyDayoffRemainData> monthlyDayoffRemainData(String employeeId, YearMonth yearMonth,
-				ClosureId closureId, ClosureDate closureDate) {
-			return remainMergeRepo.find(employeeId, yearMonth, closureId, closureDate)
-					.map(c -> c.getMonthlyDayoffRemainData());
-		}
+	@Override
+	public Optional<RsvLeaRemNumEachMonth> rsvLeaRemNumEachMonth(String employeeId, YearMonth yearMonth,
+			ClosureId closureId, ClosureDate closureDate) {
+		return remainMergeRepo.find(employeeId, yearMonth, closureId, closureDate)
+				.map(c -> c.getRsvLeaRemNumEachMonth());
+	}
 
-		@Override
-		public List<SpecialHolidayRemainData> specialHolidayRemainData(String employeeId, YearMonth yearMonth,
-				ClosureId closureId, ClosureDate closureDate) {
-			return remainMergeRepo.find(employeeId, yearMonth, closureId, closureDate)
-					.map(c -> c.getSpecialHolidayRemainData()).orElse(Collections.emptyList());
-		}
+	@Override
+	public Optional<AbsenceLeaveRemainData> absenceLeaveRemainData(String employeeId, YearMonth yearMonth,
+			ClosureId closureId, ClosureDate closureDate) {
+		return remainMergeRepo.find(employeeId, yearMonth, closureId, closureDate)
+				.map(c -> c.getAbsenceLeaveRemainData());
+	}
 
-		@Override
-		public Optional<AgreementYearSetting> agreementYearSetting(String employeeId, int yearMonth) {
-			return agreementYearSettingRepo.findByKey(employeeId, yearMonth);
-		}
+	@Override
+	public Optional<MonthlyDayoffRemainData> monthlyDayoffRemainData(String employeeId, YearMonth yearMonth,
+			ClosureId closureId, ClosureDate closureDate) {
+		return remainMergeRepo.find(employeeId, yearMonth, closureId, closureDate)
+				.map(c -> c.getMonthlyDayoffRemainData());
+	}
 
-		@Override
-		public Optional<AgreementMonthSetting> agreementMonthSetting(String employeeId, YearMonth yearMonth) {
-			return agreementMonthSettingRepo.findByKey(employeeId, yearMonth);
-		}
-		
-		@Override
-		public List<AgreementMonthSetting> agreementMonthSettingClones(List<String> employeeId, YearMonth yearMonth) {
-			List<YearMonth> yearMonths = new ArrayList<YearMonth>();
-			yearMonths.add(yearMonth);
-			return agreementMonthSettingRepo.findByKey(employeeId, yearMonths);
-		}
+	@Override
+	public List<SpecialHolidayRemainData> specialHolidayRemainData(String employeeId, YearMonth yearMonth,
+			ClosureId closureId, ClosureDate closureDate) {
+		return remainMergeRepo.find(employeeId, yearMonth, closureId, closureDate)
+				.map(c -> c.getSpecialHolidayRemainData()).orElse(Collections.emptyList());
+	}
 
-		@Override
-		public Optional<AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(String employeeId,
-				YearMonth yearMonth) {
-			return agreementTimeOfManagePeriodRepo.find(employeeId, yearMonth);
-		}
+	@Override
+	public Optional<AgreementYearSetting> agreementYearSetting(String employeeId, int yearMonth) {
+		return agreementYearSettingRepo.findByKey(employeeId, yearMonth);
+	}
 
-		@Override
-		public List<AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(List<String> employeeIds,
-				List<YearMonth> yearMonths) {
-			return agreementTimeOfManagePeriodRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
-		}
+	@Override
+	public Optional<AgreementMonthSetting> agreementMonthSetting(String employeeId, YearMonth yearMonth) {
+		return agreementMonthSettingRepo.findByKey(employeeId, yearMonth);
+	}
 
-		@Override
-		public void updateLogInfo(String empCalAndSumExecLogID, int executionContent, int processStatus) {
-			empCalAndSumExeLogRepo.updateLogInfo(empCalAndSumExecLogID, executionContent, processStatus);
-		}
+	@Override
+	public List<AgreementMonthSetting> agreementMonthSettingClones(List<String> employeeId, YearMonth yearMonth) {
+		List<YearMonth> yearMonths = new ArrayList<YearMonth>();
+		yearMonths.add(yearMonth);
+		return agreementMonthSettingRepo.findByKey(employeeId, yearMonths);
+	}
 
-		@Override
-		public void updateLogWithContent(String employeeID, String empCalAndSumExecLogId, int executionContent,
-				int state) {
-			targetPersonRepo.updateWithContent(employeeID, empCalAndSumExecLogId, executionContent, state);
-		}
+	@Override
+	public Optional<AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(String employeeId, YearMonth yearMonth) {
+		return agreementTimeOfManagePeriodRepo.find(employeeId, yearMonth);
+	}
 
-		@Override
-		public void add(ErrMessageInfo errMessageInfo) {
-			errMessageInfoRepo.add(errMessageInfo);
-		}
+	@Override
+	public List<AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(List<String> employeeIds,
+			List<YearMonth> yearMonths) {
+		return agreementTimeOfManagePeriodRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
+	}
 
-		@Override
-		public Optional<EmpCalAndSumExeLog> calAndSumExeLog(String empCalAndSumExecLogID) {
-			if(!cache.getEmpCalAndSumExeLogMap().containsKey(empCalAndSumExecLogID)){
-				cache.getEmpCalAndSumExeLogMap().put(empCalAndSumExecLogID,
+	@Override
+	public void updateLogInfo(String empCalAndSumExecLogID, int executionContent, int processStatus) {
+		empCalAndSumExeLogRepo.updateLogInfo(empCalAndSumExecLogID, executionContent, processStatus);
+	}
+
+	@Override
+	public void updateLogWithContent(String employeeID, String empCalAndSumExecLogId, int executionContent, int state) {
+		targetPersonRepo.updateWithContent(employeeID, empCalAndSumExecLogId, executionContent, state);
+	}
+
+	@Override
+	public void add(ErrMessageInfo errMessageInfo) {
+		errMessageInfoRepo.add(errMessageInfo);
+	}
+
+	@Override
+	public Optional<EmpCalAndSumExeLog> calAndSumExeLog(String empCalAndSumExecLogID) {
+		if (!cache.getEmpCalAndSumExeLogMap().containsKey(empCalAndSumExecLogID)) {
+			cache.getEmpCalAndSumExeLogMap().put(empCalAndSumExecLogID,
 					empCalAndSumExeLogRepo.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID));
-			}
-			return cache.getEmpCalAndSumExeLogMap().get(empCalAndSumExecLogID);
 		}
+		return cache.getEmpCalAndSumExeLogMap().get(empCalAndSumExecLogID);
+	}
 
-		@Override
-		public void removeMonthEditState(String employeeId, YearMonth yearMonth, ClosureId closureId,
-				ClosureDate closureDate) {
-			editStateOfMonthlyPerRepo.remove(employeeId, yearMonth, closureId, closureDate);
-		}
+	@Override
+	public void removeMonthEditState(String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate) {
+		editStateOfMonthlyPerRepo.remove(employeeId, yearMonth, closureId, closureDate);
+	}
 
-		@Override
-		public List<EditStateOfMonthlyPerformance> monthEditStates(String employeeId, YearMonth yearMonth,
-				ClosureId closureId, ClosureDate closureDate) {
-			return editStateOfMonthlyPerRepo.findByClosure(employeeId, yearMonth, closureId, closureDate);
-		}
+	@Override
+	public List<EditStateOfMonthlyPerformance> monthEditStates(String employeeId, YearMonth yearMonth,
+			ClosureId closureId, ClosureDate closureDate) {
+		return editStateOfMonthlyPerRepo.findByClosure(employeeId, yearMonth, closureId, closureDate);
+	}
 
 //		@Override
 //		public ManagedExecutorService getExecutorService() {
 //			return executorService;
 //		} 
 
-		@Override
-		public Map<GeneralDate, AffiliationInforOfDailyAttd> dailyAffiliationInfors(List<String> employeeIds, DatePeriod ymd) {
-			
-			Map<GeneralDate, AffiliationInforOfDailyAttd> dataForResult = new ConcurrentHashMap<GeneralDate, AffiliationInforOfDailyAttd>();
-			Map<GeneralDate, AffiliationInforOfDailyAttd> dataByRepo = new ConcurrentHashMap<GeneralDate, AffiliationInforOfDailyAttd>();
-		
-			for(String employeeId : employeeIds){
-				for(GeneralDate date : ymd.datesBetween()){
-					String keyForGet = employeeId + "-" + date.toString();	
-					if(cache.getAffiliationInforOfDailyAttdMap().containsKey(keyForGet)){
-						dataForResult.put(date,cache.getAffiliationInforOfDailyAttdMap().get(keyForGet));
-					}
-					else{
-						dataByRepo =affiliationInforOfDailyPerforRepo.finds(Arrays.asList(employeeId), new DatePeriod(date, ymd.end()))
-								.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getAffiliationInfor()));
-						
-						dataByRepo.forEach((k, v) ->{
-							String keyForPut = employeeId + "-" + k.toString();
-							if(!cache.getAffiliationInforOfDailyAttdMap().containsKey(keyForPut)){
-								cache.getAffiliationInforOfDailyAttdMap().put(keyForPut, v);
-							}
-							dataForResult.put(k, v);
-						});
-						
-						break;
-					}
-				};
+	@Override
+	public Map<GeneralDate, AffiliationInforOfDailyAttd> dailyAffiliationInfors(List<String> employeeIds,
+			DatePeriod ymd) {
+
+		Map<GeneralDate, AffiliationInforOfDailyAttd> dataForResult = new ConcurrentHashMap<GeneralDate, AffiliationInforOfDailyAttd>();
+		Map<GeneralDate, AffiliationInforOfDailyAttd> dataByRepo = new ConcurrentHashMap<GeneralDate, AffiliationInforOfDailyAttd>();
+
+		for (String employeeId : employeeIds) {
+			for (GeneralDate date : ymd.datesBetween()) {
+				String keyForGet = employeeId + "-" + date.toString();
+				if (cache.getAffiliationInforOfDailyAttdMap().containsKey(keyForGet)) {
+					dataForResult.put(date, cache.getAffiliationInforOfDailyAttdMap().get(keyForGet));
+				} else {
+					dataByRepo = affiliationInforOfDailyPerforRepo
+							.finds(Arrays.asList(employeeId), new DatePeriod(date, ymd.end())).stream()
+							.collect(Collectors.toMap(c -> c.getYmd(), c -> c.getAffiliationInfor()));
+
+					dataByRepo.forEach((k, v) -> {
+						String keyForPut = employeeId + "-" + k.toString();
+						if (!cache.getAffiliationInforOfDailyAttdMap().containsKey(keyForPut)) {
+							cache.getAffiliationInforOfDailyAttdMap().put(keyForPut, v);
+						}
+						dataForResult.put(k, v);
+					});
+
+					break;
+				}
 			}
-			return dataForResult;
+			;
 		}
+		return dataForResult;
+	}
 
-		@Override
-		public MonthlyRecordToAttendanceItemConverter createMonthlyConverter() {
-			return converterFactory.createMonthlyConverter();
-		}
+	@Override
+	public MonthlyRecordToAttendanceItemConverter createMonthlyConverter() {
+		return converterFactory.createMonthlyConverter();
+	}
 
-		@Override
-		public AttendanceDaysMonth monthAttendanceDays(CacheCarrier cacheCarrier, DatePeriod period,
-				Map<String, WorkType> workTypeMap) {
-			return predWorkingDaysAdaptor.byPeriod(cacheCarrier, period, workTypeMap);
-		}
+	@Override
+	public AttendanceDaysMonth monthAttendanceDays(CacheCarrier cacheCarrier, DatePeriod period,
+			Map<String, WorkType> workTypeMap) {
+		return predWorkingDaysAdaptor.byPeriod(cacheCarrier, period, workTypeMap);
+	}
 
-		@Override
-		public void merge(List<IntegrationOfMonthly> domains, GeneralDate targetDate) {
-			updateAllDomainMonthService.merge(domains, targetDate);
-		}
+	@Override
+	public void merge(List<IntegrationOfMonthly> domains, GeneralDate targetDate) {
+		updateAllDomainMonthService.merge(domains, targetDate);
+	}
 
-		@Override
-		public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
-			return workingConditionItemRepo.getBySidAndStandardDate(employeeId, baseDate);
-		}
-		
-		@Override
-		public List<WorkingConditionItem> workingConditionItemClones(List<String> employeeId, GeneralDate baseDate) {
-			return workingConditionItemRepo.getByListSidAndStandardDate(employeeId, baseDate);
-		}
+	@Override
+	public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
+		return workingConditionItemRepo.getBySidAndStandardDate(employeeId, baseDate);
+	}
 
-		@Override
-		public List<WorkingConditionItem> workingConditionItem(String employeeId, DatePeriod datePeriod) {
-			return workingConditionItemRepo.getBySidAndPeriodOrderByStrD(employeeId, datePeriod);
-		}
+	@Override
+	public List<WorkingConditionItem> workingConditionItemClones(List<String> employeeId, GeneralDate baseDate) {
+		return workingConditionItemRepo.getByListSidAndStandardDate(employeeId, baseDate);
+	}
 
-		@Override
-		public Map<String, Map<GeneralDate, WorkingConditionItem>> workingConditionItem(
-				Map<String, Set<GeneralDate>> params) {
-			return workingConditionItemRepo.getBySidAndPeriod(params);
-		}
+	@Override
+	public List<WorkingConditionItem> workingConditionItem(String employeeId, DatePeriod datePeriod) {
+		return workingConditionItemRepo.getBySidAndPeriodOrderByStrD(employeeId, datePeriod);
+	}
 
-		@Override
-		public Optional<AgreementUnitSetting> agreementUnitSetting(String companyId) {
-			if(!cache.getAgreementUnitSettingCache().isPresent()){
-				cache.setAgreementUnitSettingCache(agreementUnitSetRepo.find(companyId));
-			}
-			return cache.getAgreementUnitSettingCache();
-		}
+	@Override
+	public Map<String, Map<GeneralDate, WorkingConditionItem>> workingConditionItem(
+			Map<String, Set<GeneralDate>> params) {
+		return workingConditionItemRepo.getBySidAndPeriod(params);
+	}
 
-		@Override
-		public Optional<AffClassificationSidImport> affEmployeeClassification(String companyId, String employeeId,
-				GeneralDate baseDate) {
-			return affClassficationAdapter.findByEmployeeId(companyId, employeeId, baseDate);
+	@Override
+	public Optional<AgreementUnitSetting> agreementUnitSetting(String companyId) {
+		if (!cache.getAgreementUnitSettingCache().isPresent()) {
+			cache.setAgreementUnitSettingCache(agreementUnitSetRepo.find(companyId));
 		}
+		return cache.getAgreementUnitSettingCache();
+	}
 
-		@Override
-		public List<AffClassificationSidImport> affEmployeeClassification(String companyId, List<String> employeeId,
-				DatePeriod baseDate) {
-			return affClassficationAdapter.finds(companyId, employeeId, baseDate);
-		}
-		
-		@Override
-		public Optional<AgreementTimeOfClassification> agreementTimeOfClassification(String companyId,
-				LaborSystemtAtr laborSystemAtr, String classificationCode) {
-			
-			String key = companyId + "-" + laborSystemAtr + "-" + classificationCode;
-			if(!cache.getAgreementTimeOfClassificationMap().containsKey(key)){
-				cache.getAgreementTimeOfClassificationMap().put(key, agreementTimeOfClassificationRepo
+	@Override
+	public Optional<AffClassificationSidImport> affEmployeeClassification(String companyId, String employeeId,
+			GeneralDate baseDate) {
+		return affClassficationAdapter.findByEmployeeId(companyId, employeeId, baseDate);
+	}
+
+	@Override
+	public List<AffClassificationSidImport> affEmployeeClassification(String companyId, List<String> employeeId,
+			DatePeriod baseDate) {
+		return affClassficationAdapter.finds(companyId, employeeId, baseDate);
+	}
+
+	@Override
+	public Optional<AgreementTimeOfClassification> agreementTimeOfClassification(String companyId,
+			LaborSystemtAtr laborSystemAtr, String classificationCode) {
+
+		String key = companyId + "-" + laborSystemAtr + "-" + classificationCode;
+		if (!cache.getAgreementTimeOfClassificationMap().containsKey(key)) {
+			cache.getAgreementTimeOfClassificationMap().put(key, agreementTimeOfClassificationRepo
 					.getByCidAndClassificationCode(companyId, classificationCode, laborSystemAtr));
-			}
-			return cache.getAgreementTimeOfClassificationMap().get(key);
 		}
+		return cache.getAgreementTimeOfClassificationMap().get(key);
+	}
 
-		@Override
-		public List<AgreementTimeOfClassification> agreementTimeOfClassification(String companyId,
-				List<String> classificationCode) {
-			return agreementTimeOfClassificationRepo.findCidAndLstCd(companyId, classificationCode);
-		}
+	@Override
+	public List<AgreementTimeOfClassification> agreementTimeOfClassification(String companyId,
+			List<String> classificationCode) {
+		return agreementTimeOfClassificationRepo.findCidAndLstCd(companyId, classificationCode);
+	}
 
-		@Override
-		public List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId, String employeeId,
-				GeneralDate baseDate) {
-			return affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRootRequire(cacheCarrier, companyId, employeeId, baseDate);
-		}
+	@Override
+	public List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId, String employeeId,
+			GeneralDate baseDate) {
+		return affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRootRequire(cacheCarrier, companyId, employeeId,
+				baseDate);
+	}
 
-		@Override
-		public Map<GeneralDate, Map<String, List<String>>> getCanUseWorkplaceForEmp(String companyId,
-				List<String> employeeId, DatePeriod baseDate) {
-			return affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRoot(companyId, employeeId, baseDate);
-		}
+	@Override
+	public Map<GeneralDate, Map<String, List<String>>> getCanUseWorkplaceForEmp(String companyId,
+			List<String> employeeId, DatePeriod baseDate) {
+		return affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRoot(companyId, employeeId, baseDate);
+	}
 
-		@Override
-		public List<String> getCanUseWorkplaceForEmp(String companyId, String employeeId, GeneralDate baseDate) {
-			return affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRoot(companyId, employeeId, baseDate);
-		}
+	@Override
+	public List<String> getCanUseWorkplaceForEmp(String companyId, String employeeId, GeneralDate baseDate) {
+		return affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRoot(companyId, employeeId, baseDate);
+	}
 
-		@Override
-		public Optional<AgreementTimeOfWorkPlace> agreementTimeOfWorkPlace(String workplaceId,
-				LaborSystemtAtr laborSystemAtr) {
-			String key = workplaceId + "-" + laborSystemAtr;
-			if(!cache.getAgreementTimeOfWorkPlaceMap().containsKey(key)){
-				cache.getAgreementTimeOfWorkPlaceMap().put(key, agreementTimeWorkPlaceRepo.getByWorkplaceId(workplaceId, laborSystemAtr));
-			}
-			return cache.getAgreementTimeOfWorkPlaceMap().get(key);
+	@Override
+	public Optional<AgreementTimeOfWorkPlace> agreementTimeOfWorkPlace(String workplaceId,
+			LaborSystemtAtr laborSystemAtr) {
+		String key = workplaceId + "-" + laborSystemAtr;
+		if (!cache.getAgreementTimeOfWorkPlaceMap().containsKey(key)) {
+			cache.getAgreementTimeOfWorkPlaceMap().put(key,
+					agreementTimeWorkPlaceRepo.getByWorkplaceId(workplaceId, laborSystemAtr));
 		}
+		return cache.getAgreementTimeOfWorkPlaceMap().get(key);
+	}
 
-		@Override
-		public List<AgreementTimeOfWorkPlace> agreementTimeOfWorkPlace(List<String> workplaceId) {
-			return agreementTimeWorkPlaceRepo.getByListWorkplaceId(workplaceId);
-		}
+	@Override
+	public List<AgreementTimeOfWorkPlace> agreementTimeOfWorkPlace(List<String> workplaceId) {
+		return agreementTimeWorkPlaceRepo.getByListWorkplaceId(workplaceId);
+	}
 
-		@Override
-		public Map<String, List<SyEmploymentImport>> employment(List<String> employeeId, DatePeriod baseDate) {
-			return syEmploymentAdapter.finds(employeeId, baseDate);
-		}
+	@Override
+	public Map<String, List<SyEmploymentImport>> employment(List<String> employeeId, DatePeriod baseDate) {
+		return syEmploymentAdapter.finds(employeeId, baseDate);
+	}
 
-		@Override
-		public Optional<SyEmploymentImport> employment(String companyId, String employeeId, GeneralDate baseDate) {
-			return syEmploymentAdapter.findByEmployeeId(companyId, employeeId, baseDate);
-		}
+	@Override
+	public Optional<SyEmploymentImport> employment(String companyId, String employeeId, GeneralDate baseDate) {
+		return syEmploymentAdapter.findByEmployeeId(companyId, employeeId, baseDate);
+	}
 
-		@Override
-		public List<AgreementTimeOfEmployment> agreementTimeOfEmployment(String comId,
-				List<String> employmentCategoryCode) {
-			return agreementTimeOfEmploymentRepo.findByCidAndListCd(comId, employmentCategoryCode);
-		}
+	@Override
+	public List<AgreementTimeOfEmployment> agreementTimeOfEmployment(String comId,
+			List<String> employmentCategoryCode) {
+		return agreementTimeOfEmploymentRepo.findByCidAndListCd(comId, employmentCategoryCode);
+	}
 
-		@Override
-		public Optional<AgreementTimeOfEmployment> agreementTimeOfEmployment(String companyId,
-				String employmentCategoryCode, LaborSystemtAtr laborSystemAtr) {
-			String key = companyId + "-" + employmentCategoryCode + "-" + laborSystemAtr;
-			if(!cache.getAgreementTimeOfEmploymentMap().containsKey(key)){
-				cache.getAgreementTimeOfEmploymentMap().put(key, 
-						agreementTimeOfEmploymentRepo.getByCidAndCd(companyId, employmentCategoryCode, laborSystemAtr));
-			}
-			return cache.getAgreementTimeOfEmploymentMap().get(key);
+	@Override
+	public Optional<AgreementTimeOfEmployment> agreementTimeOfEmployment(String companyId,
+			String employmentCategoryCode, LaborSystemtAtr laborSystemAtr) {
+		String key = companyId + "-" + employmentCategoryCode + "-" + laborSystemAtr;
+		if (!cache.getAgreementTimeOfEmploymentMap().containsKey(key)) {
+			cache.getAgreementTimeOfEmploymentMap().put(key,
+					agreementTimeOfEmploymentRepo.getByCidAndCd(companyId, employmentCategoryCode, laborSystemAtr));
 		}
+		return cache.getAgreementTimeOfEmploymentMap().get(key);
+	}
 
-		@Override
-		public List<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId) {
-			if(cache.getAgreementTimeOfCompanyCache().isEmpty()){
-				cache.setAgreementTimeOfCompanyCache(agreementTimeCompanyRepo.find(companyId));
-			}
-			return cache.getAgreementTimeOfCompanyCache();
+	@Override
+	public List<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId) {
+		if (cache.getAgreementTimeOfCompanyCache().isEmpty()) {
+			cache.setAgreementTimeOfCompanyCache(agreementTimeCompanyRepo.find(companyId));
 		}
+		return cache.getAgreementTimeOfCompanyCache();
+	}
 
-		@Override
-		public Optional<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId,
-				LaborSystemtAtr laborSystemAtr) {
-			if(!cache.getAgreementTimeOfCompanyMap().containsKey(laborSystemAtr)){
-				cache.getAgreementTimeOfCompanyMap().put(laborSystemAtr, agreementTimeCompanyRepo.getByCid(companyId, laborSystemAtr));
-			}
-			return cache.getAgreementTimeOfCompanyMap().get(laborSystemAtr);
+	@Override
+	public Optional<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId, LaborSystemtAtr laborSystemAtr) {
+		if (!cache.getAgreementTimeOfCompanyMap().containsKey(laborSystemAtr)) {
+			cache.getAgreementTimeOfCompanyMap().put(laborSystemAtr,
+					agreementTimeCompanyRepo.getByCid(companyId, laborSystemAtr));
 		}
+		return cache.getAgreementTimeOfCompanyMap().get(laborSystemAtr);
+	}
 
-		@Override
-		public List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, GeneralDate criteriaDate) {
-			return attendanceTimeOfMonthlyRepo.findByDate(employeeId, criteriaDate);
-		}
+	@Override
+	public List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, GeneralDate criteriaDate) {
+		return attendanceTimeOfMonthlyRepo.findByDate(employeeId, criteriaDate);
+	}
 
-		@Override
-		public Optional<ClosureHistory> closureHistoryByYm(String companyId, int closureId, int yearMonth) {
-			return closureRepo.findBySelectedYearMonth(companyId, closureId, yearMonth);
-		}
+	@Override
+	public Optional<ClosureHistory> closureHistoryByYm(String companyId, int closureId, int yearMonth) {
+		return closureRepo.findBySelectedYearMonth(companyId, closureId, yearMonth);
+	}
 
-		@Override
-		public void addClosureStatusManagement(ClosureStatusManagement domain) {
-			closureStatusManagementRepo.add(domain);
-		}
+	@Override
+	public void addClosureStatusManagement(ClosureStatusManagement domain) {
+		closureStatusManagementRepo.add(domain);
+	}
 
-		@Override
-		public List<ClosureStatusManagement> employeeClosureStatusManagements(List<String> employeeIds,
-				DatePeriod span) {
-			return closureStatusManagementRepo.getByIdListAndDatePeriod(employeeIds, span);
-		}
+	@Override
+	public List<ClosureStatusManagement> employeeClosureStatusManagements(List<String> employeeIds, DatePeriod span) {
+		return closureStatusManagementRepo.getByIdListAndDatePeriod(employeeIds, span);
+	}
 
-		@Override
-		public Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId) {
-			if(!cache.getClosureStatusManagementOptMap().containsKey(employeeId)){
-				cache.getClosureStatusManagementOptMap().put(employeeId, closureStatusManagementRepo.getLatestByEmpId(employeeId));
-			}
-			return cache.getClosureStatusManagementOptMap().get(employeeId);
+	@Override
+	public Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId) {
+		if (!cache.getClosureStatusManagementOptMap().containsKey(employeeId)) {
+			cache.getClosureStatusManagementOptMap().put(employeeId,
+					closureStatusManagementRepo.getLatestByEmpId(employeeId));
 		}
+		return cache.getClosureStatusManagementOptMap().get(employeeId);
+	}
 
 //		@Override
 //		public void deleteTmpAnnualHolidayMng(String mngId) {
 //			tmpAnnualHolidayMngRepo.deleteById(mngId);
 //		}
 
-		@Override
-		public List<TempAnnualLeaveMngs> tmpAnnualHolidayMng(String sid, DatePeriod dateData) {
-			return tmpAnnualHolidayMngRepo.getBySidPeriod(sid, dateData);
-		}
+	@Override
+	public List<TempAnnualLeaveMngs> tmpAnnualHolidayMng(String sid, DatePeriod dateData) {
+		return tmpAnnualHolidayMngRepo.getBySidPeriod(sid, dateData);
+	}
 
 //		@Override
 //		public void deleteTmpResereLeaveMng(String mngId) {
 //			tmpResereLeaveMngRepo.deleteById(mngId);
 //		}
 
-		@Override
-		public List<TmpResereLeaveMng> tmpResereLeaveMng(String sid, DatePeriod period) {
-			return tmpResereLeaveMngRepo.findBySidPriod(sid, period);
-		}
+	@Override
+	public List<TmpResereLeaveMng> tmpResereLeaveMng(String sid, DatePeriod period) {
+		return tmpResereLeaveMngRepo.findBySidPriod(sid, period);
+	}
 
-		@Override
-		public void addOrUpdateAnnualLeaveRemainingHistory(AnnualLeaveRemainingHistory domain) {
-			annualLeaveRemainHistRepo.addOrUpdate(domain);
-		}
+	@Override
+	public void addOrUpdateAnnualLeaveRemainingHistory(AnnualLeaveRemainingHistory domain) {
+		annualLeaveRemainHistRepo.addOrUpdate(domain);
+	}
 
-		@Override
-		public List<AnnualLeaveRemainingHistory> annualLeaveRemainingHistory(String sid, YearMonth ym) {
-			return annualLeaveRemainHistRepo.getInfoBySidAndYM(sid, ym);
-		}
+	@Override
+	public List<AnnualLeaveRemainingHistory> annualLeaveRemainingHistory(String sid, YearMonth ym) {
+		return annualLeaveRemainHistRepo.getInfoBySidAndYM(sid, ym);
+	}
 
-		@Override
-		public void addAnnualLeaveGrantRemainingData(AnnualLeaveGrantRemainingData data) {
-			annLeaGrantRemDataRepo.add(AppContexts.user().companyId(), data);
-		}
+	@Override
+	public void addAnnualLeaveGrantRemainingData(AnnualLeaveGrantRemainingData data) {
+		annLeaGrantRemDataRepo.add(AppContexts.user().companyId(), data);
+	}
 
-		@Override
-		public void updateAnnualLeaveGrantRemainingData(AnnualLeaveGrantRemainingData data) {
-			annLeaGrantRemDataRepo.update(data);
-		}
+	@Override
+	public void updateAnnualLeaveGrantRemainingData(AnnualLeaveGrantRemainingData data) {
+		annLeaGrantRemDataRepo.update(data);
+	}
 
-		@Override
-		public List<AnnualLeaveGrantRemainingData> annualLeaveGrantRemainingData(String employeeId,
-				GeneralDate grantDate) {
-			return annLeaGrantRemDataRepo.find(employeeId, grantDate);
-		}
+	@Override
+	public List<AnnualLeaveGrantRemainingData> annualLeaveGrantRemainingData(String employeeId, GeneralDate grantDate) {
+		return annLeaGrantRemDataRepo.find(employeeId, grantDate);
+	}
 
-		@Override
-		public void addOrUpdateAnnualLeaveTimeRemainingHistory(AnnualLeaveTimeRemainingHistory domain) {
-			annualLeaveTimeRemainHistRepo.addOrUpdate(domain);
-		}
+	@Override
+	public void addOrUpdateAnnualLeaveTimeRemainingHistory(AnnualLeaveTimeRemainingHistory domain) {
+		annualLeaveTimeRemainHistRepo.addOrUpdate(domain);
+	}
 
-		@Override
-		public void addOrUpdateAnnualLeaveMaxHistoryData(AnnualLeaveMaxHistoryData domain) {
-			annualLeaveMaxHistRepo.addOrUpdate(domain);
-		}
+	@Override
+	public void addOrUpdateAnnualLeaveMaxHistoryData(AnnualLeaveMaxHistoryData domain) {
+		annualLeaveMaxHistRepo.addOrUpdate(domain);
+	}
 
-		@Override
-		public Optional<AnnualLeaveMaxData> annualLeaveMaxData(String employeeId) {
-			if(!cache.getAnnualLeaveMaxDataMap().containsKey(employeeId)){
-				cache.getAnnualLeaveMaxDataMap().put(employeeId, annLeaMaxDataRepo.get(employeeId));
-			}
-			return cache.getAnnualLeaveMaxDataMap().get(employeeId);
+	@Override
+	public Optional<AnnualLeaveMaxData> annualLeaveMaxData(String employeeId) {
+		if (!cache.getAnnualLeaveMaxDataMap().containsKey(employeeId)) {
+			cache.getAnnualLeaveMaxDataMap().put(employeeId, annLeaMaxDataRepo.get(employeeId));
 		}
+		return cache.getAnnualLeaveMaxDataMap().get(employeeId);
+	}
 
-		@Override
-		public void updateAnnualLeaveMaxData(AnnualLeaveMaxData maxData) {
-			annLeaMaxDataRepo.update(maxData);
-		}
+	@Override
+	public void updateAnnualLeaveMaxData(AnnualLeaveMaxData maxData) {
+		annLeaMaxDataRepo.update(maxData);
+	}
 
-		@Override
-		public void addAnnualLeaveMaxData(AnnualLeaveMaxData maxData) {
-			annLeaMaxDataRepo.add(maxData);
-		}
+	@Override
+	public void addAnnualLeaveMaxData(AnnualLeaveMaxData maxData) {
+		annLeaMaxDataRepo.add(maxData);
+	}
 
-		@Override
-		public void addOrUpdateReserveLeaveGrantRemainHistoryData(ReserveLeaveGrantRemainHistoryData domain,
-				String cid) {
-			rsvLeaveGrantRemainHistRepo.addOrUpdate(domain, cid);
-		}
-		
-		@Override
-		public void addOrUpdateReserveLeaveGrantTimeRemainHistoryData(ReserveLeaveGrantTimeRemainHistoryData domain) {
-			rsvLeaveGrantTimeRemainHistRepo.addOrUpdate(domain);
-		}
+	@Override
+	public void addOrUpdateReserveLeaveGrantRemainHistoryData(ReserveLeaveGrantRemainHistoryData domain, String cid) {
+		rsvLeaveGrantRemainHistRepo.addOrUpdate(domain, cid);
+	}
 
-		@Override
-		public List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId) {
-			if(!cache.getReserveLeaveGrantRemainingDataMap().containsKey(employeeId)){
-				cache.getReserveLeaveGrantRemainingDataMap().put(employeeId, rervLeaGrantRemDataRepo.find(employeeId));
-			}
-			return cache.getReserveLeaveGrantRemainingDataMap().get(employeeId);
-		}
+	@Override
+	public void addOrUpdateReserveLeaveGrantTimeRemainHistoryData(ReserveLeaveGrantTimeRemainHistoryData domain) {
+		rsvLeaveGrantTimeRemainHistRepo.addOrUpdate(domain);
+	}
 
-		@Override
-		public List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId,
-				GeneralDate grantDate) {
-			String key = employeeId + "-" + grantDate;
-			if(!cache.getReserveLeaveGrantRemainingDatabyGrantDateMap().containsKey(key)){
-				cache.getReserveLeaveGrantRemainingDatabyGrantDateMap().put(key, rervLeaGrantRemDataRepo.find(employeeId, grantDate));
-			}
-			return cache.getReserveLeaveGrantRemainingDatabyGrantDateMap().get(key);
+	@Override
+	public List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId) {
+		if (!cache.getReserveLeaveGrantRemainingDataMap().containsKey(employeeId)) {
+			cache.getReserveLeaveGrantRemainingDataMap().put(employeeId, rervLeaGrantRemDataRepo.find(employeeId));
 		}
+		return cache.getReserveLeaveGrantRemainingDataMap().get(employeeId);
+	}
 
-		@Override
-		public void updateReserveLeaveGrantRemainingData(ReserveLeaveGrantRemainingData data) {
-			rervLeaGrantRemDataRepo.update(data);
+	@Override
+	public List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId,
+			GeneralDate grantDate) {
+		String key = employeeId + "-" + grantDate;
+		if (!cache.getReserveLeaveGrantRemainingDatabyGrantDateMap().containsKey(key)) {
+			cache.getReserveLeaveGrantRemainingDatabyGrantDateMap().put(key,
+					rervLeaGrantRemDataRepo.find(employeeId, grantDate));
 		}
+		return cache.getReserveLeaveGrantRemainingDatabyGrantDateMap().get(key);
+	}
 
-		@Override
-		public void addReserveLeaveGrantRemainingData(ReserveLeaveGrantRemainingData data) {
-			rervLeaGrantRemDataRepo.add(data);
+	@Override
+	public void updateReserveLeaveGrantRemainingData(ReserveLeaveGrantRemainingData data) {
+		rervLeaGrantRemDataRepo.update(data);
+	}
+
+	@Override
+	public void addReserveLeaveGrantRemainingData(ReserveLeaveGrantRemainingData data) {
+		rervLeaGrantRemDataRepo.add(data);
+	}
+
+	@Override
+	public void updateSubstitutionOfHDManagementData(SubstitutionOfHDManagementData domain) {
+		substitutionOfHDManaDataRepo.update(domain);
+	}
+
+	@Override
+	public void createSubstitutionOfHDManagementData(SubstitutionOfHDManagementData domain) {
+		substitutionOfHDManaDataRepo.create(domain);
+	}
+
+	@Override
+	public Optional<SubstitutionOfHDManagementData> substitutionOfHDManagementData(String Id) {
+		return substitutionOfHDManaDataRepo.findByID(Id);
+	}
+
+	@Override
+	public void updatePayoutManagementData(PayoutManagementData domain) {
+		payoutManagementDataRepo.update(domain);
+	}
+
+	@Override
+	public void createPayoutManagementData(PayoutManagementData domain) {
+		payoutManagementDataRepo.create(domain);
+	}
+
+	@Override
+	public Optional<PayoutManagementData> payoutManagementData(String Id) {
+		return payoutManagementDataRepo.findByID(Id);
+	}
+
+	@Override
+	public void updateCompensatoryDayOffManaData(CompensatoryDayOffManaData domain) {
+		comDayOffManaDataRepo.update(domain);
+	}
+
+	@Override
+	public void createCompensatoryDayOffManaData(CompensatoryDayOffManaData domain) {
+		comDayOffManaDataRepo.create(domain);
+	}
+
+	@Override
+	public Optional<CompensatoryDayOffManaData> compensatoryDayOffManaData(String comDayOffId) {
+		return comDayOffManaDataRepo.getBycomdayOffId(comDayOffId);
+	}
+
+	@Override
+	public Optional<LeaveManagementData> leaveManagementData(String comDayOffId) {
+		return leaveManaDataRepo.getByLeaveId(comDayOffId);
+	}
+
+	@Override
+	public void updateLeaveManagementData(LeaveManagementData leaveMng) {
+		leaveManaDataRepo.update(leaveMng);
+	}
+
+	@Override
+	public void createLeaveManagementData(LeaveManagementData leaveMng) {
+		leaveManaDataRepo.create(leaveMng);
+	}
+
+	@Override
+	public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String employeeId, int specialCode) {
+		String key = employeeId + "-" + specialCode;
+		if (!cache.getSpecialLeaveGrantRemainingDataMap().containsKey(key)) {
+			cache.getSpecialLeaveGrantRemainingDataMap().put(key,
+					specialLeaveGrantRepo.getAll(employeeId, specialCode));
 		}
+		return cache.getSpecialLeaveGrantRemainingDataMap().get(key);
+	}
 
-		@Override
-		public void updateSubstitutionOfHDManagementData(SubstitutionOfHDManagementData domain) {
-			substitutionOfHDManaDataRepo.update(domain);
+	@Override
+	public void updateSpecialLeaveGrantRemainingData(SpecialLeaveGrantRemainingData data) {
+		specialLeaveGrantRepo.update(data);
+	}
+
+	@Override
+	public void addSpecialLeaveGrantRemainingData(SpecialLeaveGrantRemainingData data) {
+		specialLeaveGrantRepo.add(AppContexts.user().companyId(), data);
+	}
+
+	@Override
+	public List<SpecialHoliday> specialHoliday(String companyId) {
+		if (cache.getSpecialHolidayCache().isEmpty()) {
+			cache.setSpecialHolidayCache(specialHolidayRepo.findByCompanyId(companyId));
 		}
+		return cache.getSpecialHolidayCache();
+	}
 
-		@Override
-		public void createSubstitutionOfHDManagementData(SubstitutionOfHDManagementData domain) {
-			substitutionOfHDManaDataRepo.create(domain);
-		}
+	@Override
+	public FixedRemainDataForMonthlyAgg monthInterimRemainData(CacheCarrier cacheCarrier, String cid, String sid,
+			DatePeriod dateData, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
+		return interimRemainOffMonthProcess.monthInterimRemainData(cacheCarrier, cid, sid, dateData, yearMonth,
+				closureId, closureDate);
+	}
 
-		@Override
-		public Optional<SubstitutionOfHDManagementData> substitutionOfHDManagementData(String Id) {
-			return substitutionOfHDManaDataRepo.findByID(Id);
-		}
+	@Override
+	public void addMonthlyClosureUpdateErrorInfor(MonthlyClosureUpdateErrorInfor domain) {
+		monthlyClosureUpdateErrorInforRepo.add(domain);
+	}
 
-		@Override
-		public void updatePayoutManagementData(PayoutManagementData domain) {
-			payoutManagementDataRepo.update(domain);
-		}
-
-		@Override
-		public void createPayoutManagementData(PayoutManagementData domain) {
-			payoutManagementDataRepo.create(domain);
-		}
-
-		@Override
-		public Optional<PayoutManagementData> payoutManagementData(String Id) {
-			return payoutManagementDataRepo.findByID(Id);
-		}
-
-		@Override
-		public void updateCompensatoryDayOffManaData(CompensatoryDayOffManaData domain) {
-			comDayOffManaDataRepo.update(domain);
-		}
-
-		@Override
-		public void createCompensatoryDayOffManaData(CompensatoryDayOffManaData domain) {
-			comDayOffManaDataRepo.create(domain);
-		}
-
-		@Override
-		public Optional<CompensatoryDayOffManaData> compensatoryDayOffManaData(String comDayOffId) {
-			return comDayOffManaDataRepo.getBycomdayOffId(comDayOffId);
-		}
-
-		@Override
-		public Optional<LeaveManagementData> leaveManagementData(String comDayOffId) {
-			return leaveManaDataRepo.getByLeaveId(comDayOffId);
-		}
-
-		@Override
-		public void updateLeaveManagementData(LeaveManagementData leaveMng) {
-			leaveManaDataRepo.update(leaveMng);
-		}
-
-		@Override
-		public void createLeaveManagementData(LeaveManagementData leaveMng) {
-			leaveManaDataRepo.create(leaveMng);
-		}
-
-		@Override
-		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String employeeId, int specialCode) {
-			String key = employeeId + "-" + specialCode ;
-			if(!cache.getSpecialLeaveGrantRemainingDataMap().containsKey(key)){
-				cache.getSpecialLeaveGrantRemainingDataMap().put(key, specialLeaveGrantRepo.getAll(employeeId, specialCode));
-			}
-			return cache.getSpecialLeaveGrantRemainingDataMap().get(key);
-		}
-
-		@Override
-		public void updateSpecialLeaveGrantRemainingData(SpecialLeaveGrantRemainingData data) {
-			specialLeaveGrantRepo.update(data);
-		}
-
-		@Override
-		public void addSpecialLeaveGrantRemainingData(SpecialLeaveGrantRemainingData data) {
-			specialLeaveGrantRepo.add(AppContexts.user().companyId(), data);
-		}
-
-		@Override
-		public List<SpecialHoliday> specialHoliday(String companyId) {
-			if(cache.getSpecialHolidayCache().isEmpty()){
-				cache.setSpecialHolidayCache(specialHolidayRepo.findByCompanyId(companyId));
-			}
-			return cache.getSpecialHolidayCache();
-		}
-
-		@Override
-		public FixedRemainDataForMonthlyAgg monthInterimRemainData(CacheCarrier cacheCarrier, String cid,
-				String sid, DatePeriod dateData, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
-			return interimRemainOffMonthProcess.monthInterimRemainData(cacheCarrier, cid, sid, dateData, yearMonth, closureId, closureDate);
-		}
-
-		@Override
-		public void addMonthlyClosureUpdateErrorInfor(MonthlyClosureUpdateErrorInfor domain) {
-			monthlyClosureUpdateErrorInforRepo.add(domain);
-		}
-
-		@Override
-		public List<MonthlyClosureUpdateErrorInfor> monthlyClosureUpdateErrorInfor(String monthlyClosureUpdateLogId,
-				String employeeId) {
-			String key = monthlyClosureUpdateLogId + "-" + employeeId;
-			if(!cache.getMonthlyClosureUpdateErrorInforMap().containsKey(key)){
-				cache.getMonthlyClosureUpdateErrorInforMap().put(key,
+	@Override
+	public List<MonthlyClosureUpdateErrorInfor> monthlyClosureUpdateErrorInfor(String monthlyClosureUpdateLogId,
+			String employeeId) {
+		String key = monthlyClosureUpdateLogId + "-" + employeeId;
+		if (!cache.getMonthlyClosureUpdateErrorInforMap().containsKey(key)) {
+			cache.getMonthlyClosureUpdateErrorInforMap().put(key,
 					monthlyClosureUpdateErrorInforRepo.getByLogIdAndEmpId(monthlyClosureUpdateLogId, employeeId));
-			}
-			return cache.getMonthlyClosureUpdateErrorInforMap().get(key);
 		}
+		return cache.getMonthlyClosureUpdateErrorInforMap().get(key);
+	}
 
-		@Override
-		public Optional<MonthlyClosureUpdateLog> monthlyClosureUpdateLog(String id) {
-			if(!cache.getMonthlyClosureUpdateLogMap().containsKey(id)){
-				cache.getMonthlyClosureUpdateLogMap().put(id, monthlyClosureUpdateLogRepo.getLogById(id));
-			}
-			return cache.getMonthlyClosureUpdateLogMap().get(id);
+	@Override
+	public Optional<MonthlyClosureUpdateLog> monthlyClosureUpdateLog(String id) {
+		if (!cache.getMonthlyClosureUpdateLogMap().containsKey(id)) {
+			cache.getMonthlyClosureUpdateLogMap().put(id, monthlyClosureUpdateLogRepo.getLogById(id));
 		}
+		return cache.getMonthlyClosureUpdateLogMap().get(id);
+	}
 
-		@Override
-		public void updateMonthlyClosureUpdateLog(MonthlyClosureUpdateLog domain) {
-			monthlyClosureUpdateLogRepo.updateStatus(domain);
-		}
+	@Override
+	public void updateMonthlyClosureUpdateLog(MonthlyClosureUpdateLog domain) {
+		monthlyClosureUpdateLogRepo.updateStatus(domain);
+	}
 
-		@Override
-		public List<MonthlyClosureUpdatePersonLog> monthlyClosureUpdatePersonLog(String monthlyClosureUpdateLogId) {
-			if(!cache.getMonthlyClosureUpdatePersonLogMap().containsKey(monthlyClosureUpdateLogId)){
-				cache.getMonthlyClosureUpdatePersonLogMap().put(monthlyClosureUpdateLogId,
+	@Override
+	public List<MonthlyClosureUpdatePersonLog> monthlyClosureUpdatePersonLog(String monthlyClosureUpdateLogId) {
+		if (!cache.getMonthlyClosureUpdatePersonLogMap().containsKey(monthlyClosureUpdateLogId)) {
+			cache.getMonthlyClosureUpdatePersonLogMap().put(monthlyClosureUpdateLogId,
 					monthlyClosureUpdatePersonLogRepo.getAll(monthlyClosureUpdateLogId));
-			}
-			return cache.getMonthlyClosureUpdatePersonLogMap().get(monthlyClosureUpdateLogId);
 		}
+		return cache.getMonthlyClosureUpdatePersonLogMap().get(monthlyClosureUpdateLogId);
+	}
 
-		@Override
-		public void addMonthlyClosureUpdatePersonLog(MonthlyClosureUpdatePersonLog domain) {
-			monthlyClosureUpdatePersonLogRepo.add(domain);
+	@Override
+	public void addMonthlyClosureUpdatePersonLog(MonthlyClosureUpdatePersonLog domain) {
+		monthlyClosureUpdatePersonLogRepo.add(domain);
+	}
+
+	@Override
+	public void deleteMonthlyClosureUpdatePersonLog(String monthlyLogId, String empId) {
+		monthlyClosureUpdatePersonLogRepo.delete(monthlyLogId, empId);
+	}
+
+	@Override
+	public Optional<ActualLock> actualLock(String companyId, int closureId) {
+		if (!cache.getActualLockMap().containsKey(closureId)) {
+			cache.getActualLockMap().put(closureId, actualLockRepo.findById(companyId, closureId));
 		}
+		return cache.getActualLockMap().get(closureId);
+	}
 
-		@Override
-		public void deleteMonthlyClosureUpdatePersonLog(String monthlyLogId, String empId) {
-			monthlyClosureUpdatePersonLogRepo.delete(monthlyLogId, empId);
+	@Override
+	public void updateActualLock(ActualLock actualLock) {
+		actualLockRepo.update(actualLock);
+	}
+
+	@Override
+	public void updateClosure(Closure closure) {
+		closureRepo.update(closure);
+	}
+
+	@Override
+	public Optional<OuenAggregateFrameSetOfMonthly> ouenAggregateFrameSetOfMonthly(String companyId) {
+		if (!cache.getOuenAggregateFrameSetOfMonthlyCache().isPresent()) {
+			cache.setOuenAggregateFrameSetOfMonthlyCache(ouenAggregateFrameSetOfMonthlyRepo.find(companyId));
 		}
+		return cache.getOuenAggregateFrameSetOfMonthlyCache();
+	}
 
-
-		@Override
-		public Optional<ActualLock> actualLock(String companyId, int closureId) {
-			if(!cache.getActualLockMap().containsKey(closureId)){
-				cache.getActualLockMap().put(closureId, actualLockRepo.findById(companyId, closureId));
-			}
-			return cache.getActualLockMap().get(closureId);
-		}
-
-		@Override
-		public void updateActualLock(ActualLock actualLock) {
-			actualLockRepo.update(actualLock);
-		}
-
-		@Override
-		public void updateClosure(Closure closure) {
-			closureRepo.update(closure);
-		}
-
-		@Override
-		public Optional<OuenAggregateFrameSetOfMonthly> ouenAggregateFrameSetOfMonthly(String companyId) {
-			if(!cache.getOuenAggregateFrameSetOfMonthlyCache().isPresent()){
-				cache.setOuenAggregateFrameSetOfMonthlyCache(ouenAggregateFrameSetOfMonthlyRepo.find(companyId));
-			}
-			return cache.getOuenAggregateFrameSetOfMonthlyCache();
-		}
-
-		@Override
-		public List<OuenWorkTimeOfDailyAttendance> ouenWorkTimeOfDailyAttendance(String empId, GeneralDate ymd) {
-			/** TODO: 渡邉さんの指示で応援系のデータ取得を一旦廃止しました。*/
+	@Override
+	public List<OuenWorkTimeOfDailyAttendance> ouenWorkTimeOfDailyAttendance(String empId, GeneralDate ymd) {
+		/** TODO: 渡邉さんの指示で応援系のデータ取得を一旦廃止しました。 */
 //			Optional<OuenWorkTimeOfDaily> daily = ouenWorkTimeOfDailyRepo.find(empId, ymd);
 //			if(!daily.isPresent()) {
 //				return new ArrayList<>();
 //			}
 //			return daily.get().getOuenTimes();
-			return new ArrayList<>();
-		}
+		return new ArrayList<>();
+	}
 
-		@Override
-		public List<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeSheetOfDailyAttendance(String empId,
-				GeneralDate ymd) {
-			/** TODO: 渡邉さんの指示で応援系のデータ取得を一旦廃止しました。*/
+	@Override
+	public List<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeSheetOfDailyAttendance(String empId, GeneralDate ymd) {
+		/** TODO: 渡邉さんの指示で応援系のデータ取得を一旦廃止しました。 */
 //			OuenWorkTimeSheetOfDaily domain =  ouenWorkTimeSheetOfDailyRepo.find(empId, ymd);
 //			if(domain == null)
 //				return new ArrayList<>();
 //			
 //			return domain.getOuenTimeSheet();
-			return new ArrayList<>();
+		return new ArrayList<>();
+	}
+
+	@Override
+	public boolean isUseWorkLayer(String companyId) {
+		return false;
+	}
+
+	@Override
+	public Optional<RegularLaborTimeCom> regularLaborTimeByCompany(String companyId) {
+		if (!cache.getRegularLaborTimeComCache().isPresent()) {
+			cache.setRegularLaborTimeComCache(regularLaborTimeComRepo.find(companyId));
+		}
+		return cache.getRegularLaborTimeComCache();
+	}
+
+	@Override
+	public Optional<DeforLaborTimeCom> deforLaborTimeByCompany(String companyId) {
+		if (!cache.getDeforLaborTimeComCache().isPresent()) {
+			cache.setDeforLaborTimeComCache(deforLaborTimeComRepo.find(companyId));
+		}
+		return cache.getDeforLaborTimeComCache();
+	}
+
+	@Override
+	public Optional<RegularLaborTimeWkp> regularLaborTimeByWorkplace(String cid, String wkpId) {
+		if (!cache.getRegularLaborTimeWkpMap().containsKey(wkpId)) {
+			cache.getRegularLaborTimeWkpMap().put(wkpId, regularLaborTimeWkpRepo.find(cid, wkpId));
+		}
+		return cache.getRegularLaborTimeWkpMap().get(wkpId);
+	}
+
+	@Override
+	public Optional<DeforLaborTimeWkp> deforLaborTimeByWorkplace(String cid, String wkpId) {
+		if (!cache.getDeforLaborTimeWkpMap().containsKey(wkpId)) {
+			cache.getDeforLaborTimeWkpMap().put(wkpId, deforLaborTimeWkpRepo.find(cid, wkpId));
 		}
 
-		@Override
-		public boolean isUseWorkLayer(String companyId) {
-			return false;
+		return cache.getDeforLaborTimeWkpMap().get(wkpId);
+	}
+
+	@Override
+	public Optional<RegularLaborTimeEmp> regularLaborTimeByEmployment(String cid, String employmentCode) {
+		if (!cache.getRegularLaborTimeEmpMap().containsKey(employmentCode)) {
+			cache.getRegularLaborTimeEmpMap().put(employmentCode,
+					regularLaborTimeEmpRepo.findById(cid, employmentCode));
+		}
+		return cache.getRegularLaborTimeEmpMap().get(employmentCode);
+	}
+
+	@Override
+	public Optional<DeforLaborTimeEmp> deforLaborTimeByEmployment(String cid, String employmentCode) {
+		if (!cache.getDeforLaborTimeEmpMap().containsKey(employmentCode)) {
+			cache.getDeforLaborTimeEmpMap().put(employmentCode, deforLaborTimeEmpRepo.find(cid, employmentCode));
+		}
+		return cache.getDeforLaborTimeEmpMap().get(employmentCode);
+	}
+
+	@Override
+	public Optional<RegularLaborTimeSha> regularLaborTimeByEmployee(String Cid, String EmpId) {
+		if (!cache.getRegularLaborTimeShaMap().containsKey(EmpId)) {
+			cache.getRegularLaborTimeShaMap().put(EmpId, regularLaborTimeShaRepo.find(Cid, EmpId));
+		}
+		return cache.getRegularLaborTimeShaMap().get(EmpId);
+	}
+
+	@Override
+	public Optional<DeforLaborTimeSha> deforLaborTimeByEmployee(String cid, String empId) {
+		if (!cache.getDeforLaborTimeShaMap().containsKey(empId)) {
+			cache.getDeforLaborTimeShaMap().put(empId, deforLaborTimeShaRepo.find(cid, empId));
+		}
+		return cache.getDeforLaborTimeShaMap().get(empId);
+	}
+
+	@Override
+	public Optional<ShaFlexMonthActCalSet> monthFlexCalcSetbyEmployee(String cid, String sId) {
+		if (!cache.getShaFlexMonthActCalSetMap().containsKey(sId)) {
+			cache.getShaFlexMonthActCalSetMap().put(sId, shaFlexMonthActCalSetRepo.find(cid, sId));
+		}
+		return cache.getShaFlexMonthActCalSetMap().get(sId);
+	}
+
+	@Override
+	public Optional<ShaDeforLaborMonthActCalSet> monthDeforLaborCalcSetByEmployee(String cId, String sId) {
+		if (!cache.getShaDeforLaborMonthActCalSetMap().containsKey(sId)) {
+			cache.getShaDeforLaborMonthActCalSetMap().put(sId, shaDeforLaborMonthActCalSetRepo.find(cId, sId));
+		}
+		return cache.getShaDeforLaborMonthActCalSetMap().get(sId);
+	}
+
+	@Override
+	public Optional<ShaRegulaMonthActCalSet> monthRegulaCalcSetByEmployee(String cid, String sId) {
+		if (!cache.getShaRegulaMonthActCalSetMap().containsKey(sId)) {
+			cache.getShaRegulaMonthActCalSetMap().put(sId, shaRegulaMonthActCalSetRepo.find(cid, sId));
+		}
+		return cache.getShaRegulaMonthActCalSetMap().get(sId);
+	}
+
+	@Override
+	public Optional<ComRegulaMonthActCalSet> monthRegulaCalSetByCompany(String companyId) {
+		if (!cache.getComRegulaMonthActCalSetCache().isPresent()) {
+			cache.setComRegulaMonthActCalSetCache(comRegulaMonthActCalSetRepo.find(companyId));
+		}
+		return cache.getComRegulaMonthActCalSetCache();
+	}
+
+	@Override
+	public Optional<ComDeforLaborMonthActCalSet> monthDeforLaborCalSetByCompany(String companyId) {
+		if (!cache.getComDeforLaborMonthActCalSetCache().isPresent()) {
+			cache.setComDeforLaborMonthActCalSetCache(comDeforLaborMonthActCalSetRepo.find(companyId));
+		}
+		return cache.getComDeforLaborMonthActCalSetCache();
+	}
+
+	@Override
+	public Optional<ComFlexMonthActCalSet> monthFlexCalSetByCompany(String companyId) {
+		if (!cache.getComFlexMonthActCalSetCache().isPresent()) {
+			cache.setComFlexMonthActCalSetCache(comFlexMonthActCalSetRepo.find(companyId));
+		}
+		return cache.getComFlexMonthActCalSetCache();
+	}
+
+	@Override
+	public Optional<WkpRegulaMonthActCalSet> monthRegularCalcSetByWorkplace(String cid, String wkpId) {
+		if (!cache.getWkpRegulaMonthActCalSetMap().containsKey(wkpId)) {
+			cache.getWkpRegulaMonthActCalSetMap().put(wkpId, wkpRegulaMonthActCalSetRepo.find(cid, wkpId));
+		}
+		return cache.getWkpRegulaMonthActCalSetMap().get(wkpId);
+	}
+
+	@Override
+	public Optional<EmpRegulaMonthActCalSet> monthRegularCalcSetByEmployment(String cid, String empCode) {
+		if (!cache.getEmpRegulaMonthActCalSetMap().containsKey(empCode)) {
+			cache.getEmpRegulaMonthActCalSetMap().put(empCode, empRegulaMonthActCalSetRepo.find(cid, empCode));
+		}
+		return cache.getEmpRegulaMonthActCalSetMap().get(empCode);
+	}
+
+	@Override
+	public Optional<WkpDeforLaborMonthActCalSet> monthDeforCalcSetByWorkplace(String cid, String wkpId) {
+		if (!cache.getWkpDeforLaborMonthActCalSetMap().containsKey(wkpId)) {
+			cache.getWkpDeforLaborMonthActCalSetMap().put(wkpId, wkpDeforLaborMonthActCalSetRepo.find(cid, wkpId));
+		}
+		return cache.getWkpDeforLaborMonthActCalSetMap().get(wkpId);
+	}
+
+	@Override
+	public Optional<EmpDeforLaborMonthActCalSet> monthDeforCalcSetByEmployment(String cid, String empCode) {
+		if (!cache.getEmpDeforLaborMonthActCalSetMap().containsKey(empCode)) {
+			cache.getEmpDeforLaborMonthActCalSetMap().put(empCode, empDeforLaborMonthActCalSetRepo.find(cid, empCode));
+		}
+		return cache.getEmpDeforLaborMonthActCalSetMap().get(empCode);
+	}
+
+	@Override
+	public Optional<MonthlyWorkTimeSetWkp> monthlyWorkTimeSetWkp(String cid, String workplaceId,
+			LaborWorkTypeAttr laborAttr, YearMonth ym) {
+		String key = workplaceId + "-" + laborAttr.value + "-" + ym.v();
+		if (!cache.getMonthlyWorkTimeSetWkpMap().containsKey(key)) {
+			cache.getMonthlyWorkTimeSetWkpMap().put(key,
+					monthlyWorkTimeSetRepo.findWorkplace(cid, workplaceId, laborAttr, ym));
+		}
+		return cache.getMonthlyWorkTimeSetWkpMap().get(key);
+	}
+
+	@Override
+	public Optional<MonthlyWorkTimeSetSha> monthlyWorkTimeSetSha(String cid, String sid, LaborWorkTypeAttr laborAttr,
+			YearMonth ym) {
+		String key = sid + "-" + laborAttr.value + "-" + ym.v();
+		if (!cache.getMonthlyWorkTimeSetShaMap().containsKey(key)) {
+			cache.getMonthlyWorkTimeSetShaMap().put(key, monthlyWorkTimeSetRepo.findEmployee(cid, sid, laborAttr, ym));
 		}
 
-		@Override
-		public Optional<RegularLaborTimeCom> regularLaborTimeByCompany(String companyId) {
-			if(!cache.getRegularLaborTimeComCache().isPresent()) {
-				cache.setRegularLaborTimeComCache(regularLaborTimeComRepo.find(companyId));
+		return cache.getMonthlyWorkTimeSetShaMap().get(key);
+	}
+
+	@Override
+	public Optional<MonthlyWorkTimeSetEmp> monthlyWorkTimeSetEmp(String cid, String empCode,
+			LaborWorkTypeAttr laborAttr, YearMonth ym) {
+		String key = empCode + "-" + laborAttr.value + "-" + ym.v();
+		if (!cache.getMonthlyWorkTimeSetEmpMap().containsKey(key)) {
+			cache.getMonthlyWorkTimeSetEmpMap().put(key,
+					monthlyWorkTimeSetRepo.findEmployment(cid, empCode, laborAttr, ym));
+		}
+		return cache.getMonthlyWorkTimeSetEmpMap().get(key);
+	}
+
+	@Override
+	public Optional<MonthlyWorkTimeSetCom> monthlyWorkTimeSetCom(String cid, LaborWorkTypeAttr laborAttr,
+			YearMonth ym) {
+		String key = laborAttr.value + "-" + ym.v().toString();
+		if (!cache.getMonthlyWorkTimeSetComMap().containsKey(key)) {
+			cache.getMonthlyWorkTimeSetComMap().put(key, monthlyWorkTimeSetRepo.findCompany(cid, laborAttr, ym));
+		}
+		return cache.getMonthlyWorkTimeSetComMap().get(key);
+	}
+
+	@Override
+	public BasicAgreementSetting basicAgreementSetting(String companyId, String employeeId, GeneralDate criteriaDate) {
+		return AgreementDomainService.getBasicSet(this, companyId, employeeId, criteriaDate);
+	}
+
+	public Optional<AggregateMethodOfMonthly> aggregateMethodOfMonthly(String cid) {
+		if (!cache.getAggregateMethodOfMonthlyCache().isPresent()) {
+			cache.setAggregateMethodOfMonthlyCache(verticalTotalMethodOfMonthlyRepo.findByCid(cid));
+		}
+		return cache.getAggregateMethodOfMonthlyCache();
+	}
+
+	@Override
+	public BasicAgreementSettingForCalc basicAgreementSetting(String cid, String sid, GeneralDate baseDate, Year year) {
+
+		return AgreementDomainService.getBasicSet(this, cid, sid, baseDate, year);
+	}
+
+	@Override
+	public Optional<WorkingConditionItem> workingConditionItem(String cid, GeneralDate ymd, String sid) {
+
+		return workingConditionRepo.getWorkingConditionItemByEmpIDAndDate(cid, ymd, sid);
+	}
+
+	@Override
+	public List<WorkingConditionItem> workingConditionItem(String cid, GeneralDate ymd, List<String> sid) {
+		return workingConditionRepo.getWorkingConditionItemByLstEmpIDAndDate(cid, ymd, sid);
+	}
+
+	@Override
+	public BasicAgreementSettingForCalc basicAgreementSetting(String cid, String sid, YearMonth ym,
+			GeneralDate baseDate) {
+
+		return AgreementDomainService.getBasicSet(this, cid, sid, baseDate, ym);
+	}
+
+	@Override
+	public Map<String, BasicAgreementSettingForCalc> basicAgreementSettingClones(String cid, List<String> sid,
+			YearMonth ym, GeneralDate baseDate) {
+
+		return AgreementDomainService.getBasicSetClones(this, cid, sid, baseDate, ym);
+	}
+
+	@Override
+	public List<IntegrationOfDaily> integrationOfDaily(String sid, DatePeriod period) {
+
+		List<IntegrationOfDaily> dataForResult = new ArrayList<>();
+		List<IntegrationOfDaily> dataByRepo = new ArrayList<>();
+
+		for (GeneralDate date : period.datesBetween()) {
+			String keyForGet = sid + "-" + date.toString();
+			if (cache.getIntegrationOfDailyMap().containsKey(keyForGet)) {
+				dataForResult.add(cache.getIntegrationOfDailyMap().get(keyForGet));
+			} else {
+				dataByRepo = integrationOfDailyGetter.getIntegrationOfDaily(sid, new DatePeriod(date, period.end()));
+
+				dataByRepo.forEach((v) -> {
+					String keyForPut = sid + "-" + v.getYmd().toString();
+					if (!cache.getIntegrationOfDailyMap().containsKey(keyForPut)) {
+						cache.getIntegrationOfDailyMap().put(keyForPut, v);
+					}
+					dataForResult.add(v);
+				});
+
+				break;
 			}
-			return cache.getRegularLaborTimeComCache();
 		}
+		;
 
-		@Override
-		public Optional<DeforLaborTimeCom> deforLaborTimeByCompany(String companyId) {
-			if(!cache.getDeforLaborTimeComCache().isPresent()) {
-				cache.setDeforLaborTimeComCache(deforLaborTimeComRepo.find(companyId));
-			}
-			return cache.getDeforLaborTimeComCache();
-		}
+		return dataForResult;
+	}
 
-		@Override
-		public Optional<RegularLaborTimeWkp> regularLaborTimeByWorkplace(String cid, String wkpId) {
-			if(!cache.getRegularLaborTimeWkpMap().containsKey(wkpId)) {
-				cache.getRegularLaborTimeWkpMap().put(wkpId, regularLaborTimeWkpRepo.find(cid, wkpId));
-			}
-			return cache.getRegularLaborTimeWkpMap().get(wkpId);
-		}
+	@Override
+	public List<IntegrationOfDaily> integrationOfDailyClones(List<String> sids, DatePeriod period) {
 
-		@Override
-		public Optional<DeforLaborTimeWkp> deforLaborTimeByWorkplace(String cid, String wkpId) {
-			if(!cache.getDeforLaborTimeWkpMap().containsKey(wkpId)) {
-				cache.getDeforLaborTimeWkpMap().put(wkpId, deforLaborTimeWkpRepo.find(cid, wkpId));
-			}
-			
-			return cache.getDeforLaborTimeWkpMap().get(wkpId);
-		}
+		List<IntegrationOfDaily> dataForResult = new ArrayList<>();
+		List<IntegrationOfDaily> dataByRepo = new ArrayList<>();
 
+		for (String sid : sids) {
+			for (GeneralDate date : period.datesBetween()) {
+				String keyForGet = sid + "-" + date.toString();
+				if (cache.getIntegrationOfDailySIDListMap().containsKey(keyForGet)) {
+					dataForResult.add(cache.getIntegrationOfDailySIDListMap().get(keyForGet));
+				} else {
+					dataByRepo = integrationOfDailyGetter.getIntegrationOfDailyClones(Arrays.asList(sid),
+							new DatePeriod(date, period.end()));
 
-
-		@Override
-		public Optional<RegularLaborTimeEmp> regularLaborTimeByEmployment(String cid, String employmentCode) {
-			if(!cache.getRegularLaborTimeEmpMap().containsKey(employmentCode)) {
-				cache.getRegularLaborTimeEmpMap().put(employmentCode, regularLaborTimeEmpRepo.findById(cid, employmentCode));
-			}
-			return cache.getRegularLaborTimeEmpMap().get(employmentCode);
-		}
-
-		@Override
-		public Optional<DeforLaborTimeEmp> deforLaborTimeByEmployment(String cid, String employmentCode) {
-			if(!cache.getDeforLaborTimeEmpMap().containsKey(employmentCode)) {
-				cache.getDeforLaborTimeEmpMap().put(employmentCode, deforLaborTimeEmpRepo.find(cid, employmentCode));
-			}
-			return cache.getDeforLaborTimeEmpMap().get(employmentCode);
-		}
-
-		@Override
-		public Optional<RegularLaborTimeSha> regularLaborTimeByEmployee(String Cid, String EmpId) {
-			if(!cache.getRegularLaborTimeShaMap().containsKey(EmpId)){
-				cache.getRegularLaborTimeShaMap().put(EmpId, regularLaborTimeShaRepo.find(Cid, EmpId));
-			}
-			return cache.getRegularLaborTimeShaMap().get(EmpId);
-		}
-
-		@Override
-		public Optional<DeforLaborTimeSha> deforLaborTimeByEmployee(String cid, String empId) {
-			if(!cache.getDeforLaborTimeShaMap().containsKey(empId)){
-				cache.getDeforLaborTimeShaMap().put(empId, deforLaborTimeShaRepo.find(cid, empId));
-			}
-			return cache.getDeforLaborTimeShaMap().get(empId);
-		}
-
-		@Override
-		public Optional<ShaFlexMonthActCalSet> monthFlexCalcSetbyEmployee(
-				String cid, String sId) {
-			if(!cache.getShaFlexMonthActCalSetMap().containsKey(sId)){
-				cache.getShaFlexMonthActCalSetMap().put(sId, shaFlexMonthActCalSetRepo.find(cid, sId));
-			}
-			return cache.getShaFlexMonthActCalSetMap().get(sId);
-		}
-
-		@Override
-		public Optional<ShaDeforLaborMonthActCalSet> monthDeforLaborCalcSetByEmployee(
-				String cId, String sId) {
-			if(!cache.getShaDeforLaborMonthActCalSetMap().containsKey(sId)){
-				cache.getShaDeforLaborMonthActCalSetMap().put(sId, shaDeforLaborMonthActCalSetRepo.find(cId, sId));
-			}
-			return cache.getShaDeforLaborMonthActCalSetMap().get(sId);
-		}
-
-		@Override
-		public Optional<ShaRegulaMonthActCalSet> monthRegulaCalcSetByEmployee(
-				String cid, String sId) {
-			if(!cache.getShaRegulaMonthActCalSetMap().containsKey(sId)){
-				cache.getShaRegulaMonthActCalSetMap().put(sId, shaRegulaMonthActCalSetRepo.find(cid, sId));
-			}
-			return cache.getShaRegulaMonthActCalSetMap().get(sId);
-		}
-
-		@Override
-		public Optional<ComRegulaMonthActCalSet> monthRegulaCalSetByCompany(
-				String companyId) {
-			if(!cache.getComRegulaMonthActCalSetCache().isPresent()){
-				cache.setComRegulaMonthActCalSetCache(comRegulaMonthActCalSetRepo.find(companyId));
-			}
-			return cache.getComRegulaMonthActCalSetCache();
-		}
-
-		@Override
-		public Optional<ComDeforLaborMonthActCalSet> monthDeforLaborCalSetByCompany(
-				String companyId) {
-			if(!cache.getComDeforLaborMonthActCalSetCache().isPresent()){
-				cache.setComDeforLaborMonthActCalSetCache(comDeforLaborMonthActCalSetRepo.find(companyId));
-			}
-			return cache.getComDeforLaborMonthActCalSetCache();
-		}
-
-		@Override
-		public Optional<ComFlexMonthActCalSet> monthFlexCalSetByCompany(
-				String companyId) {
-			if(!cache.getComFlexMonthActCalSetCache().isPresent()){
-				cache.setComFlexMonthActCalSetCache(comFlexMonthActCalSetRepo.find(companyId));
-			}
-			return cache.getComFlexMonthActCalSetCache();
-		}
-
-		@Override
-		public Optional<WkpRegulaMonthActCalSet> monthRegularCalcSetByWorkplace(
-				String cid, String wkpId) {
-			if(!cache.getWkpRegulaMonthActCalSetMap().containsKey(wkpId)) {
-				cache.getWkpRegulaMonthActCalSetMap().put(wkpId, wkpRegulaMonthActCalSetRepo.find(cid, wkpId));
-			}
-			return cache.getWkpRegulaMonthActCalSetMap().get(wkpId);
-		}
-
-		@Override
-		public Optional<EmpRegulaMonthActCalSet> monthRegularCalcSetByEmployment(
-				String cid, String empCode) {
-			if(!cache.getEmpRegulaMonthActCalSetMap().containsKey(empCode)) {
-				cache.getEmpRegulaMonthActCalSetMap().put(empCode, empRegulaMonthActCalSetRepo.find(cid, empCode));
-			}
-			return cache.getEmpRegulaMonthActCalSetMap().get(empCode);
-		}
-
-		@Override
-		public Optional<WkpDeforLaborMonthActCalSet> monthDeforCalcSetByWorkplace(
-				String cid, String wkpId) {
-			if(!cache.getWkpDeforLaborMonthActCalSetMap().containsKey(wkpId)) {
-				cache.getWkpDeforLaborMonthActCalSetMap().put(wkpId, wkpDeforLaborMonthActCalSetRepo.find(cid, wkpId));
-			}
-			return cache.getWkpDeforLaborMonthActCalSetMap().get(wkpId);
-		}
-
-		@Override
-		public Optional<EmpDeforLaborMonthActCalSet> monthDeforCalcSetByEmployment(
-				String cid, String empCode) {
-			if(!cache.getEmpDeforLaborMonthActCalSetMap().containsKey(empCode)) {
-				cache.getEmpDeforLaborMonthActCalSetMap().put(empCode, empDeforLaborMonthActCalSetRepo.find(cid, empCode));
-			}
-			return cache.getEmpDeforLaborMonthActCalSetMap().get(empCode);
-		}
-
-		@Override
-		public Optional<MonthlyWorkTimeSetWkp> monthlyWorkTimeSetWkp(String cid, String workplaceId,
-				LaborWorkTypeAttr laborAttr, YearMonth ym) {
-			String key = workplaceId + "-" + laborAttr.value + "-" + ym.v();
-			if(!cache.getMonthlyWorkTimeSetWkpMap().containsKey(key)) {
-				cache.getMonthlyWorkTimeSetWkpMap().put(key, monthlyWorkTimeSetRepo.findWorkplace(cid, workplaceId, laborAttr, ym));
-			}
-			return cache.getMonthlyWorkTimeSetWkpMap().get(key);
-		}
-
-		@Override
-		public Optional<MonthlyWorkTimeSetSha> monthlyWorkTimeSetSha(String cid, String sid,
-				LaborWorkTypeAttr laborAttr, YearMonth ym) {
-			String key = sid + "-" + laborAttr.value + "-" + ym.v();
-			if(!cache.getMonthlyWorkTimeSetShaMap().containsKey(key)){
-				cache.getMonthlyWorkTimeSetShaMap().put(key, monthlyWorkTimeSetRepo.findEmployee(cid, sid, laborAttr, ym));
-			}
-
-			return cache.getMonthlyWorkTimeSetShaMap().get(key);
-		}
-
-		@Override
-		public Optional<MonthlyWorkTimeSetEmp> monthlyWorkTimeSetEmp(String cid, String empCode,
-				LaborWorkTypeAttr laborAttr, YearMonth ym) {
-			String key = empCode + "-" + laborAttr.value + "-" + ym.v();
-			if(!cache.getMonthlyWorkTimeSetEmpMap().containsKey(key)) {
-				cache.getMonthlyWorkTimeSetEmpMap().put(key, monthlyWorkTimeSetRepo.findEmployment(cid, empCode, laborAttr, ym));
-			}
-			return cache.getMonthlyWorkTimeSetEmpMap().get(key);
-		}
-
-		@Override
-		public Optional<MonthlyWorkTimeSetCom> monthlyWorkTimeSetCom(String cid, LaborWorkTypeAttr laborAttr,
-				YearMonth ym) {
-			String key = laborAttr.value + "-" + ym.v().toString();
-			if(!cache.getMonthlyWorkTimeSetComMap().containsKey(key)) {
-				cache.getMonthlyWorkTimeSetComMap().put(key, monthlyWorkTimeSetRepo.findCompany(cid, laborAttr, ym));
-			}
-			return cache.getMonthlyWorkTimeSetComMap().get(key);
-		}
-
-		@Override
-		public BasicAgreementSetting basicAgreementSetting(String companyId, String employeeId, GeneralDate criteriaDate) {
-			return AgreementDomainService.getBasicSet(this, companyId, employeeId, criteriaDate);
-		}
-
-
-		public Optional<AggregateMethodOfMonthly> aggregateMethodOfMonthly(String cid) {
-			if(!cache.getAggregateMethodOfMonthlyCache().isPresent()){
-				cache.setAggregateMethodOfMonthlyCache(verticalTotalMethodOfMonthlyRepo.findByCid(cid));
-			}
-			return cache.getAggregateMethodOfMonthlyCache();
-		}
-
-		@Override
-		public BasicAgreementSettingForCalc basicAgreementSetting(String cid, String sid, GeneralDate baseDate, Year year) {
-
-			return AgreementDomainService.getBasicSet(this, cid, sid, baseDate, year);
-		}
-
-		@Override
-		public Optional<WorkingConditionItem> workingConditionItem(String cid, GeneralDate ymd, String sid) {
-
-			return workingConditionRepo.getWorkingConditionItemByEmpIDAndDate(cid, ymd, sid);
-		}
-		
-		@Override
-		public List<WorkingConditionItem> workingConditionItem(String cid, GeneralDate ymd, List<String> sid) {
-			return workingConditionRepo.getWorkingConditionItemByLstEmpIDAndDate(cid, ymd, sid);
-		}
-
-		@Override
-		public BasicAgreementSettingForCalc basicAgreementSetting(String cid, String sid, YearMonth ym, GeneralDate baseDate) {
-
-			return AgreementDomainService.getBasicSet(this, cid, sid, baseDate, ym);
-		}
-		
-		@Override
-		public Map<String, BasicAgreementSettingForCalc> basicAgreementSettingClones(String cid, List<String> sid, YearMonth ym, GeneralDate baseDate) {
-
-			return AgreementDomainService.getBasicSetClones(this, cid, sid, baseDate, ym);
-		}
-
-		@Override
-		public List<IntegrationOfDaily> integrationOfDaily(String sid, DatePeriod period) {
-
-			List<IntegrationOfDaily> dataForResult = new ArrayList<>();
-			List<IntegrationOfDaily> dataByRepo =  new ArrayList<>();
-			
-			for(GeneralDate date : period.datesBetween()){
-				String keyForGet = sid + "-" + date.toString();	
-				if(cache.getIntegrationOfDailyMap().containsKey(keyForGet)){
-					dataForResult.add(cache.getIntegrationOfDailyMap().get(keyForGet));
-				}
-				else{
-					dataByRepo =integrationOfDailyGetter.getIntegrationOfDaily(sid,  new DatePeriod(date, period.end()));
-					
-					dataByRepo.forEach((v) ->{
+					dataByRepo.forEach((v) -> {
 						String keyForPut = sid + "-" + v.getYmd().toString();
-						if(!cache.getIntegrationOfDailyMap().containsKey(keyForPut)){
-							cache.getIntegrationOfDailyMap().put(keyForPut, v);
+						if (!cache.getIntegrationOfDailySIDListMap().containsKey(keyForPut)) {
+							cache.getIntegrationOfDailySIDListMap().put(keyForPut, v);
 						}
 						dataForResult.add(v);
 					});
-					
+
 					break;
 				}
-			};
-
-			return dataForResult;
-		}
-		
-		@Override
-		public List<IntegrationOfDaily> integrationOfDailyClones(List<String> sids, DatePeriod period) {
-
-			List<IntegrationOfDaily> dataForResult = new ArrayList<>();
-			List<IntegrationOfDaily> dataByRepo =  new ArrayList<>();
-			
-			for(String sid : sids){
-				for(GeneralDate date : period.datesBetween()){
-					String keyForGet = sid + "-" + date.toString();	
-					if(cache.getIntegrationOfDailySIDListMap().containsKey(keyForGet)){
-						dataForResult.add(cache.getIntegrationOfDailySIDListMap().get(keyForGet));
-					}
-					else{
-						dataByRepo =integrationOfDailyGetter.getIntegrationOfDailyClones(Arrays.asList(sid),  new DatePeriod(date, period.end()));
-						
-						dataByRepo.forEach((v) ->{
-							String keyForPut = sid + "-" + v.getYmd().toString();
-							if(!cache.getIntegrationOfDailySIDListMap().containsKey(keyForPut)){
-								cache.getIntegrationOfDailySIDListMap().put(keyForPut, v);
-							}
-							dataForResult.add(v);
-						});
-						
-						break;
-					}
-				};
 			}
-			return dataForResult;
+			;
 		}
+		return dataForResult;
+	}
 
-		@Override
-		public MonAggrCompanySettings monAggrCompanySettings(String cid) {
-			if(cache.getMonAggrCompanySettingsCache() == null){
-				cache.setMonAggrCompanySettingsCache(MonAggrCompanySettings.loadSettings(this, cid));
-			}
-			return cache.getMonAggrCompanySettingsCache();
+	@Override
+	public MonAggrCompanySettings monAggrCompanySettings(String cid) {
+		if (cache.getMonAggrCompanySettingsCache() == null) {
+			cache.setMonAggrCompanySettingsCache(MonAggrCompanySettings.loadSettings(this, cid));
 		}
+		return cache.getMonAggrCompanySettingsCache();
+	}
 
-		@Override
-		public MonAggrEmployeeSettings monAggrEmployeeSettings(CacheCarrier cacheCarrier, String companyId,
-				String employeeId, DatePeriod period) {
+	@Override
+	public MonAggrEmployeeSettings monAggrEmployeeSettings(CacheCarrier cacheCarrier, String companyId,
+			String employeeId, DatePeriod period) {
 
-			return MonAggrEmployeeSettings.loadSettings(this, cacheCarrier, companyId, employeeId, period);
+		return MonAggrEmployeeSettings.loadSettings(this, cacheCarrier, companyId, employeeId, period);
+	}
+
+	@Override
+	public List<MonAggrEmployeeSettings> monAggrEmployeeSettingsClones(CacheCarrier cacheCarrier, String companyId,
+			List<String> employeeId, DatePeriod period) {
+
+		return MonAggrEmployeeSettings.loadSettingsClones(this, cacheCarrier, companyId, employeeId, period);
+	}
+
+	@Override
+	public Optional<WeekRuleManagement> weekRuleManagement(String cid) {
+		if (!cache.getWeekRuleManagementCache().isPresent()) {
+			cache.setWeekRuleManagementCache(weekRuleManagementRepo.find(cid));
 		}
-		
-		@Override
-		public List<MonAggrEmployeeSettings> monAggrEmployeeSettingsClones(CacheCarrier cacheCarrier, String companyId,
-				List<String> employeeId, DatePeriod period) {
+		return cache.getWeekRuleManagementCache();
+	}
 
-			return MonAggrEmployeeSettings.loadSettingsClones(this, cacheCarrier, companyId, employeeId, period);
+	@Override
+	public ReservationOfMonthly reservation(String sid, GeneralDate date, String companyID) {
+
+		return VerticalTotalAggregateService.aggregate(this, sid, date, companyID);
+	}
+
+	@Override
+	public List<StampCard> stampCard(String empId) {
+		if (!cache.getStampCardMap().containsKey(empId)) {
+			cache.getStampCardMap().put(empId, stampCardRepo.getListStampCard(empId));
 		}
+		return cache.getStampCardMap().get(empId);
+	}
 
-		@Override
-		public Optional<WeekRuleManagement> weekRuleManagement(String cid) {
-			if(!cache.getWeekRuleManagementCache().isPresent()) {
-				cache.setWeekRuleManagementCache(weekRuleManagementRepo.find(cid));
-			}
-			return cache.getWeekRuleManagementCache();
+	@Override
+	public List<BentoReservation> bentoReservation(List<ReservationRegisterInfo> inforLst, GeneralDate date,
+			boolean ordered, String companyID) {
+
+		return bentoReservationRepo.findByOrderedPeriodEmpLst(inforLst, new DatePeriod(date, date), ordered, companyID);
+	}
+
+	@Override
+	public Bento bento(String companyID, GeneralDate date, int frameNo) {
+
+		return bentoMenuRepo.getBento(companyID, date, frameNo);
+	}
+
+	@Override
+	public Optional<GeneralDate> getProcessingDate(String employeeId, GeneralDate date) {
+
+		return getProcessingDate.getProcessingDate(employeeId, date);
+	}
+
+	@Override
+	public Map<GeneralDate, SnapShot> snapshot(String employeeId, DatePeriod datePeriod) {
+
+		return snapshotAdapter.find(employeeId, datePeriod).stream()
+				.collect(Collectors.toMap(c -> c.getYmd(), c -> c.getSnapshot().toDomain()));
+	}
+
+	@Override
+	public Optional<SuperHD60HConMed> superHD60HConMed(String cid) {
+		if (!cache.getSuperHD60HConMedCache().isPresent()) {
+			cache.setSuperHD60HConMedCache(superHD60HConMedRepo.findById(cid));
 		}
+		return cache.getSuperHD60HConMedCache();
+	}
 
-		@Override
-		public ReservationOfMonthly reservation(String sid, GeneralDate date, String companyID) {
+	@Override
+	public List<DailyInterimRemainMngData> createDailyInterimRemainMngs(CacheCarrier cacheCarrier, String companyId,
+			String employeeId, DatePeriod period, MonAggrCompanySettings comSetting, MonthlyCalculatingDailys dailys) {
 
-			return VerticalTotalAggregateService.aggregate(this, sid, date, companyID);
+		return monthlyAggregationRemainingNumber.createDailyInterimRemainMngs(cacheCarrier, companyId, employeeId,
+				period, comSetting, dailys);
+	}
+
+	@Override
+	public AggregateMonthlyRecordValue aggregation(CacheCarrier cacheCarrier, DatePeriod period, String companyId,
+			String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate,
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
+			MonthlyCalculatingDailys monthlyCalculatingDailys, InterimRemainMngMode interimRemainMngMode,
+			boolean isCalcAttendanceRate) {
+
+		return monthlyAggregationRemainingNumber.aggregation(cacheCarrier, period, companyId, employeeId, yearMonth,
+				closureId, closureDate, companySets, employeeSets, monthlyCalculatingDailys, interimRemainMngMode,
+				isCalcAttendanceRate);
+	}
+
+	@Override
+	public Optional<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String specialId) {
+
+		return this.specialLeaveGrantRepo.getBySpecialId(specialId);
+	}
+
+	@Override
+	public List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId, DatePeriod datePeriod) {
+		return interimSpecialHolidayMngRepo.findSpecialHolidayBySidAndPeriod(mngId, datePeriod);
+	}
+
+	@Override
+	public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode,
+			LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
+
+		return specialLeaveGrantRepo.getByPeriodStatus(sid, specialLeaveCode, expirationStatus, grantDate,
+				deadlineDate);
+	}
+
+	@Override
+	public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
+			DatePeriod datePeriod, LeaveExpirationStatus expirationStatus) {
+
+		return specialLeaveGrantRepo.getByPeriodStatus(sid, speCode, expirationStatus, datePeriod.end(),
+				datePeriod.start());
+	}
+
+	@Override
+	public Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use) {
+		String key = sid + "-" + spLeaveCD + "-" + use.value;
+		if (!cache.getSpecialLeaveBasicInfoMap().containsKey(key)) {
+			cache.getSpecialLeaveBasicInfoMap().put(key,
+					specialLeaveBasicInfoRepo.getBySidLeaveCdUser(sid, spLeaveCD, use));
 		}
+		return cache.getSpecialLeaveBasicInfoMap().get(key);
+	}
 
-		@Override
-		public List<StampCard> stampCard(String empId) {
-			if(!cache.getStampCardMap().containsKey(empId)){
-				cache.getStampCardMap().put(empId, stampCardRepo.getListStampCard(empId));
-			}
-			return cache.getStampCardMap().get(empId);
+	@Override
+	public Optional<SpecialHoliday> specialHoliday(String companyID, int specialHolidayCD) {
+		if (!cache.getSpecialHolidayMap().containsKey(specialHolidayCD)) {
+			cache.getSpecialHolidayMap().put(specialHolidayCD,
+					this.specialHolidayRepo.findBySingleCD(companyID, specialHolidayCD));
 		}
+		return cache.getSpecialHolidayMap().get(specialHolidayCD);
+	}
 
-		@Override
-		public List<BentoReservation> bentoReservation(List<ReservationRegisterInfo> inforLst, GeneralDate date,
-				boolean ordered, String companyID) {
-
-			return bentoReservationRepo.findByOrderedPeriodEmpLst(inforLst, new DatePeriod(date, date), ordered, companyID);
-		}
-
-		@Override
-		public Bento bento(String companyID, GeneralDate date, int frameNo) {
-
-			return bentoMenuRepo.getBento(companyID, date, frameNo);
-		}
-
-		@Override
-		public Optional<GeneralDate> getProcessingDate(String employeeId, GeneralDate date) {
-
-			return getProcessingDate.getProcessingDate(employeeId, date);
-		}
-
-		@Override
-		public Map<GeneralDate, SnapShot> snapshot(String employeeId, DatePeriod datePeriod) {
-
-			return snapshotAdapter.find(employeeId, datePeriod)
-					.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getSnapshot().toDomain()));
-		}
-
-		@Override
-		public Optional<SuperHD60HConMed> superHD60HConMed(String cid) {
-			if(!cache.getSuperHD60HConMedCache().isPresent()){
-				cache.setSuperHD60HConMedCache(superHD60HConMedRepo.findById(cid));
-			}
-			return cache.getSuperHD60HConMedCache();
-		}
-
-		@Override
-		public List<DailyInterimRemainMngData> createDailyInterimRemainMngs(CacheCarrier cacheCarrier,
-				String companyId, String employeeId, DatePeriod period, MonAggrCompanySettings comSetting,
-				MonthlyCalculatingDailys dailys) {
-
-			return monthlyAggregationRemainingNumber.createDailyInterimRemainMngs(cacheCarrier,
-					companyId, employeeId, period, comSetting, dailys);
-		}
-
-		@Override
-		public AggregateMonthlyRecordValue aggregation(CacheCarrier cacheCarrier, DatePeriod period,
-				String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,   ClosureDate closureDate,
-				MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
-				MonthlyCalculatingDailys monthlyCalculatingDailys,
-				InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate) {
-
-			return monthlyAggregationRemainingNumber.aggregation(cacheCarrier, period, companyId, employeeId, yearMonth,
-					closureId, closureDate, companySets, employeeSets, monthlyCalculatingDailys, interimRemainMngMode,
-					isCalcAttendanceRate);
-		}
-
-
-		@Override
-		public Optional<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String specialId) {
-
-			return this.specialLeaveGrantRepo.getBySpecialId(specialId);
-		}
-
-		@Override
-		public List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId, DatePeriod datePeriod) {
-			return interimSpecialHolidayMngRepo.findSpecialHolidayBySidAndPeriod(mngId, datePeriod);
-		}
-
-		@Override
-		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode,
-				LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
-
-			return specialLeaveGrantRepo.getByPeriodStatus(
-					sid, specialLeaveCode, expirationStatus, grantDate, deadlineDate);
-		}
-
-		@Override
-		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
-				DatePeriod datePeriod, LeaveExpirationStatus expirationStatus) {
-
-			return specialLeaveGrantRepo.getByPeriodStatus(
-					sid, speCode, expirationStatus, datePeriod.end(), datePeriod.start());
-		}
-
-		@Override
-		public Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD,
-				UseAtr use) {
-			String key = sid + "-" + spLeaveCD + "-" + use.value;
-			if(!cache.getSpecialLeaveBasicInfoMap().containsKey(key)){
-				cache.getSpecialLeaveBasicInfoMap().put(key,
-						specialLeaveBasicInfoRepo.getBySidLeaveCdUser(sid, spLeaveCD, use));
-			}			
-			return cache.getSpecialLeaveBasicInfoMap().get(key);
-		}
-
-		@Override
-		public Optional<SpecialHoliday> specialHoliday(String companyID, int specialHolidayCD) {
-			if(!cache.getSpecialHolidayMap().containsKey(specialHolidayCD)){
-				cache.getSpecialHolidayMap().put(specialHolidayCD, this.specialHolidayRepo.findBySingleCD(companyID, specialHolidayCD));
-			}
-			return cache.getSpecialHolidayMap().get(specialHolidayCD);
-		}
-
-
-		@Override
-		public Optional<ElapseYear> elapseYear(String companyId, int specialHolidayCode) {
-			if(!cache.getElapseYearMap().containsKey(specialHolidayCode)){
+	@Override
+	public Optional<ElapseYear> elapseYear(String companyId, int specialHolidayCode) {
+		if (!cache.getElapseYearMap().containsKey(specialHolidayCode)) {
 			cache.getElapseYearMap().put(specialHolidayCode, this.elapseYearRepository
 					.findByCode(new CompanyId(companyId), new SpecialHolidayCode(specialHolidayCode)));
+		}
+		return cache.getElapseYearMap().get(specialHolidayCode);
+	}
+
+	@Override
+	public List<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode) {
+		if (!cache.getGrantDateTblMap().containsKey(specialHolidayCode)) {
+			cache.getGrantDateTblMap().put(specialHolidayCode,
+					this.grantDateTblRepo.findBySphdCd(companyId, specialHolidayCode));
+		}
+		return cache.getGrantDateTblMap().get(specialHolidayCode);
+	}
+
+	@Override
+	public Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode, String grantDateCode) {
+		String key = companyId + "-" + specialHolidayCode + "-" + grantDateCode;
+		if (!cache.getGrantDateTblOptMap().containsKey(key)) {
+			cache.getGrantDateTblOptMap().put(key,
+					this.grantDateTblRepo.findByCode(companyId, specialHolidayCode, grantDateCode));
+		}
+		return cache.getGrantDateTblOptMap().get(key);
+	}
+
+	@Override
+	public EmployeeRecordImport employeeFullInfo(CacheCarrier cacheCarrier, String empId) {
+
+		return this.empEmployeeAdapter.findByAllInforEmpId(cacheCarrier, empId);
+	}
+
+	@Override
+	public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
+
+		return this.empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, empId);
+	}
+
+	@Override
+	public List<SClsHistImport> employeeClassificationHistoires(CacheCarrier cacheCarrier, String companyId,
+			List<String> employeeIds, DatePeriod datePeriod) {
+
+		return this.empEmployeeAdapter.lstClassByEmployeeId(cacheCarrier, companyId, employeeIds, datePeriod);
+	}
+
+	@Override
+	public Optional<AnnualLeaveMaxHistoryData> AnnualLeaveMaxHistoryData(String employeeId, YearMonth yearMonth,
+			ClosureId closureId, ClosureDate closureDate) {
+
+		return this.annualLeaveMaxHistRepo.find(employeeId, yearMonth, closureId, closureDate);
+	}
+
+	public List<AnnualLeaveGrantRemainingData> annualLeaveGrantRemainingData(String employeeId) {
+		if (!cache.getAnnualLeaveGrantRemainingDataMap().containsKey(employeeId)) {
+			cache.getAnnualLeaveGrantRemainingDataMap().put(employeeId, annLeaGrantRemDataRepo.find(employeeId));
+		}
+		return cache.getAnnualLeaveGrantRemainingDataMap().get(employeeId);
+	}
+
+	@Override
+	public void addPayoutSubofHDManagement(PayoutSubofHDManagement domain) {
+		payoutSubofHDManaRepo.updateOrInsert(domain);
+	}
+
+	@Override
+	public void addLeaveComDayOffManagement(LeaveComDayOffManagement domain) {
+		leaveComDayOffManaRepo.updateOrInsert(domain);
+	}
+
+	@Override
+	public void deleteSpecialLeaveGrantRemainAfter(String sid, int specialCode, GeneralDate targetDate) {
+		specialLeaveGrantRepo.deleteAfter(sid, specialCode, targetDate);
+	}
+
+	@Override
+	public List<WorkingConditionItemWithPeriod> workingCondition(String employeeId, DatePeriod datePeriod) {
+		return this.workingConditionRepo
+				.getWorkingConditionItemWithPeriod(AppContexts.user().companyId(), Arrays.asList(employeeId),
+						datePeriod)
+				.stream().filter(c -> c.getWorkingConditionItem().getEmployeeId().equals(employeeId))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ClosureStatusManagement> getAllByEmpId(String employeeId) {
+		if (!cache.getClosureStatusManagementMap().containsKey(employeeId)) {
+			cache.getClosureStatusManagementMap().put(employeeId,
+					closureStatusManagementRepo.getAllByEmpId(employeeId));
+		}
+
+		return cache.getClosureStatusManagementMap().get(employeeId);
+	}
+
+	@Override
+	public Optional<ClosureEmployment> findByEmploymentCD(String employmentCode) {
+		String companyId = AppContexts.user().companyId();
+		if (!cache.getClosureEmploymentMap().containsKey(employmentCode)) {
+			cache.getClosureEmploymentMap().put(employmentCode,
+					closureEmploymentRepo.findByEmploymentCD(companyId, employmentCode));
+		}
+		return cache.getClosureEmploymentMap().get(employmentCode);
+	}
+
+	@Override
+	public Optional<ActualLock> findById(int closureId) {
+		String companyId = AppContexts.user().companyId();
+		return this.actualLock(companyId, closureId);
+	}
+
+	@Override
+	public DatePeriod getClosurePeriod(int closureId, YearMonth processYm) {
+		DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(
+				ClosureService.createRequireM1(closureRepo, closureEmploymentRepo), closureId, processYm);
+		return datePeriodClosure;
+	}
+
+	@Override
+	public Optional<ExecutionLog> getByExecutionContent(String empCalAndSumExecLogID, int executionContent) {
+		String key = empCalAndSumExecLogID + "-" + executionContent;
+		if (!cache.getExecutionLogMap().containsKey(key)) {
+			cache.getExecutionLogMap().put(key,
+					executionLogRepo.getByExecutionContent(empCalAndSumExecLogID, executionContent));
+		}
+		return cache.getExecutionLogMap().get(key);
+	}
+
+	@Override
+	public Optional<Closure> findClosureById(int closureId) {
+		String companyId = AppContexts.user().companyId();
+		if (!cache.getClosureMap().containsKey(closureId)) {
+			cache.getClosureMap().put(closureId, closureRepo.findById(companyId, closureId));
+		}
+		return cache.getClosureMap().get(closureId);
+	}
+
+	@Override
+	public Optional<HolidayAddtionSet> holidayAddtionSet(String cid) {
+		if (!cache.getHolidayAddtionSetCache().isPresent()) {
+			cache.setHolidayAddtionSetCache(holidayAddtionRepo.findByCId(cid));
+		}
+		return cache.getHolidayAddtionSetCache();
+	}
+
+	@Override
+	public Optional<PublicHolidaySetting> publicHolidaySetting(String companyID) {
+		if (!cache.getPublicHolidaySettingCache().isPresent()) {
+			cache.setPublicHolidaySettingCache(this.publicHolidaySettingRepo.get(companyID));
+		}
+		return cache.getPublicHolidaySettingCache();
+	}
+
+	@Override
+	public Optional<PublicHolidayManagementUsageUnit> publicHolidayManagementUsageUnit(String companyID) {
+		if (!cache.getPublicHolidayManagementUsageUnitCache().isPresent()) {
+			cache.setPublicHolidayManagementUsageUnitCache(this.publicHolidayManagementUsageUnitRepo.get(companyID));
+		}
+		return cache.getPublicHolidayManagementUsageUnitCache();
+	}
+
+	@Override
+	public Optional<YearMonthPeriod> getYearMonthPeriodByCalendarYearmonth(String companyID, YearMonth yearMonth) {
+		return companyAdapter.getYearMonthPeriodByCalendarYearmonth(companyID, yearMonth);
+	}
+
+	public Optional<SharedAffWorkPlaceHisImport> getAffWorkPlaceHis(String employeeId, GeneralDate processingDate) {
+		return sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, processingDate);
+	}
+
+	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId) {
+		return sharedAffWorkPlaceHisAdapter.getWorkplaceIdAndUpper(companyId, baseDate, workplaceId);
+	}
+
+	public List<SharedSidPeriodDateEmploymentImport> getEmpHistBySidAndPeriod(List<String> employeeID,
+			DatePeriod Period) {
+		return shareEmploymentAdapter.getEmpHistBySidAndPeriod(employeeID, Period);
+	}
+
+	public List<TempPublicHolidayManagement> tempPublicHolidayManagement(String employeeId, DatePeriod Period) {
+		return this.tempPublicHolidayManagementRepo.findByPeriodOrderByYmd(employeeId, Period);
+	}
+
+	public Optional<PublicHolidayCarryForwardData> publicHolidayCarryForwardData(String employeeId) {
+		if (!cache.getPublicHolidayCarryForwardDataMap().containsKey(employeeId)) {
+			cache.getPublicHolidayCarryForwardDataMap().put(employeeId,
+					this.publicHolidayCarryForwardDataRepo.get(employeeId));
+		}
+		return cache.getPublicHolidayCarryForwardDataMap().get(employeeId);
+	}
+
+	public List<EmploymentMonthDaySetting> getEmploymentMonthDaySetting(String companyID, String employmentCode,
+			List<nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year> yearList) {
+		return this.employmentMonthDaySettingRepo.findByYears(new CompanyId(companyID), employmentCode, yearList);
+	}
+
+	public List<WorkplaceMonthDaySetting> getWorkplaceMonthDaySetting(String companyID, String workplaceId,
+			List<nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year> yearList) {
+		return this.workplaceMonthDaySettingRepo.findByYears(new CompanyId(companyID), workplaceId, yearList);
+	}
+
+	public List<CompanyMonthDaySetting> getCompanyMonthDaySetting(String companyID,
+			List<nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year> yearList) {
+		return this.companyMonthDaySettingRepo.findByYears(new CompanyId(companyID), yearList);
+	}
+
+	public List<EmployeeMonthDaySetting> getEmployeeMonthDaySetting(String companyID, String employeeId,
+			List<nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year> yearList) {
+		return this.employeeMonthDaySettingRepo.findByYears(new CompanyId(companyID), employeeId, yearList);
+	}
+
+	public void deleteTempPublicHolidayByPeriod(String employeeId, DatePeriod period) {
+		this.tempPublicHolidayManagementRepo.deleteByPeriod(employeeId, period);
+	}
+
+	public void persistAndUpdate(PublicHolidayCarryForwardData carryForwardData) {
+		this.publicHolidayCarryForwardDataRepo.persistAndUpdate(carryForwardData);
+	}
+
+	public void deletePublicHolidayCarryForwardData(String employeeId) {
+		this.publicHolidayCarryForwardDataRepo.delete(employeeId);
+	}
+
+	public void persistAndUpdateCarryForwardHistory(PublicHolidayCarryForwardHistory hist) {
+		this.publicHolidayCarryForwardHistoryRepo.persistAndUpdate(hist);
+	}
+
+	public void persistAndUpdateUseChildCare(String employeeId, ChildCareUsedNumberData domain) {
+		this.childCareUsedNumberRepo.persistAndUpdate(employeeId, domain);
+	}
+
+	public void updateChildCareMaxDay(String sid, ChildCareNurseUpperLimit ThisFiscalYear) {
+		this.childCareLeaveRemInfoRepo.updateMaxDay(sid, ThisFiscalYear);
+	}
+
+	public void deleteTempAnnualSidPeriod(String sid, DatePeriod period) {
+		this.tmpAnnualHolidayMngRepo.deleteSidPeriod(sid, period);
+	}
+
+	public void deleteTempResereSidPeriod(String sid, DatePeriod period) {
+		this.tmpResereLeaveMngRepo.deleteSidPeriod(sid, period);
+	}
+
+	public void deleteInterimAbsMngBySidDatePeriod(String sId, DatePeriod period) {
+		this.interimRecAbasMngRepo.deleteAbsMngWithPeriod(sId, period);
+	}
+
+	public void deleteInterimRecMngBySidDatePeriod(String sId, DatePeriod period) {
+		this.interimRecAbasMngRepo.deleteRecMngWithPeriod(sId, period);
+	}
+
+	public void deleteTempChildCareByPeriod(String sid, DatePeriod period) {
+		this.tempChildCareManagementRepo.deleteByPeriod(sid, period);
+	}
+
+	@Override
+	public EmployeeImport findByEmpId(String empId) {
+		if (!cache.getEmployeeImportMap().containsKey(empId)) {
+			cache.getEmployeeImportMap().put(empId, Optional.ofNullable(this.empEmployeeAdapter.findByEmpId(empId)));
+		}
+		return cache.getEmployeeImportMap().get(empId).orElse(null);
+	}
+
+	@Override
+	public List<FamilyInfo> familyInfo(String employeeId) {
+		// 2021/03/22 時点では家族情報は取得できない
+		return new ArrayList<>();
+	}
+
+	@Override
+	public List<TempChildCareManagement> tempChildCareManagement(String employeeId, DatePeriod ymd) {
+		return this.tempChildCareManagementRepo.findByPeriodOrderByYmd(employeeId, ymd);
+	}
+
+	@Override
+	public List<TempCareManagement> tempCareManagement(String employeeId, DatePeriod ymd) {
+		return this.tempCareManagementRepo.findByPeriodOrderByYmd(employeeId, ymd);
+	}
+
+	@Override
+	public NursingLeaveSetting nursingLeaveSetting(String companyId, NursingCategory nursingCategory) {
+		if (!cache.getNursingLeaveSettingMap().containsKey(nursingCategory)) {
+			cache.getNursingLeaveSettingMap().put(nursingCategory, Optional.ofNullable(
+					this.nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyId, nursingCategory.value)));
+		}
+		return cache.getNursingLeaveSettingMap().get(nursingCategory).orElse(null);
+	}
+
+	@Override
+	public Optional<ChildCareUsedNumberData> childCareUsedNumber(String employeeId) {
+		if (!cache.getChildCareUsedNumberDataMap().containsKey(employeeId)) {
+			cache.getChildCareUsedNumberDataMap().put(employeeId, this.childCareUsedNumberRepo.find(employeeId));
+		}
+		return cache.getChildCareUsedNumberDataMap().get(employeeId);
+	}
+
+	@Override
+	public Optional<CareUsedNumberData> careUsedNumber(String employeeId) {
+		if (!cache.getCareUsedNumberDataMap().containsKey(employeeId)) {
+			cache.getCareUsedNumberDataMap().put(employeeId, this.careUsedNumberRepo.find(employeeId));
+		}
+		return cache.getCareUsedNumberDataMap().get(employeeId);
+	}
+
+	@Override
+	public Optional<CareManagementDate> careData(String familyID) {
+		// 2021/03/22 時点では家族情報は取得できない
+		return Optional.empty();
+	}
+
+	@Override
+	public Optional<ChildCareLeaveRemainingInfo> childCareLeaveEmployeeInfo(String employeeId) {
+		if (!cache.getChildCareLeaveRemainingInfoMap().containsKey(employeeId)) {
+			cache.getChildCareLeaveRemainingInfoMap().put(employeeId,
+					this.childCareLeaveRemInfoRepo.getChildCareByEmpId(employeeId));
+		}
+		return cache.getChildCareLeaveRemainingInfoMap().get(employeeId);
+	}
+
+	@Override
+	public Optional<CareLeaveRemainingInfo> careLeaveEmployeeInfo(String employeeId) {
+		if (!cache.getCareLeaveRemainingInfo().containsKey(employeeId)) {
+			cache.getCareLeaveRemainingInfo().put(employeeId,
+					this.careLeaveRemainingInfoRepo.getCareByEmpId(employeeId));
+		}
+		return cache.getCareLeaveRemainingInfo().get(employeeId);
+	}
+
+	@Override
+	public Optional<NursingCareLeaveRemainingInfo> employeeInfo(String employeeId, NursingCategory nursingCategory) {
+		String key = employeeId + "-" + nursingCategory;
+		if (!cache.getNursingCareLeaveRemainingInfoMap().containsKey(key)) {
+			if (nursingCategory.equals(NursingCategory.Nursing)) {
+				cache.getNursingCareLeaveRemainingInfoMap().put(key, this.careLeaveRemainingInfoRepo
+						.getCareByEmpId(employeeId).map(mapper -> (NursingCareLeaveRemainingInfo) mapper));
 			}
-			return cache.getElapseYearMap().get(specialHolidayCode);
-		}
-
-		@Override
-		public List<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode) {
-			if(!cache.getGrantDateTblMap().containsKey(specialHolidayCode)){
-				cache.getGrantDateTblMap().put(specialHolidayCode, this.grantDateTblRepo.findBySphdCd(companyId, specialHolidayCode));
+			if (nursingCategory.equals(NursingCategory.ChildNursing)) {
+				cache.getNursingCareLeaveRemainingInfoMap().put(key, this.childCareLeaveRemInfoRepo
+						.getChildCareByEmpId(employeeId).map(mapper -> (NursingCareLeaveRemainingInfo) mapper));
 			}
-			return cache.getGrantDateTblMap().get(specialHolidayCode);
 		}
-
-		@Override
-		public Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode, String grantDateCode) {
-			String key = companyId + "-" + specialHolidayCode + "-" + grantDateCode;
-			if(!cache.getGrantDateTblOptMap().containsKey(key)){
-				cache.getGrantDateTblOptMap().put(key, this.grantDateTblRepo.findByCode(companyId, specialHolidayCode, grantDateCode));
-			}
-			return cache.getGrantDateTblOptMap().get(key);
-		}
-
-		@Override
-		public EmployeeRecordImport employeeFullInfo(CacheCarrier cacheCarrier, String empId) {
-
-			return this.empEmployeeAdapter.findByAllInforEmpId(cacheCarrier, empId);
-		}
-
-		@Override
-		public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
-
-			return this.empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, empId);
-		}
-
-		@Override
-		public List<SClsHistImport> employeeClassificationHistoires(CacheCarrier cacheCarrier, String companyId,
-				List<String> employeeIds, DatePeriod datePeriod) {
-
-			return this.empEmployeeAdapter.lstClassByEmployeeId(cacheCarrier, companyId, employeeIds, datePeriod);
-		}
-
-		@Override
-		public Optional<AnnualLeaveMaxHistoryData> AnnualLeaveMaxHistoryData(
-				String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
-
-			return this.annualLeaveMaxHistRepo.find(employeeId, yearMonth, closureId, closureDate);
-		}
-
-		public List<AnnualLeaveGrantRemainingData> annualLeaveGrantRemainingData(String employeeId) {
-			if(!cache.getAnnualLeaveGrantRemainingDataMap().containsKey(employeeId)){
-				cache.getAnnualLeaveGrantRemainingDataMap().put(employeeId, annLeaGrantRemDataRepo.find(employeeId));
-			}
-			return cache.getAnnualLeaveGrantRemainingDataMap().get(employeeId);
-		}
-
-		@Override
-		public void addPayoutSubofHDManagement(PayoutSubofHDManagement domain) {
-			payoutSubofHDManaRepo.updateOrInsert(domain);
-		}
-
-		@Override
-		public void addLeaveComDayOffManagement(LeaveComDayOffManagement domain) {
-			leaveComDayOffManaRepo.updateOrInsert(domain);
-		}
-
-		@Override
-		public void deleteSpecialLeaveGrantRemainAfter(String sid, int specialCode, GeneralDate targetDate) {
-			specialLeaveGrantRepo.deleteAfter(sid, specialCode, targetDate);
-		}
-
-		@Override
-		public List<WorkingConditionItemWithPeriod> workingCondition(String employeeId, DatePeriod datePeriod) {
-			return this.workingConditionRepo.getWorkingConditionItemWithPeriod(AppContexts.user().companyId(), Arrays.asList(employeeId), datePeriod)
-					.stream().filter(c -> c.getWorkingConditionItem().getEmployeeId().equals(employeeId))
-					.collect(Collectors.toList());
-		}
-
-		@Override
-		public List<ClosureStatusManagement> getAllByEmpId(String employeeId) {
-			if(!cache.getClosureStatusManagementMap().containsKey(employeeId)){
-				cache.getClosureStatusManagementMap().put(employeeId, closureStatusManagementRepo.getAllByEmpId(employeeId));
-			}
-			
-			return cache.getClosureStatusManagementMap().get(employeeId);
-		}
-
-		@Override
-		public Optional<ClosureEmployment> findByEmploymentCD(String employmentCode) {
-			String companyId = AppContexts.user().companyId();
-			if(!cache.getClosureEmploymentMap().containsKey(employmentCode)){
-				cache.getClosureEmploymentMap().put(employmentCode, closureEmploymentRepo.findByEmploymentCD(companyId, employmentCode));
-			}
-			return cache.getClosureEmploymentMap().get(employmentCode);
-		}
-
-		@Override
-		public Optional<ActualLock> findById(int closureId) {
-			String companyId = AppContexts.user().companyId();
-			return this.actualLock(companyId, closureId);
-		}
-
-		@Override
-		public DatePeriod getClosurePeriod(int closureId, YearMonth processYm) {
-			DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(
-					ClosureService.createRequireM1(closureRepo,closureEmploymentRepo), closureId, processYm);
-			return datePeriodClosure;
-		}
-
-		@Override
-		public Optional<ExecutionLog> getByExecutionContent(String empCalAndSumExecLogID, int executionContent) {
-			String key = empCalAndSumExecLogID + "-" + executionContent;
-			if(!cache.getExecutionLogMap().containsKey(key)){
-				cache.getExecutionLogMap().put(key, executionLogRepo.getByExecutionContent(empCalAndSumExecLogID, executionContent));
-			}
-			return cache.getExecutionLogMap().get(key);
-		}
-
-		@Override
-		public Optional<Closure> findClosureById(int closureId) {
-			String companyId = AppContexts.user().companyId();
-			if(!cache.getClosureMap().containsKey(closureId)){
-				cache.getClosureMap().put(closureId, closureRepo.findById(companyId, closureId));
-			}
-			return cache.getClosureMap().get(closureId);
-		}
-
-		@Override
-		public Optional<HolidayAddtionSet> holidayAddtionSet(String cid) {
-			if(!cache.getHolidayAddtionSetCache().isPresent()){
-				cache.setHolidayAddtionSetCache(holidayAddtionRepo.findByCId(cid));
-			}
-			return cache.getHolidayAddtionSetCache();
-		}
-
-		@Override
-		public Optional<PublicHolidaySetting> publicHolidaySetting(String companyID){
-			if(!cache.getPublicHolidaySettingCache().isPresent()){
-				cache.setPublicHolidaySettingCache(this.publicHolidaySettingRepo.get(companyID));
-			}
-			return cache.getPublicHolidaySettingCache();
-		}
-		
-		@Override
-		public Optional<PublicHolidayManagementUsageUnit> publicHolidayManagementUsageUnit(String companyID){
-			if(!cache.getPublicHolidayManagementUsageUnitCache().isPresent()){
-				cache.setPublicHolidayManagementUsageUnitCache(this.publicHolidayManagementUsageUnitRepo.get(companyID));
-			}
-			return cache.getPublicHolidayManagementUsageUnitCache();
-		}
-		
-		@Override
-		public Optional<YearMonthPeriod> getYearMonthPeriodByCalendarYearmonth(String companyID, YearMonth yearMonth){
-			return companyAdapter.getYearMonthPeriodByCalendarYearmonth(companyID, yearMonth);
-		}
-		
-		
-		public Optional<SharedAffWorkPlaceHisImport> getAffWorkPlaceHis(String employeeId, GeneralDate processingDate){
-			return sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, processingDate);
-		}
-		
-		public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId){
-			return sharedAffWorkPlaceHisAdapter.getWorkplaceIdAndUpper(companyId, baseDate, workplaceId);
-		}
-		
-		public List<SharedSidPeriodDateEmploymentImport> getEmpHistBySidAndPeriod(List<String> employeeID, DatePeriod Period){
-			return shareEmploymentAdapter.getEmpHistBySidAndPeriod(employeeID, Period);
-		}
-		
-		public List<TempPublicHolidayManagement> tempPublicHolidayManagement(String employeeId, DatePeriod Period){
-			return this.tempPublicHolidayManagementRepo.findByPeriodOrderByYmd(employeeId, Period);
-		}
-		
-		public Optional<PublicHolidayCarryForwardData> publicHolidayCarryForwardData(String employeeId){
-			if(!cache.getPublicHolidayCarryForwardDataMap().containsKey(employeeId)){
-				cache.getPublicHolidayCarryForwardDataMap().put(employeeId, this.publicHolidayCarryForwardDataRepo.get(employeeId));
-			}
-			return cache.getPublicHolidayCarryForwardDataMap().get(employeeId);
-		}
-		
-		public List<EmploymentMonthDaySetting> getEmploymentMonthDaySetting(String companyID, 
-				String employmentCode,List<nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year> yearList){
-			return this.employmentMonthDaySettingRepo.findByYears(new CompanyId(companyID), employmentCode, yearList);
-		}
-		
-		public List<WorkplaceMonthDaySetting>  getWorkplaceMonthDaySetting(String companyID,
-				String workplaceId,List<nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year> yearList){
-			return  this.workplaceMonthDaySettingRepo.findByYears(new CompanyId(companyID), workplaceId, yearList);
-		}
-		
-		public List<CompanyMonthDaySetting>  getCompanyMonthDaySetting(	String companyID ,
-				List<nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year> yearList){
-			return this.companyMonthDaySettingRepo.findByYears(new CompanyId(companyID), yearList);
-		}
-		
-		public List<EmployeeMonthDaySetting>  getEmployeeMonthDaySetting(
-				String companyID, String employeeId,List<nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year> yearList){
-			return this.employeeMonthDaySettingRepo.findByYears(new CompanyId(companyID), employeeId, yearList);
-		}
-		
-		public void deleteTempPublicHolidayByPeriod(String employeeId, DatePeriod period){
-			this.tempPublicHolidayManagementRepo.deleteByPeriod(employeeId, period);
-		}
-		
-		public void persistAndUpdate(PublicHolidayCarryForwardData carryForwardData){
-			this.publicHolidayCarryForwardDataRepo.persistAndUpdate(carryForwardData);
-		}
-		
-		public void deletePublicHolidayCarryForwardData(String employeeId){
-			this.publicHolidayCarryForwardDataRepo.delete(employeeId);
-		}
-		
-		public void persistAndUpdateCarryForwardHistory(PublicHolidayCarryForwardHistory hist){
-			this.publicHolidayCarryForwardHistoryRepo.persistAndUpdate(hist);
-		}
-		
-		public void persistAndUpdateUseChildCare(String employeeId, ChildCareUsedNumberData domain){
-			this.childCareUsedNumberRepo.persistAndUpdate(employeeId, domain);
-		}
-		
-		public void updateChildCareMaxDay(String sid, ChildCareNurseUpperLimit ThisFiscalYear){
-			this.childCareLeaveRemInfoRepo.updateMaxDay(sid, ThisFiscalYear);
-		}
-		
-		public void deleteTempAnnualSidPeriod(String sid, DatePeriod period){
-			this.tmpAnnualHolidayMngRepo.deleteSidPeriod(sid, period);
-		}
-		
-		public void deleteTempResereSidPeriod(String sid, DatePeriod period){
-			this.tmpResereLeaveMngRepo.deleteSidPeriod(sid, period);
-		}
-		
-		public void deleteInterimAbsMngBySidDatePeriod(String sId, DatePeriod period){
-			this.interimRecAbasMngRepo.deleteAbsMngWithPeriod(sId, period);
-		}
-		public void deleteInterimRecMngBySidDatePeriod(String sId, DatePeriod period){
-			this.interimRecAbasMngRepo.deleteRecMngWithPeriod(sId, period);
-		}
-		public void deleteTempChildCareByPeriod(String sid, DatePeriod period){
-			this.tempChildCareManagementRepo.deleteByPeriod(sid, period);
-		}
-		
-		
-		@Override
-		public EmployeeImport findByEmpId(String empId) {
-			if(!cache.getEmployeeImportMap().containsKey(empId)){
-				cache.getEmployeeImportMap().put(empId, Optional.ofNullable(this.empEmployeeAdapter.findByEmpId(empId)));
-			}
-			return cache.getEmployeeImportMap().get(empId).orElse(null);
-		}
-		
-		@Override
-		public List<FamilyInfo> familyInfo(String employeeId) {
-			// 2021/03/22 時点では家族情報は取得できない
-			return new ArrayList<>();
-		}
-		
-		@Override
-		public List<TempChildCareManagement> tempChildCareManagement(
-				String employeeId, DatePeriod ymd) {
-				return this.tempChildCareManagementRepo.findByPeriodOrderByYmd(employeeId, ymd);
-		}
-
-		@Override
-		public List<TempCareManagement> tempCareManagement(
-				String employeeId, DatePeriod ymd) {
-				return this.tempCareManagementRepo.findByPeriodOrderByYmd(employeeId, ymd);
-		}
-		
-		
-		@Override
-		public NursingLeaveSetting nursingLeaveSetting(String companyId, NursingCategory nursingCategory) {
-			if(!cache.getNursingLeaveSettingMap().containsKey(nursingCategory)){
-				cache.getNursingLeaveSettingMap().put(nursingCategory,
-					Optional.ofNullable(this.nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyId, nursingCategory.value)));
-			}
-			return cache.getNursingLeaveSettingMap().get(nursingCategory).orElse(null);
-		}
-		
-
-		@Override
-		public Optional<ChildCareUsedNumberData> childCareUsedNumber(String employeeId) {
-			if(!cache.getChildCareUsedNumberDataMap().containsKey(employeeId)){
-				cache.getChildCareUsedNumberDataMap().put(employeeId, this.childCareUsedNumberRepo.find(employeeId));
-			}
-			return cache.getChildCareUsedNumberDataMap().get(employeeId);
-		}
-		
-		@Override
-		public Optional<CareUsedNumberData> careUsedNumber(String employeeId) {
-			if(!cache.getCareUsedNumberDataMap().containsKey(employeeId)){
-				cache.getCareUsedNumberDataMap().put(employeeId, this.careUsedNumberRepo.find(employeeId));
-			}
-			return cache.getCareUsedNumberDataMap().get(employeeId);
-		}
-		
-		@Override
-		public Optional<CareManagementDate> careData(String familyID) {
-			// 2021/03/22 時点では家族情報は取得できない
-			return Optional.empty();
-		}
-		
-		@Override
-		public Optional<ChildCareLeaveRemainingInfo> childCareLeaveEmployeeInfo(String employeeId) {
-			if(!cache.getChildCareLeaveRemainingInfoMap().containsKey(employeeId)){
-				cache.getChildCareLeaveRemainingInfoMap().put(employeeId, this.childCareLeaveRemInfoRepo.getChildCareByEmpId(employeeId));
-			}
-			return cache.getChildCareLeaveRemainingInfoMap().get(employeeId);
-		}
-		
-		@Override
-		public Optional<CareLeaveRemainingInfo> careLeaveEmployeeInfo(String employeeId) {
-			if(!cache.getCareLeaveRemainingInfo().containsKey(employeeId)){
-				cache.getCareLeaveRemainingInfo().put(employeeId, this.careLeaveRemainingInfoRepo.getCareByEmpId(employeeId));
-			}
-			return cache.getCareLeaveRemainingInfo().get(employeeId);
-		}
-		
-		
-		@Override
-		public Optional<NursingCareLeaveRemainingInfo> employeeInfo(String employeeId, NursingCategory nursingCategory) {
-			String key = employeeId + "-" + nursingCategory;
-			if(!cache.getNursingCareLeaveRemainingInfoMap().containsKey(key)){
-				if(nursingCategory.equals(NursingCategory.Nursing)){
-					cache.getNursingCareLeaveRemainingInfoMap().put(key, this.careLeaveRemainingInfoRepo
-							.getCareByEmpId(employeeId).map(mapper -> (NursingCareLeaveRemainingInfo) mapper));
-				}
-				if(nursingCategory.equals(NursingCategory.ChildNursing)){
-					cache.getNursingCareLeaveRemainingInfoMap().put(key, this.childCareLeaveRemInfoRepo
-							.getChildCareByEmpId(employeeId).map(mapper->(NursingCareLeaveRemainingInfo)mapper));
-				}
-			}
-			return cache.getNursingCareLeaveRemainingInfoMap().getOrDefault(key, Optional.empty());
-			
-		}
-		
-		public void persistAndUpdateUseCare(String employeeId, CareUsedNumberData domain){
-			this.careUsedNumberRepo.persistAndUpdate(employeeId, domain);
-		}
-		
-		public void updateCareMaxDay(String sid, ChildCareNurseUpperLimit ThisFiscalYear){
-			this.careLeaveRemainingInfoRepo.updateMaxDay(sid, ThisFiscalYear);
-		}
-		
-		public void deleteTempCareByPeriod(String sid, DatePeriod period){
-			this.tempCareManagementRepo.deleteBySidDatePeriod(sid, period);	
-		}
-		
-		public	void deleteInterimDayOffMngBySidDatePeriod(String sid, DatePeriod period){
-			this.interimBreakDayOffMngRepo.deleteDayoffWithPeriod(sid, period);
-		}
-		
-		public void deleteInterimBreakMngBySidDatePeriod(String sid, DatePeriod period){
-			this.interimBreakDayOffMngRepo.deleteBreakoffWithPeriod(sid, period);
-		}
-		
-		public void deleteTempSpecialSidPeriod(String sid, int specialCode, DatePeriod period){
-			this.interimSpecialHolidayMngRepo.deleteBySidAndPeriod(sid, specialCode, period);
-		}
-		
-		@Override
-		public AnnualPaidLeaveSetting annualPaidLeaveSetting(String companyId) {
-			if(cache.getAnnualPaidLeaveSettingCache() == null){
-				cache.setAnnualPaidLeaveSettingCache(annualPaidLeaveSettingRepo.findByCompanyId(companyId));
-			}
-			return cache.getAnnualPaidLeaveSettingCache();
-		}
-
-		@Override
-		public List<DailyInterimRemainMngData> mapInterimRemainData(RequireM1 require, CacheCarrier cacheCarrier,
-				String cid, String sid, DatePeriod datePeriod) {
-			return AggregateMonthlyRecordService.mapInterimRemainData(require, cacheCarrier, cid, sid, datePeriod);
-		}
-
-		@Override
-		public Optional<GeneralDate> algorithm(GetClosureStartForEmployee.RequireM1 require, CacheCarrier cacheCarrier, String employeeId) {
-			return GetClosureStartForEmployeeProc.algorithm(require, cacheCarrier, employeeId);
-		}
-
-		@Override	
-		public Optional<GrantPeriodDto> getPeriodYMDGrant(String cid, String sid, GeneralDate ymd, Integer periodOutput,
-				Optional<DatePeriod> fromTo) {
-			return getPeriodFromPreviousToNextGrantDate.getPeriodYMDGrant(cid, sid, ymd, periodOutput, fromTo);
-		}
-
-		@Override
-		public List<AnnLeaRemNumEachMonth> findBySidsAndYearMonths(List<String> employeeIds,
-				List<YearMonth> yearMonths) {
-			return annLeaRemNumEachMonthRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
-		}
-
-		@Override
-		public DatePeriod findClosurePeriod(RequireM3 require, CacheCarrier cacheCarrier, String employeeId,
-				GeneralDate criteriaDate) {
-			return ClosureService.findClosurePeriod(require, cacheCarrier, employeeId, criteriaDate);
-		}
-
-		@Override
-		public List<YearMonth> GetYearMonthClosurePeriod(RequireM3 require, CacheCarrier cacheCarrier,
-				String employeeId, GeneralDate criteriaDate, DatePeriod period) {
-			return ClosureService.GetYearMonthClosurePeriod(require, cacheCarrier, 
-					employeeId, criteriaDate, period);
-		}
-
-		@Override
-		public void transaction(AtomTask task) {
-			this.transaction.execute(task);
-		}
-
-		public List<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String cId, List<String> employeeId) {
-			return annLeaEmpBasicInfoRepo.getAll(cId, employeeId);
-		}
-
-		@Override
-		public List<ShaFlexMonthActCalSet> monthFlexCalcSetbyEmployee(String cid, List<String> sId) {
-			return shaFlexMonthActCalSetRepo.findAllShaByCid(cid).stream().filter(c -> sId.contains(c.getEmpId())).collect(Collectors.toList());
-		}
-
-		@Override
-		public List<ShaDeforLaborMonthActCalSet> monthDeforLaborCalcSetByEmployee(String cId, List<String> sId) {
-			return shaDeforLaborMonthActCalSetRepo.findByCid(cId).stream().filter(c -> sId.contains(c.getEmployeeId())).collect(Collectors.toList());
-		}
-
-		@Override
-		public List<ShaRegulaMonthActCalSet> monthRegulaCalcSetByEmployee(String cid, List<String> sId) {
-			List<ShaRegulaMonthActCalSet> list = shaRegulaMonthActCalSetRepo.findRegulaMonthActCalSetByCid(cid);
-			return list.stream().filter(c -> sId.contains(c.getEmployeeId())).collect(Collectors.toList());
-		}
-
-		@Override
-		public List<DeforLaborTimeSha> deforLaborTimeByEmployee(String cid, List<String> empId) {
-			return deforLaborTimeShaRepo.findList(cid, empId);
-		}
-
-		@Override
-		public List<RegularLaborTimeSha> regularLaborTimeByEmployee(String Cid, List<String> EmpId) {
-			return regularLaborTimeShaRepo.findList(Cid, EmpId);
-		}
-
-		@Override
-		public List<EmployeeImport> employee(List<String> empId) {
-			return empEmployeeAdapter.findByEmpId(empId);
-		}
-
-		@Override
-		public List<WorkingConditionItem> workingConditionItem(List<String> sId, DatePeriod datePeriod) {
-			return workingConditionItemRepo.getBySidsAndDatePeriodNew(sId, datePeriod);
-		}
-
-		@Override
-		public Map<String, Map<GeneralDate, AttendanceTimeOfDailyAttendance>> dailyAttendanceTimesclones(
-				List<String> employeeId, DatePeriod datePeriod) {
-			Map<String, Map<GeneralDate, AttendanceTimeOfDailyAttendance>> result = new HashMap<String, Map<GeneralDate,AttendanceTimeOfDailyAttendance>>();
-
-			for (String id : employeeId) {
-				Map<GeneralDate, AttendanceTimeOfDailyAttendance> dataForResult = new ConcurrentHashMap<GeneralDate, AttendanceTimeOfDailyAttendance>();
-				Map<GeneralDate, AttendanceTimeOfDailyAttendance> dataByRepo = new ConcurrentHashMap<GeneralDate, AttendanceTimeOfDailyAttendance>();
-				for(GeneralDate date : datePeriod.datesBetween()){
-					String keyForGet = employeeId + "-" + date.toString();	
-					if(cache.getAttendanceTimeOfDailyAttendanceListMap().containsKey(keyForGet)){
-						dataForResult.put(date,cache.getAttendanceTimeOfDailyAttendanceListMap().get(keyForGet));
-					}
-					else{
-						dataByRepo =attendanceTimeRepo.finds(Arrays.asList(id), new DatePeriod(date,datePeriod.end()))
-								.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTime()));
-						
-						dataByRepo.forEach((k, v) ->{
-							String keyForPut = employeeId + "-" + k.toString();
-							if(!cache.getAttendanceTimeOfDailyAttendanceListMap().containsKey(keyForPut)){
-								cache.getAttendanceTimeOfDailyAttendanceListMap().put(keyForPut, v);
-							}
-							dataForResult.put(k, v);
-						});
-						
-						break;
-					}
-				};
-				result.put(id,dataForResult);
-			}
-
-			return result;
-		}
-
-		@Override
-		public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
-			return closureEmploymentRepo.findListEmployment(companyID, employmentCD);
-		}
-
-		@Override
-		public List<Closure> closureClones(String companyId, List<Integer> closureId) {
-			return closureRepo.findByListId(companyId, closureId);
-		}
-
-		@Override
-		public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
-				GeneralDate baseDate) {
-			return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
-		}
-
-		@Override
-		public List<WorkingConditionItemWithPeriod> getWorkingConditionItemWithPeriod(String companyID,
-				List<String> lstEmpID, DatePeriod datePeriod) {
-			return workingConditionRepository.getWorkingConditionItemWithPeriod(companyID, lstEmpID, datePeriod);
-		}
-		
-		@Override
-		public List<EmploymentHistoryImported> getEmpHistBySid(String companyId, String employeeId) {
-			if(!cache.getEmploymentHistoryImportedMap().containsKey(employeeId)){
-				cache.getEmploymentHistoryImportedMap().put(employeeId, employmentAdapter.getEmpHistBySid(companyId, employeeId));
-			}
-			return cache.getEmploymentHistoryImportedMap().get(employeeId);
-		}
-
-		@Override
-		public Optional<CreatingDailyResultsCondition> creatingDailyResultsCondition(String cid) {
-			if(!cache.getCreatingDailyResultsConditionCache().isPresent()){
-				cache.setCreatingDailyResultsConditionCache(creatingDailyResultsConditionRepo.findByCid(cid));
-			}
-			return cache.getCreatingDailyResultsConditionCache();
-		}
-
-		@Override
-		public List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period) {
-			return interimBreakDayOffMngRepo.getDayOffBySidPeriod(sid, period);
-		}
-
-		@Override
-		public List<InterimBreakMng> getBreakBySidPeriod(String sid, DatePeriod period) {
-			return interimBreakDayOffMngRepo.getBySidPeriod(sid, period);
-		}
-
-		@Override
-		public List<TempChildCareManagement> findChildCareByPeriodOrderByYmd(String employeeId, DatePeriod period) {
-			return tempChildCareManagementRepo.findByPeriodOrderByYmd(employeeId, period);
-		}
-
-		@Override
-		public List<TempCareManagement> findCareByPeriodOrderByYmd(String employeeId, DatePeriod period) {
-			return tempCareManagementRepo.findByPeriodOrderByYmd(employeeId, period);
-		}
-		
-		@Override
-		public List<InterimRecMng> getRecBySidDatePeriod(String sid, DatePeriod period){
-			return interimRecAbasMngRepo.getRecBySidDatePeriod(sid, period);
-		}
-		
-		@Override
-		public List<InterimAbsMng> getAbsBySidDatePeriod(String sid, DatePeriod period){
-			return interimRecAbasMngRepo.getAbsBySidDatePeriod(sid, period);
-		}
-		
-		@Override
-		public WorkDaysNumberOnLeaveCount workDaysNumberOnLeaveCount(String cid) {
-			if(cache.getWorkDaysNumberOnLeaveCountCache() == null){
-				cache.setWorkDaysNumberOnLeaveCountCache(workDaysNumberOnLeaveCountRepo.findByCid(cid));
-			}
-			return cache.getWorkDaysNumberOnLeaveCountCache();
-		}
-
-		@Override
-		public List<IntegrationOfDaily> calculateForRecordSchedule(CalculateOption calcOption,
-				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet) {
-			return calculateDailyRecordServiceCenter.calculateForRecord(calcOption, integrationOfDaily, companySet);
-		}
-
-		@Override
-		public Optional<WkpFlexMonthActCalSet> wkpFlexMonthActCalSet(String cid, String wkpId) {
-			if(cache.wkpFlexMonthActCalSetMap.containsKey(wkpId)) {
-				return cache.wkpFlexMonthActCalSetMap.get(wkpId);
-			}
-			Optional<WkpFlexMonthActCalSet> item = wkpFlexMonthActCalSetRepo.find(cid, wkpId);
-			cache.wkpFlexMonthActCalSetMap.put(wkpId, item);
-			return item;
-		}
-
-		@Override
-		public Optional<EmpFlexMonthActCalSet> empFlexMonthActCalSet(String cid, String empCode) {
-			if(cache.empFlexMonthActCalSetMap.containsKey(empCode)) {
-				return cache.empFlexMonthActCalSetMap.get(empCode);
-			}
-			Optional<EmpFlexMonthActCalSet> item = empFlexMonthActCalSetRepo.find(cid, empCode);
-			cache.empFlexMonthActCalSetMap.put(empCode, item);
-			return item;
-		}
-
-		@Override
-		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
-			return workType(companyId, workTypeCode.v());
-		}
-
-		@Override
-		public Optional<AddSetManageWorkHour> addSetManageWorkHour(String cid) {
-			return addSetManageWorkHourRepo.findByCid(cid);
-		}
-
-		@Override
-		public Optional<WorkFlexAdditionSet> workFlexAdditionSet(String cid) {
-			return workFlexAdditionSetRepo.findByCid(cid);
-		}
-
-		@Override
-		public Optional<WorkRegularAdditionSet> workRegularAdditionSet(String cid) {
-			return workRegularAdditionSetRepo.findByCID(cid);
-		}
-
-		@Override
-		public Optional<WorkDeformedLaborAdditionSet> workDeformedLaborAdditionSet(String cid) {
-			return workDeformedLaborAdditionSetRepo.findByCid(cid);
-		}
-
-		@Override
-		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
-			if(cache.predetemineTimeSettingMap.containsKey(workTimeCode.v())) {
-				return cache.predetemineTimeSettingMap.get(workTimeCode.v());
-			}
-			Optional<PredetemineTimeSetting> item = predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode.v());
-			cache.predetemineTimeSettingMap.put(workTimeCode.v(), item);
-			return item;
-		}
-
-		@Override
-		public Optional<FlexSet> flexSet(String companyId) {
-			return flexSetRepo.findByCId(companyId);
-		}
-
-		@Override
-		public List<PayoutSubofHDManagement> getOccDigetByListSid(String sid, DatePeriod date) {
-			return payoutSubofHDManaRepo.getOccDigetByListSid(sid, date);
-		}
-
-		@Override
-		public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String sid) {
-			return substitutionOfHDManaDataRepo.getBysiD(AppContexts.user().companyId(), sid);
-		}
-
-		@Override
-		public List<PayoutManagementData> getPayoutMana(String sid) {
-			return payoutManagementDataRepo.getSid(AppContexts.user().companyId(), sid);
-		}
-
-		@Override
-		public List<PayoutSubofHDManagement> getByListDate(String sid, List<GeneralDate> lstDate) {
-			return payoutSubofHDManaRepo.getByListDate(sid, lstDate);
-		}
-
-		@Override
-		public List<PayoutSubofHDManagement> getByListOccDate(String sid, List<GeneralDate> lstDate) {
-			return payoutSubofHDManaRepo.getByListOccDate(sid, lstDate);
-		}
-
-		@Override
-		public List<InterimAbsMng> getAbsBySidDateList(String sid, List<GeneralDate> lstDate) {
-			return interimRecAbasMngRepo.getAbsBySidDateList(sid, lstDate);
-		}
-
-		@Override
-		public List<InterimRecMng> getRecBySidDateList(String sid, List<GeneralDate> lstDate) {
-			return interimRecAbasMngRepo.getRecBySidDateList(sid, lstDate);
-		}
-
-		@Override
-		public List<LeaveComDayOffManagement> getLeavByListDate(String sid, List<GeneralDate> lstDate) {
-			return leaveComDayOffManaRepo.getByListDate(sid, lstDate);
-		}
-
-		@Override
-		public List<LeaveComDayOffManagement> getLeavByListOccDate(String sid, List<GeneralDate> lstDate) {
-			return leaveComDayOffManaRepo.getLeavByListOccDate(sid, lstDate);
-		}
-
-		@Override
-		public List<InterimBreakMng> getBreakBySidDateList(String sid, List<GeneralDate> lstDate) {
-			return interimBreakDayOffMngRepo.getBreakBySidDateList(sid, lstDate);
-		}
-
-		@Override
-		public List<InterimDayOffMng> getDayOffDateList(String sid, List<GeneralDate> lstDate) {
-			return interimBreakDayOffMngRepo.getDayOffDateList(sid, lstDate);
-		}
-		
-		
-		@Override
-		public void deleteTempAnnualBySidBeforeTheYmd(String sid, GeneralDate ymd) {
-			tmpAnnualHolidayMngRepo.deleteBySidBeforeTheYmd(sid, ymd);
-			
-		}
-		
-		@Override
-		public void deleteTempResereBySidBeforeTheYmd(String sid, GeneralDate ymd) {
-			tmpResereLeaveMngRepo.deleteBySidBeforeTheYmd(sid, ymd);
-			
-		}
-
-		@Override
-		public void deleteInterimAbsMngBySidBeforeTheYmd(String sId, GeneralDate ymd) {
-			interimRecAbasMngRepo.deleteAbsMngBySidBeforeTheYmd(sId, ymd);
-			
-		}
-
-		@Override
-		public void deleteInterimRecMngBySidBeforeTheYmd(String sId, GeneralDate ymd) {
-			interimRecAbasMngRepo.deleteRecMngBySidBeforeTheYmd(sId, ymd);
-			
-		}
-		
-		@Override
-		public void deleteInterimDayoffBySidBeforeTheYmd(String sid, GeneralDate ymd) {
-			interimBreakDayOffMngRepo.deleteDayoffBySidBeforeTheYmd(sid, ymd);
-			
-		}
-
-		@Override
-		public void deleteInterimBreakoffBySidBeforeTheYmd(String sid, GeneralDate ymd) {
-			interimBreakDayOffMngRepo.deleteBreakoffBySidBeforeTheYmd(sid, ymd);
-			
-		}
-		
-		@Override
-		public void deleteTempSpecialBySidBeforeTheYmd(String sid, int specialCd, GeneralDate ymd) {
-			interimSpecialHolidayMngRepo.deleteBySidBeforeTheYmd(sid, specialCd, ymd);
-			
-		}
-		
-		@Override
-		public void deleteTempPublicHolidayBySidBeforeTheYmd(String sid, GeneralDate ymd) {
-			tempPublicHolidayManagementRepo.deleteBySidBeforeTheYmd(sid, ymd);
-			
-		}
-
-		@Override
-		public void deleteTempChildCareBySidBeforeTheYmd(String sid, GeneralDate ymd) {
-			tempChildCareManagementRepo.deleteBySidBeforeTheYmd(sid, ymd);
-			
-		}
-		
-		@Override
-		public void deleteTempCareBySidBeforeTheYmd(String sid, GeneralDate ymd) {
-			tempCareManagementRepo.deleteBySidBeforeTheYmd(sid, ymd);
-		}
-
-
+		return cache.getNursingCareLeaveRemainingInfoMap().getOrDefault(key, Optional.empty());
 
 	}
+
+	public void persistAndUpdateUseCare(String employeeId, CareUsedNumberData domain) {
+		this.careUsedNumberRepo.persistAndUpdate(employeeId, domain);
+	}
+
+	public void updateCareMaxDay(String sid, ChildCareNurseUpperLimit ThisFiscalYear) {
+		this.careLeaveRemainingInfoRepo.updateMaxDay(sid, ThisFiscalYear);
+	}
+
+	public void deleteTempCareByPeriod(String sid, DatePeriod period) {
+		this.tempCareManagementRepo.deleteBySidDatePeriod(sid, period);
+	}
+
+	public void deleteInterimDayOffMngBySidDatePeriod(String sid, DatePeriod period) {
+		this.interimBreakDayOffMngRepo.deleteDayoffWithPeriod(sid, period);
+	}
+
+	public void deleteInterimBreakMngBySidDatePeriod(String sid, DatePeriod period) {
+		this.interimBreakDayOffMngRepo.deleteBreakoffWithPeriod(sid, period);
+	}
+
+	public void deleteTempSpecialSidPeriod(String sid, int specialCode, DatePeriod period) {
+		this.interimSpecialHolidayMngRepo.deleteBySidAndPeriod(sid, specialCode, period);
+	}
+
+	@Override
+	public AnnualPaidLeaveSetting annualPaidLeaveSetting(String companyId) {
+		if (cache.getAnnualPaidLeaveSettingCache() == null) {
+			cache.setAnnualPaidLeaveSettingCache(annualPaidLeaveSettingRepo.findByCompanyId(companyId));
+		}
+		return cache.getAnnualPaidLeaveSettingCache();
+	}
+
+	@Override
+	public List<DailyInterimRemainMngData> mapInterimRemainData(RequireM1 require, CacheCarrier cacheCarrier,
+			String cid, String sid, DatePeriod datePeriod) {
+		return AggregateMonthlyRecordService.mapInterimRemainData(require, cacheCarrier, cid, sid, datePeriod);
+	}
+
+	@Override
+	public Optional<GeneralDate> algorithm(GetClosureStartForEmployee.RequireM1 require, CacheCarrier cacheCarrier,
+			String employeeId) {
+		return GetClosureStartForEmployeeProc.algorithm(require, cacheCarrier, employeeId);
+	}
+
+	@Override
+	public Optional<GrantPeriodDto> getPeriodYMDGrant(String cid, String sid, GeneralDate ymd, Integer periodOutput,
+			Optional<DatePeriod> fromTo) {
+		return getPeriodFromPreviousToNextGrantDate.getPeriodYMDGrant(cid, sid, ymd, periodOutput, fromTo);
+	}
+
+	@Override
+	public List<AnnLeaRemNumEachMonth> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths) {
+		return annLeaRemNumEachMonthRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
+	}
+
+	@Override
+	public DatePeriod findClosurePeriod(RequireM3 require, CacheCarrier cacheCarrier, String employeeId,
+			GeneralDate criteriaDate) {
+		return ClosureService.findClosurePeriod(require, cacheCarrier, employeeId, criteriaDate);
+	}
+
+	@Override
+	public List<YearMonth> GetYearMonthClosurePeriod(RequireM3 require, CacheCarrier cacheCarrier, String employeeId,
+			GeneralDate criteriaDate, DatePeriod period) {
+		return ClosureService.GetYearMonthClosurePeriod(require, cacheCarrier, employeeId, criteriaDate, period);
+	}
+
+	@Override
+	public void transaction(AtomTask task) {
+		this.transaction.execute(task);
+	}
+
+	public List<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String cId, List<String> employeeId) {
+		return annLeaEmpBasicInfoRepo.getAll(cId, employeeId);
+	}
+
+	@Override
+	public List<ShaFlexMonthActCalSet> monthFlexCalcSetbyEmployee(String cid, List<String> sId) {
+		return shaFlexMonthActCalSetRepo.findAllShaByCid(cid).stream().filter(c -> sId.contains(c.getEmpId()))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ShaDeforLaborMonthActCalSet> monthDeforLaborCalcSetByEmployee(String cId, List<String> sId) {
+		return shaDeforLaborMonthActCalSetRepo.findByCid(cId).stream().filter(c -> sId.contains(c.getEmployeeId()))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ShaRegulaMonthActCalSet> monthRegulaCalcSetByEmployee(String cid, List<String> sId) {
+		List<ShaRegulaMonthActCalSet> list = shaRegulaMonthActCalSetRepo.findRegulaMonthActCalSetByCid(cid);
+		return list.stream().filter(c -> sId.contains(c.getEmployeeId())).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<DeforLaborTimeSha> deforLaborTimeByEmployee(String cid, List<String> empId) {
+		return deforLaborTimeShaRepo.findList(cid, empId);
+	}
+
+	@Override
+	public List<RegularLaborTimeSha> regularLaborTimeByEmployee(String Cid, List<String> EmpId) {
+		return regularLaborTimeShaRepo.findList(Cid, EmpId);
+	}
+
+	@Override
+	public List<EmployeeImport> employee(List<String> empId) {
+		return empEmployeeAdapter.findByEmpId(empId);
+	}
+
+	@Override
+	public List<WorkingConditionItem> workingConditionItem(List<String> sId, DatePeriod datePeriod) {
+		return workingConditionItemRepo.getBySidsAndDatePeriodNew(sId, datePeriod);
+	}
+
+	@Override
+	public Map<String, Map<GeneralDate, AttendanceTimeOfDailyAttendance>> dailyAttendanceTimesclones(
+			List<String> employeeId, DatePeriod datePeriod) {
+		Map<String, Map<GeneralDate, AttendanceTimeOfDailyAttendance>> result = new HashMap<String, Map<GeneralDate, AttendanceTimeOfDailyAttendance>>();
+
+		for (String id : employeeId) {
+			Map<GeneralDate, AttendanceTimeOfDailyAttendance> dataForResult = new ConcurrentHashMap<GeneralDate, AttendanceTimeOfDailyAttendance>();
+			Map<GeneralDate, AttendanceTimeOfDailyAttendance> dataByRepo = new ConcurrentHashMap<GeneralDate, AttendanceTimeOfDailyAttendance>();
+			for (GeneralDate date : datePeriod.datesBetween()) {
+				String keyForGet = employeeId + "-" + date.toString();
+				if (cache.getAttendanceTimeOfDailyAttendanceListMap().containsKey(keyForGet)) {
+					dataForResult.put(date, cache.getAttendanceTimeOfDailyAttendanceListMap().get(keyForGet));
+				} else {
+					dataByRepo = attendanceTimeRepo.finds(Arrays.asList(id), new DatePeriod(date, datePeriod.end()))
+							.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTime()));
+
+					dataByRepo.forEach((k, v) -> {
+						String keyForPut = employeeId + "-" + k.toString();
+						if (!cache.getAttendanceTimeOfDailyAttendanceListMap().containsKey(keyForPut)) {
+							cache.getAttendanceTimeOfDailyAttendanceListMap().put(keyForPut, v);
+						}
+						dataForResult.put(k, v);
+					});
+
+					break;
+				}
+			}
+			;
+			result.put(id, dataForResult);
+		}
+
+		return result;
+	}
+
+	@Override
+	public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
+		return closureEmploymentRepo.findListEmployment(companyID, employmentCD);
+	}
+
+	@Override
+	public List<Closure> closureClones(String companyId, List<Integer> closureId) {
+		return closureRepo.findByListId(companyId, closureId);
+	}
+
+	@Override
+	public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
+			GeneralDate baseDate) {
+		return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
+	}
+
+	@Override
+	public List<WorkingConditionItemWithPeriod> getWorkingConditionItemWithPeriod(String companyID,
+			List<String> lstEmpID, DatePeriod datePeriod) {
+		return workingConditionRepository.getWorkingConditionItemWithPeriod(companyID, lstEmpID, datePeriod);
+	}
+
+	@Override
+	public List<EmploymentHistoryImported> getEmpHistBySid(String companyId, String employeeId) {
+		if (!cache.getEmploymentHistoryImportedMap().containsKey(employeeId)) {
+			cache.getEmploymentHistoryImportedMap().put(employeeId,
+					employmentAdapter.getEmpHistBySid(companyId, employeeId));
+		}
+		return cache.getEmploymentHistoryImportedMap().get(employeeId);
+	}
+
+	@Override
+	public Optional<CreatingDailyResultsCondition> creatingDailyResultsCondition(String cid) {
+		if (!cache.getCreatingDailyResultsConditionCache().isPresent()) {
+			cache.setCreatingDailyResultsConditionCache(creatingDailyResultsConditionRepo.findByCid(cid));
+		}
+		return cache.getCreatingDailyResultsConditionCache();
+	}
+
+	@Override
+	public List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period) {
+		return interimBreakDayOffMngRepo.getDayOffBySidPeriod(sid, period);
+	}
+
+	@Override
+	public List<InterimBreakMng> getBreakBySidPeriod(String sid, DatePeriod period) {
+		return interimBreakDayOffMngRepo.getBySidPeriod(sid, period);
+	}
+
+	@Override
+	public List<TempChildCareManagement> findChildCareByPeriodOrderByYmd(String employeeId, DatePeriod period) {
+		return tempChildCareManagementRepo.findByPeriodOrderByYmd(employeeId, period);
+	}
+
+	@Override
+	public List<TempCareManagement> findCareByPeriodOrderByYmd(String employeeId, DatePeriod period) {
+		return tempCareManagementRepo.findByPeriodOrderByYmd(employeeId, period);
+	}
+
+	@Override
+	public List<InterimRecMng> getRecBySidDatePeriod(String sid, DatePeriod period) {
+		return interimRecAbasMngRepo.getRecBySidDatePeriod(sid, period);
+	}
+
+	@Override
+	public List<InterimAbsMng> getAbsBySidDatePeriod(String sid, DatePeriod period) {
+		return interimRecAbasMngRepo.getAbsBySidDatePeriod(sid, period);
+	}
+
+	@Override
+	public WorkDaysNumberOnLeaveCount workDaysNumberOnLeaveCount(String cid) {
+		if (cache.getWorkDaysNumberOnLeaveCountCache() == null) {
+			cache.setWorkDaysNumberOnLeaveCountCache(workDaysNumberOnLeaveCountRepo.findByCid(cid));
+		}
+		return cache.getWorkDaysNumberOnLeaveCountCache();
+	}
+
+	@Override
+	public List<IntegrationOfDaily> calculateForRecordSchedule(CalculateOption calcOption,
+			List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet) {
+		return calculateDailyRecordServiceCenter.calculateForRecord(calcOption, integrationOfDaily, companySet);
+	}
+
+	@Override
+	public Optional<WkpFlexMonthActCalSet> wkpFlexMonthActCalSet(String cid, String wkpId) {
+		if (cache.wkpFlexMonthActCalSetMap.containsKey(wkpId)) {
+			return cache.wkpFlexMonthActCalSetMap.get(wkpId);
+		}
+		Optional<WkpFlexMonthActCalSet> item = wkpFlexMonthActCalSetRepo.find(cid, wkpId);
+		cache.wkpFlexMonthActCalSetMap.put(wkpId, item);
+		return item;
+	}
+
+	@Override
+	public Optional<EmpFlexMonthActCalSet> empFlexMonthActCalSet(String cid, String empCode) {
+		if (cache.empFlexMonthActCalSetMap.containsKey(empCode)) {
+			return cache.empFlexMonthActCalSetMap.get(empCode);
+		}
+		Optional<EmpFlexMonthActCalSet> item = empFlexMonthActCalSetRepo.find(cid, empCode);
+		cache.empFlexMonthActCalSetMap.put(empCode, item);
+		return item;
+	}
+
+	@Override
+	public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+		return workType(companyId, workTypeCode.v());
+	}
+
+	@Override
+	public Optional<AddSetManageWorkHour> addSetManageWorkHour(String cid) {
+		return addSetManageWorkHourRepo.findByCid(cid);
+	}
+
+	@Override
+	public Optional<WorkFlexAdditionSet> workFlexAdditionSet(String cid) {
+		return workFlexAdditionSetRepo.findByCid(cid);
+	}
+
+	@Override
+	public Optional<WorkRegularAdditionSet> workRegularAdditionSet(String cid) {
+		return workRegularAdditionSetRepo.findByCID(cid);
+	}
+
+	@Override
+	public Optional<WorkDeformedLaborAdditionSet> workDeformedLaborAdditionSet(String cid) {
+		return workDeformedLaborAdditionSetRepo.findByCid(cid);
+	}
+
+	@Override
+	public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+		if (cache.predetemineTimeSettingMap.containsKey(workTimeCode.v())) {
+			return cache.predetemineTimeSettingMap.get(workTimeCode.v());
+		}
+		Optional<PredetemineTimeSetting> item = predetemineTimeSettingRepo.findByWorkTimeCode(companyId,
+				workTimeCode.v());
+		cache.predetemineTimeSettingMap.put(workTimeCode.v(), item);
+		return item;
+	}
+
+	@Override
+	public Optional<FlexSet> flexSet(String companyId) {
+		return flexSetRepo.findByCId(companyId);
+	}
+
+	@Override
+	public List<PayoutSubofHDManagement> getOccDigetByListSid(String sid, DatePeriod date) {
+		return payoutSubofHDManaRepo.getOccDigetByListSid(sid, date);
+	}
+
+	@Override
+	public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String sid) {
+		return substitutionOfHDManaDataRepo.getBysiD(AppContexts.user().companyId(), sid);
+	}
+
+	@Override
+	public List<PayoutManagementData> getPayoutMana(String sid) {
+		return payoutManagementDataRepo.getSid(AppContexts.user().companyId(), sid);
+	}
+
+	@Override
+	public List<PayoutSubofHDManagement> getByListDate(String sid, List<GeneralDate> lstDate) {
+		return payoutSubofHDManaRepo.getByListDate(sid, lstDate);
+	}
+
+	@Override
+	public List<PayoutSubofHDManagement> getByListOccDate(String sid, List<GeneralDate> lstDate) {
+		return payoutSubofHDManaRepo.getByListOccDate(sid, lstDate);
+	}
+
+	@Override
+	public List<InterimAbsMng> getAbsBySidDateList(String sid, List<GeneralDate> lstDate) {
+		return interimRecAbasMngRepo.getAbsBySidDateList(sid, lstDate);
+	}
+
+	@Override
+	public List<InterimRecMng> getRecBySidDateList(String sid, List<GeneralDate> lstDate) {
+		return interimRecAbasMngRepo.getRecBySidDateList(sid, lstDate);
+	}
+
+	@Override
+	public List<LeaveComDayOffManagement> getLeavByListDate(String sid, List<GeneralDate> lstDate) {
+		return leaveComDayOffManaRepo.getByListDate(sid, lstDate);
+	}
+
+	@Override
+	public List<LeaveComDayOffManagement> getLeavByListOccDate(String sid, List<GeneralDate> lstDate) {
+		return leaveComDayOffManaRepo.getLeavByListOccDate(sid, lstDate);
+	}
+
+	@Override
+	public List<InterimBreakMng> getBreakBySidDateList(String sid, List<GeneralDate> lstDate) {
+		return interimBreakDayOffMngRepo.getBreakBySidDateList(sid, lstDate);
+	}
+
+	@Override
+	public List<InterimDayOffMng> getDayOffDateList(String sid, List<GeneralDate> lstDate) {
+		return interimBreakDayOffMngRepo.getDayOffDateList(sid, lstDate);
+	}
+
+	@Override
+	public void deleteTempAnnualBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+		tmpAnnualHolidayMngRepo.deleteBySidBeforeTheYmd(sid, ymd);
+
+	}
+
+	@Override
+	public void deleteTempResereBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+		tmpResereLeaveMngRepo.deleteBySidBeforeTheYmd(sid, ymd);
+
+	}
+
+	@Override
+	public void deleteInterimAbsMngBySidBeforeTheYmd(String sId, GeneralDate ymd) {
+		interimRecAbasMngRepo.deleteAbsMngBySidBeforeTheYmd(sId, ymd);
+
+	}
+
+	@Override
+	public void deleteInterimRecMngBySidBeforeTheYmd(String sId, GeneralDate ymd) {
+		interimRecAbasMngRepo.deleteRecMngBySidBeforeTheYmd(sId, ymd);
+
+	}
+
+	@Override
+	public void deleteInterimDayoffBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+		interimBreakDayOffMngRepo.deleteDayoffBySidBeforeTheYmd(sid, ymd);
+
+	}
+
+	@Override
+	public void deleteInterimBreakoffBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+		interimBreakDayOffMngRepo.deleteBreakoffBySidBeforeTheYmd(sid, ymd);
+
+	}
+
+	@Override
+	public void deleteTempSpecialBySidBeforeTheYmd(String sid, int specialCd, GeneralDate ymd) {
+		interimSpecialHolidayMngRepo.deleteBySidBeforeTheYmd(sid, specialCd, ymd);
+
+	}
+
+	@Override
+	public void deleteTempPublicHolidayBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+		tempPublicHolidayManagementRepo.deleteBySidBeforeTheYmd(sid, ymd);
+
+	}
+
+	@Override
+	public void deleteTempChildCareBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+		tempChildCareManagementRepo.deleteBySidBeforeTheYmd(sid, ymd);
+
+	}
+
+	@Override
+	public void deleteTempCareBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+		tempCareManagementRepo.deleteBySidBeforeTheYmd(sid, ymd);
+	}
+
+}

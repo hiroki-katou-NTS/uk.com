@@ -17,26 +17,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.al
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
-<<<<<<< HEAD
-=======
-import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.shr.com.context.AppContexts;
->>>>>>> pj/at/release_ver4
 
 /**
  * @author ThanhNX
@@ -119,7 +99,6 @@ public class CorrectionAttendanceRule {
 		return integrationOfDaily;
 	}
 
-<<<<<<< HEAD
 	public static interface Require extends BreakTimeSheetCorrector.RequireM1, WorkingConditionService.RequireM1, IGetAppForCorrectionRuleRequire{
 		//OptionalItemRepository.findAll
 		 public List<OptionalItem> findAllOptionalItem(String companyId);
@@ -136,90 +115,6 @@ public class CorrectionAttendanceRule {
 		
 		public SupportDataWork correctSupportDataWork(IGetAppForCorrectionRuleRequire require, IntegrationOfDaily integrationOfDaily, ScheduleRecordClassifi classification);
 		
-=======
-	private WorkingConditionService.RequireM1 createImp() {
-
-		return new WorkingConditionService.RequireM1() {
-
-			@Override
-			public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
-				return workingConditionItemRepo.getByHistoryId(historyId);
-			}
-
-			@Override
-			public Optional<WorkingCondition> workingCondition(String companyId, String employeeId,
-					GeneralDate baseDate) {
-				return workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
-			}
-		};
-	}
-
-	private BreakTimeSheetCorrector.RequireM1 createBreakRequire(Map<Integer, OptionalItem> optionalItems) {
-
-		return new BreakTimeSheetCorrector.RequireM1() {
-
-			@Override
-			public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
-
-				return fixWorkSetRepo.findByKey(companyId, workTimeCode.v());
-			}
-
-			@Override
-			public Optional<PredetemineTimeSetting> predetemineTimeSetting(String cid, WorkTimeCode workTimeCode) {
-				
-				return predetemineTimeSetRepo.findByWorkTimeCode(cid, workTimeCode.v());
-			}
-
-			@Override
-			public CalculationRangeOfOneDay createOneDayRange(
-					IntegrationOfDaily integrationOfDaily, Optional<WorkTimezoneCommonSet> commonSet, WorkType workType,
-					JustCorrectionAtr justCorrectionAtr, Optional<WorkTimeCode> workTimeCode) {
-
-
-				return createOneDayRangeCalc.createOneDayRange(integrationOfDaily, commonSet, workType, justCorrectionAtr, workTimeCode);
-			}
-
-			@Override
-			public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCd) {
-				return workTypeRepo.findByPK(companyId, workTypeCd.v());
-			}
-
-			@Override
-			public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
-
-				return workTimeSettingRepo.findByCode(companyId, workTimeCode.v());
-			}
-
-			@Override
-			public ManagePerCompanySet managePerCompanySet() {
-
-				return companyCommonSettingRepo.getCompanySetting();
-			}
-
-			@Override
-			public Optional<ManagePerPersonDailySet> managePerPersonDailySet(String sid, GeneralDate ymd, IntegrationOfDaily dailyRecord) {
-
-				return personDailySetFactory.create(AppContexts.user().companyId(), sid, ymd, dailyRecord);
-			}
-
-			@Override
-			public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
-
-				return flowWorkSettingRepo.find(companyId, workTimeCode.v());
-			}
-
-			@Override
-			public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
-
-				return flexWorkSettingRepo.find(companyId, workTimeCode.v());
-			}
-
-			@Override
-			public DailyRecordToAttendanceItemConverter createDailyConverter() {
-
-				return attendanceItemConvertFactory.createDailyConverter(optionalItems);
-			}
-		};
->>>>>>> pj/at/release_ver4
+		//public DailyRecordToAttendanceItemConverter createDailyConverter(String cid) ;
 	}
 }
