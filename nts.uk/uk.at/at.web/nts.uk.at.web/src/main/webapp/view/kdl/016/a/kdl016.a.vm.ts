@@ -397,6 +397,10 @@ module nts.uk.at.view.kdl016.a {
                                     vm.setResponseStatus(vm.executedStatus());
                                 });
                             } else {
+                                // Check if any execute is successful
+                                let employeeCodeSelects = vm.igGridDataSource.filter((item: any) => _.includes(selectedRowIds, item.id)).map(item => item.employeeCode);
+                                let empSuccessful = employeeCodeSelects.filter((item: any) => !_.includes(_.map(data.errorResults, (i: any) => i.employeeCode), item));
+
                                 let errorResults = data.errorResults;
                                 let dataError: any = [];
                                 for (let i = 0; i < errorResults.length; i++) {
@@ -416,6 +420,14 @@ module nts.uk.at.view.kdl016.a {
                                 };
 
                                 vm.$window.modal("/view/kdl/016/f/index.xhtml", resultObj).then((result: any) => {
+                                    if (empSuccessful.length > 0) {
+                                        vm.loadSupportInfo(vm.selectedMode());
+                                        vm.canDelete(false);
+                                        $("#grid").igGridSelection("clearSelection");
+                                        vm.selectedCode([]);
+                                        vm.executedStatus(true);
+                                        vm.setResponseStatus(vm.executedStatus());
+                                    }
                                 });
                             }
                         }).fail(error => {
