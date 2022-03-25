@@ -21,10 +21,8 @@ public class GetWkpIDParam {
     
     public String baseDate;
     
-<<<<<<< HEAD
     public String employeeId;
-=======
+    
     DataSessionDto dataSessionDto;
->>>>>>> pj/at/release_ver4
 
 }
