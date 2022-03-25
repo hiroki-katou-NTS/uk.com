@@ -163,9 +163,12 @@ public class InfomationInitScreenProcess {
 		val employeeIds = objectShare == null
 				? lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList())
 	                    : CollectionUtil.isEmpty(objectShare.getLstExtractedEmployee()) ?  objectShare.getLstEmployeeShare() : objectShare.getLstExtractedEmployee();
-		
+        DateRange rangeMode = rangeInit;
+		if (displayFormat == 1)
+			rangeMode = new DateRange(rangeInit.getStartDate(), rangeInit.getStartDate());
+	                    
 		// 初期表示社員を取得する - EA修正履歴：No4280 & No4291
-		initDto = processor.changeListEmployeeId(employeeIds, rangeInit, mode,
+		initDto = processor.changeListEmployeeId(employeeIds, rangeMode, mode,
 				objectShare != null, screenDto.getClosureId(), screenDto);
 		DPCorrectionStateParam stateParam = processor.getDailySupportWorkers(initDto.getParam());
 		initDto.setParam(stateParam);
@@ -176,7 +179,10 @@ public class InfomationInitScreenProcess {
 			
 			changeEmployeeIds = initDto.getParam().getEmployeeIds().isEmpty() ? initDto.getLstEmpId() : initDto.getParam().getEmployeeIds();
 		} else {
-			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
+			//changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
+			changeEmployeeIds = initDto.getParam().getEmployeeIds();
+			changeEmployeeIds.addAll(initDto.getParam().getLstEmpsSupport());
+			changeEmployeeIds = changeEmployeeIds.stream().distinct().collect(Collectors.toList());
 		}
 		// 応援勤務者の特定 - No1291
 		List<String> employeeIdsOri = changeEmployeeIds;

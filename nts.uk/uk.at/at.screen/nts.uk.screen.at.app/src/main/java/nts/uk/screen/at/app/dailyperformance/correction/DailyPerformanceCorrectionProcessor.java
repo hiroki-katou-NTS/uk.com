@@ -1838,7 +1838,7 @@ public class DailyPerformanceCorrectionProcessor {
 			new InitialDisplayEmployeeDto(lstEmployeeId, new DPCorrectionStateParam(range, employeeIds, mode, 
 					new ArrayList<>(), null, null, isTranfer, new ArrayList<>(), new ArrayList<>()));
 		
-		if(mode == ScreenMode.APPROVAL.value || mode == ScreenMode.NORMAL.value) {
+		if( mode == ScreenMode.NORMAL.value) {
 			// 応援者の情報をOutputにセットする - No4281
 			result.getParam().setLstWrkplaceId(lstWplId);
 			
@@ -1915,10 +1915,14 @@ public class DailyPerformanceCorrectionProcessor {
 			}
 		}
 		// Code
-		if(mode == ScreenMode.APPROVAL.value || mode == ScreenMode.NORMAL.value) {
+		if(mode == ScreenMode.APPROVAL.value ) {
 			// 応援者の情報をOutputにセットする - No4281
 			result.setLstEmpId(lstEmployeeId);
+			result.getParam().setEmployeeIds(lstEmployeeId);
 		}
+//		if (mode == ScreenMode.NORMAL.value) {
+//			result.getParam().getEmployeeIds().addAll(lstEmployeeId);
+//		}
 		
 		return result;
 	}
