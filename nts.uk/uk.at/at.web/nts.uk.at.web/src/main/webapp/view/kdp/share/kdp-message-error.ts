@@ -41,14 +41,14 @@ module nts.uk.at.view.kdp.share {
                         <div class="btn-title">
                             <button style="background-color: transparent;" 
                                     class="icon" 
-                                    data-bind="ntsIcon: { no: 160, width: 30, height: 30 }, click: events.registerNoti.click">
+                                    data-bind="ntsIcon: { no: 160, width: 30, height: 30, extension: 'png' }, click: events.registerNoti.click">
                             </button>
                         </div>
                     </div>
                     <div class="content">
                         <div class="text-content" data-bind="i18n: $component.workplaceNotice.contentMessager,
                             style: { 'color': $component.workplaceNotice.textColor}"></div>
-                            <button class="btn-content" data-bind="ntsIcon: { no: 161, width: 30, height: 30 }, click: events.shoNoti.click">
+                            <button class="btn-content" data-bind="ntsIcon: { no: 161, width: 30, height: 30, extension: 'png' }, click: events.shoNoti.click">
                             </button>
                         </div>
                 </div>

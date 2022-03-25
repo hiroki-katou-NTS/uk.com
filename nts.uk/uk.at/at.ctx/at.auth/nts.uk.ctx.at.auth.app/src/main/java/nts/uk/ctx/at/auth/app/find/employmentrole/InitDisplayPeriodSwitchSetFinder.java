@@ -79,7 +79,7 @@ public class InitDisplayPeriodSwitchSetFinder {
 			GeneralDate endDate = listClosureInfo.stream().filter(x -> x.getClosureId().value == closure.getClosureId().value)
 					.findFirst().get().getPeriod().end();
 			int switchDate = optDisSwitchSet.get().getDay();
-			if (endDate.addDays(switchDate).beforeOrEquals(systemDate)) {
+			if (endDate.addDays(switchDate).addDays(1).beforeOrEquals(systemDate)) {
 				for (ClosureInfo item : listClosureInfo) {
 					DatePeriod datePeriod = ClosureService.getClosurePeriod(require, item.getClosureId().value,
 							item.getCurrentMonth().addMonths(1));

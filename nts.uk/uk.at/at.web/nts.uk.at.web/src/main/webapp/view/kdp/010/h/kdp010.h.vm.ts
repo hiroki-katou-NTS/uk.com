@@ -134,7 +134,7 @@ module nts.uk.at.view.kdp010.h {
 					ajax("at", paths.getStampPage, param).done(function(totalTimeArr: any) {
 						if (totalTimeArr && (newValue == totalTimeArr.buttonLayoutType)) {
 							_.forEach(totalTimeArr.lstButtonSet, (btn:any) => {
-								if(self.checkNotUseBtnSupport(btn.buttonType)){
+								if(self.checkNotUseBtnSupport(btn.stampType)){
 									btn.usrArt = 0;								
 								}
 							});
@@ -252,18 +252,15 @@ module nts.uk.at.view.kdp010.h {
 				let stampTypes = null;
 				if (self.dataKdpH.buttonPositionNo != undefined) {
 					_.forEach(self.dataKdpH.dataShare.lstButtonSet, (item) => {
-						if (item.buttonType.reservationArt == 0) {
+						
 							stampTypes = new model.StampTypeCommand({
-								changeHalfDay: item.buttonType.stampType.changeHalfDay == 0 ? false : true,
-								goOutArt: item.buttonType.stampType.goOutArt,
-								setPreClockArt: item.buttonType.stampType.setPreClockArt,
-								changeClockArt: item.buttonType.stampType.changeClockArt,
-								changeCalArt: item.buttonType.stampType.changeCalArt
+								changeHalfDay: item.stampType.changeHalfDay == 0 ? false : true,
+								goOutArt: item.stampType.goOutArt,
+								setPreClockArt: item.stampType.setPreClockArt,
+								changeClockArt: item.stampType.changeClockArt,
+								changeCalArt: item.stampType.changeCalArt
 							});
 							
-						} else {
-							stampTypes = null
-						};
 						let lstButtonSet = new model.ButtonSettingsCommand({
 							buttonPositionNo: item.buttonPositionNo,
 							buttonDisSet: new model.ButtonDisSetCommand({
@@ -273,10 +270,7 @@ module nts.uk.at.view.kdp010.h {
 								}),
 								backGroundColor: item.buttonDisSet.backGroundColor
 							}),
-							buttonType: new model.ButtonTypeCommand({
-								reservationArt: item.buttonType.reservationArt,
-								stampType: stampTypes
-							}),
+							stampType: stampTypes,
 							usrArt: item.usrArt,
 							audioType: item.audioType,
 							supportWplSet: item.supportWplSet,
@@ -333,19 +327,19 @@ module nts.uk.at.view.kdp010.h {
 								btn.buttonDisSet.buttonNameSet.buttonName, 
 								btn.buttonDisSet.backGroundColor, 
 								btn.buttonDisSet.buttonNameSet.textColor, 
-								self.getUrlImg(btn.buttonType));
+								self.getUrlImg(btn.stampType));
 						}
 					}
 				}
 			}
 			
-			checkNotUseBtnSupport(buttonType: any): boolean{
+			checkNotUseBtnSupport(stampType: any): boolean{
 				let self = this;
-				let value: number = checkType(buttonType.stampType ? buttonType.stampType.changeClockArt: null, 
-								buttonType.stampType ? buttonType.stampType.changeCalArt : null, 
-								buttonType.stampType ? buttonType.stampType.setPreClockArt: null, 
-								buttonType.stampType ? buttonType.stampType.changeHalfDay: null, 
-								buttonType.reservationArt);
+				let value: number = checkType(stampType ? stampType.changeClockArt: null, 
+								stampType ? stampType.changeCalArt : null, 
+								stampType ? stampType.setPreClockArt: null, 
+								stampType ? stampType.changeHalfDay: null
+								);
 				if(value == 14 || value == 15 || value == 16 || value == 17 || value == 18){
 					return !self.settingsStampUse.supportUse;
 				}
@@ -358,12 +352,12 @@ module nts.uk.at.view.kdp010.h {
 				return false;
 			}
 			
-			getUrlImg(buttonType: any/*ButtonType sample on server */): string{
-				return window.location.origin + "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + getIcon(buttonType.stampType ? buttonType.stampType.changeClockArt: null, 
-								buttonType.stampType ? buttonType.stampType.changeCalArt : null, 
-								buttonType.stampType ? buttonType.stampType.setPreClockArt: null, 
-								buttonType.stampType ? buttonType.stampType.changeHalfDay: null, 
-								buttonType.reservationArt) + ".png";
+			getUrlImg(stampType: any/*ButtonType sample on server */): string{
+				return window.location.origin + "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + getIcon(stampType ? stampType.changeClockArt: null, 
+								stampType ? stampType.changeCalArt : null, 
+								stampType ? stampType.setPreClockArt: null, 
+								stampType ? stampType.changeHalfDay: null 
+								) + ".png";
 			}
 			
 
@@ -443,7 +437,7 @@ module nts.uk.at.view.kdp010.h {
 								btn.buttonDisSet.buttonNameSet.buttonName, 
 								btn.buttonDisSet.backGroundColor, 
 								btn.buttonDisSet.buttonNameSet.textColor, 
-								self.getUrlImg(btn.buttonType));
+								self.getUrlImg(btn.stampType));
 						}
 					}
 				});
@@ -512,8 +506,8 @@ module nts.uk.at.view.kdp010.h {
 			buttonPositionNo: number;
 			/** ボタンの表示設定 */
 			buttonDisSet: ButtonDisSetCommand;
-			/** ボタン種類 */
-			buttonType: ButtonTypeCommand;
+			/** 打刻種類 */
+			stampType: StampTypeCommand;
 			/** 使用区分 */
 			usrArt: number;
 			/** 音声使用方法 */
@@ -528,7 +522,7 @@ module nts.uk.at.view.kdp010.h {
 			constructor(param: IButtonSettingsCommand) {
 				this.buttonPositionNo = param.buttonPositionNo;
 				this.buttonDisSet = param.buttonDisSet;
-				this.buttonType = param.buttonType;
+				this.stampType = param.stampType;
 				this.usrArt = param.usrArt;
 				this.audioType = param.audioType;
 				this.supportWplSet = param.supportWplSet;
@@ -541,8 +535,8 @@ module nts.uk.at.view.kdp010.h {
 			buttonPositionNo: number;
 			/** ボタンの表示設定 */
 			buttonDisSet: ButtonDisSetCommand;
-			/** ボタン種類 */
-			buttonType: ButtonTypeCommand;
+			/** 打刻種類 */
+			stampType: StampTypeCommand;
 			/** 使用区分 */
 			usrArt: number;
 			/** 音声使用方法 */

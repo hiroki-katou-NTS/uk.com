@@ -26,6 +26,8 @@ import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.GetDataDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalStatusActualResultKDW003Dto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ConfirmStatusActualResultKDW003Dto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.CheckIndentityMonth;
@@ -101,10 +103,12 @@ public class DPLoadVerProcessor {
 		}
 		
 		ApprovalConfirmCache cache = loadVerData.getApprovalConfirmCache();
-		List<ConfirmStatusActualResult> confirmResults = confirmStatusActualDayChange.processConfirmStatus(companyId, sId, cache.getEmployeeIds(), Optional.of(cache.getPeriod()), Optional.empty());
+		List<ConfirmStatusActualResult> confirmResults = confirmStatusActualDayChange.processConfirmStatus(companyId, sId, cache.getEmployeeIds(), Optional.of(cache.getPeriod().convertToPeriod()), Optional.empty());
 
-		List<ApprovalStatusActualResult> approvalResults = approvalStatusActualDayChange.processApprovalStatus(companyId, sId, cache.getEmployeeIds(), Optional.of(cache.getPeriod()), Optional.empty(), cache.getMode());
-        result.setApprovalConfirmCache(new ApprovalConfirmCache(sId,  cache.getEmployeeIds(), cache.getPeriod(), cache.getMode(), confirmResults, approvalResults));
+		List<ApprovalStatusActualResult> approvalResults = approvalStatusActualDayChange.processApprovalStatus(companyId, sId, cache.getEmployeeIds(), Optional.of(cache.getPeriod().convertToPeriod()), Optional.empty(), cache.getMode());
+		List<ConfirmStatusActualResultKDW003Dto> lstConfirmStatusActualResultKDW003Dto = confirmResults.stream().map(c->ConfirmStatusActualResultKDW003Dto.fromDomain(c)).collect(Collectors.toList());
+		List<ApprovalStatusActualResultKDW003Dto> lstApprovalStatusActualResultKDW003Dto = approvalResults.stream().map(c->ApprovalStatusActualResultKDW003Dto.fromDomain(c)).collect(Collectors.toList());
+        result.setApprovalConfirmCache(new ApprovalConfirmCache(sId,  cache.getEmployeeIds(), cache.getPeriod(), cache.getMode(), lstConfirmStatusActualResultKDW003Dto, lstApprovalStatusActualResultKDW003Dto));
 		return result;
 	}
 }

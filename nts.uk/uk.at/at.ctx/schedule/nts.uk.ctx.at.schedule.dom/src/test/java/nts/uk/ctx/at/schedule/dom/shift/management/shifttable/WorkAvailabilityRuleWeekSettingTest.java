@@ -112,7 +112,7 @@ public class WorkAvailabilityRuleWeekSettingTest {
 				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 5), AssignmentMethod.HOLIDAY)
 				);
 		
-		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(require, expectations);
+		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(require, "cid", expectations);
 		
 		assertThat(isOverHolidayMaxDays).isFalse();
 	}

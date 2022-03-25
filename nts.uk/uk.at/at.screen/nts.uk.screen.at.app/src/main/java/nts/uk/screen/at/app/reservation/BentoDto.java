@@ -2,7 +2,6 @@ package nts.uk.screen.at.app.reservation;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.arc.time.GeneralDate;
 
 @Data
 @AllArgsConstructor
@@ -25,11 +24,10 @@ public class BentoDto {
     //金額２
     public int price2;
 
-    //締め時刻1で予約可能
-    public boolean reservationAtr1;
-
-    //締め時刻2で予約可能
-    public boolean reservationAtr2;
+    /**
+	 * 受付時間帯NO
+	 */
+	public int receptionTimezoneNo;
 
     //勤務場所コード
     public String workLocationCode;

@@ -21,6 +21,7 @@ public class StampSetCommunalDto extends StampSettingDto {
 		this.passwordRequiredArt = domain.isPasswordRequiredArt();
 		this.employeeAuthcUseArt = domain.isEmployeeAuthcUseArt();
 		this.authcFailCnt = domain.getAuthcFailCnt().map(m -> m.v()).orElse(null);
+		this.authcMethod = domain.getAuthcMethod().value;
 	}
 
 	// 会社ID
@@ -37,4 +38,7 @@ public class StampSetCommunalDto extends StampSettingDto {
 
 	// 指認証失敗回数
 	private Integer authcFailCnt;
+	
+	// 認証方法
+	private int authcMethod; 
 }

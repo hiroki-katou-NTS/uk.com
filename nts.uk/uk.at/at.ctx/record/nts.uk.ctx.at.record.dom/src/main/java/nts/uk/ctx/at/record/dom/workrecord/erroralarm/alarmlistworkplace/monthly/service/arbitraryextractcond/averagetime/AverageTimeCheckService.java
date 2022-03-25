@@ -96,7 +96,7 @@ public class AverageTimeCheckService {
                     break;
                 case FLEX_TIME:
                     // 合計値　+＝　フレックス時間
-                    total += monthlyCalculation.getFlexTime().getFlexTime().getFlexTime().getTime().v();
+                    total += monthlyCalculation.getFlexTime().getFlexTime().getFlexTime().getFlexTime().getTime().v();
                     break;
                 case TOTAL_RESTRAINT_TIME:
                     // 合計値　+＝　総拘束時間

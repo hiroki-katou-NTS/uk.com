@@ -1,0 +1,24 @@
+#functions-area button {
+    min-width: 110px;
+}
+
+#contents-area .control-group:nth-child(1) button:nth-child(2),
+#contents-area .control-group:nth-child(1) button:nth-child(3) {
+    min-width: 84px;
+}
+
+#A2_5 i {
+    margin-top: 4px;
+}
+
+#anpGrid * {
+    font-size: 0.8rem;
+}
+
+.mgrid .mgrid-header td {
+    white-space: pre;
+}
+
+.mgrid-sheet, .mgrid-sheet-nav {
+    overflow: auto;
+}

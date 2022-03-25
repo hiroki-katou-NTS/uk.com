@@ -117,7 +117,9 @@ public class WebMenuFinder {
 	 */
 	public List<WebMenuDetailDto> find(List<MenuCodeDto> codes) {
 		List<WebMenuDetailDto> results = new ArrayList<>();
-		Map<String, List<MenuCodeDto>> companyMap = codes.stream().collect(Collectors.groupingBy(c -> c.getCompanyId()));
+		Map<String, List<MenuCodeDto>> companyMap = codes.stream()
+				.collect(Collectors.groupingBy(c -> c.getCompanyId()));
+
 		companyMap.forEach((companyId, codeDtos) -> {
 			List<String> menuCodes = codeDtos.stream().map(MenuCodeDto::getMenuCode).collect(Collectors.toList());
 			List<WebMenu> webMenus = webMenuRepository.find(companyId, menuCodes);
@@ -206,7 +208,7 @@ public class WebMenuFinder {
 		roleIds.stream()
 				.map(r -> roleTiesRepository.getByRoleIdAndCompanyId(r, companyId))
 				.flatMap(OptionalUtil::stream)
-				.map(t -> new MenuCodeDto(t.getCompanyId(), t.getWebMenuCd().v()))
+				.map(t -> new MenuCodeDto(t.getMenuCompanyId(), t.getWebMenuCd().v()))
 				.forEach(m -> menuCodes.add(m));
 		
 		// Get role set

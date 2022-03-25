@@ -55,7 +55,7 @@ public class SprLoginFormImpl implements SprLoginFormService {
 		// 契約コード固定：　000000000000
 		// 会社コード固定：　0001
 		// 会社ID固定：　000000000000-0001
-		String companyID = "000000000000-0001";
+		String companyID = "000000000004-0018";
 		
 		// アルゴリズム「パラメータチェック」を実行する
 		String employeeID = this.paramCheck(menuCD, loginEmployeeCD, employeeCD, startTime, endTime, date, selectType, appID, reason, stampFlg);
@@ -149,18 +149,18 @@ public class SprLoginFormImpl implements SprLoginFormService {
 		loginUserContextManager.loggedInAsEmployee(
 				userSpr.getUserID(), 
 				personID, 
-				"000000000000", 
-				"000000000000-0001", 
-				"0001", 
+				"000000000004", 
+				"000000000004-0018", 
+				"0018", 
 				loginEmployeeID, 
 				loginEmployeeCD);
 		// 権限（ロール）情報を取得、設定する(lay thong tin quuyen han (role) roi setting)
 		List<RoleInfoSpr> roleList = this.getRoleInfo(userSpr.getUserID());
 		return new LoginUserContextSpr(
 				userSpr.getUserID(), 
-				"000000000000", // 固定
-				"000000000000-0001", // 固定
-				"0001", // 固定
+				"000000000004", // 固定
+				"000000000004-0018", // 固定
+				"0018", // 固定
 				personID, 
 				loginEmployeeID, 
 				loginEmployeeCD, 
@@ -174,7 +174,7 @@ public class SprLoginFormImpl implements SprLoginFormService {
 		// 契約コード固定：　000000000000
 		// 会社コード固定：　0001
 		// 会社ID固定：　000000000000-0001
-		String companyID = "000000000000-0001";
+		String companyID = "000000000004-0018";
 		List<RoleInfoSpr> roleList = new ArrayList<>();
 		Optional<String> resultRole = Optional.empty();
 		// ロール種類＝就業

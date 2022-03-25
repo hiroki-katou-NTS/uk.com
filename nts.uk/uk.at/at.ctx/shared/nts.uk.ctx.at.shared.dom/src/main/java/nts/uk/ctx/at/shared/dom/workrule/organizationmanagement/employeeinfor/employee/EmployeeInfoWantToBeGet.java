@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee;
 
+import lombok.Builder;
 import lombok.Value;
 
 /**
@@ -8,31 +9,22 @@ import lombok.Value;
  * @author dan_pv
  */
 @Value
+@Builder
 public class EmployeeInfoWantToBeGet {
-	
-	/**
-	 * 職場を取得する
-	 */
+
+	/** 職場を取得する **/
 	private final boolean isGetWorkplace;
-	
-	/**
-	 * 部門を取得する
-	 */
+
+	/** 部門を取得する **/
 	private final boolean isGetDepartment;
-	
-	/**
-	 * 職位を取得する
-	 */
+
+	/** 職位を取得する **/
 	private final boolean isGetJobTitle;
-	
-	/**
-	 * 雇用を取得する
-	 */
+
+	/** 雇用を取得する **/
 	private final boolean isGetEmployment;
-	
-	/**
-	 * 分類を取得する
-	 */
+
+	/** 分類を取得する **/
 	private final boolean isGetClassification;
 
 }

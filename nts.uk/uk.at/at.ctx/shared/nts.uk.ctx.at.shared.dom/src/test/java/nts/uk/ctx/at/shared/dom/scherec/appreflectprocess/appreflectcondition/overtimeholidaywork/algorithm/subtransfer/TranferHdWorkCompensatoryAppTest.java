@@ -35,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.GetSubHolOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -68,7 +69,7 @@ public class TranferHdWorkCompensatoryAppTest {
 
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(createWorkType());
 				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
@@ -103,7 +104,7 @@ public class TranferHdWorkCompensatoryAppTest {
 
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(createWorkType());
 				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
@@ -141,7 +142,7 @@ public class TranferHdWorkCompensatoryAppTest {
 		hdTimeWorkFrameTimeApp.addAll(Arrays.asList(create(1, 690, 0), create(2, 120, 0)));
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(createWorkType());
 				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
@@ -183,7 +184,7 @@ public class TranferHdWorkCompensatoryAppTest {
 		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(createWorkType());
 				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
@@ -216,7 +217,7 @@ public class TranferHdWorkCompensatoryAppTest {
 		DailyRecordOfApplication dailyApp = createRCHdCase21(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(createWorkType());
 				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
@@ -249,7 +250,7 @@ public class TranferHdWorkCompensatoryAppTest {
 		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(createWorkType());
 				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
@@ -282,7 +283,7 @@ public class TranferHdWorkCompensatoryAppTest {
 		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(createWorkType());
 				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
@@ -315,7 +316,7 @@ public class TranferHdWorkCompensatoryAppTest {
 		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(createWorkType());
 				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
@@ -349,7 +350,7 @@ public class TranferHdWorkCompensatoryAppTest {
 		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(createWorkType());
 				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
@@ -382,7 +383,7 @@ public class TranferHdWorkCompensatoryAppTest {
 		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(createWorkType());
 				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
@@ -416,7 +417,7 @@ public class TranferHdWorkCompensatoryAppTest {
 		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(createWorkType());
 				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
@@ -448,7 +449,7 @@ public class TranferHdWorkCompensatoryAppTest {
 		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(createWorkType());
 				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);

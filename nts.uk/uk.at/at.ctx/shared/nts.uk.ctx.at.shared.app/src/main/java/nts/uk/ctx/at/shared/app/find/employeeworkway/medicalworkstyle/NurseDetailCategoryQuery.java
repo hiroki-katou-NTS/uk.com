@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.app.find.employeeworkway.medicalworkstyle;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassificationRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -20,7 +20,7 @@ public class NurseDetailCategoryQuery {
 		String companyId = AppContexts.user().companyId();
 		return nurseClassificationRepository.getSpecifiNurseCategory(companyId, nurseCode)
 				.map(x -> new NurseDetailCategoryDto(x.getNurseClassifiCode().v(), x.getNurseClassifiName().v(),
-						x.getLicense().value, x.isOfficeWorker()))
+						x.getLicense().value, x.isOfficeWorker(), x.isNursingManager()))
 				.orElse(null);
 	}
 }

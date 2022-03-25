@@ -28,11 +28,11 @@ import nts.uk.shr.com.i18n.TextResource;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DPHeaderDto {
-	
+
 	private static final String HEADER_COLOR = "#6A6A6A";
 
 	private String headerText;
-	
+
 	private String attendanceName;
 
 	private String key;
@@ -58,15 +58,15 @@ public class DPHeaderDto {
 	private List<DPHeaderDto> group;
 
 	private Constraint constraint;
-	
+
 	private String headerCssClass;
-	
+
 	private String inputProcess;
-	
+
 	private Boolean grant;
-	
+
 	private String columnCssClass;
-	
+
 	private Integer displayNumber;
 
 	private DPHeaderDto(String headerText, String attendanceName, String key, String dataType, String width, String color, boolean hidden,
@@ -164,6 +164,11 @@ public class DPHeaderDto {
 						String.valueOf(withChild) + "px", "", false, "ComboboxTimeLimit", false, false, "center-align", null, "");
 				groups.add(dtoG);
 				groups.get(0).setConstraint(new Constraint("Integer", true, "2"));
+			}else if (item.getTypeGroup() == TypeLink.NURSE_LICENSE_CLS.value) {
+				DPHeaderDto dtoG = new DPHeaderDto("<div style=\"max-height: 20px;\">名称</div>", "<div style=\"max-height: 20px;\">名称</div>", "Name" + keyId, "number",
+						String.valueOf(withChild) + "px", "", false, "ComboboxNurseLicenseCLS", false, false, "center-align", null, "");
+				groups.add(dtoG);
+				groups.get(0).setConstraint(new Constraint("Integer", true, "2"));
 			}
 			groups.get(0).setColor(dto.getColor());
 			groups.get(1).setColor(dto.getColor());
@@ -237,7 +242,7 @@ public class DPHeaderDto {
 		return new DPHeaderDto(TextResource.localize("KDW003_110"), TextResource.localize("KDW003_110"), "ApplicationList", "String", "90px", colorHeader, false,
 				"ButtonList", false, false, "center-align", null, "");
 	}
-	
+
 	private static String setColorHeadeAppSubAppList(String key, Map<Integer, DPAttendanceItemControl> mapColor) {
 		val keyId = getCode(key);
 		val colorHeader = mapColor.get(Integer.parseInt(keyId));
@@ -254,7 +259,7 @@ public class DPHeaderDto {
 			return;
 		}
 		this.displayNumber = param.getDisplayNumber();
-		
+
 		String displayText = Strings.isNotBlank(param.getName()) ? param.getName() : param.getDisplayName();
 		if (param.getLineBreakPosition() != null && param.getLineBreakPosition() > 0 && param.getName() != null) {
 			if(displayText.length() > param.getLineBreakPosition()) {
@@ -274,10 +279,10 @@ public class DPHeaderDto {
 
 	public static List<DPHeaderDto> GenerateFixedHeader() {
 		List<DPHeaderDto> lstHeader = new ArrayList<>();
-		
+
 		lstHeader.add(new DPHeaderDto("ID", "ID", "id", "String", "30px", HEADER_COLOR, true, "Label", true, true, "center-align", null, ""));
 		lstHeader.add(new DPHeaderDto("状<br/>態", "状<br/>態", "state", "String", "30px", HEADER_COLOR, false, "FlexImage", true, true, "center-align", null, ""));
-		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_129"), TextResource.localize("KDW003_129"), "error", "String", "60px", HEADER_COLOR, false, "Label", 
+		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_129"), TextResource.localize("KDW003_129"), "error", "String", "60px", HEADER_COLOR, false, "Label",
 				true, true, "center-align", null, ""));
 		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_41"), TextResource.localize("KDW003_41"), "date", "String", "70px", HEADER_COLOR, false, "Label",
 				true, true, "center-align", null, ""));
@@ -324,18 +329,18 @@ public class DPHeaderDto {
 		if(item.getPrimitive() == null) return "";
 		return PrimitiveValueDaily.mapValuePrimitive.get(item.getPrimitive());
 	}
-	
+
 	private static String inputProcess(int itemId) {
 		//if (itemId == 28 || itemId == 29 || itemId == 31 || itemId == 34 || itemId == 41 || itemId == 44)
 		return "inputProcess";
 		//return null;
 	}
-	
+
 	private static boolean isRequired(DPAttendanceItem item){
 		if(DPText.ITEM_REQUIRED.contains(item.getId())) return true;
 		return false;
 	}
-	
+
 	public static Map<Integer, String> getPrimitiveAll() {
 		return PrimitiveValueDaily.mapValuePrimitive;
 	}

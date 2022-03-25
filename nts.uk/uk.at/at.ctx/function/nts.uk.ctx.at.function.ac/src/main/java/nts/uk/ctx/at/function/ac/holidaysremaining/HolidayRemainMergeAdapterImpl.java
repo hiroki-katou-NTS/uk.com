@@ -16,6 +16,8 @@ import nts.uk.ctx.at.function.dom.adapter.reserveleave.ReservedYearHolidayImport
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.RsvLeaUsedCurrentMonImported;
 import nts.uk.ctx.at.function.dom.adapter.vacation.CurrentHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.vacation.StatusHolidayImported;
+import nts.uk.ctx.at.function.dom.holidaysremaining.report.PublicHolidayPastSituation;
+import nts.uk.ctx.at.function.dom.holidaysremaining.report.SpecialVacationPastSituation;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export.AbsenceleaveCurrentMonthOfEmployee;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export.MonthlyAbsenceleaveRemainExport;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.export.DayoffCurrentMonthOfEmployee;
@@ -39,6 +41,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.Remai
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMergeRepository;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.publicholiday.PublicHolidayRemNumEachMonth;
+
 @Stateless
 public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 
@@ -54,15 +58,23 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 	private MonthlyAbsenceleaveRemainExport d;
 	@Inject
 	private SpecialHolidayRemainDataSevice e;
-
 	@Inject
 	private HdRemainDetailMerPub hdMerPub;
 
+	//////////////////////////////////////
+	// 月別残数データを取得する
+	//////////////////////////////////////
 	@Override
 	public HolidayRemainMerEx getRemainMer(String employeeId, YearMonthPeriod period) {
 		val lstYrMon = ConvertHelper.yearMonthsBetween(period);
+		//////////////////////////////////////
+		// 月別実績データを取得する
+		//////////////////////////////////////
 		Map<YearMonth, List<RemainMerge>> mapRemainMer = repoRemainMer.findBySidsAndYrMons(employeeId, lstYrMon);
-		//255
+
+		//////////////////////////////////////
+		// RQ255　年休
+		//////////////////////////////////////
 		List<AnnualLeaveUsageExport> lstAnn = a.getYearHdMonthlyVer4(employeeId, period, mapRemainMer);
 		List<AnnualLeaveUsageImported> result255 = new ArrayList<>();
 		for (AnnualLeaveUsageExport ann : lstAnn) {
@@ -78,7 +90,10 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 			);
 			result255.add(HolidayRemainData);
 		}
-		//258
+
+		//////////////////////////////////////
+		// RQ258　積立年休
+		//////////////////////////////////////
 		List<ReserveLeaveUsageExport> lstRsv = b.getYearRsvMonthlyVer2(employeeId, period, mapRemainMer);
 		List<ReservedYearHolidayImported> result258 = new ArrayList<>();
 		for (ReserveLeaveUsageExport rsv : lstRsv) {
@@ -86,17 +101,21 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 					rsv.getUsedDays().v(), rsv.getRemainingDays().v()));
 		}
 
-		//259
+		//////////////////////////////////////
+		// RQ259　代休
+		//////////////////////////////////////
 		List<DayoffCurrentMonthOfEmployee> lstDayCur = c.lstDayoffCurrentMonthOfEmpVer2(employeeId, period, mapRemainMer);
 		List<StatusHolidayImported> result259 = new ArrayList<>();
 		for (DayoffCurrentMonthOfEmployee day : lstDayCur) {
-				StatusHolidayImported statusHoliday = new StatusHolidayImported(day.getYm(), day.getOccurrenceDays(),
-						day.getOccurrenceTimes(), day.getUseDays(), day.getUseTimes(), day.getUnUsedDays(),
-						day.getUnUsedTimes(), day.getRemainingDays(), day.getRemainingTimes());
-				result259.add(statusHoliday);
+			StatusHolidayImported statusHoliday = new StatusHolidayImported(day.getYm(), day.getOccurrenceDays(),
+					day.getOccurrenceTimes(), day.getUseDays(), day.getUseTimes(), day.getUnUsedDays(),
+					day.getUnUsedTimes(), day.getRemainingDays(), day.getRemainingTimes());
+			result259.add(statusHoliday);
 		}
 
-		//260
+		//////////////////////////////////////
+		// RQ260　振休
+		//////////////////////////////////////
 		List<AbsenceleaveCurrentMonthOfEmployee> lstAbs = d.getDataCurrMonOfEmpVer2(employeeId, period, mapRemainMer);
 		List<StatusOfHolidayImported> result260 = new ArrayList<>();
 		for (AbsenceleaveCurrentMonthOfEmployee abs : lstAbs) {
@@ -105,16 +124,49 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 			result260.add(sttOfHd);
 		}
 
-		//263
+		//
+		//////////////////////////////////////
+		// RQ263　特別休暇                    // 2022.02.01 #120673 稲熊 変更
+		//////////////////////////////////////
 		List<SpecialHolidayRemainDataOutput> lstSpeHd = e.getSpeHdOfConfMonVer2(employeeId, period, mapRemainMer);
-		List<SpecialHolidayImported> result263 = new ArrayList<>();
-		for (SpecialHolidayRemainDataOutput speHd : lstSpeHd) {
-			SpecialHolidayImported specialHoliday = new SpecialHolidayImported(speHd.getYm(), speHd.getUseDays(),
-					speHd.getUseTimes(), speHd.getRemainDays(), speHd.getRemainTimes());
-			result263.add(specialHoliday);
-		}
+		// 2021.12.24 - 3S - chinh.hm  - issues #122037 - 変更 START
+		//List<SpecialHolidayImported> result263 = new ArrayList<>();
+		//for (SpecialHolidayRemainDataOutput speHd : lstSpeHd) {
+		//	SpecialHolidayImported specialHoliday = new SpecialHolidayImported(speHd.getYm(), speHd.getUseDays(),
+		//			speHd.getUseTimes(), speHd.getRemainDays(), speHd.getRemainTimes());
+		//	result263.add(specialHoliday);
+		//}
+		// 2021.12.24 - 3S - chinh.hm  - issues #122037 - 変更 END
+		List<SpecialVacationPastSituation> result263 = lstSpeHd.stream().map(e -> new SpecialVacationPastSituation(
+				e.getSid(),
+				e.getYm(),
+				e.getSpecialHolidayCd(),
+				////////////////////////////////////////////////////////////////////////////////
+				// 2022.02.01 #120673 稲熊 変更 START
+				//e.getUseDays(),
+				//e.getUseTimes(),
+				//e.getAfterRemainDays()  == 0 ? e.getBeforeRemainDays() :e.getAfterRemainDays(),
+				//e.getAfterRemainTimes() == 0 ? e.getBeforeRemainTimes():e.getAfterRemainTimes()
+				e.getFactUseDays(),
+				e.getFactUseTimes(),
+				e.isOptAfterFactRemain() ?  e.getAfterFactRemainDays()  : e.getBeforeFactRemainDays() ,
+				e.isOptAfterFactRemain() ?  e.getAfterFactRemainTimes() : e.getBeforeFactRemainTimes()
+				// 2022.02.01 #120673 稲熊 変更 END
+				////////////////////////////////////////////////////////////////////////////////
+		)).collect(Collectors.toList());
+		//
 
-		return new HolidayRemainMerEx(result255, result258, result259, result260, result263);
+		// 2022.01.24 - 3S - chinh.hm  - issues #122620  - 追加 START
+		////////////////////////////////////////////////
+		// RQ262 - 公休の月別利用状況(過去月)を取得する
+		////////////////////////////////////////////////
+		List<PublicHolidayPastSituation> result262  = getListPublicHolidayPastSituation(mapRemainMer);
+		// 2022.01.24 - 3S - chinh.hm  - issues #122620  - 追加 END
+
+		// 2022.01.24 - 3S - chinh.hm  - issues #122620  - 変更 START
+		//return new HolidayRemainMerEx(result255, result258, result259, result260, result263);
+		return new HolidayRemainMerEx(result255, result258, result259, result260, result263, result262);
+		// 2022.01.24 - 3S - chinh.hm  - issues #122620  - 変更 END
 	}
 
 	@Override
@@ -196,7 +248,7 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
                                 i.getGrantInfo(),
                                 i.getUsedDays(),
                                 i.getUsedTime(),
-                                i.getAnnualPaidLeaveSet()
+                                i.getAnnualPaidLeaveSet().get()
                         )
                 ).collect(Collectors.toList());
             }
@@ -218,7 +270,7 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
                                 i.getGrantInfo(),
                                 i.getUsedDays(),
                                 i.getUsedTime(),
-                                i.getAnnualPaidLeaveSet()
+                                i.getAnnualPaidLeaveSet().get()
                         )
                 ).collect(Collectors.toList());
             }
@@ -241,7 +293,7 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
                                     e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getGrantInfo(),
                                     e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getUsedDays(),
                                     e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getUsedTime(),
-                                    e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getAnnualPaidLeaveSet()
+                                    e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getAnnualPaidLeaveSet().get()
                             ),
                             new AnnualLeaveInfoKdr(
                                     e.getAggrResultOfAnnualLeave().getAsOfStartNextDayOfPeriodEnd().getYmd(),
@@ -259,7 +311,7 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
                                     e.getAggrResultOfAnnualLeave().getAsOfStartNextDayOfPeriodEnd().getGrantInfo(),
                                     e.getAggrResultOfAnnualLeave().getAsOfStartNextDayOfPeriodEnd().getUsedDays(),
                                     e.getAggrResultOfAnnualLeave().getAsOfStartNextDayOfPeriodEnd().getUsedTime(),
-                                    e.getAggrResultOfAnnualLeave().getAsOfStartNextDayOfPeriodEnd().getAnnualPaidLeaveSet()
+                                    e.getAggrResultOfAnnualLeave().getAsOfStartNextDayOfPeriodEnd().getAnnualPaidLeaveSet().get()
 
 
                             ),
@@ -271,4 +323,91 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 				.collect(Collectors.toList());
 		return lsRs;
 	}
+
+	// 2022.01.24 - 3S - chinh.hm  - issues #122620  - 追加 START
+	////////////////////////////////////////////////
+	// RQ262 - 公休の月別利用状況(過去月)を取得する
+	////////////////////////////////////////////////
+	private List<PublicHolidayPastSituation> getListPublicHolidayPastSituation(Map<YearMonth, List<RemainMerge>> mapRemainMer){
+		List<PublicHolidayPastSituation> listOuput = new ArrayList<>();
+
+		//=======================================
+		// 年月ループ
+		//=======================================
+		for (Map.Entry<YearMonth, List<RemainMerge>> entry : mapRemainMer.entrySet()) {
+			List<RemainMerge> remainMergeList =
+					new ArrayList<>(entry.getValue());
+			YearMonth ym = entry.getKey();
+			val output = new PublicHolidayPastSituation(
+					entry.getKey(),
+					null,
+					null,
+					null,
+					null
+			);
+
+			//=======================================
+			// 年月内の締め回数分ループ
+			//=======================================
+			// 2022.01.25 - AMID - 稲熊 - issues #122587 - 追加 START
+			int i_begin = 0;								// 月初index
+			int i_end   = remainMergeList.size() - 1;		// 月末index
+			// 2022.01.25 - AMID - 稲熊 - issues #122587 - 追加 END
+
+			for (int i = 0; i < remainMergeList.size(); i++) {
+				RemainMerge rmm = remainMergeList.get(i);
+				// 公休月別残数データ
+				PublicHolidayRemNumEachMonth publicHolidayRemNumEachMonth = rmm.getMonPublicHoliday();
+
+				// 2022.01.25 - AMID - 稲熊 - issues #122587 - 削除 START
+				// AnnLeaRemNumEachMonth annLeaRemNumEachMonth = rmm.getAnnLeaRemNumEachMonth();
+				// DatePeriod closurePeriod = annLeaRemNumEachMonth.getClosurePeriod();
+				// 2022.01.25 - AMID - 稲熊 - issues #122587 - 削除 START
+
+				// 繰越数←公休月別残数データ.繰越数     - numberOfCarryforwards
+				// 付与数←公休月別残数データ.公休日数   - numberOfGrants
+				// 使用数←公休月別残数データ.取得数     - numberOfUse
+				// 残数　←公休月別残数データ.翌月繰越数 - numberOfRemaining
+				val numberOfCarryforwards = publicHolidayRemNumEachMonth.getCarryForwardNumber();
+				val numberOfGrants        = publicHolidayRemNumEachMonth.getPublicHolidayday();
+				val numberOfUse           = publicHolidayRemNumEachMonth.getNumberOfAcquisitions();
+				val numberOfRemaining     = publicHolidayRemNumEachMonth.getNumberCarriedOverToTheNextMonth();
+
+				// 2022.01.25 - AMID - 稲熊 - issues #122587 - 削除 START
+				/**    終了年月日 */
+				// GeneralDate endDate = closurePeriod.end();
+				// GeneralDate endDateRemainingMax = GeneralDate.ymd(ym.year(), ym.month(), 1);
+				// 2022.01.25 - AMID - 稲熊 - issues #122587 - 削除 START
+
+				// 付与数、使用数
+				output.setNumberOfGrants( (output.getNumberOfGrants() == null ? 0 : output.getNumberOfGrants()) + (numberOfGrants == null ? 0 : numberOfGrants.v()) );
+				output.setNumberOfUse   ( (output.getNumberOfUse()    == null ? 0 : output.getNumberOfUse()   ) + (numberOfUse    == null ? 0 : numberOfUse.v())    );
+
+				// 2022.01.25 - AMID - 稲熊 - issues #122587 - 変更 START
+				// // ※公休月別残数データ．残数に限り、合算せずに締め期間．終了日が遅い方のみ保持する
+				// if (endDate.afterOrEquals(endDateRemainingMax)) {
+				//     output.setNumberOfRemaining(numberOfRemaining == null ? null : numberOfRemaining.v());
+				// }else {
+				//     //※公休月別残数データ．繰越数に限り、合算せずに締め期間．終了日が早い方のみ保持する
+				//     output.setNumberOfCarryforwards(numberOfCarryforwards == null ? null: numberOfCarryforwards.v());
+				//}
+				//
+				// 月初の場合：
+				if(i == i_begin){
+					// 月初残、繰越数(前月繰越)：合算不可　月別実績データの一番最初の締めデータの値を採用する
+					output.setNumberOfCarryforwards(numberOfCarryforwards == null ? null: numberOfCarryforwards.v());
+				}
+				// 月末の場合：
+				if(i == i_end){
+					// 残数、月度残(次月繰越)：合算不可　月別実績データの最後の締めデータの値を採用する
+					output.setNumberOfRemaining    (numberOfRemaining     == null ? null : numberOfRemaining.v());
+				}
+				// 2022.01.25 - AMID - 稲熊 - issues #122587 - 変更 END
+			}
+			listOuput.add(output);
+		}
+		return listOuput;
+	}
+	// 2022.01.24 - 3S - chinh.hm  - issues #122620  - 追加 END
 }
+

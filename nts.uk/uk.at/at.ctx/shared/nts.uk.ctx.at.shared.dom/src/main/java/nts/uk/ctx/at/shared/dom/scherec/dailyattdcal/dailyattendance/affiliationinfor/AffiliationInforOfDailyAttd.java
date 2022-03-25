@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor;
 
+import java.util.Arrays;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,10 +15,14 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSyEmploymentImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpLicenseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.GetEmpLicenseClassificationService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 
 /**
  * 日別勤怠の所属情報
@@ -27,49 +33,54 @@ import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class AffiliationInforOfDailyAttd implements DomainObject  {
 	
-	//雇用コード
+	/**
+	 * 雇用コード
+	 */
 	private EmploymentCode employmentCode;
 	
-	//職位ID
+	/**
+	 * 職位ID
+	 */
 	private String jobTitleID;
 	
-	//職場ID
+	/**
+	 * 職場ID
+	 */
 	private String wplID;
 	
-	//分類コード
+	/**
+	 * 分類コード
+	 */
 	private ClassificationCode clsCode;
 	
-	//勤務種別コード
+	/**
+	 * 勤務種別コード
+	 */
 	private Optional<BusinessTypeCode> businessTypeCode;
 	
-	//加給コード : optional
-	private Optional<BonusPaySettingCode> bonusPaySettingCode;
-
 	/**
-	 * @param employmentCode 雇用コード
-	 * @param jobTitleID 職位ID
-	 * @param wplID 職場ID
-	 * @param clsCode 分類コード
-	 * @param businessTypeCode 勤務種別コード
-	 * @param bonusPaySettingCode 加給コード
+	 * 加給コード
 	 */
-	public AffiliationInforOfDailyAttd(
-			EmploymentCode employmentCode, 
-			String jobTitleID, 
-			String wplID,
-			ClassificationCode clsCode, 
-			Optional<BusinessTypeCode> businessTypeCode,
-			Optional<BonusPaySettingCode> bonusPaySettingCode) {
-		super();
-		this.employmentCode = employmentCode;
-		this.jobTitleID = jobTitleID;
-		this.wplID = wplID;
-		this.clsCode = clsCode;
-		this.businessTypeCode = businessTypeCode;
-		this.bonusPaySettingCode = bonusPaySettingCode;
-	}
+	private Optional<BonusPaySettingCode> bonusPaySettingCode;
+	
+	/**
+	 * 職場グループID
+	 */
+	private Optional<String> workplaceGroupId;
+	
+	/**
+	 * 看護免許区分
+	 */
+	private Optional<LicenseClassification> nursingLicenseClass;
+	
+	/**
+	 * 看護管理者か
+	 */
+	private Optional<Boolean> isNursingManager;
+	
 	
 	/**
 	 * [C-1] 作る
@@ -80,13 +91,20 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 	 */
 	public static AffiliationInforOfDailyAttd create(Require require, String employeeId, GeneralDate standardDate) {
 		
+		EmpOrganizationImport empOrganization = getEmpOrganization(require, employeeId, standardDate);
+		
+		EmpLicenseClassification  empLicenseClass = getNursingLicenseClass(require, employeeId, standardDate);
+		
 		return new AffiliationInforOfDailyAttd(
-				AffiliationInforOfDailyAttd.getEmploymentCode(require, employeeId, standardDate), 
-				AffiliationInforOfDailyAttd.getJobTitleId(require, employeeId, standardDate), 
-				AffiliationInforOfDailyAttd.getWorkplaceId(require, employeeId, standardDate), 
-				AffiliationInforOfDailyAttd.getClassificationCode(require, employeeId, standardDate), 
-				AffiliationInforOfDailyAttd.getBusinessTypeCode(require, employeeId, standardDate), 
-				AffiliationInforOfDailyAttd.getBonusPaySettingCode(require, employeeId, standardDate));
+				getEmploymentCode(require, employeeId, standardDate), 
+				getJobTitleId(require, employeeId, standardDate), 
+				empOrganization.getWorkplaceId(), 
+				getClassificationCode(require, employeeId, standardDate), 
+				getBusinessTypeCode(require, employeeId, standardDate), 
+				getBonusPaySettingCode(require, employeeId, standardDate),
+				empOrganization.getWorkplaceGroupId(),
+				empLicenseClass.getOptLicenseClassification(),
+				empLicenseClass.getIsNursingManager() );
 	}
 	
 	/**
@@ -116,16 +134,14 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 	}
 	
 	/**
-	 * [S-3] 職場IDを取得する
+	 * [S-3] 社員の所属組織を取得する
 	 * @param require
 	 * @param employeeId
 	 * @param standardDate
 	 * @return
 	 */
-	private static String getWorkplaceId(Require require, String employeeId, GeneralDate standardDate) {
-		SharedAffWorkPlaceHisImport workplaceHistory = require.getAffWorkplaceHistory(employeeId, standardDate);
-		
-		return workplaceHistory.getWorkplaceId();
+	private static EmpOrganizationImport getEmpOrganization(Require require, String employeeId, GeneralDate standardDate) {
+		return require.getEmpOrganization(employeeId, standardDate);
 	}
 	
 	/**
@@ -173,7 +189,21 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 		return workingCondition.get().getTimeApply();
 	}
 	
-	public static interface Require {
+	/**
+	 * [S-8] 看護免許区分を取得する
+	 * @param require
+	 * @param employeeId 社員ID
+	 * @param standardDate 基準日
+	 * @return
+	 */
+	private static EmpLicenseClassification getNursingLicenseClass(Require require, String employeeId, GeneralDate standardDate) {
+		
+		return GetEmpLicenseClassificationService
+				.get( require, standardDate, Arrays.asList(employeeId ))
+				.get( 0 );
+	}
+	
+	public static interface Require extends GetEmpLicenseClassificationService.Require {
 		
 		/**
 		 * [R-1] 所属雇用履歴を取得する (社員ID, 年月日) : Single
@@ -189,16 +219,8 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 		 * @param standardDate 基準日
 		 * @return
 		 */
-		SharedAffJobTitleHisImport getAffJobTitleHistory(String employeeId, GeneralDate standardDate);
-		
-		/**
-		 * [R-3] 所属職場履歴を取得する (社員ID, 年月日) : Single
-		 * @param employeeId 社員ID
-		 * @param standardDate 基準日
-		 * @return
-		 */
-		SharedAffWorkPlaceHisImport getAffWorkplaceHistory(String employeeId, GeneralDate standardDate);
-		
+		SharedAffJobTitleHisImport getAffJobTitleHistory(String employeeId, GeneralDate standardDate);		
+			
 		/**
 		 * [R-4] 所属分類履歴を取得する (社員ID, 年月日) : Single
 		 * @param employeeId 社員ID
@@ -222,6 +244,15 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 		 * @return
 		 */
 		Optional<WorkingConditionItem> getWorkingConditionHistory(String employeeId, GeneralDate standardDate);
+		
+		/**
+		 * [R-7] 所属組織を取得する
+		 * @param employeeId
+		 * @param standardDate
+		 * @return
+		 */
+		EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate);
+		
 	}
 		
 }

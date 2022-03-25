@@ -323,9 +323,9 @@ public class IntegrationOfWorkTime {
 	 */
 	public List<OverTimeFrameNo> getLegalOverTimeFrameNoList(WorkType workType) {
 		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
-			case FIXED:				return this.fixedWorkSetting.get().getLegalOverTimeFrameNoList(workType);
+			case FIXED:				return this.fixedWorkSetting.get().getInLegalOverTimes(workType);
 			case FLEX:				return Collections.emptyList();
-			case FLOW:				return Collections.emptyList();
+			case FLOW:				return this.flowWorkSetting.get().getInLegalOverTimes();
 			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
 			default:				throw new RuntimeException("Non-conformity No Work");
 		}
@@ -427,5 +427,36 @@ public class IntegrationOfWorkTime {
 		}
 		// 出勤系ではない場合は最低勤務時間を0：00にする
 		return Optional.of(this.flexWorkSetting.get().getCoreTimeSetting().changeZeroMinWorkTime());
+	}
+	
+	public static IntegrationOfWorkTime getWorkTime(RequireM2 require, String cid, Optional<WorkTimeCode> workTimeCode) {
+		
+		/** require.就業時間帯を取得 */
+		val workTimeSet = workTimeCode.flatMap(c -> require.workTimeSetting(cid, c)).orElse(null);
+		
+		/** 就業時間帯=NULLチェック */
+		if(workTimeSet == null) {
+			return null;
+		}
+		
+		switch(workTimeSet.getWorkTimeDivision().getWorkTimeForm()) {
+			case FIXED:				
+				return new IntegrationOfWorkTime(workTimeSet.getWorktimeCode(), workTimeSet, 
+						                         require.fixedWorkSetting(cid, workTimeSet.getWorktimeCode()).get());
+			case FLEX:				
+				return new IntegrationOfWorkTime(workTimeSet.getWorktimeCode(), workTimeSet, 
+												 require.flexWorkSetting(cid, workTimeSet.getWorktimeCode()).get());
+			case FLOW:				
+				return new IntegrationOfWorkTime(workTimeSet.getWorktimeCode(), workTimeSet, 
+						                         require.flowWorkSetting(cid, workTimeSet.getWorktimeCode()).get());
+			case TIMEDIFFERENCE:	
+				throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
+			default:				
+				throw new RuntimeException("Non-conformity No Work");
+		}
+	}
+
+	public static interface RequireM2 extends WorkTimeSetting.Require {
+		
 	}
 }

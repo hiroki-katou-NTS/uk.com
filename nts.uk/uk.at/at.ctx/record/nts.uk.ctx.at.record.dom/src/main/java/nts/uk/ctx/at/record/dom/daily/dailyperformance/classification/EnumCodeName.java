@@ -5,7 +5,9 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Data
 @AllArgsConstructor
@@ -19,15 +21,15 @@ public class EnumCodeName {
     	}
     	return list;
     }
-    
+
     public static List<EnumCodeName> getDowork(){
     	List<EnumCodeName> list = new ArrayList<>();
-    	for(int i =0; i< DoWork.values().length; i++){ 
+    	for(int i =0; i< DoWork.values().length; i++){
     		list.add(new EnumCodeName(DoWork.values()[i].value, DoWork.values()[i].description));
     	}
     	return list;
     }
-    
+
     public static List<EnumCodeName> getCalcHours(){
     	List<EnumCodeName> list = new ArrayList<>();
     	for(int i =0; i< AutomaticCalcAfterHours.values().length; i++){
@@ -35,7 +37,7 @@ public class EnumCodeName {
     	}
     	return list;
     }
-    
+
     public static List<EnumCodeName> getCalcCompact(){
     	List<EnumCodeName> list = new ArrayList<>();
     	for(int i =0; i< AutomaticCalcCompact.values().length; i++){
@@ -43,11 +45,19 @@ public class EnumCodeName {
     	}
     	return list;
     }
-    
+
     public static List<EnumCodeName> getComboTimeLimit(){
     	List<EnumCodeName> list = new ArrayList<>();
     	for(int i =0; i< TimeLimitUpperLimitSetting.values().length; i++){
     		list.add(new EnumCodeName(TimeLimitUpperLimitSetting.values()[i].value, TimeLimitUpperLimitSetting.values()[i].description));
+    	}
+    	return list;
+    }
+
+    public static List<EnumCodeName> getNursingLicenseCls(){
+    	List<EnumCodeName> list = new ArrayList<>();
+    	for(int i =0; i< LicenseClassification.values().length; i++){
+    		list.add(new EnumCodeName(LicenseClassification.values()[i].value, TextResource.localize(LicenseClassification.values()[i].nameId)));
     	}
     	return list;
     }

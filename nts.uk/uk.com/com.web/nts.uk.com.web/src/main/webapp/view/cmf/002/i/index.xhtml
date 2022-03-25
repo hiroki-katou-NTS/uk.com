@@ -40,10 +40,10 @@
 							<div id="I2_1"
 								data-bind="ntsRadioBoxGroup: {
 									name:'#{i18n.getText('CMF002_138')}',
-									value: formatSelection, 
+									value: formatSelection,
 									options: $parent.formatSelectionItem, 
 									optionsValue: 'code', 
-									enable: $parent.enableGlobal(), 
+									enable: $parent.enableGlobal,
 									optionsText: 'name'}">
 							</div>
 						</div>
@@ -90,7 +90,7 @@
 										visibleItemsCount: 5,
 										value: decimalFraction,
 										optionsText: 'name',
-										enable: $parent.enableGlobal()}">
+										enable: $parent.enableRoudingSelection()}">
 									</div>
 									<!-- enable: $parent.enableDecimalFraction() -->
 								</div>
@@ -107,7 +107,7 @@
 							<div id="I3_1"
 								data-bind="ntsCheckBox: { 
 								checked: outputMinusAsZero, 
-								enable:$parent.enableGlobal(), 
+								enable:$parent.enableGlobal,
 								text: '#{i18n.getText('CMF002_147')}'
 								}"></div>
 						</div>
@@ -125,7 +125,7 @@
 									value: fixedValueOperation, 
 									options: $parent.fixedValueOperationItem, 
 									optionsValue: 'code', 
-									enable: $parent.enableGlobal(), 
+									enable: $parent.enableGlobal,
 									optionsText: 'name'}">
 							</div>
 						</div>
@@ -171,7 +171,7 @@
 									value: fixedLengthOutput, 
 									options: $parent.fixedLengthOutputItem, 
 									optionsValue: 'code', 
-									enable: $parent.enableGlobal(), 
+									enable: $parent.enableGlobal,
 									optionsText: 'name', 
 									}">
 							</div>
@@ -225,7 +225,7 @@
 									value: nullValueReplace, 
 									options: $parent.nullValueReplaceItem, 
 									optionsValue: 'code', 
-									enable: $parent.enableGlobal(), 
+									enable: $parent.enableGlobal,
 									optionsText: 'name'}">
 							</div>
 						</div>

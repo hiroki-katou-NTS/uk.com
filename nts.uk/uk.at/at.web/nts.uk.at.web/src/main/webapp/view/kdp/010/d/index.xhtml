@@ -17,6 +17,7 @@
 	
 			<com:stylefile path="../main.css"/>
 			<com:scriptfile path="kdp010.d.vm.js" />
+			<com:stylefile path="kdp010.d.main.css"/>
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
@@ -59,19 +60,26 @@
 					<tr data-bind="with: settingsSmartphoneStamp">
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_240')}</div> 
-							<div tabindex="5" class="inline-display min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.buttonEmphasisArtOption, optionsValue: 'id', optionsText: 'name', value: buttonEmphasisArt, enable: true }"></div>
+							<div tabindex="5" class="inline-display min-with-120 option-group" data-bind="ntsRadioBoxGroup: {options: $parent.buttonEmphasisArtOption, optionsValue: 'id', optionsText: 'name', value: buttonEmphasisArt, enable: true }"></div>
+						</td>
+					</tr>
+					<tr data-bind="with: settingsSmartphoneStamp">
+						<td>
+							<div class="label-middle">
+								<label>#{i18n.getText('KDP010_238')}</label>
+							</div>
 						</td>
 					</tr>
 					<tr data-bind="with: settingsSmartphoneStamp">
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_244')}</div> 
-							<div tabindex="6" class="inline-display min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.locationInfoUseOption, optionsValue: 'id', optionsText: 'name', value: locationInfoUse, enable: true }"></div>
+							<div tabindex="6" class="inline-display min-with-120 option-group" data-bind="ntsRadioBoxGroup: {options: $parent.locationInfoUseOption, optionsValue: 'id', optionsText: 'name', value: locationInfoUse, enable: true }"></div>
 						</td>
 					</tr>
 					<tr data-bind="with: settingsSmartphoneStamp">
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_247')}</div> 
-							<div tabindex="7" class="inline-display min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.areaLimitAtrOption, optionsValue: 'id', optionsText: 'name', value: areaLimitAtr, enable: areaLimitAtrEnable }"></div>
+							<div tabindex="7" class="inline-display min-with-120 option-group" data-bind="ntsRadioBoxGroup: {options: $parent.areaLimitAtrOption, optionsValue: 'id', optionsText: 'name', value: areaLimitAtr, enable: areaLimitAtrEnable }"></div>
 						</td>
 					</tr>
 					<tr>

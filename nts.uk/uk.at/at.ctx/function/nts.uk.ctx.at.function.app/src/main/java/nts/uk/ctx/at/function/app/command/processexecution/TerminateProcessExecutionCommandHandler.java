@@ -334,7 +334,9 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
                     domain.getEndDateTime(),
                     domain.getExecutionAtr().value,
                     ExecutionStatus.START_OF_INTERRUPTION.value,
-                    domain.getPresenceOfError().value);
+                    domain.getPresenceOfError().value,
+                    domain.getAnyAggrName().v(),
+                    domain.getPeriod());
         	this.aggrPeriodExcutionRepo.updateExcution(domain);
         });
     }

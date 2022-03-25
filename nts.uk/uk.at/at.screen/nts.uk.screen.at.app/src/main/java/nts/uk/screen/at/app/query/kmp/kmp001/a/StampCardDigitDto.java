@@ -17,4 +17,7 @@ public class StampCardDigitDto {
 	private int stampCardDigitNumber;
 	private int stampCardEditMethod;
 	private boolean isIc_card = false;
+	
+	// write more for ver29
+	private boolean isQRCode = false;
 }

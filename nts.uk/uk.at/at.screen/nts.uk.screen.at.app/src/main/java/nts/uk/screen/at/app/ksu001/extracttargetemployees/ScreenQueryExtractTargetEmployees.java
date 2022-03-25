@@ -17,7 +17,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
@@ -34,10 +33,10 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankPriority;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeamRepository;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassificationRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.EmployeeSearchCallSystemType;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetEmpCanReferService;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.RegulationInfoEmpQuery;
@@ -139,15 +138,14 @@ public class ScreenQueryExtractTargetEmployees {
 		}
 
 		@Override
-		public List<String> sortEmployee(List<String> lstmployeeId, EmployeeSearchCallSystemType sysAtr, Integer sortOrderNo,
-				GeneralDate referenceDate, Integer nameType) {
+		public List<String> sortEmployee(List<String> employeeIdList, EmployeeSearchCallSystemType systemType, Integer sortOrderNo, GeneralDate date, Integer nameType) {
 			List<String> data = regulInfoEmpPub.sortEmployee(
 					AppContexts.user().companyId(),
-					lstmployeeId,
-					sysAtr.value,
+					employeeIdList,
+					systemType.value,
 					sortOrderNo,
 					nameType,
-					GeneralDateTime.fromString(referenceDate.toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT));
+					GeneralDateTime.fromString(date.toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT));
 			return data;
 		}
 
@@ -252,8 +250,8 @@ public class ScreenQueryExtractTargetEmployees {
 		}
 
 		@Override
-		public List<EmpMedicalWorkFormHisItem> getEmpClassifications(List<String> listEmp, GeneralDate referenceDate) {
-			List<EmpMedicalWorkFormHisItem> data = empMedicalWorkStyleHisRepo.get(listEmp, referenceDate);
+		public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp, GeneralDate referenceDate) {
+			List<EmpMedicalWorkStyleHistoryItem> data = empMedicalWorkStyleHisRepo.get(listEmp, referenceDate);
 			return data;
 		}
 

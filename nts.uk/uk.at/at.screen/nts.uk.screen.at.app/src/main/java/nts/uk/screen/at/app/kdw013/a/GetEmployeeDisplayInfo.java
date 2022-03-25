@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.kdw013.a;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,6 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.GetAllEmployeeWithWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.GetWorkplaceOfEmployeeAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workplace.ReferenceableWorkplaceImport;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.DailyLock;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSetting;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSettingRepository;
@@ -83,10 +85,13 @@ public class GetEmployeeDisplayInfo {
 		});
 
 		// 3. call 社員ID,基準日 List＜確認者>
-
-		List<ConfirmerDto> confirms = this.getWorkConfirmationStatus.get(sid, refDate);
-
-		result.setLstComfirmerDto(confirms);
+		List<ConfirmerByDay> comfirmByDayList = new ArrayList<>();
+		period.datesBetween().forEach(date -> {
+			List<ConfirmerDto> confirmers = this.getWorkConfirmationStatus.get(sid, date);
+			comfirmByDayList.add(new ConfirmerByDay(date, confirmers));
+		});
+		
+		result.setLstComfirmerDto(comfirmByDayList);
 
 		// 4: <call>(社員ID,表示期間,対象項目リスト)
 		GetDailyPerformanceDataResult dailyPerformanceData = getDailyPerformanceData.get(sid, period,
@@ -135,12 +140,12 @@ public class GetEmployeeDisplayInfo {
 		}
 
 		@Override
-		public Map<String, String> getWorkPlace(String userID, String employeeID, GeneralDate date) {
+		public ReferenceableWorkplaceImport getWorkPlace(String userID, String employeeID, GeneralDate date) {
 			return getWorkplaceOfEmployeeAdapter.get(userID, employeeID, date);
 		}
 
 		@Override
-		public Map<String, String> getByCID(String companyId, GeneralDate baseDate) {
+		public ReferenceableWorkplaceImport getByCID(String companyId, GeneralDate baseDate) {
 			return getAllEmployeeWithWorkplaceAdapter.get(companyId, baseDate);
 		}
 

@@ -54,15 +54,16 @@ public class CorrectDailyAttendanceServiceTest {
 		new Expectations() {
 			{
 
-				require.getWorkType("001");
+				require.workType(anyString, new WorkTypeCode("001"));
 				result = Optional.of(createWorkType("001", WorkTypeUnit.OneDay, WorkTypeClassification.Absence));
 
-				require.getWorkType("002");
+				require.workType(anyString, new WorkTypeCode("002"));
 				result = Optional.of(createWorkType("002", WorkTypeUnit.OneDay, WorkTypeClassification.Absence));
 			}
 		};
 
-		WorkInfoOfDailyAttendance actualResult = CorrectDailyAttendanceService.correctFurikyu(require, before, after);
+		WorkInfoOfDailyAttendance actualResult = CorrectDailyAttendanceService.correctFurikyu(
+				require, "companyId", before, after);
 
 		assertThat(actualResult.getNumberDaySuspension()).isEmpty();
 
@@ -92,16 +93,17 @@ public class CorrectDailyAttendanceServiceTest {
 		new Expectations() {
 			{
 
-				require.getWorkType("001");
+				require.workType(anyString, new WorkTypeCode("001"));
 				result = Optional.of(createWorkType("001", WorkTypeUnit.OneDay, //勤務の単位
 						WorkTypeClassification.Shooting));// 振出
 
-				require.getWorkType("002");
+				require.workType(anyString, new WorkTypeCode("002"));
 				result = Optional.of(createWorkType("002", WorkTypeUnit.OneDay, WorkTypeClassification.Attendance));
 			}
 		};
 
-		WorkInfoOfDailyAttendance actualResult = CorrectDailyAttendanceService.correctFurikyu(require, before, after);
+		WorkInfoOfDailyAttendance actualResult = CorrectDailyAttendanceService.correctFurikyu(
+				require, "companyId", before, after);
 
 		assertThat(actualResult.getNumberDaySuspension().get().getDays().v()).isEqualTo(1.0);
 		assertThat(actualResult.getNumberDaySuspension().get().getClassifiction()).isEqualTo(FuriClassifi.DRAWER);
@@ -133,16 +135,17 @@ public class CorrectDailyAttendanceServiceTest {
 		new Expectations() {
 			{
 
-				require.getWorkType("001");
+				require.workType(anyString, new WorkTypeCode("001"));
 				result = Optional.of(createWorkType("001", WorkTypeUnit.OneDay, //勤務の単位
 						WorkTypeClassification.Shooting));// 振出
 
-				require.getWorkType("002");
+				require.workType(anyString, new WorkTypeCode("002"));
 				result = Optional.of(createWorkType("002", WorkTypeUnit.OneDay, WorkTypeClassification.Holiday));
 			}
 		};
 
-		WorkInfoOfDailyAttendance actualResult = CorrectDailyAttendanceService.correctFurikyu(require, before, after);
+		WorkInfoOfDailyAttendance actualResult = CorrectDailyAttendanceService.correctFurikyu(
+				require, "companyId", before, after);
 
 		assertThat(actualResult.getNumberDaySuspension()).isEmpty();
 
@@ -172,16 +175,17 @@ public class CorrectDailyAttendanceServiceTest {
 		new Expectations() {
 			{
 
-				require.getWorkType("001");
+				require.workType(anyString, new WorkTypeCode("001"));
 				result = Optional.of(createWorkType("001", WorkTypeUnit.OneDay, //勤務の単位
 						WorkTypeClassification.Pause));// 振休
 
-				require.getWorkType("002");
+				require.workType(anyString, new WorkTypeCode("002"));
 				result = Optional.of(createWorkType("002", WorkTypeUnit.OneDay, WorkTypeClassification.Absence));
 			}
 		};
 
-		WorkInfoOfDailyAttendance actualResult = CorrectDailyAttendanceService.correctFurikyu(require, before, after);
+		WorkInfoOfDailyAttendance actualResult = CorrectDailyAttendanceService.correctFurikyu(
+				require, "companyId", before, after);
 
 		assertThat(actualResult.getNumberDaySuspension().get().getDays().v()).isEqualTo(1.0);
 		assertThat(actualResult.getNumberDaySuspension().get().getClassifiction()).isEqualTo(FuriClassifi.SUSPENSION);
@@ -212,16 +216,17 @@ public class CorrectDailyAttendanceServiceTest {
 		new Expectations() {
 			{
 
-				require.getWorkType("001");
+				require.workType(anyString, new WorkTypeCode("001"));
 				result = Optional.of(createWorkType("001", WorkTypeUnit.OneDay, //勤務の単位
 						WorkTypeClassification.Pause));// 振休
 
-				require.getWorkType("002");
+				require.workType(anyString, new WorkTypeCode("002"));
 				result = Optional.of(createWorkType("002", WorkTypeUnit.OneDay, WorkTypeClassification.Attendance));
 			}
 		};
 
-		WorkInfoOfDailyAttendance actualResult = CorrectDailyAttendanceService.correctFurikyu(require, before, after);
+		WorkInfoOfDailyAttendance actualResult = CorrectDailyAttendanceService.correctFurikyu(
+				require, "companyID", before, after);
 
 		assertThat(actualResult.getNumberDaySuspension()).isEmpty();
 

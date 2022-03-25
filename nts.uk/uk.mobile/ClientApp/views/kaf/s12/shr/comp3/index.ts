@@ -258,24 +258,24 @@ export class KafS12ApplyTimeComponent extends Vue {
         switch (self.params.appTimeType) {
             case AppTimeType.ATWORK:
                 return self.calculatedData
-                    && self.calculatedData.timeBeforeWork1 > 0
+                    && self.calculatedData.timeBeforeWork1 == 0
                     && self.reflectSetting
                     && self.reflectSetting.destination.firstBeforeWork == 1;
             case AppTimeType.OFFWORK:
                 return self.calculatedData
-                    && self.calculatedData.timeAfterWork1 > 0
+                    && self.calculatedData.timeAfterWork1 == 0
                     && self.reflectSetting
                     && self.reflectSetting.destination.firstAfterWork == 1;
             case AppTimeType.ATWORK2:
                 return self.calculatedData
-                    && self.calculatedData.timeBeforeWork2 > 0
+                    && self.calculatedData.timeBeforeWork2 == 0
                     && self.reflectSetting
                     && self.reflectSetting.destination.secondBeforeWork == 1
                     && self.appDispInfoStartupOutput
                     && self.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
             case AppTimeType.OFFWORK2:
                 return (self.calculatedData
-                    && self.calculatedData.timeAfterWork2 > 0
+                    && self.calculatedData.timeAfterWork2 == 0
                     && self.reflectSetting
                     && self.reflectSetting.destination.secondAfterWork == 1
                     && self.appDispInfoStartupOutput
@@ -283,13 +283,13 @@ export class KafS12ApplyTimeComponent extends Vue {
                     || self.checkTimeParam(self.params);
             case AppTimeType.PRIVATE:
                 return (self.calculatedData
-                    && self.calculatedData.privateOutingTime > 0
+                    && self.calculatedData.privateOutingTime == 0
                     && self.reflectSetting
                     && self.reflectSetting.destination.privateGoingOut == 1) 
                     || self.checkTimeParam(self.params);
             case AppTimeType.UNION:
                 return (self.calculatedData
-                    && self.calculatedData.unionOutingTime > 0
+                    && self.calculatedData.unionOutingTime == 0
                     && self.reflectSetting
                     && self.reflectSetting.destination.unionGoingOut == 1) 
                     || self.checkTimeParam(self.params);

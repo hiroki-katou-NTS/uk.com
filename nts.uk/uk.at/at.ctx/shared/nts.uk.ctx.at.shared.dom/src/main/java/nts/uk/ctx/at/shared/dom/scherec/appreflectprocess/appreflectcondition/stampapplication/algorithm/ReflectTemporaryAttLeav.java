@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.UpdateEditSttCreateBeforeAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
@@ -54,7 +53,7 @@ public class ReflectTemporaryAttLeav {
 				Pair<TimeLeavingWork, List<Integer>> result = createTimeLeav(data);
 				lst.add(result.getLeft());
 				lstItemId.addAll(result.getRight());
-				dailyApp.setTempTime(Optional.of(new TemporaryTimeOfDailyAttd(new WorkTimes(0), lst)));
+				dailyApp.setTempTime(Optional.of(new TemporaryTimeOfDailyAttd(lst)));
 				// dailyApp.getTempTime().get().setCountWorkTime();
 			}
 			

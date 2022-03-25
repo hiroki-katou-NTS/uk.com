@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.app.find.yearholidaygrant;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfService;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 
 /**
@@ -33,13 +34,13 @@ public class LengthOfServiceTblDto {
 	
 	/* 月数 */
 	private int month;
-	
-	public static LengthOfServiceTblDto fromDomain(LengthServiceTbl domain){
-		return new LengthOfServiceTblDto(domain.getCompanyId(), 
-									domain.getYearHolidayCode().v(), 
-									domain.getGrantNum().v(), 
-									domain.getAllowStatus().value, 
-									domain.getStandGrantDay().value, 
+
+	public static LengthOfServiceTblDto fromDomain(String companyId,String yearHolidayCode,LengthOfService domain){
+		return new LengthOfServiceTblDto(companyId,
+									yearHolidayCode,
+									domain.getGrantNum().v(),
+									domain.getAllowStatus().value,
+									domain.getStandGrantDay().value,
 									domain.getYear().v(),
 									domain.getMonth().v());
 	}

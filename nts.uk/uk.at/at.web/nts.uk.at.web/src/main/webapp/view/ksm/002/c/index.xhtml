@@ -7,9 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 600, height: 620 };</script>
+			<script>var dialogSize = { width: 420, height: 630 };</script>
 			<com:ValidatorScript>
-					nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificName
+				nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificName
    			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksm002.c.main.css" />
@@ -31,36 +31,35 @@
 						<tr>
 							<!-- C1_3: No -->
 							<th>#{i18n.getText('KSM002_59')}</th>
-							<!-- C1_4: 使用区分 -->
-							<th>#{i18n.getText('KSM002_38')}</th>
 							<!-- C1_5: 表示名称 -->
-							<th data-bind="text: textKSM002_39"></th>
+							<th style="width: 156px;" data-bind="text: textKSM002_39"></th>
+							<!-- C1_4: 使用区分 -->
+							<th style="width: 160px;">#{i18n.getText('KSM002_38')}</th>
 						</tr>
 					</thead>
 					<tbody data-bind="foreach: specificDateItem">
 						<tr>
 							<td data-bind="text: ($index()+1)"></td>
 							<td>
-								<div class="cf" data-bind="ntsSwitchButton: {
+								<input tabindex="1" class="specificName" data-bind="ntsTextEditor: {
+										name: '#[KSM002_39]',
+										value: specificName,
+										constraint: 'SpecificName',
+										option: { width: '130px' },
+										required: true },
+										attr: { id: 'specificName' + $index()}" />
+							</td>
+							<td>
+								<div tabindex="2" class="cf useAtr" data-bind="ntsSwitchButton: {
 										name: '#[KSM002_38]',
 										options: ko.observableArray([
-											{ code: '1', name: '#{i18n.getText('Enum_UseAtr_Use')}' },
-								            { code: '0', name: '#{i18n.getText('Enum_UseAtr_NotUse')}' }
-								        ]),
+											{ code: 1, name: '#{i18n.getText('Enum_UseAtr_Use')}' },
+											{ code: 0, name: '#{i18n.getText('Enum_UseAtr_NotUse')}' }
+										]),
 										optionsValue: 'code',
 										optionsText: 'name',
 										value: useAtr,
 										enable: true }"></div>	
-							</td>
-							<td>
-								<input class="specificName" data-bind="ntsTextEditor: {
-										name: '#[KSM002_39]',
-										value: specificName,
-										constraint: 'SpecificName',
-										option: { width: '275px' },
-										required: true, 
-										enable: Boolean(useAtr()==1) },
-										attr: { id: 'specificName' + $index()}" />
 							</td>
 						</tr>
 					</tbody>
@@ -68,9 +67,9 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- C2_1: Button 決定 -->
-				<button class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KSM002_40')}</button>
+				<button tabindex="3" class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KSM002_56')}</button>
 				<!-- C2_2: Button キャンセル -->
-				<button class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KSM002_41')}</button>	
+				<button tabindex="4" class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KSM002_41')}</button>	
 			</div>
 		</ui:define>
 	</ui:composition>
