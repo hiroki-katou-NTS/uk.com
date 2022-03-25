@@ -55,8 +55,8 @@ public class HolidayWorkFrameTime implements Cloneable{
 		
 		HolidayWorkFrameTime holidayWorkFrameTime = new HolidayWorkFrameTime(
 				holidayFrameNo,
-				this.holidayWorkTime,
-				this.transferTime,
+				Finally.of(this.holidayWorkTime.get().clone()),
+				Finally.of(this.transferTime.get().clone()),
 				this.beforeApplicationTime);
 		return holidayWorkFrameTime;
 	}
@@ -69,7 +69,7 @@ public class HolidayWorkFrameTime implements Cloneable{
 	public HolidayWorkFrameTime changeOverTime(TimeDivergenceWithCalculation holidayWorkTime) {
 		return new HolidayWorkFrameTime(this.holidayFrameNo,
 				 						Finally.of(holidayWorkTime),
-				 						this.transferTime,
+				 						Finally.of(this.transferTime.get().clone()),
 				 						this.getBeforeApplicationTime());
 	}
 
@@ -79,7 +79,7 @@ public class HolidayWorkFrameTime implements Cloneable{
 	 */
 	public HolidayWorkFrameTime changeTransTime(TimeDivergenceWithCalculation transTime) {
 		return new HolidayWorkFrameTime(this.holidayFrameNo,
-									 this.holidayWorkTime,
+									 Finally.of(this.holidayWorkTime.get().clone()),
 									 Finally.of(transTime),
 									 this.getBeforeApplicationTime());
 	}

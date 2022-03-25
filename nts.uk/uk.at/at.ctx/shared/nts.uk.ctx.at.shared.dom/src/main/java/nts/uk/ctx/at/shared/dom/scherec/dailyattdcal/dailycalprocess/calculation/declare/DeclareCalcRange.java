@@ -137,7 +137,7 @@ public class DeclareCalcRange {
 						itgOfWorkTime,
 						itgOfDaily,
 						calcRangeRecord.getOneDayOfRange(),
-						itgOfDaily.getAttendanceLeave().get(),
+						itgOfDaily.getAttendanceLeave().get().getTimeLeavingWorks(),
 						Optional.empty(),
 						companyCommonSetting,
 						personCommonSetting);

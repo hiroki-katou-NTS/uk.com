@@ -164,16 +164,15 @@ public class TimeLeavingWork extends DomainObject{
 
 	/**
 	 * 打刻漏れをしているかチェックする
-	 * @return 打刻漏れをしていない 
+	 * @return 打刻漏れをしていない
 	 */
 	public boolean checkLeakageStamp() {
-		/** 出勤時刻が無い */
-		if(!this.getAttendanceStamp().isPresent()) {
-			return false;
-		}
-		/** 退勤時刻が無い */
-		if(!this.getLeaveStamp().isPresent()) {
-			return false;
+		switch (this.checkStampLeakState()) {
+		case NO_ATTENDANCE:
+		case NO_LEAVE:
+			return false;	// 出勤or退勤がない時だけ打刻漏れ（＝計算不可）　（両方ない時は、計算可能扱い） 
+		default:
+			break;
 		}
 		return true;
 	}
@@ -237,12 +236,13 @@ public class TimeLeavingWork extends DomainObject{
 	 * @return 退勤時刻（丸め無し）
 	 */
 	public Optional<TimeWithDayAttr> getLeaveTime() {
-		Optional<TimeWithDayAttr> result = getStampOfLeave().flatMap(c -> c.getTimeDay().getTimeWithDay());
 		return getStampOfLeave().flatMap(c -> c.getTimeDay().getTimeWithDay());
 	}
 	
 	public boolean existsTimeWithDay() {
-		return this.getAttendanceTime().isPresent() || this.getLeaveTime().isPresent();
+		// 出勤・退勤のどちらか存在すれば、true
+		if (this.checkStampLeakState() == TLWStampLeakState.NOT_EXIST) return true;
+		return false;
 	}
 	
 	//NOとデフォルトを作成する
@@ -268,5 +268,21 @@ public class TimeLeavingWork extends DomainObject{
 		}
 		//出勤時刻←予定開始時刻
 		this.getStampOfAttendance().get().getTimeDay().setTimeWithDay(Optional.of(scheduleStartTime));
+	}
+	
+	/**
+	 * 打刻漏れ状態チェック
+	 * @return 打刻漏れ状態
+	 */
+	public TLWStampLeakState checkStampLeakState() {
+		boolean existAttendance = false;
+		boolean existLeave = false;
+		if (this.getStampOfAttendance().isPresent() && this.getAttendanceTime().isPresent()) existAttendance = true;
+		if (this.getLeaveTime().isPresent() && this.getLeaveTime().isPresent()) existLeave = true;
+		
+		if (!existAttendance && !existLeave) return TLWStampLeakState.NOT_EXIST;
+		if (!existAttendance) return TLWStampLeakState.NO_ATTENDANCE;
+		if (!existLeave) return TLWStampLeakState.NO_LEAVE;
+		return TLWStampLeakState.EXIST;
 	}
 }

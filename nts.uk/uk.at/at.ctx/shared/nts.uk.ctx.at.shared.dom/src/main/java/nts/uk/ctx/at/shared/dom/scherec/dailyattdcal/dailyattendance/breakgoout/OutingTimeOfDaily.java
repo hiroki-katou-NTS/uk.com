@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.TemporaryFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.service.ActualWorkTimeSheetListService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
@@ -256,6 +257,12 @@ public class OutingTimeOfDaily {
 		if(outsideWorkTimeSheet.getHolidayWorkTimeSheet().isPresent()) {
 			for(HolidayWorkFrameTimeSheetForCalc holidayWorkFrameTimeSheetForCalc:outsideWorkTimeSheet.getHolidayWorkTimeSheet().get().getWorkHolidayTime()) {
 				list.addAll(holidayWorkFrameTimeSheetForCalc.getDedTimeSheetByAtr(DeductionAtr.Appropriate, conditionAtr));
+			}
+		}
+		// 臨時
+		if(outsideWorkTimeSheet.getTemporaryTimeSheet().isPresent()) {
+			for(TemporaryFrameTimeSheet temporaryFrameTimeSheet : outsideWorkTimeSheet.getTemporaryTimeSheet().get().getFrameTimeSheets()) {
+				list.addAll(temporaryFrameTimeSheet.getDedTimeSheetByAtr(DeductionAtr.Appropriate, conditionAtr));
 			}
 		}
 		
