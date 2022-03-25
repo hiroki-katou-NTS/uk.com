@@ -18,7 +18,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatu
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
@@ -29,7 +28,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.interval.In
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.HolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
@@ -210,7 +208,6 @@ public class IntegrationOfDailyHelperInScheRec {
 		@Injectable private static BreakTimeOfDaily breakTime;
 		@Injectable private static RaiseSalaryTimeOfDailyPerfor raise;
 		@Injectable private static WorkTimes workTimes;
-		@Injectable private static TemporaryTimeOfDaily temporaly;
 		@Injectable private static ShortWorkTimeOfDaily shorttime;
 		@Injectable private static HolidayOfDaily holiday;
 		@Injectable private static IntervalTimeOfDaily interval;
@@ -238,7 +235,7 @@ public class IntegrationOfDailyHelperInScheRec {
 								,	new TotalWorkingTime(
 												atdTime, atdTime, atdTime, AtdTimeHelper.createWithinOfDaily(withinTime, withinAmount), excess
 											,	Collections.emptyList(), Collections.emptyList(), breakTime, Collections.emptyList()
-											,	raise, workTimes, temporaly, shorttime, holiday, interval
+											,	raise, workTimes, shorttime, holiday, interval
 										)
 								, divTime, AtdTimeHelper.createPremiumOfDaily(premiumTime, premiumAmount) )
 						,	stay, budget, unEmploy

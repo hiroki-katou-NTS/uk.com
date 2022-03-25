@@ -136,7 +136,6 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 			/** 1.2: [not 勤務予定．isEmpty]:一日中に作業予定を作成する(Require, 作業コード)*/
 			if(optional.isPresent()) {
 				WorkSchedule workSchedule = optional.get();
-				
 				workSchedule.createTaskScheduleForWholeDay(require, companyId, new TaskCode(command.getTaskCode()));
 				
 				/** 2: persist*/
@@ -244,12 +243,6 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 			if(listAffJobTitleHis.isEmpty())
 				return null;
 			return listAffJobTitleHis.get(0);
-		}
-
-		@Override
-		public SharedAffWorkPlaceHisImport getAffWorkplaceHistory(String employeeId, GeneralDate standardDate) {
-			Optional<SharedAffWorkPlaceHisImport> rs = sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, standardDate);
-			return rs.isPresent() ? rs.get() : null;
 		}
 
 		@Override

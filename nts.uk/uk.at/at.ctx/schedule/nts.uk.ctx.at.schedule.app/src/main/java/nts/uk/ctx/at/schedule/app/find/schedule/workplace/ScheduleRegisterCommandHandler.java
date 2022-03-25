@@ -451,16 +451,7 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
             if(listAffJobTitleHis.isEmpty())
                 return null;
             return listAffJobTitleHis.get(0);
-        }
-
-        @Override
-        public SharedAffWorkPlaceHisImport getAffWorkplaceHistory(String employeeId, GeneralDate standardDate) {
-//            Optional<SharedAffWorkPlaceHisImport> rs = sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, standardDate);
-//            return rs.isPresent() ? rs.get() : null;
-            return sharedAffWorkPlaceHisCache.get(standardDate, e ->
-                sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, standardDate)
-                .map(h -> DateHistoryCache.Entry.of(h.getDateRange(), h))).orElse(null);
-        }
+        }    
 
         @Override
         public SClsHistImport getClassificationHistory(String employeeId, GeneralDate standardDate) {

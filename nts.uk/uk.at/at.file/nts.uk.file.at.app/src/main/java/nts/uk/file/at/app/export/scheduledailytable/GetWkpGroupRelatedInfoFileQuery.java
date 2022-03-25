@@ -169,47 +169,48 @@ public class GetWkpGroupRelatedInfoFileQuery {
                 targetOrg
         );
 
-        SortSetting sortSetting = sortSettingRepo.get(AppContexts.user().companyId()).orElseGet(() -> {
-            throw new RuntimeException("SortSetting Not Found!");
+        sortSettingRepo.get(AppContexts.user().companyId()).ifPresent(sortSetting -> {
+            List<String> finalEmployeeIds = sortSetting.sort(
+                    new SortSetting.Require() {
+                        @Override
+                        public List<BelongScheduleTeam> getScheduleTeam(List<String> empIDs) {
+                            return belongScheduleTeamRepo.get(companyId, empIDs);
+                        }
+                        @Override
+                        public List<EmployeeRank> getEmployeeRanks(List<String> lstSID) {
+                            return employeeRankRepo.getAll(lstSID);
+                        }
+                        @Override
+                        public Optional<RankPriority> getRankPriorities() {
+                            return rankRepo.getRankPriority(companyId);
+                        }
+                        @Override
+                        public List<EmployeePosition> getPositionEmps(GeneralDate ymd, List<String> lstEmp) {
+                            return syJobTitleAdapter.findSJobHistByListSIdV2(lstEmp, ymd);
+                        }
+                        @Override
+                        public List<PositionImport> getCompanyPosition(GeneralDate ymd) {
+                            return syJobTitleAdapter.findAll(companyId, ymd);
+                        }
+                        @Override
+                        public List<EmpClassifiImport> getEmpClassifications(GeneralDate ymd, List<String> lstEmpId) {
+                            return syClassificationAdapter.getByListSIDAndBasedate(ymd, lstEmpId);
+                        }
+                        @Override
+                        public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp, GeneralDate referenceDate) {
+                            return empMedicalWorkStyleHisRepo.get(listEmp, referenceDate);
+                        }
+                        @Override
+                        public List<NurseClassification> getListCompanyNurseCategory() {
+                            return nurseClassificationRepo.getListCompanyNurseCategory(companyId);
+                        }
+                    },
+                    period.end(),
+                    employeeIds
+            );
+            employeeIds.clear();
+            employeeIds.addAll(finalEmployeeIds);
         });
-        employeeIds = sortSetting.sort(
-                new SortSetting.Require() {
-                    @Override
-                    public List<BelongScheduleTeam> getScheduleTeam(List<String> empIDs) {
-                        return belongScheduleTeamRepo.get(companyId, empIDs);
-                    }
-                    @Override
-                    public List<EmployeeRank> getEmployeeRanks(List<String> lstSID) {
-                        return employeeRankRepo.getAll(lstSID);
-                    }
-                    @Override
-                    public Optional<RankPriority> getRankPriorities() {
-                        return rankRepo.getRankPriority(companyId);
-                    }
-                    @Override
-                    public List<EmployeePosition> getPositionEmps(GeneralDate ymd, List<String> lstEmp) {
-                        return syJobTitleAdapter.findSJobHistByListSIdV2(lstEmp, ymd);
-                    }
-                    @Override
-                    public List<PositionImport> getCompanyPosition(GeneralDate ymd) {
-                        return syJobTitleAdapter.findAll(companyId, ymd);
-                    }
-                    @Override
-                    public List<EmpClassifiImport> getEmpClassifications(GeneralDate ymd, List<String> lstEmpId) {
-                        return syClassificationAdapter.getByListSIDAndBasedate(ymd, lstEmpId);
-                    }
-                    @Override
-                    public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp, GeneralDate referenceDate) {
-                        return empMedicalWorkStyleHisRepo.get(listEmp, referenceDate);
-                    }
-                    @Override
-                    public List<NurseClassification> getListCompanyNurseCategory() {
-                        return nurseClassificationRepo.getListCompanyNurseCategory(companyId);
-                    }
-                },
-                period.end(),
-                employeeIds
-        );
 
         Map<String, EmployeeInformationImport> mapEmpInfo = employeeInformationAdapter.getEmployeeInfo(new EmployeeInformationQueryDtoImport(
                 employeeIds,

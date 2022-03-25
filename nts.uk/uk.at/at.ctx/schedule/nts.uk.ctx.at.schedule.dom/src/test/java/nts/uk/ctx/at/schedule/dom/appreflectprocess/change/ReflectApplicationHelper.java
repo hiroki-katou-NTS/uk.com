@@ -166,7 +166,7 @@ public class ReflectApplicationHelper {
 
 		// 日別勤怠の臨時出退勤
 		Optional<TemporaryTimeOfDailyAttd> tempTime = Optional
-				.of(new TemporaryTimeOfDailyAttd(new WorkTimes(1), timeLeavingWorks));
+				.of(new TemporaryTimeOfDailyAttd(timeLeavingWorks));
 
 		// 日別勤怠の外出時間帯
 		OutingTimeSheet outSheet = new OutingTimeSheet(new OutingFrameNo(1),

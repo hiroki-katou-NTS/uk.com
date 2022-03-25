@@ -1,5 +1,10 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -53,4 +58,45 @@ public class BonusPayTime {
 				TimeWithCalculation.sameTime(new AttendanceTime(0)));
 	}
 
+	/**
+	 * 加算する
+	 * @param other 他の加給時間
+	 * @return 加算後の加給時間
+	 */
+	public BonusPayTime add(BonusPayTime other) {
+		return new BonusPayTime(
+				this.BonusPayTimeItemNo,
+				this.bonusPayTime.addMinutes(other.getBonusPayTime().valueAsMinutes()),
+				this.withinBonusPay.addMinutes(
+						other.getWithinBonusPay().getTime(),
+						other.getWithinBonusPay().getCalcTime()),
+				this.excessBonusPayTime.addMinutes(
+						other.getExcessBonusPayTime().getTime(),
+						other.getExcessBonusPayTime().getCalcTime()));
+	}
+	
+	/**
+	 * 加給時間Listの累計
+	 * @param bonusPayTimeList 加給時間List
+	 * @return 累計後の加給時間List
+	 */
+	public static List<BonusPayTime> sumBonusPayTimeList(List<BonusPayTime> bonusPayTimeList) {
+		
+		// 累計後Map
+		Map<Integer, BonusPayTime> sumBonusPayTimeMap = new HashMap<>();
+		
+		for (BonusPayTime bonusPayTime : bonusPayTimeList) {
+			int itemNo = bonusPayTime.BonusPayTimeItemNo;
+			if (sumBonusPayTimeMap.containsKey(itemNo)) {
+				BonusPayTime source = sumBonusPayTimeMap.get(itemNo);
+				sumBonusPayTimeMap.replace(itemNo, source.add(bonusPayTime));
+			}
+			else {
+				sumBonusPayTimeMap.put(bonusPayTime.BonusPayTimeItemNo, bonusPayTime);
+			}
+		}
+		return sumBonusPayTimeMap.values().stream()
+				.sorted((a, b) -> a.BonusPayTimeItemNo - b.BonusPayTimeItemNo)
+				.collect(Collectors.toList());
+	}
 }

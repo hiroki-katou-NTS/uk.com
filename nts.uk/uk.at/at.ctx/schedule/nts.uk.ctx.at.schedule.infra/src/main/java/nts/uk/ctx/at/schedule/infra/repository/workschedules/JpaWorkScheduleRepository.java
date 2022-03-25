@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.database.DatabaseProduct;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
@@ -853,7 +855,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			Map<Pair<String, GeneralDate>, List<KscdtSchComeLate>> mapPairComeLate = this.getKscdtSchComeLates(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchGoingOut>> mapPairGoingOut = this.getKscdtSchGoingOuts(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchLeaveEarly>> mapPairLeaveEarly = this.getKscdtSchLeaveEarlys(listEmp, period);
-			
+
 			// WorkSchedule
 			Map<Pair<String, GeneralDate>, KscdtSchBasicInfo> mapPairSchBasicInfo = this.getSchBasicInfo(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchEditState>> mapPairSchEditState = this.getSchEditState(listEmp, period);
@@ -891,7 +893,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 							scheTime.kscdtSchComeLate = mapPairComeLate.getOrDefault(key, new ArrayList<>());
 							scheTime.kscdtSchGoingOut = mapPairGoingOut.getOrDefault(key, new ArrayList<>());
 							scheTime.kscdtSchLeaveEarly = mapPairLeaveEarly.getOrDefault(key, new ArrayList<>());
-							
 							basicInfo.kscdtSchTime = scheTime;
 						}
 
@@ -938,7 +939,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " , KSCDT_SCH_BASIC_INFO.NURSE_LICENSE_ATR, KSCDT_SCH_BASIC_INFO.IS_NURSE_ADMINISTRATOR, KSCDT_SCH_BASIC_INFO.BONUS_PAY_CD"
 				+ " FROM KSCDT_SCH_BASIC_INFO"
 				+ " WHERE KSCDT_SCH_BASIC_INFO.SID IN " + listEmp + " AND KSCDT_SCH_BASIC_INFO.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
-
 		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
 			listSchBasicInfo = new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 				String sid = rs.getString("SID");
@@ -959,7 +959,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				String workplaceGroupId = rs.getString("WKP_GROUP_ID");
 				Integer nursingLicenseClass = rs.getInt("NURSE_LICENSE_ATR");
 				Boolean nursingManager = rs.getBoolean("IS_NURSE_ADMINISTRATOR");
-				String bonusPaySettingCode = rs.getString("BONUS_PAY_CD");	
+				String bonusPaySettingCode = rs.getString("BONUS_PAY_CD");
 				
 				return new KscdtSchBasicInfo(new KscdtSchBasicInfoPK(sid, ymd)
 							, cid, confirmedATR, empCd, jobId, wkpId, clsCd, busTypeCd

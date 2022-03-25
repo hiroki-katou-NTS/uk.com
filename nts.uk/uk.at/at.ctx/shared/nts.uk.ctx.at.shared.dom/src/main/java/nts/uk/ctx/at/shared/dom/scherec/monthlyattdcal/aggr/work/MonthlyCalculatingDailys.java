@@ -499,7 +499,6 @@ public class MonthlyCalculatingDailys {
 												beforeActualWork.getTotalWorkingTime().getOutingTimeOfDailyPerformance(),
 												beforeActualWork.getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor(),
 												beforeActualWork.getTotalWorkingTime().getWorkTimes(),
-												beforeActualWork.getTotalWorkingTime().getTemporaryTime(),
 												beforeActualWork.getTotalWorkingTime().getShotrTimeOfDaily(),
 												new HolidayOfDaily(
 														beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getAbsence(),

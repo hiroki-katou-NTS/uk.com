@@ -55,7 +55,8 @@ public class TemporaryWorkTimesOfMonthly implements Serializable{
 
 		if (attendanceTime == null) return;
 
-		val temporatyDaily = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getTemporaryTime();		
+		val temporatyDaily = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+				.getExcessOfStatutoryTimeOfDaily().getTemporaryTime();		
 		// 勤務回数を計算
 		this.times = this.times.addTimes(temporatyDaily.getTemporaryTime().size());
 		//　勤務時間を計算する

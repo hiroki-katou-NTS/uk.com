@@ -57,7 +57,11 @@ public class EmpMedicalWorkFinder implements PeregFinder<EmpMedicalWorkDto>{
 	
 	public Optional<EmpMedicalWorkStyleHistory> getEmpMedicalWorkHist(PeregQuery query) {
 		if(query.getInfoId() == null){
-			return empMedicalWorkRepo.getHist(query.getEmployeeId(), query.getStandardDate());
+			if (query.getStandardDate() != null) {
+				return empMedicalWorkRepo.getHist(query.getEmployeeId(), query.getStandardDate());
+			} else {
+				return Optional.empty();
+			}
 		}else{
 			return empMedicalWorkRepo.getHistByHistId(query.getInfoId());
 		}

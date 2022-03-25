@@ -367,14 +367,6 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 			return listAffJobTitleHis.get(0);
 		}
 		
-		// TODO team C delete
-		// implements AffiliationInforOfDailyAttd.Require
-		@Override
-		public SharedAffWorkPlaceHisImport getAffWorkplaceHistory(String employeeId, GeneralDate standardDate) {
-			Optional<SharedAffWorkPlaceHisImport> rs = sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, standardDate);
-			return rs.isPresent() ? rs.get() : null;
-		}
-		
 		// implements AffiliationInforOfDailyAttd.Require
 		@Override
 		public SClsHistImport getClassificationHistory(String employeeId, GeneralDate standardDate) {

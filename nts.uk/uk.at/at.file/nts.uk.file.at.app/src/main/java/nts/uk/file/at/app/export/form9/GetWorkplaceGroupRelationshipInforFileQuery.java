@@ -158,7 +158,7 @@ public class GetWorkplaceGroupRelationshipInforFileQuery {
         @Override
         public Optional<EmployeeCodeAndDisplayNameImport> getPersonEmployeeBasicInfo(String employeeId) {
         	return this.employeeShareAdap.getEmployeeCodeAndDisplayNameImportByEmployeeIds(Arrays.asList(employeeId)).stream()
-        			.filter( e -> e.getEmployeeCode().equals(employeeId) )
+        			.filter( e -> e.getEmployeeId().equals(employeeId) )
         			.findFirst();
         }
 
