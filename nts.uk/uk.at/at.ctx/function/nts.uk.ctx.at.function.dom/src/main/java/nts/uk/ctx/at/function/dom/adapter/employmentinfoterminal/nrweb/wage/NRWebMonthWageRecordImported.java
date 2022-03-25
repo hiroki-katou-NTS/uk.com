@@ -5,10 +5,11 @@ import lombok.Getter;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
- * @author sakuratani
- *
- *         月間年間賃金実績Imported
- */
+* @author sakuratani
+*
+*			月間年間賃金実績Imported
+*         
+*/
 @Getter
 @AllArgsConstructor
 public class NRWebMonthWageRecordImported {

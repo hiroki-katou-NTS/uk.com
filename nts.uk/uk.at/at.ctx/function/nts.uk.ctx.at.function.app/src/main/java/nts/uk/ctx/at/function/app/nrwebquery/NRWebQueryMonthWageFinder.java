@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.nrwebquery;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -12,10 +13,10 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.nrweb.wage.DailyRecordPeriodAdapter;
-import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.nrweb.wage.NRWebGetMonthWageRecordAdapter;
-import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.nrweb.wage.NRWebGetMonthWageScheduleAdapter;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.nrweb.wage.NRWebMonthWageRecordImported;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.nrweb.wage.NRWebMonthWageScheduleImported;
+import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.nrweb.wage.month.NRWebGetMonthWageRecordAdapter;
+import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.nrweb.wage.month.NRWebGetMonthWageScheduleAdapter;
 import nts.uk.ctx.at.function.dom.adapter.estimateamount.EstimateAmountSettingImport;
 import nts.uk.ctx.at.function.dom.adapter.estimateamount.GetEstimateAmountAdapter;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.nrweb.common.NRWebQuerySidDateParameter;
@@ -28,19 +29,19 @@ public class NRWebQueryMonthWageFinder implements NRWebQueryFinder {
 
 	@Inject
 	private NRWebRequireImpl nrWebRequireImpl;
-	
+
 	@Inject
 	private DailyRecordPeriodAdapter dailyRecordPeriodAdapter;
-	
+
 	@Inject
 	private NRWebGetMonthWageRecordAdapter nrWebGetMonthWageRecordAdapter;
-	
+
 	@Inject
 	private NRWebGetMonthWageScheduleAdapter nrWebGetMonthWageScheduleAdapter;
-	
+
 	@Inject
 	private GetEstimateAmountAdapter getEstimateAmountAdapter;
-	
+
 	@Override
 	public Response process(NRWebQuerySidDateParameter queryParam) {
 		RequireImpl impl = new RequireImpl();
@@ -61,18 +62,17 @@ public class NRWebQueryMonthWageFinder implements NRWebQueryFinder {
 		}
 
 		@Override
-		public DatePeriod getPeriodDuringDailyDataExists(String employeeId, DatePeriod period) {
-			return dailyRecordPeriodAdapter.getPeriodDuringDailyDataExists(employeeId, period);
+		public Optional<DatePeriod> getPeriodDuringDailyDataExists(String employeeId, DatePeriod period) {
+			return dailyRecordPeriodAdapter.get(employeeId, period);
 		}
 
-		@Override
-		public List<NRWebMonthWageRecordImported> getMonthWageRecord(String cid, String employeeId, DatePeriod period) {
-			return nrWebGetMonthWageRecordAdapter.getDataMonthWageRecord(cid, employeeId, period);
+		public NRWebMonthWageRecordImported getMonthWageRecord(String employeeId, DatePeriod period) {
+			return nrWebGetMonthWageRecordAdapter.get(employeeId, period);
 		}
 
-		@Override
-		public List<NRWebMonthWageScheduleImported> getMonthWageSchedule(String cid, String employeeId, DatePeriod period) {
-			return nrWebGetMonthWageScheduleAdapter.GetDataMonthWageSchedule(cid, employeeId, period);
+		public NRWebMonthWageScheduleImported getMonthWageSchedule(String employeeId,
+				DatePeriod period) {
+			return nrWebGetMonthWageScheduleAdapter.get(employeeId, period);
 		}
 
 		@Override

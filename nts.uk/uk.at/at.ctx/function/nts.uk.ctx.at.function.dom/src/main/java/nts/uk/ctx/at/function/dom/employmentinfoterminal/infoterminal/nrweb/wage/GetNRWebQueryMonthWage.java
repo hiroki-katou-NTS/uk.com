@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.nrweb.wage;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,7 +14,7 @@ import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.nrweb.wage.NRWe
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.nrweb.wage.NRWebMonthWageAndEmployeeId;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.nrweb.wage.NRWebMonthWageRecordImported;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.nrweb.wage.NRWebMonthWageScheduleImported;
-import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.nrweb.wage.SchedulePeriodAndRecordPeriod;
+import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.nrweb.wage.month.SchedulePeriodAndRecordPeriod;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.nrweb.common.NRWebQuerySidDateParameter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 
@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
  *
  *         NRWeb月間賃金を取得
 /**
- * @author atsuki_sakuratani
+ * @author sakuratani
  *
  */
 public class GetNRWebQueryMonthWage {
@@ -36,65 +36,32 @@ public class GetNRWebQueryMonthWage {
 		DatePeriod period = require.getClosurePeriod(closure, param.getNrWebQuery().getYmFormat());
 
 		// 賃金を取得する
-		return getWage(require, param.getCid(), param.getSid(), period);
+		return getWage(require, param.getSid(), period);
 
 	}
 
 	// [2] 勤務予定と勤務実績から賃金を取得する
-	public static NRWebMonthWageAndEmployeeId getWage(Require require, String cid, String employeeId, DatePeriod period) {
+	public static NRWebMonthWageAndEmployeeId getWage(Require require, String employeeId, DatePeriod period) {
 
 		// 予定期間と実績期間の処理時間を取得する
 		SchedulePeriodAndRecordPeriod periodSR = calcPeriod(require, period, employeeId);
 
 		// 月間賃金実績を取得する
-		List<NRWebMonthWageRecordImported> wageRecords = periodSR.getPeriodRecord()
-				.map(c -> require.getMonthWageRecord(cid, employeeId, c))
-				.orElse(new ArrayList<>());
+		Optional<NRWebMonthWageRecordImported> wageRecords = periodSR.getPeriodRecord()
+				.map(c -> require.getMonthWageRecord(employeeId, c));
 
 		// 月間賃金予定を取得する
-		List<NRWebMonthWageScheduleImported> wageSchedules = periodSR.getPeriodSchedule()
-				.map(c -> require.getMonthWageSchedule(cid, employeeId, c))
-				.orElse(new ArrayList<>());
+		Optional<NRWebMonthWageScheduleImported> wageSchedules = periodSR.getPeriodSchedule()
+				.map(c -> require.getMonthWageSchedule(employeeId, c));
 
 		// 勤務予定と勤務実績から賃金を取得する
 		NRWebMonthWage nRWebMonthWage = createMonthWage(wageRecords, wageSchedules, period);
-		return new NRWebMonthWageAndEmployeeId(nRWebMonthWage, employeeId, Optional.empty());
+		return new NRWebMonthWageAndEmployeeId(employeeId, nRWebMonthWage, Optional.empty());
 
 	}
 
-	// private
-	// [pvt-1] 月間賃金を作成する
-	private static NRWebMonthWage createMonthWage(List<NRWebMonthWageRecordImported> wageRecords,
-			List<NRWebMonthWageScheduleImported> wageSchedules, DatePeriod period) {
-
-		// 目安時間を合計する
-		int measureTime = wageRecords.stream().collect(Collectors.summingInt(x -> x.getMeasure().getTime().v()));
-
-		// 現在勤務時間と現在勤務金額を合計する
-		ItemValue currentWorkTimeAndAmount = sumValue(
-				wageRecords.stream().map(x -> x.getCurrentWork()).collect(Collectors.toList()));
-
-		// 現在勤務残業時間と現在勤務残業金額を合計する
-		ItemValue currentOverworkTimeAndAmount = sumValue(
-				wageRecords.stream().map(x -> x.getCurrentOvertime()).collect(Collectors.toList()));
-
-		// 予定勤務時間と予定勤務金額を合計する
-		ItemValue scheduleWorkTimeAndAmount = sumValue(
-				wageSchedules.stream().map(x -> x.getScheduleWork()).collect(Collectors.toList()));
-
-		// 予定勤務残業時間と予定勤務残業金額を合計する
-		ItemValue scheduleOverworkTimeAndAmount = sumValue(
-				wageSchedules.stream().map(x -> x.getScheduleOvertime()).collect(Collectors.toList()));
-
-		// 月間賃金を作成する
-		return new NRWebMonthWage(period,
-				new ItemValue(measureTime, 0l, Optional.empty()), currentWorkTimeAndAmount,
-				currentOverworkTimeAndAmount, scheduleWorkTimeAndAmount, scheduleOverworkTimeAndAmount);
-
-	}
-
-	// [pvt-2] 勤務時間と勤務金額を合計する
-	private static ItemValue sumValue(List<ItemValueImported> itemValues) {
+	// [3] 勤務時間と勤務金額を合計する
+	public static ItemValue sumValue(List<ItemValueImported> itemValues) {
 
 		// 項目値.勤務時間を合計する
 		int workTime = itemValues.stream().collect(Collectors.summingInt(x -> x.getTime().v()));
@@ -103,20 +70,54 @@ public class GetNRWebQueryMonthWage {
 		long workAmount = itemValues.stream().collect(Collectors.summingLong(x -> x.getAmount().v()));
 
 		// 項目値をreturnする
-		return new ItemValue(workTime, workAmount, Optional.empty());
+		return new ItemValue(workTime, workAmount);
 
 	}
 
-	// [pvt-3] 予定期間と実績期間の処理時間を計算する
+	// private
+	// [pvt-1] 月間賃金を作成する
+	private static NRWebMonthWage createMonthWage(Optional<NRWebMonthWageRecordImported> wageRecords,
+			Optional<NRWebMonthWageScheduleImported> wageSchedules, DatePeriod period) {
+
+		// 目安時間を合計する
+		int measureTime = wageRecords.map(x -> x.getMeasure().getTime().v()).orElse(0)
+				+ wageSchedules.map(x -> x.getMeasure().getTime().v()).orElse(0);
+
+		// 現在勤務時間と現在勤務金額を合計する
+		ItemValue currentWorkTimeAndAmount = sumValue(
+				Arrays.asList(wageRecords.map(x -> x.getCurrentWork()).orElse(ItemValueImported.createDefault())));
+
+		// 現在勤務残業時間と現在勤務残業金額を合計する
+		ItemValue currentOverworkTimeAndAmount = sumValue(
+				Arrays.asList(wageRecords.map(x -> x.getCurrentOvertime()).orElse(ItemValueImported.createDefault())));
+		// 予定勤務時間と予定勤務金額を合計する
+		ItemValue scheduleWorkTimeAndAmount = sumValue(
+				Arrays.asList(wageSchedules.map(x -> x.getScheduleWork()).orElse(ItemValueImported.createDefault())));
+
+		// 予定勤務残業時間と予定勤務残業金額を合計する
+		ItemValue scheduleOverworkTimeAndAmount = sumValue(
+				Arrays.asList(
+						wageSchedules.map(x -> x.getScheduleOvertime()).orElse(ItemValueImported.createDefault())));
+
+		// 月間賃金を作成する
+		return new NRWebMonthWage(period,
+				new ItemValue(measureTime, 0l), currentWorkTimeAndAmount,
+				currentOverworkTimeAndAmount, scheduleWorkTimeAndAmount, scheduleOverworkTimeAndAmount);
+
+	}
+
+	// [pvt-2] 予定期間と実績期間の処理時間を計算する
 	private static SchedulePeriodAndRecordPeriod calcPeriod(Require require, DatePeriod period,
 			String employeeId) {
 
 		// 日別実績データが存在する期間を取得する
-		DatePeriod dailyData = require.getPeriodDuringDailyDataExists(employeeId, period);
+		Optional<DatePeriod> dailyData = require.getPeriodDuringDailyDataExists(employeeId, period);
 
 		// 実績期間を計算する
-		Optional<DatePeriod> periodRecord = dailyData.end().afterOrEquals(GeneralDate.today())
-				? Optional.of(new DatePeriod(dailyData.start(), GeneralDate.today().addDays(-1)))
+		Optional<DatePeriod> periodRecord = dailyData.isPresent()
+				? dailyData.get().end().afterOrEquals(GeneralDate.today())
+						? Optional.of(new DatePeriod(dailyData.get().start(), GeneralDate.today().addDays(-1)))
+						: Optional.empty()
 				: Optional.empty();
 
 		// 予定期間を計算する
@@ -147,15 +148,15 @@ public class GetNRWebQueryMonthWage {
 
 		// [R-3] 日別実績データが存在する期間を取得
 		// DailyRecordPeriodAdapter
-		public DatePeriod getPeriodDuringDailyDataExists(String employeeId, DatePeriod period);
+		public Optional<DatePeriod> getPeriodDuringDailyDataExists(String employeeId, DatePeriod period);
 
 		// [R-4] NRWeb照会月間賃金実績を取得
 		// NRWebGetMonthWageRecordAdapter
-		public List<NRWebMonthWageRecordImported> getMonthWageRecord(String cid, String employeeId, DatePeriod period);
+		public NRWebMonthWageRecordImported getMonthWageRecord(String employeeId, DatePeriod period);
 
 		// [R-5] NRWeb照会月間賃金予定を取得
 		// NRWebGetMonthWageScheduleAdapter
-		public List<NRWebMonthWageScheduleImported> getMonthWageSchedule(String cid, String employeeId, DatePeriod period);
+		public NRWebMonthWageScheduleImported getMonthWageSchedule(String employeeId, DatePeriod period);
 
 	}
 }

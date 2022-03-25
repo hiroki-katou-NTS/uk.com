@@ -9,10 +9,11 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceAmountMonth;
 
 /**
- * @author sakuratani
- *
- *         項目値Imported
- */
+* @author sakuratani
+*
+*			項目値Imported
+*
+*/
 @Getter
 @AllArgsConstructor
 public class ItemValueImported {
@@ -25,5 +26,11 @@ public class ItemValueImported {
 
 	//色
 	private Optional<ColorCode> color;
+
+	public static ItemValueImported createDefault() {
+		return new ItemValueImported(new AttendanceTimeMonthWithMinus(0), new AttendanceAmountMonth(0),
+				Optional.empty());
+
+	}
 
 }

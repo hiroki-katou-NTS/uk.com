@@ -7,10 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * @author sakuratani
- *
- *         項目値
- */
+* @author sakuratani
+*
+*			項目値
+*         
+*/
 @Getter
 @AllArgsConstructor
 public class ItemValue {
@@ -23,7 +24,7 @@ public class ItemValue {
 
 	// 色
 	private Optional<String> color;
-	
+
 	public ItemValue(int time, long amount) {
 		this(time, amount, Optional.empty());
 	}
@@ -56,5 +57,18 @@ public class ItemValue {
 	private String amountFormat() {
 		DecimalFormat formatter = new DecimalFormat("###,###,###,###");
 		return formatter.format(amount);
+	}
+
+	// ItemValueクラスのクローン
+	public ItemValue clone() {
+		return new ItemValue(this.time, this.amount, this.color);
+	}
+
+	// ItemValue（金額と時間）の合計を算出する
+	public ItemValue add(ItemValue item) {
+		ItemValue dom = this.clone();
+		dom.time += item.getTime();
+		dom.amount += item.getAmount();
+		return dom;
 	}
 }

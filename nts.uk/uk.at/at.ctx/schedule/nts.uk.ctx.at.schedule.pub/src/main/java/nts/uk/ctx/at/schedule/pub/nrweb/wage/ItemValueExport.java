@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.pub.employmentinfoterminal.nrweb.monthwage;
+package nts.uk.ctx.at.schedule.pub.nrweb.wage;
 
 import java.util.Optional;
 
@@ -6,10 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * @author sakuratani
- *
- *         項目値Export
- */
+* @author sakuratani
+*
+*			項目値Export
+*         
+*/
 @Getter
 @AllArgsConstructor
 public class ItemValueExport {

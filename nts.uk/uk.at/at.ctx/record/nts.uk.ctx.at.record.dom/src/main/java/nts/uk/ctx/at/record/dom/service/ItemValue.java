@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.pub.nrweb.monthwage;
+package nts.uk.ctx.at.record.dom.service;
 
 import java.util.Optional;
 
@@ -8,19 +8,22 @@ import lombok.Getter;
 /**
  * @author sakuratani
  *
- *         項目値Export
+ *         項目値
  */
 @Getter
 @AllArgsConstructor
-public class ItemValueExport {
+public class ItemValue {
 
-	//時間
+	// 時間
 	private int time;
 
-	//金額
+	// 金額
 	private long amount;
 
-	//色
+	// 色
 	private Optional<String> color;
 
+	public ItemValue(int time, long amount) {
+		this(time, amount, Optional.empty());
+	}
 }

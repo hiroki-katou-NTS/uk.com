@@ -12,10 +12,11 @@ import nts.uk.ctx.at.function.dom.adapter.estimateamount.EstimateAmountDetailImp
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.nrweb.common.NRWebQueryMenuName;
 
 /**
- * @author sakuratani
- *
- *         月間賃金
- */
+* @author sakuratani
+*
+*			月間賃金
+*         
+*/
 @Getter
 @AllArgsConstructor
 public class NRWebMonthWage {
@@ -37,7 +38,7 @@ public class NRWebMonthWage {
 
 	// 計画勤務残業
 	private ItemValue scheduleOvertime;
-	
+
 	public void setMeasureAmount(long value) {
 		this.measure = new ItemValue(this.measure.getTime(), value);
 	}
@@ -89,7 +90,8 @@ public class NRWebMonthWage {
 	}
 
 	// [5] XMLを作る
-	public String createXml(NRWebQueryMenuName menuName, YearMonth ym, Optional<Integer> year, List<EstimateAmountDetailImport> dataAmountSetting) {
+	public String createXml(NRWebQueryMenuName menuName, YearMonth ym, Optional<Integer> year,
+			List<EstimateAmountDetailImport> dataAmountSetting) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("<kindata type='5'><item type='head'  repbtn='no'>");
 		String yearMonthOrYear = menuName == NRWebQueryMenuName.MONTH_WAGE

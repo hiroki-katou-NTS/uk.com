@@ -1,14 +1,15 @@
-package nts.uk.ctx.at.schedule.pub.nrweb.monthwage;
+package nts.uk.ctx.at.schedule.pub.nrweb.wage;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
- * @author sakuratani
- *
- *         月間年間賃金予定Export
- */
+* @author sakuratani
+*
+*			月間年間賃金予定Export
+*
+*/
 @Getter
 @AllArgsConstructor
 public class NRWebMonthWageScheduleExport {
