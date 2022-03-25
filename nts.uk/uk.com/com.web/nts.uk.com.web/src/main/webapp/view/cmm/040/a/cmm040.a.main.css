@@ -46,7 +46,7 @@
   margin-bottom: 5px;
 }
 
-.ui-igcombo-field , .ui-corner-all ,.nts-combo-item , .nts-column{
+.ui-igcombo-field , .ui-corner-all ,.nts-combo-item , .nts-column , .ui-igcombo-nomatchfound{
 	     font-size: 0.7rem !important;
 }
 .nts-combo-column-0{
