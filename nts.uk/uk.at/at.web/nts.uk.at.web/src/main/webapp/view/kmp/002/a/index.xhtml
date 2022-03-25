@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+  <ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+      <com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber
+			</com:ValidatorScript>
+      <com:scriptfile set="IGNITE" />
+      <com:stylefile path="kmp002.a.style.css" />
+      <com:scriptfile path="kmp002.a.vm.js" />
+    </ui:define>
+
+    <ui:define name="content">
+      <div id="functions-area">
+				<div class="container">
+					<button tabindex="1" id="A1_1" data-bind="click: showFormInput, disable: disableNewBtn()">#{i18n.getText('KMP002_1')}</button>
+					<button tabindex="2" id="A1_2" class="proceed" data-bind="click: register, disable: disableRegisterBtn()">#{i18n.getText('KMP002_2')}</button>
+					<button tabindex="3" id="A1_3" class="danger" data-bind="click: deleteCard, disable: disableDeleteBtn()">#{i18n.getText('KMP002_3')}</button>
+					<button tabindex="4" id="A1_4" data-bind="click: openDialogKMP002b">#{i18n.getText('KMP002_4')}</button>
+				</div>
+			</div>
+      <div id="contents-area">
+        <div class="container-content">
+          <div class="row flex valign-center">
+            <div id="A2_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KMP002_12')}</div>
+            <div tabindex="5" id="A2_2" class="date-picker"
+              data-bind="ntsDatePicker: {
+                name: '#[KMP002_12]',
+                value: date,
+                dateFormat: 'YYYY/MM/DD',
+                valueFormat: 'YYYYMMDD',
+                enable: disableDate() === false
+              }"></div>
+            <button tabindex="6" id="A2_3" data-bind="click: applyBaseDate, disable: disableDate()">#{i18n.getText('KMP002_13')}</button>
+          </div>
+          <div class="two-panel">
+            <div class="grid-list left-panel">
+              <table id="single-list" data-bind="ntsGridList: {
+                name: '#[KMP002_5]',
+                height: '275px',
+                dataSource: supportCardList,
+                primaryKey: 'supportCardId',
+                columns: columns,
+                multiple: false,
+                value: currentCard
+              }"></table>
+            </div>
+            <div class="right-panel" data-bind="with: supportCard">
+              <div class="flex valign-center">
+                <div id="A2_11" style="width: 30%" data-bind="ntsFormLabel: {required: true, constraint: 'SupportCardNumber'}">#{i18n.getText('KMP002_6')}</div>
+                <input tabindex="7" id="A2_12"
+                  data-bind="ntsTextEditor: {
+                      name: '#[KMP002_6]',
+                      constraint: 'SupportCardNumber',
+                      value: supportCardNo,
+                      required: true,
+                      option: { textalign: 'left', width: '60px' }
+                    },
+                    disable: $parent.mode() === $parent.NORMAL_MODE,
+                    hasFocus: $parent.isFocusInput" />
+              </div>
+              <div class="flex valign-center" style="margin-top: 20px;">
+                <div id="A2_13" style="width: 30%;" data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Company')}</div>
+                <span id="A2_14" class="label" data-bind="text: companyCode"></span>
+                <span id="A2_15" class="label" style="margin-left: 15px;" data-bind="text: companyName"></span>
+              </div>
+              <div class="flex valign-center" style="margin-top: 20px;">
+                <div id="A2_16" style="width: 30%;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('Com_Workplace')}</div>
+                <button id="A2_17" data-bind="click: $parent.openDialogCDL008.bind($parent)">#{i18n.getText('KMP002_11')}</button>
+                <span id="A2_18" class="label" style="margin-left: 15px;" data-bind="text: workplaceCode"></span>
+                <span id="A2_19" class="label" style="margin-left: 15px;" data-bind="text: workplaceName"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+
+</html>

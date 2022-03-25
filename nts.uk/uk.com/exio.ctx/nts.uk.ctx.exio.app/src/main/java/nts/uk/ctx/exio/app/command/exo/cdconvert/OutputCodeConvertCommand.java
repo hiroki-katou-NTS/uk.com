@@ -31,6 +31,16 @@ public class OutputCodeConvertCommand
     private Long version;
     
     private List<CdConvertDetailCommand> listCdConvertDetail;
-    
 
+	public OutputCodeConvertCommand(String convertCode, String convertName, String cid, int acceptWithoutSetting,
+			Long version, List<CdConvertDetailCommand> listCdConvertDetail) {
+		super();
+		this.convertCode = convertCode;
+		this.convertName = convertName;
+		this.cid = cid;
+		this.acceptWithoutSetting = acceptWithoutSetting;
+		this.version = version;
+		this.listCdConvertDetail = listCdConvertDetail;
+	}
+    
 }

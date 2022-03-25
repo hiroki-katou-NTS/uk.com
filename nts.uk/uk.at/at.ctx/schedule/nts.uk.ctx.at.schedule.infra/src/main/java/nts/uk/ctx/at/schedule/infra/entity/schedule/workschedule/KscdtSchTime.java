@@ -58,6 +58,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.AbsenceOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.AnnualOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.HolidayOfDaily;
@@ -295,9 +296,9 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 	@JoinTable(name = "KSCDT_SCH_LEAVE_EARLY")
 	public List<KscdtSchLeaveEarly> kscdtSchLeaveEarly;
 
-	@OneToMany(targetEntity = KscdtSchTask.class, mappedBy = "kscdtSchTime", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinTable(name = "KSCDT_SCH_TASK")
-	public List<KscdtSchTask> kscdtSchTask;
+//	@OneToMany(targetEntity = KscdtSchTask.class, mappedBy = "kscdtSchTime", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+//	@JoinTable(name = "KSCDT_SCH_TASK")
+//	public List<KscdtSchTask> kscdtSchTask;
 
 	/**
 	 * 
@@ -311,7 +312,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		GeneralDate yMD = workSchedule.getYmd();
 		String sID = workSchedule.getEmployeeID();
 		KscdtSchTimePK pk = new KscdtSchTimePK(sID, yMD);
-		TaskSchedule task = workSchedule.getTaskSchedule();
+//		TaskSchedule task = workSchedule.getTaskSchedule();
 		ActualWorkingTimeOfDaily timeOfDailys = workSchedule.getOptAttendanceTime().get().getActualWorkingTimeOfDaily();
 		// 勤務予定．勤怠時間．勤務時間．総労働時間
 		TotalWorkingTime workingTime = timeOfDailys.getTotalWorkingTime();
@@ -434,9 +435,9 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 				.stream()
 				.map(c -> KscdtSchLeaveEarly.toEntity(sID, yMD, cID, c.getWorkNo().v(), c.getTimePaidUseTime()))
 				.collect(Collectors.toList());
-		AtomicInteger index = new AtomicInteger(1);
-		List<KscdtSchTask> lstKscdtSchTask = task.getDetails().stream()
-				.map(c -> KscdtSchTask.toEntity(sID, yMD, cID, c, index.getAndIncrement())).collect(Collectors.toList());
+//		AtomicInteger index = new AtomicInteger(1);
+//		List<KscdtSchTask> lstKscdtSchTask = task.getDetails().stream()
+//				.map(c -> KscdtSchTask.toEntity(sID, yMD, cID, c, index.getAndIncrement())).collect(Collectors.toList());
 
 		KscdtSchTime kscdtSchTime = new KscdtSchTime(pk, cID, // cid
 				workingTime.getWorkTimes() == null ? 0 : workingTime.getWorkTimes().v(), // count
@@ -488,7 +489,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 				timeOfDailys.getTimeDifferenceWorkingHours() == null ? 0
 						: timeOfDailys.getTimeDifferenceWorkingHours().v(), // staggeredWhTime
 				kscdtSchOvertimeWork, kscdtSchHolidayWork, kscdtSchBonusPay, kscdtSchPremium, kscdtSchShortTime,
-				listKscdtSchComeLate,listKscdtSchGoingOut,listKscdtSchLeaveEarly,lstKscdtSchTask,
+				listKscdtSchComeLate,listKscdtSchGoingOut,listKscdtSchLeaveEarly,
 				//ver5
 				timeOfDaily.getWithinWorkTimeAmount() == null ? 0 : timeOfDaily.getWithinWorkTimeAmount().v(), // prsWorkTimeAmount TODO :Xác nhận lại
 				timeOfDailys.getPremiumTimeOfDailyPerformance().getTotalWorkingTime() == null?0:timeOfDailys.getPremiumTimeOfDailyPerformance().getTotalWorkingTime().v(),//premiumWorkTimeTotal
@@ -529,7 +530,8 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily = new ExcessOfStatutoryTimeOfDaily(nightTime,
 				Optional.ofNullable(kscdtSchOvertimeWork.toDomain(overTimeOfDaily, overtimeWorks)),
 				Optional.ofNullable(kscdtSchHolidayWork.toDomain(this.extBindTimeHw, this.extMidNiteHdwTimeLghd,
-						this.extMidNiteHdwTimeIlghd, this.extMidNiteHdwTimePubhd, holidayWorks)));
+						this.extMidNiteHdwTimeIlghd, this.extMidNiteHdwTimePubhd, holidayWorks)),
+				new TemporaryTimeOfDaily(new ArrayList<>(), new TemporaryTimes(0)));
 		// raiseSalaryTimeOfDailyPerfor
 		KscdtSchBonusPay kscdtSchBonusPay = new KscdtSchBonusPay();
 		RaiseSalaryTimeOfDailyPerfor raiseSalaryTimeOfDailyPerfor = new RaiseSalaryTimeOfDailyPerfor(
@@ -563,7 +565,6 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 				.of(TimeWithCalculation.sameTime(new AttendanceTime(this.brkTotalTime)), TimeWithCalculation.sameTime(AttendanceTime.ZERO), TimeWithCalculation.sameTime(AttendanceTime.ZERO));
 		BreakTimeOfDaily breakTimeOfDaily = new BreakTimeOfDaily(toRecordTotalTime, null, new BreakTimeGoOutTimes(0), new AttendanceTime(0), new ArrayList<>());
 
-		TemporaryTimeOfDaily temporaryTime = new TemporaryTimeOfDaily(new ArrayList<>());
 		IntervalTimeOfDaily intervalTime = IntervalTimeOfDaily.of(new AttendanceClock(0), new AttendanceTime(0));
 
 		// #114431
@@ -606,7 +607,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		TotalWorkingTime totalWorkingTime = new TotalWorkingTime(new AttendanceTime(this.totalTime),
 				new AttendanceTime(0), new AttendanceTime(this.totalTimeAct), withinStatutoryTimeOfDaily,
 				excessOfStatutoryTimeOfDaily, lateTimeOfDaily, leaveEarlyTimeOfDaily, breakTimeOfDaily,
-				lateOutingTimeOfDaily, raiseSalaryTimeOfDailyPerfor, new WorkTimes(this.count), temporaryTime,
+				lateOutingTimeOfDaily, raiseSalaryTimeOfDailyPerfor, new WorkTimes(this.count),
 				shotrTime, holidayOfDaily, new AttendanceTime(vacationAddTime), intervalTime);
 
 		// 乖離時間
@@ -624,10 +625,11 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 				timeDiff, totalWorkingTime, divTime, premiumTime);
 
 		// Create Task
-		List<TaskScheduleDetail> details = kscdtSchTask.stream()
-				.map(task -> new TaskScheduleDetail(new TaskCode(task.taskCode), new TimeSpanForCalc(new TimeWithDayAttr(task.startClock), new TimeWithDayAttr(task.endClock))))
-				.collect(Collectors.toList());
-		TaskSchedule taskSchedule = new TaskSchedule(details);
+//		List<TaskScheduleDetail> details = kscdtSchTask.stream()
+//				.map(task -> new TaskScheduleDetail(new TaskCode(task.taskCode), new TimeSpanForCalc(new TimeWithDayAttr(task.startClock), new TimeWithDayAttr(task.endClock))))
+//				.collect(Collectors.toList());
+//		TaskSchedule taskSchedule = new TaskSchedule(details);
+		TaskSchedule taskSchedule = TaskSchedule.createWithEmptyList();
 
 		AttendanceTimeOfDailyAttendance optAttendanceTime = new AttendanceTimeOfDailyAttendance(null,
 				workingTimeOfDaily, null, null, null);
@@ -652,8 +654,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 			int hdspHourlyTime, int hdstkTime, int hdHourlyTime, int hdHourlyShortageTime, int absenceTime,
 			int vacationAddTime, int staggeredWhTime, List<KscdtSchOvertimeWork> overtimeWorks,
 			List<KscdtSchHolidayWork> holidayWorks, List<KscdtSchBonusPay> bonusPays, List<KscdtSchPremium> premiums,
-			List<KscdtSchShortTime> shortTimes,List<KscdtSchComeLate> kscdtSchComeLate,List<KscdtSchGoingOut> kscdtSchGoingOut,List<KscdtSchLeaveEarly> kscdtSchLeaveEarly,
-			List<KscdtSchTask> kscdtSchTask,
+			List<KscdtSchShortTime> shortTimes,List<KscdtSchComeLate> kscdtSchComeLate,List<KscdtSchGoingOut> kscdtSchGoingOut,List<KscdtSchLeaveEarly> kscdtSchLeaveEarly,			
 			int prsWorkTimeAmount,int premiumWorkTimeTotal,int premiumAmountTotal,int useDailyHDSub
 			) {
 		super();
@@ -702,7 +703,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		this.kscdtSchComeLate = kscdtSchComeLate;
 		this.kscdtSchGoingOut = kscdtSchGoingOut;
 		this.kscdtSchLeaveEarly = kscdtSchLeaveEarly;
-		this.kscdtSchTask = kscdtSchTask;
+//		this.kscdtSchTask = kscdtSchTask;
 		//ver5
 		this.prsWorkTimeAmount = prsWorkTimeAmount;
 		this.premiumWorkTimeTotal = premiumWorkTimeTotal;

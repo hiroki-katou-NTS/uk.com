@@ -11,7 +11,8 @@ public interface AggrPeriodTargetRepository {
 	 * @return
 	 */
 	List<AggrPeriodTarget> findAll (String aggrId);
-	
+	List<AggrPeriodTarget> findAll (List<String> aggrId);
+
 	void addTarget(List<AggrPeriodTarget> target);
 	
 	Optional<AggrPeriodTarget> findByAggr(String aggrId);

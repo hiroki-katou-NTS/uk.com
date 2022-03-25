@@ -25,13 +25,13 @@ public class WorkLocationDto {
 	private String workLocationName;
 	
 	/** 打刻範囲 . 半径*/
-	private int radius;
+	private Integer radius;
 	
 	/** 打刻範囲.地理座標.緯度*/
-	private double latitude;
+	private Double latitude;
 	
 	/** 打刻範囲.地理座標.経度*/
-	private double longitude;
+	private Double longitude;
 	
 	/** IPアドレス一覧*/
 	private List<Ipv4AddressDto>  listIPAddress;

@@ -194,6 +194,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					
 				}).then((successData: any) => {
 					if (successData) {
+						let errorMsgLst = successData.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorMsgLst;
+						if(!_.isEmpty(errorMsgLst)) {
+							vm.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
+		 								
+							});
+						}
 						vm.dataSource = successData;
 						vm.itemControlHandler();
 						vm.bindOverTimeWorks(vm.dataSource);
@@ -547,6 +553,13 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					});
 				})
 				return $.Deferred().resolve(false);	
+			}
+			if (failData.messageId == "Msg_3267") {
+				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
+					.then(() => {
+						$('#kaf000-a-component4-singleDate').focus();
+					});
+				return $.Deferred().resolve(false);
 			}
 			if(failData.messageId == "Msg_750"
 			|| failData.messageId == "Msg_1654"
@@ -1626,6 +1639,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			self.$blockui('show');
 			self.$ajax(API.changeAppDate, param)
 				.done((res: AppHdWorkDispInfo) => { 
+					let errorMsgLst = res.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorMsgLst;
+					if(!_.isEmpty(errorMsgLst)) {
+						self.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
+	 							
+						});
+					}
 					self.dataSource = res;
 					self.itemControlHandler();
 					self.bindOverTimeWorks(self.dataSource);
@@ -1634,7 +1653,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					self.bindHolidayTime(self.dataSource, 1);
 					self.bindOverTime(self.dataSource, 1);
 				})
-				.fail(() => {})
+				.fail((failData) => { self.$dialog.error(failData); })
 				.always(() => self.$blockui('hide'));
 		}
 

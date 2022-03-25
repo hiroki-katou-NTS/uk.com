@@ -125,11 +125,11 @@ public class DailyModifyMobileCommandFacade {
 		if (dataParent.getStateParam() != null && dataParent.getStateParam().getDateInfo() != null) {
 			DatePeriodInfo paramCommon = dataParent.getStateParam().getDateInfo();
 			AggrPeriodClosure aggrClosure = paramCommon.getLstClosureCache().stream()
-					.filter(x -> x.getClosureId().value == paramCommon.getClosureId().value).findFirst().orElse(null);
+					.filter(x -> x.getClosureId() == paramCommon.getClosureId()).findFirst().orElse(null);
 			Optional<IntegrationOfMonthly> domainMonthOpt = Optional.empty();
 			if (aggrClosure != null)
 				monthParam = new UpdateMonthDailyParam(aggrClosure.getYearMonth(), dataParent.getEmployeeId(),
-						aggrClosure.getClosureId().value, ClosureDateDto.from(aggrClosure.getClosureDate()),
+						aggrClosure.getClosureId(), ClosureDateDto.from(aggrClosure.getClosureDate().convertToClosureDateDto()),
 						domainMonthOpt, new DatePeriod(dataParent.getDateRange().getStartDate(),
 								dataParent.getDateRange().getEndDate()),
 						"", true, true, 0L);
@@ -208,6 +208,7 @@ public class DailyModifyMobileCommandFacade {
 						old -> old.getEmployeeId().equals(x.getEmployeeId()) && old.getDate().equals(x.getDate()))
 						.findFirst().orElse(null);
 				CorrectDailyAttendanceService.correctFurikyu(correctDaiAttRequireImpl.createRequire(),
+						AppContexts.user().companyId(),
 						dailyOldSameDate.getWorkInfo().toDomain(x.getEmployeeId(), x.getDate()), domDaily.getWorkInformation());
 				//ootsuka mode
 				if (AppContexts.optionLicense().customize().ootsuka()) {

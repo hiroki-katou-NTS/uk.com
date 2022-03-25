@@ -15,7 +15,7 @@ export class AppInfo {
     public opComplementLeaveApp: any;
     public opAppStartDate: Date;
     public opAppEndDate: Date;
-
+    public opBackgroundColor: string;
 
     constructor(params: IAppInfo) {
         this.id = params.id;
@@ -30,6 +30,7 @@ export class AppInfo {
         this.opComplementLeaveApp = params.opComplementLeaveApp;
         this.opAppStartDate = params.opAppStartDate;
         this.opAppEndDate = params.opAppEndDate;
+        this.opBackgroundColor = params.opBackgroundColor;
     }
 
     

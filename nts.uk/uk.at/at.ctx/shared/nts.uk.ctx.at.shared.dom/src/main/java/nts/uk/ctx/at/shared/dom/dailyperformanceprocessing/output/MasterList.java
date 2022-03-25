@@ -28,7 +28,7 @@ public class MasterList {
 	private BaseAutoCalSetting baseAutoCalSetting;
 	
 	/** 加給設定 **/
-	private Optional<BonusPaySetting> bonusPaySettingOpt;
+	private Optional<BonusPaySetting> bonusPaySettingOpt = Optional.empty();
 	
 	/** 特定日設定 **/
 	private List<RecSpecificDateSettingImport> specificDateSettingImport = new ArrayList<>();

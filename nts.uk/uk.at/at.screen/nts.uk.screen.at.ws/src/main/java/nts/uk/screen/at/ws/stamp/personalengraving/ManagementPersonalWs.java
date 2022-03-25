@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.management.personal
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.EmployeeStampDataRequest;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.EmployeeStampDatasFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.EmployeeTimeCardRequest;
+import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.RegionalTimeInput;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.StampDisplayButtonFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.StampSettingsEmbossFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.TimeCardFinder;
@@ -51,8 +52,8 @@ public class ManagementPersonalWs {
 	
 	@POST
 	@Path("startPage")
-	public KDP002AStartPageSettingDto getStampSetting() {
-		return new KDP002AStartPageSettingDto(this.stampSettingsEmbossFinder.getSettings());
+	public KDP002AStartPageSettingDto getStampSetting(RegionalTimeInput param) {
+		return new KDP002AStartPageSettingDto(this.stampSettingsEmbossFinder.getSettings(param));
 	}
 	
 	@POST

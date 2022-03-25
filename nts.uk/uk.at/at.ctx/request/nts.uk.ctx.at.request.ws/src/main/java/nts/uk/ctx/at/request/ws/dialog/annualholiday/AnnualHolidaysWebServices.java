@@ -8,7 +8,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.dialog.annualholiday.AnnualHolidaysFinder;
+import nts.uk.ctx.at.request.app.find.dialog.annualholiday.GetInforRemainAnnualHoliday;
+import nts.uk.ctx.at.request.app.find.dialog.annualholiday.InforAnnualHolidaysAccHolidayDto;
 import nts.uk.ctx.at.request.app.find.dialog.annualholiday.dto.AnnualHolidaysDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.shr.com.context.AppContexts;
@@ -22,6 +25,9 @@ public class AnnualHolidaysWebServices extends WebService {
 	
 	@Inject
 	private AnnualHolidaysFinder holidayFinder;
+	
+	@Inject
+	private GetInforRemainAnnualHoliday holiday;
 
 	@POST
 	@Path("findAnnualHolidays")
@@ -35,5 +41,12 @@ public class AnnualHolidaysWebServices extends WebService {
 		List<String> result = employeeRequestAdapter.getAllSidByCid(AppContexts.user().companyId());
 		return result;
 	}
+	
+	@POST
+	@Path("findAnnualHoliday")
+	public InforAnnualHolidaysAccHolidayDto findAnnualHoliday(String sID) {
+		return holiday.getGetInforRemainAnnualHoliday(GeneralDate.today(), sID);
+	}
+	
 
 }

@@ -11,6 +11,6 @@ import nts.arc.task.tran.AtomTask;
 public interface ConvertTimeRecordReservationAdapter {
 
 	public Optional<AtomTask> convertData(String empInfoTerCode, String contractCode,
-			ReservReceptDataImport reservReceptData);
+			ReservReceptDataImport reservReceptData, String companyID);
 
 }
