@@ -1,11 +1,8 @@
 package nts.uk.file.at.infra.statement.stamp;
 
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -329,6 +326,9 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 	}
 	
 	public String deleteFirstZero (String number) {
+		if (number == null || number.equals("")) {
+			return number;
+		}
 		if (number.substring(0, 1).equals("0")) {
 			return number.substring(1);
 		}
