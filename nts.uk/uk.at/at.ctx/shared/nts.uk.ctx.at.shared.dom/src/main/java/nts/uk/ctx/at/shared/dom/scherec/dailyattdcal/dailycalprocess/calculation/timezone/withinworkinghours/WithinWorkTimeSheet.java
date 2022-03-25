@@ -1532,7 +1532,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				this.leaveEarlyDecisionClock,
 				this.lateDecisionClock);
 	}
-<<<<<<< HEAD
 	
 	/**
 	 * 逆丸めにして取得する
@@ -1550,6 +1549,4 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 						.collect(Collectors.toList()));
 	}
 }
-=======
-}
->>>>>>> pj/at/release_ver4
+
