@@ -121,7 +121,11 @@
 						],
 						optionsValue: 'value',
 						optionsText: 'text',
-						value: timeManagerSetAtr}">
+						value: timeManagerSetAtr,
+                        enable: ko.computed(function() {
+									return !useStamp();
+								})
+                        }">
 
                 </div>
                 <!-- H2_8 -> H2_20 Group end-->

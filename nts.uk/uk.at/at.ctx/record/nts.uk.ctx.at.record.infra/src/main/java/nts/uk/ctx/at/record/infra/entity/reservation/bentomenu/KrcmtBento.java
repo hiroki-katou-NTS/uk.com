@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.reservation.bentomenu;
 
+import java.util.Optional;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -8,17 +10,19 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoAmount;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoReservationUnitName;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-
-import java.util.Optional;
 
 @Entity
 @Table(name = "KRCMT_BENTO")
@@ -41,21 +45,18 @@ public class KrcmtBento extends ContractUkJpaEntity {
     @Column(name = "PRICE2")
     public int price2;
 
-    @Column(name = "RESERVATION1_ATR")
-    public boolean reservationAtr1;
-
-    @Column(name = "RESERVATION2_ATR")
-    public boolean reservationAtr2;
-
     @Column(name = "WORK_LOCATION_CD")
     public String workLocationCode;
-
+    
+    @Column(name = "FRAME_NO")
+    public int receptionTimezoneNo;
+    
     @ManyToOne
     @PrimaryKeyJoinColumns({
-            @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-            @PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID")
+    	@PrimaryKeyJoinColumn(name="CID", referencedColumnName="CID"),
+    	@PrimaryKeyJoinColumn(name="HIST_ID", referencedColumnName="HIST_ID")
     })
-    public KrcmtBentoMenu bentoMenu;
+	public KrcmtBentoMenuHist krcmtBentoMenuHist;
 
     @Override
     protected Object getKey() {
@@ -69,12 +70,11 @@ public class KrcmtBento extends ContractUkJpaEntity {
                 new BentoAmount(price1),
                 new BentoAmount(price2),
                 new BentoReservationUnitName(unitName),
-                reservationAtr1,
-                reservationAtr2,
-                Optional.of(new WorkLocationCode(workLocationCode)));
+                EnumAdaptor.valueOf(receptionTimezoneNo, ReservationClosingTimeFrame.class),
+                Strings.isBlank(workLocationCode) ? Optional.empty() : Optional.of(new WorkLocationCode(workLocationCode)));
     }
 
-    public static KrcmtBento fromDomain(Bento bento, String hisId, KrcmtBentoMenu krcmtBentoMenu) {
+    public static KrcmtBento fromDomain(Bento bento, String hisId) {
         return new KrcmtBento(
                 new KrcmtBentoPK(
                         AppContexts.user().companyId(),
@@ -85,11 +85,9 @@ public class KrcmtBento extends ContractUkJpaEntity {
                 bento.getUnit().v(),
                 bento.getAmount1().v(),
                 bento.getAmount2().v(),
-                bento.isReservationTime1Atr(),
-                bento.isReservationTime2Atr(),
-                bento.getWorkLocationCode().isPresent() ?
-                        bento.getWorkLocationCode().get().v() : null,
-                krcmtBentoMenu
+                bento.getWorkLocationCode().isPresent() ? bento.getWorkLocationCode().get().v() : null,
+        		bento.getReceptionTimezoneNo().value,
+        		null
         );
     }
 

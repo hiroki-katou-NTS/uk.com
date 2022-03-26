@@ -140,7 +140,7 @@ public class CheckIndentityMonth {
 			return new IndentityMonthResult(false, false, true);
 		}
 		
-		Optional<Closure> closureIdOpt = closureRepository.findById(param.getCompanyId(), stateParam.getDateInfo().getClosureId().value);
+		Optional<Closure> closureIdOpt = closureRepository.findById(param.getCompanyId(), stateParam.getDateInfo().getClosureId());
 		if (!closureIdOpt.isPresent()) {
 			return new IndentityMonthResult(false, false, true);
 		}

@@ -193,6 +193,7 @@ public class JpaAffWorkplaceGroupRespository extends JpaRepository implements Af
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<AffWorkplaceGroup> getByListWKPID(String CID, List<String> WKPID) {
+		if (WKPID.isEmpty()) return new ArrayList<>();
 		Set<String> lstWKPID = WKPID.stream().map(x -> x).collect(Collectors.toSet());
 		return this.queryProxy().query(SELECT_BY_CID_LIST_WPID, BsymtAffWorkPlaceGroup.class).setParameter("CID", CID)
 				.setParameter("lstWPID", lstWKPID).getList(c -> c.toDomain());

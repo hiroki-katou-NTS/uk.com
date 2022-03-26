@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.adapter.employee;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 /**
@@ -8,6 +9,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
+@Builder
 public class ClassificationImport {
 
     /** The company id. */

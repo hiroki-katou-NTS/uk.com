@@ -99,8 +99,18 @@ button.nts-switch-button {
 
 .time-padding {
     padding: 0 10px 5px 0;
+	text-align: left !important;
 }
 
 .mv-13 {
 	margin: 13px 0;
+}
+
+span.text {
+    font-size: 0.8rem;
+}
+
+td {
+	text-align: center !important;
+	height: 33px !important;
 }

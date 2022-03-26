@@ -6,7 +6,19 @@ module nts.uk.at.view.kaf022.j.viewmodel {
             {code: 1, name: text('KAF022_100')},
             {code: 0, name: text('KAF022_101')}
         ]);
-        supportFrames: KnockoutObservableArray<ItemModel>;
+
+        // J
+        itemListUseLocation: KnockoutObservableArray<ItemModel> = ko.observableArray([
+          {code: 1, name: text('KAF022_787')},
+          {code: 0, name: text('KAF022_788')}
+        ]);
+        useLocationSelection: KnockoutObservable<number> = ko.observable(0);
+
+        itemListWkpDis: KnockoutObservableArray<ItemModel> = ko.observableArray([
+          {code: 1, name: text('KAF022_787')},
+          {code: 0, name: text('KAF022_788')}
+        ]);
+        wkpDisAtr: KnockoutObservable<number> = ko.observable(0); 
 
         // 取消の機能の使用する
         cancelAtr: KnockoutObservable<number> = ko.observable(0);
@@ -54,8 +66,6 @@ module nts.uk.at.view.kaf022.j.viewmodel {
         // 下部コメント.太字
         childCareComment2Bold: KnockoutObservable<boolean> = ko.observable(false);
 
-        // 応援枠の表示件数
-        supportFrameDispNO: KnockoutObservable<number> = ko.observable(1);
         // 上部コメント.コメント
         supportComment1Content: KnockoutObservable<string> = ko.observable("");
         // 上部コメント.文字色
@@ -125,12 +135,6 @@ module nts.uk.at.view.kaf022.j.viewmodel {
 
         constructor() {
             const self = this;
-
-            self.supportFrames = ko.observableArray([]);
-            for (let i = 1; i <= 20; i++) {
-                self.supportFrames.push(new ItemModel(i, i.toString()));
-            }
-
             $("#fixed-table-j1").ntsFixedTable({});
             $("#fixed-table-j2").ntsFixedTable({});
             $("#fixed-table-j3").ntsFixedTable({});
@@ -147,7 +151,8 @@ module nts.uk.at.view.kaf022.j.viewmodel {
             const dataReflect = allData.appStampReflect;
             if (dataSetting) {
                 self.cancelAtr(dataSetting.useCancelFunction);
-                self.supportFrameDispNO(dataSetting.supportFrameDispNO);
+                self.useLocationSelection(dataSetting.useLocationSelection);
+                self.wkpDisAtr(dataSetting.wkpDisAtr);
                 const goOutTypeDispControl = dataSetting.goOutTypeDispControl || [];
                 goOutTypeDispControl.forEach(d => {
                     switch (d.goOutType) {
@@ -247,6 +252,8 @@ module nts.uk.at.view.kaf022.j.viewmodel {
             return {
                 appStampSetting: {
                     cancelAtr: self.cancelAtr(),
+                    wkpDisAtr: self.wkpDisAtr(),
+                    useLocationSelection: self.useLocationSelection(),
 
                     workComment1Content: self.workComment1Content(),
                     workComment1Color: self.workComment1Color(),
@@ -273,7 +280,6 @@ module nts.uk.at.view.kaf022.j.viewmodel {
                     childCareComment2Color: self.childCareComment2Color(),
                     childCareComment2Bold: self.childCareComment2Bold(),
 
-                    supportFrameDispNO: self.supportFrameDispNO(),
                     supportComment1Content: self.supportComment1Content(),
                     supportComment1Color: self.supportComment1Color(),
                     supportComment1Bold: self.supportComment1Bold(),

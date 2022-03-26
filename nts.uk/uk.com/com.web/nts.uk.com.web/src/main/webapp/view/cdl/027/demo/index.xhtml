@@ -33,7 +33,7 @@
 							{ prop: 'name', length: 10 },
 						]}"></div>
 					<div data-bind="ntsFormLabel: { required: true, text: 'Period' }" style="margin-left: 50px"></div>
-					<span data-bind="if: periodType() == 'fullDate'">
+					<div data-bind="if: periodType() == 'fullDate'">
 						<div id="ymdrangepicker" style="display: inline-block; vertical-align: inherit; padding-left: 28px" 
 						data-bind="ntsDateRangePicker: { 
 							required: true, 
@@ -42,9 +42,9 @@
 							showNextPrevious: false, 
 							value: period, 
 							maxRange: 'none'}"/>
-					</span>
-					<span data-bind="if: periodType() == 'yearmonth'">
-						<div id="ymdrangepicker" style="display: inline-block; vertical-align: inherit; padding-left: 28px"
+					</div>
+					<div data-bind="if: periodType() == 'yearmonth'">
+						<div id="ymrangepicker" style="display: inline-block; vertical-align: inherit; padding-left: 28px"
 						data-bind="ntsDateRangePicker: { 
 							required: true, 
 							enable: true, 
@@ -52,9 +52,9 @@
 							showNextPrevious: false, 
 							value: period, 
 							maxRange: 'none'}"/>
-					</span>
-					<span data-bind="if: periodType() == 'year'">
-						<div id="ymdrangepicker" style="display: inline-block; vertical-align: inherit; padding-left: 28px"
+					</div>
+					<div data-bind="if: periodType() == 'year'">
+						<div id="yrangepicker" style="display: inline-block; vertical-align: inherit; padding-left: 28px"
 						data-bind="ntsDateRangePicker: { 
 							required: true, 
 							enable: true, 
@@ -62,11 +62,11 @@
 							showNextPrevious: false, 
 							value: period, 
 							maxRange: 'none'}"/>
-					</span>
-					<span data-bind="if: periodType() == 'ym-ymd'">
+					</div>
+					<div data-bind="if: periodType() == 'ym-ymd'">
 						<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div>
 						<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
-					</span>
+					</div>
 				</div>
 				<div class="valign-center control-group cf">
 					<div data-bind="ntsFormLabel: { required: true, text: 'Select Employee' }"></div>

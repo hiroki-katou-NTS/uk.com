@@ -6,6 +6,9 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -97,5 +100,19 @@ public class GoOutTypeRoundingSet extends WorkTimeDomainObject implements Clonea
 			throw new RuntimeException("AggregateTotalTimeSpentAtWork clone error.");
 		}
 		return cloned;
+	}
+
+	/**
+	 * 丸め設定を取得する
+	 * @param reason 外出理由
+	 * @param deductAtr 控除区分
+	 * @param reverse 逆丸め用
+	 * @return 時間丸め設定
+	 */
+	public TimeRoundingSetting getRoundingSet(GoingOutReason reason, DeductionAtr deductAtr, TimeRoundingSetting reverse) {
+		if(reason.isPublicOrCmpensation()) {
+			return this.officalUseCompenGoOut.getRoundingSet(deductAtr, reverse);
+		}
+		return this.privateUnionGoOut.getRoundingSet(deductAtr, reverse);
 	}
 }

@@ -43,15 +43,27 @@ import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTicket;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployee;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployeeRepository;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -64,6 +76,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -116,6 +129,17 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 	
 	@Inject
 	private EmpEmployeeAdapter empAdapter;
+	@Inject
+	private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
+	@Inject
+	private NurseClassificationRepository nurseClassificationRepo;
+	@Inject
+	private EmpAffiliationInforAdapter empAffInforAdapter;
+	
+	@Inject
+	private SupportOperationSettingRepository supportOperationSettingRepo;
+	@Inject
+	private SupportableEmployeeRepository supportableEmployeeRepo;
 	
 	private final String STATUS_REGISTER = "STATUS_REGISTER";
 	private final String STATUS_ERROR = "STATUS_ERROR";
@@ -134,8 +158,13 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 		RequireImpl requireImpl = new RequireImpl(basicScheduleService, workTypeRepo, workTimeSettingRepository,
 				fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet, workScheduleRepo, correctWorkSchedule,
 				interimRemainDataMngRegisterDateChange, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
-				sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter);
+				sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter,
+				supportOperationSettingRepo,
+				empMedicalWorkStyleHistoryRepo, nurseClassificationRepo, empAffInforAdapter);
+		
 		List<ResultOfRegisteringWorkSchedule> lstRsOfRegisWorkSchedule = new ArrayList<ResultOfRegisteringWorkSchedule>();
+		
+		String cid = AppContexts.user().companyId();
 		
 		// step 1
 		// loop:社員ID in 社員IDリスト
@@ -144,13 +173,30 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 			List<WorkScheduleSaveCommand<T>> scheduleOfEmps = v;
 			// loop:年月日 in 年月日リスト
 			for (WorkScheduleSaveCommand<T> data : scheduleOfEmps) {
+				
+				// step 1.1 : 社員と期間を指定して取得する(社員ID, 期間：年月日): List<応援可能な社員>
+				List<SupportableEmployee> supportableEmpList = supportableEmployeeRepo
+						.findByEmployeeIdWithPeriod(new EmployeeId(sid), DatePeriod.oneDay(data.ymd));
+				
+				// step 1.2 :  応援チケットを作成する(年月日): Optional<応援チケット>
+				List<SupportTicket> supportTicketList = new ArrayList<>();
+				supportableEmpList.forEach(supportableEmp -> {
+					Optional<SupportTicket> supportTicketOpt = supportableEmp.createTicket(data.ymd);
+					if (supportTicketOpt.isPresent())
+						supportTicketList.add(supportTicketOpt.get());
+				});
+				
+				// step 1.3 : call DomainService 勤務予定を作る
+				
 				WorkInformation workInfo = new WorkInformation(data.workInfor.workTypeCd, data.workInfor.workTimeCd);
-				// step 1.1
+				
 				ResultOfRegisteringWorkSchedule rsOfRegisteringWorkSchedule = CreateWorkSchedule.create(
-						requireImpl, sid, data.ymd,
+						requireImpl, cid, sid, data.ymd,
 						workInfo,
-						data.isBreakByHand, // TODO VN team update
-						data.breakTimeList, data.mapAttendIdWithTime);
+						data.isBreakByHand,
+						data.breakTimeList, 
+						supportTicketList,
+						data.mapAttendIdWithTime);
 				
 				lstRsOfRegisWorkSchedule.add(rsOfRegisteringWorkSchedule);
 			}
@@ -245,17 +291,25 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 		private BusinessTypeEmpService businessTypeEmpService;
 		@Inject
 		private SyClassificationAdapter syClassificationAdapter;
+		@Inject
+		private SupportOperationSettingRepository supportOperationSettingRepo;
+		@Inject
+		private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
+		@Inject
+		private NurseClassificationRepository nurseClassificationRepo;
+		@Inject
+		private EmpAffiliationInforAdapter empAffInforAdapter;
 		
 		// implements WorkInformation.Require
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeRepo.findByPK(companyId, workTypeCode.v());
 		}
 		
 		// implements WorkInformation.Require
 		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
 		}
 		
 		// implements WorkInformation.Require
@@ -266,30 +320,26 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 		
 		// implements WorkInformation.Require
 		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			Optional<FixedWorkSetting> workSetting = fixedWorkSet.findByKey(companyId, code.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return fixedWorkSet.findByKey(companyId, workTimeCode.v());
 		}
 		
 		// implements WorkInformation.Require
 		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			Optional<FlowWorkSetting> workSetting = flowWorkSet.find(companyId, code.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flowWorkSet.find(companyId, workTimeCode.v());
 		}
 		
 		// implements WorkInformation.Require
 		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			Optional<FlexWorkSetting> workSetting = flexWorkSet.find(companyId, code.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flexWorkSet.find(companyId, workTimeCode.v());
 		}
 		
 		// implements WorkInformation.Require
 		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			Optional<PredetemineTimeSetting> workSetting = predetemineTimeSet.findByWorkTimeCode(companyId, wktmCd.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return predetemineTimeSet.findByWorkTimeCode(companyId, workTimeCode.v());
 		}
 		
 		// implements AffiliationInforOfDailyAttd.Require
@@ -310,15 +360,8 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 			if(listAffJobTitleHis.isEmpty())
 				return null;
 			return listAffJobTitleHis.get(0);
-		}
-		
-		// implements AffiliationInforOfDailyAttd.Require
-		@Override
-		public SharedAffWorkPlaceHisImport getAffWorkplaceHistory(String employeeId, GeneralDate standardDate) {
-			Optional<SharedAffWorkPlaceHisImport> rs = sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, standardDate);
-			return rs.isPresent() ? rs.get() : null;
-		}
-		
+		}	
+				
 		// implements AffiliationInforOfDailyAttd.Require
 		@Override
 		public SClsHistImport getClassificationHistory(String employeeId, GeneralDate standardDate) {
@@ -344,6 +387,13 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 		public Optional<WorkingConditionItem> getWorkingConditionHistory(String employeeId, GeneralDate standardDate) {
 			Optional<WorkingConditionItem> rs = workingConditionRepo.getWorkingConditionItemByEmpIDAndDate(companyId, standardDate, employeeId);
 			return rs;
+		}
+		
+		// implements AffiliationInforOfDailyAttd.Require
+		@Override
+		public EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate) {
+			List<EmpOrganizationImport> info = empAffInforAdapter.getEmpOrganization(standardDate, Arrays.asList(employeeId));
+			return info.isEmpty()? null: info.get(0);
 		}
 		
 		//implements EditStateOfDailyAttd.Require
@@ -383,5 +433,24 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 		public void registerTemporaryData(String employeeId, GeneralDate date) {
 			interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, Arrays.asList(date));
 		}
+
+		@Override
+		public SupportOperationSetting getSupportOperationSetting() {
+			return supportOperationSettingRepo.get(companyId);
+		}
+		
+		// GetEmpLicenseClassificationService
+		@Override
+		public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp,
+				GeneralDate referenceDate) {
+			return empMedicalWorkStyleHistoryRepo.get(listEmp, referenceDate);
+		}
+
+		// GetEmpLicenseClassificationService
+		@Override
+		public List<NurseClassification> getListCompanyNurseCategory() {
+			return nurseClassificationRepo.getListCompanyNurseCategory(AppContexts.user().companyId());
+		}
+		
 	}
 }

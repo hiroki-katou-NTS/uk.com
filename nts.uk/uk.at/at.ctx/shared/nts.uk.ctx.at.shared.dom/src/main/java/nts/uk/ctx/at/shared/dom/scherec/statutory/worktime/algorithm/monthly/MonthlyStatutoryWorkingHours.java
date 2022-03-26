@@ -46,7 +46,7 @@ public class MonthlyStatutoryWorkingHours {
 																			.orElseGet(() -> new MonthlyEstimateTime(0)), 
 																		flexMonthUnit.getLaborTime().getWeekAvgTime()
 																			.orElseGet(() -> new MonthlyEstimateTime(0))))
-				.orElseGet(() -> MonthlyFlexStatutoryLaborTime.zeroMonthlyFlexStatutoryLaborTime());
+				.orElseGet(() -> new MonthlyFlexStatutoryLaborTime());
 	}
 	
 	/**
@@ -173,10 +173,7 @@ public class MonthlyStatutoryWorkingHours {
 												RequireM0 {
 	}
 	
-	public static interface RequireM0 {
-		
-		Optional<UsageUnitSetting> usageUnitSetting(String companyId);
-	}
+	public static interface RequireM0 extends UsageUnitSetting.Require {}
 	
 	public static interface RequireM3 extends DailyStatutoryLaborTime.RequireM1 {} 
 	

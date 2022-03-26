@@ -17,7 +17,7 @@ public class ReservationSettingService extends WebService{
     private BentoReserveSettingCommandHandler register;
 
     @POST
-    @Path("add")
+    @Path("save")
     public void save(BentoReserveSettingCommand command) {
         this.register.handle(command);
     }

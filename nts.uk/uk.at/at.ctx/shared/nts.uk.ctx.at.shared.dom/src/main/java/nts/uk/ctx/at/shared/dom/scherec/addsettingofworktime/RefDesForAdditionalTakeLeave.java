@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
@@ -39,16 +40,16 @@ public class RefDesForAdditionalTakeLeave {
 
     /** 休暇加算時間の取得 */
     public BreakDownTimeDay getVacationAddTime(Require require, String cid, String sid,
-    		Optional<WorkTimeCode> workTimeCode, GeneralDate baseDate) {
+    		WorkInformation recordInfo, GeneralDate baseDate) {
     	
     	/** 参照先を確認 */
     	if (this.referenceSet != VacationAdditionTimeRef.REFER_PERSONAL_SET) {
     		
     		/** 就業時間帯コードOptional．emptyチェック */
-    		if (workTimeCode.isPresent()) {
+    		if (recordInfo.exsistsWorkTime()) {
 
     		    /** 所定時間を取得する */
-    			return getVacationAddTimeFromWorkTime(require, cid, workTimeCode);
+    			return getVacationAddTimeFromWorkTime(require, cid, recordInfo.getWorkTimeCodeNotNull());
     		}
     		
     		/** 参照先設定で分岐 */
@@ -59,10 +60,13 @@ public class RefDesForAdditionalTakeLeave {
     		}
     	}
     	
-    	/** 個人別設定参照先を確認 */
-    	if(referIndividualSet.get() == VacationSpecifiedTimeRefer.WORK_HOUR_DUR_WEEKDAY) {
-    		
-    		/** 平日時集票時間帯を参照 */
+    	// 個人別設定参照先を確認
+    	if (!this.referIndividualSet.isPresent()){
+    		// 平日時就業時間帯を参照
+    		return getVacationAddTimeForWeekend(require, cid, sid, baseDate);
+    	}
+    	if (referIndividualSet.get() == VacationSpecifiedTimeRefer.WORK_HOUR_DUR_WEEKDAY) {
+    		// 平日時就業時間帯を参照
     		return getVacationAddTimeForWeekend(require, cid, sid, baseDate);
     	}
     	
@@ -112,7 +116,7 @@ public class RefDesForAdditionalTakeLeave {
 	private BreakDownTimeDay getVacationAddTimeFromWorkTime(RequireM1 require, String cid,
 			Optional<WorkTimeCode> workTimeCode) {
 		/** 所定時間を取得 */
-		val preSet = require.predetemineTimeSetting(cid, workTimeCode.get().v());
+		val preSet = require.predetemineTimeSetting(cid, workTimeCode.get());
 		if (preSet.isPresent()) {
 			
 			/** 所定時間．就業加算時間を取得 */
@@ -135,16 +139,13 @@ public class RefDesForAdditionalTakeLeave {
 
     }
     
-    public static interface RequireM1 {
+    public static interface RequireM1 extends PredetemineTimeSetting.Require {
     	
-    	Optional<PredetemineTimeSetting> predetemineTimeSetting(String cid, String workTimeCode);
     }
     
-    public static interface Require0 {
-
-    	Optional<WorkingConditionItem> workingConditionItem(String sid, GeneralDate baseDate);
+    public static interface Require0 extends WorkingConditionItem.Require {
+    	
     }
-	
 	
     public static interface Require extends RequireM2, RequireM3 {
 

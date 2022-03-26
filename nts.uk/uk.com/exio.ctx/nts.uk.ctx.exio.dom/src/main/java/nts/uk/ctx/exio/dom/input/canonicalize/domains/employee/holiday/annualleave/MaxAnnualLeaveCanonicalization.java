@@ -23,7 +23,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.errors.RecordError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 
 /**
  * 年休上限データ 
@@ -65,7 +65,7 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization 
 
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(DomainDataColumn.SID);
+		return Arrays.asList(new DomainDataColumn(Items.SID, "SID", DataType.STRING));
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization 
 					}
 
 					//既存データのチェックと保存は継承先に任せる
-					super.canonicalize(require, context, interm, getPrimaryKeys(interm));
+					super.canonicalize(require, context, interm);
 					importingKeys.add(keyValue);
 				}
 		});
@@ -96,11 +96,6 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization 
 	private KeyValues getPrimaryKeys(IntermediateResult interm) {
 		//このドメインのKeyはSIDなので、Stringで取り出す。
 		return new KeyValues(Arrays.asList(interm.getItemByNo(Items.SID).get().getString()));
-	}
-	
-	@Override
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
-		return Arrays.asList(Items.SID);
 	}
 
 	private static class FixedItem{

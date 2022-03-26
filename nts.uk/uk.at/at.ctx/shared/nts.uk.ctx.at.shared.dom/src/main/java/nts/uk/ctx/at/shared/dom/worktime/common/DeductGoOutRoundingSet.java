@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -96,5 +98,18 @@ public class DeductGoOutRoundingSet extends WorkTimeDomainObject implements Clon
 			throw new RuntimeException("DeductGoOutRoundingSet clone error.");
 		}
 		return cloned;
+	}
+
+	/**
+	 * 丸め設定を取得する
+	 * @param dedAtr 控除区分
+	 * @param reverse 逆丸め用
+	 * @return 時間丸め設定
+	 */
+	public TimeRoundingSetting getRoundingSet(DeductionAtr dedAtr, TimeRoundingSetting reverse) {
+		if(dedAtr.isDeduction()) {
+			return this.deductTimeRoundingSetting.getRoundingSet(reverse);
+		}
+		return this.approTimeRoundingSetting.getRoundingSet(reverse);
 	}
 }

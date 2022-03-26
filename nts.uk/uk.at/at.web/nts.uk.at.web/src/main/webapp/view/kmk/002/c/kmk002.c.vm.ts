@@ -104,9 +104,12 @@ module nts.uk.at.view.kmk002.c {
                 // set datasource for left table
                 self.leftItems(data);
                 self.sortLeftTable();
-
+				let textKMK002_173 = nts.uk.resource.getText('KMK002_173');
                 // set displayNumber for right table
                 param.itemSelection.attendanceItems.forEach(item => {
+					if(_.isNil(item.attendanceItemName)){
+						item.attendanceItemName = textKMK002_173;
+					}
                     let vl = _.find(data, it => it.attendanceItemId == item.attendanceItemId);
                     if (!_.isUndefined(vl)) {
                         item.attendanceItemDisplayNumber = vl.attendanceItemDisplayNumber;    

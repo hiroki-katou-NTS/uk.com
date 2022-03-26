@@ -158,71 +158,74 @@ module nts.uk.ui.at.ksu002.a {
 		achievement: KnockoutObservable<ACHIEVEMENT> = ko.observable(ACHIEVEMENT.NO);
 		workData: KnockoutObservable<null | WorkData> = ko.observable(null);
 		kdl053Open: any = null;
-		
-		employeeId: KnockoutObservableArray<string>;
-		
+
+		employeeIds: KnockoutObservableArray<string>;
+		employeeId: KnockoutObservable<string> = ko.observable(this.$user.employeeId);
+
+		employeeInputList: KnockoutObservableArray<EmployeeModel> = ko.observableArray([]);
+
 		data: WorkSchedule<moment.Moment>[] = [];
 		dataDaily: Achievement[] = [];
-		
+
 		dayStartWeek: KnockoutObservable<number> = ko.observable(null);
-		
+
 		isSelectedStartWeek: KnockoutObservable<boolean> = ko.observable(false);
-		
+
 		storageDataStartWeek: KnockoutObservable<any> = ko.observable(null);
-		
+
 		readyLoadData: boolean = false;
-		
+
 		// Data result from 予定・実績を取得する
 		plansResultsData: KnockoutObservable<any> = ko.observable(null);
-		
+
 		legalworkinghours: KnockoutObservable<any> = ko.observable(null);
-		
-		startupProcessingInformation: KnockoutObservable<any> = ko.observable(null); 
-		
+
+		startupProcessingInformation: KnockoutObservable<any> = ko.observable(null);
+
 		listOfPeriodsClose: KnockoutObservable<any> = ko.observable(null);
-		
+
 		visibleA1_1: KnockoutObservable<boolean> = ko.observable(false);
 		visibleA1_2: KnockoutObservable<boolean> = ko.observable(false);
 		visibleA1_3: KnockoutObservable<boolean> = ko.observable(false);
 		visibleA1_4: KnockoutObservable<boolean> = ko.observable(false);
-    
-        taskId = null;
-		
+
+		taskId = null;
+
 		dr: c.DateRange = {
-				begin: null,
-				finish: null
-			};
-		
-		constructor(){
+			begin: null,
+			finish: null
+		};
+
+		constructor() {
 			super();
 			let self = this;
-			self.startupProcessingInformation.subscribe((v:any)=>{
-				_.each(v.scheModifyAuthCtrlByPerson, (e:any) => {
-					if(e.functionNo == 1){
+			self.startupProcessingInformation.subscribe((v: any) => {
+				_.each(v.scheModifyAuthCtrlByPerson, (e: any) => {
+					if (e.functionNo == 1) {
 						self.visibleA1_1(e.isAvailable);
 					}
-					if(e.functionNo == 2){
+					if (e.functionNo == 2) {
 						self.visibleA1_4(e.isAvailable);
 					}
 				});
-				_.each(v.scheModifyAuthCtrlCommon, (e:any) => {
-					if(e.functionNo == 1){
+				_.each(v.scheModifyAuthCtrlCommon, (e: any) => {
+					if (e.functionNo == 1) {
 						self.visibleA1_3(e.isAvailable);
 					}
-					if(e.functionNo == 2){
+					if (e.functionNo == 2) {
 						self.visibleA1_2(e.isAvailable);
 					}
 				});
 			});
 		}
-		
+
 		created() {
 			const vm = this;
-			
+
 			vm.getfirst();
-			
-			vm.employeeId = ko.observableArray([vm.$user.employeeId]);
-			
+
+			vm.employeeIds = ko.observableArray([ko.unwrap(vm.employeeId)]);
+
 			initEvent();
 
 			vm.enable = ko.computed({
@@ -243,6 +246,15 @@ module nts.uk.ui.at.ksu002.a {
 				owner: vm
 			});
 
+			vm.employeeId.subscribe((data: string) => {
+
+				vm.employeeIds([data]);
+				vm.getPlansResultsData(false);
+				// reset memento
+				vm.schedules.reset();
+				vm.loadData();
+			})
+
 			// call to api and get data
 			vm.baseDate
 				.subscribe((d: c.DateRange) => {
@@ -250,7 +262,7 @@ module nts.uk.ui.at.ksu002.a {
 						vm.baseDateKCP015(null);
 						vm.dr.begin = null;
 						vm.dr.finish = null;
-						vm.getPlansResultsData(false);	
+						vm.getPlansResultsData(false);
 						// reset memento
 						vm.schedules.reset();
 
@@ -278,9 +290,9 @@ module nts.uk.ui.at.ksu002.a {
 					vm.dr.begin = begin;
 					vm.dr.finish = finish;
 					vm.baseDateKCP015(vm.dr.finish);
-					if(vm.readyLoadData){
+					if (vm.readyLoadData) {
 						vm.loadData();
-					}else{
+					} else {
 						vm.readyLoadData = true;
 					}
 				});
@@ -291,23 +303,23 @@ module nts.uk.ui.at.ksu002.a {
 					const { IMPRINT } = EDIT_STATE;
 					const schedules: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
 
-						vm.loadData();
-						return;
+					vm.loadData();
+					return;
 				});
 		}
-		
-		rebidingData(){
+
+		rebidingData() {
 			let vm = this;
-			if(vm.achievement() === ACHIEVEMENT.NO){
-//				vm.bidingData();
-			}else{
-//				vm.bidingDataDaily();
+			if (vm.achievement() === ACHIEVEMENT.NO) {
+				//				vm.bidingData();
+			} else {
+				//				vm.bidingDataDaily();
 			}
 		}
-		
-		loadData(){
-			let vm = this;	
-			
+
+		loadData() {
+			let vm = this;
+
 			vm.$errors('clear')
 				.then(() => vm.$blockui('grayout'))
 				.then(() => vm.getPlansResultsData(false))
@@ -451,90 +463,127 @@ module nts.uk.ui.at.ksu002.a {
 						vm.schedules.reset();
 					}
 				}).always(() => vm.$blockui('hide'));
-			};
-		
-		getfirst(){
+		};
+
+		getfirst() {
 			let self = this;
-			let sv = self.$ajax('at','screen/ksu/ksu002/getStartupProcessingInformation');
+			let sv = self.$ajax('at', 'screen/ksu/ksu002/getStartupProcessingInformation');
 			//<<Query>> 週の管理を取得する
 			let sv1 = self.$ajax('at', API.GET_START_DAY_OF_WEEK);
 			let sv2 = self.$ajax('at', '/screen/ksu/ksu002/getListOfPeriodsClose')
-				.fail((error:any)=>{
+				.fail((error: any) => {
 					self.$dialog.error(error);
 				});
 			let sv3 = self.$window.storage("KSU002.USER_DATA");
-			
-			$.when(sv, sv1, sv2, sv3).done((data: any, data1: any, data2: any, data3: any)=>{
-				self.startupProcessingInformation(data);
-				if(data3){
+
+			$.when(sv, sv1, sv2, sv3).done((data: any, data1: any, data2: any, data3: any) => {
+				if (data) {
+					self.startupProcessingInformation(data);
+					self.employeeInputList(data.employeeInfos.employeeInfos);
+				}
+				if (data3) {
 					self.storageDataStartWeek(data3.fdate);
 				}
-				self.dayStartWeek(data1.dayOfWeek);	
-				if(self.readyLoadData){
+				self.dayStartWeek(data1.dayOfWeek);
+				if (self.readyLoadData) {
 					self.loadData();
-				}else{
-					self.readyLoadData = true;					
+				} else {
+					self.readyLoadData = true;
 				}
-				if(data2){
+				if (data2) {
 					self.listOfPeriodsClose(data2);
 				}
 			});
 		}
-		
-		getPlansResultsData(getDaily: boolean): JQueryPromise<any>{
+
+		getPlansResultsData(getDaily: boolean): JQueryPromise<any> {
 			let vm = this;
 			let dfd = $.Deferred<void>();
 			const { begin, finish } = vm.baseDate();
 			vm.legalworkinghours(null);
 			vm.plansResultsData(null);
-			if(!begin || !finish){
+			if (!begin || !finish) {
 				return;
 			}
 			const command = {
-				listSid: [vm.$user.employeeId],
+				listSid: [ko.unwrap(vm.employeeId)],
 				startDate: moment(begin).format('YYYY/MM/DD'),
 				endDate: moment(finish).format('YYYY/MM/DD'),
 				actualData: vm.achievement() === ACHIEVEMENT.YES
 			};
-			
-			let sv1 = vm.$ajax('at','screen/ksu/ksu002/getPlansResults', command).done((data:any) => {
-				if(getDaily){
-					dfd.resolve(data.workScheduleWorkDaily);
-				}else{
-					dfd.resolve(data.workScheduleWorkInfor2);					
-				}
-			});
-			let sv2 = vm.$ajax('at','screen/ksu/ksu002/getlegalworkinghours', command);
-			$.when(sv1, sv2).done((data1: any, data2: any) => {
+
+			// let sv1 = vm.$ajax('at', 'screen/ksu/ksu002/getPlansResults', command).done((data: any) => {
+			// 	if (getDaily) {
+			// 		dfd.resolve(data.workScheduleWorkDaily);
+			// 	} else {
+			// 		dfd.resolve(data.workScheduleWorkInfor2);
+			// 	}
+			// });
+			// let sv2 = vm.$ajax('at', 'screen/ksu/ksu002/getlegalworkinghours', command);
+			// $.when(sv1, sv2).done((data1: any, data2: any) => {
+			// 	vm.legalworkinghours(data2);
+			// 	vm.plansResultsData(data1);
+			// 	vm.plansResultsData.valueHasMutated();
+			// });
+
+			vm.$ajax('at', 'screen/ksu/ksu002/getlegalworkinghours', command).then((data2: any) => {
 				vm.legalworkinghours(data2);
-				vm.plansResultsData(data1);
-				vm.plansResultsData.valueHasMutated();
-			});
+				vm.workplaceId(data2.affWorkPlace);
+			}).then(() => {
+				const command1 = {
+					listSid: [ko.unwrap(vm.employeeId)],
+					startDate: moment(begin).format('YYYY/MM/DD'),
+					endDate: moment(finish).format('YYYY/MM/DD'),
+					actualData: vm.achievement() === ACHIEVEMENT.YES,
+					targetOrg: { unit: 0, workplaceId: ko.unwrap(vm.workplaceId) }
+				};
+				vm.$ajax('at', 'screen/ksu/ksu002/getPlansResults', command1).done((data: any) => {
+					if (getDaily) {
+						dfd.resolve(data.workScheduleWorkDaily);
+					} else {
+						dfd.resolve(data.workScheduleWorkInfor2);
+					}
+				}).then(() => {
+					vm.plansResultsData.valueHasMutated();
+				});
+			})
+
 			return dfd.promise();
 		}
-		
-		
+
+
 		mounted() {
 		}
-		
+
 		openB() {
 			let vm = this;
 			const { begin, finish } = vm.baseDate();
+
+			const exist: EmployeeModel = _.find(ko.unwrap(vm.employeeInputList), ((item: EmployeeModel) => { return item.id == ko.unwrap(vm.employeeId) }));
+			let employeeCode = vm.startupProcessingInformation().employeeCode;
+			let employeeName = vm.startupProcessingInformation().businessName;
+			if (exist) {
+				employeeCode = exist.code;
+				employeeName = exist.businessName;
+			}
+
+
 			let shareData = {
-                startDate: moment(begin).format('YYYY/MM/DD'),//対象期間開始日
-                endDate: moment(finish).format('YYYY/MM/DD'),//対象期間終了日
-                employeeCode: vm.startupProcessingInformation().employeeCode,//社員コード
-                employeeName: vm.startupProcessingInformation().businessName,//社員名
-                targetDate: moment(vm.yearMonth(), 'YYYYMMDD').format('YYYY/MM/DD'),//対象年月
-                startDay: 0, //起算曜日
-                isStartingDayOfWeek: false
-            }
+				employeeId: ko.unwrap(vm.employeeId),
+				startDate: moment(begin).format('YYYY/MM/DD'),//対象期間開始日
+				endDate: moment(finish).format('YYYY/MM/DD'),//対象期間終了日
+				employeeCode: employeeCode,//社員コード
+				employeeName: employeeName,//社員名
+				targetDate: moment(vm.yearMonth(), 'YYYYMMDD').format('YYYY/MM/DD'),//対象年月
+				startDay: 0, //起算曜日
+				isStartingDayOfWeek: false
+			}
 			vm.$window.storage("KSU002.USER_DATA").done(data => {
 				shareData.startDay = data.fdate;
 				shareData.isStartingDayOfWeek = vm.dayStartWeek() === data.fdate;
 				vm.$window.storage("ksu002B_params", shareData).then(() => {
-		            nts.uk.ui.windows.sub.modal('/view/ksu/002/b/index.xhtml');
-		        });				
+					nts.uk.ui.windows.sub.modal('/view/ksu/002/b/index.xhtml');
+				});
 			});
 		}
 		// UI-8: Undo-Redoの処理
@@ -664,19 +713,19 @@ module nts.uk.ui.at.ksu002.a {
 				.resolve(vm.$validate.valid())
 				.then((valid: boolean) => {
 					if (valid) {
-						const sid = vm.$user.employeeId;
+						const sid = ko.unwrap(vm.employeeId);
 						const registerDates: StorageData[] = [];
 						const command = { sid, registerDates };
 						const schedules = ko.unwrap(vm.schedules);
 						let schedulesFilter = schedules;
-						if(!vm.isSelectedStartWeek()){
-							schedulesFilter = _.filter(schedulesFilter, function(n:any) {
+						if (!vm.isSelectedStartWeek()) {
+							schedulesFilter = _.filter(schedulesFilter, function (n: any) {
 								let date: Date = new Date(moment(n.date).format("YYYY/MM/DD"));
-							  	return date >= new Date(moment(vm.dr.begin).format("YYYY/MM/DD")) && 
+								return date >= new Date(moment(vm.dr.begin).format("YYYY/MM/DD")) &&
 									date <= new Date(moment(vm.dr.finish).format("YYYY/MM/DD"));
 							});
 						}
-						
+
 						_.each(schedulesFilter, ({ date, data }) => {
 							const {
 								$raw,
@@ -697,82 +746,82 @@ module nts.uk.ui.at.ksu002.a {
 							const workTypeCd = ko.unwrap(wtype.code);
 
 							if (workTypeCd !== workTypeCode || workTimeCd !== workTimeCode || start !== startTime || end !== endTime) {
-								
+
 								registerDates.push({ date, end, start, workTimeCode: workTimeCd, workTypeCode: workTypeCd });
 							}
 						});
 
 						vm.$blockui('show')
 							.then(() => vm.$ajax('at', API.SAVE_DATA, command))
-                            .then((rs: any) => {
-                                vm.taskId = rs.taskInfor.id;
-                                vm.checkStateAsyncTask();
-                            });
-							// reload data
-							// .then(() => vm.achievement.valueHasMutated())
-							//.always(() => vm.$blockui('clear'));
+							.then((rs: any) => {
+								vm.taskId = rs.taskInfor.id;
+								vm.checkStateAsyncTask();
+							});
+						// reload data
+						// .then(() => vm.achievement.valueHasMutated())
+						//.always(() => vm.$blockui('clear'));
 					}
 				});
-        }
+		}
 
-        checkStateAsyncTask() {
-            let vm = this;
+		checkStateAsyncTask() {
+			let vm = this;
 
-            nts.uk.deferred.repeat(conf => conf
-                .task(() => {
-                    return nts.uk.request.asyncTask.getInfo(vm.taskId).done(function(res: any) {
-                        // finish task
-                        if (res.succeeded || res.failed || res.cancelled) {
-                            vm.$blockui('clear');
-                            let arrayItems = [];
-                            let dataResult: any = {};
-                            dataResult.listErrorInfo = [];
-                            dataResult.hasError = false;
-                            dataResult.isRegistered = true;
-                            _.forEach(res.taskDatas, item => {
-                                if (item.key == 'STATUS_REGISTER') {
-                                    dataResult.isRegistered = item.valueAsBoolean;
-                                } else if (item.key == 'STATUS_ERROR') {
-                                    dataResult.hasError = item.valueAsBoolean;
-                                } else {
-                                    arrayItems.push(item);
-                                }
-                            });
+			nts.uk.deferred.repeat(conf => conf
+				.task(() => {
+					return nts.uk.request.asyncTask.getInfo(vm.taskId).done(function (res: any) {
+						// finish task
+						if (res.succeeded || res.failed || res.cancelled) {
+							vm.$blockui('clear');
+							let arrayItems = [];
+							let dataResult: any = {};
+							dataResult.listErrorInfo = [];
+							dataResult.hasError = false;
+							dataResult.isRegistered = true;
+							_.forEach(res.taskDatas, item => {
+								if (item.key == 'STATUS_REGISTER') {
+									dataResult.isRegistered = item.valueAsBoolean;
+								} else if (item.key == 'STATUS_ERROR') {
+									dataResult.hasError = item.valueAsBoolean;
+								} else {
+									arrayItems.push(item);
+								}
+							});
 
-                            if (arrayItems.length > 0) {
-                                let listErrorInfo = _.map(arrayItems, obj2 => {
-                                    return new InforError(JSON.parse(obj2.valueAsString));
-                                });
-                                dataResult.listErrorInfo = listErrorInfo;
-                            }
+							if (arrayItems.length > 0) {
+								let listErrorInfo = _.map(arrayItems, obj2 => {
+									return new InforError(JSON.parse(obj2.valueAsString));
+								});
+								dataResult.listErrorInfo = listErrorInfo;
+							}
 
-                            vm.achievement(vm.achievement());
-                            vm.achievement.valueHasMutated();
-                            if (!dataResult.listErrorInfo.length) {
-                                return vm.$dialog.info({ messageId: 'Msg_15' }).then(() => { vm.schedules.reset(true); });
-                            } else {
-                                const { listErrorInfo, registered } = dataResult;
-                                const params = {
-                                    errorRegistrationList: listErrorInfo,
-                                    employeeIds: [vm.$user.employeeId],
-                                    isRegistered: Number(registered)
-                                };
-                                setShared('dataShareDialogKDL053', params);
-                                // call KDL053
-                                try {
-                                    vm.kdl053Open.close();
-                                }
-                                catch (exception_var) { }
+							vm.achievement(vm.achievement());
+							vm.achievement.valueHasMutated();
+							if (!dataResult.listErrorInfo.length) {
+								return vm.$dialog.info({ messageId: 'Msg_15' }).then(() => { vm.schedules.reset(true); });
+							} else {
+								const { listErrorInfo, registered } = dataResult;
+								const params = {
+									errorRegistrationList: listErrorInfo,
+									employeeIds: [ko.unwrap(vm.employeeId)],
+									isRegistered: Number(registered)
+								};
+								setShared('dataShareDialogKDL053', params);
+								// call KDL053
+								try {
+									vm.kdl053Open.close();
+								}
+								catch (exception_var) { }
 
-                                vm.kdl053Open = nts.uk.ui.windows.sub.modeless('at', '/view/kdl/053/a/index.xhtml');
-                                return vm.kdl053Open;
-                            }
-                        }
-                    });
-                }).while(infor => {
-                    return infor.pending || infor.running;
-                }).pause(1000));
-        }
+								vm.kdl053Open = nts.uk.ui.windows.sub.modeless('at', '/view/kdl/053/a/index.xhtml');
+								return vm.kdl053Open;
+							}
+						}
+					});
+				}).while(infor => {
+					return infor.pending || infor.running;
+				}).pause(1000));
+		}
 
 		// check state & memento data
 		private memento(current: DayDataSave2Memento, preview: DayDataSave2Memento) {
@@ -792,47 +841,49 @@ module nts.uk.ui.at.ksu002.a {
 		private compare(cloned: DayData, current: DayDataRawObsv) {
 			const { state } = current.data;
 			const changed: DayData = ko.toJS(current);
+			const vm = this;
+			let changeState = ko.unwrap(vm.employeeId) === vm.$user.employeeId ? EDIT_STATE.HAND_CORRECTION_MYSELF : EDIT_STATE.HAND_CORRECTION_OTHER;
 
 			if (changed.data.wtype.code !== cloned.data.wtype.code) {
-				state.wtype(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.wtype(changeState);
 				// if change time code, change all state
-				state.wtime(EDIT_STATE.HAND_CORRECTION_MYSELF);
-				state.value.begin(EDIT_STATE.HAND_CORRECTION_MYSELF);
-				state.value.finish(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.wtime(changeState);
+				state.value.begin(changeState);
+				state.value.finish(changeState);
 			}
 
 			if (changed.data.wtime.code !== cloned.data.wtime.code) {
-				state.wtime(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.wtime(changeState);
 				// if change time code, change all state
-				state.wtype(EDIT_STATE.HAND_CORRECTION_MYSELF);
-				state.value.begin(EDIT_STATE.HAND_CORRECTION_MYSELF);
-				state.value.finish(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.wtype(changeState);
+				state.value.begin(changeState);
+				state.value.finish(changeState);
 			}
 
 			if (changed.data.value.begin !== cloned.data.value.begin) {
-				state.value.begin(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.value.begin(changeState);
 			}
 
 			if (changed.data.value.finish !== cloned.data.value.finish) {
-				state.value.finish(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.value.finish(changeState);
 			}
 		}
 	}
-	
-	function initEvent(): void {
-        //click btnA5
-        $('#A5_1').ntsPopup({
-            position: {
-                my: 'left top',
-                at: 'left bottom+3',
-                of: $('#A5')
-            }
-        });
 
-        $('#A5').click(function() {
-            $('#A5_1').ntsPopup("toggle");
-        });
-    }
+	function initEvent(): void {
+		//click btnA5
+		$('#A5_1').ntsPopup({
+			position: {
+				my: 'left top',
+				at: 'left bottom+3',
+				of: $('#A5')
+			}
+		});
+
+		$('#A5').click(function () {
+			$('#A5_1').ntsPopup("toggle");
+		});
+	}
 
 	interface StorageData {
 		date: string | Date;
@@ -929,46 +980,46 @@ module nts.uk.ui.at.ksu002.a {
 		optWorkplaceEventName: string | null;
 	}
 
-    interface EditStateOfDailyAttd {
-        // 勤怠項目ID
-        attendanceItemId: number;
-        // 編集状態: 日別実績の編集状態
-        editStateSetting: EDIT_STATE;
-    }
+	interface EditStateOfDailyAttd {
+		// 勤怠項目ID
+		attendanceItemId: number;
+		// 編集状態: 日別実績の編集状態
+		editStateSetting: EDIT_STATE;
+	}
 
-    interface IError {
-        sid: string,
-        scd: string,
-        empName: string,
-        date: string,
-        attendanceItemId: string,
-        errorMessage: string,
-    }
+	interface IError {
+		sid: string,
+		scd: string,
+		empName: string,
+		date: string,
+		attendanceItemId: string,
+		errorMessage: string,
+	}
 
-    export class InforError {
-        sid: string;
-        scd: string;
-        empName: string;
-        date: string;
-        attendanceItemId: string;
-        errorMessage: string;
-        constructor(param: IError) {
-            let self = this;
-            self.sid = param.sid;
-            self.scd = param.scd;
-            self.empName = param.empName;
-            self.date = param.date;
-            self.attendanceItemId = param.attendanceItemId;
-            self.errorMessage = param.errorMessage;
-        }
-    }
+	export class InforError {
+		sid: string;
+		scd: string;
+		empName: string;
+		date: string;
+		attendanceItemId: string;
+		errorMessage: string;
+		constructor(param: IError) {
+			let self = this;
+			self.sid = param.sid;
+			self.scd = param.scd;
+			self.empName = param.empName;
+			self.date = param.date;
+			self.attendanceItemId = param.attendanceItemId;
+			self.errorMessage = param.errorMessage;
+		}
+	}
 }
-function calculateDaysStartEndWeek(start: Date, end: Date, settingDayStart: number, isSelectedSettingDayStart: boolean): ({start: Date, end: Date}){
-	if(isSelectedSettingDayStart){
+function calculateDaysStartEndWeek(start: Date, end: Date, settingDayStart: number, isSelectedSettingDayStart: boolean): ({ start: Date, end: Date }) {
+	if (isSelectedSettingDayStart) {
 		const locale = moment.locale();
 		moment.updateLocale(locale, {
 			week: {
-				dow: settingDayStart == 7 ? 0: settingDayStart,
+				dow: settingDayStart == 7 ? 0 : settingDayStart,
 				doy: 0
 			}
 		});
@@ -980,14 +1031,16 @@ function calculateDaysStartEndWeek(start: Date, end: Date, settingDayStart: numb
 				doy: 0
 			}
 		});
-		return {start: nStart.toDate(), end: nEnd.toDate()};
-	}else{
-		return {start: start, end: end};
+		return { start: nStart.toDate(), end: nEnd.toDate() };
+	} else {
+		return { start: start, end: end };
 	}
 }
-function converNumberToTime(number: number): string{
-	if (-60 < number &&  number < 0) {
-		return ('-' + Math.ceil(number/60).toString() +':'+ (Math.abs(number%60) == 0 ? '00': (Math.abs(number%60)).toString())); 
+function converNumberToTime(number: number): string {
+	const minute: string = Math.abs(number % 60) > 9 ? Math.abs(number % 60).toString() : '0' + Math.abs(number % 60).toString();
+
+	if (-60 < number && number < 0) {
+		return ('-' + Math.ceil(number / 60).toString() + ':' + (Math.abs(number % 60) == 0 ? '00' : minute));
 	}
-	return (number < 0 ? Math.ceil(number/60).toString():Math.floor(number/60).toString()) +':'+ (Math.abs(number%60) == 0 ? '00': (Math.abs(number%60)).toString()); 
+	return (number < 0 ? Math.ceil(number / 60).toString() : Math.floor(number / 60).toString()) + ':' + (Math.abs(number % 60) == 0 ? '00' : minute);
 }

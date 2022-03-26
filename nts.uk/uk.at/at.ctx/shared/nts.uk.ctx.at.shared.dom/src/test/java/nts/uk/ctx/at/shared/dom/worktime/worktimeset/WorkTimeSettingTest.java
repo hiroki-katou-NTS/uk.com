@@ -10,7 +10,6 @@ import mockit.Injectable;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -47,7 +46,7 @@ public class WorkTimeSettingTest {
 		// Before
 		new Verifications() {{
 			// 固定勤務設定を取得する
-			require.getWorkSettingForFixedWork( instance.getWorktimeCode() );
+			require.fixedWorkSetting(instance.getCompanyId(), instance.getWorktimeCode());
 			times = 0;
 		}};
 
@@ -57,7 +56,7 @@ public class WorkTimeSettingTest {
 		// After
 		new Verifications() {{
 			// 固定勤務設定を取得する
-			require.getWorkSettingForFixedWork( instance.getWorktimeCode() );
+			require.fixedWorkSetting(instance.getCompanyId(), instance.getWorktimeCode());
 			times = 1;
 		}};
 
@@ -80,7 +79,7 @@ public class WorkTimeSettingTest {
 		// Before
 		new Verifications() {{
 			// 流動勤務設定を取得する
-			require.getWorkSettingForFlowWork( instance.getWorktimeCode() );
+			require.flowWorkSetting(instance.getCompanyId(), instance.getWorktimeCode());
 			times = 0;
 		}};
 
@@ -90,7 +89,7 @@ public class WorkTimeSettingTest {
 		// After
 		new Verifications() {{
 			// 流動勤務設定を取得する
-			require.getWorkSettingForFlowWork( instance.getWorktimeCode() );
+			require.flowWorkSetting(instance.getCompanyId(), instance.getWorktimeCode());
 			times = 1;
 		}};
 
@@ -113,7 +112,7 @@ public class WorkTimeSettingTest {
 		// Before
 		new Verifications() {{
 			// フレックス勤務設定を取得する
-			require.getWorkSettingForFlexWork( instance.getWorktimeCode() );
+			require.flexWorkSetting(instance.getCompanyId(), instance.getWorktimeCode());
 			times = 0;
 		}};
 
@@ -123,7 +122,7 @@ public class WorkTimeSettingTest {
 		// After
 		new Verifications() {{
 			// フレックス勤務設定を取得する
-			require.getWorkSettingForFlexWork( instance.getWorktimeCode() );
+			require.flexWorkSetting(instance.getCompanyId(), instance.getWorktimeCode());
 			times = 1;
 		}};
 

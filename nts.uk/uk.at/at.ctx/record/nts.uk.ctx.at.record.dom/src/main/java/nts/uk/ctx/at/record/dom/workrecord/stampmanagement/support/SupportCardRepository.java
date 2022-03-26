@@ -13,12 +13,18 @@ import java.util.Optional;
  */
 public interface SupportCardRepository {
 
-	public Optional<SupportCard> get(String cid, int supportCardNo);
+	public Optional<SupportCard> get(String cid, String supportCardNo);
 
 	public void update(List<SupportCard> domains);
 
 	public void insert(List<SupportCard> domains);
 
 	public void delete(List<SupportCard> domains);
+	
+	public List<SupportCard> getAll();
+	
+	public Optional<SupportCard> getBySupportCardNo(String supportCardNo);
+	
+	public void delete(String cid, String supportCardNo);
 
 }

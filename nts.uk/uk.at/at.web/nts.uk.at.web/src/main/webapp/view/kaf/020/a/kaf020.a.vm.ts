@@ -14,10 +14,14 @@ module nts.uk.at.view.kaf020.a {
         baseDate: string;
         isAgentMode: KnockoutObservable<boolean> = ko.observable(false);
 		screenCode: number = null;
-
-
+		backFromB: boolean = false;
+		
         created(params: AppInitParam) {
             const vm = this;
+            if (document.referrer.indexOf('kaf/020/b/index.xhtml') > 0) {
+                vm.backFromB = true;
+            }
+
 			if(nts.uk.request.location.current.isFromMenu) {
 				sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');	
 			} else {
@@ -47,8 +51,12 @@ module nts.uk.at.view.kaf020.a {
             vm.$ajax(PATH_API.optionalSetting).done((data: Array<OptionalItemAppSet>) => {
                 if (data.length == 0) {
                     vm.$dialog.error({messageId: "Msg_1694"});
-                } else if (data.length == 1 && (!params || !params.fromB)) {
-                    vm.detail(data[0]);
+                } else if (data.length == 1) {
+                    if (vm.backFromB) {
+                        vm.goBack();
+                    } else {
+                        vm.detail(data[0]);
+                    }
                 } else {
                     data = _.sortBy(data, ["code"]);
                     vm.optionalItemAppSet(data);

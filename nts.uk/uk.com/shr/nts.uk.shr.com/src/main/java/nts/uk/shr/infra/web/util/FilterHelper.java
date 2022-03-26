@@ -1,45 +1,15 @@
 package nts.uk.shr.infra.web.util;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
-
-import nts.uk.shr.com.context.ScreenIdentifier;
-import nts.uk.shr.com.program.Program;
 import nts.uk.shr.com.program.ProgramsManager;
 import nts.uk.shr.com.program.WebAppId;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Optional;
+
 public class FilterHelper {
 	
-	public static List<Program> LOGIN_PATH = Arrays.asList(
-			ProgramsManager.CCG007A,
-			ProgramsManager.CCG007B,
-			ProgramsManager.CCG007C,
-			ProgramsManager.CCG007D,
-			ProgramsManager.CCG007E,
-			ProgramsManager.CCG007F,
-			ProgramsManager.CCG007G,
-			ProgramsManager.CCG007H,
-			ProgramsManager.CCG007I
-			);
-	
-	public static boolean isLoginPage(String requestPath){
-		return LOGIN_PATH.stream().anyMatch(lg -> {
-			return requestPath.contains(lg.getPPath());
-		});
-	}
-	
-	public static boolean isLoginPage(ScreenIdentifier target){
-		String pgID = target.getProgramId() + target.getScreenId();
-		return LOGIN_PATH.stream().anyMatch(lg -> {
-			return pgID.equals(lg.getPId());
-		});
-	}
-
 	public static Optional<String> detectProgram(String requestPath){
 		Iterator<Entry<WebAppId, String>> iterator = FilterConst.webApps.entrySet().iterator();
 		Entry<WebAppId, String> entry = null;

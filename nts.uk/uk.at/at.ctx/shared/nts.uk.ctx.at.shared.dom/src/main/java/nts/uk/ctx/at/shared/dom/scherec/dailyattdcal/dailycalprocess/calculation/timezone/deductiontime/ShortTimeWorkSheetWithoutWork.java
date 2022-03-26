@@ -23,6 +23,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.TemporaryTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
@@ -81,7 +83,7 @@ public class ShortTimeWorkSheetWithoutWork {
 				integrationOfWorkTime,
 				integrationOfDaily,
 				calcRangeOfOneDay.getOneDayOfRange(),
-				calcRangeOfOneDay.getAttendanceLeavingWork(),
+				calcRangeOfOneDay.getAttendanceLeavingWork().getTimeLeavingWorks(),
 				Optional.empty(),
 				companyCommonSetting,
 				personCommonSetting);
@@ -115,24 +117,40 @@ public class ShortTimeWorkSheetWithoutWork {
 		List<TimeSheetOfDeductionItem> childCareList =
 				itemList.stream().filter(t -> t.getDeductionAtr().isChildCare()).collect(Collectors.toList());
 		for (TimeSheetOfDeductionItem item : childCareList){
-			// 遅刻早退控除前時間帯に含まない時間帯の取得
-			List<TimeSpanForCalc> checkingList = new ArrayList<>(
-					oneDay.getWithinWorkingTimeSheet().get().getTimeSheetNotDupBeforeLateEarly(
-							item.getTimeSheet().getTimeSpan()));
-			// 確認中Listを確認する
-			List<TimeSpanForCalc> results = new ArrayList<>();
-			for (TimeSpanForCalc checking : checkingList){
-				boolean isChecked = false;
-				if (oneDay.getOutsideWorkTimeSheet().isPresent()){
-					OutsideWorkTimeSheet outsideWorkTimeSheet = oneDay.getOutsideWorkTimeSheet().get();
-					if (outsideWorkTimeSheet.getOverTimeWorkSheet().isPresent()){
-						OverTimeSheet overTimeSheet = outsideWorkTimeSheet.getOverTimeWorkSheet().get();
+			List<TimeSpanForCalc> results = new ArrayList<>();		// 結果List
+			// 就業時間内時間帯を確認する
+			if (oneDay.getWithinWorkingTimeSheet().isPresent()){
+				WithinWorkTimeSheet withinWorkTimeSheet = oneDay.getWithinWorkingTimeSheet().get();
+				// 遅刻早退控除前時間帯に含まない時間帯の取得
+				results.addAll(withinWorkTimeSheet.getTimeSheetNotDupBeforeLateEarly(
+						item.getTimeSheet().getTimeSpan()));
+			}
+			else {
+				results.add(item.getTimeSheet().getTimeSpan());
+			}
+			// 就業時間外時間帯を確認する
+			if (oneDay.getOutsideWorkTimeSheet().isPresent()){
+				OutsideWorkTimeSheet outsideWorkTimeSheet = oneDay.getOutsideWorkTimeSheet().get();
+				// 残業時間帯を確認する
+				if (outsideWorkTimeSheet.getOverTimeWorkSheet().isPresent()){
+					OverTimeSheet overTimeSheet = outsideWorkTimeSheet.getOverTimeWorkSheet().get();
+					List<TimeSpanForCalc> notDupList = new ArrayList<>();
+					for (TimeSpanForCalc result : results){
 						// 残業時間帯に含まない時間帯の取得
-						results.addAll(overTimeSheet.getTimeSheetNotDupOverTime(checking));
-						isChecked = true;
+						notDupList.addAll(overTimeSheet.getTimeSheetNotDupOverTime(result));
 					}
+					results = notDupList;
 				}
-				if (!isChecked) results.add(checking);	// 残業時間帯がない時、確認中Listをそのまま追加する
+				// 臨時時間帯を確認する
+				if (outsideWorkTimeSheet.getTemporaryTimeSheet().isPresent()){
+					TemporaryTimeSheet temporaryTimeSheet = outsideWorkTimeSheet.getTemporaryTimeSheet().get();
+					List<TimeSpanForCalc> notDupList = new ArrayList<>();
+					for (TimeSpanForCalc result : results){
+						// 臨時時間帯に含まない時間帯の取得
+						notDupList.addAll(temporaryTimeSheet.getTimeSheetNotDupTemporary(result));
+					}
+					results = notDupList;
+				}
 			}
 			// 結果Listを控除項目の時間帯Listに変換する
 			for (TimeSpanForCalc result : results){

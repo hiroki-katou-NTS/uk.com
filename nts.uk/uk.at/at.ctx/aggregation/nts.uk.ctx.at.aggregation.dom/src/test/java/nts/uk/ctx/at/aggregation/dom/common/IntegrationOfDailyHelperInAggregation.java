@@ -31,7 +31,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.interval.In
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.HolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
@@ -234,6 +233,9 @@ public class IntegrationOfDailyHelperInAggregation {
 				,	new ClassificationCode(classCode)	// 分類コード
 				,	Optional.empty()					// 勤務種別コード
 				,	Optional.empty()					// 加給コード
+				,	Optional.empty()					// 職場グループID
+				,	Optional.empty()					// 免許区分
+				,	Optional.empty()					// 看護管理者か
 			);
 		}
 
@@ -323,7 +325,6 @@ public class IntegrationOfDailyHelperInAggregation {
 		@Injectable private static BreakTimeOfDaily breakTime;
 		@Injectable private static RaiseSalaryTimeOfDailyPerfor raise;
 		@Injectable private static WorkTimes workTimes;
-		@Injectable private static TemporaryTimeOfDaily temporaly;
 		@Injectable private static ShortWorkTimeOfDaily shorttime;
 		@Injectable private static HolidayOfDaily holiday;
 		@Injectable private static IntervalTimeOfDaily interval;
@@ -351,7 +352,7 @@ public class IntegrationOfDailyHelperInAggregation {
 								,	new TotalWorkingTime(
 												atdTime, atdTime, atdTime, AtdTimeHelper.createWithinOfDaily(withinTime, withinAmount), excess
 											,	Collections.emptyList(), Collections.emptyList(), breakTime, Collections.emptyList()
-											,	raise, workTimes, temporaly, shorttime, holiday, interval
+											,	raise, workTimes, shorttime, holiday, interval
 										)
 								, divTime, AtdTimeHelper.createPremiumOfDaily(premiumTime, premiumAmount) )
 						,	stay, budget, unEmploy

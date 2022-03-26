@@ -34,8 +34,19 @@ public class KrqdtAppStamp extends ContractUkJpaEntity{
 	
 	@Column(name = "GO_OUT_ATR")
 	public Integer goOutAtr;
-	
-	
+
+	/** 応援勤務NO */
+	@Column(name = "SUPPORT_WORK_NO")
+	public Integer supportWorkNo;
+
+	/** 職場ID */
+	@Column(name = "STAMP_WKP_ID")
+	public String stampWkpId;
+
+	/** 勤務場所コード */
+	@Column(name = "STAMP_WK_LOCATION_CD")
+	public String stampWkLocationCd;
+
 	@Override
 	protected Object getKey() {
 		return krqdtAppStampPK;

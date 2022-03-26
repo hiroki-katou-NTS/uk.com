@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter;
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoImport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
+import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 //import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpBasicInfoExport;
 //import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.bs.person.pub.person.PersonInfoExport;
@@ -37,6 +38,9 @@ public class PersonInfoAdapterImpl implements PersonInfoAdapter {
 	
 	@Inject
 	private SyEmployeePub syEmployeePub;
+	
+	@Inject
+	private IPersonInfoPub iPersonInfoPub;
 	
 
 	/* (non-Javadoc)
@@ -117,6 +121,21 @@ public class PersonInfoAdapterImpl implements PersonInfoAdapter {
 				empBasicInfoExport.getRetiredDate()
 				);
 		return empBasicInfoImport;
+	}
+
+	@Override
+	public EmpBasicInfoImport getEmpBasicInfoImport(String sID) {
+		nts.uk.ctx.bs.employee.pub.person.PersonInfoExport personInfoExport = iPersonInfoPub.getPersonInfo(sID);
+		return new EmpBasicInfoImport(
+				personInfoExport.getPid(), 
+				personInfoExport.getBusinessName(), 
+				personInfoExport.getEmployeeId(), 
+				personInfoExport.getBusinessName(), 
+				personInfoExport.getGender(), 
+				personInfoExport.getBirthDay(), 
+				personInfoExport.getEmployeeCode(), 
+				personInfoExport.getEntryDate(), 
+				personInfoExport.getRetiredDate());
 	}
 
 }

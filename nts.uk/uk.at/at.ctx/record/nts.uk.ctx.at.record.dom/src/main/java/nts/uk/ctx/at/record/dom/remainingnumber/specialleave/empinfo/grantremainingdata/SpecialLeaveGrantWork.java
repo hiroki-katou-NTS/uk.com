@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremai
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.specialholiday.export.NextSpecialLeaveGrant;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
  */
 @Getter
 @Setter
+@AllArgsConstructor
 public class SpecialLeaveGrantWork {
 
 	/** 期間の開始日に付与があるか */

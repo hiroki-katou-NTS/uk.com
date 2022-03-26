@@ -76,7 +76,7 @@ public class GetScheduleOfWorkInfo {
 
 		// step 2
 		// call 勤務予定で勤務予定（勤務情報）dtoを作成する
-		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = createWorkScheduleWorkInfor.getDataScheduleOfWorkInfo(mngStatusAndWScheMap);
+		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = createWorkScheduleWorkInfor.getDataScheduleOfWorkInfo(mngStatusAndWScheMap, param.targetOrg);
 		return listWorkScheduleWorkInfor;
 	}
 

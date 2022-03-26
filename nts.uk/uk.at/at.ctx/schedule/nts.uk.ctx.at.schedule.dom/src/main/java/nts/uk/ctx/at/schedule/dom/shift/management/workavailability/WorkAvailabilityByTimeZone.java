@@ -42,12 +42,15 @@ public class WorkAvailabilityByTimeZone implements WorkAvailability, DomainValue
 	}
 
 	@Override
-	public boolean isHolidayAvailability(Require require) {
+	public boolean isHolidayAvailability(Require require, String companyId) {
 		return false;
 	}
 	
 	@Override
-	public boolean isMatchingWorkAvailability(Require require, WorkInformation workInformation,
+	public boolean isMatchingWorkAvailability(
+			Require require,
+			String companyId,
+			WorkInformation workInformation,
 			List<TimeSpanForCalc> timeZoneList) {
 		
 		if (timeZoneList.isEmpty()) {

@@ -99,6 +99,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.param.PAttendanceItem;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQueryProcessor;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
@@ -729,11 +730,11 @@ public class MonthlyPerformanceReload {
 					for(CheckEmpEralOuput checkEmpEralOuput: listCheckEmpEralOuput) {
 						if(x.getEmployeeId().equals(checkEmpEralOuput.getEmployId())) {
 							if(checkEmpEralOuput.getTypeAtr() == TypeErrorAlarm.ERROR) {
-								x.setError("ER");
+								x.setError(TextResource.localize("KMW003_47"));							
 							}else if(checkEmpEralOuput.getTypeAtr() == TypeErrorAlarm.ALARM) {
-								x.setError("AL");
+								x.setError(TextResource.localize("KMW003_48"));
 							}else if(checkEmpEralOuput.getTypeAtr() == TypeErrorAlarm.ERROR_ALARM) {
-								x.setError("ER/AL");
+								x.setError(TextResource.localize("KMW003_46"));
 							}else {
 								x.setError("");
 							}

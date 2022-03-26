@@ -67,10 +67,11 @@ import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeDig
 import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeLeaveApplicationDetailShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeLeaveApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.workchange.AppWorkChangeShare;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceReasonContent;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
-import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 public class ConvertApplicationToShare {
 
@@ -162,7 +163,7 @@ public class ConvertApplicationToShare {
 				return new AppStampShare(appStamp.getListTimeStampApp().stream().map(x -> {
 					return new TimeStampAppShare(converDesTimeApp(x.getDestinationTimeApp()), x.getTimeOfDay(),
 							x.getWorkLocationCd().map(y -> new WorkLocationCD(y.v())), x.getAppStampGoOutAtr(),
-							Optional.empty());// TODO: domain sinsei hasn't workplaceId
+							x.getWorkplaceId().map(y -> new WorkplaceId(y.v())));
 				}).collect(Collectors.toList()), // 時刻
 
 						appStamp.getListDestinationTimeApp().stream().map(y -> converDesTimeApp(y))
@@ -238,7 +239,7 @@ public class ConvertApplicationToShare {
 	private static DestinationTimeAppShare converDesTimeApp(DestinationTimeApp app) {
 		return new DestinationTimeAppShare(TimeStampAppEnumShare.valueOf(app.getTimeStampAppEnum().value),
 				app.getEngraveFrameNo(), StartEndClassificationShare.valueOf(app.getStartEndClassification().value),
-				app.getSupportWork());
+				app.getSupportWorkNo().map(WorkNo::v));
 
 	}
 

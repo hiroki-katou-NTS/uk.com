@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.infra.repository.specialholiday;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -354,12 +355,20 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 
 	@Override
 	public List<GrantDateTbl> findBySphdCd(String companyId, int specialHolidayCode) {
-		return this.queryProxy().query(SELECT_GD_BY_SPHDCD_QUERY, Object[].class)
+		List<GrantDateTbl> grantDateTblList = this.queryProxy().query(SELECT_GD_BY_SPHDCD_QUERY, Object[].class)
 				.setParameter("companyId", companyId)
 				.setParameter("specialHolidayCode", specialHolidayCode)
 				.getList(c -> {
 					return createGdDomainFromEntity(c);
 				});
+		
+		return grantDateTblList.stream().map(x ->{
+				// 「特別休暇経過付与日数テーブル」
+				List<GrantElapseYearMonth> elapseYearList
+						= findGrantElapseYearMonth(companyId, specialHolidayCode, x.getGrantDateCode().toString());
+				x.setElapseYear(elapseYearList);
+				return x;
+			}).collect(Collectors.toList());
 	}
 
 	@Override

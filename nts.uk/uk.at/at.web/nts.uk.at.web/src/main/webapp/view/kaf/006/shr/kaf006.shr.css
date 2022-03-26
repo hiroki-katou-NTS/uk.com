@@ -7,7 +7,7 @@
 }
 
 .table-border {
-    border: 1px solid black;
+    border: 1px solid white;
 }
 
 button.nts-switch-button {
@@ -72,4 +72,18 @@ button.nts-switch-button {
 
 #kaf006-shr-component1 .space-between-table .row-underline  a {
 	margin-top: 5px;
+}
+
+.bg-gray{
+	background-color: #6A6A6A;
+	color: #fff;
+}
+
+.small-height{
+    height: 25px !important;
+}
+
+td {
+	text-align: left !important;
+	height: 33px !important;
 }

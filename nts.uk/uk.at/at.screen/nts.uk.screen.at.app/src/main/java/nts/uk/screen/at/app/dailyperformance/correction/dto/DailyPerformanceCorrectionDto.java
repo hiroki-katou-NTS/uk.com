@@ -14,13 +14,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.xml.security.utils.I18n;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.dto.DailyPerformanceCodeDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomOptionalDeserializer;
+import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomOptionalSerializer;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
@@ -31,7 +34,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityM
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthResult;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.com.license.option.OptionLicense;
 
 /**
  * @author hungnm
@@ -130,8 +132,12 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 	
 	private List<String> changeEmployeeIds;
 	
+	@JsonDeserialize(using = CustomOptionalDeserializer.class)
+	@JsonSerialize(using = CustomOptionalSerializer.class)
 	private Optional<IdentityProcessUseSetDto> identityProcessDtoOpt;
 	
+	@JsonDeserialize(using = CustomOptionalDeserializer.class)
+	@JsonSerialize(using = CustomOptionalSerializer.class)
 	private Optional<ApprovalUseSettingDto> approvalUseSettingDtoOpt;
 	
 	private DateRange datePeriodResult;
@@ -150,6 +156,9 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 	private Boolean confirmEmployment;
 	// 作業運用設定.作業運用方法 && アプリケーションコンテキスト．オプションライセンス．就業．作業・応援管理
 	private boolean showWorkLoad;
+	
+	// param session 
+	private DataSessionDto dataSessionDto;
 	
 	public DailyPerformanceCorrectionDto() {
 		super();
@@ -209,7 +218,8 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 //		if (existedCellState.isPresent()) {
 //			existedCellState.get().addState("mgrid-disable");
 //		} else {
-		   if(!header.getKey().equals("Application") && !header.getKey().equals("Submitted") && !header.getKey().equals("ApplicationList") && !header.getAttendanceName().equals(TextResource.localize("KDW003_62"))){
+		 
+		if(!header.getKey().equals("Application") && !header.getKey().equals("Submitted") && !header.getKey().equals("ApplicationList") && !header.getAttendanceName().equals(TextResource.localize("KDW003_62"))){
 			int attendanceAtr = mapDP.get(Integer.parseInt(getID(header.getKey()))).getAttendanceAtr();
 			if (attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value) {
 				if (attendanceAtr == DailyAttendanceAtr.Classification.value) {
@@ -225,7 +235,10 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 				this.mapCellState.put("_" + data.getId()+ "|" + header.getKey(), new DPCellStateDto("_" + data.getId(), header.getKey(), toList("mgrid-disable")));
 				 lstCellDisByLock.add(new DPHideControlCell("_" + data.getId(), header.getKey()));
 			}
-		   }
+		} else {
+			this.mapCellState.put("_" + data.getId()+ "|" + header.getKey(), new DPCellStateDto("_" + data.getId(), header.getKey(), toList("mgrid-disable")));
+			lstCellDisByLock.add(new DPHideControlCell("_" + data.getId(), header.getKey()));
+		}
 //		}
 	}
 

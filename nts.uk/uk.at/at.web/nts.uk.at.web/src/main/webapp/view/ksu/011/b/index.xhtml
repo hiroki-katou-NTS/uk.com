@@ -1,0 +1,200 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = { width: 1115, height: 640 };</script>
+        <com:ValidatorScript>
+            nts.uk.ctx.at.aggregation.dom.scheduledailytable.ScheduleDailyTableCode
+            nts.uk.ctx.at.aggregation.dom.scheduledailytable.ScheduleDailyTableName
+            nts.uk.ctx.at.aggregation.dom.scheduledailytable.ScheduleDailyTableInkanTitle
+            nts.uk.ctx.at.aggregation.dom.scheduledailytable.ScheduleDailyTableComment
+        </com:ValidatorScript>
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="ksu011.b.main.css" />
+        <com:scriptfile path="ksu011.b.vm.js" />
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <button id="B1_1" data-bind="click: createNew">#{i18n.getText('KSU011_23')}</button>
+            <button id="B1_2" data-bind="click: registerSetting, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('KSU011_24')}</button>
+            <button id="B1_3" data-bind="click: deleteSetting, enable: !newMode()" class="danger">#{i18n.getText('KSU011_25')}</button>
+            <button id="B1_4" data-bind="click: copySetting, enable: !newMode()">#{i18n.getText('KSU011_26')}</button>
+            <button id="B1_5" data-bind="click: closeDialog">#{i18n.getText('KSU011_27')}</button>
+        </div>
+        <div id="contents-area" class="two-panel">
+            <div class="left-panel">
+                <div data-bind="ntsPanel:{width: '320px', height: '460px', direction: 'none', showIcon: true, visible: true}">
+                    <div data-bind="ntsSearchBox: {
+                                        searchMode: 'highlight',
+                                        targetKey: 'code',
+                                        comId: 'B2_3',
+	                                    items: outputItems,
+	                                    selected: selectedOutputItemCode,
+	                                    selectedKey: 'code',
+	                                    fields: ['name', 'code'],
+	                                    mode: 'igGrid'
+                                    }" />
+                    <table id="B2_3"
+                           data-bind="ntsGridList: {
+                                        name: $i18n('KSU011_28'),
+                                        rows: 12,
+                                        dataSource: outputItems,
+                                        primaryKey: 'code',
+                                        columns: ko.observableArray([
+                                            { headerText: $i18n('KSU011_29'), key: 'code', width: 60 },
+                                            { headerText: $i18n('KSU011_30'), key: 'name', width: 200 },
+                                        ]),
+                                        multiple: false,
+                                        value: selectedOutputItemCode
+                                    }">
+                    </table>
+                </div>
+            </div>
+            <div class="right-panel">
+                <div class="control-group valign-center">
+                    <div data-bind="ntsFormLabel: {required: true, text: $i18n('KSU011_31'), constraint: ['ScheduleDailyTableCode', 'ScheduleDailyTableName']}"/>
+                    <input id="B3_2"
+                           data-bind="ntsTextEditor: {
+                                        value: code,
+                                        constraint: 'ScheduleDailyTableCode',
+                                        required: true,
+                                        enable: newMode,
+                                        name: $i18n('KSU011_32')
+                                    }" />
+                    <input id="B3_3"
+                           data-bind="ntsTextEditor: {
+                                        value: name,
+                                        constraint: 'ScheduleDailyTableName',
+                                        required: true,
+                                        name: $i18n('KSU011_33')
+                                    }" />
+                </div>
+                <div class="control-group valign-center">
+                    <div data-bind="ntsFormLabel: {text: $i18n('KSU011_34'), constraint: 'ScheduleDailyTableInkanTitle'}"/>
+                    <div data-bind="ntsCheckBox: { checked: useSignStamp, text: $i18n('KSU011_35') }"></div>
+                </div>
+                <div class="control-group valign-center">
+                    <div class="form-label"/>
+                    <input id="B4_3"
+                           data-bind="ntsTextEditor: {
+                                        value: columnName1,
+                                        constraint: 'ScheduleDailyTableInkanTitle',
+                                        required: false,
+                                        enable: useSignStamp,
+                                        name: $i18n('KSU011_36')
+                                    }" />
+                    <input data-bind="ntsTextEditor: {
+                                        value: columnName2,
+                                        constraint: 'ScheduleDailyTableInkanTitle',
+                                        required: false,
+                                        enable: useSignStamp,
+                                        name: $i18n('KSU011_37')
+                                    }" />
+                    <input data-bind="ntsTextEditor: {
+                                        value: columnName3,
+                                        constraint: 'ScheduleDailyTableInkanTitle',
+                                        required: false,
+                                        enable: useSignStamp,
+                                        name: $i18n('KSU011_38')
+                                    }" />
+                    <input data-bind="ntsTextEditor: {
+                                        value: columnName4,
+                                        constraint: 'ScheduleDailyTableInkanTitle',
+                                        required: false,
+                                        enable: useSignStamp,
+                                        name: $i18n('KSU011_39')
+                                    }" />
+                    <input data-bind="ntsTextEditor: {
+                                        value: columnName5,
+                                        constraint: 'ScheduleDailyTableInkanTitle',
+                                        required: false,
+                                        enable: useSignStamp,
+                                        name: $i18n('KSU011_40')
+                                    }" />
+                    <input data-bind="ntsTextEditor: {
+                                        value: columnName6,
+                                        constraint: 'ScheduleDailyTableInkanTitle',
+                                        required: false,
+                                        enable: useSignStamp,
+                                        name: $i18n('KSU011_41')
+                                    }" />
+                </div>
+                <div class="control-group valign-center">
+                    <div data-bind="ntsFormLabel: {text: $i18n('KSU011_42')}"/>
+                    <button id="B5_2" data-bind="click: openDialogC.bind($vm, 'personal'), text: $i18n('KSU011_43')"/>
+                    <input id="B5_2_1"
+                           data-bind="ntsTextEditor: {
+                                        value: readonlyText1,
+                                        required: false,
+                                        readonly: true,
+                                        name: $i18n('KSU011_43')
+                                    }" />
+                </div>
+                <div class="control-group valign-center">
+                    <div class="form-label"/>
+                    <button id="B5_3" data-bind="click: openDialogC.bind($vm, 'workplace'), text: $i18n('KSU011_44')"/>
+                    <input id="B5_3_1"
+                           data-bind="ntsTextEditor: {
+                                        value: readonlyText2,
+                                        required: false,
+                                        readonly: true,
+                                        name: $i18n('KSU011_44')
+                                    }" />
+                </div>
+                <div class="control-group valign-top">
+                    <div data-bind="ntsFormLabel: {text: $i18n('KSU011_45'), constraint: 'ScheduleDailyTableComment'}"/>
+                    <textarea rows="3" style="width: 565px;" data-bind="ntsMultilineEditor: { value: comment, name: $i18n('KSU011_46'), constraint: 'ScheduleDailyTableComment' }" />
+                </div>
+                <div class="control-group valign-center">
+                    <div data-bind="ntsFormLabel: {text: $i18n('KSU011_47')}"/>
+                    <div data-bind="ntsCheckBox: { checked: transferDisplay, text: $i18n('KSU011_48') }"></div>
+                </div>
+                <div class="control-group valign-center">
+                    <div data-bind="ntsFormLabel: {text: $i18n('KSU011_49')}" style="width: auto;"/>
+                    <button data-bind="ntsHelpButton: {image: 'B8_2.png', position: 'right center-89', enable: true }">？</button>
+                </div>
+                <div class="control-group valign-top">
+                    <div class="form-label"/>
+                    <span data-bind="text: $i18n('KSU011_51')" style="line-height: 30px; padding-left: 45px;"/>
+                    <div style="display: inline-block;"
+                         data-bind="ntsRadioBoxGroup: {
+                                            options: [
+                                                {value: 0, name: $i18n('KSU011_53')},
+                                                {value: 1, name: $i18n('KSU011_54')}
+                                            ],
+                                            optionsValue: 'value',
+                                            optionsText: 'name',
+                                            value: supporterSchedulePrintMethod,
+                                            required: false,
+                                            name: $i18n('KSU011_52')
+                                        }">
+                    </div>
+                </div>
+                <div class="control-group valign-top" style="margin-bottom: 0;">
+                    <div class="form-label"/>
+                    <span data-bind="text: $i18n('KSU011_55')" style="line-height: 30px; padding-left: 45px;"/>
+                    <div style="display: inline-block;"
+                         data-bind="ntsRadioBoxGroup: {
+                                            options: [
+                                                {value: 0, name: $i18n('KSU011_57')},
+                                                {value: 1, name: $i18n('KSU011_58')}
+                                            ],
+                                            optionsValue: 'value',
+                                            optionsText: 'name',
+                                            value: supporterRecordPrintMethod,
+                                            required: false,
+                                            name: $i18n('KSU011_56')
+                                        }">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

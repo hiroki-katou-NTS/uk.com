@@ -1,6 +1,7 @@
 
 .titleColor {
-	background-color: #CFF1A5;
+	background-color: #6A6A6A;
+    color: #fff;
 }
 .disableFlag .box {
 	background-color: #888 !important;
@@ -196,4 +197,7 @@ div.form-label.broken {
  	margin-top: 12px;
  	margin-left: 120px;
  	width: auto !important
+}
+#contents-area .left-panel {
+	overflow: hidden !important;
 }

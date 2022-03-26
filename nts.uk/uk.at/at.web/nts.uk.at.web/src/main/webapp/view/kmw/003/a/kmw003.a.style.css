@@ -175,10 +175,10 @@ html {
 	margin-top: -33px;
 	margin-left: -10px;
 }
-.ui-iggrid .ui-iggrid-headercaption, .ui-iggrid .ui-iggrid-header, .ui-iggrid .ui-iggrid-toolbar {
+/* .ui-iggrid .ui-iggrid-headercaption, .ui-iggrid .ui-iggrid-header, .ui-iggrid .ui-iggrid-toolbar {
     background-color: white;
     border-color: white;
-}
+} */
 #content-grid{
     position: absolute;
     top: 93px;

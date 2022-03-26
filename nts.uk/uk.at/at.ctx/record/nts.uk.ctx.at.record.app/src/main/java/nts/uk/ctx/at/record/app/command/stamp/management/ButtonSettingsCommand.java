@@ -24,8 +24,8 @@ public class ButtonSettingsCommand {
 	/** ボタンの表示設定 */
 	private ButtonDisSetCommand buttonDisSet;
 
-	/** ボタン種類 */
-	private ButtonTypeCommand buttonType;
+	/** 打刻種類 */
+	private StampTypeCommand stampType;
 
 	/** 使用区分 */
 	private int usrArt;
@@ -44,7 +44,7 @@ public class ButtonSettingsCommand {
 				new ButtonPositionNo(this.getButtonPositionNo()), 
 				NotUseAtr.valueOf(this.usrArt), 
 				this.buttonDisSet.toDomain(), 
-				this.buttonType.getStampType().toDomain(), 
+				this.getStampType().toDomain(), 
 				AudioType.valueOf(this.audioType),
 				Optional.ofNullable(this.supportWplSet == null? null: SupportWplSet.valueOf(this.supportWplSet)),
 				Optional.ofNullable(this.taskChoiceArt == null? null: AssignmentMethod.valueOf(this.taskChoiceArt))
@@ -53,12 +53,12 @@ public class ButtonSettingsCommand {
 
 
 
-	public ButtonSettingsCommand(int buttonPositionNo, ButtonDisSetCommand buttonDisSet, ButtonTypeCommand buttonType,
+	public ButtonSettingsCommand(int buttonPositionNo, ButtonDisSetCommand buttonDisSet, StampTypeCommand stampType,
 			int usrArt, int audioType, Integer supportWplSet) {
 		super();
 		this.buttonPositionNo = buttonPositionNo;
 		this.buttonDisSet = buttonDisSet;
-		this.buttonType = buttonType;
+		this.stampType = stampType;
 		this.usrArt = usrArt;
 		this.audioType = audioType;
 		this.supportWplSet = supportWplSet;

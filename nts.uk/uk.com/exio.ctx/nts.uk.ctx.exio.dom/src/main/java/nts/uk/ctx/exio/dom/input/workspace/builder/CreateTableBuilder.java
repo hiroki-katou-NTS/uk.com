@@ -7,12 +7,13 @@ public abstract class CreateTableBuilder {
 
     public static CreateTableBuilder newInstance(DatabaseProduct database, String tableName){
         switch (database){
-            case MSSQLSERVER:
-                return new CreateSqlServerTableBuilder(tableName);
-            case POSTGRESQL:
-                return new CreatePostgresqlTableBuilder(tableName);
+        case MSSQLSERVER:
+            return new CreateSqlServerTableBuilder(tableName);
+        case POSTGRESQL:
+            return new CreatePostgresqlTableBuilder(tableName);
+		default:
+	        throw new RuntimeException("Database product'" + database.name() + "' is unsupported.");
         }
-        throw new RuntimeException("Database product'" + database.name() + "' is unsupported.");
     }
 
     public abstract CreateTableBuilder columnPK(String name, DataTypeConfiguration type);

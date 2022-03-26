@@ -62,7 +62,8 @@ public class ChangeDisplayOrganization {
 										  .map(x -> new EmployeeInformationDto(
 												  x.getEmployeeId(),
 												  x.getEmployeeCode(),
-												  x.getBusinessName()
+												  x.getBusinessName(),
+												  x.getSupportType()
 												  ))
 										  .collect(Collectors.toList())
 										  

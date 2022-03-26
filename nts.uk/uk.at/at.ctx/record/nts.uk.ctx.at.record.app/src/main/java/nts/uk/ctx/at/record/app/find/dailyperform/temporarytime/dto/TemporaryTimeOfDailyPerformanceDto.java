@@ -19,13 +19,10 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -40,12 +37,6 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 	
 	private String employeeId;
 
-	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = COUNT)
-	@AttendanceItemValue(type = ValueType.COUNT)
-	private Integer workTimes;
-
-	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = TIME_ZONE, 
-			listMaxLength = 3, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<WorkLeaveTimeDto> workLeaveTime;
 
 	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
@@ -56,7 +47,6 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 		if (domain != null) {
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());
-			dto.setWorkTimes(domain.getAttendance().getWorkTimes() == null ? null : domain.getAttendance().getWorkTimes().v());
 			dto.setWorkLeaveTime(ConvertHelper.mapTo(domain.getAttendance().getTimeLeavingWorks(), (c) -> newWorkLeaveTime(c)));
 			dto.exsistData();
 		}
@@ -67,7 +57,6 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 		if (domain != null) {
 			dto.setEmployeeId(employeeID);
 			dto.setYmd(ymd);
-			dto.setWorkTimes(domain.getWorkTimes() == null ? null : domain.getWorkTimes().v());
 			dto.setWorkLeaveTime(ConvertHelper.mapTo(domain.getTimeLeavingWorks(), (c) -> newWorkLeaveTime(c)));
 			dto.exsistData();
 		}
@@ -79,7 +68,6 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 		TemporaryTimeOfDailyPerformanceDto dto = new TemporaryTimeOfDailyPerformanceDto();
 			dto.setEmployeeId(employeeId());
 			dto.setYmd(workingDate());
-			dto.setWorkTimes(workTimes);
 			dto.setWorkLeaveTime(workLeaveTime == null ? null : workLeaveTime.stream().map(t -> t.clone()).collect(Collectors.toList()));
 		if (isHaveData()) {
 			dto.exsistData();
@@ -117,13 +105,9 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		TemporaryTimeOfDailyPerformance domain = new TemporaryTimeOfDailyPerformance(emp, new WorkTimes(toWorkTimes()), 
+		TemporaryTimeOfDailyPerformance domain = new TemporaryTimeOfDailyPerformance(emp,
 						ConvertHelper.mapTo(workLeaveTime, (c) -> WorkLeaveTimeDto.toDomain(c)), date);
 		return domain.getAttendance();
-	}
-
-	private int toWorkTimes() {
-		return workTimes == null ? (workLeaveTime == null ? 0 : workLeaveTime.size()) : workTimes;
 	}
 	
 	@Override
@@ -153,33 +137,18 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 	
 	@Override
 	public Optional<ItemValue> valueOf(String path) {
-		
-		if (path.equals(COUNT)) {
-			return Optional.of(ItemValue.builder().value(workTimes).valueType(ValueType.COUNT));
-		}
-		
 		return Optional.empty();
 	}
 
 	@Override
-	public void set(String path, ItemValue value) {
-		if (path.equals(COUNT)) {
-			this.workTimes = value.valueOrDefault(null);
-		}
-	}
-
-	@Override
 	public int size(String path) {
-		return 3;
+		return 10;
 	}
 
 	@Override
 	public PropType typeOf(String path) {
 		if (path.equals(TIME_ZONE)) {
 			return PropType.IDX_LIST;
-		}
-		if (path.equals(COUNT)){
-			return PropType.VALUE;
 		}
 		return super.typeOf(path);
 	}

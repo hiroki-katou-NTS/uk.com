@@ -13,24 +13,22 @@ import nts.uk.ctx.at.record.dom.reservation.bento.rules.BentoReservationTimeName
  * @author Doan Duy Hung
  *
  */
+@Getter
 public class ReservationClosingTime extends ValueObject {
 	
 	/**
 	 * 名前
 	 */
-	@Getter
 	private final BentoReservationTimeName reservationTimeName; 
 	
 	/**
 	 * 終了
 	 */
-	@Getter
 	private final BentoReservationTime finish;
 	
 	/**
 	 * 開始
 	 */
-	@Getter
 	private final Optional<BentoReservationTime> start;
 	
 	public ReservationClosingTime(BentoReservationTimeName reservationTimeName, BentoReservationTime finish, Optional<BentoReservationTime> start) {

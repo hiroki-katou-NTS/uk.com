@@ -36,4 +36,9 @@ public class InitWorkTypeWorkTime{
 	 * 初期選択就業時間帯名称
 	 */
 	private Optional<WorkTimeSetting> initWorkTime = Optional.empty();
+	/**
+	 * エラーメッセージ（Optional）
+	 */
+	private Optional<String> opErrorMsg;
+	
 }

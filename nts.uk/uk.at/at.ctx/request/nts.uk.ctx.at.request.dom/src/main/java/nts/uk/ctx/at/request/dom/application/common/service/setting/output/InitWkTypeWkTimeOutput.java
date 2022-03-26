@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.setting.output;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -21,5 +23,10 @@ public class InitWkTypeWkTimeOutput {
 	 * 就業時間帯コード
 	 */
 	private String workTimeCD;
+	
+	/**
+	 * エラーメッセージ(Optional)
+	 */
+	private Optional<String> opErrorMsg;
 	
 }

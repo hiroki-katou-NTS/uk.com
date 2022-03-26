@@ -64,6 +64,8 @@ import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAda
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTimeState;
@@ -104,6 +106,10 @@ public class MonthlyPerformanceDisplay {
 	
 	@Inject
 	BusinessTypeSortedMonRepository businessTypeSortedMonRepository;
+	
+	@Inject
+    private CompanyMonthlyItemService companyMonthlyItemService;
+	
 	// @Inject
 	// private AttendanceItemLinkingRepository attendanceItemLinkingRepository;
 	/**
@@ -168,6 +174,11 @@ public class MonthlyPerformanceDisplay {
 			}).collect(Collectors.toList()));
 		});
 		List<Integer> newkintaiIDList = kintaiIDList.stream().collect(Collectors.toList());
+		
+		//EA 4251
+		//会社の月次項目を取得する
+		List<AttItemName> listAttItemName = companyMonthlyItemService.getMonthlyItems(cId, Optional.empty(), newkintaiIDList, new ArrayList<>());
+		newkintaiIDList = listAttItemName.stream().map(c->c.getAttendanceItemId()).collect(Collectors.toList());
 		// 対応するドメインモデル「権限別月次項目制御」を取得する
 		MonthlyItemControlByAuthDto monthlyItemAuthDto = monthlyItemControlByAuthFinder
 				.getMonthlyItemControlByToUse(cId, employmentRoleID, newkintaiIDList, 1);
@@ -217,7 +228,9 @@ public class MonthlyPerformanceDisplay {
 					item.setDisplayNumber(c.getDisplayNumber());
 					item.setAttendanceAtr(c.getMonthlyAttendanceAtr());
 					item.setName(attdanceNames.get(c.getAttendanceItemId()));
-					item.setUserCanChange(c.getNameLineFeedPosition() == 1 ? true : false);
+				    // item.setUserCanChange(c.getNameLineFeedPosition() == 1 ? true : false);
+					item.setUserCanChange(c.getUserCanUpdateAtr() == 1 ? true : false);
+					item.setLineBreakPosition(c.getNameLineFeedPosition());
 					item.setUserCanUpdateAtr(c.getUserCanUpdateAtr());
 				});
 			}

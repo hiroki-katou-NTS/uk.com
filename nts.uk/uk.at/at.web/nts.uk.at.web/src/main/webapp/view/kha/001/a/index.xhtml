@@ -12,6 +12,9 @@
         <com:scriptfile set="IGNITE" />
         <com:stylefile path="kha001.a.css" />
         <com:scriptfile path="kha001.a.vm.js" />
+        <com:ValidatorScript>
+          nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.RangeRegardedSupportStamp
+        </com:ValidatorScript>
       </ui:define>
 
       <ui:define name="content">
@@ -30,7 +33,7 @@
           <div class="table mb-5">
             <div class="cell cell-left">
               <div
-                      data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KHA001_3')"
+                data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KHA001_3')"
               ></div>
             </div>
             <div class="cell valign-center">
@@ -51,11 +54,51 @@
           <div class="table mb-5">
             <div class="cell cell-left">
               <div
-                      data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KHA001_7')"
+                data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KHA001_5')"
               ></div>
             </div>
             <div class="cell valign-center">
-              <div id="combo-box" tabindex="4" data-bind="ntsComboBox: {
+              <input tabindex="4" class="inp-same-stamp-rance-in-minutes"
+                data-bind="ntsNumberEditor:
+                {
+                  value: sameStampRanceInMinutes,
+                  constraint: 'RangeRegardedSupportStamp',
+                  enable: isUse() === 1
+                }"
+              />
+            </div>
+          </div>
+          <div class="table mb-5">
+            <div class="cell cell-left">
+              <div
+                data-bind="ntsFormLabel: {}, text: $vm.$i18n('KHA001_6')"
+              ></div>
+            </div>
+            <div class="cell valign-center">
+              <div class="accounting-of-move-time" id="combo-box" tabindex="5" data-bind="ntsComboBox: {
+                name: '#[KHA001_6]',
+                options: itemListEnum,
+                optionsValue: 'code',
+                visibleItemsCount: 5,
+                value: accountingOfMoveTime,
+                editable: false,
+                enable: isUse,
+                selectFirstIfNull: true,
+                width: 150,
+                columns: [
+                  { prop: 'name', length: 2 }
+                ]}">
+              </div>
+            </div>
+          </div>
+          <div class="table mb-5">
+            <div class="cell cell-left">
+              <div
+                  data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KHA001_7')"
+              ></div>
+            </div>
+            <div class="cell valign-center">
+              <div id="combo-box" tabindex="6" data-bind="ntsComboBox: {
                 name: '#[KHA001_7]',
                 options: itemListCbb,
                 optionsValue: 'code',
@@ -65,13 +108,11 @@
                 enable: isUse,
                 required: true,
                 selectFirstIfNull: true,
-                 width: 74,
+                width: 74,
                 columns: [
                     { prop: 'code', length: 2 }
                 ]}">
-
               </div>
-
             </div>
             <label style="padding-left: 5px;">#{i18n.getText('KHA001_9')}</label>
           </div>

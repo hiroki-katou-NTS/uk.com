@@ -7,8 +7,10 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CheckDateForManageCmpLeaveService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
@@ -60,8 +62,8 @@ public class AbsenceTenProcess {
 				annualHoliday.setHalfManageCategoryFlg(false);
 				annualHoliday.setHalfHolidayLitmit(0);
 			}
-			// ドメインモデル「時間年休管理設定」．時間年休管理区分をチェックする(kiểm tra domain「時間年休管理設定」．時間年休管理区分)
-			if(annualPaidLeave.getTimeSetting().getTimeManageType().equals(ManageDistinct.NO)){
+			// 時間年休を管理するか
+			if(!annualPaidLeave.isManageTimeAnnualLeave(require)){
 				// ドメインモデル「時間年休管理設定」．時間年休管理区分 = 管理しない
 				annualHoliday.setSuspensionTimeYearFlg(false);
 				annualHoliday.setHoursHolidayLimit(0);
@@ -69,7 +71,7 @@ public class AbsenceTenProcess {
 			}else{
 				// ドメインモデル「時間年休管理設定」．時間年休管理区分 = 管理する
 				annualHoliday.setSuspensionTimeYearFlg(true);
-				annualHoliday.setTimeYearRest(annualPaidLeave.getTimeSetting().getTimeUnit().value);
+				annualHoliday.setTimeYearRest(annualPaidLeave.getTimeSetting().getTimeVacationDigestUnit().getDigestUnit().value);
 				// ドメインモデル「時間年休の上限日数」．参照先をチェックする(kiêm tra domain 「時間年休の上限日数」．参照先)
 				if(annualPaidLeave.getTimeSetting().getMaxYearDayLeave().reference.equals(MaxDayReference.CompanyUniform)){
 					// ドメインモデル「時間年休の上限日数」．参照先 = 会社一律
@@ -93,65 +95,31 @@ public class AbsenceTenProcess {
 	public static SubstitutionHolidayOutput getSettingForSubstituteHoliday(RequireM4 require, CacheCarrier cacheCarrier, 
 			String companyID, String employeeID, GeneralDate baseDate) {
 		SubstitutionHolidayOutput result = new SubstitutionHolidayOutput();
-		// アルゴリズム「社員所属雇用履歴を取得」を実行する(thực hiện xử lý 「社員所属雇用履歴を取得」)
-		Optional<BsEmploymentHistoryImport> empHistImport = require.employmentHistory(cacheCarrier, companyID, employeeID, baseDate);
-		if(!empHistImport.isPresent() || empHistImport.get().getEmploymentCode()==null){
-			return null;
+		// ドメインモデル「代休管理設定」を取得する(lấy dữ liệu domain 「代休管理設定」)
+		CompensatoryLeaveComSetting compensatoryLeaveComSet = require.compensatoryLeaveComSetting(companyID).orElse(null);
+		if(compensatoryLeaveComSet == null) return result;
+		// 代休を管理する年月日かどうかを判断する
+		boolean manageSubsHoliday = CheckDateForManageCmpLeaveService.check(require, companyID, employeeID, baseDate);
+		// ※OUTPUTの代休管理区分　＝　代休管理するか
+		result.setSubstitutionFlg(manageSubsHoliday);
+		
+		// 雇用設定に従う時間代休を管理するかどうか判断する
+		boolean manageTimeOff = compensatoryLeaveComSet.manageTimeOffAccordingEmpSettings(require, companyID, employeeID, baseDate);
+		// ※OUTPUTの時間代休管理区分　＝　時間代休管理するか
+		result.setTimeOfPeriodFlg(manageTimeOff);
+		
+		if (manageSubsHoliday) {
+			// 代休使用期限=ドメインモデル「代休管理設定」．「代休取得・使用方法」．使用期限
+			result.setExpirationOfsubstiHoliday(compensatoryLeaveComSet.getCompensatoryAcquisitionUse().getExpirationTime().value);
+			// 代休先取り許可=ドメインモデル「代休管理設定」．「代休取得・使用方法」．先取り許可
+			result.setAdvancePayment(compensatoryLeaveComSet.getCompensatoryAcquisitionUse().getPreemptionPermit().value);
 		}
-		int isManageByTime = 0;
-		int digestiveUnit = 0;
-		// ドメインモデル「雇用の代休管理設定」を取得する(lấy domain 「雇用の代休管理設定」)
-		CompensatoryLeaveEmSetting compensatoryLeaveEmSet = require.compensatoryLeaveEmSetting(companyID, empHistImport.get().getEmploymentCode());
-		// １件以上取得できた(lấy được 1 data trở lên)
-		if(compensatoryLeaveEmSet != null && compensatoryLeaveEmSet.getIsManaged().equals(ManageDistinct.NO)){
-			//if (compensatoryLeaveEmSet.getIsManaged() != null) {				
-				//if (compensatoryLeaveEmSet.getIsManaged().equals(ManageDistinct.YES)) {
-					// ドメインモデル「雇用の代休管理設定」．管理区分 = 管理する
-					//result.setSubstitutionFlg(true);
-				/*	result.setExpirationOfsubstiHoliday(
-							compensatoryLeaveEmSet.getCompensatoryAcquisitionUse().getExpirationTime().value);*/
-					// add refactor RequestList203
-				/*	result.setAdvancePayment(compensatoryLeaveEmSet.getCompensatoryAcquisitionUse().getPreemptionPermit().value);*/
-					/*isManageByTime = compensatoryLeaveEmSet.getCompensatoryDigestiveTimeUnit()
-							.getIsManageByTime().value;*/
-				/*	digestiveUnit = compensatoryLeaveEmSet.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value;*/
-				//} else {
-					// ドメインモデル「雇用の代休管理設定」．管理区分 = 管理しない
-					result.setSubstitutionFlg(false);
-					result.setTimeOfPeriodFlg(false);
-				//}
-			//}
-		}else{
-			// ０件(0 data), ドメインモデル「代休管理設定」を取得する(lấy dữ liệu domain 「代休管理設定」)
-			CompensatoryLeaveComSetting compensatoryLeaveComSet = require.compensatoryLeaveComSetting(companyID);
-			if(compensatoryLeaveComSet != null){
-				if (compensatoryLeaveComSet.isManaged()) {
-					// ドメインモデル「代休管理設定」．管理区分 = 管理する
-					result.setSubstitutionFlg(true);
-					result.setExpirationOfsubstiHoliday(
-							compensatoryLeaveComSet.getCompensatoryAcquisitionUse().getExpirationTime().value);
-					// add refactor RequestList203
-					result.setAdvancePayment(compensatoryLeaveComSet.getCompensatoryAcquisitionUse().getPreemptionPermit().value);
-					isManageByTime = compensatoryLeaveComSet.getCompensatoryDigestiveTimeUnit()
-							.getIsManageByTime().value;
-					digestiveUnit = compensatoryLeaveComSet.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value;
-				}
-			}else{
-				//ドメインモデル「代休管理設定」．管理区分 = 管理しない
-				result.setSubstitutionFlg(false);
-				result.setTimeOfPeriodFlg(false);
-			}
+		
+		if (manageTimeOff) {
+			// 時間代休消化単位=取得した「代休管理設定」.時間休暇の消化単位．消化単位
+			result.setDigestiveUnit(compensatoryLeaveComSet.getTimeVacationDigestUnit().getDigestUnit().value);
 		}
-		// 代休管理区分をチェックする(kiểm tra 代休管理区分)
-		if(result.isSubstitutionFlg()){
-			// ドメインモデル「時間代休の消化単位」．管理区分をチェックする(kiểm tra domain 「時間代休の消化単位」．管理区分)
-			if(isManageByTime == 1){
-				result.setTimeOfPeriodFlg(true);
-				result.setDigestiveUnit(digestiveUnit);
-			}else{
-				result.setTimeOfPeriodFlg(false);
-			}
-		}
+		
 		return result;
 	}
 	
@@ -272,11 +240,11 @@ public class AbsenceTenProcess {
 				String companyId, String employeeId, GeneralDate baseDate);
 	}
 	
-	public static interface RequireM4 extends RequireM0 {
+	public static interface RequireM4 extends RequireM0, CompensatoryLeaveComSetting.RequireM7 {
 
-		CompensatoryLeaveEmSetting compensatoryLeaveEmSetting(String companyId, String employmentCode);
+		Optional<CompensatoryLeaveEmSetting> compensatoryLeaveEmSetting(String companyId, String employmentCode);
 
-		CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId);
+		Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId);
 	}
 	
 	public static interface RequireM3 extends RequireM0 {
@@ -293,7 +261,7 @@ public class AbsenceTenProcess {
 		Optional<RetentionYearlySetting> retentionYearlySetting(String companyId);
 	}
 	
-	public static interface RequireM1 {
+	public static interface RequireM1 extends TimeVacationDigestUnit.Require {
 		
 		AnnualPaidLeaveSetting annualPaidLeaveSetting(String companyId);
 	}

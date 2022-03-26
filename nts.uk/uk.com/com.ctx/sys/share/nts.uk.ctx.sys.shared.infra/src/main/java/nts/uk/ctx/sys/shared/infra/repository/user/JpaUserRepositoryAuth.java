@@ -35,7 +35,8 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	public Optional<User> getByContractAndLoginId(String contractCode, String loginId) {
 		return this.queryProxy().query(SELECT_BY_CONTRACT_LOGIN_ID, SacmtUser.class)
 				.setParameter("contractCode", contractCode).setParameter("loginID", loginId)
-				.getSingle(c -> c.toDomain());
+				// ログインID廃止に向けて、まずは一意性の保証をやめることになったため、getSingleはNG
+				.getList(c -> c.toDomain()).stream().findFirst();
 	}
 	
 	private static final String SELECT_BY_ASSOCIATE_PERSIONID = "SELECT c FROM SacmtUser c WHERE c.associatedPersonID = :associatedPersonID";

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.wkp;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.AggregateTimeSetting;
@@ -46,5 +48,9 @@ public class WkpFlexMonthActCalSet extends FlexMonthWorkTimeAggrSet {
 		domain.flexTimeHandle = flexTimeHandle;
 		domain.workplaceId = workplaceId;
 		return domain;
+	}
+	
+	public static interface Require {
+		Optional<WkpFlexMonthActCalSet> wkpFlexMonthActCalSet(String companyId, String workplaceId);
 	}
 }

@@ -13,16 +13,6 @@ import java.util.stream.IntStream;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.primitive.PrimitiveValueBase;
-import nts.uk.ctx.at.request.dom.adapter.CalculationParams;
-import nts.uk.ctx.at.request.dom.adapter.OneDayAttendanceTimeTempCalcAdapter;
-import nts.uk.ctx.at.request.dom.application.overtime.*;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -31,9 +21,12 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.adapter.CalculationParams;
+import nts.uk.ctx.at.request.dom.adapter.OneDayAttendanceTimeTempCalcAdapter;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -62,6 +55,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.WorkInfoListOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.MsgErrorOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
@@ -76,10 +70,24 @@ import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarl
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
+import nts.uk.ctx.at.request.dom.application.overtime.CalculationResult;
+import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeHour;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeReason;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeWorkMultipleTimes;
+import nts.uk.ctx.at.request.dom.application.overtime.ReasonDivergence;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.CheckBeforeOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ICommonAlgorithmOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoBaseDateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoNoBaseDate;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoWithDateAppOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoWithDateApplication;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImageRepository;
@@ -95,6 +103,8 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionParam;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
@@ -104,11 +114,17 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -183,7 +199,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSetRepo;
-	
+
+	@Inject
+	private ICorrectionAttendanceRule correctionAttendanceRule;
 	
 	@Override
 	public int checkOvertimeAtr(String url) {
@@ -367,7 +385,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				infoNoBaseDate.getOverTimeAppSet());
 		if (!CollectionUtil.isEmpty(infoBaseDateOutput.getWorktypes())) {
 			// 申請日に関する情報を取得する
-			InfoWithDateApplication infoWithDateApplication = commonAlgorithmOverTime.getInfoAppDate(
+			InfoWithDateAppOutput infoWithDateApplication = commonAlgorithmOverTime.getInfoAppDate(
 					companyId,
 					dateOp,
 					startTimeSPR,
@@ -376,7 +394,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 					appDispInfoStartupOutput,
 					infoNoBaseDate.getOverTimeAppSet());
 			
-			output.setInfoWithDateApplicationOp(Optional.of(infoWithDateApplication));
+			output.setInfoWithDateApplicationOp(Optional.of(infoWithDateApplication.getInfoWithDateApplication()));
+			if(infoWithDateApplication.getOpErrorMsg().isPresent()) {
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getErrorMsgLst().add(infoWithDateApplication.getOpErrorMsg().get());
+			}
 		}
 		// 取得した情報をOUTPUT「勤務変更申請の表示情報」にセットしてを返す
 		output.setAppDispInfoStartup(appDispInfoStartupOutput);
@@ -1295,12 +1316,14 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Override
 	public DisplayInfoOverTime changeDateMobile(
 			String companyId,
+			String employeeId,
 			GeneralDate date,
+            PrePostAtr prePostAtr,
 			DisplayInfoOverTime displayInfoOverTime) {
 		
 		List<GeneralDate> dates = new ArrayList<>();
-		dates.add(date);
-		
+		if (date != null) dates.add(date);
+
 		// 申請表示情報(基準日関係あり)を取得する
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithmImpl.getAppDispInfoWithDate(
 				companyId,
@@ -1313,7 +1336,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 		displayInfoOverTime.getAppDispInfoStartup().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
 		// 申請日に関する情報を取得する
 		commonAlgorithmOverTime.changeApplicationDate(companyId, date, displayInfoOverTime);
-		
+        if (displayInfoOverTime.getOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME && date != null) {
+            Optional<AppOverTime> app = appOverTimeRepository.findLatestMultipleOvertimeApp(employeeId, date, prePostAtr);
+            displayInfoOverTime.setLatestMultipleOvertimeApp(app);
+        }
 		return displayInfoOverTime;
 	}
 
@@ -1514,12 +1540,14 @@ public class OvertimeServiceImpl implements OvertimeService {
 					workContent,
 					displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet(),
 					agent,
-					new ArrayList<>(),
-					new ArrayList<>(),
+					appOverTime.getMultipleTimesOp().map(OvertimeWorkMultipleTimes::getOvertimeHours).orElse(new ArrayList<>()),
+					appOverTime.getMultipleTimesOp().map(OvertimeWorkMultipleTimes::getOvertimeReasons).orElse(new ArrayList<>()),
 					displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles()
 			);
 			displayInfoOverTime.setCalculationResultOp(temp.getCalculationResultOp());
 			displayInfoOverTime.setWorkdayoffFrames(temp.getWorkdayoffFrames());
+			displayInfoOverTime.setCalculatedWorkTimes(temp.getCalculatedWorkTimes());
+            displayInfoOverTime.setCalculatedBreakTimes(temp.getCalculatedBreakTimes());
 		}
 		
 		return displayInfoOverTime;
@@ -1859,6 +1887,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 					@Override
 					public Optional<PredetemineTimeSetting> getPredetemineTimeSetting(String companyId, String workTimeCode) {
 						return predetemineTimeSetRepo.findByWorkTimeCode(companyId, workTimeCode);
+					}
+					@Override
+					public IntegrationOfDaily process(IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt) {
+						return correctionAttendanceRule.process(domainDaily, changeAtt);
 					}
 				},
 				companyId,

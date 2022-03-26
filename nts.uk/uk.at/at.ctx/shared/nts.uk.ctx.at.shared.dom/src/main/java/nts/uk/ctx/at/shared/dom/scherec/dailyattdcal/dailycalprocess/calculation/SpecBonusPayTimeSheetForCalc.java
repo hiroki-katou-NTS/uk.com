@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
@@ -20,7 +21,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Getter
-public class SpecBonusPayTimeSheetForCalc extends CalculationTimeSheet{
+public class SpecBonusPayTimeSheetForCalc extends CalculationTimeSheet implements Cloneable{
 	//特定日加給時間No
 	private SpecBonusPayNumber specBonusPayNumber;
 
@@ -123,5 +124,25 @@ public class SpecBonusPayTimeSheetForCalc extends CalculationTimeSheet{
 					this.getSpecBonusPayNumber()
 					);
 		}
+	}
+	
+	public SpecBonusPayTimeSheetForCalc clone() {
+		SpecBonusPayTimeSheetForCalc clone = new SpecBonusPayTimeSheetForCalc(
+				this.timeSheet,
+				this.rounding,
+				this.recordedTimeSheet,
+				this.deductionTimeSheet,
+				this.specBonusPayNumber);
+		try {
+			clone.timeSheet = this.timeSheet.clone();
+			clone.rounding = this.rounding.clone();
+			clone.recordedTimeSheet = this.recordedTimeSheet.stream().map(r -> r.clone()).collect(Collectors.toList());
+			clone.deductionTimeSheet = this.deductionTimeSheet.stream().map(d -> d.clone()).collect(Collectors.toList());
+			clone.specBonusPayNumber = new SpecBonusPayNumber(this.specBonusPayNumber.v());
+		}
+		catch (Exception e) {
+			throw new RuntimeException("SpecBonusPayTimeSheetForCalc clone error.");
+		}
+		return clone;
 	}
 }

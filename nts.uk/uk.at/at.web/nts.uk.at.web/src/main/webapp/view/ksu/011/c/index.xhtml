@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = { width: 640, height: 544 };</script>
+        <com:scriptfile set="IGNITE" />
+        <!--<com:stylefile path="ksu011.a.main.css" />-->
+        <com:scriptfile path="ksu011.c.vm.js" />
+        <style>
+            #swap-list_container {
+                display: inline-block;
+            }
+        </style>
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area" style="margin: auto 10px;">
+            <span data-bind="text: headLabel"/>
+            <div style="display: table">
+                <div style="display: table-cell; width: 244px;">
+                    <div data-bind="ntsFormLabel: {text: $i18n('KSU011_61')}"/>
+                    <hr/>
+                </div>
+                <div  style="display: table-cell; width: 75px;"></div>
+                <div style="display: table-cell; width: 244px;">
+                    <div data-bind="ntsFormLabel: {text: $i18n('KSU011_62')}"/>
+                    <hr/>
+                </div>
+            </div>
+            <div id="swap-list"
+                 style="display: inline-block;"
+                 data-bind="ntsSwapList: {
+                                height: window.document.documentMode ? 268 : 282,
+                                dataSource: itemsSwap,
+                                primaryKey: 'no',
+                                leftColumns: ko.observableArray([
+                                    { headerText: $i18n('KSU011_65'), key: 'no', width: 50 },
+                                    { headerText: $i18n('KSU011_66'), key: 'name', width: 150 }
+                                ]),
+                                rightColumns: ko.observableArray([
+                                    { headerText: $i18n('KSU011_68'), key: 'no', width: 50 },
+                                    { headerText: $i18n('KSU011_69'), key: 'name', width: 150 }
+                                ]),
+                                value: currentCodeListSwap,
+                                showSort: true,
+                                itemsLimit: {right: rightLimit()}
+                            }">
+            </div>
+            <div id="up-down"
+                 data-bind="ntsUpDown: {
+                                targetSource: currentCodeListSwap,
+                                primaryKey: 'no',
+                                comId: '#swap-list',
+                                type: 'swap',
+                                swapTarget: 'right'
+                            }">
+            </div>
+            <div style="display: table">
+                <div style="display: table-cell; width: 244px;"></div>
+                <div  style="display: table-cell; width: 75px;"></div>
+                <div style="display: table-cell; width: 244px;">
+                    <span class="label warning" data-bind="text: warningLabel"></span>
+                </div>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <button id="C5_1" data-bind="click: decideSelect" class="proceed x-large">#{i18n.getText('KSU011_59')}</button>
+            <button id="C5_2" data-bind="click: cancel">#{i18n.getText('KSU011_60')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

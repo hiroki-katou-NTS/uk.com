@@ -9,12 +9,12 @@
 			<ui:define name="htmlHead">
 				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="cmf001.f.css" />
-				<com:scriptfile path="cmf001.f.vm.js" />
+				<com:scriptfile path="cmf001.f.vm2.js" />
 				<com:EnumScript>
 					nts.uk.ctx.exio.dom.input.domain.ImportingDomainId
 				</com:EnumScript>
 			</ui:define>
-			domainInfoList
+			
 			<ui:define name="content">
 				<div id="functions-area">
 					<a
@@ -25,7 +25,7 @@
 					<button
 						class="proceed"
 						tabindex="3"
-						data-bind="enable: canSave, click: clickSave, text: '登録'"
+						data-bind="enable: canSave, click: save, text: '登録'"
 					></button>
 				</div>
 
@@ -33,29 +33,86 @@
 					<div class="fixed-flex-layout-left" style="padding-top: 20px; padding-left: 20px">
 						<div id="importDomain" data-bind="ntsComboBox: {
 							name: '受入ドメイン', 
-							options: $root.content.importDomainOption,
+							options: allDomains,
 							optionsValue: 'value',
 							visibleItemsCount: 20,
 							optionsText: 'name',
 							selectFirstIfNull: false,
-							value: importDomain,
-							required: false}"></div>
-						<button class="normal" id="bntAddImportDomain" data-bind="click: addImportDomain, text: '追加'"></button>
-						<button class="normal" id="bntDelImportDomain" data-bind="click: deleteImportDomain, text: '削除'"></button>
+							value: selectedIdInAllDomains,
+							required: false }"></div>
+						<button class="normal" id="bntAddImportDomain" data-bind="click: addTargetDomain, text: '追加'"></button>
+						<button class="normal" id="bntDelImportDomain" data-bind="click: removeTargetDomain, text: '削除'"></button>
 						<table id="domain-list" data-bind="ntsGridList: {
 							height: '600px',
-							dataSource: domainList,
+							dataSource: targetDomains,
+							value: selectedIdInTargetDomains,
 							primaryKey: 'domainId',
-							columns: domainListColumns,
-							value: selectedDomainId
-							}">
+							columns: [
+								{ headerText: 'ID', key: 'domainId', width: 50 , hidden: true },
+								{ headerText: '受入ドメイン', key: 'domainName', width: 280 },
+							],
+						}">
 						</table>
 					</div>
 					<div class="fixed-flex-layout-right" style="padding-top: 20px;">									
 						<div class="layout">
-							<button class="normal" data-bind="click: selectLayout, text: '項目を追加する', enable: canEditDetail" ></button>
-							<button class="normal" data-bind="text: '受入項目の詳細設定', click: gotoDetailSetting, enable: canEditDetail" ></button>
-						<table id="grid"></table>
+							<button class="normal" data-bind="click: addItem, enable: isSelectedTargetDomain" >項目を追加する</button>
+							<button class="normal" data-bind="click: gotoDetailSetting, enable: isSelectedTargetDomain" >受入項目の詳細設定</button>
+
+							<div id="mapping-table-container" class="ui-iggrid">
+								<table id="mapping-table">
+									<colgroup>
+										<col width="50px"/>
+										<col width="250px"/>
+										<col width="120px"/>
+										<col width="220px"/>
+										<col width="400px"/>
+									</colgroup>
+									<thead>
+										<tr>
+											<th>削除</th>
+											<th>名称</th>
+											<th>受入元</th>
+											<th>CSVヘッダ名</th>
+											<th>サンプルデータ</th>
+										</tr>
+									</thead>
+									<tbody data-bind="with: selectedLayout">
+										<com:ko-foreach bind="items">
+											<tr>
+												<td>
+													<button type="button" class="delete-button" data-bind="visible: canDelete, click: removeThis">削除</button>
+												</td>
+												<td data-bind="text: name"></td>
+												<td class="source-type">
+													<div data-bind="ntsSwitchButton: {
+														name: '受入元',
+														options: [{ value: 0, text: 'CSV' },{ value: 1, text: '固定値' }],
+														optionsValue: 'value',
+														optionsText: 'text',
+														value: sourceType,
+													}"></div>
+												</td>
+												<td>
+													<div id="combo-box" data-bind="ntsComboBox: {
+														name: 'CSVヘッダ名',
+														options: $root.content.sampleCsvItems,
+														optionsValue: 'columnNo',
+														optionsText: 'name',
+														value: csvColumnNo,
+														visibleItemsCount: 20,
+														selectFirstIfNull: false,
+														columns: [
+															{ prop: 'columnNo', length: 4 },
+															{ prop: 'name', length: 100 },
+														]}"></div>
+												</td>
+												<td data-bind="text: csvSampleData"></td>
+											</tr>
+										</com:ko-foreach>
+									</tbody>
+								</table>
+							</div>
 						</div>
 					</div>
 				</div>

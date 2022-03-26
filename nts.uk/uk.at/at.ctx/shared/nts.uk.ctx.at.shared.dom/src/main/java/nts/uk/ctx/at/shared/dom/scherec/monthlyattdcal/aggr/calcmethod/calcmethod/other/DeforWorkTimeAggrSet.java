@@ -3,7 +3,10 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmeth
 import java.io.Serializable;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.export.GetSettlementPeriodOfDefor;
 
 /**
  * 変形労働時間勤務の法定内集計設定
@@ -51,5 +54,13 @@ public abstract class DeforWorkTimeAggrSet extends AggregateRoot implements Seri
 		this.excessOutsideTimeSet = excessOutsideTimeSet;
 		this.deforLaborCalSetting = deforLaborCalSetting;
 		this.settlementPeriod = settlementPeriod;
+	}
+
+	/** 清算期間が複数月か判断する */
+	public boolean isMultiMonthSettlePeriod(YearMonth ym) {
+		
+		val defoPeriod = GetSettlementPeriodOfDefor.createFromDeforAggrSet(this);
+		
+		return !defoPeriod.isSingleMonth(ym);
 	}
 }
