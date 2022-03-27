@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.daily.optionalitemtime;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -13,7 +14,9 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcessing.DailyStoredProcessResult;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.scherec.anyitem.AnyItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes;
@@ -69,7 +72,8 @@ public class AnyItemValueOfDaily {
     											   		  List<EmpCondition> empConditionList,
     											   		  Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto,
     											   		  Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt, 
-    											   		  Optional<DailyStoredProcessResult> resultProcedure) {
+    											   		  Optional<DailyStoredProcessResult> resultProcedure,
+    											   		  List<ItemValue> editStates) {
     	
     	Optional<AnyItemValueOfDailyAttd> dailyAnyItem = dailyRecordDto.get().anyItems();
         //任意項目分ループ
@@ -77,6 +81,13 @@ public class AnyItemValueOfDaily {
         
         for(OptionalItem optionalItem : optionalItemList) {
         	
+			//編集状態がある任意項目Noを取得する
+			Map<Integer, Integer> editIdAndNos = AttendanceItemIdContainer.mapOptionalItemIdsToNos(editStates);
+			//編集状態があるか
+			if(editIdAndNos.containsValue(optionalItem.getOptionalItemNo().v())) {
+				//手修正・申請反映がある場合、既にdailyRecordDtoに値が入っている為、計算しない
+				continue;
+			}
         	
         	CalcResultOfAnyItem calcResult = new CalcResultOfAnyItem(optionalItem.getOptionalItemNo(),
         															 Optional.of(BigDecimal.ZERO), 
