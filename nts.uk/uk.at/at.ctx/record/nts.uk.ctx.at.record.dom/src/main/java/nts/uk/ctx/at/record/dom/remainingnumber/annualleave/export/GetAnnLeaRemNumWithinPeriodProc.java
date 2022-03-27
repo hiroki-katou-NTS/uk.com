@@ -455,9 +455,9 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		if (sttMng.isPresent()){
 			// 受け取った「年月日」を返す
 			closureStart = sttMng.get().getPeriod().end();
-//			if (closureStart.before(GeneralDate.max())){
-//				closureStart = closureStart.addDays(1);
-//			}
+			if (closureStart.before(GeneralDate.max())){
+				closureStart = closureStart.addDays(1);
+			}
 			closureStartOpt = Optional.of(closureStart);
 		}
 		else {
