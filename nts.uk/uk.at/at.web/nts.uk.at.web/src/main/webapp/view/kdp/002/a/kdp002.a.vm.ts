@@ -92,7 +92,7 @@ module nts.uk.at.view.kdp002.a {
                 const self = this;
                 const vm = new ko.ViewModel();
 
-                vm.$ajax(API.GET_IP_URL, { contractCode: vm.$user.contractCode }) .done((response) => {
+                vm.$ajax('at/record/stamp/finger/get-ip-address', { contractCode: vm.$user.contractCode }) .done((response) => {
                     var param = { contractCode: vm.$user.contractCode, workLocationCode: '', ipv4Address: response.ipaddress };
                     vm.$ajax('at', 'at/record/kdp/common/get-work-location-regional-time', param)
                         .then((data: GetWorkPlaceRegionalTime) => {

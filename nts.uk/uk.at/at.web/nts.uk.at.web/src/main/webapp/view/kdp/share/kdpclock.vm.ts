@@ -205,10 +205,10 @@ module nts.uk.at.view.kdp.share {
                 vm.initStart(params);
 
             }
+            let time  = moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate();
+            vm.time(time);
 
-            vm.getServerTime();
-
-            setInterval(() => vm.time(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate()), 300);
+            setInterval(() => vm.time(time), 300);
         }
         initStart(params) {
             let vm = this;
@@ -264,14 +264,6 @@ module nts.uk.at.view.kdp.share {
 
 			$(vm.$el).attr('id', 'stamp-header');
 		}
-        getServerTime() {
-            let vm = this;
-            vm.$ajax('at', '/server/time/now')
-                .then((c) => {
-                    const date = moment(moment(c).add(ko.unwrap(vm.regionalTime), 'm').toDate(), 'YYYY-MM-DDTHH:mm:ss').toDate();
-                    vm.time(date);
-                });
-        }
 	}
 
 	export interface StampClocParam {
