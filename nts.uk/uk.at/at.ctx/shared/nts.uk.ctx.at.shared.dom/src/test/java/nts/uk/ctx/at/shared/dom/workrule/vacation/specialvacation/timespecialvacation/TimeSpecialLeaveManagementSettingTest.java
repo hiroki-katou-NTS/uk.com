@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -37,9 +36,8 @@ public class TimeSpecialLeaveManagementSettingTest {
 	public void testDailyAttdItemsCorrespondSpecialLeave() {
 		TimeSpecialLeaveManagementSetting setting = TimeSpecialLeaveManagementHelper.createManagementSettingManageDistinct();
 		List<Integer> attendanceItemIds = setting.getDailyAttdItemsCorrespondSpecialLeave();
-		assertThat( attendanceItemIds )
-		.extracting( d -> d)
-		.containsExactly(543,504,516,1123,1124,1127,1128,1131,1132,1135,1136,1145,1146);
+		assertThat(attendanceItemIds).extracting(d -> d).containsExactly(543, 504, 516, 1123, 1124, 1127, 1128, 1131,
+		1132, 1135, 1136, 1145, 1146);
 	}
 	
 	/**
@@ -55,9 +53,14 @@ public class TimeSpecialLeaveManagementSettingTest {
 			}
 		};
 		List<Integer> attendanceItemIds = setting.getDailyAttdItemsNotAvailable(require);
-		assertThat( attendanceItemIds )
-		.extracting( d -> d)
-		.containsExactly(504,516,1123,1124,1127,1128,1131,1132,1135,1136,1145,1146);
+		
+		assertThat(attendanceItemIds).extracting(d -> d).containsExactly(504, 516, 1123, 1124, 1127, 1128, 1131, 1132,
+				1135, 1136, 1145, 1146);
+
+		// 管理区分 = 管理する
+		setting = TimeSpecialLeaveManagementHelper.createManagementSettingManageDistinctIsYes(ManageDistinct.YES);
+		attendanceItemIds = setting.getDailyAttdItemsNotAvailable(require);
+		assertThat(attendanceItemIds.isEmpty()).isTrue();
 	}
 	
 	/**

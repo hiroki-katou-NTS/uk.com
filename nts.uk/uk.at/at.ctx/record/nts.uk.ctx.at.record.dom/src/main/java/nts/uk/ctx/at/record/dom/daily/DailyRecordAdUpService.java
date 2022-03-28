@@ -82,7 +82,7 @@ public interface DailyRecordAdUpService {
 	public void adUpRemark(List<RemarksOfDailyPerform> remarks);
 	
 	// ドメインモデル「日別実績の応援作業別勤怠時間」を更新する
-	public void adUpOuenWorkTime(Optional<OuenWorkTimeOfDaily> ouen);
+	public void adUpOuenWorkTime(String sid, GeneralDate ymd, Optional<OuenWorkTimeOfDaily> ouen);
 
 	//ドメインモデル「スナップショット」を更新する
 	public void adUpSnapshot(String sid, GeneralDate ymd, SnapShot snapshot);
@@ -167,13 +167,17 @@ public interface DailyRecordAdUpService {
 				.map(x -> new RemarksOfDailyPerform(domain.getEmployeeId(), domain.getYmd(), x))
 				.collect(Collectors.toList()));
 		// ドメインモデル「日別勤怠の応援作業時間帯」を更新する
-		//adUpSupportTime(domain.getEmployeeId(), domain.getYmd(), domain.getOuenTimeSheet());
+		adUpSupportTime(domain.getEmployeeId(), domain.getYmd(), domain.getOuenTimeSheet());
 
 		// ドメインモデル「日別実績の応援作業別勤怠時間」を更新する
-		adUpOuenWorkTime(Optional.of(OuenWorkTimeOfDaily.create(domain.getEmployeeId(), domain.getYmd(), domain.getOuenTime())));
+		adUpOuenWorkTime(domain.getEmployeeId(), domain.getYmd(),
+				Optional.of(OuenWorkTimeOfDaily.create(domain.getEmployeeId(), domain.getYmd(), domain.getOuenTime())));
 
 		adUpEmpError(domain.getEmployeeError(),  Arrays.asList(Pair.of(domain.getEmployeeId(), domain.getYmd())));
 
 		adTimeAndAnyItemAdUp(Arrays.asList(domain));
+		
+		//スナップショットが存在しない場合に登録する
+		domain.getSnapshot().ifPresent(snap -> adUpSnapshot(domain.getEmployeeId(), domain.getYmd(), snap));
 	}
 }

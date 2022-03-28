@@ -23,6 +23,6 @@ public class KrcdtDayShorttimePK implements Serializable{
 	public GeneralDate ymd;
 	
 	@Column(name = "CHILD_CARE_ATR")
-	public Integer childCareAtr;
+	public int childCareAtr;
 	
 }

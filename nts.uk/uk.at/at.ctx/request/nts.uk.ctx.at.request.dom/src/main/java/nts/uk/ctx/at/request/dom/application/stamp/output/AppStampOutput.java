@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.request.dom.application.stamp.output;
 
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.WorkLocationNameImported;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.WorkplaceNameImported;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
@@ -43,4 +46,16 @@ public class AppStampOutput {
 	
 //	臨時勤務利用
 	private Optional<Boolean> useTemporary = Optional.empty();
+
+//  場所名
+	private List<WorkLocationNameImported> workLocationNames = Collections.emptyList();
+	
+//  職場名
+	private List<WorkplaceNameImported> workplaceNames = Collections.emptyList();
+	
+// 応援を利用する
+	private boolean useCheering;
+
+// 最大応援回数
+	private int maxOfCheer;
 }

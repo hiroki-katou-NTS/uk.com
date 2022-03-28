@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -13,5 +14,7 @@ public class InforWorkGoBackDirectOutput {
 	private String workTime;
 //	勤務種類リスト
 	private List<WorkType> lstWorkType;
+// 	エラーメッセージ	
+	private Optional<String> opErrorMsg;
 	 
 }

@@ -86,8 +86,8 @@ public class OverTimeFrameTime implements Cloneable{
 	 */
 	public OverTimeFrameTime changeFrameNo(Integer overTimeFrameNo) {
 		return new OverTimeFrameTime(new OverTimeFrameNo(overTimeFrameNo),
-									 this.OverTimeWork,
-									 this.TransferTime,
+									 this.OverTimeWork.clone(),
+									 this.TransferTime.clone(),
 									 this.BeforeApplicationTime,
 									 this.orderTime);
 	}
@@ -99,7 +99,7 @@ public class OverTimeFrameTime implements Cloneable{
 	public OverTimeFrameTime changeOverTime(TimeDivergenceWithCalculation overTime) {
 		return new OverTimeFrameTime(this.OverWorkFrameNo,
 									 overTime,
-									 this.TransferTime,
+									 this.TransferTime.clone(),
 									 this.BeforeApplicationTime,
 									 this.orderTime);
 	}
@@ -110,7 +110,7 @@ public class OverTimeFrameTime implements Cloneable{
 	 */
 	public OverTimeFrameTime changeTransTime(TimeDivergenceWithCalculation transTime) {
 		return new OverTimeFrameTime(this.OverWorkFrameNo,
-									 this.OverTimeWork,
+									 this.OverTimeWork.clone(),
 									 transTime,
 									 this.BeforeApplicationTime,
 									 this.orderTime);

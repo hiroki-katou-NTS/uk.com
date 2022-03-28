@@ -7,11 +7,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTimeCurrentMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTimeTotalTimeMonth;
 
 @Data
 @NoArgsConstructor
@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTim
 public class FlexCurrentMonthDto implements ItemConst, AttendanceItemDataGate {
 
 	/** フレックス時間 */
-	private int flexTime;
+	private FlexTotalTimeDto flexTime;
 
 	/** 基準時間 */
 	private int standardTime;
@@ -29,7 +29,7 @@ public class FlexCurrentMonthDto implements ItemConst, AttendanceItemDataGate {
 	private int excessWeekAveTime;
 
 	public FlexTimeCurrentMonth toDomain() {
-		return FlexTimeCurrentMonth.of(new AttendanceTimeMonthWithMinus(flexTime),
+		return FlexTimeCurrentMonth.of(flexTime == null ? new FlexTimeTotalTimeMonth() : flexTime.domain(),
 									new AttendanceTimeMonth(standardTime),
 									new AttendanceTimeMonth(excessWeekAveTime));
 	}
@@ -37,7 +37,7 @@ public class FlexCurrentMonthDto implements ItemConst, AttendanceItemDataGate {
 	public static FlexCurrentMonthDto from(FlexTimeCurrentMonth domain) {
 		FlexCurrentMonthDto dto = new FlexCurrentMonthDto();
 		if(domain != null) {
-			dto.setFlexTime(domain.getFlexTime().valueAsMinutes());
+			dto.setFlexTime(FlexTotalTimeDto.from(domain.getFlexTime()));
 			dto.setStandardTime(domain.getStandardTime().valueAsMinutes());
 			dto.setExcessWeekAveTime(domain.getExcessWeekAveTime().valueAsMinutes());
 		}
@@ -47,8 +47,6 @@ public class FlexCurrentMonthDto implements ItemConst, AttendanceItemDataGate {
 	@Override
 	public Optional<ItemValue> valueOf(String path) {
 		switch (path) {
-		case FLEX:
-			return Optional.of(ItemValue.builder().value(flexTime).valueType(ValueType.TIME));
 		case STANDARD:
 			return Optional.of(ItemValue.builder().value(standardTime).valueType(ValueType.TIME));
 		case EXCESS + AVERAGE:
@@ -61,7 +59,6 @@ public class FlexCurrentMonthDto implements ItemConst, AttendanceItemDataGate {
 	@Override
 	public PropType typeOf(String path) {
 		switch (path) {
-		case FLEX:
 		case STANDARD:
 		case EXCESS + AVERAGE:
 			return PropType.VALUE;
@@ -73,9 +70,6 @@ public class FlexCurrentMonthDto implements ItemConst, AttendanceItemDataGate {
 	@Override
 	public void set(String path, ItemValue value) {
 		switch (path) {
-		case FLEX:
-			flexTime = value.valueOrDefault(0);
-			break;
 		case STANDARD:
 			standardTime = value.valueOrDefault(0);
 			break;
@@ -83,6 +77,35 @@ public class FlexCurrentMonthDto implements ItemConst, AttendanceItemDataGate {
 			excessWeekAveTime = value.valueOrDefault(0);
 			break;
 		default:
+		}
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case FLEX:
+			return Optional.ofNullable(flexTime);
+		default:
+			return Optional.empty();
+		}
+	}
+	
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case FLEX:
+			flexTime = (FlexTotalTimeDto) value; break;
+		default:
+		}
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case FLEX:
+			return new FlexTotalTimeDto();
+		default:
+			return null;
 		}
 	}
 }

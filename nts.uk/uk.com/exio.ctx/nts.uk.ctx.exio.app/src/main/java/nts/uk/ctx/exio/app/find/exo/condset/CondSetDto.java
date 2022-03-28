@@ -62,10 +62,14 @@ public class CondSetDto {
 	 */
 	private int stringFormat;
 
+	private int encodeType;
+
+	private String fileName;
 	public static CondSetDto fromDomain(CondSet domain) {
 		return new CondSetDto(domain.getStandardAtr().value, domain.getCid(), domain.getUserId(),
 				domain.getConditionSetCode().v(), domain.getCategoryId().v(), domain.getDelimiter().value,
 				domain.getItemOutputName().value, domain.getAutoExecution().value, domain.getConditionSetName().v(),
-				domain.getConditionOutputName().value, domain.getStringFormat().value);
+				domain.getConditionOutputName().value, domain.getStringFormat().value,
+				domain.getEncodeType(),domain.getFileName());
 	}
 }

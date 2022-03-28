@@ -1293,7 +1293,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 				continue;
 			}
 			if ("dailyconfirm".equals(mpHeaderDto.getKey())
-					&& screenDto.getDailySelfChkDispAtr() == 0) {
+					&& (screenDto.getDailySelfChkDispAtr() == 0 || screenDto.getIdentityProcess().getUseDailySelfCk() == 0)) {
 		        iter.remove();
 		        continue;
 		    }

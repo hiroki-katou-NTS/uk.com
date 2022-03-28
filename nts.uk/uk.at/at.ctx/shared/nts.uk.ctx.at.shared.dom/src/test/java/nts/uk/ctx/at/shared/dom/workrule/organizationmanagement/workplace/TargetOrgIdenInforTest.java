@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mock;
@@ -233,8 +234,38 @@ public class TargetOrgIdenInforTest {
 		assertThat( listData ).containsExactlyInAnyOrderElementsOf( listResult );
 
 	}
+	
+	/**
+	 * target: createByAutoDeterminingUnit
+	 * pattern: 職場グループID
+	 */
+	@Test
+	public void testCreateByAutoDeterminingUnit_case_workplaceGroup() {
+		//act
+		val result = TargetOrgIdenInfor.createByAutoDeterminingUnit("workplaceId", Optional.of( String.valueOf("workplaceGroupId")));
+		
+		//assert
+		assertThat( result.getUnit() ).isEqualTo( TargetOrganizationUnit.WORKPLACE_GROUP );
+		assertThat( result.getWorkplaceId() ).isEmpty();
+		assertThat( result.getWorkplaceGroupId().get() ).isEqualTo( "workplaceGroupId" );
+		
+	}
 
-
+	/**
+	 * target: createByAutoDeterminingUnit
+	 * pattern: 職場ID
+	 */
+	@Test
+	public void testCreateByAutoDeterminingUnit_case_workplace() {
+		//act
+		val result = TargetOrgIdenInfor.createByAutoDeterminingUnit( "workplaceId", Optional.empty() );
+		
+		//assert
+		assertThat( result.getUnit() ).isEqualTo( TargetOrganizationUnit.WORKPLACE );
+		assertThat( result.getWorkplaceId().get() ).isEqualTo( "workplaceId" );
+		assertThat( result.getWorkplaceGroupId() ).isEmpty();
+		
+	}
 
 }
 

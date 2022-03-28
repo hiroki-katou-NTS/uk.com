@@ -35,19 +35,19 @@ module nts.uk.at.view.kaf006.shr.component1.viewmodel {
                                 <td><span data-bind="text: $parent.remainingHours"></span></td>
                             </tr>
                             <!-- /ko -->
-                            <!-- ko if: $parent.condition19Over60 -->
+                            <!-- ko if: $parent.condition19_1Over60 -->
                             <tr data-bind="click: openKDL017">
                                 <td><div data-bind="text: $i18n('Com_ExsessHoliday')"></div></td>
                                 <td><span data-bind="text: $parent.over60HHourRemain"></span></td>
                             </tr>
                             <!-- /ko -->
-                            <!-- ko if: $parent.condition19ChildNursing -->
+                            <!-- ko if: $parent.condition19_1ChildNursing -->
                             <tr data-bind="click: openKDL051">
                                 <td><div data-bind="text: $i18n('Com_ChildNurseHoliday')"></div></td>
                                 <td><span data-bind="text: $parent.childNursingRemain"></span></td>
-                            </div>
+                            </tr>
                             <!-- /ko -->
-                            <!-- ko if: $parent.condition19Nursing -->
+                            <!-- ko if: $parent.condition19_1Nursing -->
                             <tr data-bind="click: openKDL052">
                                 <td><div data-bind="text: $i18n('Com_CareHoliday')"></div></td>
                                 <td><span data-bind="text: $parent.nursingRemain"></span></td>

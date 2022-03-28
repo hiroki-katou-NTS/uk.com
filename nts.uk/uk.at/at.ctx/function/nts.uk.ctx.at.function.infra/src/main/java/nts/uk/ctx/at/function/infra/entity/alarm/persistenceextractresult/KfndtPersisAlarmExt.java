@@ -46,8 +46,8 @@ public class KfndtPersisAlarmExt extends ContractUkJpaEntity implements Serializ
     @Column(name = "PATTERN_NAME")
     public String patternName;
 
-    @OneToMany(mappedBy = "persisAlarmExtract", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinTable(name = "KFNDT_ALARM_EXTRAC_RESULT")
+    @OneToMany(mappedBy = "persisAlarmExtract", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    //@JoinTable(name = "KFNDT_ALARM_EXTRAC_RESULT")
     public List<KfndtAlarmExtracResult> extractResults;
 
     @Override

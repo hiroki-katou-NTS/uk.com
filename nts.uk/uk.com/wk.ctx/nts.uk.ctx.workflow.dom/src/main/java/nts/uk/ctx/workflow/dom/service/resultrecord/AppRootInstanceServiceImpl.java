@@ -83,7 +83,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 	@Override
 	public Request113Output getAppRootStatusByEmpsPeriod(List<String> employeeIDLst, DatePeriod period, RecordRootType rootType) {
 		// Đối ứng SPR
-		String companyID = "000000000000-0001";
+		String companyID = "000000000004-0018";
 		String loginCompanyID = AppContexts.user().companyId();
 		if(Strings.isNotBlank(loginCompanyID)){
 			companyID = loginCompanyID;

@@ -99,8 +99,9 @@ public class WorkingConditionItemServiceImpl implements WorkingConditionItemServ
 				return Optional.empty();
 			}
 			//個人情報の平日出勤時勤務情報を取得する
+			WorkInformation workInfo = domain.getWorkCategory().getWorkInformationWorkDay();
 			//終了状態：平日時出勤情報を返す
-			return Optional.of(new WorkInformation(workType.getWeekdayTimeWTypeCode().v(), workTime.get().v()));
+			return Optional.of(workInfo);
 		}
 		// 休日出勤時の勤務情報を取得する
 		Optional<WorkInformation> data = getHolidayWorkSchedule(companyId, employeeId, baseDate, workTypeCode);

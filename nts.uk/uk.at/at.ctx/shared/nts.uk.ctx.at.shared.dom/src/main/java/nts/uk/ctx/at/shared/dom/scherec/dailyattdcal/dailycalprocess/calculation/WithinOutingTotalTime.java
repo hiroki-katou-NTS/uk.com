@@ -63,8 +63,8 @@ public class WithinOutingTotalTime {
 		ConditionAtr conditionAtr = ConditionAtr.convertFromGoOutReason(reason);	// 控除種別区分
 		
 		// 所定内合計時間の計算
-		TimeWithCalculation withinDedTime = oneDay.getDeductionTime(
-				conditionAtr, dedAtr, StatutoryAtr.Statutory, goOutSet, canOffset);
+//		TimeWithCalculation withinDedTime = oneDay.getDeductionTime(
+//				conditionAtr, dedAtr, StatutoryAtr.Statutory, goOutSet, canOffset);
 		// コア内の外出時間の計算
 		FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)oneDay.getWithinWorkingTimeSheet().get();
 		AttendanceTime withinFlex = changedFlexTimeSheet.calcOutingTimeInFlex(true, conditionAtr, dedAtr, goOutSet, canOffset);
@@ -72,7 +72,7 @@ public class WithinOutingTotalTime {
 		AttendanceTime excessFlex = changedFlexTimeSheet.calcOutingTimeInFlex(false, conditionAtr, dedAtr, goOutSet, canOffset);
 		// 外出合計時間を返す
 		return WithinOutingTotalTime.of(
-				withinDedTime,
+				TimeWithCalculation.sameTime(withinFlex),
 				TimeWithCalculation.sameTime(withinFlex),
 				TimeWithCalculation.sameTime(excessFlex));
 	}
@@ -100,7 +100,7 @@ public class WithinOutingTotalTime {
 		return WithinOutingTotalTime.of(
 				withinDedTime,
 				TimeWithCalculation.sameTime(AttendanceTime.ZERO),
-				withinDedTime);
+				TimeWithCalculation.sameTime(AttendanceTime.ZERO));
 	}
 	
 	public static WithinOutingTotalTime mergeTimeAndCalcTime(WithinOutingTotalTime time, WithinOutingTotalTime calcTime) {

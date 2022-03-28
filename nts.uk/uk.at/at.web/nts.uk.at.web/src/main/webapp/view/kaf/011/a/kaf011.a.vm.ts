@@ -83,7 +83,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				}
 			}
 			let paramKAF000 = {
-				empLst: vm.params?vm.params.employeeIds:[], 
+				empLst: vm.params?vm.params.employeeIDs:[], 
 				dateLst: paramDate?[paramDate]:[], 
 				appType: vm.appType(),
 				screenCode
@@ -92,7 +92,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			vm.loadData(paramKAF000).then((loadDataFlag: any) => {
 				if(loadDataFlag) {
 					vm.$blockui("grayout");
-					return vm.$ajax('at/request/application/holidayshipment/startPageARefactor',{sIDs: [], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()});
+					return vm.$ajax('at/request/application/holidayshipment/startPageARefactor',{sIDs: vm.params?vm.params.employeeIds:[], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()});
 				}
 			}).then((data: any) =>{
 				if(data) {
@@ -269,9 +269,9 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 
 		}
 		
-		openKDL009() {
-			let self = this;
-			nts.uk.ui.windows.setShared('KDL009_DATA', (self.params ? self.params.employeeIds : [__viewContext.user.employeeId]));
+		openKDL009(vm: any) {
+			const self = vm;
+			nts.uk.ui.windows.setShared('KDL009_DATA', (self.applicationCommon() ? self.applicationCommon().employeeIDLst() : [__viewContext.user.employeeId]));
 			if(self.params && self.params.employeeIds.length > 1){
 				nts.uk.ui.windows.sub.modal("/view/kdl/009/a/index.xhtml",{width: 1100, height: 650});	
 			}else{

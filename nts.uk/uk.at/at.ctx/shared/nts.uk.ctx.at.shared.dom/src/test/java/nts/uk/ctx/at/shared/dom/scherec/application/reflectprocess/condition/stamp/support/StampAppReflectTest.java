@@ -92,7 +92,7 @@ public class StampAppReflectTest {
 		StampAppReflect reflectApp = reflect(NotUseAtr.USE);//// 応援開始、終了を反映する
 		List<Integer> actualResult = reflectApp.reflectSupport(require, application, dailyApp);
 
-		assertThat(actualResult).isEqualTo(Arrays.asList(929, 921));
+		assertThat(actualResult).isEqualTo(Arrays.asList(929, 922, 921));
 	}
 
 	private StampAppReflect reflect(NotUseAtr atr) {

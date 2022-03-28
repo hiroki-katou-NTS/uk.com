@@ -35,10 +35,12 @@ public class SuspensionHolidayFinder {
 		InforAnnualHolidaysAccHolidayDto confirmDto = null;
 		// Input．社員IDリストをチェック
 		
-			// 社員の積休残数詳細情報を取得
-			confirmDto = remainDays.getInforNumberRemainEmployees(AppContexts.user().companyId(), sIDs.get(0));
-			if (sIDs.size() > 1)
-			mode = 1; // 画面 ＝ 複数モード
+		// 社員の積休残数詳細情報を取得
+		if(lstEmp.size() > 0)
+		confirmDto = remainDays.getInforNumberRemainEmployees(AppContexts.user().companyId(), sIDs.size() > 1 ? lstEmp.get(0).getEmployeeId() : sIDs.get(0));
+		
+		if (sIDs.size() > 1)
+		mode = 1; // 画面 ＝ 複数モード
 		
 		suspenHoliday = new AnnualHolidaysDto(lstEmp, confirmDto, mode);
 		return suspenHoliday;

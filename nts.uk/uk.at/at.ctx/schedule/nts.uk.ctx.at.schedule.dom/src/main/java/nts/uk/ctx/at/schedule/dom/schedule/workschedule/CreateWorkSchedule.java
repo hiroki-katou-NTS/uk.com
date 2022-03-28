@@ -13,6 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTicket;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ClockAreaAtr;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ContainsResult;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
@@ -28,21 +29,25 @@ public class CreateWorkSchedule {
 	/**
 	 * 作る
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param date 年月日
 	 * @param workInformation 勤務情報
 	 * @param isUpdateBreakTimeList 休憩時間帯が手修正か
 	 * @param breakTimeList 休憩時間帯
+	 * @Param supportTicketList 応援チケットリスト
 	 * @param updateInfoMap 変更する情報Map
 	 * @return
 	 */
 	public static <T> ResultOfRegisteringWorkSchedule create(
-			Require require, 
+			Require require,
+			String companyId,
 			String employeeId, 
 			GeneralDate date, 
 			WorkInformation workInformation,
 			boolean isUpdateBreakTimeList,
 			List<TimeSpanForCalc> breakTimeList,
+			List<SupportTicket> supportTicketList,
 			Map<Integer, T> updateInfoMap) {
 		
 		Optional<WorkSchedule> registedWorkSchedule = require.getWorkSchedule(employeeId, date);
@@ -51,7 +56,8 @@ public class CreateWorkSchedule {
 		WorkSchedule workSchedule;
 		if ( isNewRegister || ! registedWorkSchedule.get().getWorkInfo().getRecordInfo().isSame(workInformation) ) {
 			try {
-				workSchedule = WorkSchedule.createByHandCorrectionWithWorkInformation(require, employeeId, date, workInformation);
+				workSchedule = WorkSchedule.createByHandCorrectionWithWorkInformation(require, companyId, employeeId, date, workInformation);
+				workSchedule.createSupportSchedule(require, supportTicketList);
 			} catch (BusinessException e) {
 				return ResultOfRegisteringWorkSchedule.createWithError( employeeId, date, e.getMessage() );
 			}
@@ -61,14 +67,24 @@ public class CreateWorkSchedule {
 		
 		// 時間帯チェック CheckTime Span
 		List<ErrorInfoOfWorkSchedule> errorList = 
-				CreateWorkSchedule.checkTimeSpan(require, employeeId, date, workInformation, updateInfoMap);
+				CreateWorkSchedule.checkTimeSpan(require, companyId, employeeId, date, workInformation, updateInfoMap);
 		if ( !errorList.isEmpty() ) {
 			return ResultOfRegisteringWorkSchedule.createWithErrorList(errorList);
 		}
 		
+		// update item
 		workSchedule.changeAttendanceItemValueByHandCorrection(require, updateInfoMap);
+		
+		// update break time list
 		if ( isUpdateBreakTimeList ) {
 			workSchedule.handCorrectBreakTimeList(require, breakTimeList);
+		}
+		
+		// check consistency of support schedule with work's start-end time, task's start-end time 
+		try {
+			workSchedule.checkConsistencyOfSupportSchedule(require);
+		} catch ( BusinessException e ) {
+			return ResultOfRegisteringWorkSchedule.createWithError( employeeId, date, e.getMessage() );
 		}
 		
 		WorkSchedule correctedResult = require.correctWorkSchedule(workSchedule);
@@ -89,6 +105,7 @@ public class CreateWorkSchedule {
 	/**
 	 * 時間帯のチェック
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param date 年月日
 	 * @param workInformation 勤務情報
@@ -97,6 +114,7 @@ public class CreateWorkSchedule {
 	 */
 	private static <T> List<ErrorInfoOfWorkSchedule> checkTimeSpan(
 			Require require,
+			String companyId,
 			String employeeId,
 			GeneralDate date,
 			WorkInformation workInformation,
@@ -104,7 +122,7 @@ public class CreateWorkSchedule {
 			) {
 		
 		return Stream.of ( WorkTimeZone.values() )
-					.map( workTimeZone -> getErrorInfoWithWorkTimeZone(require, employeeId, date, workInformation, workTimeZone, updateInfoMap) )
+					.map( workTimeZone -> getErrorInfoWithWorkTimeZone(require, companyId, employeeId, date, workInformation, workTimeZone, updateInfoMap) )
 					.flatMap( OptionalUtil::stream )
 					.collect( Collectors.toList() );
 	}
@@ -112,6 +130,7 @@ public class CreateWorkSchedule {
 	/**
 	 * 勤務時間帯に対するエラー情報を作成する
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param date 年月日
 	 * @param workInformation 勤務情報
@@ -121,6 +140,7 @@ public class CreateWorkSchedule {
 	 */
 	private static <T> Optional<ErrorInfoOfWorkSchedule> getErrorInfoWithWorkTimeZone(
 			Require require,
+			String companyId,
 			String employeeId, 
 			GeneralDate date, 
 			WorkInformation workInformation, 
@@ -134,7 +154,7 @@ public class CreateWorkSchedule {
 		
 		T time = updateInfoMap.get( workTimeZone.attendanceItemId );
 		ContainsResult stateOfTime = 
-				workInformation.containsOnChangeableWorkingTime(require, workTimeZone.clockArea , workTimeZone.workNo, (TimeWithDayAttr) time);
+				workInformation.containsOnChangeableWorkingTime(require, companyId, workTimeZone.clockArea , workTimeZone.workNo, (TimeWithDayAttr) time);
 		if ( stateOfTime.isContains() ) {
 			return Optional.empty();
 		}
@@ -207,5 +227,7 @@ public class CreateWorkSchedule {
 		public final WorkNo workNo;
 
 	}
+
+	
 
 }

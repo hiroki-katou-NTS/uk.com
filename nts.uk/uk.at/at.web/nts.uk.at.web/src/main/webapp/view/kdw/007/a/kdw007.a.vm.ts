@@ -857,7 +857,12 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     service.getAttendanceItemByCodes([itemCode], this.screenMode).done((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             this.errorDisplayItemName(lstItems[0].attendanceItemName);
-                        }
+                        }else{
+							if(!_.isNil(itemCode)){
+								this.errorDisplayItemName(getText("KDW007_113"));
+							}
+						}
+						
                     });
                 } else {
                     this.errorDisplayItemName("");
@@ -1439,7 +1444,12 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                                 if (lstItems && lstItems.length > 0) {
                                     self.displayLeftCompare(lstItems[0].attendanceItemName);
                                     self.displayRightCompare("");
-                                }
+                                }else{
+									if(!_.isNil(self.singleAtdItem())){
+										self.displayLeftCompare(getText("KDW007_113"));
+										self.displayRightCompare("");
+									}
+								}
                             });
                         }
                     }
@@ -1457,40 +1467,84 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     service.getAttendanceItemByCodes([self.uncountableAtdItem()], self.screenMode).done((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             self.displayTarget(lstItems[0].attendanceItemName);
-                        }
+                        }else{
+							if(!_.isNil(self.uncountableAtdItem())){
+								self.displayTarget(getText("KDW007_113"));
+							}
+						}
                     });
                 }
             } else {
                 if (self.countableAddAtdItems().length > 0) {
                     service.getAttendanceItemByCodes(self.countableAddAtdItems(), self.screenMode).done((lstItems) => {
-                        if (lstItems && lstItems.length > 0) {
-                            for (let i = 0; i < lstItems.length; i++) {
-                                let operator = (i === (lstItems.length - 1)) ? "" : " + ";
-                                self.displayTarget(self.displayTarget() + lstItems[i].attendanceItemName + operator);
-                            }
-                        }
+                       
+							for (let i = 0; i < self.countableAddAtdItems().length; i++) {
+								let operator = (i === (self.countableAddAtdItems().length - 1)) ? "" : " + ";
+								let checkExist = false;
+								for (let j = 0; j < lstItems.length; j++) {
+									if(self.countableAddAtdItems()[i] == lstItems[j].attendanceItemId){
+	                                	self.displayTarget(self.displayTarget() + lstItems[j].attendanceItemName + operator);
+										checkExist = true;
+	                                    break;
+									}
+	                            }
+								if(checkExist == false){
+									self.displayTarget(self.displayTarget() + getText("KDW007_113") + operator);
+	                            }
+							}
+                        
                     }).then(() => {
                         if (self.countableSubAtdItems().length > 0) {
                             service.getAttendanceItemByCodes(self.countableSubAtdItems(), self.screenMode).done((lstItems) => {
-                                if (lstItems && lstItems.length > 0) {
+                                for(let i =0;i<self.countableSubAtdItems().length;i++){
+                                    let operator = (i === (self.countableSubAtdItems().length - 1)) ? "" : " - ";
+                                    let beforeOperator = (i === 0) ? " - " : "";
+                                    let checkExist = false;
+                                    for (let j = 0; j < lstItems.length; j++) {
+                                        if(self.countableSubAtdItems()[i] == lstItems[j].attendanceItemId ){
+											self.displayTarget(self.displayTarget() + beforeOperator + lstItems[i].attendanceItemName + operator);
+                                            checkExist = true;
+                                            break;
+                                        }
+                                    }
+                                    if(checkExist == false){
+										self.displayTarget(self.displayTarget() + beforeOperator + getText("KDW007_113") + operator);
+                                    }
+                                }
+                                /*if (lstItems && lstItems.length > 0) {
                                     for (let i = 0; i < lstItems.length; i++) {
                                         let operator = (i === (lstItems.length - 1)) ? "" : " - ";
                                         let beforeOperator = (i === 0) ? " - " : "";
                                         self.displayTarget(self.displayTarget() + beforeOperator + lstItems[i].attendanceItemName + operator);
                                     }
-                                }
+                                }*/
                             })
                         }
                     });
                 } else if (self.countableSubAtdItems().length > 0) {
                     service.getAttendanceItemByCodes(self.countableSubAtdItems(), self.screenMode).done((lstItems) => {
-                        if (lstItems && lstItems.length > 0) {
+						for(let i =0;i<self.countableSubAtdItems().length;i++){
+                            let operator = (i === (self.countableSubAtdItems().length - 1)) ? "" : " - ";
+                            let beforeOperator = (i === 0) ? " - " : "";
+                            let checkExist = false;
+                            for (let j = 0; j < lstItems.length; j++) {
+                                if(self.countableSubAtdItems()[i] == lstItems[j].attendanceItemId ){
+									self.displayTarget(self.displayTarget() + beforeOperator + lstItems[i].attendanceItemName + operator);
+                                    checkExist = true;
+                                    break;
+                                }
+                            }
+                            if(checkExist == false){
+								self.displayTarget(self.displayTarget() + beforeOperator + getText("KDW007_113") + operator);
+                            }
+                        }
+                        /*if (lstItems && lstItems.length > 0) {
                             for (let i = 0; i < lstItems.length; i++) {
                                 let operator = (i === (lstItems.length - 1)) ? "" : " - ";
                                 let beforeOperator = (i === 0) ? " - " : "";
                                 self.displayTarget(self.displayTarget() + beforeOperator + lstItems[i].attendanceItemName + operator);
                             }
-                        }
+                        }*/
                     })
                 }
 

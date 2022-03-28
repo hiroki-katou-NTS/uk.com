@@ -1,24 +1,23 @@
 package nts.uk.screen.at.app.query.kdp.kdp001.a;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampInfoDisp;
 
-@Getter
 @AllArgsConstructor
+@Data
 public class StampInfoDispDto {
 
 	/**
 	 * 打刻カード番号
 	 */
-	@Getter
 	private final String stampNumber;
 
 	/**
 	 * 打刻日時
 	 */
-	@Getter
 	private final GeneralDateTime stampDatetime;
 
 	@Getter
@@ -27,13 +26,11 @@ public class StampInfoDispDto {
 	/**
 	 * 打刻区分
 	 */
-	@Getter
 	private final String stampAtr;
 
 	/**
 	 * 打刻
 	 */
-	@Getter
 	private final StampInfoDto stamp;
 
 	public static StampInfoDispDto fromDomain(StampInfoDisp domain) {

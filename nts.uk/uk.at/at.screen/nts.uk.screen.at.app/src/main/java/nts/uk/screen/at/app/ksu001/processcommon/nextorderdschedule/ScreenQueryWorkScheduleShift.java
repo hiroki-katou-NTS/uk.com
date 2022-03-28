@@ -16,6 +16,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
@@ -51,7 +52,7 @@ public class ScreenQueryWorkScheduleShift {
 			List<ShiftMasterMapWithWorkStyle> listShiftMasterNotNeedGetNew,
 			Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMap,
 			Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> mapDataDaily,
-			Boolean getActualData
+			Boolean getActualData, TargetOrgIdenInfor targetOrg
 			) {
 		WorkScheduleShiftBaseResult output = new WorkScheduleShiftBaseResult(
 				Collections.emptyList(),
@@ -61,7 +62,8 @@ public class ScreenQueryWorkScheduleShift {
 		WorkScheduleShiftResult workScheduleShiftResult = 
 				createWorkScheduleShift.getWorkScheduleShift(
 							mngStatusAndWScheMap,
-							listShiftMasterNotNeedGetNew);
+							listShiftMasterNotNeedGetNew,
+							targetOrg);
 		output.setListWorkScheduleShift(workScheduleShiftResult.getListWorkScheduleShift());
 		output.setMapShiftMasterWithWorkStyle(workScheduleShiftResult.getMapShiftMasterWithWorkStyle());
 		// 2 実績も取得するか == true
@@ -70,7 +72,8 @@ public class ScreenQueryWorkScheduleShift {
 			WorkScheduleShiftBaseResult workScheduleShiftBaseResult = 
 					createWorkScheduleShiftBase.getWorkScheduleShiftBase(
 							mapDataDaily,
-							listShiftMasterNotNeedGetNew);
+							listShiftMasterNotNeedGetNew,
+							targetOrg);
 			// 2.2 
 			/**
 			 * 予定と実績のList<勤務予定（シフト）dto>をMargeする。

@@ -18,9 +18,12 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.OptionalUtil;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportScheduleDetail;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskScheduleDetail;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
@@ -41,6 +44,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportInfoOfEmployee;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTicket;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -78,6 +85,9 @@ public class WorkSchedule implements DomainAggregate {
 	
 	/** 作業予定 **/
 	private TaskSchedule taskSchedule;
+	
+	/** 応援予定 **/
+	private SupportSchedule supportSchedule;
 
 	/** 出退勤 */
 	private Optional<TimeLeavingOfDailyAttd> optTimeLeaving;
@@ -94,6 +104,7 @@ public class WorkSchedule implements DomainAggregate {
 	/**
 	 * 作る
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param date 年月日
 	 * @param workinformation 勤務情報
@@ -101,30 +112,32 @@ public class WorkSchedule implements DomainAggregate {
 	 */
 	public static WorkSchedule create(
 			Require require,
+			String companyId,
 			String employeeId,
 			GeneralDate date,
 			WorkInformation workInformation
 			){
 		
-		if (! workInformation.checkNormalCondition(require) ) {
+		if (! workInformation.checkNormalCondition(require, companyId) ) {
 			throw new BusinessException("Msg_2119");
 		}
 		
 		Optional<TimeLeavingOfDailyAttd> optTimeLeaving = Optional.empty();
-		if ( workInformation.isAttendanceRate(require) ) {
+		if ( workInformation.isAttendanceRate(require, companyId) ) {
 			optTimeLeaving = Optional.of(
-					TimeLeavingOfDailyAttd.createByPredetermineZone(require, workInformation) );
+					TimeLeavingOfDailyAttd.createByPredetermineZone(require, companyId, workInformation) );
 		}
 		
-		val isBackStraight = workInformation.isBackStraight(require) ? NotUseAttribute.Use : NotUseAttribute.Not_use;
-		val isGoStraight = workInformation.isGoStraight(require) ? NotUseAttribute.Use : NotUseAttribute.Not_use;
+		val isBackStraight = workInformation.isBackStraight(require, companyId) ? NotUseAttribute.Use : NotUseAttribute.Not_use;
+		val isGoStraight = workInformation.isGoStraight(require, companyId) ? NotUseAttribute.Use : NotUseAttribute.Not_use;
 			
 		return new WorkSchedule(
 				employeeId, 
 				date, 
 				ConfirmedATR.UNSETTLED, 
 				WorkInfoOfDailyAttendance.create(
-						require, 
+						require,
+						companyId,
 						workInformation, 
 						CalculationState.No_Calculated, 
 						isBackStraight, 
@@ -134,6 +147,7 @@ public class WorkSchedule implements DomainAggregate {
 				new BreakTimeOfDailyAttd(),
 				new ArrayList<>(), 
 				TaskSchedule.createWithEmptyList(),
+				SupportSchedule.createWithEmptyList(),
 				optTimeLeaving, 
 				Optional.empty(), 
 				Optional.empty(),
@@ -143,6 +157,7 @@ public class WorkSchedule implements DomainAggregate {
 	/**
 	 * 勤務情報を指定して手修正で作る
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param date 年月日
 	 * @param workInformation 勤務情報
@@ -150,11 +165,12 @@ public class WorkSchedule implements DomainAggregate {
 	 */
 	public static WorkSchedule createByHandCorrectionWithWorkInformation(
 			Require require,
+			String companyId,
 			String employeeId,
 			GeneralDate date,
 			WorkInformation workInformation
 			) {
-		WorkSchedule workSchedule = WorkSchedule.create(require, employeeId, date, workInformation);
+		WorkSchedule workSchedule = WorkSchedule.create(require, companyId, employeeId, date, workInformation);
 		
 		List<EditStateOfDailyAttd> editStateOfDailyAttdList = 
 				Arrays.asList(
@@ -411,11 +427,12 @@ public class WorkSchedule implements DomainAggregate {
 	/**
 	 * 作業予定を入れ替える
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param newtaskSchedule 作業予定
 	 */
-	public void updateTaskSchedule(Require require, TaskSchedule newtaskSchedule ) {
+	public void updateTaskSchedule(Require require, String companyId, TaskSchedule newtaskSchedule ) {
 		
-		this.checkWhetherTaskScheduleIsCorrect(require, newtaskSchedule);
+		this.checkWhetherTaskScheduleIsCorrect(require, companyId, newtaskSchedule);
 		
 		this.taskSchedule = newtaskSchedule;
 	}
@@ -423,11 +440,12 @@ public class WorkSchedule implements DomainAggregate {
 	/**
 	 * 一日中に作業予定を作成する
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param taskCode 作業コード
 	 */
-	public void createTaskScheduleForWholeDay(Require require, TaskCode taskCode) {
+	public void createTaskScheduleForWholeDay(Require require, String companyId, TaskCode taskCode) {
 		
-		List<TimeSpanForCalc> workingTimeSpanList = this.getWorkingTimeSpan(require);
+		List<TimeSpanForCalc> workingTimeSpanList = this.getWorkingTimeSpan(require, companyId);
 		if ( workingTimeSpanList.isEmpty() ) {
 			throw new BusinessException("Msg_2103");
 		}
@@ -442,12 +460,13 @@ public class WorkSchedule implements DomainAggregate {
 	/**
 	 * 時間帯に作業予定を追加する
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param targetTimeSpan 対象時間帯
 	 * @param taskCode 作業コード
 	 */
-	public void addTaskScheduleWithTimeSpan(Require require, TimeSpanForCalc targetTimeSpan, TaskCode taskCode) {
+	public void addTaskScheduleWithTimeSpan(Require require, String companyId, TimeSpanForCalc targetTimeSpan, TaskCode taskCode) {
 		
-		List<TimeSpanForCalc> workingTimeSpanList = this.getWorkingTimeSpan(require);
+		List<TimeSpanForCalc> workingTimeSpanList = this.getWorkingTimeSpan(require, companyId);
 		if ( workingTimeSpanList.isEmpty() ) {
 			throw new BusinessException("Msg_2103");
 		}
@@ -464,13 +483,114 @@ public class WorkSchedule implements DomainAggregate {
 	}
 	
 	/**
-	 * 労働時間帯リストを取得する
+	 * 応援予定を作成する
+	 * @param require
+	 * @param supportTickets 応援チケットリスト
+	 */
+	public void createSupportSchedule(Require require, List<SupportTicket> supportTickets) {
+		
+		supportTickets.stream().forEach( ticket -> this.checkWhetherCanUpdateSupportSchedule(ticket, false) );
+		
+		this.supportSchedule = SupportSchedule.createFromSupportTicketList(require, supportTickets);
+		
+		this.checkConsistencyOfSupportSchedule(require);
+	}
+	
+	/**
+	 * 応援予定を追加する
+	 * @param require
+	 * @param ticket 応援チケット
+	 */
+	public void addSupportSchedule(Require require, SupportTicket ticket) {
+		
+		this.checkWhetherCanUpdateSupportSchedule(ticket, false);
+		
+		this.supportSchedule = this.supportSchedule.add(require, ticket);
+		
+		this.checkConsistencyOfSupportSchedule(require);
+	}
+	
+	/**
+	 * 応援予定を修正する
+	 * @param require
+	 * @param beforeModify 修正前
+	 * @param afterModify 修正後
+	 */
+	public void modifySupportSchedule(Require require, SupportTicket beforeModify, SupportTicket afterModify) {
+		
+		this.checkWhetherCanUpdateSupportSchedule(beforeModify, false);
+		this.checkWhetherCanUpdateSupportSchedule(afterModify, false);
+		
+		this.supportSchedule = this.supportSchedule.update(require, beforeModify, afterModify);
+		
+		this.checkConsistencyOfSupportSchedule(require);
+	}
+	
+	/**
+	 * 応援予定を削除する
+	 * @param ticket 応援チケット
+	 */
+	public void removeSupportSchedule(SupportTicket ticket) {
+		
+		this.checkWhetherCanUpdateSupportSchedule(ticket, true);
+		
+		switch (ticket.getSupportType()) {
+		case ALLDAY:
+			this.taskSchedule = TaskSchedule.createWithEmptyList();
+			break;
+		case TIMEZONE:
+			this.taskSchedule = this.taskSchedule.removeTaskScheduleDetailIn(ticket.getTimespan().get());
+			break;
+		default:
+			throw new RuntimeException("support type is invalid!");
+		}
+		
+		this.supportSchedule = this.supportSchedule.remove(ticket);
+	}
+	
+	/**
+	 * 社員の応援情報を取得する
 	 * @param require
 	 * @return
 	 */
-	private List<TimeSpanForCalc> getWorkingTimeSpan(Require require) {
+	public SupportInfoOfEmployee getSupportInfoOfEmployee() {
 		
-		if( !this.workInfo.isAttendanceRate(require) ) {
+		if ( ! this.supportSchedule.havePlanToSupport() ) {
+			
+			return SupportInfoOfEmployee.createWithoutSupport(
+					new EmployeeId(this.employeeID), 
+					this.ymd, 
+					this.affInfo.getAffiliationOrg());
+		}
+		
+		if ( this.supportSchedule.getSupportType().get() == SupportType.ALLDAY ) {
+			return SupportInfoOfEmployee.createWithAllDaySupport(
+					new EmployeeId(this.employeeID), 
+					this.ymd,
+					this.affInfo.getAffiliationOrg(), 
+					this.supportSchedule.getDetails().get(0).getSupportDestination());
+		} else {
+			val recipientList = this.supportSchedule.getDetails().stream()
+					.map(SupportScheduleDetail::getSupportDestination)
+					.collect(Collectors.toList());
+			
+			return SupportInfoOfEmployee.createWithTimezoneSupport(
+					new EmployeeId(this.employeeID),
+					this.ymd,
+					this.affInfo.getAffiliationOrg(),
+					recipientList);
+		}
+	}
+	
+	/**
+	 * 労働時間帯リストを取得する
+	 * @param require
+	 * @param companyId 会社ID
+	 * @return
+	 */
+	private List<TimeSpanForCalc> getWorkingTimeSpan(Require require, String companyId) {
+		
+		if( !this.workInfo.isAttendanceRate(require, companyId) ) {
 			return new ArrayList<>();
 		}
 		
@@ -519,12 +639,13 @@ public class WorkSchedule implements DomainAggregate {
 	/**
 	 * 作業予定が妥当かどうかチェックする
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param targetTaskSchedule 作業予定
 	 * @return
 	 */
-	private boolean checkWhetherTaskScheduleIsCorrect(Require require, TaskSchedule targetTaskSchedule) {
+	private boolean checkWhetherTaskScheduleIsCorrect(Require require, String companyId, TaskSchedule targetTaskSchedule) {
 		
-		if( !this.workInfo.isAttendanceRate(require) ) {
+		if( !this.workInfo.isAttendanceRate(require, companyId) ) {
 			throw new BusinessException( "Msg_2103" );
 		}
 		
@@ -533,7 +654,7 @@ public class WorkSchedule implements DomainAggregate {
 								.flatMap( x -> x.stream())
 								.collect(Collectors.toList());
 		
-		targetTaskSchedule.getDetails().stream()
+		this.taskSchedule.getDetails().stream()
 			.map( detail -> detail.getTimeSpan())
 			.forEach( taskTimeSpan -> {
 				
@@ -558,14 +679,100 @@ public class WorkSchedule implements DomainAggregate {
 				
 			});
 		
+		this.checkConsistencyBetweenSupportScheduleAndTaskSchedule();
+		
 		return true;
+	}
+	
+	/**
+	 * 応援予定を変更できるかチェックする
+	 * @param supportTicket 応援チケット
+	 * @param isRemove 削除するか
+	 */
+	private void checkWhetherCanUpdateSupportSchedule(SupportTicket supportTicket, boolean isRemove) {
+		
+		if ( !supportTicket.getEmployeeId().v().equals(this.employeeID) || !supportTicket.getDate().equals(this.ymd) ) {
+			throw new BusinessException("Msg_3254");
+		}
+		
+		if ( this.confirmedATR == ConfirmedATR.CONFIRMED ) {
+			throw new BusinessException("Msg_2268");
+		}
+		
+		if ( isRemove ) {
+			return;
+		}
+		
+		switch (supportTicket.getSupportType()) {
+		case ALLDAY:
+			if ( this.taskSchedule.isTaskScheduleGranted() ) {
+				throw new BusinessException("Msg_2271");
+			}
+			break;
+		case TIMEZONE:
+			if ( this.taskSchedule.isTaskScheduleGrantedIn(supportTicket.getTimespan().get()) ) {
+				throw new BusinessException("Msg_2273");
+			}
+			break;	
+		default:
+			throw new RuntimeException("support type is invalid!");
+		}
+		
+	}
+	
+	/**
+	 * 応援予定の整合性をチェックする
+	 * @param require
+	 */
+	public void checkConsistencyOfSupportSchedule(Require require) {
+		
+		val supportType = this.supportSchedule.getSupportType();
+		if ( !supportType.isPresent() || supportType.get() == SupportType.ALLDAY ) {
+			return;
+		}
+			
+		// TODO resolve conflict, need to fix after
+		String companyId = AppContexts.user().companyId();
+		if ( !this.workInfo.isAttendanceRate(require, companyId) ) {
+			
+			throw new BusinessException("Msg_2275");
+		}
+		
+		val workTimeSpans = this.optTimeLeaving.get().getTimeOfTimeLeavingAtt();
+		if ( this.supportSchedule.getDetails().stream()
+				.anyMatch(detail -> !detail.doesItFitInTheSpecifiedTimeSpan(workTimeSpans)) ) {
+			
+			throw new BusinessException("Msg_2276");
+		}
+		
+		this.checkConsistencyBetweenSupportScheduleAndTaskSchedule();
+		
+	}
+	
+	/**
+	 * 応援予定と作業予定の整合性をチェックする
+	 */
+	private void checkConsistencyBetweenSupportScheduleAndTaskSchedule() {
+		
+		val supportTimeSpanList = this.supportSchedule.getSupportTimeSpanList();
+		
+		val existATaskWhichIsStraddled = supportTimeSpanList.stream().anyMatch( supportTimeSpan -> 
+			this.taskSchedule.getDetails().stream()
+				.anyMatch( task -> task.isDuplicateWith(supportTimeSpan) && !task.isContainedIn(supportTimeSpan))
+		);
+		
+		if ( existATaskWhichIsStraddled ) {
+			
+			throw new BusinessException("Msg_3235");
+		}
 	}
 	
 	public static interface Require extends 
 		WorkInfoOfDailyAttendance.Require, 
 		AffiliationInforOfDailyAttd.Require,
 		TimeLeavingOfDailyAttd.Require, 
-		EditStateOfDailyAttd.Require {
+		EditStateOfDailyAttd.Require,
+		SupportSchedule.Require {
 	
 	}
 

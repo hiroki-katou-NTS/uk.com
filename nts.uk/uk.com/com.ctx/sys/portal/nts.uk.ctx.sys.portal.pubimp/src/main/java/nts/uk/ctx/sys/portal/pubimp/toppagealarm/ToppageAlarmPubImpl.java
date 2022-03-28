@@ -64,6 +64,7 @@ public class ToppageAlarmPubImpl implements ToppageAlarmPub {
 						.sids(mapper.getSids())
 						.displayEmpClassfication(EnumAdaptor.valueOf(mapper.getDisplayEmpClassfication().value, DisplayAtr.class))
 						.alarmListParttenCode(Optional.ofNullable(mapper.getPatternCode().orElse(null)))
+						.subEmpNoErrs(mapper.getSubEmpNoErrs())
 						.build())
 				.orElse(null));
 		

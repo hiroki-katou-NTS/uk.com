@@ -72,7 +72,8 @@ public class GetScheduleActualOfWorkInfo {
 				screenQueryCreateWorkSchedule.get(
 					planAndActual.getSchedule(),
 					planAndActual.getDailySchedule(),
-					getActualData);
+					getActualData,
+					targetOrg); 
 		
 		// 3 集計する(List<社員ID>, 期間, 日付, , , 対象組織識別情報, Optional<個人計カテゴリ>, Optional<職場計カテゴリ>, boolean)
 		AggregateScheduleDto aggrerateSchedule =

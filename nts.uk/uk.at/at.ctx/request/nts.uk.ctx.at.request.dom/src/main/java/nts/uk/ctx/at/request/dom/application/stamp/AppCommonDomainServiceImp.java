@@ -1,25 +1,29 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
 import org.apache.commons.lang3.BooleanUtils;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.WorkLocationAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -32,6 +36,13 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.ErrorStampInfo;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.AppStampSetting;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.MaximumNumberOfSupport;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
@@ -65,6 +76,18 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	@Inject
 	private DetailBeforeUpdate detailBeforeUpdate;
 	
+	@Inject
+	private SupportOperationSettingRepository supportOperationSettingRepo;
+	
+	@Inject
+	private WorkplaceAdapter workplaceAdapter;
+	
+	@Inject
+	private WorkLocationAdapter workLocationAdapter;
+	
+	@Inject
+	private ApplicationRepository appRepo;
+
 	@Inject
 	private WorkTypeRepository workTypeRepository;
 
@@ -123,7 +146,79 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		List<ErrorStampInfo> errorStampInfos = this.getErrorStampList(stampRecordOutput, workTypeCd);
 		appStampOutput.setErrorListOptional(Optional.ofNullable(errorStampInfos));
 		
+		// ドメイン「応援の運用設定」を取得する
+		SupportOperationSetting supportOperationSetting = this.supportOperationSettingRepo.get(companyId);
+		appStampOutput.setUseCheering(supportOperationSetting.isUsed());
+		appStampOutput.setMaxOfCheer(supportOperationSetting.getMaxNumberOfSupportOfDay().v());
+		
+		// 応援の運用設定.利用するか　＝　true
+		if (supportOperationSetting.isUsed()) {
+			List<String> workLocationCDs = stampRecordOutput != null 
+					? Stream.of(stampRecordOutput.getWorkingTime()
+													 	   , stampRecordOutput.getExtraordinaryTime()
+													 	   , stampRecordOutput.getSupportTime())
+													.flatMap(Collection::stream)
+													.map(t -> t.getOpWorkLocationCD().orElse(null))
+													.filter(Objects::nonNull)
+													.map(WorkLocationCD::v)
+													.collect(Collectors.toList())
+					: Collections.emptyList();
+			                    					  
+			List<WorkplaceId> workplaceIds = stampRecordOutput != null 
+					? Stream.of(stampRecordOutput.getWorkingTime()
+										 	   		 , stampRecordOutput.getExtraordinaryTime()
+										 	   		 , stampRecordOutput.getSupportTime())
+													.flatMap(Collection::stream)
+													.map(TimePlaceOutput::getWorkplaceId)
+													.filter(Objects::nonNull)
+													.collect(Collectors.toList())
+					: Collections.emptyList(); 
+			WkpWorkLocationName wkpWorkLocationName = this.findWkpAndWorkLocationName(
+					appStampSettingOptional.isPresent() && appStampSettingOptional.get().getWkpDisAtr().isUse(),
+					appStampSettingOptional.isPresent() && appStampSettingOptional.get().getUseLocationSelection().isUse(),
+					workplaceIds,
+					workLocationCDs,
+					dates.orElse(GeneralDate.today()));
+			
+			appStampOutput.setWorkLocationNames(wkpWorkLocationName.getWorkLocationNames());
+			appStampOutput.setWorkplaceNames(wkpWorkLocationName.getWorkplaceNames());
+		}
+
 		return appStampOutput;
+	}
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF002_打刻申請.B：打刻申請（新規）→A・B画面.打刻申請（新規）共通アルゴリズム.職場名・場所名を取得する.職場名・場所名を取得する
+	 *
+	 * @param isGetWorkPlaceName 職場名を取得する（boolean）
+	 * @param isGetWorkLocationName 場所名を取得する
+	 * @param workPlaceIds 職場ID
+	 * @param workLocationCds 勤務場所コード
+	 * @return the list
+	 */
+	@Override
+	public WkpWorkLocationName findWkpAndWorkLocationName(boolean isGetWorkPlaceName
+												 , boolean isGetWorkLocationName
+												 , List<WorkplaceId> workPlaceIds
+												 , List<String> workLocationCds
+												 , GeneralDate baseDate) {
+		WkpWorkLocationName result = new WkpWorkLocationName();
+
+		// 職場名を取得するかをチェックする
+		// 職場名を取得する＝true　AND　職場ID（List）NOT　Empty
+		if (isGetWorkPlaceName && !workPlaceIds.isEmpty()) {
+			// 職場名を取得する
+			result.setWorkplaceNames(this.workplaceAdapter.findWkpInfo(workPlaceIds, baseDate));
+		}
+
+		// INPUT.「場所名を取得する」をチェックする
+		// 場所名を取得する＝true　AND　場所コード（List）NOT　Empty
+		if (isGetWorkLocationName && !workLocationCds.isEmpty()) {
+			// 場所名を取得する
+			result.setWorkLocationNames(this.workLocationAdapter.findWorkLocationName(workLocationCds));
+		}
+
+		return result;
 	}
 
 	@Override
@@ -142,8 +237,10 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		Boolean isCon6 = BooleanUtils.toBoolean(appStampReflect.getGoOutReflectAtr().value);
 //		休憩時間帯を反映する＝しない
 		Boolean isCon7 = BooleanUtils.toBoolean(appStampReflect.getBreakReflectAtr().value);
+//		応援開始、終了を反映する=しない
+		Boolean isCon8 = BooleanUtils.toBoolean(appStampReflect.getSupportReflectAtr().value);
 		
-		if (!isCon1 && !isCon2 && (!isCon3 || !isCon4) && !isCon5 && !isCon6 && !isCon7) {
+		if (!isCon1 && !isCon2 && (!isCon3 || !isCon4) && !isCon5 && !isCon6 && !isCon7 && !isCon8) {
 			throw new BusinessException("Msg_1757");
 		}
 		
@@ -498,6 +595,12 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		Optional<StampAppReflect> appStampReflect = appStampReflectRepo.findReflectByCompanyId(companyId);
 		appStampOutput.setAppStampReflectOptional(appStampReflect);
 		
+//		ドメインモデル「打刻申請設定」を取得する	
+		Optional<AppStampSetting> appStampSettingOptional = appStampSetttingRepo.findByAppID(companyId);
+		if (appStampSettingOptional.isPresent()) {
+			appStampOutput.setAppStampSetting(appStampSettingOptional.get());
+		}
+		
 		if (recoderFlag) {			
 //			ドメインモデル「レコーダイメージ申請」を取得する
 			Optional<AppRecordImage> appRecordImageOptional = appRecordImageRepo.findByAppID(companyId, appId);
@@ -542,14 +645,50 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 				appStampOutput.setUseTemporary(Optional.of(getValue));
 			} else {
 				appStampOutput.setUseTemporary(Optional.of(false));
-			}			
+			}
 			
-		}
-		
-//		ドメインモデル「打刻申請設定」を取得する	
-		Optional<AppStampSetting> appStampSettingOptional = appStampSetttingRepo.findByAppID(companyId);
-		if (appStampSettingOptional.isPresent()) {
-			appStampOutput.setAppStampSetting(appStampSettingOptional.get());
+			// ドメイン「応援の運用設定」を取得する
+			SupportOperationSetting supportOperationSetting = this.supportOperationSettingRepo.get(companyId);
+			appStampOutput.setUseCheering(supportOperationSetting.isUsed());
+			
+			// 最大応援回数の設定を取得する
+			MaximumNumberOfSupport maxNumberOfSupportOfDay = supportOperationSetting.getMaxNumberOfSupportOfDay();
+			appStampOutput.setMaxOfCheer(maxNumberOfSupportOfDay.v());
+			
+			GeneralDate appDate = GeneralDate.today();
+			if (appStampOptional.isPresent()) {
+				Optional<Application> optApp = this.appRepo.findByID(appId);
+				
+				if (optApp.isPresent()) {
+					appDate = optApp.get().getAppDate().getApplicationDate();
+				}
+			}
+			
+			List<WorkplaceId> workplaceIds = appStampOptional.isPresent()
+					? appStampOptional.get().getListTimeStampApp().stream()
+							.map(x -> x.getWorkplaceId().orElse(null))
+							.filter(Objects::nonNull)
+							.collect(Collectors.toList())
+					: new ArrayList<WorkplaceId>();
+							
+			List<String> workLocationCDs = appStampOptional.isPresent()
+					? appStampOptional.get().getListTimeStampApp().stream()
+							.map(x -> x.getWorkLocationCd().orElse(null))
+							.filter(Objects::nonNull)
+							.map(WorkLocationCD::v)
+							.collect(Collectors.toList())
+					: new ArrayList<String>();
+			
+			WkpWorkLocationName wkpWorkLocationName = this.findWkpAndWorkLocationName(
+					appStampSettingOptional.isPresent() && appStampSettingOptional.get().getWkpDisAtr().isUse(),
+					appStampSettingOptional.isPresent() && appStampSettingOptional.get().getUseLocationSelection().isUse(),
+					workplaceIds,
+					workLocationCDs,
+					appDate);
+
+			appStampOutput.setWorkLocationNames(wkpWorkLocationName.getWorkLocationNames());
+			appStampOutput.setWorkplaceNames(wkpWorkLocationName.getWorkplaceNames());
+			
 		}
 		appStampOutput.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
 		return appStampOutput;

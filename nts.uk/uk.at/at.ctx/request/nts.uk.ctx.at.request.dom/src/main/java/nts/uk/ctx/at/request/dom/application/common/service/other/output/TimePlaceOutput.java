@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.request.dom.application.stamp.StampFrameNo;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -43,5 +44,10 @@ public class TimePlaceOutput {
 	 * 時刻開始
 	 */
 	private Optional<TimeWithDayAttr> opStartTime;
+	
+	/**
+	 * 職場ID
+	 */
+	private WorkplaceId workplaceId;
 	
 }

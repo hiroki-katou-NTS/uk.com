@@ -55,10 +55,7 @@ public class ConvertAlarmListToTopPageAlarmDataServiceTest {
 
         new Expectations(AppContexts.class){
             {
-                AppContexts.user().companyId();
-                result = companyId;
-
-                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v());
+                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v(), employeeIds);
                 result = Optional.of(extractResult);
             }
         };
@@ -83,10 +80,7 @@ public class ConvertAlarmListToTopPageAlarmDataServiceTest {
 
         new Expectations(AppContexts.class){
             {
-                AppContexts.user().companyId();
-                result = companyId;
-
-                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v());
+                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v(), employeeIds);
                 result = Optional.of(extractResult);
             }
         };
@@ -130,10 +124,7 @@ public class ConvertAlarmListToTopPageAlarmDataServiceTest {
 
         new Expectations(AppContexts.class){
             {
-                AppContexts.user().companyId();
-                result = companyId;
-
-                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v());
+                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v(), employeeIds);
                 result = Optional.empty();
             }
         };
@@ -159,7 +150,7 @@ public class ConvertAlarmListToTopPageAlarmDataServiceTest {
 
         new Expectations(AppContexts.class){
             {
-                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v());
+                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v(), employeeIds);
                 result = Optional.empty();
             }
         };
@@ -185,10 +176,7 @@ public class ConvertAlarmListToTopPageAlarmDataServiceTest {
 
         new Expectations(AppContexts.class){
             {
-                AppContexts.user().companyId();
-                result = companyId;
-
-                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v());
+                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v(), employeeIds);
                 result = Optional.empty();
             }
         };
@@ -215,10 +203,7 @@ public class ConvertAlarmListToTopPageAlarmDataServiceTest {
 
         new Expectations(AppContexts.class){
             {
-                AppContexts.user().companyId();
-                result = companyId;
-
-                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v());
+                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v(), employeeIds);
                 result = Optional.of(extractResult);
             }
         };
@@ -243,12 +228,9 @@ public class ConvertAlarmListToTopPageAlarmDataServiceTest {
         boolean isDisplayByUser = false;
         PersistenceAlarmListExtractResult extractResult = DumData.dumDomain;
 
-        new Expectations(AppContexts.class){
+        new Expectations(){
             {
-                AppContexts.user().companyId();
-                result = companyId;
-
-                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v());
+                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v(), employeeIds);
                 result = Optional.of(extractResult);
             }
         };
@@ -275,7 +257,7 @@ public class ConvertAlarmListToTopPageAlarmDataServiceTest {
 
         new Expectations(AppContexts.class){
             {
-                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v());
+                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v(), employeeIds);
                 result = Optional.of(extractResult);
             }
         };
@@ -302,10 +284,7 @@ public class ConvertAlarmListToTopPageAlarmDataServiceTest {
 
         new Expectations(AppContexts.class){
             {
-                AppContexts.user().companyId();
-                result = companyId;
-
-                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v());
+                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v(), employeeIds);
                 result = Optional.of(extractResult);
             }
         };
@@ -332,10 +311,7 @@ public class ConvertAlarmListToTopPageAlarmDataServiceTest {
 
         new Expectations(AppContexts.class){
             {
-                AppContexts.user().companyId();
-                result = companyId;
-
-                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v());
+                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v(), employeeIds);
                 result = Optional.of(extractResult);
             }
         };
@@ -362,7 +338,7 @@ public class ConvertAlarmListToTopPageAlarmDataServiceTest {
 
         new Expectations(AppContexts.class){
             {
-                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v());
+                require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v(), employeeIds);
                 result = Optional.of(extractResult);
             }
         };

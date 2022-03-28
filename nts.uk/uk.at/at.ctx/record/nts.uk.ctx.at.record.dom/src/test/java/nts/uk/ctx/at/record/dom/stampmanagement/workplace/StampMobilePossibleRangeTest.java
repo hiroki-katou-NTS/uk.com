@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.stampmanagement.workplace;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 import org.junit.Test;
 
 import mockit.Mock;
@@ -12,7 +14,7 @@ import nts.gul.location.GeoCoordinate;
 public class StampMobilePossibleRangeTest {
 	@Test
 	public void getters() {
-		StampMobilePossibleRange stampRange = WorkLocationHelper.getDefault().getStampRange().get();
+		Optional<StampMobilePossibleRange> stampRange = WorkLocationHelper.getDefault().getStampRange();
 		NtsAssert.invokeGetters(stampRange);
 	}
 

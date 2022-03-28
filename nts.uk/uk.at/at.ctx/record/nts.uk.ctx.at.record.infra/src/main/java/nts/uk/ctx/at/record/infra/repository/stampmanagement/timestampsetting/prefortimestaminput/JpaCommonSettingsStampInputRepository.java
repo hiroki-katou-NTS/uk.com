@@ -7,13 +7,11 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInput;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.MapAddress;
 import nts.uk.ctx.at.record.infra.entity.stamp.application.KrcmtStampFunction;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 打刻入力の共通設定Repository
@@ -59,7 +57,8 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 	}
 
 	public CommonSettingsStampInput toDomain(KrcmtStampFunction entity) {
-		return new CommonSettingsStampInput(entity.cid, entity.googleMapUseArt == 1, entity.mapAddress == null ? Optional.empty():Optional.of(new MapAddress(entity.mapAddress)), EnumAdaptor.valueOf(entity.supportUseArt, NotUseAtr.class));
+		return new CommonSettingsStampInput(entity.cid, entity.googleMapUseArt == 1,
+				entity.mapAddress == null ? Optional.empty() : Optional.of(new MapAddress(entity.mapAddress)), null);
 	}
 	
 	private Optional<KrcmtStampFunction> getEntity(String cId){
@@ -73,7 +72,6 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 				oldEntity.isPresent()? oldEntity.get().recordDisplayArt : 0, 
 				domain.isGooglemap() ? 1 : 0,
 				domain.getMapAddres().isPresent() ? domain.getMapAddres().get().v() : null,
-				domain.getSupportUseArt().value,
 				oldEntity.isPresent()? oldEntity.get().lstRecordDis : new ArrayList<>());
 	}
 

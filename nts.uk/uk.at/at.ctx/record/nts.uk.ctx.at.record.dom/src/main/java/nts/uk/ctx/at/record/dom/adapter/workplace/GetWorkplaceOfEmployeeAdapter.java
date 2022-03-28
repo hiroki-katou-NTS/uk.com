@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.adapter.workplace;
 
-import java.util.Map;
-
 import nts.arc.time.GeneralDate;
 
 /**
@@ -17,5 +15,5 @@ public interface GetWorkplaceOfEmployeeAdapter {
 	 * @param employeeID 社員ID
 	 * @param date 基準日
 	 */
-	Map<String, String> get(String userID, String employeeID, GeneralDate date);
+	ReferenceableWorkplaceImport get(String userID, String employeeID, GeneralDate date);
 }

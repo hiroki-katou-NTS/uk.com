@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/base.xhtml">
+      <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="/view/kcp/011/main.css" />
+        <com:scriptfile
+          path="/view/kcp/011/kcp.011.vm.js"
+          of="/nts.uk.com.web"
+        />
+        <com:scriptfile path="test.vm.js" />
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="functions-area" ><button tabindex="-1" data-bind="click: openCdl014">
+          Open CDL014 dialog
+        </button></div>
+        <div id="contents-area">
+          <div >
+
+            <h4>選択モード:</h4>
+            <div tabindex="-1"
+                    data-bind="ntsRadioBoxGroup: {
+									options: listTreeType,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedTreeType,
+									enable: true}"
+            ></div>
+
+            <h4>未選択表示:</h4>
+            <div tabindex="-1"
+              data-bind="ntsRadioBoxGroup: {
+									options: listDisplay,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedDisplay,
+									enable: true}"
+            ></div>
+
+            <h4>絞込リスト:</h4>
+            <div tabindex="-1" data-bind="ntsMultiCheckBox: {
+                                    options: listFilter,
+                                    optionsValue: 'code',
+                                    optionsText: 'name',
+                                    value: selectedFilters,
+                                    enable: enable}"></div>
+
+            <h4>選択済項目 :</h4>
+            <div tabindex="-1"
+              data-bind="ntsRadioBoxGroup: {
+									options: listSelectionType,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedSelectionType,
+									enable: enable}"
+            ></div>
+
+            <h4>職場グループリスト :</h4>
+            <com:ko tag="if" bind="selectedTreeType() == 0">
+              <table id="multi-list1" tabindex="-1" data-bind="ntsGridList: {
+							rows: 10,
+							options: $vm.listWorkPlace,
+							optionsValue: 'workPlaceId',
+							columns: [
+								{ headerText: 'WorkPlace Id', key: 'workPlaceId', width: 240, formatter: _.escape},
+								{ headerText: 'WorkPlace Code', key: 'workPlaceCode', width: 140, formatter: _.escape },
+								{ headerText: 'WorkPlaceName Name', key: 'workPlaceName', width: 340, formatter: _.escape }
+							],
+							multiple: false,
+							value: $vm.selectedWrk
+						}"></table>
+            </com:ko>
+            <com:ko tag="if" bind="selectedTreeType() == 1">
+              <table id="multi-list2"  tabindex="-1" data-bind="ntsGridList: {
+							rows: 10,
+							options: $vm.listWorkPlace,
+							optionsValue: 'workPlaceId',
+							columns: [
+								{ headerText: 'WorkPlace Id', key: 'workPlaceId', width: 240, formatter: _.escape},
+								{ headerText: 'WorkPlace Code', key: 'workPlaceCode', width: 140, formatter: _.escape },
+								{ headerText: 'WorkPlaceName Name', key: 'workPlaceName', width: 340, formatter: _.escape }
+							],
+							multiple: true,
+							value: $vm.selectedWrk
+						}"></table>
+            </com:ko>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

@@ -7,6 +7,7 @@ import nts.uk.ctx.at.function.dom.alarm.sendemail.ValueExtractAlarmManualDto;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface WorkplaceSendEmailService {
 
@@ -18,13 +19,13 @@ public interface WorkplaceSendEmailService {
 
     Map<String, List<String>> alarmWorkplacesendEmail(Map<String, List<String>> administratorTarget,
                                                       List<ValueExtractAlarmManualDto> listValueExtractAlarmDto,
-                                                      AlarmListExecutionMailSetting mailSettingsNormal,
+                                                      Optional<AlarmListExecutionMailSetting> mailSettingsNormal,
                                                       String currentAlarmCode,
                                                       boolean useAuthentication);
 
     List<String> alarmWorkplacesendEmail(List<String> empList,
                                          List<ValueExtractAlarmManualDto> listValueExtractAlarmDto,
-                                         AlarmListExecutionMailSetting mailSettingsNormal,
+                                         Optional<AlarmListExecutionMailSetting> mailSettingsNormal,
                                          String currentAlarmCode,
                                          boolean useAuthentication);
 

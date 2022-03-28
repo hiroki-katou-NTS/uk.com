@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.ScheFunctionControl;
+import nts.uk.ctx.at.schedule.dom.schedule.support.SupportFunctionControl;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -49,13 +50,20 @@ public class ScheduleBasicSettingDto {
 
     private List<WorkTypeNameDto> displayableWorkTypeList;
 
-    public static ScheduleBasicSettingDto fromDomain(ScheFunctionControl domain, List<WorkTypeNameDto> workTypeNameList) {
+    /** 応援予定を利用するか **/
+    private int use;
+    /** 時間帯応援を利用するか **/
+    private boolean useSupportInTimezone;
+
+    public static ScheduleBasicSettingDto fromDomain(ScheFunctionControl domain, List<WorkTypeNameDto> workTypeNameList, SupportFunctionControl supportFunctionControl) {
         if (domain == null) {
             ScheduleBasicSettingDto dto = new ScheduleBasicSettingDto();
             dto.setDisplayableWorkTypeList(workTypeNameList);
             return dto;
         }
-
+        if (supportFunctionControl == null){
+            supportFunctionControl = new SupportFunctionControl(false,false);
+        }
         return new ScheduleBasicSettingDto(
                 BooleanUtils.toInteger(domain.isChangeableForm(WorkTimeForm.FIXED)),
                 BooleanUtils.toInteger(domain.isChangeableForm(WorkTimeForm.FLOW)),
@@ -63,7 +71,8 @@ public class ScheduleBasicSettingDto {
                 domain.getDisplayWorkTypeControl().value,
                 domain.getDisplayableWorkTypeCodeList().stream().map(i -> i.v()).collect(Collectors.toList()),
                 BooleanUtils.toInteger(domain.isDisplayActual()),
-                workTypeNameList
+                workTypeNameList,supportFunctionControl.isUse() ? 1 :0,supportFunctionControl.isUseSupportInTimezone()
+
         );
     }
 }

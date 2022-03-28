@@ -68,6 +68,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
@@ -188,6 +189,9 @@ public class DailyModifyRCommandFacade {
 	
 	@Inject
 	private RegisterPastMonthTotalResult registerPastMonthTotalResult;
+	
+	@Inject
+	private ICorrectionAttendanceRule iCorrectionAttendanceRule;
 
 	public DataResultAfterIU insertItemDomain(DPItemParent dataParent) {
 		// Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
@@ -346,14 +350,14 @@ public class DailyModifyRCommandFacade {
 					val changeSetting = ChangeDailyAttendance.createChangeDailyAtt(dataParent.getItemValues().stream()
 							.filter(y -> y.getEmployeeId().equals(x.getEmployeeId()) && y.getDate().equals(x.getDate()))
 							.map(y -> y.getItemId()).collect(Collectors.toList()), ScheduleRecordClassifi.RECORD);
-					val domDaily = CorrectDailyAttendanceService.processAttendanceRule(
-							correctDaiAttRequireImpl.createRequire(), x.toDomain(x.getEmployeeId(), x.getDate()),
+					val domDaily = iCorrectionAttendanceRule.process(x.toDomain(x.getEmployeeId(), x.getDate()),
 							changeSetting);
 					//振休振出として扱う日数を補正する
 					val dailyOldSameDate = dtoOldTemp.stream().filter(
 							old -> old.getEmployeeId().equals(x.getEmployeeId()) && old.getDate().equals(x.getDate()))
 							.findFirst().orElse(null);
 					CorrectDailyAttendanceService.correctFurikyu(correctDaiAttRequireImpl.createRequire(),
+							AppContexts.user().companyId(),
 							dailyOldSameDate.getWorkInfo().toDomain(x.getEmployeeId(), x.getDate()), domDaily.getWorkInformation());
 					//ootsuka mode
 					if (AppContexts.optionLicense().customize().ootsuka()) {

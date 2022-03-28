@@ -9,10 +9,12 @@ import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AnyItemByPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AggregateAnyItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,15 +39,24 @@ public class AnyItemByPeriodDto implements ItemConst, AttendanceItemDataGate {
         )).collect(Collectors.toList()));
     }
 
-    public static AnyItemByPeriodDto fromDomain(AnyItemByPeriod domain) {
+    public static AnyItemByPeriodDto fromDomain(AnyItemByPeriod domain, Map<Integer, OptionalItem> optionalItems) {
         AnyItemByPeriodDto dto = new AnyItemByPeriodDto();
         domain.getAnyItemValues().values().forEach(v -> {
-            if (v.getTime().isPresent()) {
-                dto.anyItemValues.add(new OptionalItemValueDto(v.getTime().get().toString(), v.getAnyItemNo(), OptionalItemAtr.TIME));
-            } else if (v.getTimes().isPresent()) {
-                dto.anyItemValues.add(new OptionalItemValueDto(v.getTimes().get().toString(), v.getAnyItemNo(), OptionalItemAtr.NUMBER));
-            } else if (v.getAmount().isPresent()) {
-                dto.anyItemValues.add(new OptionalItemValueDto(v.getAmount().get().toString(), v.getAnyItemNo(), OptionalItemAtr.AMOUNT));
+            OptionalItem item = optionalItems.get(v.getAnyItemNo());
+            if (item != null) {
+                String value;
+                if (item.getOptionalItemAtr() == OptionalItemAtr.TIME) {
+                    value = v.getTime().isPresent() ? v.getTime().get().toString() : "0";
+                } else if (item.getOptionalItemAtr() == OptionalItemAtr.NUMBER) {
+                    value = v.getTimes().isPresent() ? v.getTimes().get().toString() : "0.0";
+                } else {
+                    value = v.getAmount().isPresent() ? v.getAmount().get().toString() : "0";
+                }
+                dto.anyItemValues.add(new OptionalItemValueDto(
+                        value,
+                        v.getAnyItemNo(),
+                        item.getOptionalItemAtr()
+                ));
             }
         });
         return dto;

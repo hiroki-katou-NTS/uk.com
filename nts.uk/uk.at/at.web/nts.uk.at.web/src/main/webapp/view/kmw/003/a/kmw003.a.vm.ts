@@ -596,28 +596,33 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 	                $("#dpGrid").off();
 	            }*/
 				if ($("#dpGrid").hasClass("mgrid")) {
-	                $("#dpGrid").mGrid("destroy");
-	                $("#dpGrid").removeClass("mgrid");
-	                $("#dpGrid").off(); 
+					setTimeout(function() {
+						$("#dpGrid").mGrid("destroy");
+		                $("#dpGrid").removeClass("mgrid");
+		                $("#dpGrid").off(); 
+					}, 200);
 	            }
-                self.loadGrid();
-                _.forEach(data.mpsateCellHideControl, (cellHide =>{
-                    $('#dpGrid').mGrid("setState", cellHide.rowId, cellHide.columnKey, ["mgrid-hide"])
-                }))
-                self.employmentCode(data.employmentCode);
-                self.dailyPerfomanceData(self.dpData);
-                self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
 
-                //画面項目の非活制御をする
-                self.showButton(new AuthorityDetailModel(data.authorityDto, data.actualTimeState, self.initMode(), data.formatPerformance.settingUnitType));
-                self.showButton().enable_multiActualTime(data.lstActualTimes.length > 1);
-//                if (data.showRegisterButton == false) {
-//                    self.showButton().enable_A1_1(data.showRegisterButton);
-//                    self.showButton().enable_A1_2(data.showRegisterButton);
-//                    self.showButton.valueHasMutated();
-//                }
-                nts.uk.ui.block.clear();
-                dfd.resolve(data.processDate);
+				setTimeout(function() {
+	                self.loadGrid();
+	                _.forEach(data.mpsateCellHideControl, (cellHide =>{
+	                    $('#dpGrid').mGrid("setState", cellHide.rowId, cellHide.columnKey, ["mgrid-hide"])
+	                }))
+	                self.employmentCode(data.employmentCode);
+	                self.dailyPerfomanceData(self.dpData);
+	                self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
+	
+	                //画面項目の非活制御をする
+	                self.showButton(new AuthorityDetailModel(data.authorityDto, data.actualTimeState, self.initMode(), data.formatPerformance.settingUnitType));
+	                self.showButton().enable_multiActualTime(data.lstActualTimes.length > 1);
+	//                if (data.showRegisterButton == false) {
+	//                    self.showButton().enable_A1_1(data.showRegisterButton);
+	//                    self.showButton().enable_A1_2(data.showRegisterButton);
+	//                    self.showButton.valueHasMutated();
+	//                }
+	                nts.uk.ui.block.clear();
+	                dfd.resolve(data.processDate);
+				}, 300);
             }).fail(function(error) {
                 nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
                     nts.uk.request.jumpToTopPage();
@@ -712,13 +717,13 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let self = this;
             self.legendOptions = {
                 items: [
-                    { colorCode: '#94B7FE', labelText: '手修正（本人）' },
-                    { colorCode: '#CEE6FF', labelText: '手修正（他人）' },
-					{ colorCode: '#F69164', labelText: getText("KMW003_42") },
-					{ colorCode: '#FFFF99', labelText: getText("KMW003_43") },
-					{ colorCode: '#FF99CC', labelText: getText("KMW003_44") },
+                    { colorCode: '#BFC5FF', labelText: '手修正（本人）' },
+                    { colorCode: '#C1E6FE', labelText: '手修正（他人）' },
+					{ colorCode: '#F9D4A9', labelText: getText("KMW003_42") },
+					{ colorCode: '#FFF1BF', labelText: getText("KMW003_43") },
+					{ colorCode: '#FFE5E5', labelText: getText("KMW003_44") },
 					{ colorCode: '#ff0000', labelText: getText("KMW003_45") },
-                    { colorCode: '#DDDDD2', labelText: getText("KMW003_33") },
+                    { colorCode: '#CCC', labelText: getText("KMW003_33") },
                 ]
             };
         }

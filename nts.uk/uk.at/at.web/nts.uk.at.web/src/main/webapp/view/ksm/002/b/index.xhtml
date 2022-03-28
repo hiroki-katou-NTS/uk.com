@@ -1,5 +1,5 @@
 
-	<div class="contents-area">
+	<div class="contents-area" style="display: inline-flex;">
 		<!--LEFT CONTENT -->
 		<div class="left-content">
 			<div id="tree-grid"></div>
@@ -7,18 +7,20 @@
 		<!--RIGHT CONTENT -->
 		<div class="right-content">
 			<div>
-				<div class="workplaceInfoB" data-bind="ntsFormLabel: {}"><label data-bind="text: workPlaceText"></label></div>	
+				<div class="workplaceInfoB" data-bind="ntsFormLabel: {}">#{i18n.getText('KSM002_61', ['#Com_Workplace'])}</div>	
 				<label data-bind="text: currentWorkPlace().name"></label>	
 			</div>
 			<hr class="hrInfoB"></hr>
 			<div class="panel panel-frame">
 				<label class="info">#{i18n.getText('KSM002_10')}</label><BR />
-				<div class="multiCheckPanel" data-bind="ntsMultiCheckBox: {
-								options: checkBoxList,
-								optionsValue: 'id',
-								optionsText: 'name',
-								value: selectedIds,
-								enable: true }">
+				<div>
+					<div style = "margin-top: 10px;" data-bind = "foreach: checkBoxList">
+						<div style="width: 12%;" class = "spec-item limited-label" data-bind="ntsCheckBox: { 
+							checked: choose,
+							text: name},
+							attr:{id: 'item'+'_'+$index()}">
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="calendarContent">

@@ -157,8 +157,8 @@ module nts.uk.at.view.kdp010.e {
                 let self = this;
                 if(param){
                     self.buttonDisSet.update(param.buttonDisSet);
-                    if(param.buttonPositionNo == 3 && param.buttonType.stampType){
-                        self.goOutArt(param.buttonType.stampType.goOutArt);
+                    if(param.buttonPositionNo == 3 && param.stampType){
+                        self.goOutArt(param.stampType.goOutArt);
                     }
                 }
             }

@@ -2,6 +2,10 @@
 
 module nts.uk.at.kdp003.p {
 
+	interface Params {
+		regionalTime: number;
+	}
+
 	const API = {
 		GET_NOTICE: '/at/record/stamp/notice/getNoticeByStamping',
 
@@ -19,12 +23,27 @@ module nts.uk.at.kdp003.p {
 		itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 		msgNotice: MessageNotice[] = [];
 		role: KnockoutObservable<Role> = ko.observable(new Role());
+		regionalTime = 0;
 
-		created() {
+		created(param: Params) {
 			const vm = this;
-			vm.searchMessage(null);
+			
+			if (param) {
+				vm.regionalTime = param.regionalTime;
+			}
+                vm.dateValue(new DatePeriod({
+                    startDate: moment(vm.$date.now()).add(vm.regionalTime, 'm').format('YYYY/MM/DD'),
+                    endDate: moment(vm.$date.now()).add(vm.regionalTime, 'm').format('YYYY/MM/DD')
+                }));
+			
+
+			const input: DatePeriod = new DatePeriod({
+				startDate: moment(vm.dateValue().startDate).toISOString(),
+				endDate: moment(vm.dateValue().endDate).toISOString()
+			});
+			vm.searchMessage(input);
 			vm.$blockui('show');
-			vm.$ajax('com', API.GET_EMP_NOTICE)
+			vm.$ajax('com', API.GET_EMP_NOTICE, { regionalTime: vm.regionalTime })
 				.then((response: EmployeeNotification) => {
 					if (response.role) {
 						vm.role(response.role);
@@ -63,7 +82,7 @@ module nts.uk.at.kdp003.p {
 
 		onClickSearch() {
 			const vm = this;
-			
+
 			vm.$validate('#P2_2').then((valid: boolean) => {
 				if (!valid) {
 					nts.uk.ui.errors.show();
@@ -85,7 +104,8 @@ module nts.uk.at.kdp003.p {
 			vm.$window.modal('at', '/view/kdp/003/q/index.xhtml', {
 				isNewMode: true,
 				role: vm.role(),
-				messageNotice: null
+				messageNotice: null,
+				regionalTime: vm.regionalTime
 			})
 				.then(result => {
 					if (result && !result.isClose) {

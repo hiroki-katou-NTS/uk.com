@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 880, height: 300 };</script>
+			<script>var dialogSize = { width: 830, height: 300 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="ksm002.e.vm.js" />
 			<com:scriptfile path="ksm002.e.start.js" />
@@ -22,14 +22,14 @@
 					<div class="label">#{i18n.getText('KSM002_58')}</div>
 				</div>
 				<div class="table">
-					<div class="cell" style = "width: 125px;">
+					<div class="cell" style = "width: 80px;">
 						<!-- E1_2 -->
 						<div style = "margin-left: 15px;" data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KSM002_53')}</div>	
 					</div>
 					<!-- E1_3 -> E1_15: check box -->
-					<div id = "checkBox" class="cell" data-bind="style: {width: size}">
+					<div id = "checkBox" class="cell" style="width: 90%;">
 						<div data-bind = "foreach: dataSource">
-							<div class = "itemName" data-bind="ntsCheckBox: { 
+							<div style="width: 15%;" class = "itemName" data-bind="ntsCheckBox: { 
 										checked: useAtr,
 										text: specificName()},
 										attr: {id: 'specificItem' + '_' + $index()}"></div>

@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoAmount;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoReservationUnitName;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
@@ -90,10 +91,10 @@ public class SendReservationMenuServiceTest {
 				require.getBento(anyString, (GeneralDate) any, (List<Integer>) any);
 				result = Arrays.asList(
 						new Bento(1, new BentoName("A"), new BentoAmount(100), new BentoAmount(200),
-								new BentoReservationUnitName("1"), true, true, Optional.empty()),
+								new BentoReservationUnitName("1"), ReservationClosingTimeFrame.FRAME1, Optional.empty()),
 						
 						new Bento(2, new BentoName("B"), new BentoAmount(100), new BentoAmount(200),
-								new BentoReservationUnitName("1"), true, true, Optional.empty())
+								new BentoReservationUnitName("1"), ReservationClosingTimeFrame.FRAME2, Optional.empty())
 						);
 			}
 		};

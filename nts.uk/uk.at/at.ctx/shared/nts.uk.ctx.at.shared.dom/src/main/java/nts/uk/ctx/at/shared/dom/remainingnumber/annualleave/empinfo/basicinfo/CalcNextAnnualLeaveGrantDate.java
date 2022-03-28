@@ -49,7 +49,7 @@ public class CalcNextAnnualLeaveGrantDate {
 	public static List<NextAnnualLeaveGrant> algorithm(RequireM2 require, CacheCarrier cacheCarrier,
 			String companyId, String employeeId, Optional<DatePeriod> period,
 			Optional<EmployeeImport> employeeOpt, Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoOpt,
-			Optional<GrantHdTblSet> grantHdTblSetOpt, Optional<List<LengthServiceTbl>> lengthServiceTblsOpt) {
+			Optional<GrantHdTblSet> grantHdTblSetOpt, Optional<LengthServiceTbl> lengthServiceTblsOpt) {
 
 		List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList = new ArrayList<>();
 
@@ -91,7 +91,7 @@ public class CalcNextAnnualLeaveGrantDate {
 	public static List<NextAnnualLeaveGrant> algorithmContainPeriodStartDate(RequireM2 require, CacheCarrier cacheCarrier,
 			String companyId, String employeeId, Optional<DatePeriod> period,
 			Optional<EmployeeImport> employeeOpt, Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoOpt,
-			Optional<GrantHdTblSet> grantHdTblSetOpt, Optional<List<LengthServiceTbl>> lengthServiceTblsOpt) {
+			Optional<GrantHdTblSet> grantHdTblSetOpt, Optional<LengthServiceTbl> lengthServiceTblsOpt) {
 
 		List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList = new ArrayList<>();
 
@@ -161,7 +161,7 @@ public class CalcNextAnnualLeaveGrantDate {
 	public static List<NextAnnualLeaveGrant> calNextHdGrantV2(RequireM1 require, CacheCarrier cacheCarrier,
 			String companyId, String employeeId, Optional<DatePeriod> period,
 			Optional<EmployeeImport> empOp, Optional<AnnualLeaveEmpBasicInfo> annLeaEmpInfoOp,
-			Optional<GrantHdTblSet> grantHdTblSetOpt, Optional<List<LengthServiceTbl>> lengthSvTblsOpt,
+			Optional<GrantHdTblSet> grantHdTblSetOpt, Optional<LengthServiceTbl> lengthSvTblsOpt,
 			Optional<GeneralDate> closureDate) {
 
 		List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList = new ArrayList<>();

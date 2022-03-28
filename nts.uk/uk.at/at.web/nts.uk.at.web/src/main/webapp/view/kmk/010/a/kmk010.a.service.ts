@@ -19,9 +19,10 @@ module nts.uk.at.view.kmk010.a {
             findAllDailyAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems",
             findAllMonthlyAttendanceItem: "at/record/businesstype/attendanceItem/getMonthlyAttendanceItems",
             checkManageSixtyHourVacationSetting: "ctx/at/shared/vacation/setting/sixtyhourvacation/com/check/manage",
-            exportOutsideOTSettingExcelMasterList: "/masterlist/report/print"
+            exportOutsideOTSettingExcelMasterList: "/masterlist/report/print",
+            getMonthlyAttendanceDivergenceName: "at/record/divergencetime/setting/getMonthlyAttendanceDivergenceName"
         }
-
+        
         /**
          * find all data overtime calculation method
          */
@@ -161,6 +162,10 @@ module nts.uk.at.view.kmk010.a {
             });
         }
         
+        export function getMonthlyAttendanceDivergenceName(arrPossible: Array<number>): JQueryPromise<Array<model.AttendanceItem>> {
+            return nts.uk.request.ajax("at", paths.getMonthlyAttendanceDivergenceName , arrPossible);
+        }
+
         export module model {
 
             
@@ -229,7 +234,13 @@ module nts.uk.at.view.kmk010.a {
             export interface SixtyHourVacationSettingCheckDto{
                 manage: boolean;
             }
-            
+            export class AttendanceItem {
+                id: number;
+                name: string;
+                displayNumber: number;
+                useAtr: number;
+                attendanceAtr: number;
+            }            
         }
     }
 }

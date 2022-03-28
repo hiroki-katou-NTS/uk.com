@@ -28,6 +28,9 @@ public class ManHrInputUsageSetting extends AggregateRoot {
 	/** 使用区分*/
 	private NotUseAtr usrAtr;
 	
+	/** 設備入力を利用する*/
+	private NotUseAtr equipmentUseAtr;
+	
 	/** [1] 作業実績の補正処理を行っても良いか判断する */
 	public boolean decideCanCorrectTaskRecord(Require require) {
 	
@@ -42,6 +45,7 @@ public class ManHrInputUsageSetting extends AggregateRoot {
 	
 	public static interface Require {
 
+		//TaskOperationSettingRepository.taskOperationSetting
 		Optional<TaskOperationSetting> taskOperationSetting(String cid);
 	}
 }

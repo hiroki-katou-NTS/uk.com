@@ -18,6 +18,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.TypeOffsetJudgment;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SyEmployeeImport;
@@ -62,9 +63,11 @@ public class AddSubHdManagementService {
 			String comDayOffIDSub = IdentifierUtil.randomUniqueId();
 			String leaveId = IdentifierUtil.randomUniqueId();
 			if (subHdManagementData.getCheckedHoliday()) {
-				int subHDAtr = 0;
+				int subHDAtr = DigestionAtr.UNUSED.value;
 				if (subHdManagementData.getCheckedHoliday() && subHdManagementData.getCheckedSubHoliday()) {
-					subHDAtr = 1;
+					subHDAtr = DigestionAtr.USED.value;
+				} else if (subHdManagementData.getDuedateHoliday().beforeOrEquals(GeneralDate.today())) {
+					subHDAtr = DigestionAtr.EXPIRED.value;
 				}
 				int equivalentHalfDay = 0;
 				int equivalentADay = 0;
@@ -158,11 +161,22 @@ public class AddSubHdManagementService {
 						unUsedHour = 0;
 					}
 					//	ループ中の「休出管理データ」を更新する Update "Data quản lý đi làm ngày nghỉ" trong vòng lặp
+					int subHdAtr;
+					GeneralDate today = GeneralDate.today();
+					if (unUsedDay > 0) {
+						if (leaveManagementData.getExpiredDate().afterOrEquals(today)) {
+							subHdAtr = DigestionAtr.UNUSED.value;
+						} else {
+							subHdAtr = DigestionAtr.EXPIRED.value;
+						}
+					} else {
+						subHdAtr = DigestionAtr.USED.value;
+					}
 					LeaveManagementData updateData = new LeaveManagementData(leaveManagementData.getID(),
 							leaveManagementData.getCID(), leaveManagementData.getSID(), false,
 							leaveManagementData.getComDayOffDate().getDayoffDate().get() , leaveManagementData.getExpiredDate(),
 							leaveManagementData.getOccurredDays(), leaveManagementData.getOccurredTimes(), unUsedDay,
-							unUsedHour, 1, leaveManagementData.getFullDayTime(), leaveManagementData.getHalfDayTime(),
+							unUsedHour, subHdAtr, leaveManagementData.getFullDayTime(), leaveManagementData.getHalfDayTime(),
 							leaveManagementData.getDisapearDate());
 					repoLeaveManaData.update(updateData);
 					// ドメインモデル「休出代休紐付け管理」を追加 Bổ sung domain model "Quản lý liên kết đi làm ngày nghỉ/ nghĩ bù)
