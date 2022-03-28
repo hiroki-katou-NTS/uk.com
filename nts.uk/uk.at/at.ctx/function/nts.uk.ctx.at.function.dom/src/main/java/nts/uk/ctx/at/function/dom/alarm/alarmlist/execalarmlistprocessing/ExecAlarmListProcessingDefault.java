@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.execalarmlistprocessing;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapterDto;
@@ -26,6 +28,8 @@ import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcess
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.ExtractionState;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.PersisAlarmListExtractResultRepository;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.PersistenceAlarmListExtractResult;
 import nts.uk.ctx.at.shared.dom.workrule.closure.*;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -69,6 +73,9 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 
 	@Inject
 	private AlarmTopPageProcessingService alarmTopPageProcessingService;
+
+	@Inject
+	private PersisAlarmListExtractResultRepository alarmExtractResultRepo;
 
 	@Override
 	public OutputExecAlarmListPro execAlarmListProcessing(String extraProcessStatusID, String companyId,
@@ -235,6 +242,13 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 			} // end for listpattencode
 
 		} // end list employmentcode
+
+		for (String code : listPatternCode) {
+			Optional<PersistenceAlarmListExtractResult> persisAlarmExtractOpt = alarmExtractResultRepo.getAlarmExtractResult(companyId, code, runCode);
+			if (!persisAlarmExtractOpt.isPresent() || persisAlarmExtractOpt.get().getAlarmListExtractResults().isEmpty()) {
+				alarmExtractResultRepo.onlyDeleteParent(companyId, code, runCode);
+			}
+		}
 
 		Optional<OutputSendAutoExe> outputSendAutoExe = sendAutoExeEmailService.sendAutoExeEmail(companyId, dateTime,
 				listExtractedAlarmDto, sendMailPerson, sendMailAdmin, alarmCode);
