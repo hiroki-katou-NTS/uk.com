@@ -663,6 +663,11 @@ module nts.uk.ui.at.ksu002.a {
 											data.value.finish.valueHasMutated();
 										}
 									}
+
+									if (data.wtype.name.toString() === '年休') {
+										data.value.finish(null);
+										data.value.begin(null);
+									}
 								})
 								.then(() => vm.compare(cloned, current))
 								// save to memento after change data
