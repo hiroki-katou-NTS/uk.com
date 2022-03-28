@@ -46,7 +46,7 @@ module nts.uk.com.view.ktg031.a {
           </thead>
         </table>
       </div>
-      <div data-bind="widget-content: 100, default: 410" id="ktg031-container">
+      <div data-bind="widget-content: 100, default: 210" id="ktg031-container">
         <div class="body" style="height: calc(100% - 5px);">
           <div class="table-container">
             <table id="ktg031-grid" style="width: 100%;">
