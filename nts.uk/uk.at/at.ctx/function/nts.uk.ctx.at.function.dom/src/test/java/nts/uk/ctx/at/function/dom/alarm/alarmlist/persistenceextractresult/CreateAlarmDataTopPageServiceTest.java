@@ -31,7 +31,7 @@ public class CreateAlarmDataTopPageServiceTest {
                 1,
                 Arrays.asList("del001", "del002"),
                 0,
-                Optional.of("patternCode1"));
+                Optional.of("patternCode1"), new ArrayList<>());
         List<TopPageAlarmImport> alarmListInfo = DumData.alarmListInfos;
         List<AffAtWorkplaceExport> affAtWorkplaceExports = DumData.affAtWorkplaceExports01;
         List<String> employeeIds = Arrays.asList("sya001", "sya002", "sya003", "sya004", "sya005", "del001", "del002");

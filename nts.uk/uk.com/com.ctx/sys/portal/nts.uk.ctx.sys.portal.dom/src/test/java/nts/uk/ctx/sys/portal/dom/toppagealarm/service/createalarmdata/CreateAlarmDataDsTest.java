@@ -182,10 +182,10 @@ public class CreateAlarmDataDsTest {
 				UpdateAutoRunAlarmDs.create(rq1, CreateAlarmDataDsHelper.CID, delInfo.get().getAlarmClassification(), delInfo.get().getSids());
 				times = 0;
 			}
-			{
-				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, delInfo.get().getSids(), delInfo.get().getAlarmListParttenCode().get(), new ArrayList<>(), delInfo.get().getDisplayEmpClassfication().value);
-				times = 1;
-			}
+//			{
+//				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, delInfo.get().getSids(), delInfo.get().getAlarmListParttenCode().get(), new ArrayList<>(), delInfo.get().getDisplayEmpClassfication().value);
+//				times = 1;
+//			}
 			{
 				RegisterAlarmDataDs.register(rq3, CreateAlarmDataDsHelper.CID, (ToppageAlarmParam) any);
 				times = alarmInfos.size();
