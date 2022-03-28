@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.specificdate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,10 +14,12 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.CompanySpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.CompanySpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.OneDaySpecificItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemNo;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDateRepository;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSpecificDateSetCommand>{
@@ -134,68 +138,54 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 	 * @param setUpdate
 	 * @param workplaceId
 	 */
-	private void UpdatebyDayforWorkPlace(GeneralDate strDate, GeneralDate endDate, List<Integer> dayofWeek, List<Integer> lstTimeItemId ,int setUpdate,String workplaceId){
-		//GeneralDate sDate = GeneralDate.fromString(String.valueOf(strDate), "yyyyMMdd");
-		//GeneralDate eDate = GeneralDate.fromString(String.valueOf(endDate), "yyyyMMdd");
+	private void UpdatebyDayforWorkPlace(GeneralDate strDate, GeneralDate endDate, List<Integer> dayofWeek, List<Integer> lstTimeItemId, int setUpdate, String workplaceId) {
+		String companyId = AppContexts.user().companyId();
 		GeneralDate date = strDate;
-		//String eDateStr = String.format("%04d%02d%02d", eDate.year(), eDate.month(),eDate.day());
-		//String dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
-		//int dateInt = Integer.valueOf(dateStr);
-		//BigDecimal dateBigDecimal = BigDecimal.valueOf(dateInt);
-		//check slected public holiday
+		//check selected public holiday
 		List<PublicHoliday> lstHoliday = checkSelectedHoliday(dayofWeek, strDate, endDate);
-		while(strDate.beforeOrEquals(endDate)){
-			if(!checkSet(lstHoliday,date,dayofWeek)){//not setting
+		
+		while (strDate.beforeOrEquals(endDate)) {
+			if (!checkSet(lstHoliday, strDate, dayofWeek)) {//not setting
 				date = date.addDays(1);
-				//dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 				strDate = date;
 				continue;
 			}
-			if(setUpdate==1){
-				//既に設定されている内容は据え置き、追加で設定する - complement
-				//list item da co san trong db
-				List<WorkplaceSpecificDateItem> lstOld = workplaceRepo.getWorkplaceSpecByDate(workplaceId, strDate);
-				List<WorkplaceSpecificDateItem> lstAdd = lstOld;
-				List<Integer> lstAddNew = new ArrayList<Integer>();
-				//find item not exist in db
-				if(lstAdd.size()==0){
-					//lst = lstTimeItemId
-					lstAddNew = lstTimeItemId;
-				}else{
-					List<WorkplaceSpecificDateItem>	a1 = new ArrayList<>();
-					
-					for (Integer timeItemId : lstTimeItemId) {
-						for (WorkplaceSpecificDateItem itemAdd : lstAdd) {
-							if(timeItemId.equals(itemAdd.getSpecificDateItemNo().v())){
-								a1.add(itemAdd);
-							}
+			if (setUpdate == 1) {
+				List<SpecificDateItemNo> oldSpecificDayItems = this.workplaceRepo.get(workplaceId, strDate)
+						.map(t -> t.getOneDaySpecificItem().getSpecificDayItems())
+						.orElse(Collections.emptyList());
+				List<SpecificDateItemNo> specificDayItems = null;
+				
+				if (oldSpecificDayItems.isEmpty()) {
+					specificDayItems = lstTimeItemId.stream()
+							.map(t -> new SpecificDateItemNo(t))
+							.collect(Collectors.toList());
+				} else {
+					specificDayItems = new ArrayList<>();
+					List<Integer> oldSpecDayItemNos = oldSpecificDayItems.stream()
+							.map(t -> t.v())
+							.collect(Collectors.toList());
+					for (Integer itemId : lstTimeItemId) {
+						if (!oldSpecDayItemNos.contains(itemId)) {
+							specificDayItems.add(new SpecificDateItemNo(itemId));
 						}
-						if(a1.isEmpty()){
-							lstAddNew.add(timeItemId);
-						}
-						a1 = new ArrayList<>();
 					}
 				}
-				List<WorkplaceSpecificDateItem> listwpSpec = new ArrayList<>();
-				for (Integer addNew : lstAddNew) {
-					listwpSpec.add(WorkplaceSpecificDateItem.createFromJavaType(workplaceId, strDate, addNew,""));
-				}
-				//add item new in db
-				workplaceRepo.InsertWpSpecDate(listwpSpec);
-			}else{
-				//既に設定されている内容をクリアし、今回選択したものだけを設定する - add new: xoa het caus cu, them moi
+				
+				this.workplaceRepo.insert(companyId, new WorkplaceSpecificDateItem(workplaceId, strDate, OneDaySpecificItem.create(specificDayItems)));
+				
+			} else {
+				//既に設定されている内容をクリアし、今回選択したものだけを設定する - add new
 				//delete setting old workplace
-				
-				workplaceRepo.deleteWorkplaceSpec(workplaceId, strDate);
+				this.workplaceRepo.delete(workplaceId, strDate);
 				//add new
-				List<WorkplaceSpecificDateItem> lstWorkplaceSpecificDate = new ArrayList<>();
-				
-				for (Integer timeItemId : lstTimeItemId) {
-					lstWorkplaceSpecificDate.add(WorkplaceSpecificDateItem.createFromJavaType(workplaceId, strDate, timeItemId,""));
-				}
-				workplaceRepo.InsertWpSpecDate(lstWorkplaceSpecificDate);
+				List<SpecificDateItemNo> specificDayItems = lstTimeItemId.stream()
+						.map(t -> new SpecificDateItemNo(t))
+						.collect(Collectors.toList());
+				this.workplaceRepo.insert(companyId, new WorkplaceSpecificDateItem(workplaceId, strDate, OneDaySpecificItem.create(specificDayItems)));
 			}
 			date = date.addDays(1);
+			strDate = date;
 		}
 	}
 	/**
@@ -206,60 +196,54 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 	 * @param lstTimeItemId
 	 * @param setUpdate
 	 */
-	private void UpdatebyDayforCompany(GeneralDate strDate, GeneralDate endDate, List<Integer> dayofWeek, List<Integer> lstTimeItemId ,int setUpdate){
+	private void UpdatebyDayforCompany(GeneralDate strDate, GeneralDate endDate, List<Integer> dayofWeek, List<Integer> lstTimeItemId, int setUpdate) {
 		String companyId = AppContexts.user().companyId();
 		GeneralDate date = strDate;
 		//check slected public holiday
 		List<PublicHoliday> lstHoliday = checkSelectedHoliday(dayofWeek, strDate, endDate);
-		while(strDate.beforeOrEquals(endDate)){
-			if(!checkSet(lstHoliday,date,dayofWeek)){//not setting
+		
+		while (strDate.beforeOrEquals(endDate)) {
+			if (!checkSet(lstHoliday, strDate, dayofWeek)) {//not setting
 				date = date.addDays(1);
 				strDate = date;
 				continue;
 			}
-			if(setUpdate==1){
-				//既に設定されている内容は据え置き、追加で設定する - complement
-				//list item da co san trong db
-				List<CompanySpecificDateItem> lstOld = companyRepo.getComSpecByDate(companyId, strDate);
-				List<CompanySpecificDateItem> lstAdd = lstOld;
-				List<Integer> lstAddNew = new ArrayList<Integer>();
-				//find item not exist in db
-				if(lstAdd.size()==0){
-					lstAddNew = lstTimeItemId;
-				}else{
-					List<CompanySpecificDateItem>	a1 = new ArrayList<>();
-					for (Integer timeItemId : lstTimeItemId) {
-						for (CompanySpecificDateItem itemAdd : lstAdd) {
-							if(timeItemId.equals(itemAdd.getSpecificDateItemNo().v())){
-								a1.add(itemAdd);
-							}
+			if (setUpdate == 1) {
+				List<SpecificDateItemNo> oldSpecificDayItems = this.companyRepo.get(companyId, strDate)
+						.map(t -> t.getOneDaySpecificItem().getSpecificDayItems())
+						.orElse(Collections.emptyList());
+				List<SpecificDateItemNo> specificDayItems = null;
+				
+				if (oldSpecificDayItems.isEmpty()) {
+					specificDayItems = lstTimeItemId.stream()
+							.map(t -> new SpecificDateItemNo(t))
+							.collect(Collectors.toList());
+				} else {
+					specificDayItems = new ArrayList<>();
+					List<Integer> oldSpecDayItemNos = oldSpecificDayItems.stream()
+							.map(t -> t.v())
+							.collect(Collectors.toList());
+					for (Integer itemId : lstTimeItemId) {
+						if (!oldSpecDayItemNos.contains(itemId)) {
+							specificDayItems.add(new SpecificDateItemNo(itemId));
 						}
-						if(a1.isEmpty()){
-							lstAddNew.add(timeItemId);
-						}
-						a1 = new ArrayList<>();
 					}
 				}
-				//get by list aa
-				List<CompanySpecificDateItem> listwpSpec = new ArrayList<>();
-				for (Integer addNew : lstAddNew) {
-					listwpSpec.add(CompanySpecificDateItem.createFromJavaType(companyId, strDate, addNew,""));
-				}
-				//add item new in db
-				companyRepo.addListComSpecDate(listwpSpec);
-			}else{
-				//既に設定されている内容をクリアし、今回選択したものだけを設定する - add new
-				//delete setting old workplace
-				companyRepo.deleteComSpecByDate(companyId, strDate);
-				//add new
-				List<CompanySpecificDateItem> lstComSpecificDate = new ArrayList<>();
 				
-				for (Integer timeItemId : lstTimeItemId) {
-					lstComSpecificDate.add(CompanySpecificDateItem.createFromJavaType(companyId, strDate, timeItemId,""));
-				}
-				companyRepo.addListComSpecDate(lstComSpecificDate);
+				this.companyRepo.insert(new CompanySpecificDateItem(companyId, strDate, OneDaySpecificItem.create(specificDayItems)));
+				
+			} else {
+				//既に設定されている内容をクリアし、今回選択したものだけを設定する - add new
+				//delete setting old company
+				this.companyRepo.delete(companyId, strDate);
+				//add new
+				List<SpecificDateItemNo> specificDayItems = lstTimeItemId.stream()
+						.map(t -> new SpecificDateItemNo(t))
+						.collect(Collectors.toList());
+				this.companyRepo.insert(new CompanySpecificDateItem(companyId, strDate, OneDaySpecificItem.create(specificDayItems)));
 			}
 			date = date.addDays(1);
+			strDate = date;
 		}
 	}
 

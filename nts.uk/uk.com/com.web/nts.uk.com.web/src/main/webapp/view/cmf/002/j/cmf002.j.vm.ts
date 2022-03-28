@@ -55,9 +55,30 @@ module nts.uk.com.view.cmf002.j.viewmodel {
 
         modeScreen: KnockoutObservable<number> = ko.observable(0);
         isEnable: KnockoutObservable<boolean> = ko.observable(false);
+
+        nullValueReplaceItemcls: KnockoutObservable<boolean> = ko.observable(false);
+        enableSpaceEditting: KnockoutObservable<boolean> = ko.observable(false);
+        enableSpaceEdditingCls: KnockoutObservable<boolean> = ko.observable(false);
+        CdEditting: KnockoutObservable<boolean> = ko.observable(false);
+        effectDigitLengthCls: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             var self = this;
+            self.characterDataFormatSetting().fixedValue.subscribe((value)=>{
+                if (value == model.NOT_USE_ATR.NOT_USE){
+                    self.nullValueReplaceItemcls(true);
+                    self.enableSpaceEditting(true);
+                    self.enableSpaceEdditingCls(true);
+                    self.CdEditting(true);
+                    self.effectDigitLengthCls(true);
+                } else {
+                    self.nullValueReplaceItemcls(false);
+                    self.enableSpaceEditting(false);
+                    self.enableSpaceEdditingCls(false);
+                    self.CdEditting(false);
+                    self.effectDigitLengthCls(false);
+                }
 
+            });
         }
 
         start(): JQueryPromise<any> {
@@ -66,19 +87,22 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             let params = getShared('CMF002_J_PARAMS');
             self.modeScreen(params.screenMode);
             if (self.modeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL && params.formatSetting) {
-                self.characterDataFormatSetting(new model.CharacterDataFormatSetting(params.formatSetting));
+                self.characterDataFormatSetting().update(params.formatSetting);
+                self.characterDataFormatSetting().fixedValue.valueHasMutated();
                 dfd.resolve();
             } else {
                 service.getCharacterDataFormatSetting().done(result => {
                     if (result) {
-                        self.characterDataFormatSetting(new model.CharacterDataFormatSetting(result));
+                        self.characterDataFormatSetting().update(result);
                     }
+                    self.characterDataFormatSetting().fixedValue.valueHasMutated();
                     dfd.resolve();
                 }).fail((err) => {
                     nts.uk.ui.dialog.alertError(error);
                     dfd.reject();
                 });
             }
+
             return dfd.promise();
         }
 
@@ -87,18 +111,18 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             let self = this;
             let command = ko.toJS(self.characterDataFormatSetting);
             command.cdConvertCd = ("").equals(command.cdConvertCd) ? null : command.cdConvertCd;
-            if (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE) {
-                command.effectDigitLength = null;
-                command.startDigit = null;
-                command.endDigit = null;
-                command.cdEditDigit = null;
-                command.cdEdittingMethod = null;
-                command.spaceEditting = null;
-                command.cdConvertCd = null;
-                command.cdConvertName = null;
-                command.nullValueReplace = null;
-                command.valueOfNullValueReplace = null;
-            }
+            // if (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE) {
+            //     command.effectDigitLength = null;
+            //     command.startDigit = null;
+            //     command.endDigit = null;
+            //     command.cdEditDigit = null;
+            //     command.cdEdittingMethod = null;
+            //     command.spaceEditting = null;
+            //     command.cdConvertCd = null;
+            //     command.cdConvertName = null;
+            //     command.nullValueReplace = null;
+            //     command.valueOfNullValueReplace = null;
+            // }
             if (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE) {
                 command.valueOfFixedValue = null;
             }
@@ -209,26 +233,7 @@ module nts.uk.com.view.cmf002.j.viewmodel {
                 return false;
             }
         }
-        nullValueReplaceItemcls() {
-            var self = this;
-            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE)
-        }
-        enableSpaceEditting() {
-            var self = this;
-            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE)
-        }
-        enableSpaceEdditingCls() {
-            var self = this;
-            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE)
-        }
-        CdEditting() {
-            var self = this;
-            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE)
-        }
-        effectDigitLengthCls() {
-            var self = this;
-            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE)
-        }
+
         open002_V2() {
             var self = this;
             setShared('CMF002_V2_PARAMS', { formatSetting: self.cdConvertCd() });

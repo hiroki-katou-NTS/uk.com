@@ -25,6 +25,32 @@
 					</div>
 				</td>
 			</tr>
+      <tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_784')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+            options: itemListWkpDis,
+            optionsValue: 'code',
+            optionsText: 'name',
+            value: wkpDisAtr,
+            enable: true
+          }">
+					</div>
+				</td>
+			</tr>
+      <tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_785')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+            options: itemListUseLocation,
+            optionsValue: 'code',
+            optionsText: 'name',
+            value: useLocationSelection,
+            enable: true
+          }">
+					</div>
+				</td>
+			</tr>
 		</tbody>
 	</table>
 
@@ -528,21 +554,6 @@
 											value: supportTimeReflecAtr,
 											enable: true}">
 					</div>
-				</td>
-			</tr>
-			<tr class="inline-radio">
-				<td class="color-header">#{i18n.getText('KAF022_243')}</td>
-				<td>
-					<div class="a4_8"
-						 data-bind="ntsComboBox: {
-                            options: supportFrames,
-                            optionsValue: 'code',
-                            visibleItemsCount: 5,
-                            value: supportFrameDispNO,
-                            optionsText: 'name',
-                            columns: [
-                                { prop: 'name', length: 8 }
-                            ]}" />
 				</td>
 			</tr>
 			<tr>

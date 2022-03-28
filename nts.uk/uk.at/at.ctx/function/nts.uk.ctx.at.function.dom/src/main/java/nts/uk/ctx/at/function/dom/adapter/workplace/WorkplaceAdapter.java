@@ -6,6 +6,9 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
+/**
+ * 職場リストから職場の情報をすべて取得するAdapter
+ */
 public interface WorkplaceAdapter {
 	Optional<WorkplaceImport> getWorlkplaceHistory(String employeeId, GeneralDate baseDate);
 

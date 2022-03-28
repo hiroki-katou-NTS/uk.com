@@ -84,11 +84,11 @@ public class GetAggregatedInfoFinder {
 			if (!param.isShiftMode) {
 
 				workScheduleWorkInfors = screenQueryCreateWorkSchedule.get(planAndActual.getSchedule(),
-						planAndActual.getDailySchedule(), param.getActualData);
+						planAndActual.getDailySchedule(), param.getActualData, targetOrgIdenInfor);
 			} else {
 
 				workScheduleShiftBaseResult = screenQueryWorkScheduleShift.create(param.getListShiftMasterNotNeedGetNew(),
-						planAndActual.getSchedule(), planAndActual.getDailySchedule(), param.getActualData);
+						planAndActual.getSchedule(), planAndActual.getDailySchedule(), param.getActualData, targetOrgIdenInfor);
 				
 				if(!workScheduleShiftBaseResult.mapShiftMasterWithWorkStyle.isEmpty()){
 					workScheduleShiftBaseResult.mapShiftMasterWithWorkStyle.forEach((key, value) -> {

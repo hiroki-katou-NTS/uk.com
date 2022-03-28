@@ -1885,7 +1885,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 taskItemValues: _.map(td.taskItemValues, tiv => { return { itemId: tiv.itemId, value: tiv.value } }),
                                 supNo: td.supNo
                             };
-                        });
+                        })
                     }
                 }
             }
@@ -2959,7 +2959,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         // cal work Time
                         _.forEach([].concat(arg.oldEvent, relatedEvents), e => {
                             calWorkTime(e);
-                        }
+                        });
                                 
                         if (arg.delta.days != 0 && !ko.unwrap<boolean>(dataEvent.shift)) {
                             _.forEach([].concat(arg.oldEvent, relatedEvents), e => {

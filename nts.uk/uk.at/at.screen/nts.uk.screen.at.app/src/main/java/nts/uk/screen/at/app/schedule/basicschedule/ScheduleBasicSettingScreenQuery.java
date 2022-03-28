@@ -1,7 +1,9 @@
 package nts.uk.screen.at.app.schedule.basicschedule;
 
+import lombok.val;
 import nts.uk.ctx.at.schedule.app.find.schedule.setting.functioncontrol.ScheFuncControlCorrectionFinder;
 import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.ScheFunctionControl;
+import nts.uk.ctx.at.schedule.dom.schedule.support.SupportFunctionControlRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
@@ -26,6 +28,9 @@ public class ScheduleBasicSettingScreenQuery {
     @Inject
     private ScheFuncControlCorrectionFinder scheFuncCtrlFinder;
 
+    @Inject
+    private SupportFunctionControlRepository supportFunctionControlRepository;
+
     public ScheduleBasicSettingDto getDataInit() {
         String companyId = AppContexts.user().companyId();
         // <<Public>> 廃止されていない勤務種類をすべて取得する
@@ -38,6 +43,8 @@ public class ScheduleBasicSettingScreenQuery {
 
         Optional<ScheFunctionControl> scheduleFuncCtrl = scheFuncCtrlFinder.getData(companyId);
 
-        return ScheduleBasicSettingDto.fromDomain(scheduleFuncCtrl.orElse(null), workTypeNameList);
+        val supportFuc = supportFunctionControlRepository.get(companyId);
+
+        return ScheduleBasicSettingDto.fromDomain(scheduleFuncCtrl.orElse(null), workTypeNameList,supportFuc);
     }
 }

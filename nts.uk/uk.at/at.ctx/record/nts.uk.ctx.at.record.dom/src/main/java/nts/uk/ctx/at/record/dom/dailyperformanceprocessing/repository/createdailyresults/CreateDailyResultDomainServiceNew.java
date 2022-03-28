@@ -736,23 +736,16 @@ public class CreateDailyResultDomainServiceNew {
 				String jobTitleId = jobTitleItemImport.isPresent() ? jobTitleItemImport.get().getJobTitleId() : null;
 
 				if (workPlaceId != null && jobTitleId != null) {
-					// 職場IDと基準日から上位職場を取得する
-					// reqList 496
-					// List<String> workPlaceIdList = this.affWorkplaceAdapter
-					// .findParentWpkIdsByWkpId(companyId, workPlaceId, strDate);
-					// [No.569]職場の上位職場を取得する
-                    // List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyId, workPlaceId,strDate);
-					//[No.571]職場の上位職場を基準職場を含めて取得する
-					List<String> workPlaceIdList = this.affWorkplaceAdapter.getWorkplaceIdAndUpper(companyId,strDate, workPlaceId);
+					MasterList masterList = new MasterList();
 
 					// 特定日設定を取得する
 					// Reqlist 490
-					List<RecSpecificDateSettingImport> specificDateSettingImport = this.recSpecificDateSettingAdapter
-							.getList(companyId, workPlaceIdList, period);;
+					List<RecSpecificDateSettingImport> specificDateSettingImport = this.recSpecificDateSettingAdapter.getList(companyId, workPlaceId, period);
 
 					// 会社職場個人の加給設定を取得する
-					Optional<BonusPaySetting> bonusPaySettingOpt = this.reflectBonusSetting(companyId, employeeId,
-							strDate, workPlaceIdList);
+//					Optional<BonusPaySetting> bonusPaySettingOpt = this.reflectBonusSetting(companyId, employeeId, strDate, workPlaceIdList);
+					//[No.571]職場の上位職場を基準職場を含めて取得する
+					List<String> workPlaceIdList = this.affWorkplaceAdapter.getWorkplaceIdAndUpper(companyId,strDate, workPlaceId);
 
 					// 自動計算設定の取得
 					BaseAutoCalSetting baseAutoCalSetting = this.autoCalculationSetService.getAutoCalculationSetting(
@@ -761,9 +754,8 @@ public class CreateDailyResultDomainServiceNew {
 					// set data in PeriodInMasterList
 					DatePeriod datePeriod = new DatePeriod(strDate, endDate);
 
-					MasterList masterList = new MasterList();
 					masterList.setBaseAutoCalSetting(baseAutoCalSetting);
-					masterList.setBonusPaySettingOpt(bonusPaySettingOpt);
+//					masterList.setBonusPaySettingOpt(bonusPaySettingOpt);
 					masterList.setDatePeriod(datePeriod);
 					masterList.setSpecificDateSettingImport(specificDateSettingImport);
 

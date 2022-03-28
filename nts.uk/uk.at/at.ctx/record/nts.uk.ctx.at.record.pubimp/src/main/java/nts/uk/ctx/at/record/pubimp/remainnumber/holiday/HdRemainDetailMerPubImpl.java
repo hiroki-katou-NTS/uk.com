@@ -64,9 +64,9 @@ public class HdRemainDetailMerPubImpl implements HdRemainDetailMerPub{
 	private YearHolidayRepository yearHolidayRepo;
 	@Inject
 	private AnnualPaidLeaveSettingRepository annualPaidLeaveSet;
-	@Inject 
+	@Inject
 	private RecordDomRequireService requireService;
-	
+
 	/**
 	 * Mer RQ265,268,269,363,364,369
 	 * @param employeeId
@@ -78,12 +78,12 @@ public class HdRemainDetailMerPubImpl implements HdRemainDetailMerPub{
 	@Override
 	public HdRemainDetailMer getHdRemainDetailMer(String employeeId, YearMonth currentMonth, GeneralDate baseDate,
 			DatePeriod period, CheckCallRQ checkCall) {
-		
+
 		Optional<GeneralDate> closureDate = Optional.empty();
 		if(checkCall.isCall268() || checkCall.isCall369()){
 			val require = requireService.createRequire();
 			val cacheCarrier = new CacheCarrier();
-			
+
 			closureDate = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
 		}
 		String companyId = AppContexts.user().companyId();
@@ -98,12 +98,12 @@ public class HdRemainDetailMerPubImpl implements HdRemainDetailMerPub{
 			companySets = new MonAggrCompanySettings();
 			AnnualPaidLeaveSetting annualLeaveSet = annualPaidLeaveSet.findByCompanyId(companyId);
 			Optional<GrantHdTblSet> grantHdTblSetOpt = Optional.empty();
-			Optional<List<LengthServiceTbl>> lengthServiceTblsOpt = Optional.empty();
+			Optional<LengthServiceTbl> lengthServiceTblsOpt = Optional.empty();
 			String grantTableCode = "";
 			if(annualLeaveEmpBasicInfoOpt.isPresent()) {
 				grantTableCode = annualLeaveEmpBasicInfoOpt.get().getGrantRule().getGrantTableCode().v();
 				grantHdTblSetOpt = yearHolidayRepo.findByCode(companyId, grantTableCode);
-				lengthServiceTblsOpt = Optional.ofNullable(this.lengthServiceRepo.findByCode(companyId, grantTableCode));
+				lengthServiceTblsOpt = this.lengthServiceRepo.findByCode(companyId, grantTableCode);
 			}
 			companySets.setAnnualLeaveSet(annualLeaveSet);
 			ConcurrentMap<String, GrantHdTblSet> grantHdTblSetMap = new ConcurrentHashMap<>();
@@ -111,9 +111,9 @@ public class HdRemainDetailMerPubImpl implements HdRemainDetailMerPub{
 				grantHdTblSetMap.put(grantTableCode, grantHdTblSetOpt.get());
 			}
 			companySets.setGrantHdTblSetMap(grantHdTblSetMap);
-			ConcurrentMap<String, List<LengthServiceTbl>> lengthServiceTblListMap = new ConcurrentHashMap<>();
+			ConcurrentMap<String,Optional<LengthServiceTbl>> lengthServiceTblListMap = new ConcurrentHashMap<>();
 			if(lengthServiceTblsOpt.isPresent()){
-				lengthServiceTblListMap.put(grantTableCode, lengthServiceTblsOpt.get());
+				lengthServiceTblListMap.put(grantTableCode, lengthServiceTblsOpt);
 			}
 			companySets.setLengthServiceTblListMap(lengthServiceTblListMap);
 		}
@@ -147,7 +147,7 @@ public class HdRemainDetailMerPubImpl implements HdRemainDetailMerPub{
 		if(checkCall.isCall369()){
 			result369 = rq265.getNextHdGrantDateVer2(companyId, employeeId, closureDate);
 		}
-		
+
 		return new HdRemainDetailMer(result265, result268, result269, result363, result364, result369);
 	}
 

@@ -41,10 +41,13 @@ public class WorkTimeInformation implements DomainObject {
 		return new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), time);
 	} 
 	
+	public WorkTimeInformation createByAutomaticSet() {
+		return new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), this.getTimeWithDay().orElse(null));
+	} 
+	
+	
 	public void setReasonTimeChange(ReasonTimeChange reasonTimeChange) {
 		this.reasonTimeChange = reasonTimeChange;
 	}
-	
-	
 
 }

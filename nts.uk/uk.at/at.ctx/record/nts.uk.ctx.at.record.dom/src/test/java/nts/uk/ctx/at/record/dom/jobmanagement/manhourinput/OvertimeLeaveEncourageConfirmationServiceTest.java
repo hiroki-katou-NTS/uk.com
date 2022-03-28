@@ -73,13 +73,13 @@ public class OvertimeLeaveEncourageConfirmationServiceTest {
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(50))),
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(60))));
 
-		OuenWorkTimeSheetOfDailyAttendance att1 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet1,
+		OuenWorkTimeSheetOfDailyAttendance att1 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet1,
 				Optional.empty());
 
-		OuenWorkTimeSheetOfDailyAttendance att2 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet2,
+		OuenWorkTimeSheetOfDailyAttendance att2 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet2,
 				Optional.empty());
 
-		OuenWorkTimeSheetOfDailyAttendance att3 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet3,
+		OuenWorkTimeSheetOfDailyAttendance att3 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet3,
 				Optional.empty());
 
 		ouenTimeSheets.add(att1);
@@ -160,13 +160,13 @@ public class OvertimeLeaveEncourageConfirmationServiceTest {
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(50))),
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(25))));
 
-		OuenWorkTimeSheetOfDailyAttendance att1 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet1,
+		OuenWorkTimeSheetOfDailyAttendance att1 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet1,
 				Optional.empty());
 
-		OuenWorkTimeSheetOfDailyAttendance att2 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet2,
+		OuenWorkTimeSheetOfDailyAttendance att2 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet2,
 				Optional.empty());
 
-		OuenWorkTimeSheetOfDailyAttendance att3 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet3,
+		OuenWorkTimeSheetOfDailyAttendance att3 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet3,
 				Optional.empty());
 
 		ouenTimeSheets.add(att1);
@@ -248,13 +248,13 @@ public class OvertimeLeaveEncourageConfirmationServiceTest {
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(50))),
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(15))));
 
-		OuenWorkTimeSheetOfDailyAttendance att1 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet1,
+		OuenWorkTimeSheetOfDailyAttendance att1 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet1,
 				Optional.empty());
 
-		OuenWorkTimeSheetOfDailyAttendance att2 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet2,
+		OuenWorkTimeSheetOfDailyAttendance att2 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet2,
 				Optional.empty());
 
-		OuenWorkTimeSheetOfDailyAttendance att3 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet3,
+		OuenWorkTimeSheetOfDailyAttendance att3 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet3,
 				Optional.empty());
 
 		ouenTimeSheets.add(att1);
@@ -336,13 +336,13 @@ public class OvertimeLeaveEncourageConfirmationServiceTest {
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(50))),
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(60))));
 
-		OuenWorkTimeSheetOfDailyAttendance att1 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet1,
+		OuenWorkTimeSheetOfDailyAttendance att1 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet1,
 				Optional.empty());
 
-		OuenWorkTimeSheetOfDailyAttendance att2 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet2,
+		OuenWorkTimeSheetOfDailyAttendance att2 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet2,
 				Optional.empty());
 
-		OuenWorkTimeSheetOfDailyAttendance att3 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet3,
+		OuenWorkTimeSheetOfDailyAttendance att3 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet3,
 				Optional.empty());
 
 		ouenTimeSheets.add(att1);
@@ -420,13 +420,13 @@ public class OvertimeLeaveEncourageConfirmationServiceTest {
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(50))),
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(60))));
 
-		OuenWorkTimeSheetOfDailyAttendance att1 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet1,
+		OuenWorkTimeSheetOfDailyAttendance att1 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet1,
 				Optional.empty());
 
-		OuenWorkTimeSheetOfDailyAttendance att2 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet2,
+		OuenWorkTimeSheetOfDailyAttendance att2 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet2,
 				Optional.empty());
 
-		OuenWorkTimeSheetOfDailyAttendance att3 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet3,
+		OuenWorkTimeSheetOfDailyAttendance att3 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet3,
 				Optional.empty());
 
 		ouenTimeSheets.add(att1);
@@ -499,13 +499,13 @@ public class OvertimeLeaveEncourageConfirmationServiceTest {
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(50))),
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(60))));
 
-		OuenWorkTimeSheetOfDailyAttendance att1 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet1,
+		OuenWorkTimeSheetOfDailyAttendance att1 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet1,
 				Optional.empty());
 
-		OuenWorkTimeSheetOfDailyAttendance att2 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet2,
+		OuenWorkTimeSheetOfDailyAttendance att2 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet2,
 				Optional.empty());
 
-		OuenWorkTimeSheetOfDailyAttendance att3 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet3,
+		OuenWorkTimeSheetOfDailyAttendance att3 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet3,
 				Optional.empty());
 
 		ouenTimeSheets.add(att1);
@@ -581,13 +581,13 @@ public class OvertimeLeaveEncourageConfirmationServiceTest {
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(50))),
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(60))));
 
-		OuenWorkTimeSheetOfDailyAttendance att1 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet1,
+		OuenWorkTimeSheetOfDailyAttendance att1 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet1,
 				Optional.empty());
 
-		OuenWorkTimeSheetOfDailyAttendance att2 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet2,
+		OuenWorkTimeSheetOfDailyAttendance att2 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet2,
 				Optional.empty());
 
-		OuenWorkTimeSheetOfDailyAttendance att3 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet3,
+		OuenWorkTimeSheetOfDailyAttendance att3 = OuenWorkTimeSheetOfDailyAttendance.create(null, null, timeSheet3,
 				Optional.empty());
 
 		ouenTimeSheets.add(att1);

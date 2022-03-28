@@ -63,6 +63,8 @@ public class DataBasicDto {
 	
 	public String viewModeSelected;
 	
+	public boolean useSupportSchedule; // ver6
+	
 	public DataBasicDto(DataScreenQueryGetInforDto resultStep1) {
 		this.startDate = resultStep1.startDate;
 		this.endDate = resultStep1.endDate;
@@ -86,6 +88,7 @@ public class DataBasicDto {
 		this.closeDate = resultStep1.closeDate;
 		this.useCategoriesPersonal = resultStep1.useCategoriesPersonal;
 		this.useCategoriesWorkplace = resultStep1.useCategoriesWorkplace;
+		this.useSupportSchedule = resultStep1.useSupportSchedule;
 	}
 	
 	public void setViewMode(Integer vMode) {

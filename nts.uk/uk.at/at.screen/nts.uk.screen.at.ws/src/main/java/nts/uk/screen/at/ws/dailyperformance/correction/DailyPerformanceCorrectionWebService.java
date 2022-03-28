@@ -653,7 +653,8 @@ public class DailyPerformanceCorrectionWebService {
         }
         
         Optional<DailyRecordDto> dailyEditOpt = dailyEdits.stream().filter(x -> {
-            return x.getDate().toString("yyyy/MM/dd").equals(param.getBaseDate());
+            return x.getAffiliationInfo().getBaseDate().toString("yyyy/MM/dd").equals(param.getBaseDate()) 
+                    && x.getAffiliationInfo().getEmployeeId().equals(param.getEmployeeId());
         }).findFirst();
         
         return new GetWkpIDOutput(dailyEditOpt.map(x -> x.getAffiliationInfo().getWorkplaceID()).orElse(null));

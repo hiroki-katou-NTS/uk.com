@@ -83,6 +83,8 @@ public class DPText {
 	
 	public static final String COLOR_HOLIDAY ="mgrid-holiday";
 	
+	public static final String COLOR_SUPPORT ="mgrid-schedule-support";
+	
 	public static final String ITALIC_TEXT ="italic-text"; 
 	
 	public static final List<Integer> ITEM_CHANGE = Arrays.asList(28, 29, 31, 34, 41, 44, 623, 625);

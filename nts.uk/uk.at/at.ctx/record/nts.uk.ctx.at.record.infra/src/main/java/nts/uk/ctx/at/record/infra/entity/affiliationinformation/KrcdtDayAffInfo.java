@@ -9,8 +9,11 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -50,6 +53,17 @@ public class KrcdtDayAffInfo extends ContractUkJpaEntity implements Serializable
 	
 	@Column(name = "WORK_TYPE_CODE")
 	public String businessTypeCode;
+	
+	// redmine 119637
+	// 職場グループID
+	@Column(name = "WKP_GROUP_ID")
+	public String workplaceGroupId;
+	// 看護免許区分
+	@Column(name = "NURSE_LICENSE_ATR")
+	public Integer nursingLicenseClass;
+	// 看護管理者か
+	@Column(name = "IS_NURSE_ADMINISTRATOR")
+	public boolean nursingManager;
 
 	@Override
 	protected Object getKey() {
@@ -66,21 +80,27 @@ public class KrcdtDayAffInfo extends ContractUkJpaEntity implements Serializable
 				this.krcdtDaiAffiliationInfPK.ymd,
 				new ClassificationCode(this.classificationCode),
 				this.bonusPayCode == null ? null : new BonusPaySettingCode(this.bonusPayCode),
-				businessTypeCode);
+				businessTypeCode,
+				workplaceGroupId,
+				nursingLicenseClass == null ? null : EnumAdaptor.valueOf(nursingLicenseClass, LicenseClassification.class),
+				nursingManager
+				);
 		return domain;
 	}
 	
-	public static KrcdtDayAffInfo toEntity(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor){
+	public static KrcdtDayAffInfo toEntity(AffiliationInforOfDailyPerfor domain){
+		AffiliationInforOfDailyAttd  affInfor = domain.getAffiliationInfor();
 		return new KrcdtDayAffInfo(
-				new KrcdtDaiAffiliationInfPK(affiliationInforOfDailyPerfor.getEmployeeId(), affiliationInforOfDailyPerfor.getYmd()),
-				affiliationInforOfDailyPerfor.getAffiliationInfor().getEmploymentCode().v(),
-				affiliationInforOfDailyPerfor.getAffiliationInfor().getJobTitleID(),
-				affiliationInforOfDailyPerfor.getAffiliationInfor().getClsCode().v(),
-				affiliationInforOfDailyPerfor.getAffiliationInfor().getWplID(),
-				!affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().isPresent() 
-					? null : affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().get().v(),
-				affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().isPresent()
-					? affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().get().v():null		
+				new KrcdtDaiAffiliationInfPK(domain.getEmployeeId(), domain.getYmd()),
+				affInfor.getEmploymentCode().v(),
+				affInfor.getJobTitleID(),
+				affInfor.getClsCode().v(),
+				affInfor.getWplID(),
+				affInfor.getBonusPaySettingCode().isPresent() ? affInfor.getBonusPaySettingCode().get().v() : null,
+				affInfor.getBusinessTypeCode().isPresent()? affInfor.getBusinessTypeCode().get().v():null,
+				affInfor.getWorkplaceGroupId().isPresent()? affInfor.getWorkplaceGroupId().get() : null,
+				affInfor.getNursingLicenseClass().isPresent()? affInfor.getNursingLicenseClass().get().value : null,
+				affInfor.getIsNursingManager().isPresent() ? (affInfor.getIsNursingManager().get()) : false
 				);
 	}
 }

@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.Maximu
 public class JudgmentCriteriaSameStampOfSupportHelper {
 	
 	public static JudgmentCriteriaSameStampOfSupport getDataDefault(){
-		return new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(100));
+		return new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10));
 	}
 
 

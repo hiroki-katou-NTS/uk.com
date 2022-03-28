@@ -17,10 +17,11 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.reservation.Helper;
-import nts.uk.ctx.at.record.dom.reservation.Helper.ClosingTime;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReserveModifyService;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 @RunWith(JMockit.class)
 public class BentoReserveModifyServiceTest {
@@ -31,10 +32,21 @@ public class BentoReserveModifyServiceTest {
 	@Test
 	public void reserve_fail_canNotCancel() {
 		
+		String companyID = "companyID";
 		val dummyDetails = Collections.singletonMap(1, Helper.count(1));
 		Optional<WorkLocationCode> workLocationCode = Helper.Reservation.WorkLocationCodeReg.DUMMY;
+		ReservationDate todayReserve = Helper.Reservation.Date.of(today());
+		BentoMenuHistory menu = new BentoMenuHistory(
+				"historyId",
+				new DateHistoryItem("historyID", new DatePeriod(GeneralDate.today(), GeneralDate.today().increase())),
+				Arrays.asList(Helper.Menu.Item.bentoReserveFrame(1, true, true)));
 
 		new Expectations() {{
+			require.getReservationSettingByOpDist(companyID, 0);
+			result = Helper.Setting.DUMMY;
+			
+			require.getBentoMenu((ReservationDate) any,workLocationCode);
+			result = Helper.Menu.DUMMY;
 			
 			require.getBefore(
 					Helper.Reservation.RegInfo.DUMMY,
@@ -55,6 +67,8 @@ public class BentoReserveModifyServiceTest {
 					Helper.Reservation.Date.DUMMY,
 					now(),
 					dummyDetails,
+					1,
+					companyID,
 					workLocationCode);
 			
 			persist.run();
@@ -65,22 +79,27 @@ public class BentoReserveModifyServiceTest {
 	@Test
 	public void reserve_success_not_Delete() {
 		
+		String companyID = "companyID";
 		ReservationRegisterInfo dummyRegInfo = Helper.Reservation.RegInfo.DUMMY;
 		Optional<WorkLocationCode> workLocationCode = Helper.Reservation.WorkLocationCodeReg.DUMMY;
 		ReservationDate todayReserve = Helper.Reservation.Date.of(today());
 
-		BentoMenu menu = new BentoMenu(
+		BentoMenuHistory menu = new BentoMenuHistory(
 				"historyId",
-				Arrays.asList(Helper.Menu.Item.bentoReserveFrame(1, true, true)),
-				ClosingTime.UNLIMITED);
+				new DateHistoryItem("historyID", new DatePeriod(GeneralDate.today(), GeneralDate.today().increase())),
+				Arrays.asList(Helper.Menu.Item.bentoReserveFrame(1, true, true)));
 		
 		Map<Integer, BentoReservationCount> details = Collections.singletonMap(1, Helper.count(10));
 		
 		new Expectations() {{
+			require.getReservationSettingByOpDist(companyID, 0);
+			result = Helper.Setting.DUMMY;
+			
 			require.getBentoMenu(todayReserve,workLocationCode);
 			result = menu;
 			
 			require.getBefore(dummyRegInfo, todayReserve);
+			result = Optional.empty();
 		}};
 		
 		NtsAssert.atomTask(
@@ -88,8 +107,10 @@ public class BentoReserveModifyServiceTest {
 						require,
 						dummyRegInfo,
 						todayReserve,
-						now(),
+						now().min().addHours(9),
 						details,
+						1,
+						companyID,
 						workLocationCode),
 				any -> require.reserve(any.get()));
 	}
@@ -98,6 +119,7 @@ public class BentoReserveModifyServiceTest {
 	@Test
 	public void reserve_success_not_Update() {
 
+		String companyID = "companyID";
 		ReservationRegisterInfo dummyRegInfo = Helper.Reservation.RegInfo.DUMMY;
 		Optional<WorkLocationCode> workLocationCode = Helper.Reservation.WorkLocationCodeReg.DUMMY;
 		ReservationDate todayReserve = Helper.Reservation.Date.of(today());
@@ -110,6 +132,9 @@ public class BentoReserveModifyServiceTest {
 				Helper.Reservation.Detail.DUMMY_LIST);
 
 		new Expectations() {{
+			require.getReservationSettingByOpDist(companyID, 0);
+			result = Helper.Setting.DUMMY;
+			
 			require.getBentoMenu(todayReserve,workLocationCode);
 			result = Helper.Menu.DUMMY;
 			
@@ -124,6 +149,8 @@ public class BentoReserveModifyServiceTest {
 						todayReserve,
 						now(),
 						Collections.emptyMap(),
+						1,
+						companyID,
 						workLocationCode),
 				any -> require.delete(any.get()));
 	}
@@ -132,14 +159,15 @@ public class BentoReserveModifyServiceTest {
 	@Test
 	public void reserve_success_Update() {
 
+		String companyID = "companyID";
 		ReservationRegisterInfo dummyRegInfo = Helper.Reservation.RegInfo.DUMMY;
 		Optional<WorkLocationCode> workLocationCode = Helper.Reservation.WorkLocationCodeReg.DUMMY;
 		ReservationDate todayReserve = Helper.Reservation.Date.of(today());
 		
-		BentoMenu menu = new BentoMenu(
+		BentoMenuHistory menu = new BentoMenuHistory(
 				"historyId",
-				Arrays.asList(Helper.Menu.Item.bentoReserveFrame(1, true, true)),
-				ClosingTime.UNLIMITED);
+				new DateHistoryItem("historyID", new DatePeriod(GeneralDate.today(), GeneralDate.today().increase())),
+				Arrays.asList(Helper.Menu.Item.bentoReserveFrame(1, true, true)));
 		
 		Map<Integer, BentoReservationCount> bentoDetails = Collections.singletonMap(1, Helper.count(5));
 
@@ -151,6 +179,9 @@ public class BentoReserveModifyServiceTest {
 				Helper.Reservation.Detail.DUMMY_LIST);
 		
 		new Expectations() {{
+			require.getReservationSettingByOpDist(companyID, 0);
+			result = Helper.Setting.DUMMY;
+			
 			require.getBentoMenu(todayReserve,workLocationCode);
 			result = menu;
 			
@@ -163,10 +194,41 @@ public class BentoReserveModifyServiceTest {
 						require,
 						dummyRegInfo,
 						todayReserve,
-						now(),
+						now().min().addHours(9),
 						bentoDetails,
+						1,
+						companyID,
 						workLocationCode),
 				any -> require.delete(any.get()),
 				any -> require.reserve(any.get()));
+	}
+	
+	@Test
+	public void reserve_fail_no_setting() {
+		
+		String companyID = "companyID";
+		val dummyDetails = Collections.singletonMap(1, Helper.count(1));
+		Optional<WorkLocationCode> workLocationCode = Helper.Reservation.WorkLocationCodeReg.DUMMY;
+
+		new Expectations() {{
+			require.getReservationSettingByOpDist(companyID, 0);
+			result = null;
+		}};
+		
+		NtsAssert.businessException("Msg_2285", () -> {
+			
+			AtomTask persist = BentoReserveModifyService.reserve(
+					require,
+					Helper.Reservation.RegInfo.DUMMY,
+					Helper.Reservation.Date.DUMMY,
+					now(),
+					dummyDetails,
+					1,
+					companyID,
+					workLocationCode);
+			
+			persist.run();
+			
+		});
 	}
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * 月次の勤怠項目Repository
  * The Interface MonthlyAttendanceItemRepository.
  */
 public interface MonthlyAttendanceItemRepository {
@@ -53,9 +54,19 @@ public interface MonthlyAttendanceItemRepository {
 	 * @return the object
 	 */
 	Optional<MonthlyAttendanceItem> findByAttendanceItemId(String companyId, int attendanceItemId);
-	
+
+	/**
+	 * Insert(月次の勤怠項目)
+	 * @param domain
+	 */
+	void insert(MonthlyAttendanceItem domain);
+
+	/**
+	 * Update(月次の勤怠項目)
+	 * @param domain
+	 */
 	void update(MonthlyAttendanceItem domain);
-	
+
 	/**
 	 * 
 	 * @param companyId
@@ -65,4 +76,41 @@ public interface MonthlyAttendanceItemRepository {
 	 */
 	public List<MonthlyAttendanceItem> findByAttendanceItemIdAndAtr(String companyId, List<Integer> attendanceItemIds, 
 			List<Integer> itemAtrs);
+
+
+	/**
+	 * [6] 全ての任意期間項目を取得する
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<MonthlyAttendanceItem> findAllAnyPeriod(String companyId);
+
+
+	/**
+	 * [7] 任意期間項目リストを取得する
+	 * @param companyId the company id
+	 * @param attendanceItemId
+	 * @return the list
+	 */
+	List<MonthlyAttendanceItem> findByAttendancePeriodItemId(String companyId, List<Integer> attendanceItemIds);
+
+	/**
+	 * [8] 任意期間項目を取得する
+	 * @param companyId the company id
+	 * @param attendanceItemId
+	 * @return the list
+	 */
+	Optional<MonthlyAttendanceItem> findByAttendancePeriodItemId(String companyId, Integer attendanceItemIds);
+
+
+	/**
+	 *
+	 * @param companyId
+	 * @param attendanceItemIds
+	 * @param itemAtrs
+	 * @return
+	 */
+	public List<MonthlyAttendanceItem> findByAttendanceItemIdAndAtrPeriod(String companyId, List<Integer> attendanceItemIds,
+																	List<Integer> itemAtrs);
 }

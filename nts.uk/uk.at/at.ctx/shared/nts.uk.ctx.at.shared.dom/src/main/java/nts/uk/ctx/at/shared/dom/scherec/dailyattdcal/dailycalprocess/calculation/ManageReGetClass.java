@@ -326,4 +326,18 @@ public class ManageReGetClass {
 				this.integrationOfWorkTime,
 				this.integrationOfDaily));
 	}
+	
+	/**
+	 * 逆丸めにして取得する
+	 * @return ManageReGetClass
+	 */
+	public ManageReGetClass getReverseRounding() {
+		return new ManageReGetClass(
+				this.calculationRangeOfOneDay.getReverseRounding(),
+				this.companyCommonSetting,
+				this.personDailySetting,
+				this.workType,
+				this.integrationOfWorkTime,
+				this.integrationOfDaily);
+	}
 }

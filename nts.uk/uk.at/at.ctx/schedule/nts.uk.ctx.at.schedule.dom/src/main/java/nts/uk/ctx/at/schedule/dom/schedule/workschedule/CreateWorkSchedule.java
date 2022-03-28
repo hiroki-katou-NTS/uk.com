@@ -13,6 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTicket;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ClockAreaAtr;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ContainsResult;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
@@ -34,6 +35,7 @@ public class CreateWorkSchedule {
 	 * @param workInformation 勤務情報
 	 * @param isUpdateBreakTimeList 休憩時間帯が手修正か
 	 * @param breakTimeList 休憩時間帯
+	 * @Param supportTicketList 応援チケットリスト
 	 * @param updateInfoMap 変更する情報Map
 	 * @return
 	 */
@@ -45,6 +47,7 @@ public class CreateWorkSchedule {
 			WorkInformation workInformation,
 			boolean isUpdateBreakTimeList,
 			List<TimeSpanForCalc> breakTimeList,
+			List<SupportTicket> supportTicketList,
 			Map<Integer, T> updateInfoMap) {
 		
 		Optional<WorkSchedule> registedWorkSchedule = require.getWorkSchedule(employeeId, date);
@@ -54,6 +57,7 @@ public class CreateWorkSchedule {
 		if ( isNewRegister || ! registedWorkSchedule.get().getWorkInfo().getRecordInfo().isSame(workInformation) ) {
 			try {
 				workSchedule = WorkSchedule.createByHandCorrectionWithWorkInformation(require, companyId, employeeId, date, workInformation);
+				workSchedule.createSupportSchedule(require, supportTicketList);
 			} catch (BusinessException e) {
 				return ResultOfRegisteringWorkSchedule.createWithError( employeeId, date, e.getMessage() );
 			}
@@ -68,9 +72,19 @@ public class CreateWorkSchedule {
 			return ResultOfRegisteringWorkSchedule.createWithErrorList(errorList);
 		}
 		
+		// update item
 		workSchedule.changeAttendanceItemValueByHandCorrection(require, updateInfoMap);
+		
+		// update break time list
 		if ( isUpdateBreakTimeList ) {
 			workSchedule.handCorrectBreakTimeList(require, breakTimeList);
+		}
+		
+		// check consistency of support schedule with work's start-end time, task's start-end time 
+		try {
+			workSchedule.checkConsistencyOfSupportSchedule(require);
+		} catch ( BusinessException e ) {
+			return ResultOfRegisteringWorkSchedule.createWithError( employeeId, date, e.getMessage() );
 		}
 		
 		WorkSchedule correctedResult = require.correctWorkSchedule(workSchedule);
@@ -213,5 +227,7 @@ public class CreateWorkSchedule {
 		public final WorkNo workNo;
 
 	}
+
+	
 
 }

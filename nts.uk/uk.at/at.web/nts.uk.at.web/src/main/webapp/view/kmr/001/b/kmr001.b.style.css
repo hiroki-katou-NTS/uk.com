@@ -1,24 +1,3 @@
-.kmr-time-editor{
-    width: 60px;
-}
-.kmr001b table {
-    margin: 5px;
-}
-.kmr001b tr td {
-    padding: 5px 0;
-}
-
-.kmr001b tr td:nth-child(2) {
-    padding: 0 20px;
-}
-.kmr001b .reservation {
-    width: 60px;
-}
-
-#B18_2{
-    padding-top: 10px;
-}
-
-.kmr001b .radio-wrapper .ntsRadioBox {
-    margin-right: 24px;
+.checkbox-group label {
+	display: table !important;	
 }

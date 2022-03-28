@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.record.infra.repository.executionstatusmanage.optionalperiodprocess;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTarget;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTargetRepository;
 import nts.uk.ctx.at.record.infra.entity.executionstatusmanage.optionalperiodprocess.KrcdtAnpPeriodTarget;
@@ -21,6 +24,7 @@ public class JpaAggrPeriodTargetRepository extends JpaRepository
 implements AggrPeriodTargetRepository{
 
 	private static final String FIND_ALL_TARGET;
+	private static final String FIND_ALL_TARGET_BYLISTID;
 	private static final String FIND_EXECUTION;
 	
 	static{
@@ -34,7 +38,16 @@ implements AggrPeriodTargetRepository{
 	builderString.append("SELECT e");
 	builderString.append(" FROM KrcdtAnpPeriodTarget e");
 	builderString.append(" WHERE e.krcmtAggrPeriodTargetPK.aggrId = :aggrId");
-	FIND_EXECUTION = builderString.toString(); 
+	FIND_EXECUTION = builderString.toString();
+
+
+	builderString = new StringBuilder();
+	builderString.append("SELECT e");
+	builderString.append(" FROM KrcdtAnpPeriodTarget e");
+	builderString.append(" WHERE e.krcmtAggrPeriodTargetPK.aggrId  IN  :aggrIds");
+	FIND_ALL_TARGET_BYLISTID = builderString.toString();
+
+
 	}
 	
 	/**
@@ -46,6 +59,19 @@ implements AggrPeriodTargetRepository{
 		return this.queryProxy().query(FIND_ALL_TARGET, KrcdtAnpPeriodTarget.class)
 				.setParameter("aggrId", aggrId)
 				.getList(c -> converToDomainApt(c));
+	}
+
+	@Override
+	public List<AggrPeriodTarget> findAll(List<String> aggrIds) {
+
+		List<AggrPeriodTarget> targetList = new ArrayList<>();
+
+		CollectionUtil.split(aggrIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			targetList.addAll(this.queryProxy().query(FIND_ALL_TARGET_BYLISTID, KrcdtAnpPeriodTarget.class)
+					.setParameter("aggrIds", subList)
+					.getList(this::converToDomainApt));
+		});
+		return targetList;
 	}
 
 	/**

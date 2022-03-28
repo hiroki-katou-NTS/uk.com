@@ -1,21 +1,49 @@
 package nts.uk.file.at.app.export.bento;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.app.find.reservation.bento.dto.*;
-import nts.uk.ctx.at.record.app.find.reservation.bento.query.ListBentoResevationQuery;
-import nts.uk.ctx.at.record.dom.reservation.bento.*;
+import nts.uk.ctx.at.record.app.find.reservation.bento.dto.BentoReservationInfoForEmpDto;
+import nts.uk.ctx.at.record.app.find.reservation.bento.dto.BentoReservedInfoDto;
+import nts.uk.ctx.at.record.app.find.reservation.bento.dto.BentoTotalDto;
+import nts.uk.ctx.at.record.app.find.reservation.bento.dto.DetailOrderInfoDto;
+import nts.uk.ctx.at.record.app.find.reservation.bento.dto.OrderInfoDto;
+import nts.uk.ctx.at.record.app.find.reservation.bento.dto.PlaceOfWorkInfoDto;
+import nts.uk.ctx.at.record.app.find.reservation.bento.dto.TotalOrderInfoDto;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
+import nts.uk.ctx.at.record.dom.reservation.bento.ReservationCorrect;
+import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
+import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoItemByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSetting;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.service.GetStampCardQuery;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.bs.company.dom.company.Company;
@@ -25,17 +53,12 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
-import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
+import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
 import nts.uk.ctx.bs.employee.pub.employee.export.PersonEmpBasicInfoPub;
 import nts.uk.ctx.bs.employee.pub.employee.export.dto.PersonEmpBasicInfoDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 注文情報を作る
@@ -47,13 +70,10 @@ public class CreateOrderInfoFileQuery {
     private CompanyRepository companyRepository;
 
     @Inject
-    private WorkplaceInformationRepository workplaceInformationRepository;
-
-    @Inject
     private WorkLocationRepository workLocationRepository;
 
     @Inject
-    private BentoMenuRepository bentoMenuRepository;
+    private BentoMenuHistRepository bentoMenuHistRepository;
 
     @Inject
     private AffWorkplaceHistoryRepository affWorkplaceHistoryRepository;
@@ -71,17 +91,17 @@ public class CreateOrderInfoFileQuery {
     private BentoReservationRepository bentoReservationRepository;
 
     @Inject
-    private ListBentoResevationQuery query;
-
-    @Inject
-    private GetStampCardQuery getStampCardQuery;
-
-    @Inject
     private PersonEmpBasicInfoPub personEmpBasicInfoPub;
+    
+    @Inject
+    private ReservationSettingRepository reservationSettingRepository;
+    
+    @Inject
+    private WorkplaceExportService workplaceExportService;
 
     public OrderInfoDto createOrderInfoFileQuery(DatePeriod period, List<String> workplaceId,
-                                                 List<String> workLocationCodes, Optional<BentoReservationSearchConditionDto> totalExtractCondition,
-                                                 Optional<BentoReservationSearchConditionDto> itemExtractCondition, Optional<Integer> frameNo, Optional<String> totalTitle,
+                                                 List<String> workLocationCodes, Optional<ReservationCorrect> totalExtractCondition,
+                                                 Optional<ReservationCorrect> itemExtractCondition, Optional<Integer> frameNo, Optional<String> totalTitle,
                                                  Optional<String> detailTitle, ReservationClosingTimeFrame reservationClosingTimeFrame){
         if (!totalTitle.isPresent() & !detailTitle.isPresent())
             throw new BusinessException("Msg_1642");
@@ -101,38 +121,65 @@ public class CreateOrderInfoFileQuery {
         List<BentoReservationInfoForEmpDto> bentoReservationInfoForEmpDtos = (List<BentoReservationInfoForEmpDto>) condition[2];
         @SuppressWarnings("unchecked")
         List<PlaceOfWorkInfoDto> placeOfWorkInfoDtos = (List<PlaceOfWorkInfoDto>) condition[3];
-        // 3. 弁当予約を取得する
-        List<BentoReservation> bentoReservationsTotal = new ArrayList<>();
-        List<BentoReservation> bentoReservationsDetail = new ArrayList<>();
-        if (totalExtractCondition.isPresent())
-            bentoReservationsTotal = getListBentoResevation(totalExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
-        if (detailTitle.isPresent()) {
-            if (frameNo.isPresent())
-                bentoReservationsDetail = getListBentoResevation(frameNo.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
-            else if(itemExtractCondition.isPresent())
-                bentoReservationsDetail = getListBentoResevation(itemExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
-        }
-        if (CollectionUtil.isEmpty(bentoReservationsTotal) & CollectionUtil.isEmpty(bentoReservationsDetail))
-        	if (totalTitle.isPresent()) {
-				throw new BusinessException("Msg_6");
-			} else {
-				throw new BusinessException("Msg_1617");
-			}
-        //4.
-        List<BentoMenu> bentoMenuList = getAllBentoMenu(companyId, period);
-        if (CollectionUtil.isEmpty(bentoMenuList))
+        //4. 
+        List<BentoMenuHistory> bentoMenuList = bentoMenuHistRepository.findByCompanyPeriod(companyId, period);
+        if (CollectionUtil.isEmpty(bentoMenuList)) {
             throw new BusinessException("Msg_1640");
+        }
+        List<ReservationRegisterInfo> reservationRegisterInfoLst = new ArrayList<>(map.values()).stream().map(ReservationRegisterInfo::new).collect(Collectors.toList());
         //5.
+        List<BentoReservation> bentoReservationLst = bentoReservationRepository.findByExtractionCondition(
+        		reservationRegisterInfoLst, period, reservationClosingTimeFrame.value, 
+        		totalTitle.isPresent() ? totalExtractCondition.orElse(ReservationCorrect.ALL_RESERVE) : itemExtractCondition.orElse(ReservationCorrect.ALL_RESERVE));
+        //5.1
+        if(frameNo.isPresent()) {
+        	bentoReservationLst = bentoReservationLst.stream().map(x -> {
+        		List<BentoReservationDetail> bentoReservationDetails = x.getBentoReservationDetails().stream().filter(y -> y.getFrameNo()==frameNo.get()).collect(Collectors.toList());
+        		if(CollectionUtil.isEmpty(bentoReservationDetails)) {
+        			return null;
+        		}
+        		return new BentoReservation(
+        				x.getRegisterInfor(), 
+        				x.getReservationDate(), 
+        				x.isOrdered(), 
+        				x.getWorkLocationCode(), 
+        				bentoReservationDetails);
+        	}).filter(x -> x!=null).collect(Collectors.toList());
+        }
+        if(CollectionUtil.isEmpty(bentoReservationLst)) {
+        	throw new BusinessException("Msg_1617");
+        }
+        
+        //6. 
+        ReservationSetting reservationSetting = reservationSettingRepository.findByCId(companyId).orElse(null);
         Optional<String> closingName = Optional.empty();
-        if(ReservationClosingTimeFrame.FRAME1.equals(reservationClosingTimeFrame))
-            closingName = bentoMenuList.stream().findFirst().map(i -> i.getClosingTime().getClosingTime1().getReservationTimeName().v());
-        else if (ReservationClosingTimeFrame.FRAME2.equals(reservationClosingTimeFrame))
-            closingName = bentoMenuList.stream().filter(i -> i.getClosingTime().getClosingTime2().isPresent())
-                    .findFirst().map(i -> i.getClosingTime().getClosingTime2().get().getReservationTimeName().v());
-
+        if(reservationSetting!=null) {
+        	if(ReservationClosingTimeFrame.FRAME1.equals(reservationClosingTimeFrame)) {
+                closingName = reservationSetting.getReservationRecTimeZoneLst().stream().filter(x -> x.getFrameNo()==ReservationClosingTimeFrame.FRAME1)
+                		.findAny().map(x -> x.getReceptionHours().getReceptionName().v());
+                		
+            } else if (ReservationClosingTimeFrame.FRAME2.equals(reservationClosingTimeFrame)) {
+                closingName = reservationSetting.getReservationRecTimeZoneLst().stream().filter(x -> x.getFrameNo()==ReservationClosingTimeFrame.FRAME2)
+                		.findAny().map(x -> x.getReceptionHours().getReceptionName().v());
+            }
+        }
         Optional<WorkLocationCode> workLocationCode = CollectionUtil.isEmpty(workLocationCodes) ? Optional.empty() : Optional.of(new WorkLocationCode(workLocationCodes.get(0)));
-        List<TotalOrderInfoDto> totalOrderInfoDtos = exportTotalOrderInfo(companyId, bentoReservationsTotal, placeOfWorkInfoDtos, frameNo, closingName, reservationClosingTimeFrame, workLocationCode);
-        List<DetailOrderInfoDto> detailOrderInfoDtos = exportDetailOrderInfo(bentoReservationsDetail, companyId, placeOfWorkInfoDtos, bentoReservationInfoForEmpDtos, frameNo, closingName);
+        List<TotalOrderInfoDto> totalOrderInfoDtos = exportTotalOrderInfo(
+        		companyId, 
+        		totalTitle.isPresent() ? bentoReservationLst : Collections.emptyList(), 
+        		placeOfWorkInfoDtos, 
+        		frameNo, 
+        		closingName, 
+        		reservationClosingTimeFrame, 
+        		workLocationCode, 
+        		reservationSetting);
+        List<DetailOrderInfoDto> detailOrderInfoDtos = exportDetailOrderInfo(
+        		detailTitle.isPresent() ? bentoReservationLst : Collections.emptyList(), 
+        		companyId, 
+        		placeOfWorkInfoDtos, 
+        		bentoReservationInfoForEmpDtos, 
+        		frameNo, 
+        		closingName);
         result.setCompanyName(companyName);
         result.setDetailOrderInfoDtoList(detailOrderInfoDtos);
         result.setDetailTittle(isCheckedEmpInfo ? detailTitle.get() : "");
@@ -147,11 +194,11 @@ public class CreateOrderInfoFileQuery {
         List<String> sIds = new ArrayList<>();
         Set<BentoReservationInfoForEmpDto> bentoReservationInfoForEmpDtos = new HashSet<>();
         List<WorkLocation> workLocations = new ArrayList<>();
-        List<WorkplaceInformation> workplaceInformations = new ArrayList<>();
+        List<WorkplaceInforParam> workplaceInformations = new ArrayList<>();
         List<PersonEmpBasicInfoDto> personEmpBasicInfoDtos;
         String contractCode = AppContexts.user().contractCode();
         if (!CollectionUtil.isEmpty(workplaceIds)) {
-            workplaceInformations = getWorkplaceInfoById(workplaceIds, companyId);
+            workplaceInformations = getWorkplaceInfoById(workplaceIds, companyId, period.start());
             sIds = getListEmpIdInWorkPlace(workplaceIds, period);
             result[0] = workplaceInformations;
         } else if (!CollectionUtil.isEmpty(workLocationCodes)) {
@@ -179,8 +226,8 @@ public class CreateOrderInfoFileQuery {
     }
 
     /** 会社IDと所属職場履歴IDから所属している職場情報を取得する */
-    private List<WorkplaceInformation> getWorkplaceInfoById(List<String> workplaceIds, String companyId){
-        return workplaceInformationRepository.findByWkpIds(companyId, workplaceIds);
+    private List<WorkplaceInforParam> getWorkplaceInfoById(List<String> workplaceIds, String companyId, GeneralDate date){
+        return workplaceExportService.getWorkplaceInforFromWkpIds(companyId, workplaceIds, date);
     }
 
     /** 期間内に特定の職場（List）に所属している社員一覧を取得 */
@@ -232,41 +279,18 @@ public class CreateOrderInfoFileQuery {
     }
 
     /** convert to DTO::職場又は場所情報 */
-    private List<PlaceOfWorkInfoDto> convertToPlaceOfWorkInfoDto(List<WorkplaceInformation> workplaceInformations, List<WorkLocation> workLocations){
+    private List<PlaceOfWorkInfoDto> convertToPlaceOfWorkInfoDto(List<WorkplaceInforParam> workplaceInformations, List<WorkLocation> workLocations){
         List<PlaceOfWorkInfoDto> result = new ArrayList<>();
         if(CollectionUtil.isEmpty(workplaceInformations))
             for(WorkLocation item : workLocations)
                 result.add(new PlaceOfWorkInfoDto(item.getWorkLocationCD().v(), item.getWorkLocationName().v()));
         else
-            for(WorkplaceInformation item : workplaceInformations)
-                result.add(new PlaceOfWorkInfoDto(item.getWorkplaceCode().v(), item.getWorkplaceName().v()));
+            for(WorkplaceInforParam item : workplaceInformations)
+                result.add(new PlaceOfWorkInfoDto(item.getWorkplaceCode(), item.getWorkplaceName()));
 
         if(result.size() > 2)
             return new ArrayList<>(Arrays.asList(result.get(0), result.get(result.size() - 1)));
         return result;
-    }
-
-    /** 3. 弁当予約を取得する */
-    private List<BentoReservation> getListBentoResevation(BentoReservationSearchConditionDto searchCondition,
-                                                         DatePeriod period, List<String> stampCardNo,
-                                                         List<String> workLocationCodes, ReservationClosingTimeFrame reservationClosingTimeFrame){
-        List<ReservationRegisterInfo> reservationRegisterInfoList = stampCardNo.stream().map(ReservationRegisterInfo::new).collect(Collectors.toList());
-        List<WorkLocationCode> workLocationCodeList = CollectionUtil.isEmpty(workLocationCodes) ? Collections.EMPTY_LIST
-                : workLocationCodes.stream().map(WorkLocationCode::new).collect(Collectors.toList());
-        return query.getListBentoResevationQuery(searchCondition, period, reservationRegisterInfoList, workLocationCodeList, reservationClosingTimeFrame);
-    }
-
-    private List<BentoReservation> getListBentoResevation(int frameNo,
-                                                          DatePeriod period, List<String> stampCardNo,
-                                                          List<String> workLocationCodes, ReservationClosingTimeFrame reservationClosingTimeFrame){
-        List<ReservationRegisterInfo> reservationRegisterInfoList = stampCardNo.stream().map(ReservationRegisterInfo::new).collect(Collectors.toList());
-        List<WorkLocationCode> workLocationCodeList = workLocationCodes.stream().map(WorkLocationCode::new).collect(Collectors.toList());
-        return bentoReservationRepository.getAllReservationOfBento(frameNo, reservationRegisterInfoList, period, reservationClosingTimeFrame, workLocationCodeList);
-    }
-
-    /** 4. 弁当メニューを取得 */
-    private List<BentoMenu> getAllBentoMenu(String companyId, DatePeriod period){
-        return bentoMenuRepository.getBentoMenuPeriod(companyId, period);
     }
 
     /** 5. 注文情報を取得する */
@@ -328,7 +352,7 @@ public class CreateOrderInfoFileQuery {
             BentoReservationInfoForEmpDto item = items.get(0);
             for(BentoReservation reservation : handlerReservation){
                 for(BentoReservationDetail detail : reservation.getBentoReservationDetails()){
-                    Bento bento = bentoMenuRepository.getBento(companyID, reservation.getReservationDate().getDate(), detail.getFrameNo());
+                    Bento bento = bentoMenuHistRepository.getBento(companyID, reservation.getReservationDate().getDate(), detail.getFrameNo());
 
                     // Bento is deleted
                     if (bento == null) continue;
@@ -369,7 +393,7 @@ public class CreateOrderInfoFileQuery {
     private List<TotalOrderInfoDto> exportTotalOrderInfo(String companyId, List<BentoReservation> reservations,
                                                         List<PlaceOfWorkInfoDto> workInfoDtos, Optional<Integer> frameNo, Optional<String> closingTimeName,
                                                          ReservationClosingTimeFrame reservationClosingTimeFrame,
-                                                         Optional<WorkLocationCode> workLocationCode){
+                                                         Optional<WorkLocationCode> workLocationCode, ReservationSetting reservationSetting){
         List<BentoReservationDetail> reservationDetails = new ArrayList<>();
         List<TotalOrderInfoDto> result = new ArrayList<>();
         String closedName = closingTimeName.orElse("");
@@ -391,13 +415,21 @@ public class CreateOrderInfoFileQuery {
         }else{*/
         for(BentoReservation item : reservations){
             int totalFee = 0;
-            reservationDetails.addAll(item.getBentoReservationDetails());
-            BentoMenu bentoMenuList = bentoMenuRepository.getBentoMenu(companyId, item.getReservationDate().getDate());
-            if (bentoMenuList == null) {
+            reservationDetails = item.getBentoReservationDetails();
+            Optional<BentoMenuHistory> opBentoMenuHistory = bentoMenuHistRepository.findByCompanyDate(companyId, item.getReservationDate().getDate());
+            if (!opBentoMenuHistory.isPresent()) {
             	continue;
 			}
             List<BentoTotalDto> bentoTotalDtoLst = new ArrayList<>();
-            BentoMenuByClosingTime menu = bentoMenuList.getByClosingTime(workLocationCode);
+            String roleID = AppContexts.user().roles().forAttendance();
+            Map<ReservationClosingTimeFrame, Boolean> orderAtr = new HashMap<>();
+            orderAtr.put(item.getReservationDate().getClosingTimeFrame(), item.isOrdered());
+            BentoMenuByClosingTime menu = BentoMenuByClosingTime.createForCurrent(
+            		roleID, 
+            		reservationSetting, 
+            		opBentoMenuHistory.get().getMenu(), 
+            		orderAtr, 
+            		item.getReservationDate().getDate());
             List<BentoItemByClosingTime> bentos;
             if (reservationClosingTimeFrame == ReservationClosingTimeFrame.FRAME1){
                 bentos = menu.getMenu1();
@@ -423,16 +455,12 @@ public class CreateOrderInfoFileQuery {
 
     private BentoTotalDto createBentoTotalDto(BentoItemByClosingTime bento, List<BentoReservationDetail> reservation){
         int quantity = 0;
-        Iterator<BentoReservationDetail> iterator = reservation.iterator();
-        while (iterator.hasNext()){
-            BentoReservationDetail temp = iterator.next();
-            if(temp.getFrameNo() == bento.getFrameNo()){
-                quantity += temp.getBentoCount().v();
-                iterator.remove();
-            }
+        Optional<BentoReservationDetail> opBentoReservationDetail = reservation.stream().filter(x -> x.getFrameNo()==bento.getFrameNo()).findAny();
+        if(opBentoReservationDetail.isPresent()) {
+        	quantity = opBentoReservationDetail.get().getBentoCount().v();
         }
         return new BentoTotalDto(bento.getUnit().v(),bento.getName().v(), quantity,
-                bento.getFrameNo(),bento.getAmount1().v() + bento.getAmount2().v());
+                bento.getFrameNo(),bento.getAmount1().v());
     }
 
     /** 6. 注文合計書を作成 */

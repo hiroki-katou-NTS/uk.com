@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <body>
+        <ui:composition template="../../../../master/dialog.xhtml">
+            <ui:define name="htmlHead">
+                <script>var dialogSize = { width: 1225, height: 600 };</script>
+                <com:scriptfile set="IGNITE"/>
+                <com:stylefile path="./kmr003.c.style.css"/>
+                <com:scriptfile path="./kmr003.c.vm.js"/>
+                <com:ValidatorScript>
+                    nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount
+                </com:ValidatorScript>
+            </ui:define>
+            <ui:define name="content">
+                <div id="functions-area">
+                    <!-- C1_1 -->
+                    <button class="proceed" data-bind="click: register, text: $i18n('KMR003_50'), enable: hasErrorsGrid() &amp;&amp; $root.errors.isEmpty "></button>
+                    <!-- C1_2 -->
+                    <button data-bind="click: close, text: $i18n('KMR003_51')"></button>
+                </div>
+                <div id="contents-area">
+                    <div style="margin-left: 30px;">
+                        <div data-bind="text: receptionHour"></div>
+                    </div>
+                    <div style="margin: 10px 30px;">
+                        <div id="grid"></div>
+                    </div>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

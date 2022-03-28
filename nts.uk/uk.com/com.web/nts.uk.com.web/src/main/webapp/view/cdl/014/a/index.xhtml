@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+  <ui:define name="htmlHead">
+    <script>
+        var dialogSize = {
+            width : 460,
+            height : 620
+        };
+    </script>
+    <com:scriptfile set="IGNITE" />
+    <com:stylefile path="/view/kcp/011/test2/main.css" />
+    <com:stylefile path="/view/kcp/011/main.css" />
+    <com:scriptfile path="/view/kcp/011/kcp.011.vm.js" of="/nts.uk.com.web" />
+    <com:scriptfile path="cdl014.a.vm.js" />
+  </ui:define>
+
+  <ui:define name="content">
+    <div id="contents-area">
+      <div id ="A1" class="label" style="padding-left: 16px;">#{i18n.getText('CDL014_2')}</div>
+      <workplace-group params="options: options"> </workplace-group>
+    </div>
+    <div id="functions-area-bottom" class="btn-click">
+      <button tabindex="2" data-bind="click: proceed"  class="proceed x-large" id="A10_1" >#{i18n.getText('CDL014_3')}</button>
+      <button tabindex="3" data-bind="click: cancel" id="A10_2">#{i18n.getText('CDL014_4')}</button>
+    </div>
+  </ui:define>
+</ui:composition>
+</body>
+</html>

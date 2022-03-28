@@ -17,6 +17,7 @@ import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -28,6 +29,7 @@ import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPe
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDayAffInfo;
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliationInfPK;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
@@ -38,17 +40,10 @@ import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		implements AffiliationInforOfDailyPerforRepository {
 
-//	private static final String REMOVE_BY_EMPLOYEE;
-	
 	private static final String FIND_BY_KEY;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-//		builderString.append("DELETE ");
-//		builderString.append("FROM KrcdtDayAffInfo a ");
-//		builderString.append("WHERE a.krcdtDaiAffiliationInfPK.employeeId = :employeeId ");
-//		builderString.append("AND a.krcdtDaiAffiliationInfPK.ymd = :ymd ");
-//		REMOVE_BY_EMPLOYEE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -69,26 +64,26 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 			throw new RuntimeException(e);
 		}
 
-//		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
-//				.setParameter("ymd", ymd).executeUpdate();
-//		this.getEntityManager().flush();
 	}
 
 	@Override
-	public void add(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor) {
-		// this.commandProxy().insert(toEntity(affiliationInforOfDailyPerfor));
+	public void add(AffiliationInforOfDailyPerfor domain) {
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
-			String bonusPaycode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().isPresent() ? "'" + affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().get().v() + "'" : null;
-			String businessTypeCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().isPresent() ? "'" + affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().get().v() + "'" : null;
-			String insertTableSQL = "INSERT INTO KRCDT_DAY_AFF_INFO ( SID , YMD , EMP_CODE, JOB_ID , CLS_CODE , WKP_ID , BONUS_PAY_CODE,WORK_TYPE_CODE ) "
-					+ "VALUES( '" + affiliationInforOfDailyPerfor.getEmployeeId() + "' , '"
-					+ affiliationInforOfDailyPerfor.getYmd() + "' , '"
-					+ affiliationInforOfDailyPerfor.getAffiliationInfor().getEmploymentCode().v() + "' , '"
-					+ affiliationInforOfDailyPerfor.getAffiliationInfor().getJobTitleID() + "' , '"
-					+ affiliationInforOfDailyPerfor.getAffiliationInfor().getClsCode().v() + "' , '"
-					+ affiliationInforOfDailyPerfor.getAffiliationInfor().getWplID() + "' , "
-					+ bonusPaycode +" , " + businessTypeCode + " )";
+			String bonusPaycode = domain.getAffiliationInfor().getBonusPaySettingCode().isPresent() ? "'" + domain.getAffiliationInfor().getBonusPaySettingCode().get().v() + "'" : null;
+			String businessTypeCode = domain.getAffiliationInfor().getBusinessTypeCode().isPresent() ? "'" + domain.getAffiliationInfor().getBusinessTypeCode().get().v() + "'" : null;
+			String workplaceGroupId = domain.getAffiliationInfor().getWorkplaceGroupId().isPresent() ? domain.getAffiliationInfor().getWorkplaceGroupId().get() : null; 
+			Integer	nursingLicenseClass =  domain.getAffiliationInfor().getNursingLicenseClass().isPresent() ? domain.getAffiliationInfor().getNursingLicenseClass().get().value : null;
+			boolean nursingManager = domain.getAffiliationInfor().getIsNursingManager().isPresent() ? domain.getAffiliationInfor().getIsNursingManager().get() : false;
+			
+			String insertTableSQL = "INSERT INTO KRCDT_DAY_AFF_INFO ( SID , YMD , EMP_CODE, JOB_ID , CLS_CODE , WKP_ID , BONUS_PAY_CODE, WORK_TYPE_CODE, WKP_GROUP_ID, NURSE_LICENSE_ATR, IS_NURSE_ADMINISTRATOR ) "
+					+ "VALUES( '" + domain.getEmployeeId() + "' , '"
+					+ domain.getYmd() + "' , '"
+					+ domain.getAffiliationInfor().getEmploymentCode().v() + "' , '"
+					+ domain.getAffiliationInfor().getJobTitleID() + "' , '"
+					+ domain.getAffiliationInfor().getClsCode().v() + "' , '"
+					+ domain.getAffiliationInfor().getWplID() + "' , "
+					+ bonusPaycode +" , " + businessTypeCode + " , '" + workplaceGroupId + "' , " + nursingLicenseClass + " , " + nursingManager + " )";
 			Statement statementI = con.createStatement();
 			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 		} catch (Exception e) {
@@ -97,32 +92,33 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 	}
 
 	@SuppressWarnings("unused")
-	private KrcdtDayAffInfo toEntity(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor) {
+	private KrcdtDayAffInfo toEntity(AffiliationInforOfDailyPerfor domain) {
 		val entity = new KrcdtDayAffInfo();
 
 		entity.krcdtDaiAffiliationInfPK = new KrcdtDaiAffiliationInfPK();
-		entity.krcdtDaiAffiliationInfPK.employeeId = affiliationInforOfDailyPerfor.getEmployeeId();
-		entity.krcdtDaiAffiliationInfPK.ymd = affiliationInforOfDailyPerfor.getYmd();
-		entity.bonusPayCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().isPresent()
-				? affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().get().v() : null;
-		entity.businessTypeCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().isPresent()
-				? affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().get().v() : null;
-		entity.classificationCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getClsCode() == null ? null
-				: affiliationInforOfDailyPerfor.getAffiliationInfor().getClsCode().v();
-		entity.employmentCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getEmploymentCode() == null ? null
-				: affiliationInforOfDailyPerfor.getAffiliationInfor().getEmploymentCode().v();
-		entity.jobtitleID = affiliationInforOfDailyPerfor.getAffiliationInfor().getJobTitleID();
-		entity.workplaceID = affiliationInforOfDailyPerfor.getAffiliationInfor().getWplID();
+		entity.krcdtDaiAffiliationInfPK.employeeId = domain.getEmployeeId();
+		entity.krcdtDaiAffiliationInfPK.ymd = domain.getYmd();
+		entity.bonusPayCode = domain.getAffiliationInfor().getBonusPaySettingCode().isPresent()
+				? domain.getAffiliationInfor().getBonusPaySettingCode().get().v() : null;
+		entity.businessTypeCode = domain.getAffiliationInfor().getBusinessTypeCode().isPresent()
+				? domain.getAffiliationInfor().getBusinessTypeCode().get().v() : null;
+		entity.classificationCode = domain.getAffiliationInfor().getClsCode() == null ? null
+				: domain.getAffiliationInfor().getClsCode().v();
+		entity.employmentCode = domain.getAffiliationInfor().getEmploymentCode() == null ? null
+				: domain.getAffiliationInfor().getEmploymentCode().v();
+		entity.jobtitleID = domain.getAffiliationInfor().getJobTitleID();
+		entity.workplaceID = domain.getAffiliationInfor().getWplID();
 
+		entity.workplaceGroupId = domain.getAffiliationInfor().getWorkplaceGroupId().isPresent()? domain.getAffiliationInfor().getWorkplaceGroupId().get() : null;
+		entity.nursingLicenseClass = domain.getAffiliationInfor().getNursingLicenseClass().isPresent()? domain.getAffiliationInfor().getNursingLicenseClass().get().value : null;
+		entity.nursingManager = domain.getAffiliationInfor().getIsNursingManager().isPresent()? domain.getAffiliationInfor().getIsNursingManager().get(): false;
+		
 		return entity;
 	}
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<AffiliationInforOfDailyPerfor> findByKey(String employeeId, GeneralDate ymd) {
-//    	Optional<AffiliationInforOfDailyPerfor> result =  this.queryProxy().query(FIND_BY_KEY, KrcdtDayAffInfo.class)
-//    			.setParameter("employeeId", employeeId)
-//				.setParameter("ymd", ymd).getSingle(f -> f.toDomain());
 		Optional<AffiliationInforOfDailyPerfor> data = Optional.empty();
 		String sql = "select * from KRCDT_DAY_AFF_INFO"
 				+ " where SID = ?"
@@ -139,7 +135,10 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 						ymd, 
 						new ClassificationCode(rec.getString("CLS_CODE")), 
 						new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")),
-						rec.getString("WORK_TYPE_CODE")== null?null: new BusinessTypeCode(rec.getString("WORK_TYPE_CODE"))
+						rec.getString("WORK_TYPE_CODE")== null?null: new BusinessTypeCode(rec.getString("WORK_TYPE_CODE")),
+						rec.getString("WKP_GROUP_ID"),
+						rec.getInt("NURSE_LICENSE_ATR")== null?null: EnumAdaptor.valueOf(rec.getInt("NURSE_LICENSE_ATR"), LicenseClassification.class),
+						rec.getBoolean("IS_NURSE_ADMINISTRATOR")	
 						);
 				return ent;
 			});
@@ -152,33 +151,17 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 
 	@Override
 	public void updateByKey(AffiliationInforOfDailyPerfor domain) {
-		// Optional<KrcdtDayAffInfo> dataOpt =
-		// this.queryProxy().query(FIND_BY_KEY, KrcdtDayAffInfo.class)
-		// .setParameter("employeeId", domain.getEmployeeId())
-		// .setParameter("ymd", domain.getYmd()).getSingle();
-		// KrcdtDayAffInfo data = dataOpt.isPresent() ? dataOpt.get() :
-		// new KrcdtDayAffInfo();
-		// if(!dataOpt.isPresent()){
-		// data.krcdtDaiAffiliationInfPK = new
-		// KrcdtDaiAffiliationInfPK(domain.getEmployeeId(), domain.getYmd());
-		// }
-		// data.bonusPayCode = domain.getBonusPaySettingCode() == null ? null :
-		// domain.getBonusPaySettingCode().v();
-		// data.classificationCode = domain.getClsCode() == null ? null :
-		// domain.getClsCode().v();
-		// data.employmentCode = domain.getEmploymentCode() == null ? null :
-		// domain.getEmploymentCode().v();
-		// data.workplaceID = domain.getWplID();
-		// data.jobtitleID = domain.getJobTitleID();
-		// this.commandProxy().update(data);
-
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String bonusPaycode = domain.getAffiliationInfor().getBonusPaySettingCode().isPresent() ? "'" + domain.getAffiliationInfor().getBonusPaySettingCode().get().v() + "'" : null;
 		String businessTypeCode = domain.getAffiliationInfor().getBusinessTypeCode().isPresent() ? "'" + domain.getAffiliationInfor().getBusinessTypeCode().get().v() + "'" : null;
+		String workplaceGroupId = domain.getAffiliationInfor().getWorkplaceGroupId().isPresent() ? domain.getAffiliationInfor().getWorkplaceGroupId().get() : null; 
+		Integer	nursingLicenseClass =  domain.getAffiliationInfor().getNursingLicenseClass().isPresent() ? domain.getAffiliationInfor().getNursingLicenseClass().get().value : null;
+		Integer nursingManager = domain.getAffiliationInfor().getIsNursingManager().isPresent() ? (domain.getAffiliationInfor().getIsNursingManager().get() ? 1 : 0 ) : null;
+		
 		String updateTableSQL = " UPDATE KRCDT_DAY_AFF_INFO SET EMP_CODE = '"
 				+ domain.getAffiliationInfor().getEmploymentCode().v() + "' , JOB_ID = '" + domain.getAffiliationInfor().getJobTitleID()
 				+ "' , CLS_CODE = '" + domain.getAffiliationInfor().getClsCode().v() + "' , WKP_ID = '" + domain.getAffiliationInfor().getWplID()
-				+ "' , BONUS_PAY_CODE = " + bonusPaycode +",WORK_TYPE_CODE ="+ businessTypeCode + "  WHERE SID = '"
+				+ "' , BONUS_PAY_CODE = " + bonusPaycode +",WORK_TYPE_CODE ="+ businessTypeCode + ", WKP_GROUP_ID = '"+ workplaceGroupId + "' , NURSE_LICENSE_ATR ="+ nursingLicenseClass +  " , IS_NURSE_ADMINISTRATOR = "+ nursingManager + "  WHERE SID = '"
 				+ domain.getEmployeeId() + "' AND YMD = '" + domain.getYmd() + "'";
 		try {
 				con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(updateTableSQL));
@@ -202,7 +185,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 	private List<AffiliationInforOfDailyPerfor> internalQuery(DatePeriod baseDate, List<String> empIds) {
 //		String subEmp = NtsStatement.In.createParamsString(empIds);
 		List<AffiliationInforOfDailyPerfor> result = new ArrayList<>();
-		String sql = "select EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE,WORK_TYPE_CODE from KRCDT_DAY_AFF_INFO "
+		String sql = "select EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE,WORK_TYPE_CODE,WKP_GROUP_ID,NURSE_LICENSE_ATR,IS_NURSE_ADMINISTRATOR from KRCDT_DAY_AFF_INFO "
 				+ " where SID in (" + NtsStatement.In.createParamsString(empIds) + ")"
 				+ " and YMD <= ?"
 				+ " and YMD >= ?";
@@ -222,7 +205,10 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 						rec.getString("SID"), rec.getString("JOB_ID"), rec.getString("WKP_ID"), rec.getGeneralDate("YMD"), 
 						new ClassificationCode(rec.getString("CLS_CODE")),
 						new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")),
-						rec.getString("WORK_TYPE_CODE")== null?null: new BusinessTypeCode(rec.getString("WORK_TYPE_CODE"))
+						rec.getString("WORK_TYPE_CODE")== null?null: new BusinessTypeCode(rec.getString("WORK_TYPE_CODE")),
+						rec.getString("WKP_GROUP_ID"),
+						rec.getInt("NURSE_LICENSE_ATR")== null?null: EnumAdaptor.valueOf(rec.getInt("NURSE_LICENSE_ATR"), LicenseClassification.class),
+						rec.getBoolean("IS_NURSE_ADMINISTRATOR")
 						);
 				return ent;
 			});
@@ -252,7 +238,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		String subEmp = NtsStatement.In.createParamsString(subList);
     	String subInDate = NtsStatement.In.createParamsString(subListDate);
     	
-		StringBuilder query = new StringBuilder("SELECT EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE,WORK_TYPE_CODE FROM KRCDT_DAY_AFF_INFO");
+		StringBuilder query = new StringBuilder("SELECT EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE,WORK_TYPE_CODE,WKP_GROUP_ID,NURSE_LICENSE_ATR,IS_NURSE_ADMINISTRATOR FROM KRCDT_DAY_AFF_INFO");
 		query.append(" WHERE SID IN (" + subEmp + ")");
 		query.append(" AND YMD IN (" + subInDate + ")");
 		
@@ -269,7 +255,10 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 				return new AffiliationInforOfDailyPerfor(new EmploymentCode(rec.getString("EMP_CODE")), 
 						rec.getString("SID"), rec.getString("JOB_ID"), rec.getString("WKP_ID"), rec.getGeneralDate("YMD"), 
 						new ClassificationCode(rec.getString("CLS_CODE")), new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")),
-						rec.getString("WORK_TYPE_CODE")== null?null: new BusinessTypeCode(rec.getString("WORK_TYPE_CODE")));
+						rec.getString("WORK_TYPE_CODE")== null?null: new BusinessTypeCode(rec.getString("WORK_TYPE_CODE")),
+						rec.getString("WKP_GROUP_ID"),
+						rec.getInt("NURSE_LICENSE_ATR")== null?null: EnumAdaptor.valueOf(rec.getInt("NURSE_LICENSE_ATR"), LicenseClassification.class),
+						rec.getBoolean("IS_NURSE_ADMINISTRATOR"));
 			});
 		}
 	}

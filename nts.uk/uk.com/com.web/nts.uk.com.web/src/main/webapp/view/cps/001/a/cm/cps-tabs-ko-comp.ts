@@ -181,9 +181,9 @@ module nts.custom.component {
                 </div>
             </div>
         <!-- /ko -->`,
-        viewModel: function(params: any) {
+        viewModel: function (params: any) {
             let select: { categoryId: string; } = getShared("CPS001A_PARAMS") || { categoryId: undefined };
-            
+
             // remove shared item from another module after get (sit)
             nts.uk.sessionStorage.removeItem(nts.uk.request.STORAGE_KEY_TRANSFER_DATA);
 
@@ -192,7 +192,7 @@ module nts.custom.component {
                 hasLayout: ko.observable(false),
                 roleId: ko.computed(() => (__viewContext.user.role.personalInfo)),
                 loginId: ko.computed(() => (__viewContext.user.employeeId)),
-                change: params.change || function(evt: IEventData) {
+                change: params.change || function (evt: IEventData) {
 
                 },
                 combobox: {
@@ -583,7 +583,7 @@ module nts.custom.component {
                                                 ctype: ko.toJS(params.combobox.object.categoryType)
                                             });
                                             params.gridlist.value(undefined);
-											params.gridlist.value.valueHasMutated();
+                                            params.gridlist.value.valueHasMutated();
                                         }
                                     }
                                 });
@@ -626,6 +626,28 @@ module nts.custom.component {
                                     params.permisions.add(false);
                                     params.permisions.copy(false);
                                 }
+
+                                if (!is_self && perm && perm.otherFutureHisAuth == 1) {
+                                    params.permisions.add(false);
+                                    params.permisions.copy(false);
+                                }
+                                else if (!is_self && perm && perm.otherFutureHisAuth == 2) {
+                                    params.permisions.add(false);
+                                    params.permisions.copy(false);
+                                } else if (!is_self && perm && perm.otherFutureHisAuth == 3) {
+                                    params.permisions.add(true);
+                                    params.permisions.copy(true);
+                                } else if (is_self && perm && perm.selfFutureHisAuth == 1) {
+                                    params.permisions.add(false);
+                                    params.permisions.copy(false);
+                                } else if (is_self && perm && perm.selfFutureHisAuth == 2) {
+                                    params.permisions.add(false);
+                                    params.permisions.copy(false);
+                                } else if (is_self && perm && perm.selfFutureHisAuth == 3) {
+                                    params.permisions.add(true);
+                                    params.permisions.copy(true);
+                                }
+
 
                                 if (perm && !!(is_self ? perm.selfAllowDelHis : perm.otherAllowDelHis)) {
                                     if (ids.indexOf(v) > -1) {

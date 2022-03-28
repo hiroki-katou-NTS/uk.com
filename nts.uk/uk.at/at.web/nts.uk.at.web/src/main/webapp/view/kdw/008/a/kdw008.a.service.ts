@@ -36,9 +36,23 @@ module nts.uk.at.view.kdw008.a.service {
         getMobileListAuthorityDailyFormatCode: BASE_DAILY_PATH + "mobile/getAuthorityDailyFormatCode",
         getMobileDailyPerformance: BASE_DAILY_PATH + "mobile/getAuthorityDailyFormat/{0}",
         addMobileDailyDetail: BASE_DAILY_PATH + "mobile/addAuthorityDailyFormat",
+        duplicateMobileDailyDetail: BASE_DAILY_PATH + "mobile/duplicateAuthorityDailyFormat",
+
         updateMobileDailyDetail: BASE_DAILY_PATH + "mobile/updateAuthorityDailyFormat",
         removeMobileAuthorityDailyFormat: BASE_DAILY_PATH + "mobile/removeAuthorityFormat",
         getMonthlyMobileDetail: BASE_DAILY_PATH + "mobile/getAuthorityMonthlyFormat/{0}",
+
+        //ModifyAnyPeriod
+        getListModifyAnyPeriod: "at/record/kdw/008/modifyAnyPeriodAttItems",
+        getListModifyAnyPeriodCorrectionFormat: "at/function/kdw/008/a/findAll",
+        getModifyAnyPeriodByCode: "at/function/kdw/008/a/findByCode/{0}",
+        addModifyAnyPeriod: "at/function/kdw/008/a/add",
+        updateModifyAnyPeriod: "at/function/kdw/008/a/update",
+        deleteModifyAnyPeriod: "at/function/kdw/008/a/delete",
+        deleteModifyAnyPeriodSheet: "at/function/kdw/008/a/delete/sheet",
+        duplicateModifyAnyPeriod: "at/function/kdw/008/a/duplicate",
+
+
 
     }
 
@@ -136,5 +150,40 @@ module nts.uk.at.view.kdw008.a.service {
         let _path = nts.uk.text.format(url, code);
         return nts.uk.request.ajax("at", _path);
     };
-    
+
+    //  ModifyAnyPeriod
+
+    export function getListModifyAnyPeriod(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", nts.uk.text.format(paths.getListModifyAnyPeriod));
+    };
+
+    export function getListModifyAnyPeriodCorrectionFormat(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", nts.uk.text.format(paths.getListModifyAnyPeriodCorrectionFormat));
+    };
+
+    export function getModifyAnyPeriodByCode(code: string): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", nts.uk.text.format(paths.getModifyAnyPeriodByCode, code));
+    };
+
+    export function addModifyAnyPeriod(command: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.addModifyAnyPeriod, command);
+    };
+
+    export function updateModifyAnyPeriod(command: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.updateModifyAnyPeriod, command);
+    };
+
+    export function deleteModifyAnyPeriod(command: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.deleteModifyAnyPeriod, command);
+    };
+    export function deleteModifyAnyPeriodSheet(command: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.deleteModifyAnyPeriodSheet, command);
+    };
+    export function duplicateModifyAnyPeriod(command: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.duplicateModifyAnyPeriod, command);
+    };
+
+    export function duplicateMobileDailyDetail(command: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.duplicateMobileDailyDetail, command);
+    };
 }

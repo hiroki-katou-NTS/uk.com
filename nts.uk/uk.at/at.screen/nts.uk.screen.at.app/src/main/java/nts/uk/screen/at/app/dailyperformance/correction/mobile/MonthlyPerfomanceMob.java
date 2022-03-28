@@ -51,6 +51,7 @@ public class MonthlyPerfomanceMob {
 	private AuthorityFormatMonthlySRepository authMFormatMonthlyRepo;
 	@Inject
 	private BusinessTypeSFormatMonthlyRepository bussSFormatMonthlyRepo;
+	
     /**
      * F：月別実績の参照を起動する
      * @param param
@@ -65,6 +66,12 @@ public class MonthlyPerfomanceMob {
 				dailyPerDto.getSettingUnit(), companyId);
 		//get ItemId
 		List<Integer> itemIds = this.getItemIds(companyId, formatDaily);
+		
+		//EA 4253
+		//会社の月次項目を取得する
+		List<AttItemName> listAttItemName = companyMonthlyItemService.getMonthlyItems(companyId, Optional.empty(), itemIds, null);
+		itemIds = listAttItemName.stream().map(c->c.getAttendanceItemId()).collect(Collectors.toList());
+		
 		GeneralDate date = param.getClosureDate();
 		Boolean lastDayOfMonth = false;
 		if(date.addDays(1).day() == 1) {
