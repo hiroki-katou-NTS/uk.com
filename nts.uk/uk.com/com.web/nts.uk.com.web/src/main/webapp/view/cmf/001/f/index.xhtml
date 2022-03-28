@@ -40,8 +40,8 @@
 							selectFirstIfNull: false,
 							value: selectedIdInAllDomains,
 							required: false }"></div>
-						<button class="normal" id="bntAddImportDomain" data-bind="click: addTargetDomain, text: '追加'"></button>
-						<button class="normal" id="bntDelImportDomain" data-bind="click: removeTargetDomain, text: '削除'"></button>
+						<button class="normal" id="bntAddImportDomain" data-bind="click: addTargetDomain, text: '追加', enable: isSelectedInAllDomains"></button>
+						<button class="normal" id="bntDelImportDomain" data-bind="click: removeTargetDomain, text: '削除', enable: isSelectedInAllDomains"></button>
 						<table id="domain-list" data-bind="ntsGridList: {
 							height: '600px',
 							dataSource: targetDomains,
