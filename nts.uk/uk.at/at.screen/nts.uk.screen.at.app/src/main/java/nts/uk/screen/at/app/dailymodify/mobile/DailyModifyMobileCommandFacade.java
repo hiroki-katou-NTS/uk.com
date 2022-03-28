@@ -166,6 +166,8 @@ public class DailyModifyMobileCommandFacade {
 		});
 
 		processDto(dailyOlds, dailyEdits, dataParent, querys, mapSidDate, pairSidDateCheck, queryNotChanges);
+		//TODO: 
+		
 		// row data will insert
 		Set<Pair<String, GeneralDate>> rowWillInsert = dailyEdits.stream()
 				.map(x -> Pair.of(x.getEmployeeId(), x.getDate())).collect(Collectors.toSet());
@@ -234,6 +236,8 @@ public class DailyModifyMobileCommandFacade {
 				}
 				return DailyRecordDto.from(domDaily, optionalMaster);
 			}).collect(Collectors.toList());
+			//TODO: 
+			
 			DailyCalcResult daiCalcResult = processDailyCalc.processDailyCalc(
 					new DailyCalcParam(mapSidDate, dataParent.getLstNotFoundWorkType(), resultOlds,
 							dataParent.getDateRange(), dataParent.getDailyEdits(), dataParent.getItemValues()),

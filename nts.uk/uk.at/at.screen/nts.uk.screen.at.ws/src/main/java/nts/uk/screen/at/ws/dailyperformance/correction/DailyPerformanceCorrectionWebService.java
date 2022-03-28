@@ -36,7 +36,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceit
 import nts.uk.ctx.bs.employee.dom.employee.service.SearchEmployeeService;
 import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeSearchData;
 import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeSearchDto;
-import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.screen.at.app.dailymodify.command.AsyncExecuteMonthlyAggregateCommandHandler;
 import nts.uk.screen.at.app.dailymodify.command.DailyCalculationRCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
@@ -67,6 +66,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.GetWkpIDOutput;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.GetWkpIDParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.HolidayRemainNumberDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.InitParamOutput;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.InputGetDataOlds;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.SidDateErrorCalcDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTimeDto;
@@ -185,20 +185,14 @@ public class DailyPerformanceCorrectionWebService {
 		Integer closureId = params.closureId;
 //		DailyPerformanceCorrectionDto screenDto = (DailyPerformanceCorrectionDto) session.getAttribute("resultReturn");
 		DailyPerformanceCorrectionDto screenDto = params.screenDto;
+		InputGetDataOlds inputGetDataOlds = new InputGetDataOlds(screenDto.getEmployeeIds(), screenDto.getDateRange(), params.displayFormat, screenDto.getDPErrorDto());
 		DailyPerformanceCorrectionDto dtoResult = this.processor.generateData(screenDto, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.showError, params.showLock, params.objectShare, closureId);
-
-//		session.setAttribute("domainOlds", dtoResult.getDomainOld());
-//		session.setAttribute("domainOldForLog", cloneListDto(dtoResult.getDomainOld()));
-//		session.setAttribute("domainEdits", null);
-//		session.setAttribute("itemIdRCs", dtoResult.getLstControlDisplayItem() == null ? null : dtoResult.getLstControlDisplayItem().getMapDPAttendance());
-//		session.setAttribute("dataSource", dtoResult.getLstData());
-//		session.setAttribute("closureId", dtoResult.getClosureId());
-//		session.setAttribute("resultReturn", null);
-//		session.setAttribute("approvalConfirm", dtoResult.getApprovalConfirmCache());
+		
 		DataSessionDto dataSessionDto = new DataSessionDto();
-		dataSessionDto.setDomainOlds(dtoResult.getDomainOld());
-		dataSessionDto.setDomainOldForLog(cloneListDto(dtoResult.getDomainOld()));
-		dataSessionDto.setDomainEdits(null);
+		dataSessionDto.setInputGetDataOlds(inputGetDataOlds);
+		//dataSessionDto.setDomainOlds(dtoResult.getDomainOld());
+//		dataSessionDto.setDomainOldForLog(cloneListDto(dtoResult.getDomainOld()));
+//		dataSessionDto.setDomainEdits(null);
 		dataSessionDto.setItemIdRCs(dtoResult.getLstControlDisplayItem() == null ? null : dtoResult.getLstControlDisplayItem().getMapDPAttendance());
 		dataSessionDto.setDataSource(dtoResult.getLstData());
 		dataSessionDto.setClosureId(dtoResult.getClosureId());
@@ -223,9 +217,9 @@ public class DailyPerformanceCorrectionWebService {
 	public DailyPerformanceCorrectionDto condition(DPParams params ) throws InterruptedException{
 		Integer closureId = params.screenDto.getDataSessionDto().getClosureId();
 		val results = this.errorProcessor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.errorCodes, params.formatCodes, params.showLock, closureId);
-		params.screenDto.getDataSessionDto().setDomainOlds(results.getDomainOld());
-		params.screenDto.getDataSessionDto().setDomainOldForLog(cloneListDto(results.getDomainOld()));
-		params.screenDto.getDataSessionDto().setDomainEdits(null);
+		//TODO: params.screenDto.getDataSessionDto().setDomainOlds(results.getDomainOld());
+		//TODO: params.screenDto.getDataSessionDto().setDomainOldForLog(cloneListDto(results.getDomainOld()));
+		//TODO: params.screenDto.getDataSessionDto().setDomainEdits(null);
 		params.screenDto.getDataSessionDto().setItemIdRCs(results.getLstControlDisplayItem() == null ? null : results.getLstControlDisplayItem().getMapDPAttendance());
 		params.screenDto.getDataSessionDto().setDataSource(results.getLstData());
 		params.screenDto.getDataSessionDto().setClosureId(results.getClosureId());
@@ -257,21 +251,14 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("loadMonth")
 	@SuppressWarnings("unchecked")
 	public DailyPerformanceCorrectionDto loadMonth(MonthParamInit monthInit) throws InterruptedException{
-//		ParamCommonAsync paramCommonAsync = (ParamCommonAsync) session.getAttribute("resultMonthReturn");
 		ParamCommonAsync paramCommonAsync = monthInit.getParamCommonAsync();
-//		DPCorrectionStateParam stateParam = (DPCorrectionStateParam)session.getAttribute("dpStateParam");
 		DPCorrectionStateParam stateParam = monthInit.getDpStateParam();
 		
-//		Object objectCacheMonth = session.getAttribute("domainMonths");
-//		Optional<MonthlyRecordWorkDto> domainMonthOpt = objectCacheMonth == null ? Optional.empty()
-//				: (Optional<MonthlyRecordWorkDto>) objectCacheMonth;
 		paramCommonAsync.setStateParam(stateParam);
 		paramCommonAsync.setDomainMonthOpt(Optional.empty());
 		paramCommonAsync.setLoadAfterCalc(monthInit.isLoadAfterCalc());
 		DailyPerformanceCorrectionDto result = this.processMonthScreen.processMonth(paramCommonAsync);
-//		session.setAttribute("domainMonths", result.getMonthResult() == null ? null : result.getMonthResult().getDomainMonthOpt());
 		
-		//session.setAttribute("resultMonthReturn", null);
 		return result;
 	}
 	
@@ -333,17 +320,20 @@ public class DailyPerformanceCorrectionWebService {
 	}
 
 	private void setDataParent(DPItemParentDto dataParentDto) {
-		val domain = dataParentDto.getDataSessionDto().getDomainEdits();
+		//TODO: val domain = dataParentDto.getDataSessionDto().getDomainEdits();
+		
+		List<DailyRecordDto> domainOlds =  this.getDataOld(dataParentDto.getDataSessionDto().getInputGetDataOlds());
 		
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
-		if (domain == null) {
-			dailyEdits = dataParentDto.getDataSessionDto().getDomainOlds();
-		} else {
-			dailyEdits = (List<DailyRecordDto>) domain;
-		}
+		//TODO: 
+//		if (domain == null) {
+			dailyEdits = domainOlds;
+//		} else {
+//			dailyEdits = (List<DailyRecordDto>) domain;
+//		}
 		dataParentDto.getDataParent().setDailyEdits(dailyEdits);
-		dataParentDto.getDataParent().setDailyOlds(dataParentDto.getDataSessionDto().getDomainOlds());
-		dataParentDto.getDataParent().setDailyOldForLog(dataParentDto.getDataSessionDto().getDomainOldForLog());
+		dataParentDto.getDataParent().setDailyOlds(domainOlds);
+		//TODO: dataParentDto.getDataParent().setDailyOldForLog(dataParentDto.getDataSessionDto().getDomainOldForLog());
 		dataParentDto.getDataParent().setLstAttendanceItem(dataParentDto.getDataSessionDto().getItemIdRCs());
 		dataParentDto.getDataParent().setErrorAllSidDate(dataParentDto.getDataSessionDto().isErrorAllCalc());
 		dataParentDto.getDataParent().setLstSidDateDomainError(convertDataError(dataParentDto.getDataSessionDto().getLstSidDateErrorCalc()));
@@ -353,6 +343,17 @@ public class DailyPerformanceCorrectionWebService {
 		Optional<MonthlyRecordWorkDto> domainMonthOpt = objectCacheMonth == null ? Optional.empty()
 				: (Optional<MonthlyRecordWorkDto>) objectCacheMonth;
 		dataParentDto.getDataParent().setDomainMonthOpt(domainMonthOpt);
+	}
+	
+	private List<DailyRecordDto> getDataOld(InputGetDataOlds inputGetDataOlds) {
+		Set<Pair<String, GeneralDate>> setErrorEmpDate = new HashSet<>();
+		 
+		if(inputGetDataOlds.getDisplayFormat() == 2) {
+			 setErrorEmpDate = inputGetDataOlds.getDPErrorDto().stream().map(x -> Pair.of(x.getEmployeeId(), x.getProcessingDate())).collect(Collectors.toSet());
+		}
+		List<DailyRecordDto> domainOld =  processor.getDailyRecordOldDto(inputGetDataOlds.getEmployeeIds(),
+				inputGetDataOlds.getDateRange(), setErrorEmpDate);
+		return domainOld;
 	}
 
 	@POST
@@ -396,13 +397,17 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("loadRow")
 	@SuppressWarnings("unchecked")
 	public DailyPerformanceCorrectionDto reloadRow(DPPramLoadRowDto param) {
-		val domain  = param.getDataSessionDto().getDomainEdits();
+//		val domain  = param.getDataSessionDto().getDomainEdits();
+		
+		List<DailyRecordDto> domainOlds =  this.getDataOld(param.getDataSessionDto().getInputGetDataOlds());
+		
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
-		if(domain == null){
-			dailyEdits = param.getDataSessionDto().getDomainOlds();
-		}else{
-			dailyEdits = (List<DailyRecordDto>) domain;
-		}
+		//TODO: 
+//		if(domain == null){
+			dailyEdits = domainOlds;
+//		}else{
+//			dailyEdits = (List<DailyRecordDto>) domain;
+//		}
 		param.getDpPramLoadRow().setDailys(dailyEdits);
 		param.getDpPramLoadRow().setLstSidDateDomainError(convertDataError(param.getDataSessionDto().getLstSidDateErrorCalc())); // lstSidDateErrorCalc
 		param.getDpPramLoadRow().setErrorAllSidDate(param.getDataSessionDto().isErrorAllCalc()); // errorAllCalc
@@ -417,14 +422,15 @@ public class DailyPerformanceCorrectionWebService {
 				: (Optional<MonthlyRecordWorkDto>) objectCacheMonth;
 		param.getDpPramLoadRow().setDomainMonthOpt(domainMonthOpt);
 		val result = loadRowProcessor.reloadGrid(param.getDpPramLoadRow());
-		if(!param.getDpPramLoadRow().getOnlyLoadMonth()) {
-			param.getDataSessionDto().setApprovalConfirmCache(result.getApprovalConfirmCache()); // approvalConfirm
-			param.getDataSessionDto().setDomainOlds(result.getDomainOld()); // domainOlds
-			param.getDataSessionDto().setDomainOldForLog(result.getDomainOldForLog()); // domainOldForLog
-		}
+		//TODO: 
+//		if(!param.getDpPramLoadRow().getOnlyLoadMonth()) {
+//			param.getDataSessionDto().setApprovalConfirmCache(result.getApprovalConfirmCache()); // approvalConfirm
+//			//param.getDataSessionDto().setDomainOlds(result.getDomainOld()); // domainOlds
+//			param.getDataSessionDto().setDomainOldForLog(result.getDomainOldForLog()); // domainOldForLog
+//		}
 		result.setApprovalConfirmCache(null);
 		result.setDomainOld(Collections.emptyList());
-		param.getDataSessionDto().setDomainEdits(null); // domainEdits
+		//param.getDataSessionDto().setDomainEdits(null); // domainEdits
 		result.setLstCellState(result.getMapCellState().values().stream().collect(Collectors.toList()));
 		result.setMapCellState(null);
 		result.setDataSessionDto(param.getDataSessionDto());
@@ -440,20 +446,24 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("loadVerData")
 	@SuppressWarnings("unchecked")
 	public LoadVerDataResultDto addAndUpdate(LoadVerDataDto loadVerDataDto) {
-		val domain = loadVerDataDto.getDataSessionDto().getDomainEdits(); // domainEdits
+		//TODO: val domain = loadVerDataDto.getDataSessionDto().getDomainEdits(); // domainEdits
+		
+		List<DailyRecordDto> domainOlds =  this.getDataOld(loadVerDataDto.getDataSessionDto().getInputGetDataOlds());
+		
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
-		if (domain == null) {
-			dailyEdits = loadVerDataDto.getDataSessionDto().getDomainOlds(); //domainOlds
-		} else {
-			dailyEdits = (List<DailyRecordDto>) domain;
-		}
+		//TODO: 
+//		if (domain == null) {
+			dailyEdits = domainOlds; //domainOlds
+//		} else {
+//			dailyEdits = (List<DailyRecordDto>) domain;
+//		}
 		loadVerDataDto.getLoadVerData().setLstDomainOld(dailyEdits);
 		loadVerDataDto.getLoadVerData().setApprovalConfirmCache(loadVerDataDto.getDataSessionDto().getApprovalConfirmCache()); //approvalConfirm
 		DPCorrectionStateParam stateParam = loadVerDataDto.getDataSessionDto().getDpStateParam(); //dpStateParam
 		loadVerDataDto.getLoadVerData().setStateParam(stateParam);
 		val result = dPLoadVerProcessor.loadVerAfterCheckbox(loadVerDataDto.getLoadVerData());
-		loadVerDataDto.getDataSessionDto().setDomainEdits(null); // domainEdits
-		loadVerDataDto.getDataSessionDto().setDomainOlds(result.getLstDomainOld()); // domainOlds
+		//TODO: loadVerDataDto.getDataSessionDto().setDomainEdits(null); // domainEdits
+		//loadVerDataDto.getDataSessionDto().setDomainOlds(result.getLstDomainOld()); // domainOlds
 		result.setLstDomainOld(new ArrayList<>());
 		loadVerDataDto.getDataSessionDto().setApprovalConfirmCache(result.getApprovalConfirmCache()); // approvalConfirm
 		result.setApprovalConfirmCache(null);
@@ -512,16 +522,19 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("calcTime")
 	@SuppressWarnings("unchecked")
 	public DCCalcTimeDto calcTime(DCCalcTimeParamDto dcTimeParam) {
-		val domain  = dcTimeParam.getDataSessionDto().getDomainEdits(); // domainEdits
+		List<DailyRecordDto> domainOlds =  this.getDataOld(dcTimeParam.getDataSessionDto().getInputGetDataOlds());
+		
+//		//TODO: val domain  = dcTimeParam.getDataSessionDto().getDomainEdits(); // domainEdits
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
-		if(domain == null){
-			dailyEdits = cloneListDto(dcTimeParam.getDataSessionDto().getDomainOlds());
-		}else{
-			dailyEdits = (List<DailyRecordDto>) domain;
-		}
+		//TODO: 
+//		if(domain == null){
+			dailyEdits = cloneListDto(domainOlds);
+//		}else{
+//			dailyEdits = (List<DailyRecordDto>) domain;
+//		}
 		
 		val result = dailyCorrectCalcTimeService.calcTime(dailyEdits, dcTimeParam.getCalcTimeParam().getItemEdits(), dcTimeParam.getCalcTimeParam().getChangeSpr31(), dcTimeParam.getCalcTimeParam().getChangeSpr34(), dcTimeParam.getCalcTimeParam().isNotChangeCell());
-		dcTimeParam.getDataSessionDto().setDomainEdits(result.getDailyEdits());
+		//TODO: dcTimeParam.getDataSessionDto().setDomainEdits(result.getDailyEdits());
 		result.setDailyEdits(Collections.emptyList());
 		DCCalcTimeDto dcCalcTimeDto = new DCCalcTimeDto(result, dcTimeParam.getDataSessionDto());
 		return dcCalcTimeDto;
@@ -531,15 +544,17 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("calculation")
 	@SuppressWarnings("unchecked")
 	public DailyPerformanceCalcDto calculation(DPItemParentDto dataParentDto) {
-		val domain  = dataParentDto.getDataSessionDto().getDomainEdits();
+		List<DailyRecordDto> domainOlds =  this.getDataOld(dataParentDto.getDataSessionDto().getInputGetDataOlds());
+		//TODO: val domain  = dataParentDto.getDataSessionDto().getDomainEdits();
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
-		if(domain == null){
-			dailyEdits = cloneListDto(dataParentDto.getDataSessionDto().getDomainOlds());
-		}else{
-			dailyEdits = (List<DailyRecordDto>) domain;
-		}
+//		if(domain == null){
+			dailyEdits = cloneListDto(domainOlds);
+			//TODO: 
+//		}else{
+//			dailyEdits = (List<DailyRecordDto>) domain;
+//		}
 		dataParentDto.getDataParent().setDailyEdits(dailyEdits);
-		dataParentDto.getDataParent().setDailyOlds(dataParentDto.getDataSessionDto().getDomainOlds()); // domainOlds
+		dataParentDto.getDataParent().setDailyOlds(domainOlds); // domainOlds
 		
 		dataParentDto.getDataParent().setLstAttendanceItem(dataParentDto.getDataSessionDto().getItemIdRCs()); //itemIdRCs
 		dataParentDto.getDataParent().setLstData(dataParentDto.getDataSessionDto().getDataSource()); // dataSource
@@ -552,7 +567,7 @@ public class DailyPerformanceCorrectionWebService {
 		dataParentDto.getDataParent().setParamCommonAsync(paramCommonAsync);
 		val result = dailyCalculationService.calculateCorrectedResults(dataParentDto.getDataParent());
 
-		dataParentDto.getDataSessionDto().setDomainEdits(result.getCalculatedRows());// domainEdits
+		//TODO: dataParentDto.getDataSessionDto().setDomainEdits(result.getCalculatedRows());// domainEdits
 		dataParentDto.getDataSessionDto().setLstSidDateErrorCalc(convertDataErrorDto(result.getLstSidDateDomainError()));// lstSidDateErrorCalc
 		dataParentDto.getDataSessionDto().setErrorAllCalc(result.isErrorAllSidDate());// errorAllCalc
 		result.setCalculatedRows(Collections.emptyList());
@@ -644,13 +659,15 @@ public class DailyPerformanceCorrectionWebService {
     @POST
 	@Path("findWplIDByCode")
 	public GetWkpIDOutput findWplIDByCode(GetWkpIDParam param) {
-	    val domain  = param.getDataSessionDto().getDomainEdits();
+		List<DailyRecordDto> domainOlds =  this.getDataOld(param.getDataSessionDto().getInputGetDataOlds());
+		
+		//TODO: val domain  = param.getDataSessionDto().getDomainEdits();
         List<DailyRecordDto> dailyEdits = new ArrayList<>();
-        if(domain == null){
-            dailyEdits = cloneListDto(param.getDataSessionDto().getDomainOlds());
-        }else{
-            dailyEdits = (List<DailyRecordDto>) domain;
-        }
+//        if(domain == null){
+            dailyEdits = cloneListDto(domainOlds);
+//        }else{
+//            dailyEdits = (List<DailyRecordDto>) domain;
+//        }
         
         Optional<DailyRecordDto> dailyEditOpt = dailyEdits.stream().filter(x -> {
             return x.getAffiliationInfo().getBaseDate().toString("yyyy/MM/dd").equals(param.getBaseDate()) 
