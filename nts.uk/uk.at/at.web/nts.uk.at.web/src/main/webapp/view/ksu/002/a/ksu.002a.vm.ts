@@ -664,7 +664,7 @@ module nts.uk.ui.at.ksu002.a {
 										}
 									}
 
-									if (data.wtype.name.toString() === '年休') {
+									if (ko.unwrap(data.wtype.name) === '年休') {
 										data.value.finish(null);
 										data.value.begin(null);
 									}
