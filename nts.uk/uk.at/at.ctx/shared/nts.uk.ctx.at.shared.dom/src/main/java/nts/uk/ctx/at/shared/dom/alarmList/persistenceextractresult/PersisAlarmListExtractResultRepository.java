@@ -13,4 +13,6 @@ public interface PersisAlarmListExtractResultRepository {
     void delete(PersistenceAlarmListExtractResult domain);
 
     List<PersistenceAlarmListExtractResult> getAlarmExtractResult(String companyId, List<String> employeeIds);
+
+    void onlyDeleteParent(String cid, String patternCode, String runCode);
 }

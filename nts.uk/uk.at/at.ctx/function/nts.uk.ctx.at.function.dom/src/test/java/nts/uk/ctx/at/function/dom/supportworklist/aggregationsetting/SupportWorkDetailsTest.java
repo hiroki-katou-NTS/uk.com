@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.*;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import org.junit.Test;
@@ -35,6 +36,7 @@ public class SupportWorkDetailsTest {
                 Arrays.asList(1, 2, 3),
                 new OuenWorkTimeSheetOfDailyAttendance(
                         new SupportFrameNo(1),
+                        SupportType.TIMEZONE,
                         WorkContent.create(
                                 WorkplaceOfWorkEachOuen.create(
                                         new WorkplaceId("workplace-id-00001"),
@@ -56,6 +58,7 @@ public class SupportWorkDetailsTest {
     public void testSetSupportWork() {
         OuenWorkTimeSheetOfDailyAttendance ouenWorkTimeSheetOfDaily = new OuenWorkTimeSheetOfDailyAttendance(
                 new SupportFrameNo(1),
+                SupportType.TIMEZONE,
                 WorkContent.create(
                         WorkplaceOfWorkEachOuen.create(
                                 new WorkplaceId("workplace-id-00001"),
@@ -100,6 +103,7 @@ public class SupportWorkDetailsTest {
                 Arrays.asList(924, 925, 926, 927, 928, 929, 930, 1305, 1306, 1309, 1336, 2191),
                 new OuenWorkTimeSheetOfDailyAttendance(
                         new SupportFrameNo(1),
+                        SupportType.TIMEZONE,
                         WorkContent.create(
                                 WorkplaceOfWorkEachOuen.create(
                                         new WorkplaceId("workplace-id-00001"),

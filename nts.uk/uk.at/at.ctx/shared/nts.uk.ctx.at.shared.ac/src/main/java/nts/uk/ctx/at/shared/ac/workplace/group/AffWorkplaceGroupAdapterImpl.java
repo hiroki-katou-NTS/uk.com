@@ -30,4 +30,9 @@ public class AffWorkplaceGroupAdapterImpl implements AffWorkplaceAdapter {
     public List<String> getUpperWorkplace(String companyID, String workplaceID, GeneralDate date) {
         return this.workplacePub.getUpperWorkplace(companyID, workplaceID, date);
     }
+
+    @Override
+    public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId) {
+        return this.workplacePub.getWorkplaceIdAndUpper(companyId, baseDate, workplaceId);
+    }
 }

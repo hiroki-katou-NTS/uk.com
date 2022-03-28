@@ -218,7 +218,8 @@ public class DumData {
                     "sya005"
             ),
             0,
-            Optional.of("patternCode1")
+            Optional.of("patternCode1"),
+            new ArrayList<>()
     );
 
     public static List<AffAtWorkplaceExport> affAtWorkplaceExports01 = Arrays.asList(
@@ -294,7 +295,8 @@ public class DumData {
                     "sya005"
             ),
             0,
-            Optional.of("patternCode1")
+            Optional.of("patternCode1"),
+            new ArrayList<>()
     );
 
     public static final List<TopPageAlarmImport> alarmListInfos2 = Arrays.asList(
