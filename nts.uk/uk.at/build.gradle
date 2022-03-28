@@ -285,7 +285,7 @@ project (':at.ctx:shared:nts.uk.ctx.at.shared.ac') {
 		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: version)
 		compile(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.pub', version: version)
 		compile(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.pub', version: version)
-        compile(group: 'com.query',name: 'nts.uk.query.pub',version: version)
+		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 	}
 }
 

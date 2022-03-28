@@ -7,8 +7,8 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.aggregation.dom.adapter.rank.EmployeeRankInfoImported;
 import nts.uk.ctx.at.aggregation.dom.adapter.team.EmployeeTeamInfoImported;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpLicenseClassification;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.GetEmpLicenseClassificationService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpLicenseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.GetEmpLicenseClassificationService;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.EmployeeInfoWantToBeGet;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.importeddto.EmployeeInfoImported;
 
@@ -18,9 +18,9 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
  * @author dan_pv
  */
 public class GetPersonalInfoForScheduleTableService {
-	
+
 	/**
-	 * 取得する	
+	 * 取得する
 	 * @param require
 	 * @param employeeIdList 社員リスト
 	 * @param baseDate 基準日
@@ -33,12 +33,12 @@ public class GetPersonalInfoForScheduleTableService {
 			GeneralDate baseDate,
 			List<ScheduleTablePersonalInfoItem> personalItemList
 			) {
-		
+
 		val employeeInfoList = getEmployeeInfo(require, employeeIdList, baseDate, personalItemList);
 		val employeeTeamInfoList = getEmployeeTeamInfo(require, employeeIdList, personalItemList);
 		val employeeRankInfoList = getEmployeeRankInfo(require, employeeIdList, personalItemList);
 		val employeeLicenseClassList = getEmployeeLicenseClass(require, employeeIdList, baseDate, personalItemList);
-		
+
 		return employeeIdList.stream().map( employeeId -> {
 			// employee's information
 			EmployeeInfoImported employeeInfo = employeeInfoList.stream()
@@ -56,12 +56,12 @@ public class GetPersonalInfoForScheduleTableService {
 			EmpLicenseClassification employeeLicenseClass = employeeLicenseClassList.stream()
 					.filter( x -> x.getEmpID().equals(employeeId))
 					.findFirst().orElse(null);
-			
+
 			return ScheduleTablePersonalInfo.create(employeeId, employeeInfo, employeeTeamInfo, employeeRankInfo, employeeLicenseClass);
-			
+
 		}).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * 社員情報を取得する
 	 * @param require
@@ -71,21 +71,22 @@ public class GetPersonalInfoForScheduleTableService {
 	 * @return
 	 */
 	private static List<EmployeeInfoImported> getEmployeeInfo(
-			Require require, 
-			List<String> employeeIds, 
+			Require require,
+			List<String> employeeIds,
 			GeneralDate baseDate,
 			List<ScheduleTablePersonalInfoItem> personalItemList) {
-		
-		EmployeeInfoWantToBeGet param = new EmployeeInfoWantToBeGet(
-				false, 
-				false, 
-				personalItemList.contains(ScheduleTablePersonalInfoItem.JOBTITLE),
-				personalItemList.contains(ScheduleTablePersonalInfoItem.EMPLOYMENT),
-				personalItemList.contains(ScheduleTablePersonalInfoItem.CLASSIFICATION));
-		
+
+		EmployeeInfoWantToBeGet param = EmployeeInfoWantToBeGet.builder()
+				.isGetWorkplace(false)
+				.isGetDepartment(false)
+				.isGetJobTitle(personalItemList.contains(ScheduleTablePersonalInfoItem.JOBTITLE))
+				.isGetEmployment(personalItemList.contains(ScheduleTablePersonalInfoItem.EMPLOYMENT))
+				.isGetClassification(personalItemList.contains(ScheduleTablePersonalInfoItem.CLASSIFICATION))
+				.build();
+
 		return require.getEmployeeInfo(employeeIds, baseDate, param);
 	}
-	
+
 	/**
 	 * 社員所属チーム情報を取得する
 	 * @param require
@@ -94,20 +95,20 @@ public class GetPersonalInfoForScheduleTableService {
 	 * @return
 	 */
 	private static List<EmployeeTeamInfoImported> getEmployeeTeamInfo(
-			Require require, 
-			List<String> employeeIds, 
+			Require require,
+			List<String> employeeIds,
 			List<ScheduleTablePersonalInfoItem> personalItemList) {
-		
+
 		if ( !personalItemList.contains(ScheduleTablePersonalInfoItem.TEAM)) {
-			
+
 			return employeeIds.stream()
 					.map(id -> EmployeeTeamInfoImported.createWithEmpty(id))
 					.collect(Collectors.toList());
 		}
-		
+
 		return require.getEmployeeTeamInfo(employeeIds);
 	}
-	
+
 	/**
 	 * 社員ランク情報を取得する
 	 * @param require
@@ -116,22 +117,22 @@ public class GetPersonalInfoForScheduleTableService {
 	 * @return
 	 */
 	private static List<EmployeeRankInfoImported> getEmployeeRankInfo (
-			Require require, 
-			List<String> employeeIds, 
+			Require require,
+			List<String> employeeIds,
 			List<ScheduleTablePersonalInfoItem> personalItemList) {
-		
+
 		if ( !personalItemList.contains(ScheduleTablePersonalInfoItem.RANK) ) {
-			
+
 			return employeeIds.stream()
 					.map(id -> EmployeeRankInfoImported.createWithEmpty(id))
 					.collect(Collectors.toList());
 		}
-		
+
 		return require.getEmployeeRankInfo(employeeIds);
-		
-		
+
+
 	}
-	
+
 	/**
 	 * 社員免許区分を取得する
 	 * @param require
@@ -141,24 +142,24 @@ public class GetPersonalInfoForScheduleTableService {
 	 * @return
 	 */
 	private static List<EmpLicenseClassification> getEmployeeLicenseClass (
-			Require require, 
-			List<String> employeeIds, 
+			Require require,
+			List<String> employeeIds,
 			GeneralDate baseDate,
 			List<ScheduleTablePersonalInfoItem> personalItemList) {
-		
+
 		if ( !personalItemList.contains(ScheduleTablePersonalInfoItem.NURSE_CLASSIFICATION) ) {
-			
+
 			return employeeIds.stream()
-					.map(id -> EmpLicenseClassification.empLicenseClassification(id))
+					.map(id -> EmpLicenseClassification.createEmpLicenseClassification(id))
 					.collect(Collectors.toList());
 		}
-		
+
 		return GetEmpLicenseClassificationService.get(require, baseDate, employeeIds);
 	}
-			
-	
+
+
 	public static interface Require extends GetEmpLicenseClassificationService.Require {
-		
+
 		/**
 		 * 社員の情報を取得する
 		 * @param employeeIds 社員リスト
@@ -167,21 +168,21 @@ public class GetPersonalInfoForScheduleTableService {
 		 * @return
 		 */
 		List<EmployeeInfoImported> getEmployeeInfo(List<String> employeeIds, GeneralDate baseDate, EmployeeInfoWantToBeGet param);
-		
+
 		/**
 		 * 所属スケジュールチーム情報を取得する
 		 * @param employeeIds 社員リスト
 		 * @return
 		 */
 		List<EmployeeTeamInfoImported> getEmployeeTeamInfo(List<String> employeeIds);
-		
+
 		/**
 		 * 社員ランク情報を取得する
 		 * @param employeeIds 社員リスト
 		 * @return
 		 */
 		List<EmployeeRankInfoImported> getEmployeeRankInfo(List<String> employeeIds);
-		
+
 	}
 
 }

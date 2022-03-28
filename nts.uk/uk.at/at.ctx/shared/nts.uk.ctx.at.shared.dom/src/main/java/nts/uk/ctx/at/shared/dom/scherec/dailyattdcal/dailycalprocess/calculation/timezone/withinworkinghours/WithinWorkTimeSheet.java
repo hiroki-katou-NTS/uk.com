@@ -668,7 +668,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 					calcAtrOfDaily));
 		}
 		//同じNo同士はここで加算し、Listのサイズを減らす
-		return sumBonusPayTime(bonusPayList);
+		return BonusPayTime.sumBonusPayTimeList(bonusPayList);
 	}
 
 	/**
@@ -688,7 +688,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 					calcAtrOfDaily));
 		}
 		//同じNo同士はここで加算し、Listのサイズを減らす
-		return sumBonusPayTime(bonusPayList);
+		return BonusPayTime.sumBonusPayTimeList(bonusPayList);
 	}
 
 	/**
@@ -1532,4 +1532,21 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				this.leaveEarlyDecisionClock,
 				this.lateDecisionClock);
 	}
+	
+	/**
+	 * 逆丸めにして取得する
+	 * @return 就業時間内時間帯
+	 */
+	public WithinWorkTimeSheet getReverseRounding() {
+		return new WithinWorkTimeSheet(
+				this.withinWorkTimeFrame.stream().map(f -> f.getReverseRounding()).collect(Collectors.toList()),
+				this.shortTimeSheet.stream().map(s -> s.clone()).collect(Collectors.toList()),
+				this.leaveEarlyDecisionClock.stream()
+						.map(l -> new LeaveEarlyDecisionClock(new TimeWithDayAttr(l.getLeaveEarlyDecisionClock().valueAsMinutes()), l.getWorkNo()))
+						.collect(Collectors.toList()),
+				this.lateDecisionClock.stream()
+						.map(l -> new LateDecisionClock(new TimeWithDayAttr(l.getLateDecisionClock().valueAsMinutes()), l.getWorkNo()))
+						.collect(Collectors.toList()));
+	}
 }
+

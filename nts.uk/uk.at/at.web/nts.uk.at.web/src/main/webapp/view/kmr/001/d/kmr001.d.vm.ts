@@ -126,7 +126,7 @@ module nts.uk.at.kmr001.d {
             vm.$dialog.confirm({ messageId: 'Msg_18' }).then(res => {
                 if (res == "yes") {
                     vm.$blockui("invisible");
-                    let data = new CommandDelete(vm.selectedHistoryId());
+                    let data = new CommandDelete(vm.selectedStartDateText(), vm.selectedHistoryId());
                     if (vm.lstWpkHistory().length > 1) {
                         vm.$ajax(API.DELETE, data).done(() => {
                             vm.created(vm.params).done(() => {
@@ -175,12 +175,16 @@ module nts.uk.at.kmr001.d {
                     endDate = moment.utc(vm.selectedEndDate(), "YYYY/MM/DD");
                 switch (vm.screenMode()) {
                     case SCREEN_MODE.NEW:
-                        data = new BentoMenuHistCommand(startDate);
+                        data = new BentoMenuHistCommand(startDate.format('YYYY/MM/DD'), endDate.format('YYYY/MM/DD'));
                         vm.$ajax(API.ADDNEW, data).done((historyId) => {
                             vm.created(vm.params).done(() => {
                                 vm.selectedHistoryId(historyId);
                                 vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-                                    vm.focusUi(data);
+                                    let params = {
+                                        date: data.startDate,
+                                        isLasted: true
+                                    };
+                                    vm.$window.close({params});
                                 });
                             });
                         }).fail((error) => {
@@ -190,12 +194,16 @@ module nts.uk.at.kmr001.d {
                         });
                         break;
                     case SCREEN_MODE.ADD:
-                        data = new BentoMenuHistCommand(startDate);
+                        data = new BentoMenuHistCommand(startDate.format('YYYY/MM/DD'), endDate.format('YYYY/MM/DD'));
                         vm.$ajax(API.ADDNEW, data).done((historyId) => {
                             vm.created(vm.params).done(() => {
                                 vm.selectedHistoryId(historyId);
                                 vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-                                    vm.focusUi(data);
+                                    let params = {
+                                        date: data.startDate,
+                                        isLasted: true
+                                    };
+                                    vm.$window.close({params});
                                 });
                             });
                         }).fail((error) => {
@@ -205,7 +213,10 @@ module nts.uk.at.kmr001.d {
                         });
                         break;
                     case SCREEN_MODE.UPDATE:
-                        data = new CommandUpdate(startDate.toISOString(), endDate.toISOString(), vm.selectedHistoryId());
+                        data = new CommandUpdate(
+							moment(startDate).format('YYYY/MM/DD'), 
+							moment(endDate).format('YYYY/MM/DD'), 
+							_.find(vm.lstWpkHistory(), o => o.historyId==vm.selectedHistoryId()).startDate);
                         vm.$ajax(API.UPDATE, data).done(() => {
                             vm.created(vm.params).done(() => {
                                 vm.selectedHistoryId.valueHasMutated();
@@ -224,22 +235,25 @@ module nts.uk.at.kmr001.d {
                         if (vm.selectedHistoryId()) {
                             let preSelectHist = _.find(vm.lstWpkHistory(), h => h.historyId == vm.selectedHistoryId());
                             let params = {
-                                historyId: preSelectHist.historyId,
-                                startDate: preSelectHist.startDate,
-                                endDate: preSelectHist.endDate
-                            };
-                            vm.$window.close({
-                                params
-                            });
+								date: preSelectHist.startDate,
+								isLasted: vm.isLatestHistory()
+							};
+										
+							if(_.isEmpty(params)) {
+								vm.$window.close();	
+							} else {
+								vm.$window.close({ params });		
+							}
                         } else {
-                            let params = {
-                                historyId: vm.lstWpkHistory()[0].historyId,
-                                startDate: vm.lstWpkHistory()[0].startDate,
-                                endDate: vm.lstWpkHistory()[0].endDate
-                            };
-                            vm.$window.close({
-                                params
-                            });
+							vm.$window.close();
+//                            let params = {
+//                                historyId: vm.lstWpkHistory()[0].historyId,
+//                                startDate: vm.lstWpkHistory()[0].startDate,
+//                                endDate: vm.lstWpkHistory()[0].endDate
+//                            };
+//                            vm.$window.close({
+//                                params
+//                            });
                         }
                         break;
                 }
@@ -248,37 +262,37 @@ module nts.uk.at.kmr001.d {
 
         cancel() {
             const vm = this;
-            if (vm.lstWpkHistory().length == 0) {
-                let params = {
-                    historyId: null,
-                    startDate: null,
-                    endDate: null
-                };
-                vm.$window.close({
-                    params
-                });
-            }
-            let preSelectHist = _.find(vm.lstWpkHistory(), h => h.historyId == vm.bkHistoryId);
-            if (preSelectHist && (preSelectHist.startDate != vm.bkStartDate || preSelectHist.endDate != vm.bkEndDate)) {
-                let params = {
-                    historyId: preSelectHist.historyId,
-                    startDate: preSelectHist.startDate,
-                    endDate: preSelectHist.endDate
-                };
-                vm.$window.close({
-                    params
-                });
-
-            } else if (preSelectHist == null && vm.lstWpkHistory().length > 0) {
-                let params = {
-                    historyId: vm.lstWpkHistory()[0].historyId,
-                    startDate: vm.lstWpkHistory()[0].startDate,
-                    endDate: vm.lstWpkHistory()[0].endDate
-                };
-                vm.$window.close({
-                    params
-                });
-            }
+//            if (vm.lstWpkHistory().length == 0) {
+//                let params = {
+//                    historyId: null,
+//                    startDate: null,
+//                    endDate: null
+//                };
+//                vm.$window.close({
+//                    params
+//                });
+//            }
+//            let preSelectHist = _.find(vm.lstWpkHistory(), h => h.historyId == vm.bkHistoryId);
+//            if (preSelectHist && (preSelectHist.startDate != vm.bkStartDate || preSelectHist.endDate != vm.bkEndDate)) {
+//                let params = {
+//                    historyId: preSelectHist.historyId,
+//                    startDate: preSelectHist.startDate,
+//                    endDate: preSelectHist.endDate
+//                };
+//                vm.$window.close({
+//                    params
+//                });
+//
+//            } else if (preSelectHist == null && vm.lstWpkHistory().length > 0) {
+//                let params = {
+//                    historyId: vm.lstWpkHistory()[0].historyId,
+//                    startDate: vm.lstWpkHistory()[0].startDate,
+//                    endDate: vm.lstWpkHistory()[0].endDate
+//                };
+//                vm.$window.close({
+//                    params
+//                });
+//            }
             vm.$window.close();
         }
 
@@ -328,22 +342,24 @@ module nts.uk.at.kmr001.d {
     }
 
     class CommandDelete {
-        historyId: string;
+		startDate: string;
+		historyId: string;
 
-        constructor(historyId: string) {
+        constructor(startDate: string, historyId: string) {
+			this.startDate = startDate;
             this.historyId = historyId;
         }
     }
 
     class CommandUpdate {
-        startDatePerio: string;
-        endDatePerio: string;
-        historyId: string;
+		startDatePerio: string;
+		endDatePerio: string;
+		originalStartDate: string;
 
-        constructor(startDatePerio: string, endDatePerio: string, historyId: string) {
+        constructor(startDatePerio: string, endDatePerio: string, originalStartDate: string) {
             this.startDatePerio = startDatePerio;
             this.endDatePerio = endDatePerio;
-            this.historyId = historyId;
+            this.originalStartDate = originalStartDate;
         }
     }
 
@@ -384,10 +400,12 @@ module nts.uk.at.kmr001.d {
     }
 
     class BentoMenuHistCommand {
-        date: string;
+        startDate: string;
+		endDate: string;
 
-        constructor(date) {
-            this.date = date;
+        constructor(startDate: string, endDate: string) {
+            this.startDate = startDate;
+			this.endDate = endDate;
         }
     }
 

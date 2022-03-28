@@ -93,7 +93,7 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 	}
 	
 	/**
-	 * 出勤系かどうか判断
+	 * [7] 出勤系かどうか判断
 	 * @return true:出勤系,false:出勤系でない
 	 */
 	public boolean isWorkingDay() {
@@ -105,7 +105,7 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 	}
 
 	/**
-	 * 出勤系分類かどうか判断
+	 * [prv-1] 出勤系分類かどうか判断
 	 * @param wt 勤務種類の分類
 	 * @return true:出勤系分類,false:出勤系分類でない
 	 */
@@ -266,8 +266,8 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 	}
 	
 	/**
-	 * 出勤系か判定する
-	 * @return　出勤系である
+	 * [14] 出勤かどうか判断する
+	 * @return true=出勤（出勤 or 振替出勤）,false=出勤でない
 	 */
 	public boolean isWeekDayAttendance() {
 		return this.dailyWork.isWeekDayAttendance();
@@ -562,8 +562,8 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 	}
 	
 	/**
-	 * 1日休出かどうかの判断
-	 * @return true=1日休出,false=1日休出ではない
+	 * [12] 休日出勤かどうか判断する
+	 * @return true=休出,false=休出ではない
 	 */
 	public boolean isHolidayWork(){
 		Optional<WorkAtr> workAtr = this.getWorkAtr(WorkTypeClassification.HolidayWork);

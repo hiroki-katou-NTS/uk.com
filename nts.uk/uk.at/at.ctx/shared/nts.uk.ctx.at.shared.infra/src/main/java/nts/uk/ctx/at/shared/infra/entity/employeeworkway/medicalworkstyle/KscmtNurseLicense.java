@@ -51,6 +51,14 @@ public class KscmtNurseLicense extends ContractUkJpaEntity implements Serializab
 	@NotNull
 	@Column(name = "IS_OFFICE_WORK")
 	private boolean officeWork;
+	
+	/**
+	 * 看護管理者か
+	 */
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "IS_NURSE_ADMINISTRATOR")
+	private boolean nursingManager;
 
 	@Override
 	protected Object getKey() {

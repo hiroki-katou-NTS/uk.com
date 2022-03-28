@@ -13,6 +13,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 /**
  * 勤務予定（勤務情報）dtoを作成する
  * UKDesign.UniversalK.就業.KSU_スケジュール.KSU001_個人スケジュール修正(職場別).個人別と共通の処理
@@ -38,18 +39,19 @@ public class ScreenQueryCreateWorkSchedule {
 	public List<WorkScheduleWorkInforDto> get(
 			Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMap,
 			Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> map,
-			Boolean getActualData
+			Boolean getActualData,
+			TargetOrgIdenInfor targetOrg
 			) {
 		
 		// 1: 作成する(Map<社員の予定管理状態, Optional<勤務予定>>)
 		List<WorkScheduleWorkInforDto> workScheduleWorkInfor1 = 
-					createWorkScheduleWorkInfor.getDataScheduleOfWorkInfo(mngStatusAndWScheMap);
+					createWorkScheduleWorkInfor.getDataScheduleOfWorkInfo(mngStatusAndWScheMap, targetOrg);
 		
 		// 2実績も取得するか == true
 		if (getActualData) {
 			// 2.1: 作成する(Map<社員の予定管理状態, Optional<日別勤怠(Work)>>)
 			List<WorkScheduleWorkInforDto> workScheduleWorkInfor2 =
-						createWorkScheduleWorkInforBase.getDataScheduleOfWorkInfo(map);
+						createWorkScheduleWorkInforBase.getDataScheduleOfWorkInfo(map, targetOrg);
 			
 			// 2.2 
 			List<WorkScheduleWorkInforDto> list1 = 

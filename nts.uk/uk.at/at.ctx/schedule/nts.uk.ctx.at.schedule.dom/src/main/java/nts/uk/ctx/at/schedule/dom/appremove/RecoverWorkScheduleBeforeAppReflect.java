@@ -72,7 +72,7 @@ public class RecoverWorkScheduleBeforeAppReflect {
 		WorkSchedule workScheduleReflect = new WorkSchedule(domainDaily.getEmployeeId(), domainDaily.getYmd(),
 				workSchedule.getConfirmedATR(), domainDaily.getWorkInformation(), domainDaily.getAffiliationInfor(),
 				domainDaily.getBreakTime(), domainDaily.getEditState(), 
-				workSchedule.getTaskSchedule(),
+				workSchedule.getTaskSchedule(), workSchedule.getSupportSchedule(),
 				domainDaily.getAttendanceLeave(),
 				domainDaily.getAttendanceTimeOfDailyPerformance(), domainDaily.getShortTime(),
 				domainDaily.getOutingTime());

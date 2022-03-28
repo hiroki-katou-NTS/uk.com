@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculatio
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,7 +36,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @AllArgsConstructor
 @Getter
-public class LateTimeSheet {
+public class LateTimeSheet implements Cloneable {
 	
 	// 遅刻していない場合はempty
 	//計上用時間帯
@@ -426,5 +427,23 @@ public class LateTimeSheet {
 				deducation,
 				this.workNo,
 				this.noCoreFlexLateTime.map(n -> new AttendanceTime(n.valueAsMinutes()))));
+	}
+	
+	public LateTimeSheet clone() {
+		LateTimeSheet clone = new LateTimeSheet(
+				this.forRecordTimeSheet,
+				this.forDeducationTimeSheet,
+				this.workNo,
+				this.noCoreFlexLateTime);
+		try {
+			clone.forRecordTimeSheet = this.forRecordTimeSheet.map(r -> r.clone());
+			clone.forDeducationTimeSheet = this.forDeducationTimeSheet.map(d -> d.clone());
+			clone.workNo = this.workNo;
+			clone.noCoreFlexLateTime = this.noCoreFlexLateTime.map(n -> new AttendanceTime(n.valueAsMinutes()));
+		}
+		catch (Exception e) {
+			throw new RuntimeException("LateTimeSheet clone error.");
+		}
+		return clone;
 	}
 }

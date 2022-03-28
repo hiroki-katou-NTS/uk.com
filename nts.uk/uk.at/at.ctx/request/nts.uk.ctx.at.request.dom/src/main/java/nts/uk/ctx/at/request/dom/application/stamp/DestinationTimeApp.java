@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 /**
  * 
@@ -23,6 +24,6 @@ public class DestinationTimeApp {
 	private Integer engraveFrameNo;
 //	開始終了区分
 	private StartEndClassification startEndClassification;
-//	応援勤務枠No
-	private Optional<Integer> supportWork; 
+//	応援勤務NO
+	private Optional<WorkNo> supportWorkNo; 
 }

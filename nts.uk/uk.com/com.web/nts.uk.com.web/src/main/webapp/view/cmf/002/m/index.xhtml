@@ -41,7 +41,7 @@
 								options: $vm.timeSelectedList,
 								optionsValue: 'code',
 								optionsText: 'name',
-								enable: $vm.enableFormatSelectionCls(),
+								enable: $vm.enableFormatSelectionCls,
 								value: timeSeletion }">
 							</div>
 						</div>
@@ -102,7 +102,7 @@
 								options: $vm.decimalSelectList,
 								optionsValue: 'code',
 								optionsText: 'name',
-								enable: $vm.enableSelectTimeCls(),
+								enable: $vm.enableSelectTimeCls,
 								value: decimalSelection }">
 							</div>
 						</div>
@@ -118,7 +118,7 @@
 							<div tabindex="5" id="M5_1"
 								data-bind="ntsCheckBox: { 
 									checked: outputMinusAsZero, 
-									enable: $vm.enableFormatSelectionCls(), 
+									enable: $vm.enableFormatSelectionCls,
 									text: '#{i18n.getText('CMF002_147')}' 
 								}"></div>
 						</div>
@@ -140,7 +140,7 @@
 								value: delimiterSetting,
 								optionsText: 'name',
 								editable: false,
-								enable: $vm.enableSelectTimeCls(),
+								enable: $vm.enableSelectTimeCls,
 								required: $vm.enableRequired(),
 								selectFirstIfNull : false,
 								columns: [
@@ -166,7 +166,7 @@
 								value: nextDayOutputMethod,
 								optionsText: 'name',
 								editable: false,
-								enable: $vm.enableSelectTimeCls(),
+								enable: $vm.enableSelectTimeCls,
 								required: $vm.enableRequired(),
 								selectFirstIfNull : false,
 								columns: [
@@ -191,7 +191,7 @@
 								value: previousDayOutputMethod,
 								optionsText: 'name',
 								editable: false,
-								enable: $vm.enableSelectTimeCls(),
+								enable: $vm.enableSelectTimeCls,
 								required: $vm.enableRequired(),
 								selectFirstIfNull : false,
 								columns: [
@@ -215,7 +215,7 @@
 									value: fixedLengthOutput, 
 									options: $vm.fixedLengthOutputItem, 
 									optionsValue: 'code', 
-									enable: $vm.enableFixedLengthOutputCls(), 
+									enable: $vm.enableFormatSelectionCls,
 									optionsText: 'name'}">
 							</div>
 						</div>
@@ -267,7 +267,7 @@
 									value: nullValueSubs, 
 									options: $vm.nullValueReplaceItem, 
 									optionsValue: 'code', 
-									enable: $vm.enableNullValueReplaceCls(), 
+									enable: $vm.enableFormatSelectionCls,
 									optionsText: 'name'}">
 							</div>
 						</div>

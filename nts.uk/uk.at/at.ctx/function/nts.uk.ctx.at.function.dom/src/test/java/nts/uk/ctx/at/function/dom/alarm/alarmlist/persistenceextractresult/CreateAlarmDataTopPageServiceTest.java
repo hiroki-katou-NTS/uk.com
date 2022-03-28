@@ -8,6 +8,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.alarm.AffAtWorkplaceExport;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.DeleteInfoAlarmImport;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.TopPageAlarmImport;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.IndividualWkpClassification;
+import nts.uk.ctx.at.function.dom.alarm.sendemail.ManagerOfWorkplaceService;
 import nts.uk.shr.com.context.AppContexts;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,34 +31,29 @@ public class CreateAlarmDataTopPageServiceTest {
                 1,
                 Arrays.asList("del001", "del002"),
                 0,
-                Optional.of("patternCode1"));
+                Optional.of("patternCode1"), new ArrayList<>());
         List<TopPageAlarmImport> alarmListInfo = DumData.alarmListInfos;
         List<AffAtWorkplaceExport> affAtWorkplaceExports = DumData.affAtWorkplaceExports01;
         List<String> employeeIds = Arrays.asList("sya001", "sya002", "sya003", "sya004", "sya005", "del001", "del002");
 
         String companyId = "companyId";
 
-        new Expectations(AppContexts.class) {
+        new Expectations() {
             {
-                AppContexts.user().companyId();
-                result = companyId;
-
                 require.getWorkplaceId(employeeIds, GeneralDate.today());
                 result = affAtWorkplaceExports;
 
-//                require.getAdminReceiveAlarmMailByWorkplaceIds(Collections.singletonList("S001"));
-//                result = Collections.singletonMap("S001", Arrays.asList("sya001", "sya002", "sya003","sya004", "sya005"));
-
-                require.getAdminReceiveAlarmMailByWorkplaceIds(Arrays.asList("S001", "S002"));
+                //require.getAdminReceiveAlarmMailByWorkplaceIds(Arrays.asList("S001", "S002"));
+                ManagerOfWorkplaceService.get(require, companyId, Arrays.asList("S001", "S002"), IndividualWkpClassification.WORKPLACE);
                 Map<String, List<String>> infoMap = new HashMap<>();
-                infoMap.put("S001",Arrays.asList("sya001", "sya002", "sya003"));
+                infoMap.put("S001", Arrays.asList("sya001", "sya002", "sya003"));
                 infoMap.put("S002", Arrays.asList("sya004", "sya005"));
                 result = infoMap;
             }
         };
 
         NtsAssert.atomTask(() ->
-                        CreateAlarmDataTopPageService.create(require, Optional.of(deleteInfoAlarmImport), alarmListInfo),
+                        CreateAlarmDataTopPageService.create(require, companyId,Optional.of(deleteInfoAlarmImport), alarmListInfo),
                 any -> require.create(companyId, any.get(), any.get())
         );
     }
@@ -76,21 +73,18 @@ public class CreateAlarmDataTopPageServiceTest {
 
         new Expectations(AppContexts.class) {
             {
-                AppContexts.user().companyId();
-                result = companyId;
-
                 require.getWorkplaceId(employeeIds, GeneralDate.today());
                 result = affAtWorkplaceExports;
 
-                require.getAdminReceiveAlarmMailByWorkplaceIds(Collections.singletonList("S002"));
+                ManagerOfWorkplaceService.get(require, companyId, Arrays.asList("S001", "S002"), IndividualWkpClassification.WORKPLACE);
                 result = Collections.singletonMap("S002", Arrays.asList("sya004", "sya005"));
 
-                require.getAdminReceiveAlarmMailByWorkplaceIds(Collections.singletonList("S001"));
-                result = Collections.singletonMap("S001", Arrays.asList("sya001", "sya002", "sya003"));
+//                require.getAdminReceiveAlarmMailByWorkplaceIds(Collections.singletonList("S001"));
+//                result = Collections.singletonMap("S001", Arrays.asList("sya001", "sya002", "sya003"));
             }
         };
 
-        NtsAssert.atomTask(() -> CreateAlarmDataTopPageService.create(require, Optional.of(deleteInfoAlarmImport), alarmListInfo),
+        NtsAssert.atomTask(() -> CreateAlarmDataTopPageService.create(require, companyId, Optional.of(deleteInfoAlarmImport), alarmListInfo),
                 any -> require.create(companyId, any.get(), any.get())
         );
     }
@@ -107,17 +101,14 @@ public class CreateAlarmDataTopPageServiceTest {
 
         String companyId = "companyId";
 
-        new Expectations(AppContexts.class) {
+        new Expectations() {
             {
-                AppContexts.user().companyId();
-                result = companyId;
-
                 require.getWorkplaceId(employeeIds, GeneralDate.today());
                 result = affAtWorkplaceExports;
             }
         };
 
-        NtsAssert.atomTask(() -> CreateAlarmDataTopPageService.create(require, Optional.of(deleteInfoAlarmImport), alarmListInfo),
+        NtsAssert.atomTask(() -> CreateAlarmDataTopPageService.create(require, companyId, Optional.of(deleteInfoAlarmImport), alarmListInfo),
                 any -> require.create(companyId, any.get(), any.get())
         );
     }
@@ -134,20 +125,20 @@ public class CreateAlarmDataTopPageServiceTest {
 
         String companyId = "companyId";
 
-        new Expectations(AppContexts.class) {
+        new Expectations() {
             {
-                AppContexts.user().companyId();
-                result = companyId;
-
                 require.getWorkplaceId(employeeIds, GeneralDate.today());
                 result = affAtWorkplaceExports;
 
-                require.getAdminReceiveAlarmMailByWorkplaceIds(Collections.singletonList("S001"));
+                ManagerOfWorkplaceService.get(require, companyId, Collections.singletonList("S001"), IndividualWkpClassification.WORKPLACE);
                 result = Collections.singletonMap("S001", Arrays.asList("sya001", "sya002", "sya003"));
+
+//                require.getAdminReceiveAlarmMailByWorkplaceIds(Collections.singletonList("S001"));
+//                result = Collections.singletonMap("S001", Arrays.asList("sya001", "sya002", "sya003"));
             }
         };
 
-        NtsAssert.atomTask(() -> CreateAlarmDataTopPageService.create(require, Optional.of(deleteInfoAlarmImport), alarmListInfo),
+        NtsAssert.atomTask(() -> CreateAlarmDataTopPageService.create(require, companyId, Optional.of(deleteInfoAlarmImport), alarmListInfo),
                 any -> require.create(companyId, any.get(), any.get())
         );
     }
@@ -164,20 +155,17 @@ public class CreateAlarmDataTopPageServiceTest {
 
         String companyId = "companyId";
 
-        new Expectations(AppContexts.class) {
+        new Expectations() {
             {
-                AppContexts.user().companyId();
-                result = companyId;
-
                 require.getWorkplaceId(employeeIds, GeneralDate.today());
                 result = affAtWorkplaceExports;
 
-                require.getAdminReceiveAlarmMailByWorkplaceIds(Collections.singletonList("S002"));
+                ManagerOfWorkplaceService.get(require, companyId, Collections.singletonList("S002"), IndividualWkpClassification.WORKPLACE);
                 result = Collections.singletonMap("S002", Arrays.asList("sya004", "sya005"));
             }
         };
 
-        NtsAssert.atomTask(() -> CreateAlarmDataTopPageService.create(require, Optional.of(deleteInfoAlarmImport), alarmListInfo),
+        NtsAssert.atomTask(() -> CreateAlarmDataTopPageService.create(require, companyId, Optional.of(deleteInfoAlarmImport), alarmListInfo),
                 any -> require.create(companyId, any.get(), any.get())
         );
     }

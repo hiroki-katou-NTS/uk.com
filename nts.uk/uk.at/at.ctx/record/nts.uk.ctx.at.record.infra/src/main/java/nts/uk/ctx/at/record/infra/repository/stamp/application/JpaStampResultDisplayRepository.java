@@ -100,7 +100,6 @@ public class JpaStampResultDisplayRepository extends JpaRepository implements St
 				domain.getUsrAtr().value, 
 				oldEntity.isPresent() ? oldEntity.get().googleMapUseArt: 0,
 				oldEntity.isPresent() ? oldEntity.get().mapAddress : null,
-				oldEntity.isPresent() ? oldEntity.get().googleMapUseArt: 0,
 				domain.getLstDisplayItemId().stream().map(mapper -> KrccpStampRecordDis.toEntity(mapper)).collect(Collectors.toList()));
 	}
 	

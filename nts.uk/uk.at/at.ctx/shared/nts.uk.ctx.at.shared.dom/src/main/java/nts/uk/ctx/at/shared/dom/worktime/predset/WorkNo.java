@@ -10,7 +10,7 @@ import nts.arc.primitive.constraint.IntegerMinValue;
  *
  */
 @IntegerMinValue(1)
-@IntegerMaxValue(3)
+@IntegerMaxValue(10)
 public class WorkNo extends IntegerPrimitiveValue<WorkNo> {
 
 	/**

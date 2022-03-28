@@ -11,6 +11,4 @@ public class NoticeSetAndAupUseArtDto {
 
 	private NoticeSetDto noticeSet;
 	
-	private Integer supportUseArt;
-	
 }

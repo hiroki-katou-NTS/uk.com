@@ -56,7 +56,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
     private static final String IS_CHECK = TextResource.localize("KMR004_36");
 
     //Work Place
-    private static final String WOKR_PLACE_LABEL = TextResource.localize("KMR004_38");
+    private static final String WOKR_PLACE_LABEL = "Com_Workplace";
     ////Work Location
     private static final String WOKR_LOCATION_LABEL = TextResource.localize("KMR004_38");
     private static final String NUMBER_FORMAT = "\"¥\"#,##0;[RED]\"¥\"-#,##0";
@@ -299,12 +299,13 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             Cells cells = worksheet.getCells();
             StringBuilder printArea = new StringBuilder();
             printArea.append("A0:");
-            int startIndex = 3;
+            int startIndex = 0;
             printHeadData(cells, exportData);
             List<TotalOrderInfoDto> dataRaw = orderInfoDto.getTotalOrderInfoDtoList();
             Map<GeneralDate, List<TotalOrderInfoDto>> map = dataRaw.stream()
                     .collect(Collectors.groupingBy(TotalOrderInfoDto::getReservationDate));
             List<TotalOrderInfoDto> dataPrint = handleDataPrint(map);
+            int page = 0;
             for (TotalOrderInfoDto dataRow : dataPrint)
                 startIndex = handleBodyTotalFormat(worksheet, dataRow, startIndex, cells, tempSheet);
 
@@ -332,14 +333,13 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
                 String name = totalDtos.get(0).getName();
                 int frameNo = totalDtos.get(0).getFrameNo();
                 int quantity = 0;
-                int amount = 0;
+                int amount = totalDtos.get(0).getAmount();
                 for(BentoTotalDto totalDto : totalDtos){
                     quantity += totalDto.getQuantity();
-                    amount += totalDto.getAmount();
                 }
                 bentoTotalDtos.add(new BentoTotalDto(unit, name, quantity, frameNo, amount));
             }
-            bentoTotalDtos.stream().sorted(Comparator.comparing(BentoTotalDto::getFrameNo));
+            bentoTotalDtos = bentoTotalDtos.stream().sorted(Comparator.comparing(BentoTotalDto::getFrameNo)).collect(Collectors.toList());
             int totalFee = 0;
             for(TotalOrderInfoDto item: totalOrderInfoDtos){
                 totalFee += item.getTotalFee();
@@ -374,11 +374,15 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             cells.get(0, startDataCol).setValue(placeOfWorkInfoDtos.get(0).getPlaceCode());
             cells.get(0, endDataCol).setValue(placeOfWorkInfoDtos.get(0).getPlaceName());
         } else {
-            cells.get(0, labelCol).setValue(WOKR_PLACE_LABEL);
-            cells.get(0, startDataCol).setValue(placeOfWorkInfoDtos.get(0).getPlaceCode());
-            cells.get(0, endDataCol).setValue(placeOfWorkInfoDtos.get(0).getPlaceName());
-            cells.get(1, startDataCol).setValue(placeOfWorkInfoDtos.get(placeOfWorkInfoDtos.size()-1).getPlaceCode());
-            cells.get(1, endDataCol).setValue(placeOfWorkInfoDtos.get(placeOfWorkInfoDtos.size()-1).getPlaceName());
+            cells.get(0, labelCol).setValue(TextResource.localize(WOKR_PLACE_LABEL));
+            String value = placeOfWorkInfoDtos.get(0).getPlaceCode() + "　" +
+            				placeOfWorkInfoDtos.get(0).getPlaceName();
+            if(placeOfWorkInfoDtos.size()>1) {
+            	value = value + "~" +
+            			placeOfWorkInfoDtos.get(placeOfWorkInfoDtos.size()-1).getPlaceCode() + "　" +
+            			placeOfWorkInfoDtos.get(placeOfWorkInfoDtos.size()-1).getPlaceName();
+            }		
+            cells.get(0, startDataCol).setValue(value);
         }
     }
 
@@ -394,14 +398,18 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
 
     private int handleBodyTotalFormat(Worksheet worksheet, TotalOrderInfoDto dataRow, int startIndex, Cells cells,
                                       Worksheet template) {
+    	//copy Header
+        try {
+			cells.copyRows(cells, 0, startIndex, 2);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        copyRowFromTemplateSheet(cells, template, 0, startIndex + 4);
         int total = 0;
         GeneralDate start = dataRow.getReservationDate();
         String timezone = dataRow.getClosedName();
-        startIndex = setRowReservationDate(cells, template, startIndex, 2, start.toString() + " " + timezone);
+        startIndex = setRowReservationDate(cells, template, startIndex+3, 2, start.toString("yyyy/MM/dd (E)") + " " + timezone);
         double height = cells.getRowHeight(0);
-
-        //copy Header
-        copyRowFromTemplateSheet(cells,template,0,startIndex - 1);
 
         cells.get(startIndex - 1, 3).setValue(TOTAL_ORDINAL);
         cells.get(startIndex - 1, 5).setValue(TOTAL_BENTO_NAME);
@@ -410,7 +418,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
 
         if (dataRow.getBentoTotalDto().size() == 0){
             //copy Footer
-            copyRowFromTemplateSheet(cells,template,3,startIndex + 1);
+            copyRowFromTemplateSheet(cells,template,3,startIndex - 1);
 
             cells.get(startIndex + dataRow.getBentoTotalDto().size(), 5).setValue(TOTAL_LABEL);
             startIndex += 4;
@@ -429,7 +437,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         startIndex += 4 - 1 ;
         // page break
         breakPage("J", startIndex - 1, worksheet);
-        return startIndex;
+        return startIndex-2;
     }
 
     private int setBodyDataTotalFormat(Cells cells, int startIndex, int index, BentoTotalDto bentoTotalDto, double height, Worksheet template) {
@@ -467,16 +475,26 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             for (DetailOrderInfoDto detailInfo : dataPrint){
 				if (page > 0) {
 					breakPage("M", startIndex, worksheet);
-					copyRowFromTemplateSheet(cells, worksheet, 0, startIndex - 1);
+					try {
+						cells.copyRows(cells, 0, startIndex - 1, 2);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					startIndex += 3;
 				}
 
                 GeneralDate start = detailInfo.getReservationDate();
                 String timezone = detailInfo.getClosingTimeName();
-                startIndex = setRowReservationDate(cells, tempSheet, startIndex, 1, start.toString() + " " + timezone);
-                for (BentoReservedInfoDto item : detailInfo.getBentoReservedInfoDtos())
-                    startIndex = handleBodyDetailFormat(worksheet, item, startIndex, cells, orderInfoExportData.isBreakPage(), tempSheet, orderInfoExportData.getOutputExt());
-
+                startIndex = setRowReservationDate(cells, tempSheet, startIndex, 1, start.toString("yyyy/MM/dd (E)") + " " + timezone);
+                for(int i = 0; i < detailInfo.getBentoReservedInfoDtos().size(); i++) {
+                	BentoReservedInfoDto item = detailInfo.getBentoReservedInfoDtos().get(i);
+                	if(i == detailInfo.getBentoReservedInfoDtos().size() - 1) {
+                		startIndex = handleBodyDetailFormat(worksheet, item, startIndex, cells, false, tempSheet, orderInfoExportData.getOutputExt());
+                	} else {
+                		startIndex = handleBodyDetailFormat(worksheet, item, startIndex, cells, orderInfoExportData.isBreakPage(), tempSheet, orderInfoExportData.getOutputExt());
+                	}
+                }
+                
 				page++;
             }
             printArea.append("M"+(startIndex-1));

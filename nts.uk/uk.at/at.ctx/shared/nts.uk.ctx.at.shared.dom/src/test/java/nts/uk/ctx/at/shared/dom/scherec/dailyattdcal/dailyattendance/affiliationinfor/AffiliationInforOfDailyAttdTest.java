@@ -2,10 +2,12 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliatio
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.junit.Test;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
@@ -14,12 +16,16 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSyEmploymentImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
-import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpLicenseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.GetEmpLicenseClassificationService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 
 public class AffiliationInforOfDailyAttdTest {
 	
@@ -52,7 +58,8 @@ public class AffiliationInforOfDailyAttdTest {
 						new DatePeriod(
 							GeneralDate.ymd(2020, 1, 1), 
 							GeneralDate.ymd(2020, 12, 31)), 
-						"job-name");
+						"job-name",
+						"job-code");
 		}};
 		
 		String result = NtsAssert.Invoke.staticMethod(AffiliationInforOfDailyAttd.class, "getJobTitleId", 
@@ -62,24 +69,18 @@ public class AffiliationInforOfDailyAttdTest {
 	}
 	
 	@Test
-	public void testGetWorkplaceId() {
-		new Expectations() {{
-			require.getAffWorkplaceHistory( anyString, (GeneralDate) any);
-			result = new SharedAffWorkPlaceHisImport(
-						new DatePeriod(
-								GeneralDate.ymd(2020, 1, 1), 
-								GeneralDate.ymd(2020, 12, 31)), 
-						"empId",
-						"wpl-id", 
-						"wpl-code", 
-						"wpl-name", 
-						"wpl-displayName");
+	public void testGetEmpOrganization(@Injectable EmpOrganizationImport empOrg) {
+		
+		
+		new Expectations(empOrg) {{
+			require.getEmpOrganization( anyString, (GeneralDate) any);
+			result = empOrg;
 		}};
 		
-		String result = NtsAssert.Invoke.staticMethod(AffiliationInforOfDailyAttd.class, "getWorkplaceId", 
+		EmpOrganizationImport result = NtsAssert.Invoke.staticMethod(AffiliationInforOfDailyAttd.class, "getEmpOrganization", 
 				require, "empId", GeneralDate.today());
 		
-		assertThat( result ).isEqualTo( "wpl-id" );
+		assertThat( result ).isEqualTo( empOrg );
 	}
 	
 	@Test
@@ -192,26 +193,60 @@ public class AffiliationInforOfDailyAttdTest {
 					require, "empId", GeneralDate.today());
 		
 		assertThat(result.get().v()).isEqualTo("001");
+	}
+	
+	@Test
+	public void testGetNursingLicenseClass_empty() {
+		
+		new Expectations(GetEmpLicenseClassificationService.class) {{
+			GetEmpLicenseClassificationService.get(require, (GeneralDate) any, Arrays.asList("empId") );
+			result = Arrays.asList( new EmpLicenseClassification("empId", Optional.empty(), Optional.empty() ));
+		}};
+		
+		EmpLicenseClassification result = NtsAssert.Invoke.staticMethod(
+				AffiliationInforOfDailyAttd.class, 
+				"getNursingLicenseClass", 
+				require, "empId", GeneralDate.today());
+		
+		assertThat( result.getIsNursingManager()).isEmpty();
+		assertThat( result.getOptLicenseClassification()).isEmpty();
+	}
+	
+	@Test
+	public void testGetNursingLicenseClass_exist() {
+		
+		new Expectations(GetEmpLicenseClassificationService.class) {{
+			GetEmpLicenseClassificationService.get(require, (GeneralDate) any, Arrays.asList("empId") );
+			result = Arrays.asList( new EmpLicenseClassification("empId", Optional.of(LicenseClassification.NURSE), Optional.of(Boolean.TRUE) ));
+		}};
+		
+		EmpLicenseClassification result = NtsAssert.Invoke.staticMethod(
+				AffiliationInforOfDailyAttd.class, 
+				"getNursingLicenseClass", 
+				require, "empId", GeneralDate.today());
+		
+		assertThat( result.getIsNursingManager().get()).isTrue();
+		assertThat( result.getOptLicenseClassification().get()).isEqualTo(LicenseClassification.NURSE);
 		
 	}
 	
 	@Test
 	public void testCreate(@Injectable WorkingConditionItem workingCondition) {
 		
-		new Expectations() {{
+		new Expectations(GetEmpLicenseClassificationService.class) {{
 			
 			require.getAffEmploymentHistory(anyString, (GeneralDate) any);
-			result = Helper.createEmployment("employmentCode");
+			result = AffiliationInforOfDailyAttdHelper.createEmployment("employmentCode");
 			
 			require.getAffJobTitleHistory(anyString, (GeneralDate) any);
-			result = Helper.createJobTitle("jobTitleId");
+			result = AffiliationInforOfDailyAttdHelper.createJobTitle("jobTitleId");
 			
 			
-			require.getAffWorkplaceHistory(anyString, (GeneralDate) any);
-			result = Helper.createWorkplace("workplaceId");
+			require.getEmpOrganization(anyString, (GeneralDate) any);
+			result = AffiliationInforOfDailyAttdHelper.createEmpOrganizationImport("workplaceId", "workplaceGroupId");
 			
 			require.getClassificationHistory(anyString, (GeneralDate) any);
-			result = Helper.createClassification("classificationCode");
+			result = AffiliationInforOfDailyAttdHelper.createClassification("classificationCode");
 			
 			require.getWorkingConditionHistory( anyString, (GeneralDate) any);
 			result = Optional.of(workingCondition);
@@ -219,8 +254,9 @@ public class AffiliationInforOfDailyAttdTest {
 			workingCondition.getTimeApply();
 			result = Optional.of(new BonusPaySettingCode("001"));
 			
+			GetEmpLicenseClassificationService.get(require, (GeneralDate) any, Arrays.asList("empId") );
+			result = Arrays.asList( new EmpLicenseClassification("empId", Optional.of(LicenseClassification.NURSE), Optional.of(Boolean.TRUE) ));
 		}};
-		
 		
 		AffiliationInforOfDailyAttd result = AffiliationInforOfDailyAttd.create(require, "empId", GeneralDate.today()); 
 		
@@ -230,59 +266,40 @@ public class AffiliationInforOfDailyAttdTest {
 		assertThat( result.getClsCode().v() ).isEqualTo( "classificationCode" );
 		assertThat( result.getBusinessTypeCode() ).isEmpty();
 		assertThat( result.getBonusPaySettingCode().get().v() ).isEqualTo( "001" );
-		
+		assertThat( result.getWorkplaceGroupId().get() ).isEqualTo( "workplaceGroupId" );
+		assertThat( result.getNursingLicenseClass().get() ).isEqualTo( LicenseClassification.NURSE );
+		assertThat( result.getIsNursingManager().get()).isTrue();
 	}
 	
-	
-	
-	static class Helper {
-		
-		static SharedSyEmploymentImport createEmployment( String employmentCode ) {
+	/**
+	 * target: getAffiliationOrg
+	 */
+	@Test
+	public void testGetAffiliationOrg() {
+		//職場ID
+		{
+			val target = AffiliationInforOfDailyAttdHelper.createAffiliationInforOfDailyAttd( "workplaceId", Optional.empty() );
 			
-			return new SharedSyEmploymentImport(
-					"empId", 
-					employmentCode, 
-					"employmentName", 
-					new DatePeriod(
-							GeneralDate.ymd(2020, 1, 1), 
-							GeneralDate.ymd(2020, 2, 1))); 
+			//act
+			val result = target.getAffiliationOrg();
+			
+			//assert
+			assertThat( result.getUnit() ).isEqualTo( TargetOrganizationUnit.WORKPLACE );
+			assertThat( result.getWorkplaceId().get() ).isEqualTo( "workplaceId" );
+			assertThat( result.getWorkplaceGroupId() ).isEmpty();
 		}
 		
-		static SharedAffJobTitleHisImport createJobTitle(String jobTitleId) {
+		//職場グループID
+		{
+			val target = AffiliationInforOfDailyAttdHelper.createAffiliationInforOfDailyAttd( "workplaceId", Optional.of( String.valueOf("workplaceGroupId")));
 			
-			return new SharedAffJobTitleHisImport(
-					"empId", 
-					jobTitleId, 
-					new DatePeriod(
-							GeneralDate.ymd(2020, 1, 1), 
-							GeneralDate.ymd(2020, 2, 1)), 
-					"jobTitleName");
-		}
-		
-		static SharedAffWorkPlaceHisImport createWorkplace(String workplaceId) {
+			//act
+			val result = target.getAffiliationOrg();
 			
-			return new SharedAffWorkPlaceHisImport(
-					new DatePeriod(
-							GeneralDate.ymd(2020, 1, 1), 
-							GeneralDate.ymd(2020, 2, 1)), 
-					"empId", 
-					workplaceId, 
-					"wplCode", 
-					"wplName", 
-					"wkpDisplayName");
+			//assert
+			assertThat( result.getUnit() ).isEqualTo( TargetOrganizationUnit.WORKPLACE_GROUP );
+			assertThat( result.getWorkplaceId() ).isEmpty();
+			assertThat( result.getWorkplaceGroupId().get() ).isEqualTo( "workplaceGroupId" );
 		}
-		
-		static SClsHistImport createClassification(String classificationCode) {
-			
-			return new SClsHistImport(
-					new DatePeriod(
-							GeneralDate.ymd(2020, 1, 1), 
-							GeneralDate.ymd(2020, 2, 1)), 
-					"empId", 
-					classificationCode, 
-					"classificationName");
-		}
-		
 	}
-
 }

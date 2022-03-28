@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
@@ -27,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
+import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
@@ -84,25 +86,28 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 
 	/**
 	 * 固定勤務(休日出勤）
+	 * @param companyCommonSetting 会社別設定管理
+	 * @param personDailySetting 社員設定管理
+	 * @param integrationOfWorkTime 統合就業時間帯
+	 * @param integrationOfDaily 日別実績(Work)
 	 * @param attendanceLeave 出退勤
-	 * @param holidayWorkTimeList 休出時間の時間帯設定
 	 * @param todayWorkType 勤務種類
-	 * @param bonuspaySetting 加給設定
-	 * @param midNightTimeSheet 深夜時間帯
 	 * @param deductionTimeSheet 控除時間帯
-	 * @param commonSetting 就業時間帯の共通設定
-	 * @param specificDateAttrSheets 特定日区分
+	 * @param oneDayOfRange 1日の範囲
 	 * @return 計算用休出枠時間帯List
 	 */
 	public static List<HolidayWorkFrameTimeSheetForCalc> createHolidayTimeWorkFrame(
+			ManagePerCompanySet companyCommonSetting,
+			ManagePerPersonDailySet personDailySetting,
+			IntegrationOfWorkTime integrationOfWorkTime,
+			IntegrationOfDaily integrationOfDaily,
 			TimeLeavingWork attendanceLeave,
-			List<HDWorkTimeSheetSetting> holidayWorkTimeList,
 			WorkType todayWorkType,
-			Optional<BonusPaySetting> bonuspaySetting,
-			MidNightTimeSheet midNightTimeSheet,
 			DeductionTimeSheet deductionTimeSheet,
-			Optional<WorkTimezoneCommonSet> commonSetting,
-			Optional<SpecificDateAttrOfDailyAttd> specificDateAttrSheets){
+			TimeSpanForDailyCalc oneDayOfRange){
+
+		// 休出時間の時間帯設定
+		List<HDWorkTimeSheetSetting> holidayWorkTimeList = integrationOfWorkTime.getHDWorkTimeSheetSettingList();
 		
 		List<HolidayWorkFrameTimeSheetForCalc> returnList = new ArrayList<>();
 		for (HDWorkTimeSheetSetting holidayWorkTime: holidayWorkTimeList) {
@@ -110,15 +115,24 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 					attendanceLeave,
 					holidayWorkTime,
 					todayWorkType,
-					bonuspaySetting,
-					midNightTimeSheet,
+					personDailySetting.getBonusPaySetting(),
+					companyCommonSetting.getMidNightTimeSheet(),
 					deductionTimeSheet,
-					commonSetting,
-					specificDateAttrSheets);
+					Optional.of(integrationOfWorkTime.getCommonSetting()),
+					integrationOfDaily.getSpecDateAttr());
 			if (holidayWorkFrameTimeSheet.isPresent()){
 				returnList.add(holidayWorkFrameTimeSheet.get());
 			}
 		}
+		// 臨時による休出時間帯の取得
+		returnList.addAll(HolidayWorkTimeSheet.getHolidayWorkTimeSheetFromTemporary(
+				companyCommonSetting,
+				personDailySetting,
+				integrationOfWorkTime,
+				integrationOfDaily,
+				todayWorkType,
+				oneDayOfRange));
+		// 休出枠時間帯を返す
 		return returnList;
 	}
 	
@@ -381,5 +395,24 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 		recreated.registDeductionList(ActualWorkTimeSheetAtr.HolidayWork, this.getCloneDeductionTimeSheet(), commonSet);
 		
 		return Optional.of(recreated);
+	}
+	
+	/**
+	 * 逆丸めにして取得する
+	 * @return 休出枠時間帯
+	 */
+	public HolidayWorkFrameTimeSheetForCalc getReverseRounding() {
+		return new HolidayWorkFrameTimeSheetForCalc(
+				this.timeSheet.clone(),
+				this.rounding.getReverseRounding(),
+				this.recordedTimeSheet.stream().map(r -> r.clone()).collect(Collectors.toList()),
+				this.deductionTimeSheet.stream().map(d -> d.clone()).collect(Collectors.toList()),
+				this.bonusPayTimeSheet.stream().map(b -> b.clone()).collect(Collectors.toList()),
+				this.specBonusPayTimesheet.stream().map(s -> s.clone()).collect(Collectors.toList()),
+				this.midNightTimeSheet.clone(),
+				this.frameTime.clone(),
+				this.TreatAsTimeSpentAtWork,
+				new EmTimezoneNo(this.HolidayWorkTimeSheetNo.v().intValue()),
+				this.statutoryAtr.isPresent() ? Finally.of(StaturoryAtrOfHolidayWork.valueOf(this.statutoryAtr.get().toString())) : Finally.empty());
 	}
 }

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.operationsetting;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLength(100)
+@StringMaxLength(200)
 public class Comment extends StringPrimitiveValue<Comment>{
 
 	/**

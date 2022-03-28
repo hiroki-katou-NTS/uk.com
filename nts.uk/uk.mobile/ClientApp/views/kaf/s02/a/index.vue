@@ -33,55 +33,143 @@
 
         <!-- workHour -->
         <div v-if="(mode && condition5) || (!mode && workHourLst.length > 0)">
-          <div v-for="itemWH in workHourLst" :key="itemWH.frame">
-            <div class="row mt-3" v-if="condition1(itemWH)">
-              <div class="col-6">{{ itemWH.title | i18n }}</div>
-              <!-- A3_2 -->
-              <div class="col-6 text-right" style="font-size: 90%" v-if="condition2"><kafs00subp3 v-bind:params="itemWH.actualHours" /></div>
-            </div>
-            <!-- A3_3 -->
-            <div style="color: red; font-size: 90%" v-if="condition2 && itemWH.errorMsg !== null && condition1(itemWH)">{{ itemWH.errorMsg }}</div>
-            <!-- A3_1 -->
-            <div class="card-body" v-if="condition1(itemWH)">
-              <nts-time-range-input class="mb-1" v-model="itemWH.workHours" v-bind:showTile="false" v-bind:disabled="checkboxWH.filter((x) => x === itemWH.frame).length > 0 && condition2" />
-              <!-- A3_4 -->
-              <nts-checkbox
-                class="checkbox-text uk-text-dark-gray"
-                style="font-size: 90%"
-                v-if="itemWH.dispCheckbox && condition2 && (itemWH.actualHours.startTime != null || itemWH.actualHours.endTime != null)"
-                v-model="checkboxWH"
-                v-bind:value="itemWH.frame"
-                v-bind:disabled="itemWH.disableCheckbox"
-                >{{ "KAFS02_5" | i18n }}</nts-checkbox
-              >
-            </div>
+          <div v-for="(itemWH, index) in workHourLst" :key="itemWH.frame">
+            <template v-if="index < workHourLstNumber">
+              <div class="row mt-3" v-if="condition1(itemWH)">
+                <div class="col-6">{{ itemWH.title | i18n }}</div>
+                <!-- A3_2 -->
+                <div class="col-6 text-right" style="font-size: 90%" v-if="condition2"><kafs00subp3 v-bind:params="itemWH.actualHours" /></div>
+              </div>
+              <!-- A3_3 -->
+              <div style="color: red; font-size: 90%" v-if="condition2 && itemWH.errorMsg !== null && condition1(itemWH)">{{ itemWH.errorMsg }}</div>
+              <!-- A3_1 -->
+              <div class="card-body" v-if="condition1(itemWH)">
+                <nts-time-range-input class="mb-1" v-model="itemWH.workHours" v-bind:showTile="false" v-bind:disabled="checkboxWH.filter((x) => x === itemWH.frame).length > 0 && condition2" />
+                <div class="mt-1 mb-1">
+                  <template v-if="condition14">
+                    <!-- A3_13 -->
+                    <span class="uk-text-dark-gray fs-smaller">{{ "KAFS02_33" | i18n }}</span>
+                    <!-- A3_14 -->
+                    <button type="button" class="btn btn-selection"
+                      :disabled="checkboxWH.filter((x) => x === itemWH.frame).length > 0 && condition2"
+                      @click="openCDLS08(itemWH)"
+                    >
+                      <span class="badge badge-secondary">{{ itemWH.workplaceCD }}</span>
+                      <span :class="{ 'fs-smaller': !itemWH.workplaceCD }">{{ itemWH.workplaceName }}</span>
+                    </button>
+                  </template>
+                  <template v-if="condition15">
+                    <!-- A3_15 -->
+                    <span class="uk-text-dark-gray fs-smaller">{{ "KAFS02_34" | i18n }}</span>
+                    <!-- A3_16 -->
+                    <button type="button" class="btn btn-selection"
+                      :disabled="checkboxWH.filter((x) => x === itemWH.frame).length > 0 && condition2"
+                      @click="openKDLS10(itemWH)"
+                    >
+                      <span class="badge badge-secondary">{{ itemWH.workLocationCD }}</span>
+                      <span :class="{ 'fs-smaller': !itemWH.workLocationCD }">{{ itemWH.workLocationName }}</span>
+                    </button>
+                  </template>
+                </div>
+                <!-- A3_4 -->
+                <nts-checkbox
+                  class="checkbox-text uk-text-dark-gray"
+                  style="font-size: 90%"
+                  v-if="itemWH.dispCheckbox && condition2 && (itemWH.actualHours.startTime != null || itemWH.actualHours.endTime != null)"
+                  v-model="checkboxWH"
+                  v-bind:value="itemWH.frame"
+                  v-bind:disabled="itemWH.disableCheckbox"
+                  >{{ "KAFS02_5" | i18n }}</nts-checkbox
+                >
+              </div>
+            </template>
           </div>
+          <template v-if="condition5 && workHourLstNumber < workHourLst.length && multipleWork">
+            <div class="text-center position-relative" style="height: 55px">
+              <!-- A3_18 -->
+              <div class="position-absolute w-100 mt-4 pt-2">
+                <span>{{ "KAFS02_10" | i18n }}</span>
+              </div>
+              <!-- A3_19 -->
+              <div class="position-absolute w-100">
+                <hr>
+              </div>
+              <!-- A3_17 -->
+              <div class="position-absolute w-100 mt-1">
+                <span @click="displayMoreItem('workHourLst')" class="fas fa-2x fa-plus-circle" style="color: #33b5e5"></span>
+              </div>
+            </div>
+          </template>
         </div>
         <!-- Temprory WorkHour -->
         <div v-if="condition4 || (!mode && tempWorkHourLst.length > 0)">
-          <div v-for="itemTH in tempWorkHourLst" :key="itemTH.frame">
-            <div class="row mt-3">
-              <div class="col-6">{{ itemTH.title | i18n(itemTH.frame) }}</div>
-              <!-- A3_2 -->
-              <div class="col-6 text-right" style="font-size: 90%" v-if="condition2"><kafs00subp3 v-bind:params="itemTH.actualHours" /></div>
-            </div>
-            <!-- A3_3 -->
-            <div style="color: red; font-size: 90%" v-if="condition2 && itemTH.errorMsg !== null">{{ itemTH.errorMsg }}</div>
-            <!-- A3_1 -->
-            <div class="card-body">
-              <nts-time-range-input class="mb-1" v-model="itemTH.workHours" v-bind:showTile="false" v-bind:disabled="checkboxTH.filter((x) => x === itemTH.frame).length > 0 && condition2" />
-              <!-- A3_4 -->
-              <nts-checkbox
-                class="checkbox-text uk-text-dark-gray"
-                style="font-size: 90%"
-                v-if="itemTH.dispCheckbox && condition2 && (itemTH.actualHours.startTime != null || itemTH.actualHours.endTime != null)"
-                v-model="checkboxTH"
-                v-bind:value="itemTH.frame"
-                v-bind:disabled="itemTH.disableCheckbox"
-                >{{ "KAFS02_5" | i18n }}</nts-checkbox
-              >
-            </div>
+          <div v-for="(itemTH, index) in tempWorkHourLst" :key="itemTH.frame">
+            <template v-if="index < tempWorkHourLstNumber">
+              <div class="row mt-3">
+                <div class="col-6">{{ itemTH.title | i18n(itemTH.frame) }}</div>
+                <!-- A3_2 -->
+                <div class="col-6 text-right" style="font-size: 90%" v-if="condition2"><kafs00subp3 v-bind:params="itemTH.actualHours" /></div>
+              </div>
+              <!-- A3_3 -->
+              <div style="color: red; font-size: 90%" v-if="condition2 && itemTH.errorMsg !== null">{{ itemTH.errorMsg }}</div>
+              <!-- A3_1 -->
+              <div class="card-body">
+                <nts-time-range-input class="mb-1" v-model="itemTH.workHours" v-bind:showTile="false" v-bind:disabled="checkboxTH.filter((x) => x === itemTH.frame).length > 0 && condition2" />
+                <div class="mt-1 mb-1">
+                  <template v-if="condition14">
+                    <!-- A3_24 -->
+                    <span class="uk-text-dark-gray fs-smaller">{{ "KAFS02_33" | i18n }}</span>
+                    <!-- A3_25 -->
+                    <button type="button" class="btn btn-selection"
+                      :disabled="checkboxTH.filter((x) => x === itemTH.frame).length > 0 && condition2"
+                      @click="openCDLS08(itemTH)"
+                    >
+                      <span class="badge badge-secondary">{{ itemTH.workplaceCD }}</span>
+                      <span :class="{ 'fs-smaller': !itemTH.workplaceCD }">{{ itemTH.workplaceName }}</span>
+                    </button>
+                  </template>
+                  <template v-if="condition15">
+                    <!-- A3_26 -->
+                    <span class="uk-text-dark-gray fs-smaller">{{ "KAFS02_34" | i18n }}</span>
+                    <!-- A3_27 -->
+                    <button type="button" class="btn btn-selection"
+                      :disabled="checkboxTH.filter((x) => x === itemTH.frame).length > 0 && condition2"
+                      @click="openKDLS10(itemTH)"
+                    >
+                      <span class="badge badge-secondary">{{ itemTH.workLocationCD }}</span>
+                      <span :class="{ 'fs-smaller': !itemTH.workLocationCD }">{{ itemTH.workLocationName }}</span>
+                    </button>
+                  </template>
+                </div>
+                <!-- A3_4 -->
+                <nts-checkbox
+                  class="checkbox-text uk-text-dark-gray"
+                  style="font-size: 90%"
+                  v-if="itemTH.dispCheckbox && condition2 && (itemTH.actualHours.startTime != null || itemTH.actualHours.endTime != null)"
+                  v-model="checkboxTH"
+                  v-bind:value="itemTH.frame"
+                  v-bind:disabled="itemTH.disableCheckbox"
+                  >{{ "KAFS02_5" | i18n }}</nts-checkbox
+                >
+              </div>
+            </template>
           </div>
+          <template v-if="condition4 && tempWorkHourLstNumber < tempWorkHourLst.length">
+            <div class="text-center position-relative" style="height: 55px">
+              <!-- A3_29 -->
+              <div class="position-absolute w-100 mt-4 pt-2">
+                <span>{{ "KAFS02_10" | i18n }}</span>
+              </div>
+              <!-- A3_30 -->
+              <div class="position-absolute w-100">
+                <hr>
+              </div>
+              <!-- A3_28 -->
+              <div class="position-absolute w-100 mt-1">
+                <span @click="displayMoreItem('tempWorkHourLst')" class="fas fa-2x fa-plus-circle" style="color: #33b5e5"></span>
+              </div>
+            </div>
+          </template>
         </div>
       </div>
     </div>
@@ -254,6 +342,84 @@
               >{{ "KAFS02_5" | i18n }}</nts-checkbox
             >
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- A12 -->
+    <div v-if="condition13 || (!mode && supportLst.length > 0)">
+      <div class="card card-label">
+        <div class="card-header uk-bg-accordion mt-2 mb-n2">
+          <span>{{ "KAFS02_31" | i18n }}</span>
+        </div>
+        <div v-if="(mode && condition13) || (!mode && supportLst.length > 0)">
+          <div v-for="(itemSP, index) in supportLst" :key="itemSP.frame">
+            <template v-if="index < supportLstNumber">
+              <div class="row mt-3">
+                <div class="col-6">{{ itemSP.title | i18n(itemSP.frame) }}</div>
+                <!-- A12_2 -->
+                <div class="col-6 text-right" style="font-size: 90%" v-if="condition2"><kafs00subp3 v-bind:params="itemSP.actualHours" /></div>
+              </div>
+              <!-- A12_3 -->
+              <div style="color: red; font-size: 90%" v-if="condition2 && condition13 && itemSP.errorMsg !== null">{{ itemSP.errorMsg }}</div>
+              <!-- A12_1 -->
+              <div class="card-body">
+                <nts-time-range-input class="mb-1" v-model="itemSP.workHours" v-bind:showTile="false" v-bind:disabled="checkboxSP.filter((x) => x === itemSP.frame).length > 0 && condition2" />
+                <div class="mt-1 mb-1">
+                  <template v-if="condition14">
+                    <!-- A12_5 -->
+                    <span class="uk-text-dark-gray fs-smaller">{{ "KAFS02_33" | i18n }}</span>
+                    <!-- A12_6 -->
+                    <button type="button" class="btn btn-selection"
+                      :disabled="checkboxSP.filter((x) => x === itemSP.frame).length > 0 && condition2"
+                      @click="openCDLS08(itemSP)"
+                    >
+                      <span class="badge badge-secondary">{{ itemSP.workplaceCD }}</span>
+                      <span :class="{ 'fs-smaller': !itemSP.workplaceCD }">{{ itemSP.workplaceName }}</span>
+                    </button>
+                  </template>
+                  <template v-if="condition15">
+                    <!-- A12_7 -->
+                    <span class="uk-text-dark-gray fs-smaller">{{ "KAFS02_34" | i18n }}</span>
+                    <!-- A12_8 -->
+                    <button type="button" class="btn btn-selection"
+                      :disabled="checkboxSP.filter((x) => x === itemSP.frame).length > 0 && condition2"
+                      @click="openKDLS10(itemSP)"
+                    >
+                      <span class="badge badge-secondary">{{ itemSP.workLocationCD }}</span>
+                      <span :class="{ 'fs-smaller': !itemSP.workLocationCD }">{{ itemSP.workLocationName }}</span>
+                    </button>
+                  </template>
+                </div>
+                <!-- A12_4 -->
+                <nts-checkbox
+                  class="checkbox-text uk-text-dark-gray"
+                  style="font-size: 90%"
+                  v-if="itemSP.dispCheckbox && condition2 && (itemSP.actualHours.startTime != null || itemSP.actualHours.endTime != null)"
+                  v-model="checkboxSP"
+                  v-bind:value="itemSP.frame"
+                  v-bind:disabled="itemSP.disableCheckbox"
+                  >{{ "KAFS02_5" | i18n }}</nts-checkbox
+                >
+              </div>
+            </template>
+          </div>
+          <template v-if="condition13 && supportLstNumber < supportLst.length">
+            <div class="text-center position-relative" style="height: 55px">
+              <!-- A12_10 -->
+              <div class="position-absolute w-100 mt-4 pt-2">
+                <span>{{ "KAFS02_10" | i18n }}</span>
+              </div>
+              <!-- A12_11 -->
+              <div class="position-absolute w-100">
+                <hr>
+              </div>
+              <!-- A12_9 -->
+              <div class="position-absolute w-100 mt-1">
+                <span @click="displayMoreItem('supportLst')" class="fas fa-2x fa-plus-circle" style="color: #33b5e5"></span>
+              </div>
+            </div>
+          </template>
         </div>
       </div>
     </div>

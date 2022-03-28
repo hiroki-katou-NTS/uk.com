@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 880, height: 490 };</script>
+			<script>var dialogSize = { width: 720, height: 530 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="ksm002.d.vm.js" />
 			<com:scriptfile path="ksm002.d.start.js" />
@@ -32,15 +32,16 @@
 							<div  id="startMonth" tabindex="1" style="margin-top:10px" data-bind="ntsDateRangePicker: { 
 									value: dateValue, 
 									name: '#[KSM002_43]',
-									required: true }">
+									required: true,
+									maxRange: 'oneYear' }">
 								</div>		
 						</td>
 					</tr>
 					<tr>
 						<td class="cell"><div style="margin-top:20px; margin-left:20px" data-bind="ntsFormLabel: { required: true}">#{i18n.getText('KSM002_44')}</div></td>
-						<td style="float: left">
+						<td style="float: left; width: 100%;">
 							<div>
-								<div style = "margin-top: 15px" data-bind = "foreach: dayInWeek">
+								<div style = "margin-top: 15px;" data-bind = "foreach: dayInWeek">
 									<div class = "DayInWeekItem" data-bind="ntsCheckBox: { 
 												checked: choose,
 												text: day()},
@@ -55,9 +56,9 @@
 					</tr>
 					<tr>
 						<td  class="cell"><div style="margin-top:13px; margin-left:20px" data-bind="ntsFormLabel: { required: true}">#{i18n.getText('KSM002_53')}</div></td>
-						<td style="float: left">
+						<td style="float: left; width: 100%;">
 							<div>
-								<div style = "margin-top: 15px" data-bind = "foreach: specificDateItem">
+								<div style = "margin-top: 15px;" data-bind = "foreach: specificDateItem">
 									<div class = "itemName" data-bind="ntsCheckBox: { 
 												checked: useAtr,
 												text: specificName()},
@@ -68,7 +69,7 @@
 					</tr>
 				</table>
 			</div>
-			<div id="functions-area-bottom" style="height:140px !important">
+			<div id="functions-area-bottom" style="height:145px !important">
 				<div class="bg-yellow">
 					<div id="radioButton" data-bind="ntsRadioBoxGroup: {
 						name: '#[KSM002_60]',

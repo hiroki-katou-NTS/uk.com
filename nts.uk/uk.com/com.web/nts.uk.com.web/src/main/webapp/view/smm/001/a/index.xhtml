@@ -63,11 +63,11 @@
               <input tabindex="6" class="init-data-text init-text1" data-bind="ntsTextEditor: {
 	              value: initDataText1, 
 	              constraint: ['ExternalImportCode'],
-	              enable: checkedOrganizationInformation,
+	              enable: false,
 	              name: '#[SMM001_19]'}" />
               <!--A4_2-->
               <button tabindex="7" class= "large init-data-button" 
-              						data-bind="enable: checkedOrganizationInformation,
+              						data-bind="enable: false,
               									click: createOrganization">
               	#{i18n.getText('SMM001_18')}
               </button>
@@ -138,12 +138,13 @@
               	#{i18n.getText('SMM001_18')}
               </button>                
             </div>
-            <div class="d-flex mb-1">
+            <div class="d-flex mb-1" enable ="true">
               <!--A2_8-->
               <div tabindex="16"
-                data-bind="ntsCheckBox: { checked: checkedAddressInformation, enable: true, text: ADDRESS_INFORMATION }">
+                data-bind="ntsCheckBox: { checked: checkedAddressInformation, enable: false, text: ADDRESS_INFORMATION }">
               </div>
               <!--A2_9-->
+              <!-- enable: checkedAddressInformation, -->
               <div tabindex="17" class="combo-box-info" data-bind="ntsComboBox: {
                 name: '#[SMM001_6]',
                 options: itemList,
@@ -152,7 +153,7 @@
                 value: selectedAddressInformation,
                 optionsText: 'name',
                 editable: false,
-                enable: checkedAddressInformation,
+                enable: false,
                 columns: [
                   { prop: 'code', length: 4 },
                   { prop: 'name', length: 10 },
@@ -161,12 +162,12 @@
               <!--A4_7-->
               <input tabindex="18" class="init-data-text init-text4" data-bind="ntsTextEditor: {
               value: initDataText4, 
-              enable: checkedAddressInformation,
+              enable: false,
               constraint: ['ExternalImportCode'],
               name: '#[SMM001_19]'}" />
               <!--A4_8-->
               <button tabindex="19" class= "large init-data-button"
-              						 data-bind="enable: checkedAddressInformation,
+              						 data-bind="enable: false,
               						 			click: address">
               	#{i18n.getText('SMM001_18')}
               </button>                 
@@ -207,9 +208,10 @@
             <div class="d-flex mb-1">
               <!--A2_12-->
               <div tabindex="24"
-                data-bind="ntsCheckBox: { checked: checkedAffiliatedMaster, enable: true, text: AFFILIATED_MASTER }">
+                data-bind="ntsCheckBox: { checked: checkedAffiliatedMaster, enable: false, text: AFFILIATED_MASTER }">
               </div>
               <!--A2_13-->
+              <!-- enable: checkedAffiliatedMaster, -->
               <div tabindex="25" class="combo-box-info" data-bind="ntsComboBox: {
                 name: '#[SMM001_6]',
                 options: itemList,
@@ -218,7 +220,7 @@
                 value: selectedAffiliatedMaster,
                 optionsText: 'name',
                 editable: false,
-                enable: checkedAffiliatedMaster,
+                enable: false,
                 columns: [
                   { prop: 'code', length: 4 },
                   { prop: 'name', length: 10 },
@@ -227,12 +229,12 @@
               <!--A4_11-->
               <input tabindex="26" class="init-data-text init-text6" data-bind="ntsTextEditor: {
               value: initDataText6, 
-              enable: checkedAffiliatedMaster,
+              enable: false,
               constraint: ['ExternalImportCode'],
               name: '#[SMM001_19]'}" />
               <!--A4_12-->
               <button tabindex="27" class= "large init-data-button" 
-              								data-bind="enable: checkedAffiliatedMaster,
+              								data-bind="enable: false,
               											click: belongs">
               	#{i18n.getText('SMM001_18')}
               </button>               
@@ -240,9 +242,10 @@
             <div class="d-flex mb-1">
               <!--A2_14-->
               <div tabindex="28"
-                data-bind="ntsCheckBox: { checked: checkedEmployeeMaster, enable: true, text: EMPLOYEE_MASTER }">
+                data-bind="ntsCheckBox: { checked: checkedEmployeeMaster, enable: false, text: EMPLOYEE_MASTER }">
               </div>
               <!--A2_15-->
+              <!-- enable: checkedEmployeeMaster, -->
               <div tabindex="29" class="combo-box-info" data-bind="ntsComboBox: {
                 name: '#[SMM001_6]',
                 options: itemList,
@@ -251,7 +254,7 @@
                 value: selectedEmployeeMaster,
                 optionsText: 'name',
                 editable: false,
-                enable: checkedEmployeeMaster,
+                enable: false,
                 columns: [
                   { prop: 'code', length: 4 },
                   { prop: 'name', length: 10 },
@@ -261,11 +264,11 @@
               <input tabindex="30" class="init-data-text init-text7" data-bind="ntsTextEditor: {
               value: initDataText7, 
               constraint: ['ExternalImportCode'],
-              enable: checkedEmployeeMaster,
+              enable: false,
               name: '#[SMM001_19]'}" />
               <!--A4_14-->
               <button tabindex="31" class= "large init-data-button" 
-              							data-bind="enable: checkedEmployeeMaster,
+              							data-bind="enable: false,
               										click: employee">
               	#{i18n.getText('SMM001_18')}
               </button>                  

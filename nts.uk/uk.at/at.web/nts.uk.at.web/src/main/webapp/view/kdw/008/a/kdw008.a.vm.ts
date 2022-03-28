@@ -568,6 +568,8 @@ module nts.uk.at.view.kdw008.a {
                     if (attItem) {
                         dto.attendanceItemName = attItem.attendanceItemName;
                         dto.attendanceItemDisplayNumber = attItem.attendanceItemDisplayNumber;
+                    } else {
+                        dto.attendanceItemName = getText('KDW008_39');
                     }
                     return dto;
                 })
@@ -624,6 +626,8 @@ module nts.uk.at.view.kdw008.a {
                     if (attItem) {
                         dto.attendanceItemName = attItem.attendanceItemName;
                         dto.attendanceItemDisplayNumber = attItem.attendanceItemDisplayNumber;
+                    } else {
+                        dto.attendanceItemName = getText('KDW008_39');
                     }
                     return dto;
                 });
@@ -1367,7 +1371,6 @@ module nts.uk.at.view.kdw008.a {
                 if (!data) return;
                 this.attendanceItemId = data.attendanceItemId;
                 //this.attendanceItemName = data.attendanceItemName || "";
-
                 if(data.displayName && data.displayName.length > 0) {
                     this.attendanceItemName = data.displayName;
                 }

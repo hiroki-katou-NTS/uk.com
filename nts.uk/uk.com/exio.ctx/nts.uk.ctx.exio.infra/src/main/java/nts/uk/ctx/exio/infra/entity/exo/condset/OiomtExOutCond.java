@@ -76,6 +76,21 @@ public class OiomtExOutCond extends ContractUkJpaEntity
 	@Column(name = "AUTO_EXECUTION")
 	private int autoExecution;
 
+	// ＃123273①
+	/**
+	 * 文字コード交換
+	 */
+	@Basic(optional = false)
+	@Column(name = "CHARACTER_CD")
+	private int encodeType;
+
+	/**
+	 * 出力ファイル名
+	 */
+	@Basic(optional = true)
+	@Column(name = "FILE_NAME")
+	private String fileName;
+
 	/**
 	 * Gets primary key of entity.
 	 *

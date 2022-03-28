@@ -41,10 +41,6 @@ public class ImportingItemMapping {
 
 	public ImportingItemMapping(int itemNo, boolean isFixedValue, Optional<Integer> csvColumnNo, Optional<StringifiedValue> fixedValue) {
 
-		if (csvColumnNo.isPresent() && fixedValue.isPresent()) {
-			throw new RuntimeException("両方同時には設定できない");
-		}
-
 		this.isFixedValue = isFixedValue;
 		this.itemNo = itemNo;
 		this.csvColumnNo = csvColumnNo;

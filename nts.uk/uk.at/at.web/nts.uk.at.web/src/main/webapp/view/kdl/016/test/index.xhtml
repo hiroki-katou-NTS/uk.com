@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
+
+        <com:stylefile path="kdl016.test.style.css"/>
+        <com:scriptfile path="kdl016.test.vm.js"/>
+
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <button data-bind="click: openDialog, enable: enableOpenKdl016">Open KDL016A</button>
+        </div>
+        <div id="content-area">
+            <div class="control-group valign-center">
+                <div data-bind="ntsFormLabel: {required: true, text: 'Employee List:'}"/>
+                <div id="ccgcomponent" tabindex="1"></div>
+                <div class="employee-item-list" id="component-items-list"></div>
+            </div>
+            <div class="control-group valign-center" style="margin-top: 70px;margin-left: 20px;">
+                <div data-bind="ntsFormLabel: {required: true, text: 'Date period:'}"/>
+                <div style="margin-left: 20px;" id="daterangepicker" tabindex="2" data-bind="ntsDateRangePicker: {
+						required: required,
+						enable: enable,
+						showNextPrevious: true,
+						value: dateValue,
+						maxRange: 'oneYear'}"></div>
+            </div>
+            <div class="control-group valign-center" style="margin-top: 20px; margin-left: 20px;">
+                <div data-bind="ntsFormLabel: {required: true, text: 'Organization:'}"/>
+                <button tabindex="3" style="margin-left: 15px;" data-bind="enable: true, click : openKDL046 ">Selection</button>
+                <span style="margin-left: 20px; font-weight: bold; color: blue" data-bind="text: targetOrganizationName"></span>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+
+</html>

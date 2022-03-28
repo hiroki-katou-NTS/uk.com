@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehou
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.AbsenceOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.AnnualOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.HolidayOfDaily;
@@ -75,7 +76,6 @@ public class TotalWorkingTimeHelperInAggregation {
 				Collections.emptyList(),
 				crateRaiseSalary(),
 				new WorkTimes(0),
-				createTemporaryTime(),
 				createShortTime(),
 				createHolidayTime(),
 				IntervalTimeOfDaily.empty());
@@ -130,7 +130,10 @@ public class TotalWorkingTimeHelperInAggregation {
 						Collections.emptyList(), 
 						lstHolidayWorkFrameTime,
 						Finally.of(new HolidayMidnightWork(Collections.emptyList())), 
-						new AttendanceTime(0))));
+						new AttendanceTime(0))),
+				new TemporaryTimeOfDaily(
+						Collections.emptyList(),
+						new TemporaryTimes(0)));
 	}
 	
 	private static List<LateTimeOfDaily> createLateTime() {
@@ -174,11 +177,6 @@ public class TotalWorkingTimeHelperInAggregation {
 	private static RaiseSalaryTimeOfDailyPerfor crateRaiseSalary() {
 		
 		return new RaiseSalaryTimeOfDailyPerfor(new ArrayList<>(),new ArrayList<>());
-	}
-	
-	private static TemporaryTimeOfDaily createTemporaryTime() {
-		
-		return new TemporaryTimeOfDaily(Collections.emptyList());
 	}
 	
 	private static ShortWorkTimeOfDaily createShortTime() {

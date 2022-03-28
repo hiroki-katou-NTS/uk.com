@@ -6,6 +6,9 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceResultImport;
 import nts.arc.time.calendar.period.DatePeriod;
 
+/**
+ * 	日次の勤怠項目を取得するAdapter
+ */
 public interface DailyAttendanceItemAdapter {
 	
 	List<DailyAttendanceItemAdapterDto> getDailyAttendanceItem(String companyId, List<Integer> dailyAttendanceItemIds);

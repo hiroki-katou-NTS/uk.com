@@ -596,28 +596,33 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 	                $("#dpGrid").off();
 	            }*/
 				if ($("#dpGrid").hasClass("mgrid")) {
-	                $("#dpGrid").mGrid("destroy");
-	                $("#dpGrid").removeClass("mgrid");
-	                $("#dpGrid").off(); 
+					setTimeout(function() {
+						$("#dpGrid").mGrid("destroy");
+		                $("#dpGrid").removeClass("mgrid");
+		                $("#dpGrid").off(); 
+					}, 200);
 	            }
-                self.loadGrid();
-                _.forEach(data.mpsateCellHideControl, (cellHide =>{
-                    $('#dpGrid').mGrid("setState", cellHide.rowId, cellHide.columnKey, ["mgrid-hide"])
-                }))
-                self.employmentCode(data.employmentCode);
-                self.dailyPerfomanceData(self.dpData);
-                self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
 
-                //画面項目の非活制御をする
-                self.showButton(new AuthorityDetailModel(data.authorityDto, data.actualTimeState, self.initMode(), data.formatPerformance.settingUnitType));
-                self.showButton().enable_multiActualTime(data.lstActualTimes.length > 1);
-//                if (data.showRegisterButton == false) {
-//                    self.showButton().enable_A1_1(data.showRegisterButton);
-//                    self.showButton().enable_A1_2(data.showRegisterButton);
-//                    self.showButton.valueHasMutated();
-//                }
-                nts.uk.ui.block.clear();
-                dfd.resolve(data.processDate);
+				setTimeout(function() {
+	                self.loadGrid();
+	                _.forEach(data.mpsateCellHideControl, (cellHide =>{
+	                    $('#dpGrid').mGrid("setState", cellHide.rowId, cellHide.columnKey, ["mgrid-hide"])
+	                }))
+	                self.employmentCode(data.employmentCode);
+	                self.dailyPerfomanceData(self.dpData);
+	                self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
+	
+	                //画面項目の非活制御をする
+	                self.showButton(new AuthorityDetailModel(data.authorityDto, data.actualTimeState, self.initMode(), data.formatPerformance.settingUnitType));
+	                self.showButton().enable_multiActualTime(data.lstActualTimes.length > 1);
+	//                if (data.showRegisterButton == false) {
+	//                    self.showButton().enable_A1_1(data.showRegisterButton);
+	//                    self.showButton().enable_A1_2(data.showRegisterButton);
+	//                    self.showButton.valueHasMutated();
+	//                }
+	                nts.uk.ui.block.clear();
+	                dfd.resolve(data.processDate);
+				}, 300);
             }).fail(function(error) {
                 nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
                     nts.uk.request.jumpToTopPage();

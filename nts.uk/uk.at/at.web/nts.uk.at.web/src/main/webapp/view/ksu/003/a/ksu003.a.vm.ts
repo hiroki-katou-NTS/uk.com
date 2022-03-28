@@ -121,6 +121,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		modes = ko.observableArray(["normal", "paste", "pasteFlex"].map(c => ({ code: c, name: c })));
 		checkOpenKdl003 : any = 0;
         taskId : any = null;
+		closeDialogStatus : boolean = false;
         
 		constructor(data: any) {
 			let self = this;
@@ -2490,7 +2491,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				service.regWorkSchedule(dataReg).done((rs: any) => {
                     self.taskId = rs.taskInfor.id;
                     self.checkStateAsyncTaskNormalMode();
-                    
+                    self.closeDialogStatus = true;
 				}).fail(function(error: any) {
 					block.clear();
 					alertError(error);
@@ -2519,6 +2520,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				})
 				
 				service.addTaskWorkSchedule(self.taskPasteData).done((rs: any) => {
+					self.closeDialogStatus = true;
                     if (type != 1) {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         block.grayout();
@@ -6644,6 +6646,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		public closeDialog(): void {
 			let self = this;
 			self.checkCloseKsu003 = true;
+			setShared('status-result', self.closeDialogStatus);
+			
 			nts.uk.ui.windows.close();
 		}
 	}

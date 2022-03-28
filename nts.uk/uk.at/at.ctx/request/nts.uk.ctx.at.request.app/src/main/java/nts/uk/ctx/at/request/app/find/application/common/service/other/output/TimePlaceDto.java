@@ -9,6 +9,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.TimePlaceOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.StampFrameNo;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -46,13 +47,19 @@ public class TimePlaceDto {
 	 */
 	private Integer opStartTime;
 	
+	/**
+	 * 職場ID
+	 */
+	private String workplaceId;
+	
 	public static TimePlaceDto fromDomain(TimePlaceOutput timePlaceOutput) {
 		return new TimePlaceDto(
 				timePlaceOutput.getOpWorkLocationCD().map(x -> x.v()).orElse(null), 
 				timePlaceOutput.getOpGoOutReasonAtr().map(x -> x.value).orElse(null), 
 				timePlaceOutput.getFrameNo().v(), 
 				timePlaceOutput.getOpEndTime().map(x -> x.v()).orElse(null), 
-				timePlaceOutput.getOpStartTime().map(x -> x.v()).orElse(null));
+				timePlaceOutput.getOpStartTime().map(x -> x.v()).orElse(null),
+				timePlaceOutput.getWorkplaceId() == null ? "" : timePlaceOutput.getWorkplaceId().v());
 	} 
 	
 	public TimePlaceOutput toDomain() {
@@ -61,6 +68,7 @@ public class TimePlaceDto {
 				opGoOutReasonAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opGoOutReasonAtr, GoingOutReason.class)), 
 				new StampFrameNo(frameNo), 
 				opEndTime == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(opEndTime)), 
-				opStartTime == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(opStartTime)));
+				opStartTime == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(opStartTime)),
+				new WorkplaceId(workplaceId));
 	}
 }

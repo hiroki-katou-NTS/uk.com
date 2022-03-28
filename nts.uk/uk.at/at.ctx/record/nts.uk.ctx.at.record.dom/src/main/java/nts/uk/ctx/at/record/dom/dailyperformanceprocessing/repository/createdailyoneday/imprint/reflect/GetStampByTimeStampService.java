@@ -17,15 +17,15 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 /** 打刻時刻と該当する打刻を取得する */
 public class GetStampByTimeStampService {
 
-	public static Optional<Stamp> get(Require require, String sid, GeneralDate ymd, boolean startAtr, TimeWithDayAttr stampTime) {
-		if (stampTime == null) {
+	public static Optional<Stamp> get(Require require, String sid, GeneralDate ymd, boolean startAtr, Optional<TimeWithDayAttr> stampTime) {
+		if (!stampTime.isPresent()) {
 			return Optional.empty();
 		}
 		
 		/** 打刻時刻と年月日から打刻の日時を計算する */
-		val stampDate = ymd.addDays(getDayToAdd(stampTime));
+		val stampDate = ymd.addDays(getDayToAdd(stampTime.get()));
 		val timeToGet = GeneralDateTime.ymdhms(stampDate.year(), stampDate.month(), stampDate.day(), 0, 0, 0)
-					.addMinutes(stampTime.getDayTime());
+					.addMinutes(stampTime.get().getDayTime());
 		
 		/** Requireで「社員の打刻カード」を取得する */
 		val stampCards = require.stampCard(AppContexts.user().contractCode(), sid);
@@ -50,8 +50,10 @@ public class GetStampByTimeStampService {
 	
 	public static interface Require {
 		
+		//StampCardRepository stampCardRepo;
 		List<StampCard> stampCard(String contractCode, String sid);
 
+		// StampDakokuRepository stampRepo;
 		List<Stamp> stamp(List<String> listCard,String companyId, GeneralDateTime startDate, GeneralDateTime endDate);
 	}
 }

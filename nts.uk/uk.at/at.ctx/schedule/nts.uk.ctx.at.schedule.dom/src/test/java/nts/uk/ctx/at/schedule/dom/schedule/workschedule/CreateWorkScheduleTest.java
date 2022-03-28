@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,14 +24,19 @@ import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText.Builder;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.CreateWorkSchedule.WorkTimeZone;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule.Require;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTicket;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ClockAreaAtr;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ContainsResult;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
@@ -215,6 +221,7 @@ public class CreateWorkScheduleTest {
 					workInformation, 
 					false,
 					new ArrayList<>(),
+					new ArrayList<>(),
 					new HashMap<>());
 			
 			assertThat( result.getAtomTask() ).isEmpty();
@@ -255,6 +262,7 @@ public class CreateWorkScheduleTest {
 					new BreakTimeOfDailyAttd(), 
 					new ArrayList<>(),
 					TaskSchedule.createWithEmptyList(),
+					SupportSchedule.createWithEmptyList(),
 					Optional.empty(), 
 					Optional.empty(), 
 					Optional.empty(),
@@ -323,6 +331,7 @@ public class CreateWorkScheduleTest {
 					GeneralDate.ymd(2020, 11, 1), 
 					workInformation, 
 					false,
+					new ArrayList<>(),
 					new ArrayList<>(),
 					updateInfoMap);
 			
@@ -414,6 +423,7 @@ public class CreateWorkScheduleTest {
 					workInformation, 
 					false,
 					new ArrayList<>(),
+					new ArrayList<>(),
 					updateInfoMap);
 			
 			assertThat( result.getAtomTask() ).isEmpty();
@@ -504,6 +514,7 @@ public class CreateWorkScheduleTest {
 					workInformation, 
 					false,
 					new ArrayList<>(),
+					new ArrayList<>(),
 					updateInfoMap);
 			
 			assertThat( result.getAtomTask() ).isEmpty();
@@ -532,7 +543,6 @@ public class CreateWorkScheduleTest {
 		@Test
 		public <T> void testCreate_updateBreakTimeList(
 				@Injectable WorkInformation workInformation,
-				@Mocked Builder builder,
 				@Mocked WorkSchedule workSchedule) {
 			
 			List<TimeSpanForCalc> breakTimeList = Arrays.asList( 
@@ -558,6 +568,7 @@ public class CreateWorkScheduleTest {
 					workInformation, 
 					true, // 休憩時間帯が手修正か: true
 					breakTimeList,
+					new ArrayList<>(),
 					new HashMap<>());
 			
 		}
@@ -566,7 +577,6 @@ public class CreateWorkScheduleTest {
 		@Test
 		public <T> void testCreate_notUpdateBreakTimeList(
 				@Injectable WorkInformation workInformation,
-				@Mocked Builder builder,
 				@Mocked WorkSchedule workSchedule) {
 			
 			List<TimeSpanForCalc> breakTimeList = Arrays.asList( 
@@ -592,6 +602,7 @@ public class CreateWorkScheduleTest {
 					workInformation, 
 					false, // 休憩時間帯が手修正か: false
 					breakTimeList,
+					new ArrayList<>(),
 					new HashMap<>());
 			
 		}
@@ -600,7 +611,6 @@ public class CreateWorkScheduleTest {
 		@Test
 		public <T> void testCreate_insert_successfull(
 				@Injectable WorkInformation workInformation,
-				@Mocked Builder builder,
 				@Mocked WorkSchedule workSchedule) {
 			
 			new Expectations() {{
@@ -640,6 +650,7 @@ public class CreateWorkScheduleTest {
 					workInformation, 
 					false,
 					new ArrayList<>(),
+					new ArrayList<>(),
 					updateInfoMap);
 			
 			assertThat( result.getErrorInformation() ).isEmpty();
@@ -654,7 +665,6 @@ public class CreateWorkScheduleTest {
 		@Test
 		public <T> void testCreate_update_successfull(
 				@Injectable WorkInformation workInformation,
-				@Mocked Builder builder,
 				@Mocked WorkSchedule workSchedule
 				) {
 			
@@ -693,11 +703,110 @@ public class CreateWorkScheduleTest {
 					workInformation, 
 					false,
 					new ArrayList<>(),
+					new ArrayList<>(),
 					updateInfoMap);
 			
 			assertThat( result.getErrorInformation() ).isEmpty();
 			NtsAssert.atomTask( () -> result.getAtomTask().get() , 
 					any -> require.updateWorkSchedule( any.get() ),
+					any -> require.registerTemporaryData("emp", GeneralDate.ymd(2020, 11, 1))
+					);
+			
+		}
+		
+		@SuppressWarnings("unchecked")
+		@Test
+		public <T> void testCreate_create_support_ticket_exception(
+				@Injectable WorkInformation workInformation,
+				@Injectable TargetOrgIdenInfor targetOrg) {
+			
+			String employeeId = "empId";
+			GeneralDate date = GeneralDate.ymd(2020, 11, 1);
+			WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(employeeId, date, 
+					ConfirmedATR.UNSETTLED, 
+					TaskSchedule.createWithEmptyList(), 
+					SupportSchedule.createWithEmptyList());
+			
+			new Expectations(WorkSchedule.class) {{
+				require.getWorkSchedule(anyString, (GeneralDate) any);
+				// result = empty
+				
+				WorkSchedule.createByHandCorrectionWithWorkInformation(require, anyString, employeeId, date, workInformation);
+				result = workSchedule;
+				
+				workSchedule.createSupportSchedule(require, (List<SupportTicket>) any);
+				result = new BusinessException("message-id");
+			}};
+			
+			ResultOfRegisteringWorkSchedule result = CreateWorkSchedule.create(
+					require, 
+					"companyId",
+					employeeId, 
+					date, 
+					workInformation, 
+					false,
+					new ArrayList<>(),
+					Arrays.asList(new SupportTicket(new EmployeeId(employeeId), targetOrg, SupportType.ALLDAY, date, Optional.empty())),
+					Collections.emptyMap() );
+			
+			// Assert
+			assertThat(result.isHasError()).isTrue();
+			assertThat(result.getErrorInformation())
+				.extracting(
+					e -> e.getEmployeeId(),
+					e -> e.getDate(),
+					e -> e.getAttendanceItemId(),
+					e -> e.getErrorMessage() )
+				.containsExactly(
+					tuple(employeeId, date, Optional.empty(), "message-id"));
+			assertThat(result.getAtomTask()).isEmpty();
+			
+			assertThat(workSchedule.getSupportSchedule().getDetails()).isEmpty();
+			
+		}
+		
+		@Test
+		public <T> void testCreate_create_support_ticket_ok(
+				@Injectable WorkInformation workInformation,
+				@Injectable TargetOrgIdenInfor targetOrg) {
+			
+			String employeeId = "empId";
+			GeneralDate date = GeneralDate.ymd(2020, 11, 1);
+			WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(employeeId, date, 
+					ConfirmedATR.UNSETTLED, 
+					TaskSchedule.createWithEmptyList(), 
+					SupportSchedule.createWithEmptyList());
+			
+			new Expectations(WorkSchedule.class) {{
+				require.getWorkSchedule(anyString, (GeneralDate) any);
+				// result = empty
+				
+				WorkSchedule.createByHandCorrectionWithWorkInformation(require, anyString, employeeId, date, workInformation);
+				result = workSchedule;
+			}};
+			
+			ResultOfRegisteringWorkSchedule result = CreateWorkSchedule.create(
+					require, 
+					"companyId",
+					employeeId, 
+					date, 
+					workInformation, 
+					false,
+					new ArrayList<>(),
+					Arrays.asList(new SupportTicket(new EmployeeId(employeeId), targetOrg, SupportType.ALLDAY, date, Optional.empty())),
+					Collections.emptyMap() );
+			
+			// Assert
+			assertThat(workSchedule.getSupportSchedule().getDetails())
+				.extracting(
+					s -> s.getSupportDestination(),
+					s -> s.getSupportType(),
+					s -> s.getTimeSpan() )
+				.containsExactly(
+					tuple(targetOrg, SupportType.ALLDAY, Optional.empty())	);
+			assertThat( result.getErrorInformation() ).isEmpty();
+			NtsAssert.atomTask( () -> result.getAtomTask().get() , 
+					any -> require.insertWorkSchedule(  any.get() ),
 					any -> require.registerTemporaryData("emp", GeneralDate.ymd(2020, 11, 1))
 					);
 			

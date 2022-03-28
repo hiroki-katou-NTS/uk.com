@@ -18,7 +18,7 @@ public class SupportParam {
 	// 開始区分
 	private StartAtr startAtr;
 	// 勤怠打刻：勤怠打刻 - 出退勤。出勤。打刻。時刻
-	private WorkTimeInformation timeDay;
+	private Optional<WorkTimeInformation> timeDay;
 	// 場所コード＜Optional＞
 	private Optional<WorkLocationCD> locationCode;
 	// 職場ID＜Optional＞

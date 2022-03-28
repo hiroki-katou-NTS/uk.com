@@ -83,7 +83,7 @@ public class GetSupportDataJudgedSameDSTest {
 		
 		StartAtr isStart = StartAtr.START_OF_SUPPORT;
 		
-		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
+		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10));
 		new Expectations() {
 			{
 				required.getCriteriaSameStampOfSupport();
@@ -126,7 +126,7 @@ public class GetSupportDataJudgedSameDSTest {
 		
 		StartAtr isStart = StartAtr.START_OF_SUPPORT;
 		
-		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
+		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10));
 		new Expectations() {
 			{
 				required.getCriteriaSameStampOfSupport();
@@ -169,7 +169,7 @@ public class GetSupportDataJudgedSameDSTest {
 		
 		StartAtr isStart = StartAtr.END_OF_SUPPORT;
 
-		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
+		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10));
 		new Expectations() {
 			{
 				required.getCriteriaSameStampOfSupport();
@@ -212,7 +212,7 @@ public class GetSupportDataJudgedSameDSTest {
 		
 		StartAtr isStart = StartAtr.END_OF_SUPPORT;
 
-		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
+		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10));
 		new Expectations() {
 			{
 				required.getCriteriaSameStampOfSupport();
@@ -260,7 +260,7 @@ public class GetSupportDataJudgedSameDSTest {
 
 		StartAtr isStart = StartAtr.START_OF_SUPPORT;
 
-		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
+		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10));
 		new Expectations() {
 			{
 				required.getCriteriaSameStampOfSupport();
@@ -306,7 +306,7 @@ public class GetSupportDataJudgedSameDSTest {
 
 		StartAtr isStart = StartAtr.END_OF_SUPPORT;
 
-		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
+		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10));
 		new Expectations() {
 			{
 				required.getCriteriaSameStampOfSupport();
