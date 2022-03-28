@@ -1,7 +1,10 @@
 package nts.uk.ctx.exio.dom.input.validation;
 
 import lombok.val;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
+import nts.gul.text.KatakanaConverter;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
@@ -39,6 +42,14 @@ public class CorrectValueByType {
         if (zeroPadded != null) {
             return padZero(pvClass, item);
         }
+        
+        val charTypeAnno = pvClass.getAnnotation(StringCharType.class);
+        if (charTypeAnno != null) {
+        	val charType = charTypeAnno.value();
+        	if (charType == CharType.KANA || charType == CharType.KATAKANA) {
+        		return kana(item);
+        	}
+        }
 
         return item;
     }
@@ -48,6 +59,13 @@ public class CorrectValueByType {
         val length = pvClass.getAnnotation(StringMaxLength.class);
         String padded = StringUtils.leftPad(item.getString(), length.value(), '0');
         return DataItem.of(item.getItemNo(), padded);
+    }
+    
+    private static DataItem kana(DataItem item) {
+    	
+    	String source = item.getString();
+    	String corrected = KatakanaConverter.halfToFull(source);
+    	return DataItem.of(item.getItemNo(), corrected);
     }
 
     public interface Require extends CorrectEmployeeCode.EmployeeCodeValidateRequire{
