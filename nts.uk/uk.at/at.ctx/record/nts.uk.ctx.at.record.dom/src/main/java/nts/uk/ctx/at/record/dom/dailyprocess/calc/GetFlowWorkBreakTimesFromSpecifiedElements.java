@@ -30,8 +30,7 @@ public class GetFlowWorkBreakTimesFromSpecifiedElements {
                 false
         );
 
-        IntegrationOfDaily correctedDailyRecord = CorrectDailyAttendanceService.processAttendanceRule(
-                require,
+        IntegrationOfDaily correctedDailyRecord = require.process(
                 dailyRecord.get(),
                 changeDailyAttendance
         );
