@@ -122,6 +122,8 @@ module nts.uk.at.kha002.a {
                     const allItems = vm.aggregateUnit() == AggregateUnit.WORKPLACE
                         ? vm.getListWorkplaces($('#A3_3').getDataList())
                         : []; // 今回対象外
+                    let wkpSelected = $('#A3_3').getRowSelected();
+
                     const exportQuery = {
                         aggregationUnit: vm.aggregateUnit(),
                         supportWorkCode: vm.selectedLayout(),
@@ -132,16 +134,16 @@ module nts.uk.at.kha002.a {
                         workLocationCodes: vm.selectedWorkLocations(),
                         headerInfos: [{
                             firstLineCode: vm.aggregateUnit() == AggregateUnit.WORKPLACE
-                                ? (vm.selectedWorkplaces().length > 0 ? _.find(allItems, i => i.id == vm.selectedWorkplaces()[0]).code : null)
+                                ? (wkpSelected.length > 0 ? wkpSelected[0].code : null)
                                 : null, // 今回対象外
                             firstLineName: vm.aggregateUnit() == AggregateUnit.WORKPLACE
-                                ? (vm.selectedWorkplaces().length > 0 ? _.find(allItems, i => i.id == vm.selectedWorkplaces()[0]).name : null)
+                                ? (wkpSelected.length > 0 ? _.find(allItems, i => i.id == wkpSelected[0].id).name : null)
                                 : null, // 今回対象外
                             lastLineCode: vm.aggregateUnit() == AggregateUnit.WORKPLACE
-                                ? (vm.selectedWorkplaces().length > 0 ? _.find(allItems, i => i.id == vm.selectedWorkplaces()[vm.selectedWorkplaces().length - 1]).code : null)
+                                ? (wkpSelected.length > 0 ? wkpSelected[wkpSelected.length - 1].code : null)
                                 : null, // 今回対象外
                             lastLineName: vm.aggregateUnit() == AggregateUnit.WORKPLACE
-                                ? (vm.selectedWorkplaces().length > 0 ? _.find(allItems, i => i.id == vm.selectedWorkplaces()[vm.selectedWorkplaces().length - 1]).name : null)
+                                ? (wkpSelected.length > 0 ? _.find(allItems, i => i.id == wkpSelected[wkpSelected.length - 1].id).name : null)
                                 : null, // 今回対象外
                             numberOfSelect: vm.aggregateUnit() == AggregateUnit.WORKPLACE
                                 ? vm.selectedWorkplaces().length
