@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.*;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -27,6 +28,7 @@ public class SupportWorkDetailsHelper {
                 attendanceItemIds,
                 new OuenWorkTimeSheetOfDailyAttendance(
                         new SupportFrameNo(1),
+                        SupportType.TIMEZONE,
                         WorkContent.create(
                                 WorkplaceOfWorkEachOuen.create(
                                         new WorkplaceId("workplace-id-00001"),
