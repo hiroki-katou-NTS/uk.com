@@ -33,6 +33,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRe
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
@@ -100,13 +102,14 @@ public class AddWorkScheduleByTimezoneCommandHandler extends CommandHandler<AddW
 	@Inject
 	private SyClassificationAdapter syClassificationAdapter;
 	@Inject
+	private SupportOperationSettingRepository supportOperationSettingRepo;
+	@Inject
 	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 	@Inject
 	private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
 	@Inject
 	private NurseClassificationRepository nurseClassificationRepo;
 	
-
 	@Override
 	protected void handle(CommandHandlerContext<AddWorkScheduleByTimezoneCommand> context) {
 		AddWorkScheduleByTimezoneCommand command = context.getCommand();
@@ -121,7 +124,8 @@ public class AddWorkScheduleByTimezoneCommandHandler extends CommandHandler<AddW
 				flowWorkSet, flexWorkSet, predetemineTimeSet, workScheduleRepo, correctWorkSchedule,
 				interimRemainDataMngRegisterDateChange, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
 				sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter, 
-				empAffiliationInforAdapter, empMedicalWorkStyleHistoryRepo, nurseClassificationRepo);
+				supportOperationSettingRepo,empAffiliationInforAdapter, empMedicalWorkStyleHistoryRepo, nurseClassificationRepo);
+		
 		// 2:not 勤務予定．isEmpty : 時間帯に作業予定を追加する(@Require, 計算用時間帯, 作業コード)
 		if (!lstWorkSchedule.isEmpty()) {
 			for (WorkSchedule item : lstWorkSchedule) {
@@ -171,6 +175,8 @@ public class AddWorkScheduleByTimezoneCommandHandler extends CommandHandler<AddW
 		private BusinessTypeEmpService businessTypeEmpService;
 		@Inject
 		private SyClassificationAdapter syClassificationAdapter;
+		@Inject
+		private SupportOperationSettingRepository supportOperationSettingRepo;
 		
 		private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 		
@@ -279,6 +285,10 @@ public class AddWorkScheduleByTimezoneCommandHandler extends CommandHandler<AddW
 		}
 
 		@Override
+		public SupportOperationSetting getSupportOperationSetting() {
+			return supportOperationSettingRepo.get(AppContexts.user().companyId());
+		}
+		
 		public EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate) {
 			List<EmpOrganizationImport> results = empAffiliationInforAdapter.getEmpOrganization(standardDate, Arrays.asList(employeeId));
 			if(results.isEmpty())
@@ -297,5 +307,6 @@ public class AddWorkScheduleByTimezoneCommandHandler extends CommandHandler<AddW
 			String companyId = AppContexts.user().companyId();
 			return nurseClassificationRepo.getListCompanyNurseCategory(companyId);
 		}
+		
 	}
 }

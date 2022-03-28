@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPa
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 
 /**
@@ -105,6 +106,15 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 				empOrganization.getWorkplaceGroupId(),
 				empLicenseClass.getOptLicenseClassification(),
 				empLicenseClass.getIsNursingManager() );
+	}
+	
+	/**
+	 * 所属組織を取得する
+	 * @return
+	 */
+	public TargetOrgIdenInfor getAffiliationOrg () {
+		
+		return TargetOrgIdenInfor.createByAutoDeterminingUnit(this.wplID, this.workplaceGroupId);
 	}
 	
 	/**

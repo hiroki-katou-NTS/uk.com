@@ -52,4 +52,6 @@ public class DataScreenQueryGetInforDto {
 	
 	// ・締め日 = スケジュール修正職場別の表示設定.初期表示期間の終了日.締め日
 	public DateInMonth closeDate;
+	
+	public boolean useSupportSchedule;
 }

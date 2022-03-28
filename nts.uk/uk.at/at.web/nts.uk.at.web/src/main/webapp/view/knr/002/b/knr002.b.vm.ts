@@ -47,7 +47,6 @@ module knr002.b {
                 self.workLocationName = ko.observable('');
                 self.lastSuccessDate = ko.observable('');
                 self.status = ko.observable('');
-                setTimeout(() => { $(".column-2 #multi-list_sDate").attr('colspan',5); }, 1); 
                 self.colorText = (value: any, obj: any) => {
                     setTimeout(() => {
                         let cell1 = $("#multi-list").igGrid("cellById", obj.id, 'sDate');

@@ -22,7 +22,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 @AllArgsConstructor
-public class MidNightTimeSheetForCalcList {
+public class MidNightTimeSheetForCalcList implements Cloneable {
 
 	/** 時間帯一覧 */
 	List<MidNightTimeSheetForCalc> timeSheets = new ArrayList<>();
@@ -114,5 +114,16 @@ public class MidNightTimeSheetForCalcList {
 				.filter(t -> t.isPresent())
 				.map(t -> t.get())
 				.collect(Collectors.toList()));
+	}
+	
+	public MidNightTimeSheetForCalcList clone() {
+		MidNightTimeSheetForCalcList clone = new MidNightTimeSheetForCalcList(this.timeSheets);
+		try {
+			clone.timeSheets = this.timeSheets.stream().map(t -> t.clone()).collect(Collectors.toList());
+		}
+		catch (Exception e) {
+			throw new RuntimeException("MidNightTimeSheetForCalcList clone error.");
+		}
+		return clone;
 	}
 }

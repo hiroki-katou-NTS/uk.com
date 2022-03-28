@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <!--<com:stylefile path="kha003.a.style.css"/>-->
+        <com:scriptfile path="kha002.a.vm.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area">
+            <!--A1_1-->
+            <button tabindex="1" data-bind="enable: true, click: exportExcel">#{i18n.getText('KHA002_10')}</button>
+            <!--A1_2-->
+            <button tabindex="2" data-bind="enable: true, click: exportCsv">#{i18n.getText('KHA002_11')}</button>
+            <!--A1_3-->
+            <button class="pull-right"
+                    style="border: none; box-shadow: none; min-width: 30px; padding: 0!important; margin-right: 15px;"
+                    data-bind="click: openDialogC, visible: __viewContext.user.role.isInCharge.attendance">
+                <i data-bind="ntsIcon: { no: 5, width: 30, height: 30 }"></i>
+            </button>
+        </div>
+        <div id="contents-area" class="two-panel">
+            <div class="left-panel" style="padding-top: 5px; padding-left: 15px;">
+                <div class="control-group valign-center">
+                    <div style="min-width: 50px;" data-bind="ntsFormLabel: {required: true, text: $i18n('KHA002_13')}"/>
+                    <div id="A2_3"
+                         tabindex="3"
+                         data-bind="ntsDateRangePicker: {
+                                        required: true,
+                                        showNextPrevious: true,
+                                        pickOnly: true,
+                                        value: dateValue,
+                                        name:'#[KHA002_14]',
+                                        maxRange: 'oneMonth'
+                                    }"/>
+                </div>
+                <div class="control-group valign-top" data-bind="if: aggregateUnit() == 0">
+                    <div style="min-width: 50px;" data-bind="ntsFormLabel: {required: true, text: $i18n('KHA002_15')}"/>
+                    <div id="A3_3"></div>
+                </div>
+                <div class="control-group valign-top" data-bind="if: aggregateUnit() == 1">
+                    今回対象外
+                </div>
+            </div>
+            <div class="right-panel" style="padding-top: 5px;">
+                <div class="control-group valign-center">
+                    <div style="min-width: 90px;" data-bind="ntsFormLabel: {required: true, text: $i18n('KHA002_20')}"/>
+                    <div id="A5_2"
+                         style="width: 400px;"
+                         tabindex="6"
+                         data-bind="ntsComboBox: {
+                                    options: layoutSettings,
+                                    visibleItemsCount: 15,
+                                    value: selectedLayout,
+                                    optionsValue: 'code',
+                                    optionsText: 'name',
+                                    name:'#[KHA002_21]',
+                                    required: true,
+                                    selectFirstIfNull: false,
+                                    columns: [
+                                        { prop: 'code', length: 4 },
+                                        { prop: 'name', length: 14 }
+                                    ]}">
+                    </div>
+                    <button tabindex="7" data-bind="click: openDialogB, visible: __viewContext.user.role.isInCharge.attendance">#{i18n.getText('KHA002_22')}</button>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

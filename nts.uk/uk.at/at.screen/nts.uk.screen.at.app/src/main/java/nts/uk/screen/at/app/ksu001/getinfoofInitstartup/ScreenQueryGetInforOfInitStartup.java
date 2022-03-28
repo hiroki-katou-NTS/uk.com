@@ -27,12 +27,16 @@ import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlC
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyStartDateService;
 import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.ScheFunctionControl;
 import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.ScheFunctionCtrlByWorkplace;
+import nts.uk.ctx.at.schedule.dom.schedule.support.SupportFunctionControl;
+import nts.uk.ctx.at.schedule.dom.schedule.support.SupportFunctionControlRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.GetShiftTableRuleForOrganizationService;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRule;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForCompany;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForCompanyRepo;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForOrganization;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForOrganizationRepo;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetTargetIdentifiInforService;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
@@ -91,6 +95,12 @@ public class ScreenQueryGetInforOfInitStartup {
 	
 	@Inject
 	private GetSummaryCategory getSummaryCategory;
+	
+	@Inject
+	private SupportOperationSettingRepository supportOperationSettingRepo;
+	
+	@Inject
+	private SupportFunctionControlRepository supportFunctionControlRepo;
 
 	
 	public DataScreenQueryGetInforDto getData() {
@@ -152,6 +162,17 @@ public class ScreenQueryGetInforOfInitStartup {
 		// step 12 get()
 		OptionLicense optionaLicense = AppContexts.optionLicense();
 		
+		boolean useSupportSchedule = false;
+		// step 13
+		SupportOperationSetting supportOperationSetting = supportOperationSettingRepo.get(companyID);
+		if(supportOperationSetting != null && supportOperationSetting.isUsed()){
+			// step 14
+			SupportFunctionControl supportFunctionControl = supportFunctionControlRepo.get(companyID);
+			if(supportFunctionControl != null) {
+				useSupportSchedule = supportFunctionControl.isUse();
+			} 
+		}
+		
 		return new DataScreenQueryGetInforDto(
 				datePeriod.start(),
 				datePeriod.end(),
@@ -172,7 +193,8 @@ public class ScreenQueryGetInforOfInitStartup {
 		        optionaLicense.attendance().schedule().nursing(),
 		        summaryCategory.getUseCategoriesWorkplace(),
 			    summaryCategory.getUseCategoriesPersonal(),
-			    workScheDisplaySettingOpt.get().getEndDay().getClosingDate()
+			    workScheDisplaySettingOpt.get().getEndDay().getClosingDate(),
+			    useSupportSchedule
 				);
 	}
 	

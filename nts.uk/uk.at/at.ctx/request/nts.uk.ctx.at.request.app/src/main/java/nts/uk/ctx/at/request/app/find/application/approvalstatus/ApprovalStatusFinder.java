@@ -114,7 +114,7 @@ public class ApprovalStatusFinder {
 		if (Objects.isNull(domain)) {
 			// ドメインが取得できなかった場合
 			// 画面モード ＝ 新規
-			return new ApprovalStatusMailTempDto(mailType, null, null, null, "", "", 0);
+			return new ApprovalStatusMailTempDto(mailType, 1, 1, 1, "", "", 0);
 		}
 		// ドメインが取得できた場合(lấy được)
 		// 画面モード ＝ 更新

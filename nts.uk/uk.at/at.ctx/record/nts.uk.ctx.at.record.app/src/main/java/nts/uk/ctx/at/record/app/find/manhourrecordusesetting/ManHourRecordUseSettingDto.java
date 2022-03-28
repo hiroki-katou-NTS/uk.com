@@ -22,5 +22,5 @@ public class ManHourRecordUseSettingDto {
 	ManHourRecordReferenceSettingDto manHourRecordReferenceSetting;
 	
 	// 使用区分
-	int usrAtr;
+	int usrAtr = 0;
 }

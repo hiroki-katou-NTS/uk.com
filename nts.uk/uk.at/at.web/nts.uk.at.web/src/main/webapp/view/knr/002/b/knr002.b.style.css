@@ -70,4 +70,6 @@
 .nts-gridlist.ui-iggrid table th.ui-widget-header:not(:last-child)::after {
 	border: 0;
 }
-
+#multi-list_sDate{
+	text-align: left; 
+} 

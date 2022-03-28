@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * AR:	打刻入力の共通設定
@@ -39,9 +38,9 @@ public class CommonSettingsStampInput implements DomainAggregate{
 	private Optional<MapAddress> mapAddres;
 	
 	/**
-	 * 応援打刻を利用する
+	 * インターバルメッセージの表示設定
 	 */
 	@Setter
 	@Getter
-	private NotUseAtr supportUseArt; 
+	private IntervalMessageDisplaySettings intervalMessageDisplaySettings; 
 }

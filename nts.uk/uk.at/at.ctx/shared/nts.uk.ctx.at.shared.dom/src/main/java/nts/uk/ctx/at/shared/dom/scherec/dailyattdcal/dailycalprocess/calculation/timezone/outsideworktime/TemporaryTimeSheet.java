@@ -156,12 +156,12 @@ public class TemporaryTimeSheet {
 		// 時間帯リストから休憩を削除する
 		DeductionTimeSheet deductExceptedBreak = new DeductionTimeSheet(
 				deductionTimeSheet.getForDeductionTimeZoneList().stream()
-					.filter(c -> !(c.getDeductionAtr().isBreak()) &&
-							c.getBreakAtr().isPresent() && c.getBreakAtr().get().isBreak())
+					.filter(c -> !(c.getDeductionAtr().isBreak() &&
+							c.getBreakAtr().isPresent() && c.getBreakAtr().get().isBreak()))
 					.collect(Collectors.toList()),
 				deductionTimeSheet.getForRecordTimeZoneList().stream()
-					.filter(c -> !(c.getDeductionAtr().isBreak()) &&
-							c.getBreakAtr().isPresent() && c.getBreakAtr().get().isBreak())
+					.filter(c -> !(c.getDeductionAtr().isBreak() &&
+							c.getBreakAtr().isPresent() && c.getBreakAtr().get().isBreak()))
 					.collect(Collectors.toList()),
 				deductionTimeSheet.getBreakTimeOfDailyList(),
 				deductionTimeSheet.getDailyGoOutSheet(),

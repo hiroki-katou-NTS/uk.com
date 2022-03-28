@@ -10,7 +10,7 @@ module nts.uk.at.view.kdw006.i.viewmodel {
         elapsedMonthsValue: KnockoutObservable<any>;
 
         useAtr: KnockoutObservable<number>;
-        useAtrTask: KnockoutObservable<number | null>;
+        useAtrTask: KnockoutObservable<number>;
         time: KnockoutObservable<number>;
         displayMessage: KnockoutObservable<string>;
         messageColor: KnockoutObservable<string>;
@@ -109,9 +109,10 @@ module nts.uk.at.view.kdw006.i.viewmodel {
                     self.oldValues.displayMessage = self.displayMessage();
                     self.oldValues.messageColor = self.messageColor();
                     self.oldValues.boldAtr = self.boldAtr();
-                    self.useAtrTask(res.usrAtr);
-
-                    self.useAtrTask.valueHasMutated();
+                    if (res.usrAtr) {
+                        self.useAtrTask(res.usrAtr);
+                        self.useAtrTask.valueHasMutated();
+                    }
                     dfd.resolve();
                 } else {
                     dfd.resolve();

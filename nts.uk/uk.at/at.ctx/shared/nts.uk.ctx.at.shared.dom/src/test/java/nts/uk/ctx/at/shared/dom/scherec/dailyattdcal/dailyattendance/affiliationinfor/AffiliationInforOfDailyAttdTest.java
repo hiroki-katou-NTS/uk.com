@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.junit.Test;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
@@ -15,8 +16,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSyEmploymentImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
-import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
-import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpLicenseClassification;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.GetEmpLicenseClassificationService;
@@ -25,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPa
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 
 public class AffiliationInforOfDailyAttdTest {
@@ -236,17 +236,17 @@ public class AffiliationInforOfDailyAttdTest {
 		new Expectations(GetEmpLicenseClassificationService.class) {{
 			
 			require.getAffEmploymentHistory(anyString, (GeneralDate) any);
-			result = Helper.createEmployment("employmentCode");
+			result = AffiliationInforOfDailyAttdHelper.createEmployment("employmentCode");
 			
 			require.getAffJobTitleHistory(anyString, (GeneralDate) any);
-			result = Helper.createJobTitle("jobTitleId");
+			result = AffiliationInforOfDailyAttdHelper.createJobTitle("jobTitleId");
 			
 			
 			require.getEmpOrganization(anyString, (GeneralDate) any);
-			result = Helper.createEmpOrganizationImport("workplaceId", "workplaceGroupId");
+			result = AffiliationInforOfDailyAttdHelper.createEmpOrganizationImport("workplaceId", "workplaceGroupId");
 			
 			require.getClassificationHistory(anyString, (GeneralDate) any);
-			result = Helper.createClassification("classificationCode");
+			result = AffiliationInforOfDailyAttdHelper.createClassification("classificationCode");
 			
 			require.getWorkingConditionHistory( anyString, (GeneralDate) any);
 			result = Optional.of(workingCondition);
@@ -271,66 +271,35 @@ public class AffiliationInforOfDailyAttdTest {
 		assertThat( result.getIsNursingManager().get()).isTrue();
 	}
 	
-	
-	
-	static class Helper {
-		
-		static SharedSyEmploymentImport createEmployment( String employmentCode ) {
+	/**
+	 * target: getAffiliationOrg
+	 */
+	@Test
+	public void testGetAffiliationOrg() {
+		//職場ID
+		{
+			val target = AffiliationInforOfDailyAttdHelper.createAffiliationInforOfDailyAttd( "workplaceId", Optional.empty() );
 			
-			return new SharedSyEmploymentImport(
-					"empId", 
-					employmentCode, 
-					"employmentName", 
-					new DatePeriod(
-							GeneralDate.ymd(2020, 1, 1), 
-							GeneralDate.ymd(2020, 2, 1))); 
+			//act
+			val result = target.getAffiliationOrg();
+			
+			//assert
+			assertThat( result.getUnit() ).isEqualTo( TargetOrganizationUnit.WORKPLACE );
+			assertThat( result.getWorkplaceId().get() ).isEqualTo( "workplaceId" );
+			assertThat( result.getWorkplaceGroupId() ).isEmpty();
 		}
 		
-		static SharedAffJobTitleHisImport createJobTitle(String jobTitleId) {
+		//職場グループID
+		{
+			val target = AffiliationInforOfDailyAttdHelper.createAffiliationInforOfDailyAttd( "workplaceId", Optional.of( String.valueOf("workplaceGroupId")));
 			
-			return new SharedAffJobTitleHisImport(
-					"empId", 
-					jobTitleId, 
-					new DatePeriod(
-							GeneralDate.ymd(2020, 1, 1), 
-							GeneralDate.ymd(2020, 2, 1)), 
-					"jobTitleName",
-					"jobtitelCode");
-		}
-		
-		static SharedAffWorkPlaceHisImport createWorkplace(String workplaceId) {
+			//act
+			val result = target.getAffiliationOrg();
 			
-			return new SharedAffWorkPlaceHisImport(
-					new DatePeriod(
-							GeneralDate.ymd(2020, 1, 1), 
-							GeneralDate.ymd(2020, 2, 1)), 
-					"empId", 
-					workplaceId, 
-					"wplCode", 
-					"wplName", 
-					"wkpDisplayName");
-		}
-		
-		static SClsHistImport createClassification(String classificationCode) {
-			
-			return new SClsHistImport(
-					new DatePeriod(
-							GeneralDate.ymd(2020, 1, 1), 
-							GeneralDate.ymd(2020, 2, 1)), 
-					"empId", 
-					classificationCode, 
-					"classificationName");
-		}
-		
-		static EmpOrganizationImport createEmpOrganizationImport(String workplaceId, String workplaceGroupId) {
-			
-			return new EmpOrganizationImport(
-					new EmployeeId("empId"), 
-					Optional.of("empCode"), 
-					Optional.of("b-name"), 
-					workplaceId, 
-					Optional.of(workplaceGroupId));
+			//assert
+			assertThat( result.getUnit() ).isEqualTo( TargetOrganizationUnit.WORKPLACE_GROUP );
+			assertThat( result.getWorkplaceId() ).isEmpty();
+			assertThat( result.getWorkplaceGroupId().get() ).isEqualTo( "workplaceGroupId" );
 		}
 	}
-
 }

@@ -87,6 +87,20 @@ public class TargetOrgIdenInfor implements DomainValue {
 		
 		throw new RuntimeException("unit out of range."); 
 	}
+	
+	/**
+	 * 単位を自動判別して識別情報作成する
+	 * @param workplaceId 職場ID
+	 * @param workplaceGroupId 職場グループID
+	 * @return
+	 */
+	public static TargetOrgIdenInfor createByAutoDeterminingUnit(String workplaceId, Optional<String> workplaceGroupId) {
+		if ( workplaceGroupId.isPresent() ) {
+			return TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(workplaceGroupId.get());
+		} else {
+			return TargetOrgIdenInfor.creatIdentifiWorkplace(workplaceId);
+		}
+	}
 
 	// [1] 組織の表示情報を取得する
 	public DisplayInfoOrganization getDisplayInfor(Require require, GeneralDate referenceDate) {

@@ -22,6 +22,6 @@ public class NoticeSetFinder {
 	
 	public NoticeSetAndAupUseArtDto getNoticeSetAndAupUseArt() {
 		String companyId = AppContexts.user().companyId();
-		return new NoticeSetAndAupUseArtDto(repo.get(companyId).map(c->new NoticeSetDto(c)).orElse(null), commonRepo.get(companyId).map(c->c.getSupportUseArt().value).orElse(null)); 
+		return new NoticeSetAndAupUseArtDto(repo.get(companyId).map(c->new NoticeSetDto(c)).orElse(null)); 
 	}
 }
