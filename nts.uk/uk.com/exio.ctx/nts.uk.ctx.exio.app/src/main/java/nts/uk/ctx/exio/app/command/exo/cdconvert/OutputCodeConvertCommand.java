@@ -2,9 +2,14 @@ package nts.uk.ctx.exio.app.command.exo.cdconvert;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.Value;
 
-@Value
+@NoArgsConstructor
+@Setter
+@Getter
 public class OutputCodeConvertCommand
 {
     
