@@ -39,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
@@ -101,6 +102,9 @@ public class DailyCalculationRCommandFacade {
 	
 	@Inject
 	private DailyCorrectEventServiceCenter dailyCorrectEventServiceCenter;
+	
+	@Inject
+	private ICorrectionAttendanceRule iCorrectionAttendanceRule;
 	
 	public static final int MINUTES_OF_DAY = 24 * 60;
 
@@ -366,9 +370,8 @@ public class DailyCalculationRCommandFacade {
 			ChangeDailyAttendance changeSetting = ChangeDailyAttendance.createChangeDailyAtt(dataParent.getItemValues().stream()
 					.filter(y -> y.getEmployeeId().equals(x.getEmployeeId()) && y.getDate().equals(x.getDate()))
 					.map(y -> y.getItemId()).collect(Collectors.toList()), ScheduleRecordClassifi.RECORD);
-			IntegrationOfDaily domDaily = CorrectDailyAttendanceService.processAttendanceRule(
-					correctDaiAttRequireImpl.createRequire(), x.toDomain(x.getEmployeeId(), x.getDate()),
-					changeSetting);
+			IntegrationOfDaily domDaily = iCorrectionAttendanceRule.process(x.toDomain(x.getEmployeeId(), x.getDate()),
+					 changeSetting);
 			//振休振出として扱う日数を補正する
 			DailyRecordDto dailyOldSameDate = dtoOldTemp.stream().filter(
 					old -> old.getEmployeeId().equals(x.getEmployeeId()) && old.getDate().equals(x.getDate()))
