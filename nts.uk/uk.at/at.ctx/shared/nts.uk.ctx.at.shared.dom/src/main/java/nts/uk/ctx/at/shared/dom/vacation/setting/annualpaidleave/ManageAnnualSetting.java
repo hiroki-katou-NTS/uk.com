@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -18,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt;
  */
 // 年休管理設定
 @Getter
+@AllArgsConstructor
 public class ManageAnnualSetting extends DomainObject implements Serializable{
 
     /**

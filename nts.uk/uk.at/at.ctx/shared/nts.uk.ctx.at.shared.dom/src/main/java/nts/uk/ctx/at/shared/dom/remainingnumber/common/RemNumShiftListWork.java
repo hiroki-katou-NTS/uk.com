@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
  * @author masaaki_jinno
  */
 @Getter
+@AllArgsConstructor
 public class RemNumShiftListWork {
 
 	/**
@@ -182,7 +184,8 @@ public class RemNumShiftListWork {
 		// 付与残数ダミーデータ.残数.時間
 		// ← 付与残数ダミーデータ.使用数.時間＊ー１
 		LeaveRemainingNumber leaveRemainingNumberTmp = new LeaveRemainingNumber();
-		leaveRemainingNumberTmp.setDays(new LeaveRemainingDayNumber(getUnusedNumber().getDays().v() * -1));
+		leaveRemainingNumberTmp.setDays(new LeaveRemainingDayNumber(
+				getUnusedNumber().getDays().v().equals(0.0) ? 0.0 : getUnusedNumber().getDays().v() * -1));
 		if (getUnusedNumber().getMinutes().isPresent()) {
 			leaveRemainingNumberTmp
 					.setMinutes(Optional.of(new LeaveRemainingTime(getUnusedNumber().getMinutes().get().v() * -1)));
