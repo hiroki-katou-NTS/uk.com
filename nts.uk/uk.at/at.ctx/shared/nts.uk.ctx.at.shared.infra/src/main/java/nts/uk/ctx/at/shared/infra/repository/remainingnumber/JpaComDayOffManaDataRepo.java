@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.database.DatabaseProduct;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
@@ -362,6 +363,17 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 		String updScd = insScd;
 		String updPg = insPg;
 		StringBuilder sb = new StringBuilder();
+		
+		List<String> unknownDates = new ArrayList<String>();
+
+		if (this.database().is(DatabaseProduct.MSSQLSERVER)) {
+			unknownDates.add("1");
+			unknownDates.add("0");
+		} else if (this.database().is(DatabaseProduct.POSTGRESQL)) {
+			unknownDates.add("true");
+			unknownDates.add("false");
+		}
+		
 		domains.stream().forEach(c -> {
 			String sql = INS_SQL;
 			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
@@ -378,7 +390,7 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 			sql = sql.replace("CID_VAL", "'" + c.getCID() + "'");
 			sql = sql.replace("SID_VAL", "'" + c.getSID()+ "'");
 			
-			sql = sql.replace("UNKNOWN_DATE_VAL", c.getDayOffDate().isUnknownDate() == true? "1" : "0");
+			sql = sql.replace("UNKNOWN_DATE_VAL", c.getDayOffDate().isUnknownDate() == true ? unknownDates.get(0) : unknownDates.get(1));
 			sql = sql.replace("DAYOFF_DATE_VAL",  c.getDayOffDate().getDayoffDate().isPresent()
 					? "'"+ c.getDayOffDate().getDayoffDate().get()+ "'" : "null");
 			

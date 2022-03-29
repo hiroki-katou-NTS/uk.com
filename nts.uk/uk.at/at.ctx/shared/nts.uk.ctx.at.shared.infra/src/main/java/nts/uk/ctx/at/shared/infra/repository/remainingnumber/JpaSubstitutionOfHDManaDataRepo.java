@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.database.DatabaseProduct;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
@@ -340,6 +341,16 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 		String updScd = insScd;
 		String updPg = insPg;
 		StringBuilder sb = new StringBuilder();
+		
+		List<String> unknownDates = new ArrayList<String>();
+		
+		if (this.database().is(DatabaseProduct.MSSQLSERVER)) {
+			unknownDates.add("1");
+			unknownDates.add("0");
+		} else if (this.database().is(DatabaseProduct.POSTGRESQL)) {
+			unknownDates.add("true");
+			unknownDates.add("false");
+		}
 		domains.parallelStream().forEach(c -> {
 			String sql = INS_SQL;
 			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
@@ -355,8 +366,7 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 			sql = sql.replace("SUBOFHD_ID_VAL", "'" + c.getSubOfHDID() + "'");
 			sql = sql.replace("CID_VAL", "'" + c.getCid()+ "'");
 			sql = sql.replace("SID_VAL", "'" + c.getSID()+ "'");
-			
-			sql = sql.replace("UNKNOWN_DATE_VAL", c.getHolidayDate().isUnknownDate()== true? "1":"0");
+			sql = sql.replace("UNKNOWN_DATE_VAL",c.getHolidayDate().isUnknownDate() == true ? unknownDates.get(0) : unknownDates.get(1));
 			sql = sql.replace("DAYOFF_DATE_VAL", c.getHolidayDate().getDayoffDate().isPresent()? "'"+ c.getHolidayDate().getDayoffDate().get()+"'" : "null");
 			sql = sql.replace("NUMBER_OF_DAYS_VAL", c.getRequiredDays() == null? "null" : "" + c.getRequiredDays().v() + "");
 			sql = sql.replace("REMAIN_DAYS_VAL", c.getRemainDays() == null?  "null": "" + c.getRemainDays().v() + "");
