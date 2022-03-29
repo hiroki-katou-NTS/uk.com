@@ -33,7 +33,7 @@ public class WorkplaceGroupGettingServiceTest {
 		new Expectations() {
 			{
 				require.getAffWkpHistItemByEmpDate(anyString, date);
-				result = wkp;
+				result = Optional.of( wkp );
 
 				require.getWGInfo(Arrays.asList(wkp));
 			}
@@ -71,16 +71,16 @@ public class WorkplaceGroupGettingServiceTest {
 		new Expectations() {
 			{
 				require.getAffWkpHistItemByEmpDate("emp1", date);
-				result = wkp1;
+				result = Optional.of( wkp1 );
 
 				require.getAffWkpHistItemByEmpDate("emp2", date);
-				result = wkp2;
+				result = Optional.of( wkp2 );
 
 				require.getAffWkpHistItemByEmpDate("emp3", date);
-				result = wkp3;
+				result = Optional.of( wkp3 );
 
 				require.getAffWkpHistItemByEmpDate("emp4", date);
-				result = wkp4;
+				result = Optional.of( wkp4 );
 
 				require.getWGInfo(withAny(new ArrayList<>()));
 				result = listAffWorkplaceGroup;

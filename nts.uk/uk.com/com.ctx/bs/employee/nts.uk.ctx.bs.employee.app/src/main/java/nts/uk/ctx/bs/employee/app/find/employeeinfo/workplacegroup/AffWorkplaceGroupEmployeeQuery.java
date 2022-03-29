@@ -80,13 +80,9 @@ public class AffWorkplaceGroupEmployeeQuery {
 		private AffWorkplaceGroupRespository repoAffWorkplaceGroup;
 
 		@Override
-		public String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
+		public Optional<String> getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
 			List<AffWorkplaceHistoryItem> itemLst = affWkpHistoryItemRepo.getAffWrkplaHistItemByEmpIdAndDate(date, employeeID);
-			if(CollectionUtil.isEmpty(itemLst)) {
-				return new String();
-			} else {
-				return itemLst.get(0).getWorkplaceId();
-			}
+			return itemLst.stream().findFirst().map( d -> d.getWorkplaceId() );
 		}
 
 		@Override
