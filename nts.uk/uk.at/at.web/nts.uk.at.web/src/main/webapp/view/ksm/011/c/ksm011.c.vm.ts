@@ -18,8 +18,11 @@ module nts.uk.at.view.ksm011.c {
     achievementDisplay: KnockoutObservable<number> = ko.observable(0);
     workTypeList: KnockoutObservableArray<string> = ko.observableArray([]);
     workTypeListText: KnockoutObservable<string>;
-
+    use: KnockoutObservable<number> = ko.observable(0);
+    useSupportInTimezone: KnockoutObservable<boolean> = ko.observable(false);
     selectableWorkTypes: KnockoutObservableArray<string> = ko.observableArray([]);
+    enableSupportTime: KnockoutObservable<boolean> = ko.observable(false);
+    functionItems: KnockoutObservableArray<any> = ko.observableArray([]);
 
     constructor(params: any) {
       super();
@@ -49,12 +52,29 @@ module nts.uk.at.view.ksm011.c {
             $('#KSM011_C3_6').ntsError('clear');
         }
       });
+
+      vm.use.subscribe(value =>{
+        vm.enableSupportTime(value ==1);
+      });
+      vm.createLinkButtonOnRight();
     }
 
     mounted() {
       const vm = this;
     }
-
+    createLinkButtonOnRight() {
+          const vm = this;
+          let links = [
+              { icon: "images/go-out.png", link: '/view/kha/001/a/index.xhtml', text: vm.$i18n('KSM011_125') },
+          ];
+          _.forEach(links, (item) => {
+              vm.functionItems.push({
+                  ...item, action: function () {
+                      vm.$jump(item.link);
+                  }
+              });
+          });
+      }
     openDialogKDl002() {
       const vm = this;
       const lstselectedCode = vm.workTypeList();
@@ -86,11 +106,13 @@ module nts.uk.at.view.ksm011.c {
           vm.workTypeList(data.workTypeCodeList || []);
           vm.achievementDisplay(data.displayActual);
           vm.selectableWorkTypes(data.displayableWorkTypeList || []);
+          vm.use(data.use);
+          vm.useSupportInTimezone(data.useSupportInTimezone);
         }
       }).fail(error => {
         vm.$dialog.error(error);
       }).always(() => {
-        $(".switchButton-wrapper")[0].focus();
+        $(".switchbox-wrappers")[0].focus();
         vm.$blockui('hide');
       });
     }
@@ -109,7 +131,9 @@ module nts.uk.at.view.ksm011.c {
           changeableFluid: vm.fluidWork(),
           displayWorkTypeControl: vm.workTypeControl(),
           displayActual: vm.achievementDisplay(),
-          displayableWorkTypeCodeList: vm.workTypeList()
+          displayableWorkTypeCodeList: vm.workTypeList(),
+          use: vm.use(),
+          useSupportInTimezone: vm.useSupportInTimezone()
       };
       vm.$blockui('show');
       vm.$ajax(PATH.registerSetting, params).done((data) => {

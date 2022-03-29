@@ -847,13 +847,17 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		String companyID = AppContexts.user().companyId();
 		String sql = "select APP_ID from KRQDT_APPLICATION where CID = @companyID and APP_TYPE = @appType " +
 				"and APPLICANTS_SID = @employeeID and APP_DATE = @date and PRE_POST_ATR = 0 order by INPUT_DATE desc";
-		return new NtsStatement(sql, this.jdbcProxy())
+		List<String> appIDLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("companyID", companyID)
 				.paramInt("appType", appType.value)
 				.paramString("employeeID", employeeID)
 				.paramDate("date", date)
-				.getList(rec -> rec.getString("APP_ID"))
-				.stream().findFirst();
+				.getList(rec -> rec.getString("APP_ID"));
+		List<Application> applicationLst = this.findByIDLst(appIDLst);
+		return applicationLst.stream().filter(x -> x.getAppReflectedState() != ReflectedState.REMAND &&
+					x.getAppReflectedState() != ReflectedState.DENIAL && x.getAppReflectedState() != ReflectedState.CANCELED)
+			.sorted(Comparator.comparing(Application::getInputDate).reversed())
+			.findFirst().map(x -> x.getAppID());
 	}
 	
 	//http://192.168.50.4:3000/issues/113816
@@ -917,6 +921,9 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 
 	@Override
 	public List<Application> findByIDLst(List<String> appIDLst) {
+		if(CollectionUtil.isEmpty(appIDLst)) {
+			return Collections.emptyList();
+		}
 		String sql = "select a.EXCLUS_VER as aEXCLUS_VER, a.CONTRACT_CD as aCONTRACT_CD, a.CID as aCID, a.APP_ID as aAPP_ID, a.PRE_POST_ATR as aPRE_POST_ATR, " +
 				"a.INPUT_DATE as aINPUT_DATE, a.ENTERED_PERSON_SID as aENTERED_PERSON_SID, " +
 				"a.REASON_REVERSION as aREASON_REVERSION, a.APP_DATE as aAPP_DATE, a.FIXED_REASON as aFIXED_REASON, a.APP_REASON as aAPP_REASON, a.APP_TYPE as aAPP_TYPE, " +

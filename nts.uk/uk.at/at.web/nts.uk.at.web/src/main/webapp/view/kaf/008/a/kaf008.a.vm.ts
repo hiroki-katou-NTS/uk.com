@@ -158,6 +158,12 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 }
             }).done((res: any) => {
                 if (res.result) {
+					let errorMsgLst = res.businessTripInfoOutputDto.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
+					if(!_.isEmpty(errorMsgLst)) {
+						vm.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
+	 								
+						});
+					}
                     let output = res.businessTripInfoOutputDto;
 
                     vm.dataFetch().businessTripOutput = output;
@@ -209,6 +215,13 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 application: applicationDto,
                 screenDetails: mapScreenContent
             };
+			let errorMsgLst = tripOutput.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
+			if(!_.isEmpty(errorMsgLst)) {
+				vm.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
+					vm.focusDate();			
+				});
+				return;
+			}
 
             vm.$blockui( "show" );
             vm.$validate([
@@ -236,7 +249,6 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 if (data) {
                     vm.$dialog.info({messageId: "Msg_15"})
                         .then(() => {
-							nts.uk.request.ajax("at", API.reflectApp, data.reflectAppIdLst);
    							CommonProcess.handleAfterRegister(data, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
                         });
                 }
@@ -249,7 +261,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             const vm = this;
             let dateItem = $(vm.$el).find('#kaf000-a-component4-rangeDate');
             if (dateItem.length) {
-                dateItem.focus();
+                $(vm.$el).find('#kaf000-a-component4-rangeDate .nts-input').focus();
             } else {
                 $(vm.$el).find('#kaf000-a-component4-singleDate').focus();
             }
@@ -302,6 +314,12 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                     }
     
                     switch (err.messageId) {
+						case "Msg_3267": {
+							vm.$dialog.error({ messageId: err.messageId, messageParams: err.parameterIds }).then(() => {
+								vm.focusDate();
+							});
+                            break;
+						}
                         case "Msg_23":
                         case "Msg_24":
                         case "Msg_457": {
@@ -386,8 +404,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
         startNew: "at/request/application/businesstrip/start",
         checkBeforeRegister: "at/request/application/businesstrip/checkBeforeRegister",
         register: "at/request/application/businesstrip/register",
-        changeAppDate: "at/request/application/businesstrip/changeAppDate",
-		reflectApp: "at/request/application/reflect-app"
+        changeAppDate: "at/request/application/businesstrip/changeAppDate"
     };
 
 }

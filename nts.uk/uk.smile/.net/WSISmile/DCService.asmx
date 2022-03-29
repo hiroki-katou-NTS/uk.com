@@ -1,0 +1,1 @@
+<%@ WebService Language="C#" CodeBehind="DCService.asmx.cs" Class="KinErp.WSISmile.KinjirouDataConvert" %>

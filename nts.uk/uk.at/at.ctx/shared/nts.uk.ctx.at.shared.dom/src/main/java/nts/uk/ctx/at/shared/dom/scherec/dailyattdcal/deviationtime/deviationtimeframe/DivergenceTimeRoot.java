@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
@@ -33,6 +35,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 // 乖離時間
 @Getter
+@AllArgsConstructor
 public class DivergenceTimeRoot extends AggregateRoot {
 
 	/** The divergence time no. */
@@ -535,4 +538,66 @@ public class DivergenceTimeRoot extends AggregateRoot {
 			return 0;
 		}
 	}
+	
+	/**
+	 * 	[1] 乖離時間に対応する日次の勤怠項目を取得する
+	 * @return
+	 */
+	public List<Integer> getDaiLyAttendanceIdByNo() {
+		switch(this.divergenceTimeNo) {
+		case 1:
+			return Arrays.asList(436,437,440);
+		case 2: 
+			return Arrays.asList(441,442,445);
+		case 3: 
+			return Arrays.asList(446,447,450);
+		case 4: 
+			return Arrays.asList(451,452,455);
+		case 5: 
+			return Arrays.asList(456,457,460);
+		case 6: 
+			return Arrays.asList(799,800,803);
+		case 7: 
+			return Arrays.asList(804,805,808);
+		case 8: 
+			return Arrays.asList(809,810,813);
+		case 9: 
+			return Arrays.asList(814,815,818);
+		default : //10
+			return Arrays.asList(819,820,823);
+		}
+	}
+	
+	/**
+	 * [2] 乖離時間に対応する月次の勤怠項目を取得する
+	 * 
+	 * @return
+	 */
+	public List<Integer> getMonthlyAttendanceIdByNo() {
+		return Arrays.asList(388 + this.divergenceTimeNo);
+	}
+	
+	/**
+	 * 	[3] 利用できない日次の勤怠項目を取得する
+	 * @return
+	 */
+	public List<Integer> getDailyAttendanceIdNotAvailable() {
+		if(this.divTimeUseSet == DivergenceTimeUseSet.NOT_USE) {
+			return this.getDaiLyAttendanceIdByNo();
+		}
+		return new ArrayList<>();
+	}
+	
+	/**
+	 *  [4] 利用できない月次の勤怠項目を取得する
+	 * @return
+	 */
+	public List<Integer> getMonthlyAttendanceIdNotAvailable() {
+		if(this.divTimeUseSet == DivergenceTimeUseSet.NOT_USE) {
+			return this.getMonthlyAttendanceIdByNo();
+		}
+		return new ArrayList<>();
+	}
+	
+	
 }

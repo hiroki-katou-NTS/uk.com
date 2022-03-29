@@ -30,6 +30,8 @@ public class StampSetCommunalDto {
 	
 	private Integer authcFailCnt;
 	
+	private int authcMethod;
+	
 	public static StampSetCommunalDto fromDomain(StampSetCommunal domain) {
 		return new StampSetCommunalDto(
 				domain.getCid(), 
@@ -38,6 +40,7 @@ public class StampSetCommunalDto {
 				domain.isNameSelectArt()?1:0, 
 				domain.isPasswordRequiredArt()?1:0, 
 				domain.isEmployeeAuthcUseArt()?1:0, 
-				domain.getAuthcFailCnt().isPresent()?domain.getAuthcFailCnt().get().v():null);
+				domain.getAuthcFailCnt().isPresent()?domain.getAuthcFailCnt().get().v():null,
+				domain.getAuthcMethod().value);
 	}
 }

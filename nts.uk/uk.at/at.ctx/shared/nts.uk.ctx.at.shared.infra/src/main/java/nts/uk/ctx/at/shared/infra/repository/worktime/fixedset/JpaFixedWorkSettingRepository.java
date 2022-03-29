@@ -52,6 +52,13 @@ public class JpaFixedWorkSettingRepository extends JpaRepository implements Fixe
 	 */
 	@Override
 	public void add(FixedWorkSetting domain) {
+		if(domain.getLstHalfDayWorkTimezone().get(1).getRestTimezone().getTimezones().isEmpty()) {
+			domain.getLstHalfDayWorkTimezone().get(1).getRestTimezone().getTimezones().addAll(domain.getLstHalfDayWorkTimezone().get(0).getRestTimezone().getTimezones());
+		}
+		
+		if(domain.getLstHalfDayWorkTimezone().get(2).getRestTimezone().getTimezones().isEmpty()) {
+			domain.getLstHalfDayWorkTimezone().get(2).getRestTimezone().getTimezones().addAll(domain.getLstHalfDayWorkTimezone().get(0).getRestTimezone().getTimezones());
+		}
 		this.commandProxy().insert(this.toEntity(domain));
 	}
 

@@ -233,6 +233,10 @@
 	color: #e51010;
 }
 
+.mgrid-schedule-support{
+	background-color: #fedfe6;
+}
+
 .ui-iggrid .ui-iggrid-tablebody td {
     height: 29px;
 }
@@ -297,7 +301,7 @@
 #monthly-data-view {
 	margin-top: 10px;
 	width: calc(100% - 800px);
-	overflow-x: scroll;
+	overflow-x: hidden;
 }
 
 #monthly-data-view #miGrid_fixedContainerScroller {
@@ -305,7 +309,12 @@
 }
 
 #monthly-data-view #miGrid_scroll {
-	overflow: hidden !important;
+	/* overflow: hidden !important; */
+	overflow-x: auto visible;
+} 
+
+#miGrid_container {
+	width:auto !important;
 }
 
 /* �c���f�[�^ */

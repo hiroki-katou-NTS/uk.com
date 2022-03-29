@@ -69,7 +69,7 @@ public class JpaWorkTimezoneExtraordTimeSetSetMemento implements WorkTimezoneExt
 	@Override
 	public void setOTFrameSet(ExtraordWorkOTFrameSet set) {
 		this.entity.setOtFrameNo(set.getOtFrameNo().v());
-		this.entity.setInLegalBreakFrameNo(set.getInLegalWorkFrameNo().v());
+		this.entity.setIlLegalOtFrameNo(set.getInLegalWorkFrameNo().v());
 		this.entity.setSettlementOrder(set.getSettlementOrder().v());
 	}
 

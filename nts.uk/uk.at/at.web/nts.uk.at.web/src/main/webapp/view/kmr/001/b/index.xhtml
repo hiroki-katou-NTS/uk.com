@@ -7,11 +7,10 @@
 <body>
 <ui:composition template="/master/base.xhtml">
 	<ui:define name="htmlHead">
-		<com:ValidatorScript>
-			nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReferenceTime
-			nts.uk.ctx.at.record.dom.reservation.bento.rules.BentoReservationTimeName
-			nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime
-		</com:ValidatorScript>
+        <com:ValidatorScript>
+            nts.uk.ctx.at.record.dom.reservation.bento.rules.BentoReservationTimeName
+            nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime
+        </com:ValidatorScript>
 		<com:scriptfile set="IGNITE" />
 		<com:stylefile path="./kmr001.b.style.css" />
 		<com:stylefile path="../kmr001.common.styles.css"/>
@@ -20,7 +19,7 @@
 
 	<ui:define name="content">
 		<div id="functions-area">
-			<!--B1_1-->
+            <!--B1_1-->
 			<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }, text: $i18n('KMR001_3')"></a>
 			<!--B1_2-->
 			<button class="proceed" tabindex="2" data-bind="click:
@@ -28,285 +27,187 @@
 				text: $i18n('KMR001_4'),
 				enable: $root.errors.isEmpty
 			"/>
-		</div>
-		<div class="kmr001b" id="contents-area" data-bind="with: model" >
-			<!--B2_1-->
-			<div class="label" data-bind="text: $vm.$i18n('KMR001_82')" ></div>
-			<hr/>
-			<table>
-				<tr>
-					<td>
-						<!--B3_1-->
-						<div data-bind="ntsFormLabel: { required: true, inline: true, enable: true, text: $vm.$i18n('KMR001_5')}"></div>
-					</td>
-					<td>
-						<!--B3_2 -> 4-->
-						<div tabindex="3" data-bind="ntsRadioBoxGroup: {
-					options: ([
-						{id : 0, name : $vm.$i18n('KMR001_6')},
-						{id : 1, name : $vm.$i18n('KMR001_7')}
-            		]),
-					optionsValue: 'id',
-					optionsText: 'name',
-					value: operationDistinction,
-					enable: true}"></div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<!--B5_1-->
-						<div data-bind="ntsFormLabel: { required: true, inline: true, enable: true, text: $vm.$i18n('KMR001_9')} "></div>
-					</td>
-					<td>
-						<!--B5_2-->
-						<span >
-						<input tabindex="4" class="kmr-time-editor" data-bind="ntsTimeEditor: {
-							inputFormat: 'time',
-							mode: 'time',
-							enable: true,
-							readonly: false,
-							required: true,
-							constraint: 'ReferenceTime',
-							value: referenceTime,
-							name: $vm.$i18n('KMR001_9')
-							}"  />
-						</span>
-						<!--B5_3-->
-						<span class="label" data-bind="text: $vm.$i18n('KMR001_10')" ></span>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<!--B19_1-->
-						<div data-bind="ntsFormLabel: {
-							required: true,
-							inline: true,
-							enable: true,
-							text: $vm.$i18n('KMR001_63')}
-						" />
-					</td>
-					<td>
-						<!--B19_2-->
-						<span class="label reservation" data-bind="text: $vm.$i18n('KMR001_69')"></span>
-						<!--B19_3-->
-						<input tabindex="5" data-bind="ntsTextEditor: {
-							required: true,
-							value: reservationFrameName1,
-							constraint: 'BentoReservationTimeName',
-							name: $vm.$i18n('KMR001_69')
-						}"
-						/>
-					</td>
-					<td>
-						<!--B19_4-->
-						<span class="label label reservation" data-bind="text: $vm.$i18n('KMR001_70')"></span>
+        </div>
+        <div class="kmr001b" id="contents-area">
+            <!-- B2_1 -->
+            <div class="label" data-bind="text: $vm.$i18n('KMR001_82')" ></div>
+            <!-- B2_2 -->
+            <div class="table">
+                <hr class="cell" style="width: 750px; float: left"/>
+            </div>
 
-						<!--B19_5-->
-						<span>
-							<input tabindex="6" class="kmr-time-editor" data-bind="ntsTimeEditor: {
-								mode: 'time',
-								inputFormat: 'time',
-								required: true ,
-								value: reservationStartTime1,
-								constraint: 'BentoReservationTime',
-								name: $vm.$i18n('KMR001_71')
-								}"
-							/>
-						</span>
+            <!-- B19 -->
+            <div class="table" style="margin-left: 30px;">
+                <div class="cell" data-bind="ntsFormLabel: { required: true, text: $vm.$i18n('KMR001_91')}"></div>
+            </div>
 
-						<!--B19_6-->
-						<span class="label" data-bind="text: $vm.$i18n('KMR001_58')"></span>
+            <div class="table" style="margin: 5px 60px;">
+                <!-- B19_2 -->
+                <div class="cell" style="width: 90px;">
+                    <div data-bind="ntsFormLabel: { required: true, text: $vm.$i18n('KMR001_69')}"></div>
+                </div>
+                <!-- B19_3 -->
+                <div class="cell">
+                	<input style="width: 90px;" class="required-field" data-bind="ntsTextEditor: {
+                					name: $vm.$i18n('KMR001_69'),
+                					constraint: 'BentoReservationTimeName',
+                					value: reservationFrameName1,
+                					required: true }" />
+                </div>
+                <!-- B19_4 -->
+                <div class="cell valign-center" style="width: 80px;">
+                	<span style="margin-left: 20px;" data-bind="text: $vm.$i18n('KMR001_70')"></span>
+                </div>
+                <!-- B19_5 -->
+                <input class="cell m-0-20 required-field" style="width: 40px;" data-bind="ntsTimeEditor: {
+                    mode: 'time',
+                    inputFormat: 'time',
+                    constraint: 'BentoReservationTime', 
+                    required: true, 
+                    name: $vm.$i18n('KMR001_71'),
+                    value: reservationStartTime1
+                }"/>
+                <!-- B19_6 -->
+                <div class="cell m-0-20" data-bind="text: $vm.$i18n('KMR001_58')"></div>
+                <!-- B19_7 -->
+                <input class="cell m-0-20 required-field" style="width: 40px;" data-bind="ntsTimeEditor: {
+                    mode: 'time',
+                    inputFormat: 'time',
+                    constraint: 'BentoReservationTime', 
+                    required: true, 
+                    name: $vm.$i18n('KMR001_72'),
+                    value: reservationEndTime1
+                }"/>
+            </div>
+            <div class="table" style="margin: 20px 60px;">
+                <!-- B20-8 -->
+                <div class="cell" style="width: 90px;">
+                    <div data-bind="ntsCheckBox: { checked: useTime2, text: $vm.$i18n('KMR001_73') }"></div>
+                </div>
+                <!-- B20_3 -->
+                <div class="cell">
+                	<input style="width: 90px;" class="required-field-2" data-bind="ntsTextEditor: {
+                					name: $vm.$i18n('KMR001_73'),
+                					constraint: 'BentoReservationTimeName',
+                					value: reservationFrameName2,
+                					enable: useTime2,
+                					required: useTime2 }" />
+                </div>
+                <!-- B20_4 -->
+                <div class="cell valign-center" style="width: 80px;">
+                	<span style="margin-left: 20px;" data-bind="text: $vm.$i18n('KMR001_74')"></span>
+                </div>
+                <!-- B20_5 -->
+                <input class="cell m-0-20 required-field-2" style="width: 40px;" data-bind="ntsTimeEditor: {
+                    mode: 'time',
+                    inputFormat: 'time',
+                    constraint: 'BentoReservationTime', 
+                    name: $vm.$i18n('KMR001_75'),
+                    value: reservationStartTime2,
+                    enable: useTime2,
+   					required: useTime2
+                }"/>
+                <!-- B20_6 -->
+                <div class="cell m-0-20" data-bind="text: $vm.$i18n('KMR001_58')"></div>
+                <!-- B20_7 -->
+                <input class="cell m-0-20 required-field-2" style="width: 40px;" data-bind="ntsTimeEditor: {
+                    mode: 'time',
+                    inputFormat: 'time',
+                    constraint: 'BentoReservationTime', 
+                    name: $vm.$i18n('KMR001_76'),
+                    value: reservationEndTime2,
+                    enable: useTime2,
+   					required: useTime2
+                }"/>
+            </div>
+            <!-- B24_1 -->
+            <div style="margin: 10px 70px; margin-left: 85px;" data-bind="text: $vm.$i18n('KMR001_110')"></div>
 
-						<!--B19_7-->
-						<span >
-							<input tabindex="7" id="end1" class="kmr-time-editor" data-bind="ntsTimeEditor: {
-								mode: 'time',
-								inputFormat: 'time',
-								required: true,
-								value: reservationEndTime1,
-								constraint: 'BentoReservationTime',
-								name: $vm.$i18n('KMR001_72')
-								}"
-							/>
-						</span>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<!--B20_1-->
-						<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_68')}"></div>
-					</td>
-					<td>
-						<!--B20_2-->
-						<span class="label reservation" data-bind="text: $vm.$i18n('KMR001_73')"></span>
-
-						<!--B20_3-->
-						<input tabindex="8" data-bind="ntsTextEditor: {
-							value: reservationFrameName2,
-							constraint: 'BentoReservationTimeName',
-							name: $vm.$i18n('KMR001_73')
-							}"
-						/>
-					</td>
-					<td>
-						<!--B20_4-->
-						<span class="label reservation" data-bind="text: $vm.$i18n('KMR001_74')"></span>
-
-						<!--B20_5-->
-						<span>
-							<input tabindex="9" class="kmr-time-editor" data-bind="ntsTimeEditor: {
-								mode: 'time',
-								inputFormat: 'time',
-								value: reservationStartTime2,
-								constraint: 'BentoReservationTime',
-								name: $vm.$i18n('KMR001_75')
-								}"
-							/>
-
-						</span>
-						<!--B20_6-->
-						<span class="label" data-bind="text: $vm.$i18n('KMR001_58')"></span>
-
-						<!--B20_7-->
-						<span>
-							<input id="end2" tabindex="10" class="kmr-time-editor" data-bind="ntsTimeEditor: {
-								mode: 'time',
-								inputFormat: 'time',
-								value: reservationEndTime2,
-								constraint: 'BentoReservationTime',
-								name: $vm.$i18n('KMR001_76')
-								}"
-							/>
-						</span>
-					</td>
-				</tr>
-			</table>
-			<span class="label" data-bind="text: $vm.$i18n('KMR001_25')"></span>
-			<hr/>
-			<table>
-				<tr>
-					<td>
-						<!--B10_1-->
-						<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_21')}"></div>
-					</td>
-					<td>
-						<!--B10_2-->
-						<div tabindex="11" style="top: 10px; width: 250px;" id="combo-box"  data-bind="ntsComboBox: {
-							width: '250px',
-							name:$vm.$i18n('KMR001_22'),
-							options: vm.itemsReservationChange,
-							optionsValue: 'appId',
-							visibleItemsCount: 5,
-							value: contentChangeDeadline,
-							optionsText: 'appName',
-							editable: false,
-							enable: true,
-							columns: [
-								{ prop: 'appName', length: 10 },
-							]}"
-						/>
-
-						<!--B10_3-->
-						<div style="display: inline;" data-bind="if: vm.visibleContentChangeDeadline() ">
-							<div tabindex="-1" style="width: 90px; top: 10px; padding: 0 10px" data-bind="ntsComboBox: {
-							name:$vm.$i18n('KMR001_23'),
-							options: vm.itemsReservationChangeDay,
-							optionsValue: 'appId',
-							optionsText: 'appValue',
-							value: contentChangeDeadlineDay,
-							enable: true,
-							columns: [{ prop: 'appValue'}]}"
-							/>
-
-							<!--B10_4-->
-							<span>日間まで</span>
-						</div>
-
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<!--B21_1-->
-						<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_77')}"></div>
-					</td>
-					<td>
-						<!--B21_2-->
-						<div tabindex="12" data-bind="ntsRadioBoxGroup: {
-					options: ([
-						{id : 0, name : $vm.$i18n('KMR001_78')},
-						{id : 1, name : $vm.$i18n('KMR001_79')}
-            		]),
-					optionsValue: 'id',
-					optionsText: 'name',
-					value: orderedData,
-					enable: true}"></div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<!--B14_1-->
-						<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_26')}" />
-					</td>
-					<td>
-						<!--B14_2-->
-						<div tabindex="13" data-bind="ntsRadioBoxGroup: {
-							options: ([
-								{id : 0, name : $vm.$i18n('KMR001_28')},
-								{id : 1, name : $vm.$i18n('KMR001_29')}
-							]),
-							optionsValue: 'id',
-							optionsText: 'name',
-							value: orderDeadline,
-							enable: true}"/>
-					</td>
-				</tr>
-			</table>
-			<!--B15-->
-			<span class="label" data-bind="text: $vm.$i18n('KMR001_30')"></span>
-			<hr/>
-			<table>
-				<tr>
-					<td>
-						<!--B17_1-->
-						<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_31')}"></div>
-					</td>
-					<td>
-						<!--B17_2-->
-						<div tabindex="14" data-bind="ntsRadioBoxGroup: {
-							options: ([
-								{id : 0, name : $vm.$i18n('KMR001_33')},
-								{id : 1, name : $vm.$i18n('KMR001_34')}
-							]),
-							optionsValue: 'id',
-							optionsText: 'name',
-							value: monthlyResults,
-							enable: true}"
-						/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<!--B18_1-->
-						<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_35')}"></div>
-					</td>
-					<td>
-						<!--B18_2-->
-						<div id="B18_2" tabindex="15" data-bind="ntsRadioBoxGroup: {
-							options: ([
-								{id : 0, name : $vm.$i18n('KMR001_33')},
-								{id : 1, name : $vm.$i18n('KMR001_34')}
-							]),
-							optionsValue: 'id',
-							optionsText: 'name',
-							value: dailyResults,
-							enable: true}" />
-						<div class="break-line"></div>
-						<!--B18_3-->
-						<!--B18_4-->
-					</td>
-				</tr>
-			</table>
-		</div>
+            <!-- B12 -->
+            <div class="label" data-bind="text: $vm.$i18n('KMR001_96')" ></div>
+            <!-- B13 -->
+            <div class="table">
+                <hr class="cell" style="width: 750px; float: left"/>
+            </div>
+            <!-- B14_1 -->
+            <div style="margin: 5px 60px;">
+                <div class="checkbox-group" data-bind="ntsRadioBoxGroup: {
+                    options: reserveContentChangeList,
+                    optionsValue: 'id',
+                    optionsText: 'name',
+                    value: selectedContent}"></div>
+            </div>
+            <!-- B14_4 -->
+            <div class="table" style="margin-left: 90px;">
+                <div class="cell" style="width: 80px;" data-bind="ntsComboBox: {
+                    name: $vm.$i18n('KMR001_96'),
+                    options: contentChangeDeadlineDayLst,
+                    visibleItemsCount: 5,
+                    value: contentChangeDeadlineDayCurrent,
+					optionsText: 'localizedName',
+					optionsValue: 'value',
+                }"></div>
+                <!-- B14_5 -->
+                <div class="cell" style="vertical-align: middle;" data-bind="text: $vm.$i18n('KMR001_100')"></div>
+            </div>
+            <!-- B15 -->
+            <div class="label" style="margin-top: 10px;" data-bind="text: $vm.$i18n('KMR001_101')" ></div>
+            <!-- B16 -->
+            <div class="table">
+                <hr class="cell" style="width: 750px; float: left"/>
+            </div>
+            <div class="table" style="margin-left: 60px; margin-top: 10px;">
+                <!-- B17-1 -->
+                <div class="cell" style="vertical-align: middle; width: 65px;">
+                    <div data-bind="text: $vm.$i18n('KMR001_101')"></div>
+                </div>
+                <!-- B17_2 -->
+                <div class="cell">
+                	<div data-bind="ntsSwitchButton: {
+									name: $vm.$i18n('KMR001_101'),
+									options: ko.observableArray([
+							        	{ code: 1, name: $i18n('KMR001_106')},
+							        	{ code: 0, name: $i18n('KMR001_107')}
+							        ]),
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: orderMngAtr }">
+					</div>
+                </div>
+                <!-- B17-4 -->
+                <div class="cell" style="vertical-align: middle; padding-left: 40px;">
+                    <div data-bind="text: $vm.$i18n('KMR001_112')"></div>
+                </div>
+            </div>
+            <div class="table" style="margin-left: 60px; margin-top: 10px;">
+            	<div data-bind="i18n: 'KMR001_102', ntsCheckBox: { checked: monthlyResults }"></div>
+            </div>
+            <!-- B21 -->
+            <div class="label" style="margin-top: 15px;" data-bind="text: $vm.$i18n('KMR001_103')" ></div>
+            <!-- B22 -->
+            <div class="table">
+                <hr class="cell" style="width: 750px; float: left"/>
+            </div>
+            <div class="table" style="margin-left: 60px; margin-top: 10px;">
+                <!-- B23-1 -->
+                <div class="cell">
+                    <div data-bind="text: $vm.$i18n('KMR001_104')"></div>
+                </div>
+			</div>
+			<div class="table" style="margin-left: 60px; margin-top: 10px;">
+                <!-- B23_2 -->
+                <div class="cell">
+                	<button data-bind="click: openCDL025">#{i18n.getText('KMR001_105')}</button>
+                </div>
+                <!-- B23-3 -->
+                <div class="cell col-1" style="vertical-align: middle; padding-left: 10px;">
+                	<input style="width: 400px;" data-bind="ntsTextEditor: {
+                					name: $vm.$i18n('KMR001_104'),
+                					value: roleName,
+                					readonly: true }" />
+                </div>
+            </div>
+        </div>
 	</ui:define>
 </ui:composition>
 </body>

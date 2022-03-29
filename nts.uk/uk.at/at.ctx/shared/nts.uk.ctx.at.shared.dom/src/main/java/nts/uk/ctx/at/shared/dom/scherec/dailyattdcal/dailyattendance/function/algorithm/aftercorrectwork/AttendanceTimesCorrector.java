@@ -11,10 +11,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 public class AttendanceTimesCorrector {
 
 	/** 勤務回数の補正 */
-	public static void correct(Require require, IntegrationOfDaily dailyRecord) {
+	public static void correct(Require require, String companyId, IntegrationOfDaily dailyRecord) {
 		
 		/** 所定時間帯を取得する */
-		val workTimeZones = dailyRecord.getWorkInformation().getRecordInfo().getWorkInfoAndTimeZone(require);
+		val workTimeZones = dailyRecord.getWorkInformation().getRecordInfo().getWorkInfoAndTimeZone(require, companyId);
 
 		workTimeZones.ifPresent(tz -> {
 			

@@ -37,6 +37,7 @@ public class TopPageAlarmAdapterImpl implements TopPageAlarmAdapter {
 			delInformation.setSids(delInfo.getSids());
 			delInformation.setDisplayEmpClassfication(EnumAdaptor.valueOf(delInfo.getDisplayAtr(), DisplayEmpClassfication.class));
 			delInformation.setPatternCode(delInfo.getPatternCode());
+			delInformation.setSubEmpNoErrs(delInfo.getSubEmpNoErrs());
 			delInformationOpt = Optional.of(delInformation);
 		}
 		

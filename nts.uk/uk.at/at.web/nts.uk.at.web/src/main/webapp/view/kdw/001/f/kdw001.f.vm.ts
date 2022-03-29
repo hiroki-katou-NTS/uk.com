@@ -16,8 +16,6 @@ module nts.uk.at.view.kdw001.f {
             inputEmpCalAndSumByDate: KnockoutObservable<model.InputEmpCalAndSumByDate>;
             //list obj EmpCalAndSumExeLog 
             empCalAndSumExeLog: KnockoutObservableArray<model.EmpCalAndSumExeLog>;
-            //list caseSpecExeContent
-            listCaseSpecExeContent : KnockoutObservableArray<model.CaseSpecExeContent>;
             //listClosure
             listClosure : KnockoutObservableArray<any>;
             //list sid
@@ -44,8 +42,6 @@ module nts.uk.at.view.kdw001.f {
                     new model.InputEmpCalAndSumByDate(self.dateValue().startDate, self.dateValue().endDate));
                 // list obj EmpCalAndSumExeLog
                 self.empCalAndSumExeLog = ko.observableArray([]);
-                //list obj CaseSpecExeContent
-                self.listCaseSpecExeContent =  ko.observableArray([]);
                 //list obj listClosure
                 self.listClosure =  ko.observableArray([]);
                 //listSid
@@ -89,9 +85,8 @@ module nts.uk.at.view.kdw001.f {
                 let self = this;
                 let dfd = $.Deferred();
                 // get all CaseSpecExeContent
-                let dfdAllCaseSpecExeContent = self.getAllCaseSpecExeContent();
                 let dfdAllClosure = self.getAllClosure();
-                $.when(dfdAllCaseSpecExeContent,dfdAllClosure).done((dfdAllCaseSpecExeContentData,dfdAllClosureData) => {
+                $.when(dfdAllClosure).done((dfdAllClosureData) => {
                      //get all EmpCalAndSumExeLog by date
                     self.getAllEmpCalAndSumExeLog(self.inputEmpCalAndSumByDate()).done(() => {
                         dfd.resolve();
@@ -124,11 +119,6 @@ module nts.uk.at.view.kdw001.f {
                             self.listSid.push(value.employeeID);
                         
                         let item = new model.EmpCalAndSumExeLog(value);
-                        //executedMenuName
-                        if( item.executedMenu == 1) {
-                            item.executedMenuName = _.find(self.listCaseSpecExeContent(), function(caseSpecExeContent) { 
-                                return caseSpecExeContent.caseSpecExeContentID == item.caseSpecExeContentID; }).useCaseName ;  
-                        }
                         // set name closure by date
                         _.find(self.listClosure(), function(closure) { 
                             if (closure.closureId == item.closureID) {
@@ -146,19 +136,19 @@ module nts.uk.at.view.kdw001.f {
                         item.changeIsTextRed(false); 
                         _.find(value.executionLogs, function(executionLog) { 
                             if(executionLog.executionContent ==0){
-                                if(executionLog.dailyCreationSetInfo.executionType == 1){
+                                if(executionLog.executionType == 1){
                                     item.changeIsTextRed(true);
                                 }
                             }else if (executionLog.executionContent ==1){
-                                if(executionLog.dailyCalSetInfo.executionType == 1){
+                                if(executionLog.executionType == 1){
                                     item.changeIsTextRed(true);     
                                 }
                             }else if (executionLog.executionContent ==2){
-                                if(executionLog.reflectApprovalSetInfo.executionType == 1){
+                                if(executionLog.executionType == 1){
                                     item.changeIsTextRed(true);     
                                 }
                             } else if (executionLog.executionContent ==3){
-                                if(executionLog.monlyAggregationSetInfo.executionType == 1){
+                                if(executionLog.executionType == 1){
                                     item.changeIsTextRed(true);     
                                 }
                             }
@@ -177,39 +167,6 @@ module nts.uk.at.view.kdw001.f {
                 });
                 return dfd.promise();
             }//end function getAllEmpCalAndSumExeLog
-            
-            /**
-             * function get all caseSpecExeContent
-             */
-            getAllCaseSpecExeContent(){
-                let self = this;
-                let dfd = $.Deferred<any>();
-                service.getAllCaseSpecExeContent().done(function(data){
-                    self.listCaseSpecExeContent(data);
-                    dfd.resolve(data);
-                }).fail(function(res: any) {
-                    dfd.reject();
-                    nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
-                });
-                return dfd.promise();
-            }
-            
-            
-            
-            /**
-             * get caseSpecExeContent by id
-             */
-            getCaseSpecExeContent(caseSpecExeContentID:string){
-                let self = this;
-                let dfd = $.Deferred<any>();
-                service.getCaseSpecExeContentById(caseSpecExeContentID).done(function(data){
-                    dfd.resolve(data);
-                }).fail(function(res: any) {
-                    dfd.reject();
-                    nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
-                });
-                return dfd.promise();
-            }
             
             /**
              * get all Closure
@@ -317,14 +274,12 @@ module nts.uk.at.view.kdw001.f {
             executionContentName :string;
             existenceError: number;
             executionTime: ExecutionTime;
+            executionType: number;
             processStatus: number;
             objectPeriod: ObjectPeriod;
             calExecutionSetInfoID :string;
-            reflectApprovalSetInfo : SetInforReflAprResult;
-            dailyCreationSetInfo : SettingInforForDailyCreation;
-            dailyCalSetInfo : CalExeSettingInfor;
-            monlyAggregationSetInfo : CalExeSettingInfor;
             numberPersonErr : number;
+            executionTypeName : string;
         }
 
         export interface IExecutionTime {
@@ -361,9 +316,7 @@ module nts.uk.at.view.kdw001.f {
                 this.closureName = data.closureName == null ? " " : data.closureName;
                 this.processingMonthName = data.processingMonth%100 + "月度" + "   " + this.closureName || data.processingMonth%100 + "月度" + "   " + "" ;
                 this.executedMenu = data.executedMenu;
-                if (data.executedMenu == 0) {
-                    this.executedMenuName = "詳細実行";
-                }
+                this.executedMenuName = "詳細実行";
 
                 this.executedMenuJapan = data.executedMenuJapan;
                 this.executionDate = data.executionDate.toString().slice(0,10);
@@ -402,28 +355,24 @@ module nts.uk.at.view.kdw001.f {
             executionContentName :string;
             existenceError: number;
             executionTime: ExecutionTime;
+            executionType: number;
             processStatus: number;
             objectPeriod: ObjectPeriod;
             calExecutionSetInfoID :string;
-            reflectApprovalSetInfo : SetInforReflAprResult;
-            dailyCreationSetInfo : SettingInforForDailyCreation;
-            dailyCalSetInfo : CalExeSettingInfor;
-            monlyAggregationSetInfo : CalExeSettingInfor;
             numberPersonErr : number;
+            executionTypeName : string;
             constructor(data: IExecutionLog) {
                 this.empCalAndSumExecLogID = data.empCalAndSumExecLogID;
                 this.executionContent = data.executionContent;
                 this.executionContentName = data.executionContentName;   
                 this.existenceError = data.existenceError;
                 this.executionTime = new ExecutionTime(data.executionTime);
+                this.executionType = this.executionType;
                 this.processStatus = data.processStatus;
                 this.objectPeriod = data.objectPeriod;
                 this.calExecutionSetInfoID = data.calExecutionSetInfoID;
-                this.reflectApprovalSetInfo = data.reflectApprovalSetInfo;
-                this.dailyCreationSetInfo = data.dailyCreationSetInfo;
-                this.dailyCalSetInfo = data.dailyCalSetInfo;
-                this.monlyAggregationSetInfo = data.monlyAggregationSetInfo;
                 this.numberPersonErr = data.numberPersonErr;
+                this.executionTypeName = data.executionTypeName;
             }
         }//end class ExecutionLog
         

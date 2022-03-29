@@ -8,13 +8,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRank;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRankRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.Rank;
@@ -26,12 +26,13 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamReposito
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.DisplayControlPersonalCondition;
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.DisplayControlPersonalConditionRepo;
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.PersonalCondition;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassificationRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.PersonalConditionsDto;
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.EmployeeInformationDto;
+import nts.uk.screen.at.app.ksu001.extracttargetemployees.SupportType;
 import nts.uk.screen.at.app.ksu001.start.OrderEmployeeParam;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -63,32 +64,49 @@ public class GetDataAfterSortEmp {
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	public  DataAfterSortEmpDto getData(OrderEmployeeParam param) {
-		List<EmployeeInformationDto> listEmpInfo = param.listEmpInfo;
+		// order lại list nhân viên thuôc workplace thôi, còn list nhân viên đên support thì order theo scd là được rồi.
+		List<EmployeeInformationDto> listEmpInfoByOrg = param.listEmpInfo.stream()
+				.filter(e -> e.supportType != SupportType.COME_TO_SUPPORT.value).collect(Collectors.toList());		
+		// list nhân viên đến support (không thuộc workplace)
+		List<EmployeeInformationDto> listEmpInfoSupport = param.listEmpInfo.stream()
+				.filter(e -> e.supportType == SupportType.COME_TO_SUPPORT.value).collect(Collectors.toList());
+		
+		listEmpInfoSupport.sort( Comparator.comparing(EmployeeInformationDto :: getEmployeeCode));
 
-		listEmpInfo.sort( Comparator.comparing(EmployeeInformationDto :: getEmployeeCode));
+
+		listEmpInfoByOrg.sort( Comparator.comparing(EmployeeInformationDto :: getEmployeeCode));
 		
-		param.setListEmpInfo(listEmpInfo);
+		param.setListEmpInfo(listEmpInfoByOrg);
 		
-		List<String> listSidOrder = sortEmployees.getListEmp(param);
+		List<String> listSidByOrgOrder = sortEmployees.getListEmp(param);
 		
-		listEmpInfo.sort(Comparator.comparing( v -> listSidOrder.indexOf(v.employeeId)));
+		// sắp xêp lại list nhân viên thuộc workplace theo list sid đã được order từ thuật toán trên
+		listEmpInfoByOrg.sort(Comparator.comparing( v -> listSidByOrgOrder.indexOf(v.employeeId)));
 		
 		Optional<DisplayControlPersonalCondition> displayControlPerCond = displayControlPerCondRepo.get(AppContexts.user().companyId());
 		if (!displayControlPerCond.isPresent()) {
-			return new DataAfterSortEmpDto(listEmpInfo, new ArrayList<>());
+			return new DataAfterSortEmpDto(
+					Stream.concat(listEmpInfoByOrg.stream(), listEmpInfoSupport.stream()).collect(Collectors.toList())
+					, new ArrayList<>() );
 		}
 		
 		RequireImplDispControlPerCond requireImplDispControlPerCond = new RequireImplDispControlPerCond(
 				belongScheduleTeamRepo, scheduleTeamRepo, employeeRankRepo, rankRepo, empMedicalWorkStyleHistoryRepo,
 				nurseClassificationRepo);
 
-		List<PersonalCondition> listPersonalCond = displayControlPerCond.get().acquireInforDisplayControlPersonalCondition(requireImplDispControlPerCond, GeneralDate.fromString(param.endDate, DATE_FORMAT),listSidOrder);
+		List<PersonalCondition> listPersonalCond = displayControlPerCond.get().acquireInforDisplayControlPersonalCondition(
+				requireImplDispControlPerCond, 
+				GeneralDate.fromString(param.endDate, DATE_FORMAT),
+				param.listEmpInfo.stream().map(i -> i.employeeId).collect(Collectors.toList()));
 		
 		List<PersonalConditionsDto> listPersonalConditions = listPersonalCond.stream().map(i -> {
 			return new PersonalConditionsDto(i);
 		}).collect(Collectors.toList());
 		
-		return new DataAfterSortEmpDto(listEmpInfo, listPersonalConditions);
+		return new DataAfterSortEmpDto(
+				Stream.concat(listEmpInfoByOrg.stream(), listEmpInfoSupport.stream()).collect(Collectors.toList()), 
+                listPersonalConditions
+                );
 	}
 	
 	@AllArgsConstructor
@@ -131,8 +149,8 @@ public class GetDataAfterSortEmp {
 		}
 
 		@Override
-		public List<EmpMedicalWorkFormHisItem> getEmpClassifications(List<String> listEmp, GeneralDate referenceDate) {
-			List<EmpMedicalWorkFormHisItem> data = empMedicalWorkStyleHistoryRepo.get(listEmp, referenceDate);
+		public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp, GeneralDate referenceDate) {
+			List<EmpMedicalWorkStyleHistoryItem> data = empMedicalWorkStyleHistoryRepo.get(listEmp, referenceDate);
 			return data;
 		}
 

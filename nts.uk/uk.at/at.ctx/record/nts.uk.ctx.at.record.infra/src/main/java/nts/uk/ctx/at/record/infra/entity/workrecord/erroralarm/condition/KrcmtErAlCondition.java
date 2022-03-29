@@ -505,7 +505,7 @@ public class KrcmtErAlCondition extends ContractUkJpaEntity implements Serializa
 							.map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode).collect(Collectors.toList()));
 			condition.chooseWorkTimeOperator(entity.whPlanActualOperator);
 		} else {
-			if (entity.workTypeUseAtr == 1 || !entity.lstWtPlan.isEmpty()) {
+			if (entity.workTypeUseAtr == 1 || !entity.lstWhPlan.isEmpty()) {
 				condition.setWorkTimeSingle((entity.whPlanFilterAtr != null && entity.whPlanFilterAtr == 1),
 						Optional.ofNullable(entity.lstWhPlan).orElse(Collections.emptyList()).stream()
 								.map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode).collect(Collectors.toList()));	

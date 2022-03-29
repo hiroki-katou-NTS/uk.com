@@ -108,8 +108,13 @@ export class KdwS03AMenuComponent extends Vue {
                 
                 return;
             }
+            let dataCheckSignInput = {
+                listDPItemCheckBox: dataCheckSign,
+                dailyRecordDtos: this.dailyCorrectionState.domainOlds
+            };
+            
 
-            this.$http.post('at', servicePath.confirmAll, dataCheckSign).then((result: { data: any }) => {
+            this.$http.post('at', servicePath.confirmAll, dataCheckSignInput).then((result: { data: any }) => {
                 this.$mask('show', 0.5);
                 if (processFlag == 'confirm') {
                     this.$modal.info({ messageId: 'Msg_15' }).then((v: any) => {

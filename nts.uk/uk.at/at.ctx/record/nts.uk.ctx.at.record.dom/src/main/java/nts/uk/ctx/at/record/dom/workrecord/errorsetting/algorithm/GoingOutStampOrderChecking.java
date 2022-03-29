@@ -229,7 +229,7 @@ public class GoingOutStampOrderChecking {
 							.checkStateAtr(duplicateStateAtr);
 					if (duplicationStatusOfTimeZone == DuplicationStatusOfTimeZone.SAME_WORK_TIME
 							|| duplicationStatusOfTimeZone == DuplicationStatusOfTimeZone.INCLUSION_OUTSIDE) {
-						state = CheckState.INCLUSION;
+						return CheckState.INCLUSION;
 					} else {
 						// Optional<TemporaryTimeOfDailyPerformance>
 						// temporaryTimeOfDailyPerformance =
@@ -261,7 +261,7 @@ public class GoingOutStampOrderChecking {
 											.checkStateAtr(newDuplicateStateAtr);
 									if (newDuplicationStatusOfTimeZone == DuplicationStatusOfTimeZone.SAME_WORK_TIME
 											|| newDuplicationStatusOfTimeZone == DuplicationStatusOfTimeZone.INCLUSION_OUTSIDE) {
-										state = CheckState.INCLUSION;
+										return CheckState.INCLUSION;
 									} else {
 										state = CheckState.NON_INCLUSION;
 									}

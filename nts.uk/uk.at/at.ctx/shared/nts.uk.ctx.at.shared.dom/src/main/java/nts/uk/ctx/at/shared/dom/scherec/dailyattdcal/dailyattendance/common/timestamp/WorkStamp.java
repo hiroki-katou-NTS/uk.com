@@ -45,6 +45,12 @@ public class WorkStamp extends DomainObject{
 				Optional.empty());
 	}
 	
+	public WorkStamp createByAutomaticSet() {
+		
+		return new WorkStamp(
+				this.timeDay.createByAutomaticSet(),
+				this.locationCode);
+	}
 
 	public WorkStamp(TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
 			TimeChangeMeans timeChangeMeans,EngravingMethod engravingMethod) {
@@ -99,7 +105,7 @@ public class WorkStamp extends DomainObject{
 		return new WorkStamp(
 				new WorkTimeInformation(
 						new ReasonTimeChange(TimeChangeMeans.APPLICATION, Optional.empty()), null),
-				Optional.empty());
+				null);
 	}
 	
 	/**

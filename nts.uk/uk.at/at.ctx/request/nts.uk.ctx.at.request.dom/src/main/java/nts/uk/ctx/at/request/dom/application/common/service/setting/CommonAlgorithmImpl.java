@@ -224,6 +224,17 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			appDispInfoNoDateOutput.setOpAdvanceReceptionHours(preAppAcceptLimit.getOpAvailableTime());
 		}
 		// 「申請表示情報(基準日関係なし)」を返す (Trả về 「Thông tin hiển thị application(kg liên quan base date)」)
+		String loginID = AppContexts.user().employeeId();
+		Optional<EmployeeInfoImport> opEmployeeInfo = Optional.empty();
+		if(applicantLst.contains(loginID)) {
+			// 取得した「申請者情報」から入力者社員情報を取得する
+			opEmployeeInfo = employeeInfoLst.stream().filter(x -> x.getSid().equals(loginID)).findAny();
+		} else {
+			// 入力者の社員情報を取得する
+			opEmployeeInfo = this.getEnterPersonInfor(applicantLst.stream().findFirst().orElse(""), loginID);
+		}
+		// 取得した「入力者社員情報」をセットする
+		appDispInfoNoDateOutput.setOpEmployeeInfo(opEmployeeInfo);
 		return appDispInfoNoDateOutput;
 	}
 
@@ -493,8 +504,9 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				opAchievementDetail = opActualContentDisplay.get().getOpAchievementDetail();
 			}
 			if(!opAchievementDetail.isPresent()) {
+				continue;
 				// エラーメッセージ(Msg_1715)を表示
-				throw new BusinessException("Msg_1715", employeeInfo.getBussinessName(), loopDate.toString());
+				// throw new BusinessException("Msg_1715", employeeInfo.getBussinessName(), loopDate.toString());
 			}
 			// INPUT．申請する勤務種類リストをチェックする
 			if(CollectionUtil.isEmpty(workTypeLst)) {
@@ -518,6 +530,9 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			this.inconsistencyCheckApplication(companyID, employeeInfo, loopDate, opWorkTypeFirst.get(), opWorkTypeActual.get());
 			// 日ごとに休日区分の矛盾チェック
 			this.inconsistencyCheckHoliday(companyID, employeeInfo, loopDate, opWorkTypeFirst.get(), opWorkTypeActual.get());
+		}
+		if(CollectionUtil.isEmpty(actualContentDisplayLst)) {
+			return;
 		}
 		// INPUT．申請する勤務種類リストをチェックする
 		if(workTypeLst.size() <= 1) {
@@ -574,7 +589,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 					String resultWorkType = achievementDetail.getWorkTypeCD();
 					String resultWorkTime = achievementDetail.getWorkTimeCD();
 
-					return new InitWkTypeWkTimeOutput(resultWorkType, resultWorkTime);		
+					return new InitWkTypeWkTimeOutput(resultWorkType, resultWorkTime, Optional.empty());		
 				}
 			}
 		}
@@ -582,7 +597,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		GeneralDate paramDate = date == null ? GeneralDate.today() : date;
 		Optional<WorkingConditionItem> opWorkingConditionItem = WorkingConditionService.findWorkConditionByEmployee(createRequireM1(), employeeID, paramDate);
 		String processWorkType = null;
-		String processWorkTime = null; 
+		String processWorkTime = null;
+		Optional<String> opErrorMsg = Optional.empty();
 		
 		if(opWorkingConditionItem.isPresent()) {
 			
@@ -630,6 +646,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			
 			
 		} else {
+			// エラーメッセージ(Msg_3267)をエラーリストに追加する
+			opErrorMsg = Optional.of("Msg_3267");
 			// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
 			processWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
 			// Input．就業時間帯リストをチェック(Check Input. worktimeList)
@@ -639,7 +657,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			}
 		}
 		
-		return new InitWkTypeWkTimeOutput(processWorkType, processWorkTime);
+		return new InitWkTypeWkTimeOutput(processWorkType, processWorkTime, opErrorMsg);
 	}
 
 	@Override
@@ -964,17 +982,17 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			}
 			
 			@Override
-			public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
+			public Optional<SEmpHistoryImport> getSEmpHistoryImport(String employeeId, GeneralDate baseDate) {
 				return sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, baseDate);
 			}
 			
 			@Override
-			public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode) {
+			public Optional<CompensatoryLeaveEmSetting> compensatoryLeaveEmSetting(String companyId, String employmentCode) {
 				return Optional.ofNullable(compensLeaveEmSetRepo.find(companyId, employmentCode));
 			}
 			
 			@Override
-			public Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId) {
+			public Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId) {
 				return Optional.ofNullable(compensLeaveComSetRepository.find(companyId));
 			}
 		};

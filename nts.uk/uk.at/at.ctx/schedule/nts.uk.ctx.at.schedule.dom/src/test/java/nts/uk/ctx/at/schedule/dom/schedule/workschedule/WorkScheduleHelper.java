@@ -5,7 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import mockit.Injectable;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
@@ -41,7 +43,16 @@ public class WorkScheduleHelper {
 			"Wpl-Id-001", 
 			new ClassificationCode("class-001"), 
 			Optional.empty(), 
+			Optional.empty(),
+			Optional.empty(),
+			Optional.empty(),
 			Optional.empty());
+	
+	@Injectable
+	private static TaskSchedule taskSchedule;
+	
+	@Injectable
+	private static BreakTimeOfDailyAttd lstBreakTime;
 	
 	
 	public static WorkSchedule createDefaultWorkSchedule() { 
@@ -55,6 +66,7 @@ public class WorkScheduleHelper {
 				new BreakTimeOfDailyAttd(), // breakTime
 				Collections.emptyList(), // editState
 				TaskSchedule.createWithEmptyList(), // taskSchedule
+				SupportSchedule.createWithEmptyList(),
 				Optional.empty(), // timeLeaving
 				Optional.empty(), // attendanceTime
 				Optional.empty(), // shortTime
@@ -68,19 +80,11 @@ public class WorkScheduleHelper {
 	 */
 	public static WorkSchedule createWithBreakTimeAndTaskSchedule(BreakTimeOfDailyAttd breakTime, TaskSchedule taskSchedule) {
 		
-		return new WorkSchedule(
-				"employeeID",
-				GeneralDate.today(),
-				ConfirmedATR.UNSETTLED,
-				defaultWorkInfo,
-				defaultAffInfo, 
-				breakTime,
-				Collections.emptyList(), // editState
-				taskSchedule,
-				Optional.empty(), // timeLeaving
-				Optional.empty(), // attendanceTime
-				Optional.empty(), // shortTime
-				Optional.empty()); // outingTime
+		WorkSchedule workSchedule = createDefaultWorkSchedule();
+		workSchedule.setLstBreakTime(breakTime);
+		workSchedule.setTaskSchedule(taskSchedule);
+		
+		return workSchedule;
 	}
 	
 	/**
@@ -90,19 +94,11 @@ public class WorkScheduleHelper {
 	 */
 	public static WorkSchedule createWithBreakTimeAndShortTime(BreakTimeOfDailyAttd breakTime, Optional<ShortTimeOfDailyAttd> shortTime) {
 		
-		return new WorkSchedule(
-				"employeeID",
-				GeneralDate.today(),
-				ConfirmedATR.UNSETTLED,
-				defaultWorkInfo,
-				defaultAffInfo, 
-				breakTime,
-				Collections.emptyList(), // editState
-				TaskSchedule.createWithEmptyList(),
-				Optional.empty(), // timeLeaving
-				Optional.empty(), // attendanceTime
-				shortTime, // shortTime
-				Optional.empty()); // outingTime
+		WorkSchedule workSchedule = createDefaultWorkSchedule();
+		workSchedule.setLstBreakTime(breakTime);
+		workSchedule.setOptSortTimeWork(shortTime);
+		
+		return workSchedule;
 	}
 	
 	/**
@@ -111,19 +107,10 @@ public class WorkScheduleHelper {
 	 */
 	public static WorkSchedule createWithWorkInfo(WorkInfoOfDailyAttendance workInfo) {
 		
-		return new WorkSchedule(
-				"employeeID",
-				GeneralDate.today(),
-				ConfirmedATR.UNSETTLED,
-				workInfo,
-				defaultAffInfo, 
-				new BreakTimeOfDailyAttd(),
-				Collections.emptyList(), // editState
-				TaskSchedule.createWithEmptyList(),
-				Optional.empty(), // timeLeaving
-				Optional.empty(), // attendanceTime
-				Optional.empty(), // shortTime
-				Optional.empty()); // outingTime
+		WorkSchedule workSchedule = createDefaultWorkSchedule();
+		workSchedule.setWorkInfo(workInfo);
+		
+		return workSchedule;
 	}
 	
 	/**
@@ -135,19 +122,11 @@ public class WorkScheduleHelper {
 			WorkInfoOfDailyAttendance workInfo,
 			TimeLeavingOfDailyAttd timeLeaving) {
 		
-		return new WorkSchedule(
-				"employeeID",
-				GeneralDate.today(),
-				ConfirmedATR.UNSETTLED,
-				workInfo,
-				defaultAffInfo, 
-				new BreakTimeOfDailyAttd(),
-				Collections.emptyList(), // editState
-				TaskSchedule.createWithEmptyList(),
-				Optional.of(timeLeaving), // timeLeaving
-				Optional.empty(), // attendanceTime
-				Optional.empty(), // shortTime
-				Optional.empty()); // outingTime
+		WorkSchedule workSchedule = createDefaultWorkSchedule();
+		workSchedule.setWorkInfo(workInfo);
+		workSchedule.setOptTimeLeaving(Optional.of(timeLeaving));
+		
+		return workSchedule;
 	}
 	
 	/**
@@ -161,19 +140,12 @@ public class WorkScheduleHelper {
 			BreakTimeOfDailyAttd breakTime,
 			TimeLeavingOfDailyAttd timeLeaving) {
 		
-		return new WorkSchedule(
-				"employeeID",
-				GeneralDate.today(),
-				ConfirmedATR.UNSETTLED,
-				workInfo,
-				defaultAffInfo, 
-				breakTime,
-				Collections.emptyList(), // editState
-				TaskSchedule.createWithEmptyList(),
-				Optional.of(timeLeaving), // timeLeaving
-				Optional.empty(), // attendanceTime
-				Optional.empty(), // shortTime
-				Optional.empty()); // outingTime
+		WorkSchedule workSchedule = createDefaultWorkSchedule();
+		workSchedule.setWorkInfo(workInfo);
+		workSchedule.setLstBreakTime(breakTime);
+		workSchedule.setOptTimeLeaving(Optional.of(timeLeaving));
+		
+		return workSchedule;
 	}
 	
 	/**
@@ -189,19 +161,13 @@ public class WorkScheduleHelper {
 			TimeLeavingOfDailyAttd timeLeaving,
 			ShortTimeOfDailyAttd shortTimeWork) {
 		
-		return new WorkSchedule(
-				"employeeID",
-				GeneralDate.today(),
-				ConfirmedATR.UNSETTLED,
-				workInfo,
-				defaultAffInfo, 
-				breakTime,
-				Collections.emptyList(), // editState
-				TaskSchedule.createWithEmptyList(),
-				Optional.of(timeLeaving), // timeLeaving
-				Optional.empty(), // attendanceTime
-				Optional.of(shortTimeWork), // shortTime
-				Optional.empty()); // outingTime
+		WorkSchedule workSchedule = createDefaultWorkSchedule();
+		workSchedule.setWorkInfo(workInfo);
+		workSchedule.setLstBreakTime(breakTime);
+		workSchedule.setOptTimeLeaving(Optional.of(timeLeaving));
+		workSchedule.setOptSortTimeWork(Optional.of(shortTimeWork));
+		
+		return workSchedule;
 	}
 	
 	/**
@@ -216,19 +182,12 @@ public class WorkScheduleHelper {
 			Optional<OutingTimeOfDailyAttd> outingTime
 			) {
 		
-		return new WorkSchedule(
-				"employeeID",
-				GeneralDate.today(),
-				ConfirmedATR.UNSETTLED,
-				defaultWorkInfo,
-				defaultAffInfo, 
-				new BreakTimeOfDailyAttd(),
-				Collections.emptyList(),
-				TaskSchedule.createWithEmptyList(),
-				optTimeLeaving, // parameter
-				optAttendanceTime, // parameter
-				Optional.empty(),
-				outingTime); // parameter
+		WorkSchedule workSchedule = createDefaultWorkSchedule();
+		workSchedule.setOptTimeLeaving(optTimeLeaving);
+		workSchedule.setOptAttendanceTime(optAttendanceTime);
+		workSchedule.setOutingTime(outingTime);
+		
+		return workSchedule;
 	}
 	
 	/**
@@ -241,19 +200,11 @@ public class WorkScheduleHelper {
 			List<EditStateOfDailyAttd> editStateList
 			) {
 		
-		return new WorkSchedule(
-				"employeeID",
-				GeneralDate.today(),
-				ConfirmedATR.UNSETTLED,
-				defaultWorkInfo,
-				defaultAffInfo, 
-				new BreakTimeOfDailyAttd(),
-				editStateList, 
-				TaskSchedule.createWithEmptyList(),
-				Optional.of( timeLeaving ),
-				Optional.empty(), 
-				Optional.empty(),
-				Optional.empty()); 
+		WorkSchedule workSchedule = createDefaultWorkSchedule();
+		workSchedule.setOptTimeLeaving(Optional.of( timeLeaving ));
+		workSchedule.setLstEditState(editStateList);
+		
+		return workSchedule;
 	}
 	
 	/**
@@ -276,19 +227,11 @@ public class WorkScheduleHelper {
 				DayOfWeek.MONDAY, 
 				new ArrayList<>(), Optional.empty()); 
 		
-		return new WorkSchedule(
-				"employeeID",
-				GeneralDate.today(),
-				ConfirmedATR.UNSETTLED,
-				workInfo,
-				defaultAffInfo, 
-				new BreakTimeOfDailyAttd(),
-				Collections.emptyList(), 
-				TaskSchedule.createWithEmptyList(),
-				optTimeLeaving,
-				Optional.empty(), 
-				Optional.empty(),
-				Optional.empty()); 
+		WorkSchedule workSchedule = createDefaultWorkSchedule();
+		workSchedule.setWorkInfo(workInfo);
+		workSchedule.setOptTimeLeaving(optTimeLeaving);
+		
+		return workSchedule;
 	}
 	
 	public static WorkSchedule createWithParams(
@@ -296,51 +239,68 @@ public class WorkScheduleHelper {
 			List<EditStateOfDailyAttd> editStateList
 			) {
 		
-		return new WorkSchedule(
-				"employeeID",
-				GeneralDate.today(),
-				ConfirmedATR.UNSETTLED,
-				defaultWorkInfo,
-				defaultAffInfo, 
-				breakTime,
-				editStateList, 
-				TaskSchedule.createWithEmptyList(),
-				Optional.empty(),
-				Optional.empty(), 
-				Optional.empty(),
-				Optional.empty()); 
+		WorkSchedule workSchedule = createDefaultWorkSchedule();
+		workSchedule.setLstBreakTime(breakTime);
+		workSchedule.setLstEditState(editStateList);
+		
+		return workSchedule;
 	}
 	
 	public static WorkSchedule createWithConfirmAtr(ConfirmedATR confirmAtr) {
-		return new WorkSchedule(
-				"employeeID",
-				GeneralDate.today(),
-				confirmAtr,
-				defaultWorkInfo,
-				defaultAffInfo, 
-				new BreakTimeOfDailyAttd(),
-				Collections.emptyList(),
-				TaskSchedule.createWithEmptyList(),
-				Optional.empty(),
-				Optional.empty(),
-				Optional.empty(),
-				Optional.empty());
+		
+		WorkSchedule workSchedule = createDefaultWorkSchedule();
+		workSchedule.setConfirmedATR(confirmAtr);
+		return workSchedule;
 	}
 	
 	public static WorkSchedule createWithEditStateList(List<EditStateOfDailyAttd> editStateList) {
+		
+		WorkSchedule workSchedule = createDefaultWorkSchedule();
+		workSchedule.setLstEditState(editStateList);
+		
+		return workSchedule;
+	}
+	
+	public static WorkSchedule createWithParams(String employeeId, GeneralDate date,
+			ConfirmedATR confirmedAtr, TaskSchedule taskSchedule, SupportSchedule supportSchedule) {
+		
+		return new WorkSchedule(employeeId, date, confirmedAtr, 
+				defaultWorkInfo, defaultAffInfo, 
+				new BreakTimeOfDailyAttd(), Collections.emptyList(), 
+				taskSchedule, supportSchedule, 
+				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+	}
+	
+	/**
+	 * 勤務予定を作る
+	 * @param sid 社員ID
+	 * @param ymd 年月日
+	 * @param affInfo 勤務情報
+	 * @param supportSchedule 応援予定
+	 * @return
+	 */
+	public static WorkSchedule createWorkSchedule(
+			String sid
+		,	GeneralDate ymd
+		,	AffiliationInforOfDailyAttd affInfo
+		,	SupportSchedule supportSchedule
+		) {
+		
 		return new WorkSchedule(
-				"employeeID",
-				GeneralDate.today(),
-				ConfirmedATR.UNSETTLED,
-				defaultWorkInfo,
-				defaultAffInfo, 
-				new BreakTimeOfDailyAttd(),
-				editStateList,
-				TaskSchedule.createWithEmptyList(),
-				Optional.empty(),
-				Optional.empty(),
-				Optional.empty(),
-				Optional.empty());
+					sid
+				,	ymd
+				,	ConfirmedATR.CONFIRMED
+				,	defaultWorkInfo
+				,	affInfo
+				,	lstBreakTime
+				,	Collections.emptyList()
+				,	taskSchedule
+				,	supportSchedule
+				,	Optional.empty()
+				,	Optional.empty()
+				,	Optional.empty()
+				,	Optional.empty()
+					);
 	}
 
 }

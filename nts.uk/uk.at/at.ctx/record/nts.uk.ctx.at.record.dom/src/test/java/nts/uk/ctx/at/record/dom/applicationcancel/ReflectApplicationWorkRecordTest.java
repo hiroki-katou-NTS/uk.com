@@ -40,6 +40,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.RCCreateDailyAfterApplicationeReflect;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.time.AttendanceClock;
 
@@ -65,7 +66,7 @@ public class ReflectApplicationWorkRecordTest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void test(@Mocked TimeStampApplicationNRMode nrMode, @Mocked GetTargetDateRecordApplication app) {
+	public void test(@Mocked TimeStampApplicationNRMode nrMode, @Mocked GetTargetDateRecordApplication app, @Mocked WorkingConditionService wcd) {
 
 		ApplicationShare application = ReflectApplicationHelper.createAppShare(ApplicationTypeShare.STAMP_APPLICATION,
 				PrePostAtrShare.POSTERIOR, GeneralDate.ymd(2020, 01, 01));
@@ -92,6 +93,9 @@ public class ReflectApplicationWorkRecordTest {
 				GetTargetDateRecordApplication.getTargetDate(require, anyString, (AppRecordImageShare) any);
 				result = Pair.of(Optional.of(GeneralDate.ymd(2020, 01, 01)), Optional.of(createStamp()));
 				times = 1;
+				
+				WorkingConditionService.findWorkConditionByEmployee(require, anyString, (GeneralDate) any);
+				result = Optional.empty();
 
 			}
 
@@ -119,7 +123,7 @@ public class ReflectApplicationWorkRecordTest {
 	 * 
 	 */
 	@Test
-	public void testReflectAll(@Mocked RCCreateDailyAfterApplicationeReflect reflect) {
+	public void testReflectAll(@Mocked RCCreateDailyAfterApplicationeReflect reflect, @Mocked WorkingConditionService wcd) {
 
 		AppStampShare appImg = ReflectApplicationHelper.createAppStamp(PrePostAtrShare.POSTERIOR);
 
@@ -138,6 +142,9 @@ public class ReflectApplicationWorkRecordTest {
 				RCCreateDailyAfterApplicationeReflect.process(require, "", (ApplicationShare) any,
 						(DailyRecordOfApplication) any, (GeneralDate) any);
 				times = 1;
+				
+				WorkingConditionService.findWorkConditionByEmployee(require, anyString, (GeneralDate) any);
+				result = Optional.empty();
 
 			}
 

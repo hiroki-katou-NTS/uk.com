@@ -45,7 +45,7 @@ public class NumberOfEmployeesByAttributeCountingServiceTest {
 		// Mock: 日別勤怠の勤務情報
 		new MockUp<WorkInfoOfDailyAttendance>() {
 			@Mock
-			public boolean isAttendanceRate(Require require) {
+			public boolean isAttendanceRate(Require require, String companyId) {
 				return ( this.getMockInstance().getRecordInfo() == Helper.WorkInfo.WORKING );
 			}
 		};
@@ -76,7 +76,7 @@ public class NumberOfEmployeesByAttributeCountingServiceTest {
 
 		// Execute
 		val result = NumberOfEmployeesByAttributeCountingService
-						.count(require, AggregationUnitOfEmployeeAttribute.EMPLOYMENT, values);
+						.count(require, "cid", AggregationUnitOfEmployeeAttribute.EMPLOYMENT, values);
 
 
 		// Assertion
@@ -133,6 +133,9 @@ public class NumberOfEmployeesByAttributeCountingServiceTest {
 						,	new ClassificationCode("CLASSCD")	// 分類コード
 						,	Optional.empty()					// 勤務種別コード
 						,	Optional.empty()					// 加給コード
+						,	Optional.empty()					// 職場グループID
+						,	Optional.empty()					// 免許区分
+						,	Optional.empty()					// 看護管理者か
 					);
 
 			/**
@@ -148,6 +151,9 @@ public class NumberOfEmployeesByAttributeCountingServiceTest {
 							,	template.getClsCode()				// 分類コード
 							,	template.getBusinessTypeCode()		// 勤務種別コード
 							,	template.getBonusPaySettingCode()	// 加給コード
+							,	Optional.empty()					// 職場グループID
+							,	Optional.empty()					// 免許区分
+							,	Optional.empty()					// 看護管理者か
 						);
 			}
 
@@ -164,6 +170,9 @@ public class NumberOfEmployeesByAttributeCountingServiceTest {
 							,	clsCd								// 分類コード
 							,	template.getBusinessTypeCode()		// 勤務種別コード
 							,	template.getBonusPaySettingCode()	// 加給コード
+							,	Optional.empty()					// 職場グループID
+							,	Optional.empty()					// 免許区分
+							,	Optional.empty()					// 看護管理者か
 						);
 			}
 
@@ -180,6 +189,9 @@ public class NumberOfEmployeesByAttributeCountingServiceTest {
 							,	template.getClsCode()				// 分類コード
 							,	template.getBusinessTypeCode()		// 勤務種別コード
 							,	template.getBonusPaySettingCode()	// 加給コード
+							,	Optional.empty()					// 職場グループID
+							,	Optional.empty()					// 免許区分
+							,	Optional.empty()					// 看護管理者か
 						);
 			}
 

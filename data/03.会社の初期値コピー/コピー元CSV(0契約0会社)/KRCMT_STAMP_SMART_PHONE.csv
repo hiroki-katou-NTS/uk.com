@@ -1,2 +1,2 @@
-INS_DATE,INS_CCD,INS_SCD,INS_PG,UPD_DATE,UPD_CCD,UPD_SCD,UPD_PG,EXCLUS_VER,CONTRACT_CD,CID,CORRECTION_INTERVAL,RESULT_DISPLAY_TIME,TEXT_COLOR,BUTTON_EMPHASIS_ART,LOCATION_INFO_USE,AREA_LIMIT_ATR
-,,,,,,,,"0","000000000000","000000000000-0000","10","10","#ffffff",false,"0","0"
+ins_date,ins_ccd,ins_scd,ins_pg,upd_date,upd_ccd,upd_scd,upd_pg,exclus_ver,contract_cd,cid,correction_interval,result_display_time,text_color,button_emphasis_art,location_info_use,area_limit_atr
+,,,,,,,,0,"000000000000","000000000000-0000",10,10,"#999999",false,0,0

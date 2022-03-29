@@ -47,7 +47,6 @@ module knr002.b {
                 self.workLocationName = ko.observable('');
                 self.lastSuccessDate = ko.observable('');
                 self.status = ko.observable('');
-                setTimeout(() => { $(".column-2 #multi-list_sDate").attr('colspan',5); }, 1); 
                 self.colorText = (value: any, obj: any) => {
                     setTimeout(() => {
                         let cell1 = $("#multi-list").igGrid("cellById", obj.id, 'sDate');
@@ -104,9 +103,6 @@ module knr002.b {
              */
             private extract(): any {
                 let self = this;
-                if(self.hasError()){
-                    return;
-                }
                 // process
                 let sDateTime = self.toDate(new Date(self.sTime()));
                 let eDateTime = self.toDate(new Date(self.eTime()));
@@ -126,7 +122,7 @@ module knr002.b {
              */
             private loadLogInPeriod(empInfoTerCode: string, sTime: string, eTime: string): void{
                 var self = this; 
-                if(empInfoTerCode === undefined || empInfoTerCode === ''){
+                if(self.hasError() || empInfoTerCode === undefined || empInfoTerCode === ''){
                     self.displayLogList([]);
                 }else{
                     service.getInPeriod(empInfoTerCode, sTime, eTime).done((data: Array<any>) => {
@@ -166,7 +162,6 @@ module knr002.b {
              */
             private hasError(): boolean{
                 var self = this;
-                self.clearErrors();
                 //period time
                 return $("#B4_2").ntsError("hasError");
             }

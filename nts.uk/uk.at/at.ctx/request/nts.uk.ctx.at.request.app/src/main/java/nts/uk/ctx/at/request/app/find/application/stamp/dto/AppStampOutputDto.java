@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.WorkLocationNameImported;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.WorkplaceNameImported;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 
 @AllArgsConstructor
@@ -35,8 +37,19 @@ public class AppStampOutputDto {
 	
 //	臨時勤務利用
 	public Boolean useTemporary;
+
+//  場所名
+	public List<WorkLocationNameImported> workLocationNames;
 	
+//  職場名
+	public List<WorkplaceNameImported> workplaceNames;
 	
+// 応援を利用する
+	public Boolean useCheering;
+
+// 最大応援回数
+	public Integer maxOfCheer;
+
 	public static AppStampOutputDto fromDomain(AppStampOutput appStampOutput) {
 		return new AppStampOutputDto(
 				AppStampSettingDto.fromDomain(appStampOutput.getAppStampSetting()),
@@ -55,7 +68,11 @@ public class AppStampOutputDto {
 				appStampOutput.getAppStampReflectOptional().isPresent()
 						? AppStampReflectDto.fromDomain(appStampOutput.getAppStampReflectOptional().get())
 						: null,
-				appStampOutput.getUseTemporary().isPresent() ? appStampOutput.getUseTemporary().get() : null);
+				appStampOutput.getUseTemporary().isPresent() ? appStampOutput.getUseTemporary().get() : null,
+				appStampOutput.getWorkLocationNames(),
+				appStampOutput.getWorkplaceNames(),
+				appStampOutput.isUseCheering(),
+				appStampOutput.getMaxOfCheer());
 	}
 	
 	
@@ -69,6 +86,10 @@ public class AppStampOutputDto {
 						: Optional.empty(),
 				appStampOptional != null ? Optional.of(appStampOptional.toDomain()) : Optional.empty(),
 				appStampReflectOptional != null ? Optional.of(appStampReflectOptional.toDomain()) : Optional.empty(),
-				useTemporary != null ? Optional.of(useTemporary) : Optional.empty());
+				useTemporary != null ? Optional.of(useTemporary) : Optional.empty(),
+				workLocationNames,
+				workplaceNames,
+				useCheering,
+				maxOfCheer);
 	}
 }

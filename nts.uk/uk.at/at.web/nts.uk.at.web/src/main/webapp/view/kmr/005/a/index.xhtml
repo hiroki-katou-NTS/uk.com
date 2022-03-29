@@ -24,6 +24,9 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button class="proceed" data-bind="click: exportFile, enable: $root.errors.isEmpty">#{i18n.getText('KMR005_2')}</button>
+				<div style="display: inline-block; margin-left: 700px;" data-bind="if: displayBackBtn">
+					<a class="goout" data-bind="ntsLinkButton: { action: toKMR002 }">#{i18n.getText('KMR005_13')}</a>
+				</div>
 			</div>
 			<div id="contents-area">
 				<div id="ccgcomponent"></div>

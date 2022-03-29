@@ -6,11 +6,14 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 
 /**
  * @author hungnm
@@ -23,6 +26,7 @@ public class DPDataDto {
     private String id;
 	private String state;
     private String error;
+    @JsonDeserialize(using = CustomGeneralDateSerializer.class)
     private GeneralDate date;
     private boolean sign;
     private boolean approval;

@@ -6,11 +6,14 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 
 /**
  * @author hungnm
@@ -20,7 +23,9 @@ import nts.arc.time.calendar.period.DatePeriod;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DateRange {
+	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate startDate;
+	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate endDate;
 
 	public List<GeneralDate> toListDate() {
@@ -51,5 +56,9 @@ public class DateRange {
 	
 	public static DateRange convertPeriod(DatePeriod period) {
 		return new DateRange(period.start(), period.end());
+	}
+	
+	public DatePeriod convertToPeriod() {
+		return new DatePeriod(this.startDate, this.endDate);
 	}
 }

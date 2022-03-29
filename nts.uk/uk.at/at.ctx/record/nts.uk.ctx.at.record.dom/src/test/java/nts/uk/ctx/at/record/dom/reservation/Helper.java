@@ -1,25 +1,44 @@
 package nts.uk.ctx.at.record.dom.reservation;
 
+import static nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame.FRAME1;
+import static nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame.FRAME2;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.time.clock.ClockHourMinute;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.reservation.bento.*;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.clock.ClockHourMinute;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime;
+import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
+import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
+import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bento.rules.BentoReservationTimeName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoAmount;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoReservationUnitName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTime;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.*;
-
-import static nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame.*;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.AchievementMethod;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.Achievements;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ContentChangeDeadline;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ContentChangeDeadlineDay;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.CorrectionContent;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationOrderMngAtr;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTime;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSetting;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 public class Helper {
 	
@@ -40,8 +59,6 @@ public class Helper {
 
 		public static class achievements {
 			public static Achievements DUMMY = new Achievements(
-					new ReferenceTime(1),
-					AchievementMethod.valueOf(1),
 					AchievementMethod.valueOf(1)
 			);
 		}
@@ -50,8 +67,8 @@ public class Helper {
 			public static CorrectionContent DUMMY = new CorrectionContent(
 					ContentChangeDeadline.valueOf(1),
 					ContentChangeDeadlineDay.valueOf(1),
-					OrderedData.valueOf(1),
-					OrderDeadline.valueOf(1)
+					ReservationOrderMngAtr.CAN_MANAGE,
+					new ArrayList<>()
 			);
 		}
 
@@ -125,10 +142,10 @@ public class Helper {
 	}
 
 	public static class Menu {
-		public static final BentoMenu DUMMY = new BentoMenu(
+		public static final BentoMenuHistory DUMMY = new BentoMenuHistory(
 				"historyId",
-				Arrays.asList(Item.DUMMY),
-				ClosingTime.UNLIMITED);
+				new DateHistoryItem("historyID", new DatePeriod(GeneralDate.today(), GeneralDate.today().increase())),
+				Arrays.asList(Item.DUMMY));
 		
 		public static class Item {
 			public static final Bento DUMMY = bentoReserveFrame(1, true, true);
@@ -144,8 +161,7 @@ public class Helper {
 						amount(amount1 != null ? amount1 : 0),
 						amount(amount2 != null ? amount2 : 0),
 						unit("unit"),
-						true,
-						true,
+						ReservationClosingTimeFrame.FRAME1,
 						WorkLocationCodeReg.DUMMY);
 			}
 			
@@ -156,8 +172,7 @@ public class Helper {
 						amount(0),
 						amount(0),
 						unit("unit"),
-						reserveFrame1,
-						reserveFrame2,
+						reserveFrame1 ? FRAME1 : FRAME2,
 						WorkLocationCodeReg.DUMMY);
 			}
 			
@@ -181,6 +196,57 @@ public class Helper {
 				return new BentoReservationTime(value);
 			}
 				
+		}
+	}
+	
+	public static class Setting {
+		public static final ReservationSetting DUMMY = new ReservationSetting(
+				"companyID", 
+				OperationDistinction.BY_COMPANY, 
+				new CorrectionContent(
+						ContentChangeDeadline.ALLWAY_FIXABLE, 
+						ContentChangeDeadlineDay.ONE, 
+						ReservationOrderMngAtr.CAN_MANAGE, 
+						new ArrayList<>()), 
+				new Achievements(AchievementMethod.ALL_DATA), 
+				Arrays.asList(ReserRecTimeZone.ReserFrame1, ReserRecTimeZone.ReserFrame2), 
+				true);
+		
+		public static class CorrecContent {
+			public static CorrectionContent createByChangeDeadline(ContentChangeDeadline contentChangeDeadline) {
+				return new CorrectionContent(contentChangeDeadline, ContentChangeDeadlineDay.ONE, ReservationOrderMngAtr.CAN_MANAGE, new ArrayList<>());
+			}
+			
+			public static CorrectionContent createByChangeDeadlineDay(ContentChangeDeadlineDay contentChangeDeadlineDay) {
+				return new CorrectionContent(ContentChangeDeadline.ALLWAY_FIXABLE, contentChangeDeadlineDay, ReservationOrderMngAtr.CAN_MANAGE, new ArrayList<>());
+			}
+
+			public static CorrectionContent createByOrderMng(ReservationOrderMngAtr reservationOrderMngAtr) {
+				return new CorrectionContent(ContentChangeDeadline.ALLWAY_FIXABLE, ContentChangeDeadlineDay.ONE, reservationOrderMngAtr, new ArrayList<>());
+			}
+
+			public static CorrectionContent createByModifiLst(List<String> canModifiLst) {
+				return new CorrectionContent(ContentChangeDeadline.MODIFIED_FROM_ORDER_DATE, ContentChangeDeadlineDay.ONE, ReservationOrderMngAtr.CAN_MANAGE, canModifiLst);
+			}
+		}
+		
+		public static class ReserRecTimeZone {
+			public static final ReservationRecTimeZone ReserFrame1 = new ReservationRecTimeZone(
+					createReservationRecTime("frame1", 480, 600), 
+					ReservationClosingTimeFrame.FRAME1);
+			
+			public static final ReservationRecTimeZone ReserFrame2 = new ReservationRecTimeZone(
+					createReservationRecTime("frame2", 960, 1200), 
+					ReservationClosingTimeFrame.FRAME2);
+			
+			public static ReservationRecTime createReservationRecTime(String name, int startTime, int endTime) {
+				return new ReservationRecTime(
+						new BentoReservationTimeName(name), 
+						new BentoReservationTime(startTime), 
+						new BentoReservationTime(endTime));
+			}
+		
+		
 		}
 	}
 }

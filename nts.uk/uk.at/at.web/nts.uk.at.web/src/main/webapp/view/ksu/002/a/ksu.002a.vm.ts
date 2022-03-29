@@ -512,19 +512,42 @@ module nts.uk.ui.at.ksu002.a {
 				actualData: vm.achievement() === ACHIEVEMENT.YES
 			};
 
-			let sv1 = vm.$ajax('at', 'screen/ksu/ksu002/getPlansResults', command).done((data: any) => {
-				if (getDaily) {
-					dfd.resolve(data.workScheduleWorkDaily);
-				} else {
-					dfd.resolve(data.workScheduleWorkInfor2);
-				}
-			});
-			let sv2 = vm.$ajax('at', 'screen/ksu/ksu002/getlegalworkinghours', command);
-			$.when(sv1, sv2).done((data1: any, data2: any) => {
+			// let sv1 = vm.$ajax('at', 'screen/ksu/ksu002/getPlansResults', command).done((data: any) => {
+			// 	if (getDaily) {
+			// 		dfd.resolve(data.workScheduleWorkDaily);
+			// 	} else {
+			// 		dfd.resolve(data.workScheduleWorkInfor2);
+			// 	}
+			// });
+			// let sv2 = vm.$ajax('at', 'screen/ksu/ksu002/getlegalworkinghours', command);
+			// $.when(sv1, sv2).done((data1: any, data2: any) => {
+			// 	vm.legalworkinghours(data2);
+			// 	vm.plansResultsData(data1);
+			// 	vm.plansResultsData.valueHasMutated();
+			// });
+
+			vm.$ajax('at', 'screen/ksu/ksu002/getlegalworkinghours', command).then((data2: any) => {
 				vm.legalworkinghours(data2);
-				vm.plansResultsData(data1);
-				vm.plansResultsData.valueHasMutated();
-			});
+				vm.workplaceId(data2.affWorkPlace);
+			}).then(() => {
+				const command1 = {
+					listSid: [ko.unwrap(vm.employeeId)],
+					startDate: moment(begin).format('YYYY/MM/DD'),
+					endDate: moment(finish).format('YYYY/MM/DD'),
+					actualData: vm.achievement() === ACHIEVEMENT.YES,
+					targetOrg: { unit: 0, workplaceId: ko.unwrap(vm.workplaceId) }
+				};
+				vm.$ajax('at', 'screen/ksu/ksu002/getPlansResults', command1).done((data: any) => {
+					if (getDaily) {
+						dfd.resolve(data.workScheduleWorkDaily);
+					} else {
+						dfd.resolve(data.workScheduleWorkInfor2);
+					}
+				}).then(() => {
+					vm.plansResultsData.valueHasMutated();
+				});
+			})
+
 			return dfd.promise();
 		}
 
@@ -1014,8 +1037,8 @@ function calculateDaysStartEndWeek(start: Date, end: Date, settingDayStart: numb
 	}
 }
 function converNumberToTime(number: number): string {
-	const minute : string = Math.abs(number % 60) > 9 ? Math.abs(number % 60).toString() : '0' + Math.abs(number % 60).toString();
-	
+	const minute: string = Math.abs(number % 60) > 9 ? Math.abs(number % 60).toString() : '0' + Math.abs(number % 60).toString();
+
 	if (-60 < number && number < 0) {
 		return ('-' + Math.ceil(number / 60).toString() + ':' + (Math.abs(number % 60) == 0 ? '00' : minute));
 	}

@@ -9,11 +9,11 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.LicenseClassification;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiCode;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiName;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassificationRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassifiCode;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassifiName;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.ctx.at.shared.infra.entity.employeeworkway.medicalworkstyle.KscmtNurseLicense;
 import nts.uk.ctx.at.shared.infra.entity.employeeworkway.medicalworkstyle.KscmtNurseLicensePK;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
@@ -50,14 +50,15 @@ public class JpaNurseClassificationRepository extends JpaRepository implements N
 	//[4] update(看護区分）
 	@Override
 	public void update(NurseClassification nurseClassification) {
-		String sqlQuery = "UPDATE KSCMT_NURSE_LICENSE SET NAME = ? , LICENSE_ATR = ?, IS_OFFICE_WORK = ?  WHERE CID = ? AND CD = ? ";
+		String sqlQuery = "UPDATE KSCMT_NURSE_LICENSE SET NAME = ? , LICENSE_ATR = ?, IS_OFFICE_WORK = ?, IS_NURSE_ADMINISTRATOR = ?  WHERE CID = ? AND CD = ? ";
 		try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(sqlQuery))) {
 			ps.setString(1, nurseClassification.getNurseClassifiName().v());
 			ps.setInt(2, nurseClassification.getLicense().value);
-			ps.setInt(3, nurseClassification.isOfficeWorker() ? 1 : 0);
+			ps.setBoolean(3, nurseClassification.isOfficeWorker());
+			ps.setBoolean(4, nurseClassification.isNursingManager());
 
-			ps.setString(4, nurseClassification.getCompanyId().v());
-			ps.setString(5, nurseClassification.getNurseClassifiCode().v());
+			ps.setString(5, nurseClassification.getCompanyId().v());
+			ps.setString(6, nurseClassification.getNurseClassifiCode().v());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -74,14 +75,21 @@ public class JpaNurseClassificationRepository extends JpaRepository implements N
 
 	private NurseClassification toDomain(KscmtNurseLicense ent) {
 		return new NurseClassification(new CompanyId(ent.getKscmtNurseLicensePK().getCompanyId()),
-				new NurseClassifiCode(ent.getKscmtNurseLicensePK().getCode()), new NurseClassifiName(ent.getName()),
-				LicenseClassification.valueOf(ent.getLicenseAtr()), ent.isOfficeWork());
+				new NurseClassifiCode(ent.getKscmtNurseLicensePK().getCode()), 
+				new NurseClassifiName(ent.getName()),
+				LicenseClassification.valueOf(ent.getLicenseAtr()), 
+				ent.isOfficeWork(),
+				ent.isNursingManager());
 	}
+	
 
 	private KscmtNurseLicense toEntity(NurseClassification domain) {
 		return new KscmtNurseLicense(
 				new KscmtNurseLicensePK(domain.getCompanyId().v(), domain.getNurseClassifiCode().v()),
-				domain.getNurseClassifiName().v(), domain.getLicense().value, domain.isOfficeWorker());
+				domain.getNurseClassifiName().v(), 
+				domain.getLicense().value, 
+				domain.isOfficeWorker(),  
+				domain.isNursingManager());
 	}
 
 }

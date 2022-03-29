@@ -23,15 +23,18 @@ public class WorkAvailabilityByHoliday implements WorkAvailability, DomainValue 
 	}
 	
 	@Override
-	public boolean isHolidayAvailability(WorkAvailability.Require require) {
+	public boolean isHolidayAvailability(WorkAvailability.Require require, String companyId) {
 		return true;
 	}
 	
 	@Override
-	public boolean isMatchingWorkAvailability(WorkAvailability.Require require, WorkInformation workInformation,
+	public boolean isMatchingWorkAvailability(
+			WorkAvailability.Require require,
+			String companyId,
+			WorkInformation workInformation,
 			List<TimeSpanForCalc> timeZoneList) {
 
-		Optional<WorkStyle> workStyle = workInformation.getWorkStyle(require);
+		Optional<WorkStyle> workStyle = workInformation.getWorkStyle(require, companyId);
 		
 		if (workStyle.isPresent() && workStyle.get() == WorkStyle.ONE_DAY_REST){
 			return true;

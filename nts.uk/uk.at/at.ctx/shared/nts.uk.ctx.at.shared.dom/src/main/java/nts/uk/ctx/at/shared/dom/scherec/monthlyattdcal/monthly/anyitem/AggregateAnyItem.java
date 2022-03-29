@@ -104,4 +104,24 @@ public class AggregateAnyItem implements Cloneable {
 			}
 		}
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(AggregateAnyItem target){
+
+		if (target.amount.isPresent()) {
+			
+			this.amount = target.amount.map(t -> t.addAmount(this.amount.map(a -> a.v()).orElse(0)));
+		}
+		if (target.time.isPresent()) {
+			
+			this.time = target.time.map(t -> t.addMinutes(this.time.map(a -> a.v()).orElse(0)));
+		}
+		if (target.times.isPresent()) {
+			
+			this.times = target.times.map(t -> t.addTimes(this.times.map(a -> a.v().doubleValue()).orElse(0d)));
+		}
+	}
 }

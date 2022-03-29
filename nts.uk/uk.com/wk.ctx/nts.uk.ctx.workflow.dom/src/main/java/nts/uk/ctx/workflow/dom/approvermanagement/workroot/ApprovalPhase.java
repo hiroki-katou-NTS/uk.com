@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -42,6 +43,26 @@ public class ApprovalPhase extends AggregateRoot{
 				EnumAdaptor.valueOf(approvalForm, ApprovalForm.class),
 				browsingPhase,
 				EnumAdaptor.valueOf(approvalAtr, ApprovalAtr.class),
+				approvers);
+	}
+	
+	/**
+	 * [C-1] 一承認者で作成する
+	 * @param approvalId 承認ID
+	 * @param phaseOrder フェーズの順序
+	 * @param approverId 承認者ID
+	 * @return
+	 */
+	public static ApprovalPhase createSimpleFromJavaType(
+			String approvalId,
+			int phaseOrder,
+			String approverId) {
+		List<Approver> approvers = Arrays.asList(Approver.createSimpleFromJavaType(approverId));
+		return new ApprovalPhase(approvalId,
+				phaseOrder,
+				ApprovalForm.EVERYONE_APPROVED,
+				0,
+				ApprovalAtr.PERSON,
 				approvers);
 	}
 	

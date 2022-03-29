@@ -1,0 +1,157 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>
+            var dialogSize = {
+                width : 1175,
+                height : 730
+            };
+        </script>
+        <com:ValidatorScript>
+            nts.uk.ctx.at.function.dom.supportworklist.outputsetting.SupportWorkOutputCode
+            nts.uk.ctx.at.function.dom.supportworklist.outputsetting.SupportWorkOutputName
+        </com:ValidatorScript>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="kha002.b.style.css"/>
+        <com:scriptfile path="kha002.b.vm.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <button data-bind="click: createNewSetting, enable: !!$vm.selectedLayout()">#{i18n.getText('KHA002_40')}</button>
+            <button class="proceed" data-bind="click: registerSetting, enable: $root.errors.isEmpty()">#{i18n.getText('KHA002_41')}</button>
+            <button class="danger" data-bind="click: deleteSetting, enable: !!$vm.selectedLayout()">#{i18n.getText('KHA002_42')}</button>
+            <button data-bind="click: closeDialog">#{i18n.getText('KHA002_43')}</button>
+        </div>
+        <div id="contents-area" class="two-panel">
+            <div class="left-panel" style="padding-top: 5px; padding-left: 15px;">
+                <table id="B2_1"
+                       data-bind="ntsGridList: {
+                                        name:'#[KHA002_44]',
+                                        rows: 15,
+                                        options: layoutSettings,
+                                        optionsValue: 'code',
+                                        columns: [
+                                            { headerText: '#{i18n.getText('KHA002_45')}', key: 'code', width: 60, formatter: _.escape },
+                                            { headerText: '#{i18n.getText('KHA002_46')}', key: 'name', width: 300, formatter: _.escape }
+                                        ],
+                                        multiple: false,
+                                        value: selectedLayout
+                                }">
+                </table>
+            </div>
+            <div class="right-panel" style="padding-top: 5px;" data-bind="with: setting">
+                <div class="control-group valign-center">
+                    <div data-bind="ntsFormLabel: {required: true, text: $vm.$i18n('KHA002_47'), constraint: ['SupportWorkOutputCode', 'SupportWorkOutputName']}"/>
+                    <input id="B3_2"
+                           data-bind="ntsTextEditor: {
+                                            value: code,
+                                            enable : !$vm.selectedLayout(),
+                                            name: '#[KHA002_48]',
+                                            required: true,
+                                            constraint: 'SupportWorkOutputCode'
+                                    }"/>
+                    <input id="B3_3"
+                           data-bind="ntsTextEditor: {
+                                            value: name,
+                                            enable : true,
+                                            name: '#[KHA002_49]',
+                                            required: true,
+                                            constraint: 'SupportWorkOutputName'
+                                    }"/>
+                </div>
+                <div class="control-group valign-center">
+                    <div data-bind="ntsFormLabel: {required: false, text: $vm.$i18n('KHA002_51')}"/>
+                    <div id="B5_2"
+                         style="width: 225px;"
+                         data-bind="ntsComboBox: {
+                                    options: [
+                                        {code: 0, name: $vm.$i18n('KHA002_53')},
+                                        {code: 1, name: $vm.$i18n('KHA002_54')},
+                                        {code: 2, name: $vm.$i18n('KHA002_55')}
+                                    ],
+                                    visibleItemsCount: 3,
+                                    value: extractCondition,
+                                    optionsValue: 'code',
+                                    optionsText: 'name',
+                                    name:'#[KHA002_52]',
+                                    required: true,
+                                    columns: [
+                                        { prop: 'name', length: 10 }
+                                    ]}">
+                    </div>
+                </div>
+                <div class="control-group valign-top">
+                    <div data-bind="ntsFormLabel: {required: false, text: $vm.$i18n('KHA002_56')}"/>
+                    <div style="display: inline-block;">
+                        <div class="control-group checkbox-area">
+                            <div data-bind="ntsCheckBox: { checked: displayDetailAtr, text: $vm.$i18n('KHA002_57') }"></div>
+                            <div data-bind="ntsCheckBox: { checked: displaySumOneDayAtr, text: $vm.$i18n('KHA002_58') }"></div>
+                        </div>
+                        <div class="checkbox-area">
+                            <div data-bind="ntsCheckBox: { checked: displaySumSupportWorkplaceAtr, text: $vm.aggregateUnit() == 0 ? $vm.$i18n('KHA002_150') : $vm.$i18n('KHA002_151') }"></div>
+                            <div data-bind="ntsCheckBox: { checked: displaySumSupportDetailAtr, text: $vm.$i18n('KHA002_59') }"></div>
+                            <div data-bind="ntsCheckBox: { checked: displaySumWorkplaceAtr, text: $vm.aggregateUnit() == 0 ? $vm.$i18n('KHA002_152') : $vm.$i18n('KHA002_153') }"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group valign-center">
+                    <div data-bind="ntsFormLabel: {required: false, text: $vm.$i18n('KHA002_60')}"/>
+                    <div style="display: inline-block;" class="checkbox-area">
+                        <div data-bind="ntsCheckBox: { checked: displayTotalSumSupportWorkplaceAtr, text: $vm.aggregateUnit() == 0 ? $vm.$i18n('KHA002_154') : $vm.$i18n('KHA002_155') }"></div>
+                        <div data-bind="ntsCheckBox: { checked: displayTotalSumAtr, text: $vm.$i18n('KHA002_61') }"></div>
+                    </div>
+                </div>
+                <div class="control-group valign-center">
+                    <div data-bind="ntsFormLabel: {required: false, text: $vm.$i18n('KHA002_62')}"/>
+                    <div style="display: inline-flex;"
+                         data-bind="ntsSwitchButton: {
+                                        options: [
+                                            {code: 0, name: $vm.$i18n('KHA002_63')},
+                                            {code: 1, name: $vm.aggregateUnit() == 0 ? $vm.$i18n('KHA002_156') : $vm.$i18n('KHA002_157')},
+                                        ],
+                                        optionsValue: 'code',
+                                        optionsText: 'name',
+                                        value: breakPageAtr
+                                }">
+                    </div>
+                </div>
+                <div class="control-group valign-top" style="margin-bottom: 0;">
+                    <div data-bind="ntsFormLabel: {required: false, text: $vm.$i18n('KHA002_64')}"/>
+                    <div id="swap-list"
+                         data-bind="ntsSwapList: {
+                                    height: 330,
+                                    dataSource: $vm.allItems,
+                                    primaryKey: 'attendanceItemId',
+                                    leftColumns: ko.observableArray([
+                                        { headerText: 'ID', key: 'attendanceItemId', width: 0, hidden: true },
+                                        { headerText: $vm.$i18n('KHA002_66'), key: 'attendanceItemName', width: 150 }
+                                    ]),
+                                    rightColumns: ko.observableArray([
+                                        { headerText: 'ID', key: 'attendanceItemId', width: 0, hidden: true },
+                                        { headerText: $vm.$i18n('KHA002_68'), key: 'attendanceItemName', width: 150 }
+                                    ]),
+                                    value: items,
+                                    itemsLimit: {right: 7}
+                                }"></div>
+                    <div id="up-down"
+                         data-bind="ntsUpDown: {
+                                    targetSource: items,
+                                    primaryKey: 'attendanceItemId',
+                                    comId: '#swap-list',
+                                    type: 'swap',
+                                    swapTarget: 'right'
+                                }"></div>
+                    <span style="padding-left: 125px;" data-bind="text: $vm.$i18n('KHA002_69')"/>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

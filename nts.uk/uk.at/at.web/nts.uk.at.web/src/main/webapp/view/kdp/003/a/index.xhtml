@@ -48,7 +48,8 @@
 										show: $vm.showClockButton.company,
 										click: function() { $vm.stampHistory.apply($vm, []); }
 									}
-								}
+								},
+								regionalTime: $vm.regionalTime
 							}"></div>
 						<com:ko-if bind="ko.toJS($vm.message) === null">
 							<div tabindex="2" data-bind="kdp-tab-button-panel: { 

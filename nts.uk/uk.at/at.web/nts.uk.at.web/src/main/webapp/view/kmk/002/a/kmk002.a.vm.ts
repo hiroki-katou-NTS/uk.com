@@ -15,6 +15,8 @@ module nts.uk.at.view.kmk002.a {
     export module viewmodel {
 
         import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+        import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+        import alertError = nts.uk.ui.dialog.alertError;
 
         export class ScreenModel {
             optionalItemHeader: OptionalItemHeader;
@@ -1310,7 +1312,6 @@ module nts.uk.at.view.kmk002.a {
                         if($('#inp-upper-time-month').is(':enabled')){
                             $('#inp-upper-time-month').ntsEditor('validate');
                         }
-
                         this.upperRequired(true);
                     } else {
                         if ($('#inp-upper-amount-day').ntsError("hasError")) {
@@ -1331,7 +1332,6 @@ module nts.uk.at.view.kmk002.a {
                         if ($('#inp-upper-time-month').ntsError("hasError")) {
                             $('#inp-upper-time-month').ntsError('clear');
                         }
-
                         this.upperRequired(false);
                     }
                 });
@@ -1376,13 +1376,115 @@ module nts.uk.at.view.kmk002.a {
                         if ($('#inp-lower-time-month').ntsError("hasError")) {
                             $('#inp-lower-time-month').ntsError('clear');
                         }
-
                         this.lowerRequired(false);
                     }
                 });
-                
-            }
+                // TIME DAY
+                this.timeUpperDay.subscribe((e)=>{
+                    if(this.lowerCheck()){
+                        if(!isNullOrUndefined(this.timeLowerDay())){
+                                $('#inp-lower-time-day').ntsError('clear');
+                        }
+                    }
+                });
+                this.timeLowerDay.subscribe((e)=>{
+                    if(this.upperCheck()){
+                        if(!isNullOrUndefined(this.timeUpperDay())){
+                                $('#inp-upper-time-day').ntsError('clear');
+                        }
+                    }
+                });
 
+                //TIME MONTH
+                this.timeUpperMonth.subscribe((e)=>{
+                    if(this.lowerCheck())
+                    {
+                        if(!isNullOrUndefined(this.timeLowerMonth())){
+                                $('#inp-lower-time-month').ntsError('clear');
+                        }
+                    }
+                });
+                this.timeLowerMonth.subscribe((e)=>{
+                    if(this.upperCheck())
+                    {
+                        if(!isNullOrUndefined(this.timeUpperMonth())){
+                                $('#inp-upper-time-month').ntsError('clear');
+
+                        }
+                    }
+                });
+
+                // AMOUNT DAY
+                this.amountUpperDay.subscribe((e)=>{
+                    if(this.lowerCheck())
+                    {
+                        if(!isNullOrUndefined(this.amountLowerDay())){
+                                $('#inp-lower-amount-day').ntsError('clear');
+                        }
+                    }
+                });
+                this.amountLowerDay.subscribe((e)=>{
+                    if(this.upperCheck())
+                    {
+                        if(!isNullOrUndefined(this.amountUpperDay())){
+                                $('#inp-upper-amount-day').ntsError('clear');
+                        }
+                    }
+                });
+
+                // AMOUNT MONTH
+                this.amountUpperMonth.subscribe((e)=>{
+                    if(this.lowerCheck())
+                    {
+                        if(!isNullOrUndefined(this.amountLowerMonth())){
+                                $('#inp-lower-amount-month').ntsError('clear');
+                        }
+                    }
+                });
+                this.amountLowerMonth.subscribe((e)=>{
+                    if(this.upperCheck())
+                    {
+                        if(!isNullOrUndefined(this.amountUpperMonth())){
+                                $('#inp-upper-amount-month').ntsError('clear');
+                        }
+                    }
+                });
+
+                // NUMBER DAY
+                this.numberUpperDay.subscribe((e)=>{
+                    if(this.lowerCheck())
+                    {
+                        if(!isNullOrUndefined(this.numberLowerDay())){
+                                $('#inp-lower-number-day').ntsError('clear');
+                        }
+                    }
+                });
+                this.numberLowerDay.subscribe((e)=>{
+                    if(this.upperCheck())
+                    {
+                        if(!isNullOrUndefined(this.numberUpperDay())){
+                                $('#inp-upper-number-day').ntsError('clear');
+                        }
+                    }
+                });
+
+                // NUMBER MONTH
+                this.numberUpperMonth.subscribe((e)=>{
+                    if(this.lowerCheck())
+                    {
+                        if(!isNullOrUndefined(this.numberLowerMonth())){
+                                $('#inp-lower-number-month').ntsError('clear');
+                        }
+                    }
+                });
+
+                this.numberLowerMonth.subscribe((e)=>{
+                    if(this.upperCheck())
+                        if(!isNullOrUndefined(this.numberUpperMonth())){
+                            $('#inp-upper-number-month').ntsError('clear');
+                        }
+                });
+            }
             /**
              * Check if limit range is set.
              */
@@ -1450,7 +1552,49 @@ module nts.uk.at.view.kmk002.a {
                     }
                 }
             }
+            validateDomain(){
+                // TIME DAY
+                let self = this;
+                    if(self.lowerCheck() && self.upperCheck()){
+                        if(!isNullOrUndefined(self.timeLowerDay()) && !isNullOrUndefined(self.timeUpperDay())){
+                            if(parseInt(self.timeUpperDay().toString()) < parseInt(self.timeLowerDay().toString())){
+                            $('#inp-upper-time-day').ntsError('set', { messageId: "Msg_574" });
+                            $('#inp-lower-time-day').ntsError('set', { messageId: "Msg_574" });
+                            }
+                        }
+                        if(!isNullOrUndefined(self.timeLowerMonth()) && !isNullOrUndefined(self.timeUpperMonth()) ){
+                            if(parseInt(self.timeUpperMonth().toString()) < parseInt(self.timeLowerMonth().toString())){
+                                    $('#inp-upper-time-month').ntsError('set', { messageId: "Msg_574" });
+                                    $('#inp-lower-time-month').ntsError('set', { messageId: "Msg_574" });
+                            }
+                        }
+                        if(!isNullOrUndefined(self.amountLowerDay()) && !isNullOrUndefined(self.amountUpperDay())){
+                            if(parseInt(self.amountUpperDay().toString()) < parseInt(self.amountLowerDay().toString())){
+                                    $('#inp-upper-amount-day').ntsError('set', { messageId: "Msg_574" });
+                                    $('#inp-lower-amount-day').ntsError('set', { messageId: "Msg_574" });
+                            }
+                        }
+                        if(!isNullOrUndefined(self.amountLowerMonth()) && !isNullOrUndefined(self.amountUpperMonth())){
+                            if(parseInt(self.amountUpperMonth().toString()) < parseInt(self.amountLowerMonth().toString())){
+                               $('#inp-upper-amount-month').ntsError('set', { messageId: "Msg_574" });
+                               $('#inp-lower-amount-month').ntsError('set', { messageId: "Msg_574" });
+                            }
+                        }
+                        if(!isNullOrUndefined(self.numberLowerDay()) &&!isNullOrUndefined(self.numberUpperDay())){
+                            if(parseInt(self.numberUpperDay().toString()) < parseInt(self.numberLowerDay().toString())){
+                                    $('#inp-upper-number-day').ntsError('set', { messageId: "Msg_574" });
+                                    $('#inp-lower-number-day').ntsError('set', { messageId: "Msg_574" });
+                            }
+                        }
+                        if(!isNullOrUndefined(self.numberLowerMonth()) && !isNullOrUndefined(self.numberUpperMonth())){
+                            if(parseInt(self.numberUpperMonth().toString()) < parseInt(self.numberLowerMonth().toString())){
+                                    $('#inp-upper-number-month').ntsError('set', { messageId: "Msg_574" });
+                                    $('#inp-lower-number-month').ntsError('set', { messageId: "Msg_574" });
+                            }
+                        }
+                    }
 
+            }
             /**
              * Reset to default value
              */
@@ -1933,6 +2077,7 @@ module nts.uk.at.view.kmk002.a {
 
                 // validate calculation result range input
                 self.optionalItem.calcResultRange.validateInput();
+                self.optionalItem.calcResultRange.validateDomain();
 
                 // check has error.
                 if ($('.nts-editor').ntsError('hasError')) {
@@ -2591,7 +2736,8 @@ module nts.uk.at.view.kmk002.a {
                 let result = '';
                 let sortAttdanceItems = _.sortBy(dto.attendanceItems,item=>item.attendanceItemDisplayNumber);
                 sortAttdanceItems.forEach(item => {
-                    result += item.operatorText + ' ' + item.attendanceItemName + ' ';
+					let name = item.attendanceItemName != null?item.attendanceItemName:nts.uk.resource.getText('KMK002_173');
+                    result += item.operatorText + ' ' + name + ' ';
                 });
 
                 // remove first '+'

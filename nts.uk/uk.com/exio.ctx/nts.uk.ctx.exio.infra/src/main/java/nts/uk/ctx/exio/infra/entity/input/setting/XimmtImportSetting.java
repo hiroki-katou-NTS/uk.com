@@ -17,7 +17,6 @@ import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportName;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
-import nts.uk.ctx.exio.dom.input.setting.FromCsvBaseSettingToDomainRequire;
 import nts.uk.ctx.exio.dom.input.setting.ImportSettingBaseType;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -65,7 +64,7 @@ public class XimmtImportSetting extends ContractUkJpaEntity implements Serializa
 	 * @param require CSVベースの場合かつベースCSVを読む必要がある場合に指定する。通常実装クラスはFromCsvBaseSettingToDomainRequireImplを使用すること
 	 * @return
 	 */
-	public ExternalImportSetting toDomain(Optional<FromCsvBaseSettingToDomainRequire> require) {
+	public ExternalImportSetting toDomain() {
 		ImportSettingBaseType type = ImportSettingBaseType.valueOf(this.baseType);
 
 		return new ExternalImportSetting(

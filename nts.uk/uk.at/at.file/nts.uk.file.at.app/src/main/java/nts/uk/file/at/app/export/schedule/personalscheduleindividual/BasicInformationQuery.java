@@ -1,5 +1,14 @@
 package nts.uk.file.at.app.export.schedule.personalscheduleindividual;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
@@ -19,13 +28,13 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEventRep
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItemRepository;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificDateItemNo;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.CompanySpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.CompanySpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemNo;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDateRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.GetLegalWorkTimeOfEmployeeService;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.LegalWorkTimeOfEmployee;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
@@ -72,14 +81,6 @@ import nts.uk.screen.at.app.query.ksu.ksu002.a.KSU002Finder;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import org.apache.commons.lang3.StringUtils;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 基本情報取得
@@ -201,15 +202,16 @@ public class BasicInformationQuery {
                 TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace(workPplaceId);
                 // 作成する(Require, 年月日, 対象組織識別情報)
                 DateInformation information = DateInformation.create(new DateInformation.Require() {
-                    @Override
-                    public List<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, GeneralDate specificDate) {
-                        return workplaceSpecificDateRepo.getWorkplaceSpecByDate(workplaceId, specificDate);
-                    }
+                	
+                	@Override
+            		public Optional<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, GeneralDate specificDate) {
+            			return workplaceSpecificDateRepo.get(workplaceId, specificDate);
+            		}
 
-                    @Override
-                    public List<CompanySpecificDateItem> getComSpecByDate(GeneralDate specificDate) {
-                        return companySpecificDateRepo.getComSpecByDate(companyId, specificDate);
-                    }
+            		@Override
+            		public Optional<CompanySpecificDateItem> getComSpecByDate(GeneralDate specificDate) {
+            			return companySpecificDateRepo.get(AppContexts.user().companyId(), specificDate);
+            		}
 
                     @Override
                     public Optional<WorkplaceEvent> findByPK(String workplaceId, GeneralDate date) {
@@ -226,12 +228,14 @@ public class BasicInformationQuery {
                         return publicHolidayRepo.getHolidaysByDate(companyId, date);
                     }
 
-                    @Override
-                    public List<SpecificDateItem> getSpecifiDateByListCode(List<SpecificDateItemNo> lstSpecificDateItemNo) {
-                        if (lstSpecificDateItemNo.isEmpty()) return new ArrayList<>();
-                        List<Integer> _lstSpecificDateItemNo = lstSpecificDateItemNo.stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
-                        return specificDateItemRepo.getSpecifiDateByListCode(companyId, _lstSpecificDateItemNo);
-                    }
+					@Override
+					public List<SpecificDateItem> getSpecifiDateByListCode(List<SpecificDateItemNo> lstSpecificDateItemNo) {
+						if (lstSpecificDateItemNo.isEmpty()) {
+							return new ArrayList<>();
+						}
+						return specificDateItemRepo.getSpecifiDateByListCode(AppContexts.user().companyId(), lstSpecificDateItemNo);
+					}
+					
                 }, date, targetOrgIdenInfor);
                 dateInformationList.add(information);
             }

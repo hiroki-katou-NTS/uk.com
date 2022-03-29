@@ -24,7 +24,10 @@ import nts.uk.ctx.at.request.dom.application.stamp.TimeStampAppOther;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeZoneStampClassification;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStamp;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStampPK;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.TimeZone;
@@ -54,8 +57,20 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		Integer endCancelAtr = res.getInt("END_CANCEL_ATR");
 		String appID = res.getString("APP_ID");
 		String companyID = res.getString("CID");
-		return new KrqdtAppStamp(new KrqdtAppStampPK(companyID, appID, stampAtr, stampFrameNo), startTime, endTime,
-				startCancelAtr, endCancelAtr, goOutAtr);
+		Integer supportWorkNo = res.getInt("SUPPORT_WORK_NO");
+		String stampWkpId = res.getString("STAMP_WKP_ID");
+		String stampWkLocationCd = res.getString("STAMP_WK_LOCATION_CD");
+		return new KrqdtAppStamp(
+				new KrqdtAppStampPK(companyID, appID, stampAtr, stampFrameNo),
+				startTime,
+				endTime,
+				startCancelAtr,
+				endCancelAtr,
+				goOutAtr,
+				supportWorkNo,
+				stampWkpId,
+				stampWkLocationCd
+		);
 	}
 
 	@Override
@@ -156,7 +171,11 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 										: null,
 								x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START ? START_NOT_CANCEL : null, 
 								x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END ? END_NOT_CANCEL : null,
-								x.getAppStampGoOutAtr().isPresent() ? x.getAppStampGoOutAtr().get().value : null);
+								x.getAppStampGoOutAtr().isPresent() ? x.getAppStampGoOutAtr().get().value : null,
+								x.getDestinationTimeApp().getSupportWorkNo().map(WorkNo::v).orElse(0),
+								x.getWorkplaceId().map(WorkplaceId::v).orElse(null),
+								x.getWorkLocationCd().map(WorkLocationCD::v).orElse(null)
+							);
 						listStamps.add(krqdtAppStamp);
 					}
 				} else {
@@ -172,7 +191,12 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 									: null,
 							x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START ? START_NOT_CANCEL : null, 
 							x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END ? END_NOT_CANCEL : null,
-							x.getAppStampGoOutAtr().isPresent() ? x.getAppStampGoOutAtr().get().value : null);
+							x.getAppStampGoOutAtr().isPresent() ? x.getAppStampGoOutAtr().get().value : null,
+							x.getDestinationTimeApp().getSupportWorkNo().map(WorkNo::v).orElse(0),
+							x.getWorkplaceId().map(WorkplaceId::v).orElse(null),
+							x.getWorkLocationCd().map(WorkLocationCD::v).orElse(null)
+					);
+					
 					listStamps.add(krqdtAppStamp);
 				}
 
@@ -198,11 +222,19 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		
 					} else {
 						krqdtAppStamp = new KrqdtAppStamp(
-								new KrqdtAppStampPK(AppContexts.user().companyId(), appStamp.getAppID(),
+								new KrqdtAppStampPK(
+										AppContexts.user().companyId(),
+										appStamp.getAppID(),
 										convertEnumTimeStamApp(x.getTimeStampAppEnum()), x.getEngraveFrameNo()),
-								null, null, x.getStartEndClassification() == StartEndClassification.START ? START_CANCEL : null,
+								null,
+								null,
+								x.getStartEndClassification() == StartEndClassification.START ? START_CANCEL : null,
 								x.getStartEndClassification() == StartEndClassification.END ? END_CANCEL : null, 
-										null);
+								null,
+								null,
+								null,
+								null
+						);
 						listStamps.add(krqdtAppStamp);
 					}
 				} else {
@@ -211,7 +243,10 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 									convertEnumTimeStamApp(x.getTimeStampAppEnum()), x.getEngraveFrameNo()),
 							null, null, x.getStartEndClassification() == StartEndClassification.START ? START_CANCEL : null,
 							x.getStartEndClassification() == StartEndClassification.END ? END_CANCEL : null, 
-									null);
+							null,
+							null,
+							null,
+							null);
 					listStamps.add(krqdtAppStamp);
 				}
 				
@@ -227,6 +262,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 						item.getTimeZone().getEndTime().v(),
 						START_NOT_CANCEL,
 						END_NOT_CANCEL,
+						null,
+						null,
+						null,
 						null);
 				listStamps.add(krqdtAppStamp);
 			});
@@ -239,6 +277,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 						null,
 						START_CANCEL,
 						END_CANCEL,
+						null,
+						null,
+						null,
 						null);
 				listStamps.add(krqdtAppStamp);
 			});
@@ -266,6 +307,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				Integer goOutAtr = krqdtAppStamp.goOutAtr;
 				Integer startCancelAtr = krqdtAppStamp.startCancelAtr;
 				Integer endCancelAtr = krqdtAppStamp.endCancelAtr;
+				String stampWkpId = krqdtAppStamp.stampWkpId;
+				String stampWkLocationCd = krqdtAppStamp.stampWkLocationCd;
+				
 				if (stampAtr == 2 || stampAtr == 6 || stampAtr == 5) {
 					TimeZoneStampClassification timeZoneStampClassification = null;
 					if (stampAtr == 2) {
@@ -298,10 +342,12 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 					} else {
 						timeStampAppEnum = TimeStampAppEnum.CHEERING;
 					}
+					
+					Integer supportWorkNo = krqdtAppStamp.supportWorkNo;
 					DestinationTimeApp destinationTimeAppEnd = new DestinationTimeApp(timeStampAppEnum, stampFrameNo,
-							StartEndClassification.END, Optional.empty());
+							StartEndClassification.END, supportWorkNo == null ? Optional.empty() : Optional.of(new WorkNo(supportWorkNo)));
 					DestinationTimeApp destinationTimeAppStart = new DestinationTimeApp(timeStampAppEnum, stampFrameNo,
-							StartEndClassification.START, Optional.empty());
+							StartEndClassification.START, supportWorkNo == null ? Optional.empty() : Optional.of(new WorkNo(supportWorkNo)));
 					if (startCancelAtr != null) {
 						if (startCancelAtr == 1) {
 							listDestinationTimeApp.add(destinationTimeAppStart);
@@ -311,8 +357,13 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 								GoingOutReason appStampGoOutAtr = EnumAdaptor.valueOf(goOutAtr, GoingOutReason.class);
 								appStampGoOutAtrOp = Optional.of(appStampGoOutAtr);
 							}
-							TimeStampApp timeStampApp = new TimeStampApp(destinationTimeAppStart,
-									new TimeWithDayAttr(startTime), Optional.empty(), appStampGoOutAtrOp);
+							TimeStampApp timeStampApp = new TimeStampApp(
+									destinationTimeAppStart,
+									new TimeWithDayAttr(startTime),
+									Optional.ofNullable(new WorkLocationCD(stampWkLocationCd)),
+									appStampGoOutAtrOp,
+									Optional.ofNullable(new WorkplaceId(stampWkpId))
+							);
 							listTimeStampApp.add(timeStampApp);
 						}						
 					}
@@ -325,8 +376,13 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 								GoingOutReason appStampGoOutAtr = EnumAdaptor.valueOf(goOutAtr, GoingOutReason.class);
 								appStampGoOutAtrOp = Optional.of(appStampGoOutAtr);
 							}
-							TimeStampApp timeStampApp = new TimeStampApp(destinationTimeAppEnd,
-									new TimeWithDayAttr(endTime), Optional.empty(), appStampGoOutAtrOp);
+							TimeStampApp timeStampApp = new TimeStampApp(
+									destinationTimeAppEnd,
+									new TimeWithDayAttr(endTime),
+									Optional.ofNullable(new WorkLocationCD(stampWkLocationCd)),
+									appStampGoOutAtrOp,
+									Optional.ofNullable(new WorkplaceId(stampWkpId))
+							);
 							listTimeStampApp.add(timeStampApp);
 						}		
 					}

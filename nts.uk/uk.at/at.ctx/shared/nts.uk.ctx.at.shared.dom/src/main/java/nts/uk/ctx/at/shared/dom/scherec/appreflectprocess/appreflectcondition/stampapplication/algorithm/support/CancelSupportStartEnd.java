@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.s
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -35,7 +36,7 @@ public class CancelSupportStartEnd {
 		// [input. 打刻取消(List)]でループ
 		listDestinationTimeApp.stream().forEach(data -> {
 			Optional<OuenWorkTimeSheetOfDailyAttendance> ouenOpt = dailyApp.getOuenTimeSheet().stream()
-					.filter(x -> x.getWorkNo().v() == data.getSupportWork().orElse(Integer.MAX_VALUE)).findFirst();
+					.filter(x -> x.getWorkNo().v() == data.getStampNo().intValue()).findFirst();
 
 			if (ouenOpt.isPresent()) {
 				// 処理中の応援枠NOがキーとなる[応援]をクリアする
@@ -49,8 +50,8 @@ public class CancelSupportStartEnd {
 		});
 
 		// 申請反映状態にする
-		UpdateEditSttCreateBeforeAppReflect.update(dailyApp, lstItemId);
-		return lstItemId;
+		UpdateEditSttCreateBeforeAppReflect.update(dailyApp, lstItemId.stream().distinct().collect(Collectors.toList()));
+		return lstItemId.stream().distinct().collect(Collectors.toList());
 	}
 
 	private static Pair<OuenWorkTimeSheetOfDailyAttendance, List<Integer>> update(
@@ -64,20 +65,21 @@ public class CancelSupportStartEnd {
 									.flatMap(x -> x.getReasonTimeChange().getEngravingMethod())),
 							null)),
 					old.getTimeSheet().getEnd());
-			lstItemId.add(CancelAppStamp.createItemId(929, data.getEngraveFrameNo(), 10));
+			lstItemId.add(CancelAppStamp.createItemId(929, data.getStampNo().intValue(), 10));
 		} else {
-			sheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(data.getEngraveFrameNo()),
+			sheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(data.getWorkNo().orElse(null)),
 					old.getTimeSheet().getStart(),
 					Optional.of(new WorkTimeInformation(
 							new ReasonTimeChange(TimeChangeMeans.APPLICATION, old.getTimeSheet().getEnd()
 									.flatMap(x -> x.getReasonTimeChange().getEngravingMethod())),
 							null)));
-			lstItemId.add(CancelAppStamp.createItemId(930, data.getEngraveFrameNo(), 10));
+			lstItemId.add(CancelAppStamp.createItemId(930, data.getStampNo().intValue(), 10));
 		}
 
 		WorkplaceOfWorkEachOuen workplace = WorkplaceOfWorkEachOuen
 				.create(old.getWorkContent().getWorkplace().getWorkplaceId(), null);
-		lstItemId.add(CancelAppStamp.createItemId(921, data.getEngraveFrameNo(), 10));
+		lstItemId.add(CancelAppStamp.createItemId(921, data.getStampNo().intValue(), 10));
+		lstItemId.add(CancelAppStamp.createItemId(922, data.getStampNo().intValue(), 10));
 
 		WorkContent workContent = WorkContent.create(workplace, old.getWorkContent().getWork(), Optional.empty());
 		return Pair.of(OuenWorkTimeSheetOfDailyAttendance.create(old.getWorkNo(), workContent, sheet, Optional.empty()), lstItemId);

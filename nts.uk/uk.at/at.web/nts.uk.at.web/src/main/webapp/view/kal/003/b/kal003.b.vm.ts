@@ -1489,13 +1489,18 @@ module nts.uk.at.view.kal003.b.viewmodel {
 
             let self = this;
             self.displayAttendanceItemSelections_BA2_3("");
+			let display = "";
             if (self.workRecordExtractingCondition().checkItem() === 3) {
                 if (currentAtdItemCondition.uncountableAtdItem()) {
                     service.getAttendanceItemByCodes([currentAtdItemCondition.uncountableAtdItem()]).then((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             self.displayAttendanceItemSelections_BA2_3(lstItems[0].attendanceItemName);
                             $("#display-target-item").trigger("validate");
-                        }
+                        }else{
+							if(currentAtdItemCondition.uncountableAtdItem() != 0){
+								self.displayAttendanceItemSelections_BA2_3(resource.getText('KAL003_357'));
+							}
+						}
                     }, function(rejected) {
                         defered.resolve();
                     });
@@ -1503,39 +1508,92 @@ module nts.uk.at.view.kal003.b.viewmodel {
             } else {
                 if (currentAtdItemCondition.countableAddAtdItems().length > 0) {
                     service.getAttendanceItemByCodes(currentAtdItemCondition.countableAddAtdItems()).then((lstItems) => {
-                        if (lstItems && lstItems.length > 0) {
+						for(let i =0;i<currentAtdItemCondition.countableAddAtdItems().length;i++){
+							let operator = (i === (currentAtdItemCondition.countableAddAtdItems().length - 1)) ? "" : " + ";
+							let checkExist = false;
+							for (let j = 0; j < lstItems.length; j++) {
+								if(currentAtdItemCondition.countableAddAtdItems()[i] == lstItems[j].attendanceItemId ){
+									display = display + lstItems[j].attendanceItemName + operator;
+									checkExist = true;
+									break;
+								}
+							}
+							if(checkExist == false){
+								display = display+resource.getText('KAL003_357')+operator;
+							}
+						}
+	
+                        /*if (lstItems && lstItems.length > 0) {
                             for (let i = 0; i < lstItems.length; i++) {
                                 let operator = (i === (lstItems.length - 1)) ? "" : " + ";
                                 self.displayAttendanceItemSelections_BA2_3(self.displayAttendanceItemSelections_BA2_3() + lstItems[i].attendanceItemName + operator);
                             }
                             $("#display-target-item").trigger("validate");
-                        }
+                        }*/
+						self.displayAttendanceItemSelections_BA2_3(display);
+						$("#display-target-item").trigger("validate");
 
                         if (currentAtdItemCondition.countableSubAtdItems().length > 0) {
                             service.getAttendanceItemByCodes(currentAtdItemCondition.countableSubAtdItems()).then((lstItems) => {
-                                if (lstItems && lstItems.length > 0) {
+								for(let i =0;i<currentAtdItemCondition.countableSubAtdItems().length;i++){
+									let operator = (i === (currentAtdItemCondition.countableSubAtdItems().length - 1)) ? "" : " - ";
+                                    let beforeOperator = (i === 0) ? " - " : "";
+									let checkExist = false;
+									for (let j = 0; j < lstItems.length; j++) {
+										if(currentAtdItemCondition.countableSubAtdItems()[i] == lstItems[j].attendanceItemId ){
+											display = display + beforeOperator + lstItems[j].attendanceItemName + operator;
+											checkExist = true;
+											break;
+										}
+									}
+									if(checkExist == false){
+										display = display+beforeOperator+resource.getText('KAL003_357')+operator;
+									}
+								}
+                                /*if (lstItems && lstItems.length > 0) {
                                     for (let i = 0; i < lstItems.length; i++) {
                                         let operator = (i === (lstItems.length - 1)) ? "" : " - ";
                                         let beforeOperator = (i === 0) ? " - " : "";
                                         self.displayAttendanceItemSelections_BA2_3(self.displayAttendanceItemSelections_BA2_3() + beforeOperator + lstItems[i].attendanceItemName + operator);
                                     }
                                     $("#display-target-item").trigger("validate");
-                                }
+                                }*/
+								self.displayAttendanceItemSelections_BA2_3(display);
+								$("#display-target-item").trigger("validate");
                             });
+							
                         }
                     }, function(rejected) {
                         defered.resolve();
                     });
                 } else if (currentAtdItemCondition.countableSubAtdItems().length > 0) {
                     service.getAttendanceItemByCodes(currentAtdItemCondition.countableSubAtdItems()).then((lstItems) => {
-                        if (lstItems && lstItems.length > 0) {
+	
+						for(let i =0;i<currentAtdItemCondition.countableSubAtdItems().length;i++){
+							let operator = (i === (currentAtdItemCondition.countableSubAtdItems().length - 1)) ? "" : " - ";
+                            let beforeOperator = (i === 0) ? " - " : "";
+							let checkExist = false;
+							for (let j = 0; j < lstItems.length; j++) {
+								if(currentAtdItemCondition.countableSubAtdItems()[i] == lstItems[j].attendanceItemId ){
+									display = display + beforeOperator + lstItems[j].attendanceItemName + operator;
+									checkExist = true;
+									break;
+								}
+							}
+							if(checkExist == false){
+								display = display+beforeOperator+resource.getText('KAL003_357')+operator;
+							}
+							self.displayAttendanceItemSelections_BA2_3(display);
+							$("#display-target-item").trigger("validate");
+						}
+                        /*if (lstItems && lstItems.length > 0) {
                             for (let i = 0; i < lstItems.length; i++) {
                                 let operator = (i === (lstItems.length - 1)) ? "" : " - ";
                                 let beforeOperator = (i === 0) ? " - " : "";
                                 self.displayAttendanceItemSelections_BA2_3(self.displayAttendanceItemSelections_BA2_3() + beforeOperator + lstItems[i].attendanceItemName + operator);
                             }
                             $("#display-target-item").trigger("validate");
-                        }
+                        }*/
                     }, function(rejected) {
                         defered.resolve();
                     });

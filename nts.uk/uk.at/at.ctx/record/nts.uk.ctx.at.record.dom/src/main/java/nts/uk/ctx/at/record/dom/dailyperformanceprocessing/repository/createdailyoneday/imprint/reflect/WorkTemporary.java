@@ -37,4 +37,17 @@ public class WorkTemporary {
 	public void setOneHourLeavingWork(Optional<TimeActualStamp> oneHourLeavingWork) {
 		this.oneHourLeavingWork = oneHourLeavingWork;
 	}
+	
+	public Optional<TimeActualStamp> getAutoFirstAttendance(){
+		return this.getFirstAttendance().map(c->c.createByAutomaticSet());
+	}
+	public Optional<TimeActualStamp> getAutoTwoHoursWork(){
+		return this.getTwoHoursWork().map(c->c.createByAutomaticSet());
+	}
+	public Optional<TimeActualStamp> getAutoLastLeave(){
+		return this.getLastLeave().map(c->c.createByAutomaticSet());
+	}
+	public Optional<TimeActualStamp> getAutoOneHourLeavingWork(){
+		return this.getOneHourLeavingWork().map(c->c.createByAutomaticSet());
+	}
 }

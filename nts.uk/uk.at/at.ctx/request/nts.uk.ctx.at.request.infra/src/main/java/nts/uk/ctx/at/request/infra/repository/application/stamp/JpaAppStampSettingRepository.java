@@ -22,8 +22,8 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stam
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.GoOutTypeDispControl;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.SettingForEachType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.StampAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.SupportFrameDispNO;
 import nts.uk.shr.com.color.ColorCode;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Stateless
 public class JpaAppStampSettingRepository extends JpaRepository implements AppStampSettingRepository{
 
@@ -58,9 +58,10 @@ public class JpaAppStampSettingRepository extends JpaRepository implements AppSt
 		
 		appStampSetting.setCompanyID(res.getString("CID"));
 		
-		appStampSetting.setSupportFrameDispNO(new SupportFrameDispNO(res.getInt("SUP_DISP_CNT")));
-		
 		appStampSetting.setUseCancelFunction(EnumAdaptor.valueOf(res.getBoolean("CANCEL_DISP_ATR") ? 1 : 0, UseDivision.class));
+		Integer stampDispAtr = res.getBoolean("STAMP_PLACE_DISP_ATR") ? 1 : 0;
+		appStampSetting.setUseLocationSelection(stampDispAtr == null ? NotUseAtr.NOT_USE : EnumAdaptor.valueOf(stampDispAtr, NotUseAtr.class));
+		appStampSetting.setWkpDisAtr(EnumAdaptor.valueOf(res.getBoolean("STAMP_WKP_DISP_ATR") ? 1 : 0, NotUseAtr.class));
 		
 		List<SettingForEachType> settingForEachTypeLst = new ArrayList<SettingForEachType>();
 		

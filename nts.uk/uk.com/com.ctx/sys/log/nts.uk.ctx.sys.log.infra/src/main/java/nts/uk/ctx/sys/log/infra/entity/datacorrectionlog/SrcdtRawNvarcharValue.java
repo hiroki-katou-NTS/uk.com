@@ -31,11 +31,11 @@ public class SrcdtRawNvarcharValue extends ContractUkJpaEntity {
 	@Basic(optional = false)
 	public String value;
 
-	@OneToOne(mappedBy = "rawNvarcharValueBefore")
-	public SrcdtDataCorrection beforeLog;
-
-	@OneToOne(mappedBy = "rawNvarcharValueAfter")
-	public SrcdtDataCorrection afterLog;
+//	@OneToOne(mappedBy = "rawNvarcharValueBefore")
+//	public SrcdtDataCorrection beforeLog;
+//
+//	@OneToOne(mappedBy = "rawNvarcharValueAfter")
+//	public SrcdtDataCorrection afterLog;
 
 	@Override
 	protected Object getKey() {

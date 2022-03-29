@@ -76,16 +76,48 @@
 											data-bind="ntsTextEditor: {name : '#[CMM040_12]',value: $parent.workLocationCD ,constraint: ['WorkLocationCD'], required: true , enable: $parent.isCreate , name: '#[CMM040_12]'}" /></td>
 									</tr>
 									<tr>
-										<td >
+										<td style = "padding-bottom: 10px;">
 											<div
 												data-bind="ntsFormLabel: {constraint: ['WorkLocationName'], required: true }">#{i18n.getText('CMM040_13')}
 											</div>
 										</td>
-										<td data-bind="with: currentBonusPaySetting"><input id = "focusName" 
+										<td style = "padding-bottom: 10px;" data-bind="with: currentBonusPaySetting"><input id = "focusName" 
 											class="inputRequired" 
 											data-bind="ntsTextEditor: {name : '#[CMM040_13]',value:  $parent.workLocationName , constraint: ['WorkLocationName'], required: true, name: '#[CMM040_13]'}" /></td>
 									</tr>
+									<tr>
+										<td >
+											<div
+												data-bind="ntsFormLabel: {constraint: ['WorkLocationName'], required: false }">#{i18n.getText('CMM040_43')}
+											</div>
+										</td>
+										<td >
+											<div data-bind="ntsComboBox: {
+															name: '#[CMM040_44]',
+															options: selectAreaCombobox,
+															optionsValue: 'code',
+															visibleItemsCount: 5,
+															value: selectAreaCode,
+															optionsText: 'name',
+															editable: true,
+															enable: true,
+															required: false ,
+															selectFirstIfNull: false ,
+															width: 520 ,
+															columns: [
+																{ prop: 'name', length: 9 },
+																{ prop: 'text', length: 1 },
+															]}">
+											</div>
+										</td>
+									</tr>
+									
+									<tr>
+										<td></td>
+										<td><div style = " margin-top: 5px; margin-bottom: 10px;">#{i18n.getText('CMM040_45')}</div></td>
+									</tr>
 								</table>
+								
 								<div style = " font-weight: bold; margin-top: 20px; margin-bottom: 10px;">#{i18n.getText('CMM040_14')}</div>
 								<hr
 									style="height: 2px; border-width: 0; color: gray; background-color: gray"></hr>
@@ -127,7 +159,8 @@
 								<div id="A5_14">#{i18n.getText('CMM040_39')}</div>
 								<div id="A5_15">
 									<div id="combo-box" style="width: 100px;"
-										data-bind="ntsComboBox: {		
+										data-bind="ntsComboBox: {
+									name : '#[CMM040_39]',		
 									options: itemList,
 									optionsValue: 'value',
 									visibleItemsCount: 5,
@@ -142,14 +175,14 @@
 								<div id="A5_7">#{i18n.getText('CMM040_22')}</div>
 								<div style="float: left;">
 									<input id="validatelat" style="width: 75px;;margin-left: -120px; margin-top: 0px; "
-										data-bind="ntsNumberEditor: {value: latitude , option : option }" />
+										data-bind="ntsNumberEditor: {name : '#[CMM040_22]', required: ko.computed(()=> { return latitudeRequired()  })  , value: latitude , option : option }" />
 								</div>
 								</div>
 								<div style = "width: 190px" class="valign-center control-group">
 								<div id="A5_9">#{i18n.getText('CMM040_23')}</div>
 								<div style="float: left;">
 									<input id="validatelong" style="width: 75px; "
-										data-bind="ntsNumberEditor: {value: longitude , option : option}" />
+										data-bind="ntsNumberEditor: {name : '#[CMM040_23]', required: ko.computed(()=> { return longitudeRequired()  }) , value: longitude , option : option}" />
 								</div>
 								</div>
 								</div>

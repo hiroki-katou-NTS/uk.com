@@ -59,9 +59,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.ba
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
+import nts.uk.ctx.at.request.dom.application.common.service.application.ApproveAppProcedure;
+import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApproveAppProcedureOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -113,6 +114,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaReposit
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
@@ -152,6 +155,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.DetermineChildCareManage;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.DetermineLongTermManage;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
@@ -277,9 +282,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     private ApplicationApprovalService applicationService;
 
 	@Inject
-	private RegisterAtApproveReflectionInfoService registerApproveReflectInfoService;
-
-	@Inject
 	private LeaveComDayOffManaRepository leaveComDayOffManaRepo;
 
 	@Inject
@@ -374,6 +376,18 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 	
 	@Inject
 	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
+	
+	@Inject
+    private DetermineChildCareManage determineChildCareManage;
+	
+	@Inject
+    private DetermineLongTermManage determineLongTermManage;
+	
+	@Inject
+	private SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepository;
+
+	@Inject
+	private ApproveAppProcedure approveAppProcedure;
 
 	private final String FORMAT_DATE = "yyyy/MM/dd";
 
@@ -449,32 +463,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     	detailBeforeUpdate.displayWorkingHourCheck(companyID
     			, appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()
     			, appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCodeNotNull().isPresent() ? appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode().v() : null);
-    	
-    	//INPUT．休暇申請起動時の表示情報．申請表示情報．申請設定（基準日関係あり）．表示する実績内容」をチェックする
-    	Optional<List<ActualContentDisplay>> opActualContentDisplayLst = 
-    			appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
-    	
-    	List<GeneralDate> listDatesCheck = listDates.stream().filter(x -> !holidayDates.contains(x)).collect(Collectors.toList());
-    	
-    	//対象日リスト = INPUT．「休暇申請．申請．申請開始日」～INPUT．「休暇申請．申請．申請終了日」を年月日リストにした後に取得した「休日の申請日<List>」の年月日を除く
-    	if(opActualContentDisplayLst.isPresent() && !listDatesCheck.isEmpty()) {
-    		List<GeneralDate> listActualDates = 
-    				opActualContentDisplayLst.get().stream()
-    				.filter(a -> a.getOpAchievementDetail().isPresent())
-    				.map(y -> y.getDate()).collect(Collectors.toList());
-    		
-    		for (GeneralDate checkDate : listDatesCheck) {
-    			if(!listActualDates.contains(checkDate)) {
-    				//その他場合
-    				throw new BusinessException("Msg_1715", empEmployeeAdapter.findByEmpId(appAbsence.getEmployeeID()).getEmployeeName(), checkDate.toString("yyyy/MM/dd"));
-    			}
-    		}
-    	}
-//    	else {
-//    		//その他場合
-//    		throw new BusinessException("Msg_1715", empEmployeeAdapter.findByEmpId(appAbsence.getEmployeeID()).getEmployeeName(), listDatesCheck.get(0).toString("yyyy/MM/dd"));
-//    	}
-    	
+ 	
     	// 申請全般登録時チェック処理
     	TimeDigestionParam timeDigestionParam = new TimeDigestionParam();
         if (appAbsence.getReflectFreeTimeApp().getTimeDegestion().isPresent()) {
@@ -603,7 +592,21 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 					childNursingLeaveSetting.getTimeVacationDigestUnit().getManage(),
 					nursingLeaveSetting.getManageType());
 	    }catch (Exception ignored){}
-
+	    
+	    // 子の看護管理するかどうか判断する
+	    boolean checkChildCare = determineChildCareManage.algorithm(companyID, sID);
+	    if (nursingCareLeaveManagement.getChildNursingManagement().equals(ManageDistinct.YES)) {
+	        nursingCareLeaveManagement.setChildNursingManagement(checkChildCare ? ManageDistinct.YES : ManageDistinct.NO);
+	    }
+	    
+	    // 介護管理するかどうか判断する
+	    boolean checkLongTerm = determineLongTermManage.algorithm(companyID, sID);
+	    if (nursingCareLeaveManagement.getLongTermCareManagement().equals(ManageDistinct.YES)) {
+	        nursingCareLeaveManagement.setLongTermCareManagement(checkLongTerm ? ManageDistinct.YES : ManageDistinct.NO);
+	    }
+	    
+	    // ドメイン「特別休暇基本情報」を取得する
+	    List<SpecialLeaveBasicInfo> specialLeaveBasicInfos = specialLeaveBasicInfoRepository.listSPLeav(sID);
 
 	    // OUTPUTを作成して返す
 
@@ -613,7 +616,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		        substituteLeaveManagement,
 		        holidayManagement,
 		        overtime60hManagement,
-		        nursingCareLeaveManagement);
+		        nursingCareLeaveManagement, 
+		        specialLeaveBasicInfos.stream()
+		        .map(x -> new SpeHolidayRemainInfo(x.getUsed().value == 1, x.getSpecialLeaveCode().v()))
+		        .collect(Collectors.toList()));
 	}
 
 	private ComSubstVacation getComSubstVacation(String companyID) {
@@ -1069,7 +1075,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 //				return workInformation.getPredeterminedTimezone(companyID, workTimeCode, workTypeCode, null);
 			    AbsenceServiceRequireImpl require = new AbsenceServiceRequireImpl(workTypeRepository, workTimeSettingRepository,
 			            basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineRepo);
-			    Optional<WorkInfoAndTimeZone> workInfoOpt =  workInformation.getWorkInfoAndTimeZone(require);
+			    Optional<WorkInfoAndTimeZone> workInfoOpt =  workInformation.getWorkInfoAndTimeZone(require, companyID);
 
 			    return workInfoOpt.isPresent() ? workInfoOpt.get().getTimeZones() : Collections.emptyList();
 			}
@@ -1974,8 +1980,22 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 
         Application appNew = this.applicationRepository.findByID(applyForLeave.getApplication().getAppID()).get();
 
-        // アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
-        String reflectAppId = this.registerApproveReflectInfoService.newScreenRegisterAtApproveInfoReflect(applyForLeave.getApplication().getEmployeeID(), appNew);
+        // 申請承認する時の手続き
+        List<String> autoSuccessMail = new ArrayList<>();
+		List<String> autoFailMail = new ArrayList<>();
+		List<String> autoFailServer = new ArrayList<>();
+        ApproveAppProcedureOutput approveAppProcedureOutput = approveAppProcedure.approveAppProcedure(
+        		AppContexts.user().companyId(), 
+        		Arrays.asList(applyForLeave.getApplication()), 
+        		Collections.emptyList(), 
+        		AppContexts.user().employeeId(), 
+        		Optional.empty(), 
+        		Arrays.asList(appTypeSetting), 
+        		false,
+        		true);
+        autoSuccessMail.addAll(approveAppProcedureOutput.getSuccessList().stream().distinct().collect(Collectors.toList()));
+		autoFailMail.addAll(approveAppProcedureOutput.getFailList().stream().distinct().collect(Collectors.toList()));
+		autoFailServer.addAll(approveAppProcedureOutput.getFailServerList().stream().distinct().collect(Collectors.toList()));
 
         // 休暇紐付け管理を登録する
         this.registerVacationLinkManage(leaveComDayOffMana, payoutSubofHDManagements);
@@ -1990,9 +2010,12 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         		appTypeSetting,
         		mailServerSet,
         		false);
-        if(Strings.isNotBlank(reflectAppId)) {
-        	result.setReflectAppIdLst(Arrays.asList(reflectAppId));
-        }
+        result.getAutoSuccessMail().addAll(autoSuccessMail);
+		result.getAutoFailMail().addAll(autoFailMail);
+		result.getAutoFailServer().addAll(autoFailServer);
+		result.setAutoSuccessMail(result.getAutoSuccessMail().stream().distinct().collect(Collectors.toList()));
+		result.setAutoFailMail(result.getAutoFailMail().stream().distinct().collect(Collectors.toList()));
+		result.setAutoFailServer(result.getAutoFailServer().stream().distinct().collect(Collectors.toList()));
         return result;
     }
 
@@ -2501,57 +2524,52 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         private WorkTypeRepository workTypeRepo;
 
         @Inject
-        private WorkTimeSettingRepository workTimeSettingRepository;
+        private WorkTimeSettingRepository workTimeSettingRepo;
 
         @Inject
         private BasicScheduleService basicScheduleService;
 
         @Inject
-        private FixedWorkSettingRepository fixedWorkSet;
+        private FixedWorkSettingRepository fixedWorkSetRepo;
 
         @Inject
-        private FlowWorkSettingRepository flowWorkSet;
+        private FlowWorkSettingRepository flowWorkSetRepo;
 
         @Inject
-        private FlexWorkSettingRepository flexWorkSet;
+        private FlexWorkSettingRepository flexWorkSetRepo;
 
         @Inject
-        private PredetemineTimeSettingRepository predetemineTimeSet;
+        private PredetemineTimeSettingRepository predetemineTimeSetRepo;
 
-        @Override
-        public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-            Optional<FixedWorkSetting> workSetting = fixedWorkSet.findByKey(companyId, code.v());
-            return workSetting.isPresent() ? workSetting.get() : null;
-        }
-
-        @Override
-        public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-            Optional<FlowWorkSetting> workSetting = flowWorkSet.find(companyId, code.v());
-            return workSetting.isPresent() ? workSetting.get() : null;
-        }
-
-        @Override
-        public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-            Optional<FlexWorkSetting> workSetting = flexWorkSet.find(companyId, code.v());
-            return workSetting.isPresent() ? workSetting.get() : null;
-        }
-
-        @Override
-        public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-            Optional<PredetemineTimeSetting> workSetting = predetemineTimeSet.findByWorkTimeCode(companyId, wktmCd.v());
-            return workSetting.isPresent() ? workSetting.get() : null;
-        }
-
-        @Override
-        public Optional<WorkType> getWorkType(String workTypeCd) {
-            return workTypeRepo.findByPK(companyId, workTypeCd);
-
-        }
-
-        @Override
-        public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-            return workTimeSettingRepository.findByCode(companyId, workTimeCode);
-        }
+		@Override
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return fixedWorkSetRepo.findByKey(companyId, workTimeCode.v());
+		}
+		
+		@Override
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flowWorkSetRepo.find(companyId, workTimeCode.v());
+		}
+		
+		@Override
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flexWorkSetRepo.find(companyId, workTimeCode.v());
+		}
+		
+		@Override
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return predetemineTimeSetRepo.findByWorkTimeCode(companyId, workTimeCode.v());
+		}
+		
+		@Override
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeRepo.findByPK(companyId, workTypeCode.v());
+		}
+		
+		@Override
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return workTimeSettingRepo.findByCode(companyId, workTimeCode.v());
+		}
 
         @Override
         public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {

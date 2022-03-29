@@ -28,7 +28,6 @@ import nts.uk.ctx.at.schedule.app.command.executionlog.internal.BasicWorkSetting
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.BasicWorkSettingByWorkplaceGetterCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.CalculationCache;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicWorkSettingHandler;
-import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeErrorLogHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheduleErrorLogGeterCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.WorkdayAttrByClassGetterCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.WorkdayAttrByWorkplaceGeterCommand;
@@ -52,6 +51,7 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.DateRegistedEmpSche;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.RegistrationListDateSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.createworkschedule.createschedulecommon.correctworkschedule.CorrectWorkSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ProcessingStatus;
@@ -516,7 +516,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 				WorkInformation.Require require = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository,
 						basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
-				ErrorStatusWorkInfo checkErrorCondition = information.checkErrorCondition(require);
+				ErrorStatusWorkInfo checkErrorCondition = information.checkErrorCondition(require, AppContexts.user().companyId());
 
 				// 正常の場合
 				if (checkErrorCondition.value == ErrorStatusWorkInfo.NORMAL.value) {
@@ -604,10 +604,12 @@ public class ScheduleCreatorExecutionTransaction {
 					if (command.getContent().getConfirm()) {
 						atr = ConfirmedATR.CONFIRMED;
 					}
+					
 					WorkSchedule workSchedule = new WorkSchedule(integrationOfDaily.getEmployeeId(),
 							integrationOfDaily.getYmd(), atr, integrationOfDaily.getWorkInformation(),
 							integrationOfDaily.getAffiliationInfor(), integrationOfDaily.getBreakTime(),
 							integrationOfDaily.getEditState(), TaskSchedule.createWithEmptyList(),
+							SupportSchedule.createWithEmptyList(),
 							integrationOfDaily.getAttendanceLeave(),
 							integrationOfDaily.getAttendanceTimeOfDailyPerformance(), integrationOfDaily.getShortTime(),
 							integrationOfDaily.getOutingTime());
@@ -738,7 +740,9 @@ public class ScheduleCreatorExecutionTransaction {
 								nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek
 										.valueOf(dateInPeriod.dayOfWeek() - 1),
 								new ArrayList<>(), Optional.empty()),
-						null, new BreakTimeOfDailyAttd(), new ArrayList<>(), TaskSchedule.createWithEmptyList(),
+						null, new BreakTimeOfDailyAttd(), new ArrayList<>(), 
+						TaskSchedule.createWithEmptyList(),
+						SupportSchedule.createWithEmptyList(),
 						Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()),
 				workingConditionItem, scheManaStatuTempo);
 
@@ -832,10 +836,9 @@ public class ScheduleCreatorExecutionTransaction {
 		// if 休職中
 		if (optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE || 
 				optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.CLOSED) {
-		prepareWorkOutput = this.getWorkInfoLeave( employeesTempo, command, creator, domain,
-			 targetPeriod, dateInPeriod, masterCache, dateRegistedEmpSche, carrier);
-		return prepareWorkOutput;
-
+			prepareWorkOutput = this.getWorkInfoLeave( employeesTempo, command, creator, domain,
+				targetPeriod, dateInPeriod, masterCache, dateRegistedEmpSche, carrier);
+			return prepareWorkOutput;
 		}
 
 		// if 予定管理する
@@ -1609,7 +1612,10 @@ public class ScheduleCreatorExecutionTransaction {
 												x.getWorkplaceId()))
 										.collect(Collectors.toList())))
 						.collect(Collectors.toList()),
-				masterCache.getListBusTypeOfEmpHis());
+				masterCache.getListBusTypeOfEmpHis(),
+				masterCache.getEmpGeneralInfo().getEmpWorkplaceGroup(), 
+				masterCache.getEmpGeneralInfo().getEmpLicense());
+		
 		return generalInfoImport;
 
 	}
@@ -1617,28 +1623,26 @@ public class ScheduleCreatorExecutionTransaction {
 	@AllArgsConstructor
 	public static class WorkInformationImpl implements WorkInformation.Require {
 
-		private final String companyId = AppContexts.user().companyId();
-
 		@Inject
 		private WorkTypeRepository workTypeRepo;
 
 		@Inject
-		private WorkTimeSettingRepository workTimeSettingRepository;
+		private WorkTimeSettingRepository workTimeSettingRepo;
 
 		@Inject
 		private BasicScheduleService basicScheduleService;
 
 		@Inject
-		private FixedWorkSettingRepository fixedWorkSet;
+		private FixedWorkSettingRepository fixedWorkSetRepo;
 
 		@Inject
-		private FlowWorkSettingRepository flowWorkSet;
+		private FlowWorkSettingRepository flowWorkSetRepo;
 
 		@Inject
-		private FlexWorkSettingRepository flexWorkSet;
+		private FlexWorkSettingRepository flexWorkSetRepo;
 
 		@Inject
-		private PredetemineTimeSettingRepository predetemineTimeSet;
+		private PredetemineTimeSettingRepository predetemineTimeSetRepo;
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -1646,37 +1650,33 @@ public class ScheduleCreatorExecutionTransaction {
 		}
 
 		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			Optional<FixedWorkSetting> workSetting = fixedWorkSet.findByKey(companyId, code.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return fixedWorkSetRepo.findByKey(companyId, workTimeCode.v());
+		}
+		
+		@Override
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flowWorkSetRepo.find(companyId, workTimeCode.v());
+		}
+		
+		@Override
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flexWorkSetRepo.find(companyId, workTimeCode.v());
+		}
+		
+		@Override
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return predetemineTimeSetRepo.findByWorkTimeCode(companyId, workTimeCode.v());
+		}
+		
+		@Override
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeRepo.findByPK(companyId, workTypeCode.v());
 		}
 
 		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			Optional<FlowWorkSetting> workSetting = flowWorkSet.find(companyId, code.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
-		}
-
-		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			Optional<FlexWorkSetting> workSetting = flexWorkSet.find(companyId, code.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
-		}
-
-		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			Optional<PredetemineTimeSetting> workSetting = predetemineTimeSet.findByWorkTimeCode(companyId, wktmCd.v());
-			return workSetting.isPresent() ? workSetting.get() : null;
-		}
-
-		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
-		}
-
-		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return workTimeSettingRepo.findByCode(companyId, workTimeCode.v());
 		}
 	}
 }

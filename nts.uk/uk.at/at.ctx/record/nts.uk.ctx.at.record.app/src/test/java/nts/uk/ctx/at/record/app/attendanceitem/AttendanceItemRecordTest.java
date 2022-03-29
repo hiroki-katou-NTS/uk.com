@@ -15,7 +15,11 @@ import org.junit.Test;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.temporarytime.dto.TemporaryTimeOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInformationOfDailyDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.WorkLeaveTimeDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtilRes;
@@ -66,9 +70,30 @@ public class AttendanceItemRecordTest {
 //		
 //		Assert.assertTrue(missingIds.isEmpty());
 //	}
+	
+	@Test
+	/** test item: 1 -> 2650 */
+	public void test_dailyTemporary() {
+		
+		TemporaryTimeOfDailyPerformanceDto temporary = getTemporaryDaily();
+		
+		List<Integer> itemIds = IntStream.range(2737, 2793).map(c -> c).boxed().collect(Collectors.toList());
+		List<ItemValue> values = AttendanceItemUtilRes.collect(temporary, itemIds, AttendanceItemType.DAILY_ITEM);
+		values.stream().sorted((c1, c2) -> c1.itemId() - c2.itemId()).forEach(c -> {
+			assertThat(c.valueAsObjet()).isNotNull();
+//			System.out.println(c.path());
+//			System.out.println(c.getItemId() + " - " + c.getValue() + "-" + c.getValueType());
+		});
+		
+		TemporaryTimeOfDailyPerformanceDto dto2 = TemporaryTimeOfDailyPerformanceDto.getDto(null);
+		AttendanceItemUtilRes.merge(dto2, values, AttendanceItemType.DAILY_ITEM);
+		
+		assertThat(dto2.getWorkLeaveTime()).isNotEmpty();
+		
+	}
 
 	@Test
-	/** test item: 2251 -> 2650 */
+	/** test item: 2737 -> 2792 */
 	public void test_dailyOuen() {
 		
 		List<OuenWorkTimeSheetOfDailyAttendance> ouenSheets = new ArrayList<>();
@@ -101,6 +126,17 @@ public class AttendanceItemRecordTest {
 //			});
 //		});
 	}
+
+	private TemporaryTimeOfDailyPerformanceDto getTemporaryDaily() {
+		TemporaryTimeOfDailyPerformanceDto temporary = new TemporaryTimeOfDailyPerformanceDto();
+		List<WorkLeaveTimeDto> workLeaveTime = new ArrayList<>();
+		IntStream.range(1, 11).forEach(c -> 
+			workLeaveTime.add(new WorkLeaveTimeDto(c, 
+					new WithActualTimeStampDto(new TimeStampDto(60*c + 1, "場所" + c, 0), new TimeStampDto(60*c + 2, "場所" + c, 0), null, null, null, null, null), 
+					new WithActualTimeStampDto(new TimeStampDto(60*c + 5, "場所" + c, 0), new TimeStampDto(60*c + 6, "場所" + c, 0), null, null, null, null, null))));
+		temporary.setWorkLeaveTime(workLeaveTime);
+		return temporary;
+	}
 	
 	private OuenWorkTimeSheetOfDailyAttendance getOuen(int idx) {
 		return OuenWorkTimeSheetOfDailyAttendance.create(new SupportFrameNo(idx), 
@@ -113,7 +149,7 @@ public class AttendanceItemRecordTest {
 				Optional.empty());
 	}
 	
-	@Test
+//	@Test
 	public void test_toAttendanceItemDtoMonthly() {
 		
 		List<ItemValue> items = AttendanceItemUtilRes.collect(new MonthlyRecordWorkDto(), AttendanceItemType.MONTHLY_ITEM);

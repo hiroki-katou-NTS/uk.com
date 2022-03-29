@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.appabsence.service;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -39,4 +41,7 @@ public class CheckDispHolidayType {
     
     // 介護看護休暇管理
     private NursingCareLeaveManagement nursingCareLeaveManagement;
+    
+    // 特別休暇管理情報(List)
+    private List<SpeHolidayRemainInfo> speHolidayRemainInfos;
 }

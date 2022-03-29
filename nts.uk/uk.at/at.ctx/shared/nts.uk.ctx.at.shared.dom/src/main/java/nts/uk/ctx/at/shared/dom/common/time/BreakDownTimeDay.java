@@ -152,9 +152,13 @@ public class BreakDownTimeDay extends WorkTimeDomainObject implements Cloneable,
 		this.morning = newMorning.orElse(this.getMorning());
 		this.afternoon = newAfternoon.orElse(this.getAfternoon());
 	}
-	
-	/** 取得 */
-	public AttendanceTime get(WorkAtr workAtr ) {
+
+	/**
+	 * 取得
+	 * @param workAtr 1日午前午後区分
+	 * @return 勤怠時間
+	 */
+	public AttendanceTime get(WorkAtr workAtr) {
 		switch (workAtr) {
 		case Afternoon:
 			return this.afternoon;

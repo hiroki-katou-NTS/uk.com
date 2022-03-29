@@ -64,7 +64,7 @@ module ksm002.d{
                 self.dayInWeek([new DayInWeekItem(nts.uk.resource.getText('KSM002_45'),0), new DayInWeekItem(nts.uk.resource.getText('KSM002_46'),0), new DayInWeekItem(nts.uk.resource.getText('KSM002_47'),0), new DayInWeekItem(nts.uk.resource.getText('KSM002_48'),0), new DayInWeekItem(nts.uk.resource.getText('KSM002_49'),0), new DayInWeekItem(nts.uk.resource.getText('KSM002_50'),0), new DayInWeekItem(nts.uk.resource.getText('KSM002_51'),0)]);
                 service.getSpecificDateByIsUse(1).done(function(data) {
                     let dataSource =  _.orderBy(data, ["specificDateItemNo"], ["asc"]);
-                    dataSource.forEach(function(item){
+                    dataSource.forEach(function(item: any){
                         self.specificDateItem.push(
                             new SpecificDateItem(
                                 item.timeItemId,

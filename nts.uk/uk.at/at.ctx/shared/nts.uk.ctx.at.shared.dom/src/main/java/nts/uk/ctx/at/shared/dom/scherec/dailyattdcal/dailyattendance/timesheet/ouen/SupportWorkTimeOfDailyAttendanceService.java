@@ -42,6 +42,10 @@ public class SupportWorkTimeOfDailyAttendanceService {
 			IntegrationOfDaily integrationOfDaily) {
 		
 		//日別勤怠の応援作業時間を計算する
+		integrationOfDaily.getOuenTime().removeIf(x -> {
+			return recordReGetClass.getIntegrationOfDaily().getOuenTimeSheet().stream()
+					.noneMatch(y -> x.getWorkNo().v() == y.getWorkNo().v());
+		});
 		return recordReGetClass.getIntegrationOfDaily().getOuenTimeSheet().stream()
 				.map(timeSheet -> OuenWorkTimeOfDailyAttendance.create(
 						scheduleReGetClass,
