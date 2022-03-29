@@ -363,14 +363,14 @@ public class DailyCalculationRCommandFacade {
 		
 		List<DailyRecordDto> dtoOldTemp = dailyOlds;
 		dailyEdits = dailyEdits.stream().map(x -> {
-			val changeSetting = ChangeDailyAttendance.createChangeDailyAtt(dataParent.getItemValues().stream()
+			ChangeDailyAttendance changeSetting = ChangeDailyAttendance.createChangeDailyAtt(dataParent.getItemValues().stream()
 					.filter(y -> y.getEmployeeId().equals(x.getEmployeeId()) && y.getDate().equals(x.getDate()))
 					.map(y -> y.getItemId()).collect(Collectors.toList()), ScheduleRecordClassifi.RECORD);
-			val domDaily = CorrectDailyAttendanceService.processAttendanceRule(
+			IntegrationOfDaily domDaily = CorrectDailyAttendanceService.processAttendanceRule(
 					correctDaiAttRequireImpl.createRequire(), x.toDomain(x.getEmployeeId(), x.getDate()),
 					changeSetting);
 			//振休振出として扱う日数を補正する
-			val dailyOldSameDate = dtoOldTemp.stream().filter(
+			DailyRecordDto dailyOldSameDate = dtoOldTemp.stream().filter(
 					old -> old.getEmployeeId().equals(x.getEmployeeId()) && old.getDate().equals(x.getDate()))
 					.findFirst().orElse(null);
 			CorrectDailyAttendanceService.correctFurikyu(correctDaiAttRequireImpl.createRequire(),
@@ -382,7 +382,7 @@ public class DailyCalculationRCommandFacade {
 				 if(lstItemValue.isEmpty()) {
 					 return  DailyRecordDto.from(domDaily, optionalMaster);
 				 }
-				 val itemValues = lstItemValue.stream()
+				 List<ItemValue> itemValues = lstItemValue.stream()
 							.map(it -> new ItemValue(it.getValue(),
 									it.getValueType() == null ? ValueType.UNKNOWN : ValueType.valueOf(it.getValueType()),
 									it.getLayoutCode(), it.getItemId()))
