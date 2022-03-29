@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingda
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
@@ -18,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.Abse
  */
 @Getter
 @Setter
+@AllArgsConstructor
 public class LeaveRemainingNumber {
 
 	/**
@@ -60,9 +62,12 @@ public class LeaveRemainingNumber {
 		return new LeaveRemainingNumber(days, minutes);
 	}
 
+	/**
+	 * [7] 残時間を取得
+	 * @return
+	 */
 	public LeaveRemainingTime getMinutesOrZero() {
-		if(!this.getMinutes().isPresent())return new LeaveRemainingTime(0);
-		return this.getMinutes().get();
+		return this.getMinutes().orElse(new LeaveRemainingTime(0));
 	}
 
 	@Override
@@ -323,5 +328,226 @@ public class LeaveRemainingNumber {
 						? Optional.of(new LeaveUsedTime(this.getMinutesOrZero().v())) : Optional.empty(),
 				stowageDays, leaveOverLimitNumber);
 	}
+	
+	/**
+	 * [1] 積み崩すか
+	 * @param require
+	 * @param companyId
+	 * @param employeeId
+	 * @param baseDate
+	 * @param usedNumber
+	 * @return
+	 */
+	public boolean needStacking(LeaveRemainingNumber.RequireM3 require, String companyId,
+			String employeeId, GeneralDate baseDate, LeaveUsedNumber usedNumber){
+		if(!usedNumber.isUseTime() || (usedNumber.isUseTime() && canDigesWtithRemainingTime(usedNumber.getMinutes()))){
+			return false;
+		}
+		
+		Optional<LaborContractTime> contractTime = getContractTime(require, companyId, employeeId, baseDate);
+		
+		return isThereRemainingDay() && contractTime.isPresent();
+	}
+	
+	/**
+	 * [2] 消化しきれるか
+	 * @param require
+	 * @param companyId
+	 * @param employeeId
+	 * @param baseDate
+	 * @param usedNumber
+	 * @return
+	 */
+	public boolean canDigest(LeaveRemainingNumber.RequireM3 require, String companyId,
+			String employeeId, GeneralDate baseDate,LeaveUsedNumber usedNumber){
+		
+		if(needStacking(require, companyId, employeeId, baseDate, usedNumber)){
+			LeaveRemainingNumber stackedRemaingNumber = calcStack(require, companyId, employeeId, baseDate);
+			return usedNumber.days.lessThanOrEqualTo(stackedRemaingNumber.days.v())
+					&& usedNumber.getMinutesOrZero()
+							.lessThanOrEqualTo(stackedRemaingNumber.getMinutesOrZero().v());
+		}
+		return usedNumber.days.lessThanOrEqualTo(this.days.v()) && 
+				usedNumber.getMinutesOrZero().lessThanOrEqualTo(this.getMinutesOrZero().v());
+	}
+	
+	/**
+	 * [3] 消化する
+	 * @param require
+	 * @param companyId
+	 * @param employeeId
+	 * @param baseDate
+	 * @param usedNumber
+	 * @return
+	 */
+	public LeaveRemainingNumber digest(LeaveRemainingNumber.RequireM3 require, String companyId,
+			String employeeId, GeneralDate baseDate, LeaveUsedNumber usedNumber){
+		
+		if(needStacking(require, companyId, employeeId, baseDate, usedNumber)){
+			LeaveRemainingNumber stackedRemaingNumber = calcStack(require, companyId, employeeId, baseDate);
+			return stackedRemaingNumber.digestNotMinus(usedNumber);
+		}
+		
+		return this.digestNotMinus(usedNumber);
+	}
+	
+	
+	/**
+	 * [4] 消化できた使用数を取得する
+	 * @param require
+	 * @param usedNumber
+	 * @param digestedRemaingNumber
+	 * @param companyId
+	 * @param employeeId
+	 * @param baseDate
+	 * @return
+	 */
+	public LeaveUsedNumber digestUsedNumber(LeaveRemainingNumber.RequireM3 require,LeaveUsedNumber usedNumber,
+			LeaveRemainingNumber digestedRemaingNumber, String companyId, String employeeId, GeneralDate baseDate){
+		
+		LeaveRemainingNumber remainNumber = this.clone();
+		if(needStacking(require, companyId, employeeId, baseDate, usedNumber)){
+			remainNumber = this.calcStack(require, companyId, employeeId, baseDate);
+		}
+		
+		LeaveUsedDayNumber usedDay = new LeaveUsedDayNumber(0.0);
+		Optional<LeaveUsedTime> time = Optional.empty();
+		
+		if(usedNumber.isUseDay()){
+			usedDay = new LeaveUsedDayNumber(remainNumber.days.v() - digestedRemaingNumber.days.v());
+			
+		}else{
+			time = Optional.of(new LeaveUsedTime(remainNumber.getMinutesOrZero().v()
+					- digestedRemaingNumber.getMinutesOrZero().v()));
+		}
+		
+		
+		return LeaveUsedNumber.of(usedDay, time,Optional.empty(), Optional.empty());
+	}
+	
+	/**
+	 * [5] 消化できなかった使用数を求める
+	 * @param require
+	 * @param usedNumber
+	 * @param remaingNumber
+	 * @param companyId
+	 * @param employeeId
+	 * @param baseDate
+	 * @return
+	 */
+	public LeaveUsedNumber calculateForUnDigestedNumber(LeaveRemainingNumber.RequireM3 require,LeaveUsedNumber usedNumber,
+			LeaveRemainingNumber remaingNumber, String companyId, String employeeId, GeneralDate baseDate){
+		return usedNumber.subtract(digestUsedNumber(require, usedNumber, remaingNumber, companyId, employeeId, baseDate));
+	}
+	
+	
+	/**
+	 * [6] 消化できず残った数を取得
+	 * @param require
+	 * @param companyId
+	 * @param employeeId
+	 * @param baseDate
+	 * @param usedNumber
+	 * @return
+	 */
+	public LeaveRemainingNumber getUndigestedNumber(LeaveRemainingNumber.RequireM3 require, String companyId,
+			String employeeId, GeneralDate baseDate, LeaveUsedNumber usedNumber){
+		
+		LeaveRemainingNumber remainingNumber;
+		if(needStacking(require, companyId, employeeId, baseDate, usedNumber)){
+			LeaveRemainingNumber stackedRemaingNumber = calcStack(require, companyId, employeeId, baseDate);
+			remainingNumber =  stackedRemaingNumber.digest(usedNumber);
+		}else{
+			remainingNumber = this.digest(usedNumber);
+		}
+		
+		if(remainingNumber.days.v() < 0){
+			return LeaveRemainingNumber.of(new LeaveRemainingDayNumber(0.0), remainingNumber.getMinutes());
+		}
+		
+		if(remainingNumber.getMinutesOrZero().v() < 0){
+			return LeaveRemainingNumber.of(remainingNumber.days, Optional.empty());
+		}
+		
+		return remainingNumber;
+	}
+	
+	/**
+	 * [prv-1] 消化する(マイナスなし) 
+	 * @param usedNumber
+	 * @return
+	 */
+	private LeaveRemainingNumber digestNotMinus(LeaveUsedNumber usedNumber){
+		
+		LeaveRemainingNumber remainingNumbr = this.digest(usedNumber);
+		
+		if(remainingNumbr.days.v() < 0 || remainingNumbr.getMinutesOrZero().v() < 0){
+			return  new LeaveRemainingNumber(0,0);
+		}
+		
+		return  remainingNumbr;
+	}
+	
+	/**
+	 * [prv-2] 消化する(マイナスあり)
+	 * @param usedNumber
+	 * @return
+	 */
+	private LeaveRemainingNumber digest(LeaveUsedNumber usedNumber){
+		
+		double remainingDay = this.days.v() - usedNumber.days.v();
+		
+		int remainingTime = this.getMinutesOrZero().v() - usedNumber.getMinutesOrZero().v();
 
+		return new LeaveRemainingNumber(remainingDay, remainingTime);
+	}
+	
+	/**
+	 * [prv-3] 積み崩しを行う
+	 * @param require
+	 * @param companyId
+	 * @param employeeId
+	 * @param baseDate
+	 * @param usedNumber
+	 * @return
+	 */
+	private LeaveRemainingNumber calcStack(LeaveRemainingNumber.RequireM3 require, String companyId,
+			String employeeId, GeneralDate baseDate){
+		Optional<LaborContractTime> contractTime = getContractTime(require, companyId, employeeId, baseDate);
+		
+		if(!contractTime.isPresent()){
+			return this.clone();
+		}
+		
+		double day = this.days.v() -1.0;
+		int time = this.getMinutesOrZero().v() + contractTime.get().v();
+		
+		return new LeaveRemainingNumber(day, time);
+	}
+	
+	
+	
+	/**
+	 * 	[prv-4] 積み崩しができる日数が残っているか
+	 */
+	private boolean isThereRemainingDay(){
+		return 1 <= this.days.v();
+	}
+
+	/**
+	 * [prv-5] 残時間で消化できるか
+	 * @param usedTime
+	 * @return
+	 */
+	private boolean canDigesWtithRemainingTime(Optional<LeaveUsedTime> usedTime){
+		if(!this.minutes.isPresent()){
+			return	false;
+		}
+		
+		if(!usedTime.isPresent()){
+			return true;
+		}
+		return this.minutes.get().v() >= usedTime.get().v();
+			
+	}
 }

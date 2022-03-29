@@ -90,21 +90,11 @@ public class LeaveUsedNumber{
 	}
 
 	/**
-	 * 日数＞０または時間＞０のときはTrue,それ以外はfalseを返す
+	 *  [3]使用しているか
 	 * @return
 	 */
 	public boolean isLargerThanZero(){
-		if ( days.v() > 0.0 ){
-			return true;
-		}
-		if ( !minutes.isPresent() ){
-			return false;
-		}
-		if ( minutes.get().v() > 0 ){
-			return true;
-		} else {
-			return false;
-		}
+		return isUseDay() || isUseTime();
 	}
 
 	/**
@@ -152,10 +142,22 @@ public class LeaveUsedNumber{
 	}
 
 
+	/**
+	 * [6] 使用時間を取得
+	 * @return
+	 */
 	public LeaveUsedTime getMinutesOrZero() {
-		if(!this.minutes.isPresent())return new LeaveUsedTime(0);
-		return this.minutes.get();
+		return this.minutes.orElse(new LeaveUsedTime(0));
 	}
+	
+	/**
+	 * [7] 積み崩し日数を取得
+	 * @return
+	 */
+	public LeaveUsedDayNumber getStowageDaysOrZero(){
+		return this.stowageDays.orElse(new LeaveUsedDayNumber(0.0));
+	}
+	
 
 	/**
 	 * 使用数を加算
@@ -196,13 +198,24 @@ public class LeaveUsedNumber{
 	}
 
 	/**
-	 * 日数単位で使用しているかどうかを確認する
+	 * [1] 日数使用しているか
 	 * @return
 	 */
 	public boolean isUseDay() {
 		return this.getDays().greaterThan(0.0);
 	}
 	
+	
+	/**
+	 * 	[2] 時間使用しているか
+	 * @return
+	 */
+	public boolean isUseTime(){
+		if ( !minutes.isPresent() ){
+			return false;
+		}
+		return minutes.get().v() > 0;
+	}
 	
 	public LeaveUsedNumber(TempAnnualLeaveMngs tempAnnualLeaveMng) {
 
@@ -217,5 +230,28 @@ public class LeaveUsedNumber{
 	public boolean isLimitOver(){
 		return this.getLeaveOverLimitNumber().isPresent();
 	}
-
+	
+	/**
+	 * [4] 積み崩し日数を加算する
+	 * @param days
+	 * @return
+	 */
+	public LeaveUsedNumber addStowageDays(LeaveUsedDayNumber days){
+		return LeaveUsedNumber.of(this.days, this.minutes,
+				Optional.of(new LeaveUsedDayNumber(this.getStowageDaysOrZero().v() + days.v())),
+				leaveOverLimitNumber);
+	}
+	
+	/**
+	 * [5]減算する
+	 * @param useNumbr
+	 * @return
+	 */
+	public LeaveUsedNumber subtract(LeaveUsedNumber useNumbr){
+		LeaveUsedDayNumber days = new LeaveUsedDayNumber(this.days.v() - useNumbr.days.v());
+		
+		LeaveUsedTime time = new LeaveUsedTime(this.getMinutesOrZero().v() - useNumbr.getMinutesOrZero().v());
+		
+		return LeaveUsedNumber.of(days, Optional.of(time), this.stowageDays, this.leaveOverLimitNumber);
+	}
 }
