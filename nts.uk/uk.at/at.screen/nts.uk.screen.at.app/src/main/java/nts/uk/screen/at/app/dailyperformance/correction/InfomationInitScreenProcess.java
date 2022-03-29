@@ -171,6 +171,10 @@ public class InfomationInitScreenProcess {
 		initDto = processor.changeListEmployeeId(employeeIds, rangeMode, mode,
 				objectShare != null, screenDto.getClosureId(), screenDto);
 		DPCorrectionStateParam stateParam = processor.getDailySupportWorkers(initDto.getParam());
+		
+		if (param.initFromScreenOther == true)
+			stateParam.setLstEmpsSupport(stateParam.getLstEmpsSupport().stream().filter(x -> !stateParam.getLstEmpSelect().contains(x)).collect(Collectors.toList()));
+		
 		initDto.setParam(stateParam);
 		
 		if (lstEmployee.isEmpty()) {
@@ -182,6 +186,10 @@ public class InfomationInitScreenProcess {
 			//changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 			changeEmployeeIds = initDto.getParam().getEmployeeIds();
 			changeEmployeeIds.addAll(initDto.getParam().getLstEmpsSupport());
+			
+			if (param.initFromScreenOther == true)
+				changeEmployeeIds.addAll(stateParam.getLstEmpSelect());
+			
 			changeEmployeeIds = changeEmployeeIds.stream().distinct().collect(Collectors.toList());
 		}
 		// 応援勤務者の特定 - No1291

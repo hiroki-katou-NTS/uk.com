@@ -1845,6 +1845,8 @@ public class DailyPerformanceCorrectionProcessor {
 			
 			List<String> lstEmp597 = lstInfoEmp.stream().map(x -> x.getSid()).collect(Collectors.toList());
 			result.getParam().setEmployeeIds(lstEmp597);
+			
+			result.getParam().setLstEmpSelect(employeeIds);
 		}
 		
 		// 「自分のみ」以外の場合
