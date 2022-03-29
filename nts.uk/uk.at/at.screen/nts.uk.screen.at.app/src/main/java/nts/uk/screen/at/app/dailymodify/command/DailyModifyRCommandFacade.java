@@ -239,17 +239,14 @@ public class DailyModifyRCommandFacade {
 				optionalItem.findAll(companyId).stream()
 				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
 		
-		for( DailyRecordDto dailyEditItem : dailyEdits) {
-			List<DailyModifyQuery> data =  querys.stream().filter(x->x.getEmployeeId().equals(dailyEditItem.getEmployeeId())).collect(Collectors.toList());
-			for(DailyModifyQuery d : data) {
-				DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory
-						.createDailyConverter(optionalItems).setData(dailyEditItem.toDomain(d.getEmployeeId(), d.getBaseDate())).completed();
-				List<Integer> atendanceId = converter.editStates().stream()
-						.map(x -> x.getAttendanceItemId()).distinct().collect(Collectors.toList());
-				List<ItemValue> beforeItem = atendanceId.isEmpty() ? new ArrayList<>() : converter.convert(atendanceId);
-				beforeItems.put(Pair.of(d.getEmployeeId(), d.getBaseDate()), beforeItem);
-			}
+		for( DailyRecordDto dailyEditItem : dailyOlds) {
+			List<DailyModifyQuery> data =  querys.stream().filter(x->x.getEmployeeId().equals(dailyEditItem.getEmployeeId()) && x.getBaseDate().equals(dailyEditItem.getDate())).collect(Collectors.toList());
 			
+			DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory
+					.createDailyConverter(optionalItems).setData(dailyEditItem.toDomain(dailyEditItem.getEmployeeId(), dailyEditItem.getDate())).completed();
+			List<Integer> atendanceId = data.stream().flatMap(x -> x.getItemValues().stream().map(y -> y.getItemId())).collect(Collectors.toList());
+			List<ItemValue> beforeItem = atendanceId.isEmpty() ? new ArrayList<>() : converter.convert(atendanceId);
+			beforeItems.put(Pair.of(dailyEditItem.getEmployeeId(), dailyEditItem.getDate()), beforeItem);
 		}
 		
 		// row data will insert
@@ -415,9 +412,8 @@ public class DailyModifyRCommandFacade {
 							.createDailyConverter()
 							.setData(dom.toDomain(dom.getEmployeeId(), dom.getDate()))
 							.completed();
-					if(!beforeItems.isEmpty()) {
+					if(!beforeItems.isEmpty() && beforeItems.containsKey(Pair.of(dom.getEmployeeId(), dom.getDate()))) {
 						afterConverter.merge(beforeItems.get(Pair.of(dom.getEmployeeId(), dom.getDate())));
-					
 					}
 					val domDailyforLog = afterConverter.toDomain();
 					forlog.add(domDailyforLog);

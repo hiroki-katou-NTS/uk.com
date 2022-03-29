@@ -21,23 +21,30 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
+import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DailyModifyRCResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.RCDailyCorrectionResult;
+import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.EventCorrectResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.shared.app.command.scherec.monthlyattendanceitem.RegisterPastMonthTotalResult;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.CorrectDailyAttendanceService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.screen.at.app.dailymodify.CorrectDaiAttRequireImpl;
 import nts.uk.screen.at.app.dailymodify.command.common.DailyCalcParam;
 import nts.uk.screen.at.app.dailymodify.command.common.DailyCalcResult;
 import nts.uk.screen.at.app.dailymodify.command.common.ProcessCommonCalc;
@@ -89,6 +96,12 @@ public class DailyCalculationRCommandFacade {
 	@Inject
 	private RegisterPastMonthTotalResult registerPastMonthTotalResult;
 	
+	@Inject
+	private CorrectDaiAttRequireImpl correctDaiAttRequireImpl;
+	
+	@Inject
+	private DailyCorrectEventServiceCenter dailyCorrectEventServiceCenter;
+	
 	public static final int MINUTES_OF_DAY = 24 * 60;
 
 	private static final String FORMAT_HH_MM = "%d:%02d";
@@ -99,7 +112,7 @@ public class DailyCalculationRCommandFacade {
 	public DailyPerformanceCalculationDto calculateCorrectedResults(DPItemParent dataParent) {
 		// chuan bi data
 		DailyPerformanceCorrectionDto dailyCorrectDto = null;
-		List<DailyRecordDto> editedDtos = dataParent.getDailyEdits();
+		List<DailyRecordDto> editedDtos = this.getListEdits(dataParent);
 		List<DailyRecordDto> editedKeep = editedDtos.stream().map(x -> x.clone()).collect(Collectors.toList());
 		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateEdit = dataParent.getItemValues().stream()
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
@@ -327,6 +340,64 @@ public class DailyCalculationRCommandFacade {
 				resultCompare.getLeft(), empSidUpdate, false, dailyCorrectDto, true);
 		return returnData;
 
+	}
+	
+	public List<DailyRecordDto> getListEdits(DPItemParent dataParent) {
+		
+		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateEdit = dataParent.getItemValues().stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
+		
+		List<DailyModifyQuery> querys = createQuerys(mapSidDateEdit);
+		
+		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
+				.findAll(AppContexts.user().companyId()).stream()
+				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
+		
+		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateNotChange = dataParent.getItemValues().stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
+		
+		List<DailyModifyQuery> queryNotChanges = createQuerys(mapSidDateNotChange);
+		List<DailyRecordDto> dailyOlds = new ArrayList<>(), dailyEdits = new ArrayList<>();
+		
+		dailyModifyResCommandFacade.processDto(dailyOlds, dailyEdits, dataParent, querys, mapSidDateEdit, queryNotChanges);
+		
+		List<DailyRecordDto> dtoOldTemp = dailyOlds;
+		dailyEdits = dailyEdits.stream().map(x -> {
+			val changeSetting = ChangeDailyAttendance.createChangeDailyAtt(dataParent.getItemValues().stream()
+					.filter(y -> y.getEmployeeId().equals(x.getEmployeeId()) && y.getDate().equals(x.getDate()))
+					.map(y -> y.getItemId()).collect(Collectors.toList()), ScheduleRecordClassifi.RECORD);
+			val domDaily = CorrectDailyAttendanceService.processAttendanceRule(
+					correctDaiAttRequireImpl.createRequire(), x.toDomain(x.getEmployeeId(), x.getDate()),
+					changeSetting);
+			//振休振出として扱う日数を補正する
+			val dailyOldSameDate = dtoOldTemp.stream().filter(
+					old -> old.getEmployeeId().equals(x.getEmployeeId()) && old.getDate().equals(x.getDate()))
+					.findFirst().orElse(null);
+			CorrectDailyAttendanceService.correctFurikyu(correctDaiAttRequireImpl.createRequire(),
+					AppContexts.user().companyId(),
+					dailyOldSameDate.getWorkInfo().toDomain(x.getEmployeeId(), x.getDate()), domDaily.getWorkInformation());
+			//ootsuka mode
+			if (AppContexts.optionLicense().customize().ootsuka()) {
+				 List<DPItemValue> lstItemValue = mapSidDateNotChange.get(Pair.of(x.getEmployeeId(), x.getDate()));
+				 if(lstItemValue.isEmpty()) {
+					 return  DailyRecordDto.from(domDaily, optionalMaster);
+				 }
+				 val itemValues = lstItemValue.stream()
+							.map(it -> new ItemValue(it.getValue(),
+									it.getValueType() == null ? ValueType.UNKNOWN : ValueType.valueOf(it.getValueType()),
+									it.getLayoutCode(), it.getItemId()))
+							.collect(Collectors.toList());
+
+				DailyModifyRCResult updatedOoTsuka = DailyModifyRCResult.builder().employeeId(x.getEmployeeId())
+						.workingDate(x.getDate()).items(itemValues).completed();
+				EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(
+						DailyRecordDto.from(domDaily, optionalMaster), 
+						updatedOoTsuka, AppContexts.user().companyId());
+				return result.getCorrected();
+			}
+			return DailyRecordDto.from(domDaily, optionalMaster);
+		}).collect(Collectors.toList());
+		return dailyEdits;
 	}
 
 	private List<DailyModifyQuery> createQuerys(Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate) {
