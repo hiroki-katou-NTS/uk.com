@@ -328,10 +328,10 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	@Override
 	public void addAll(List<SubstitutionOfHDManagementData> domains) {
 		String INS_SQL = "INSERT INTO KRCDT_HD_SUB_MNG (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
-				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG,CONTRACT_CD," 
 				+ " SUBOFHD_ID, CID, SID, UNKNOWN_DATE, DAYOFF_DATE, NUMBER_OF_DAYS, REMAIN_DAYS)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
-				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, CONTRACT_CD_VAL,"
 				+ " SUBOFHD_ID_VAL, CID_VAL, SID_VAL, UNKNOWN_DATE_VAL, DAYOFF_DATE_VAL, NUMBER_OF_DAYS_VAL, REMAIN_DAYS_VAL); ";
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
@@ -340,6 +340,7 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 		String updCcd = insCcd;
 		String updScd = insScd;
 		String updPg = insPg;
+		String contractCd = AppContexts.user().contractCode();
 		StringBuilder sb = new StringBuilder();
 		
 		List<String> unknownDates = new ArrayList<String>();
@@ -362,6 +363,7 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
 			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+			sql = sql.replace("CONTRACT_CD_VAL", "'" + contractCd + "'");
 
 			sql = sql.replace("SUBOFHD_ID_VAL", "'" + c.getSubOfHDID() + "'");
 			sql = sql.replace("CID_VAL", "'" + c.getCid()+ "'");

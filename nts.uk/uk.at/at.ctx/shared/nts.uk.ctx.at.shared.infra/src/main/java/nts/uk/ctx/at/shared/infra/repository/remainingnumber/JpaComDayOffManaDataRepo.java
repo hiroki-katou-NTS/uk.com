@@ -350,10 +350,10 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	@Override
 	public void addAll(List<CompensatoryDayOffManaData> domains) {
 		String INS_SQL = "INSERT INTO KRCDT_HD_COM_MNG (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
-				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG, CONTRACT_CD," 
 				+ " COM_DAYOFF_ID, CID, SID, UNKNOWN_DATE, DAYOFF_DATE, REQUIRED_DAYS, REQUIRED_TIMES, REMAIN_DAYS, REMAIN_TIMES)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
-				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, CONTRACT_CD_VAL,"
 				+ " COM_DAYOFF_ID_VAL, CID_VAL, SID_VAL, UNKNOWN_DATE_VAL, DAYOFF_DATE_VAL, REQUIRED_DAYS_VAL, REQUIRED_TIMES_VAL, REMAIN_DAYS_VAL, REMAIN_TIMES_VAL); ";
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
@@ -362,6 +362,7 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 		String updCcd = insCcd;
 		String updScd = insScd;
 		String updPg = insPg;
+		String contractCd = AppContexts.user().contractCode();
 		StringBuilder sb = new StringBuilder();
 		
 		List<String> unknownDates = new ArrayList<String>();
@@ -385,6 +386,7 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
 			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+			sql = sql.replace("CONTRACT_CD_VAL", "'" + contractCd + "'");
 
 			sql = sql.replace("COM_DAYOFF_ID_VAL", "'"+ c.getComDayOffID() + "'");
 			sql = sql.replace("CID_VAL", "'" + c.getCID() + "'");
