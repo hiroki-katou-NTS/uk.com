@@ -69,14 +69,18 @@ public class NRWebMonthWage {
 			List<EstimateAmountDetailImport> dataAmountSetting) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("<HTML>");
+		builder.append("\n");
 		builder.append("<HEAD><TITLE>");
 		builder.append(menuName.value);
 		builder.append("</TITLE></HEAD>");
-		builder.append("<BODY><DL>");
+		builder.append("\n");
+		builder.append("<BODY>\n<DL>");
 		String yearMonthOrYear = menuName == NRWebQueryMenuName.MONTH_WAGE
 				? String.format("%d年%02d月度", ym.year(), ym.month())
 				: year.map(x -> String.format("%d年度", x)).orElse("年度");
+				builder.append("\n");
 		builder.append(String.format("<DT>%s</DT>", yearMonthOrYear));
+		builder.append("\n");
 		builder.append(this.getMeasure().createOneDataHtml("目安時間", "目安金額"));
 		builder.append(this.getCurrentWork().createOneDataHtml("現在勤務時間", "現在勤務金額"));
 		builder.append(this.getCurrentOvertime().createOneDataHtml("現在勤務残業時間", "現在勤務残業金額"));
@@ -85,7 +89,7 @@ public class NRWebMonthWage {
 		builder.append(this.getLastWork().createOneDataHtml("最終勤務時間", "最終勤務金額"));
 		builder.append(this.getLastOverTime().createOneDataHtml("最終勤務残業時間", "最終勤務残業金額"));
 		builder.append(this.getLastWorkDiff(dataAmountSetting).createOneDataHtml("最終勤務差分時間", "最終勤務差分金額"));
-		builder.append("</DL></BODY></HTML>");
+		builder.append("</DL>\n</BODY>\n</HTML>");
 		return builder.toString();
 	}
 
@@ -93,23 +97,58 @@ public class NRWebMonthWage {
 	public String createXml(NRWebQueryMenuName menuName, YearMonth ym, Optional<Integer> year,
 			List<EstimateAmountDetailImport> dataAmountSetting) {
 		StringBuilder builder = new StringBuilder();
-		builder.append("<kindata type='5'><item type='head'  repbtn='no'>");
+		builder.append("<kindata type='5'>\n<item type='head'  repbtn='no'>");
 		String yearMonthOrYear = menuName == NRWebQueryMenuName.MONTH_WAGE
 				? String.format("%d年%02d月度", ym.year(), ym.month())
 				: year.map(x -> String.format("%d年度", x)).orElse("年度");
-		builder.append(String.format("<subitem index='1' value = %s type='date' align='2'/>",
+				builder.append("\n");
+		builder.append(String.format("<subitem index='1' value = '%s' type='date' align='2'/>",
 				yearMonthOrYear));
-		builder.append("<subitem index='2' value='時間' align='2'/><subitem index='3' value='金額' align='2'/></item>");
+		builder.append("\n");
+		builder.append("<subitem index='2' value='時間' align='2'/><subitem index='3' value='金額' align='2'/>\n</item>");
+		builder.append("\n");
+		builder.append("<item type = 'data'>");
+		builder.append("\n");
 		builder.append(this.getMeasure().createOneDataXml("目安", Optional.empty()));
+		builder.append("</item>");
+		builder.append("\n");
+		builder.append("<item type = 'data'>");
+		builder.append("\n");
 		builder.append(this.getCurrentWork().createOneDataXml("現在勤務", Optional.empty()));
+		builder.append("</item>");
+		builder.append("\n");
+		builder.append("<item type = 'data'>");
+		builder.append("\n");
 		builder.append(this.getCurrentOvertime().createOneDataXml("残業", Optional.empty()));
+		builder.append("</item>");
+		builder.append("\n");
+		builder.append("<item type = 'data'>");
+		builder.append("\n");
 		builder.append(this.getScheduleWork().createOneDataXml("計画勤務", Optional.empty()));
+		builder.append("</item>");
+		builder.append("\n");
+		builder.append("<item type = 'data'>");
+		builder.append("\n");
 		builder.append(this.getScheduleOvertime().createOneDataXml("残業", Optional.empty()));
+		builder.append("</item>");
+		builder.append("\n");
+		builder.append("<item type = 'data'>");
+		builder.append("\n");
 		builder.append(this.getLastWork().createOneDataXml("最終勤務", Optional.empty()));
+		builder.append("</item>");
+		builder.append("\n");
+		builder.append("<item type = 'data'>");
+		builder.append("\n");
 		builder.append(this.getLastOverTime().createOneDataXml("残業", Optional.empty()));
+		builder.append("</item>");
+		builder.append("\n");
+		builder.append("<item type = 'data'>");
+		builder.append("\n");
 		val itemCalc = this.getLastWorkDiff(dataAmountSetting);
 		builder.append(itemCalc.createOneDataXml("最終勤務", itemCalc.getColor()));
-
+		builder.append("</item>");
+		builder.append("\n");
+		builder.append("</kindata>");
 		return builder.toString();
 
 	}

@@ -89,12 +89,12 @@ public class GetNRWebQueryOvertimeAppDetail {
 
 			// 外深夜時間
 			Optional<String> midnightIimeOutside = app.getApplicationTime().getOverTimeShiftNight().map(data -> {
-				return String.valueOf(data.getOverTimeMidNight().v());
+				return NRQueryApp.createValueFormatTime(String.valueOf(data.getOverTimeMidNight().v()));
 			});
 
 			// フレックス超過時間
 			Optional<String> flexOvertime = app.getApplicationTime().getFlexOverTime().map(data -> {
-				return String.valueOf(data.v());
+				return NRQueryApp.createValueFormatTime(String.valueOf(data.v()));
 			});
 
 			// 勤務種類名
@@ -143,7 +143,7 @@ public class GetNRWebQueryOvertimeAppDetail {
 							lstWorkFrame.stream()
 									.filter(y -> y.getOvertimeWorkFrNo().v().intValue() == x.getFrameNo().v())
 									.findFirst().get().getOvertimeWorkFrName().v(),
-							String.valueOf(x.getApplicationTime().v()));
+									NRQueryApp.createValueFormatTime(String.valueOf(x.getApplicationTime().v())));
 				}).collect(Collectors.toList());
 	}
 
@@ -174,11 +174,11 @@ public class GetNRWebQueryOvertimeAppDetail {
 				if (no.isPresent()) {
 					String value = "";
 					if (no.get().getOptionalItemAtr() == OptionalItemAtr.TIME) {
-						value = anyAppDetail.getTime().map(x -> String.valueOf(x.v())).orElse("");
+						value = anyAppDetail.getTime().map(x -> NRQueryApp.createValueFormatTime(String.valueOf(x.v()))).orElse("");
 					} else if (no.get().getOptionalItemAtr() == OptionalItemAtr.NUMBER) {
 						value = anyAppDetail.getTimes().map(x -> String.valueOf(x.v())).orElse("");
 					} else {
-						value = anyAppDetail.getAmount().map(x -> String.valueOf(x.v())).orElse("");
+						value = anyAppDetail.getAmount().map(x -> NRQueryApp.createValueFormatMoney(String.valueOf(x.v()))).orElse("");
 					}
 
 					return new NRQueryOvertimeAppAnyItem(no.get().getOptionalItemName().v(), value);

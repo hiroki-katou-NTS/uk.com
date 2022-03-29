@@ -33,7 +33,7 @@ public class GetNRWebQueryMenu {
 					.getClosureMonth().getProcessingYm().v();
 
 
-		List<NRWebQueryMenuDetail> detail = Arrays.asList(NRWebQueryMenuName.values()).stream()
+		List<NRWebQueryMenuDetail> detail = Arrays.asList(NRWebQueryMenuName.values()).stream().filter(x -> x != NRWebQueryMenuName.MENU)
 				.map(x -> new NRWebQueryMenuDetail(x.value, x.link, createArg(x), Optional.of(Integer.parseInt(x.no))))
 				.collect(Collectors.toList());
 
@@ -48,25 +48,25 @@ public class GetNRWebQueryMenu {
 			return NRWebQueryArg.TYPE.value + "," + NRWebQueryArg.CNO.value + "," + NRWebQueryArg.VER.value;
 
 		case SCHEDULE:
-			return NRWebQueryArg.CNO.value + "," + NRWebQueryArg.YM.value + "," + NRWebQueryArg.VER.value;
+			return NRWebQueryArg.CNO.value + "," + NRWebQueryArg.DATE.value + "," + NRWebQueryArg.VER.value;
 
 		case DAILY:
-			return NRWebQueryArg.TYPE.value + "," + NRWebQueryArg.CNO.value + "," + NRWebQueryArg.YM.value + ","
+			return NRWebQueryArg.TYPE.value + "," + NRWebQueryArg.CNO.value + "," + NRWebQueryArg.DATE.value + ","
 					+ NRWebQueryArg.VER.value;
 
 		case MONTHLY:
-			return NRWebQueryArg.CNO.value + "," + NRWebQueryArg.YM.value + "," + NRWebQueryArg.VER.value;
-
-		// TODO: ?????
-		case APPLICATION:
 			return NRWebQueryArg.CNO.value + "," + NRWebQueryArg.DATE.value + "," + NRWebQueryArg.VER.value;
 
+		case APPLICATION:
+			return NRWebQueryArg.CNO.value + "," + NRWebQueryArg.DATE.value + "," + NRWebQueryArg.KBN.value + ","
+					+ NRWebQueryArg.JIKBN.value + "," + NRWebQueryArg.NDATE.value + "," + NRWebQueryArg.VER.value;
+
 		case MONTH_WAGE:
-			return NRWebQueryArg.TYPE.value + "," + NRWebQueryArg.CNO.value + "," + NRWebQueryArg.YM.value + ","
+			return NRWebQueryArg.TYPE.value + "," + NRWebQueryArg.CNO.value + "," + NRWebQueryArg.DATE.value + ","
 					+ NRWebQueryArg.VER.value;
 
 		case ANNUAL_WAGE:
-			return NRWebQueryArg.TYPE.value + "," + NRWebQueryArg.CNO.value + "," + NRWebQueryArg.YM.value + ","
+			return NRWebQueryArg.TYPE.value + "," + NRWebQueryArg.CNO.value + "," + NRWebQueryArg.DATE.value + ","
 					+ NRWebQueryArg.VER.value;
 
 		default:

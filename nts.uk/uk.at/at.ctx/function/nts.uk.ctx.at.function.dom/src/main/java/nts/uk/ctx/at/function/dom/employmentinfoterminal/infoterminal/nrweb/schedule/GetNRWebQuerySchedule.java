@@ -28,7 +28,7 @@ public class GetNRWebQuerySchedule {
 
 		DatePeriod period = null;
 		// パラメータークエリ.ym.length == 6
-		if (param.getNrWebQuery().getYm().isPresent() && param.getNrWebQuery().getYm().get().length() == 6) {
+		if (param.getNrWebQuery().getDate().isPresent() && param.getNrWebQuery().getDate().get().length() == 6) {
 			Closure closure = require.getClosureDataByEmployee(param.getCid(), param.getSid(), GeneralDate.today());
 			period = require.getClosurePeriod(closure, param.getNrWebQuery().getYmFormat());
 		} else {

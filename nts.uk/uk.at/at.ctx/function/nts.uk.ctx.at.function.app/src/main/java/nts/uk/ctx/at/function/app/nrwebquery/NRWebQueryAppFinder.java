@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
 
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.CacheCarrier;
@@ -29,7 +28,7 @@ public class NRWebQueryAppFinder implements NRWebQueryFinder {
 	private GetAllNRWebQueryAppDetailAdapter getAllNRWebQueryAppDetailAdapter;
 
 	@Override
-	public Response process(NRWebQuerySidDateParameter queryParam) {
+	public String process(NRWebQuerySidDateParameter queryParam) {
 		RequireImpl impl = new RequireImpl(nrWebRequireImpl, getAllNRWebQueryAppDetailAdapter);
 		return NRWebQueryApplicationXmlHtml.process(impl, queryParam);
 	}

@@ -19,7 +19,7 @@ import nts.uk.ctx.bs.company.pub.company.YearAndPeriodPub;
 public class YearAndPeriodAdapterImpl implements YearAndPeriodAdapter {
 
 	@Inject
-	YearAndPeriodPub yearAndPeriodPub;
+	public YearAndPeriodPub yearAndPeriodPub;
 
 	@Override
 	public YearAndPeriodImported get(String cid, DatePeriod period) {

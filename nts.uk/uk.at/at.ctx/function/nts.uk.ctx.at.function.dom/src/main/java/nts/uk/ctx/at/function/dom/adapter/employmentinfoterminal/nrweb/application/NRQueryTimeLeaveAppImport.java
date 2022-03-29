@@ -24,12 +24,15 @@ public class NRQueryTimeLeaveAppImport extends NRQueryAppImport {
 	@Override
 	public String createXml() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(String.format("<subitem title='申請名' value=％s align='1' valign='1'/>", this.getAppName()));
+		builder.append(String.format("<subitem title='申請名' value='%s' align='1' valign='1'/>", this.getAppName()));
+		builder.append("\n");
 		builder.append(
-				String.format("<subitem title='承認状況' value=%s align='1' valign='1' />", this.getApprovalStatus()));
+				String.format("<subitem title='承認状況' value='%s' align='1' valign='1' />", this.getApprovalStatus()));
+		builder.append("\n");
 		this.timeLeavDetail.forEach(data -> {
-			builder.append(String.format("<subitem title='％s' value=%s align='1' valign='1' />", data.getReflectDest(),
+			builder.append(String.format("<subitem title='%s' value='%s' align='1' valign='1' />", data.getReflectDest(),
 					data.getTime()));
+			builder.append("\n");
 		});
 		return builder.toString();
 	}
@@ -37,10 +40,13 @@ public class NRQueryTimeLeaveAppImport extends NRQueryAppImport {
 	@Override
 	public String createHtml() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(String.format("<DT>申請名</DT><DD>%s</DD>", this.getAppName()));
-		builder.append(String.format("<DT>承認状況</DT><DD>%s</DD>", this.getApprovalStatus()));
+		builder.append(String.format("<DT>申請名</DT>\n<DD>%s</DD>", this.getAppName()));
+		builder.append("\n");
+		builder.append(String.format("<DT>承認状況</DT>\n<DD>%s</DD>", this.getApprovalStatus()));
+		builder.append("\n");
 		this.timeLeavDetail.forEach(data -> {
-			builder.append(String.format("<DT>%s</DT><DD>%s </DD>", data.getReflectDest(), data.getTime()));
+			builder.append(String.format("<DT>%s</DT>\n<DD>%s </DD>", data.getReflectDest(), data.getTime()));
+			builder.append("\n");
 		});
 		return builder.toString();
 	}

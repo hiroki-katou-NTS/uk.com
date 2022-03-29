@@ -49,7 +49,7 @@ public class NRQueryAppConvertFunc {
 				.map(x -> new NRWebQueryAppParameterExport(x.getDate(), x.getKbn(), x.getJikbn(), x.getNdate()));
 		NRWebQueryParameterExport nrWebQuery = new NRWebQueryParameterExport(Import.getNrWebQuery().getContractCode(),
 				Import.getNrWebQuery().getCno(), Import.getNrWebQuery().getVer(), Import.getNrWebQuery().getType(),
-				Import.getNrWebQuery().getYm(), application);
+				Import.getNrWebQuery().getDate(), application);
 		return new NRWebQuerySidDateParameterExport(Import.getCid(), Import.getSid(), nrWebQuery);
 	}
 

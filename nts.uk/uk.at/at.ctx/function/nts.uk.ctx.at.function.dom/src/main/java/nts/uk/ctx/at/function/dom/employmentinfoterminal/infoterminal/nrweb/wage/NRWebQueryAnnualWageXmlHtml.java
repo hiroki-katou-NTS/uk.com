@@ -3,9 +3,6 @@ package nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.nrweb.wag
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.nrweb.wage.NRWebMonthWageAndEmployeeId;
 import nts.uk.ctx.at.function.dom.adapter.estimateamount.EstimateAmountDetailImport;
@@ -22,7 +19,7 @@ import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.nrweb.comm
 public class NRWebQueryAnnualWageXmlHtml {
 
 	// 情報処理
-	public static Response process(Require require, NRWebQuerySidDateParameter param) {
+	public static String process(Require require, NRWebQuerySidDateParameter param) {
 		// ＄NRWeb照会年間賃金
 		NRWebMonthWageAndEmployeeId queryResult = GetNRWebQueryAnnualWage.process(require, param);
 		// 目安金額設定
@@ -40,16 +37,13 @@ public class NRWebQueryAnnualWageXmlHtml {
 		if (param.getNrWebQuery().getType().isPresent()
 				&& param.getNrWebQuery().getType().get().equals(NRType.XML.value)) {
 			// XMLを作る(＄NRWeb照会メニュー一覧)
-			return Response.ok(
+			return
 					queryResult.getMonthWage().createXml(NRWebQueryMenuName.ANNUAL_WAGE,
-							param.getNrWebQuery().getYmFormat(), queryResult.getYear(), dataAmountSettingAnnual),
-					MediaType.APPLICATION_XML).build();
+							param.getNrWebQuery().getYmFormat(), queryResult.getYear(), dataAmountSettingAnnual);
 		} else {
 			// HTMLを作る(＄NRWeb照会メニュー一覧)
-			return Response.ok(
-					queryResult.getMonthWage().createHtml(NRWebQueryMenuName.ANNUAL_WAGE,
-							param.getNrWebQuery().getYmFormat(), queryResult.getYear(), dataAmountSettingAnnual),
-					MediaType.TEXT_HTML).build();
+			return queryResult.getMonthWage().createHtml(NRWebQueryMenuName.ANNUAL_WAGE,
+							param.getNrWebQuery().getYmFormat(), queryResult.getYear(), dataAmountSettingAnnual);
 		}
 	}
 

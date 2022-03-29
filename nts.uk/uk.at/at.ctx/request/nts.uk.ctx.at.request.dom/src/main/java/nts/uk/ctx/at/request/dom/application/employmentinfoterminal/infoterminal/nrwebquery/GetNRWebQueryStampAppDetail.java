@@ -121,7 +121,7 @@ public class GetNRWebQueryStampAppDetail {
 		Function<String, NRQueryStampAppDetail> createDetail = new Function<String, NRQueryStampAppDetail>() {
 			@Override
 			public NRQueryStampAppDetail apply(String t) {
-				return new NRQueryStampAppDetail(t, appRecoder.getAttendanceTime().toString());
+				return new NRQueryStampAppDetail(t, NRQueryApp.createValueFormatTimeAtr(appRecoder.getAttendanceTime().toString()));
 			}
 		};
 		for (ReflectionStatusOfDay state : appRecoder.getReflectionStatus().getListReflectionStatusOfDay()) {
@@ -166,7 +166,7 @@ public class GetNRWebQueryStampAppDetail {
 			@Override
 			public NRQueryStampAppDetail apply(String t) {
 				return new NRQueryStampAppDetail(t + destictTimeZone.getEngraveFrameNo(),
-						timeZones.map(x -> x.getStartTime().toString()).orElse(cancelMessage));
+						timeZones.map(x -> NRQueryApp.createValueFormatTimeAtr(x.getStartTime().toString())).orElse(cancelMessage));
 			}
 		};
 		switch (destictTimeZone.getTimeZoneStampClassification()) {
@@ -197,7 +197,7 @@ public class GetNRWebQueryStampAppDetail {
 				return new NRQueryStampAppDetail(
 						(destinationTimeApp.getStartEndClassification() == StartEndClassification.START ? in : out)
 								+ destinationTimeApp.getEngraveFrameNo(),
-						timeOfDay.map(x -> x.v().toString()).orElse(cancelMessage));
+						timeOfDay.map(x -> NRQueryApp.createValueFormatTimeAtr(x.v().toString())).orElse(cancelMessage));
 			}
 		};
 		switch (destinationTimeApp.getTimeStampAppEnum()) {

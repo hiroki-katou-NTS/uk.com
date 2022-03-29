@@ -26,7 +26,9 @@ public class GetNRWebQueryMonth {
 
 		List<NRWebQueryMonthItem> lstItem = require
 				.findSettingByContractCode(new ContractCode(param.getNrWebQuery().getContractCode()));
-
+		if(lstItem.isEmpty()) {
+			return Optional.empty();
+		}
 		Optional<NRWebMonthData> result = require.getDataMonthData(param.getCid(), param.getSid(),
 				lstItem.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList()),
 				param.getNrWebQuery().getYmFormat());

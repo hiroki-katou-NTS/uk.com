@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.pubimp.employmentinfoterminal.nrweb.wage;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfM
 *			NRWeb照会年間賃金月別実績を取得PubImpl
 *
 */
+@Stateless
 public class NRWebGetAnnualWageRecordPubImpl implements NRWebGetAnnualWageRecordPub {
 
 	@Inject

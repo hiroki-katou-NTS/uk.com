@@ -53,38 +53,65 @@ public class NRQueryHolidayWorkTimeAppImport extends NRQueryAppImport {
 	public String createXml() {
 		StringBuilder builder = new StringBuilder();
 		builder.append(String.format("<subitem title='申請名' value='%s' align='1' valign='1'/>", this.getAppName()));
+		builder.append("\n");
 		builder.append(
 				String.format("<subitem title='承認状況' value='%s' align='1' valign='1' />", this.getApprovalStatus()));
-		this.holidayQuotaLst
-				.forEach(data -> builder.append(String.format("<subitem title='%s' value='%s' align='1' valign='1' />",
-						data.getHolidayQuotaName(), data.getHolidayQuotaTime())));
+		builder.append("\n");
+		builder.append(String.format("<subitem title='勤務種類' value='%s'  align='1' valign='1' />", workTypeName));
+		builder.append("\n");
+		builder.append(String.format("<subitem title='就業時間帯' value='%s'  align='1' valign='1' />", workTimeName));
+		builder.append("\n");
+		this.holidayQuotaLst.forEach(data -> {
+			builder.append(String.format("<subitem title='%s' value='%s' align='1' valign='1' />",
+					data.getHolidayQuotaName(), data.getHolidayQuotaTime()));
+			builder.append("\n");
+		});
 
-		this.midnightIimeOutside.ifPresent(data -> builder
-				.append(String.format("<subitem title='外深夜時間' value='%s'  align='1' valign='1' />", data)));
+		this.midnightIimeOutside.ifPresent(data -> {
+			builder.append(String.format("<subitem title='外深夜時間' value='%s'  align='1' valign='1' />", data));
+			builder.append("\n");
+		});
 
-		this.reasonDissocsLst.forEach(
-				data -> builder.append(String.format("<subitem title='乖離理由' value='%s'  align='1' valign='1' />", data)));
+		this.reasonDissocsLst.forEach(data -> {
+			builder.append(String.format("<subitem title='乖離理由' value='%s'  align='1' valign='1' />", data));
+			builder.append("\n");
+		});
 
-		if (goOutAtr == NotUseAtr.USE)
-			builder.append("<subitem title='直行直帰' value=直行  align='1' valign='1' />");
-		if (comeBackAtr == NotUseAtr.USE)
-			builder.append("<subitem title='直行直帰' value=直帰  align='1' valign='1' />");
+		if (goOutAtr == NotUseAtr.USE) {
+			builder.append("<subitem title='直行直帰' value='直行'  align='1' valign='1' />");
+			builder.append("\n");
+		}
+		if (comeBackAtr == NotUseAtr.USE) {
+			builder.append("<subitem title='直行直帰' value='直帰'  align='1' valign='1' />");
+			builder.append("\n");
+		}
 		return builder.toString();
 	}
 
 	@Override
 	public String createHtml() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(String.format("<DT>申請名</DT><DD>%s</DD>", this.getAppName()));
-		builder.append(String.format("<DT>承認状況</DT><DD>%s</DD>", this.getApprovalStatus()));
-		this.holidayQuotaLst.forEach(data -> builder.append(
-				String.format("<DT>%s</DT><DD>%s</DD>", data.getHolidayQuotaName(), data.getHolidayQuotaTime())));
-		this.midnightIimeOutside.ifPresent(data -> builder.append(String.format("<DT>外深夜時間</DT><DD>%s</DD>", data)));
-		this.reasonDissocsLst.forEach(data -> builder.append(String.format("<DT>乖離理由</DT><DD>%s</DD>", data)));
+		builder.append(String.format("<DT>申請名</DT>\n<DD>%s</DD>", this.getAppName()));
+		builder.append(String.format("<DT>承認状況</DT>\n<DD>%s</DD>", this.getApprovalStatus()));
+		builder.append("\n");
+		this.holidayQuotaLst.forEach(data -> {
+			builder.append(
+					String.format("<DT>%s</DT>\n<DD>%s</DD>", data.getHolidayQuotaName(), data.getHolidayQuotaTime()));
+			builder.append("\n");
+		});
+		this.midnightIimeOutside.ifPresent(data -> {
+			builder.append(String.format("<DT>外深夜時間</DT>\n<DD>%s</DD>", data));
+			builder.append("\n");
+		});
+		this.reasonDissocsLst.forEach(data -> {
+			builder.append(String.format("<DT>乖離理由</DT>\n<DD>%s</DD>", data));
+			builder.append("\n");
+		});
 		if (goOutAtr == NotUseAtr.USE)
-			builder.append("<DT>直行直帰</DT><DD>直行</DD");
+			builder.append("<DT>直行直帰</DT>\n<DD>直行</DD");
 		if (comeBackAtr == NotUseAtr.USE)
-			builder.append("<DT>直行直帰</DT><DD>直帰</DD>");
+			builder.append("<DT>直行直帰</DT>\n<DD>直帰</DD>");
+		builder.append("\n");
 		return builder.toString();
 	}
 

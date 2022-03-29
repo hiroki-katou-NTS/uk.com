@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
 
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.CacheCarrier;
@@ -35,7 +34,7 @@ public class NRWebQueryScheduleFinder implements NRWebQueryFinder {
 	private NRWebGetScheduleAdapter nrWebGetScheduleAdapter;
 
 	@Override
-	public Response process(NRWebQuerySidDateParameter queryParam) {
+	public String process(NRWebQuerySidDateParameter queryParam) {
 
 		RequireImpl impl = new RequireImpl(nrWebRequireImpl, nrWebQueryScheduleItemRepo, nrWebGetScheduleAdapter);
 		return NRWebQueryScheduleXmlHtml.process(impl, queryParam);

@@ -3,9 +3,6 @@ package nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.nrweb.sch
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.nrweb.schedule.NRWebScheduleRecordData;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.nrweb.common.NRType;
@@ -22,17 +19,17 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.E
 public class NRWebQueryScheduleXmlHtml {
 
 	// 情報処理
-	public static Response process(Require require, NRWebQuerySidDateParameter param) {
+	public static String process(Require require, NRWebQuerySidDateParameter param) {
 
 		List<NRWebScheduleRecordData> dto = GetNRWebQuerySchedule.process(require, param);
 
 		if (param.getNrWebQuery().getType().isPresent()
 				&& param.getNrWebQuery().getType().get().equals(NRType.XML.value)) {
 			// XMLを作る(＄NRWeb照会メニュー一覧)
-			return Response.ok(createXml(dto), MediaType.APPLICATION_XML).build();
+			return createXml(dto);
 		} else {
 			// HTMLを作る(＄NRWeb照会メニュー一覧)
-			return Response.ok(createHtml(dto), MediaType.TEXT_HTML).build();
+			return createHtml(dto);
 		}
 	}
 
@@ -40,46 +37,56 @@ public class NRWebQueryScheduleXmlHtml {
 	private static String createHtml(List<NRWebScheduleRecordData> dto) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("<HTML>");
+		builder.append("\n");
 		builder.append("<HEAD><TITLE>");
 		builder.append(NRWebQueryMenuName.SCHEDULE.value);
 		builder.append("</TITLE></HEAD>");
-		builder.append("<BODY><DL>");
+		builder.append("\n");
+		builder.append("<BODY>\n<DL>");
 		dto.stream().forEach(data -> {
-			builder.append(String.format("<DT>日付</DT><DD>%s</DD>", data.getDate().toString()));
+			builder.append(String.format("<DT>日付</DT>\n<DD>%s</DD>", data.getDate().toString()));
+			builder.append("\n");
 			data.getValue().forEach(value -> {
-				builder.append(String.format("<DT>%s </DT><DD>%s</DD>", value.getName(), value.getValue()));
+				builder.append(String.format("<DT>%s </DT>\n<DD>%s</DD>", value.getName(), value.getValue()));
+				builder.append("\n");
 			});
 		});
-		builder.append("</DL></BODY></HTML>");
+		builder.append("</DL>\n</BODY>\n</HTML>");
 		return builder.toString();
 	}
 
 	// [pvt-2] XMLを作る
 	private static String createXml(List<NRWebScheduleRecordData> dto) {
 		StringBuilder builder = new StringBuilder();
-		builder.append("<kindata type='1'><item type='head'>");
+		builder.append("<kindata type='1'>\n<item type='head'>");
+		builder.append("\n");
 		if (!dto.isEmpty()) {
 			AtomicInteger index = new AtomicInteger(1);
 			dto.get(0).getValue().forEach(data -> {
 				builder.append(String.format("<subitem index='%s' value='%s' align='2'/>",
 						String.valueOf(index.getAndIncrement()), data.getName()));
+				builder.append("\n");
 			});
 			builder.append("</item>");
+			builder.append("\n");
 			dto.stream().forEach(data -> {
 				builder.append(String.format("<item type='data' date='%s' color='%s' align='2'>",
-						data.getDate().toString(), createColor(data.getDate())));
+						String.format("%04d%02d%02d", data.getDate().year(), data.getDate().month(), data.getDate().day()), createColor(data.getDate())));
+				builder.append("\n");
 				index.set(1);
 				data.getValue().forEach(value -> {
 					builder.append(String.format("<subitem index='%s' value='%s' align='3' color='%s'/> ",
 							String.valueOf(index.getAndIncrement()), value.getValue(), createState(value.getState())));
+					builder.append("\n");
 				});
 				builder.append("</item>");
+				builder.append("\n");
 			});
 
 		}
 
 		builder.append(
-				"<item type='guide'><subitem index='1' value='手入力・修正' color='134,194,255' /><subitem index='2' value='申請' color='0,255,0' /></item></kindata>");
+				"<item type='guide'>\n<subitem index='1' value='手入力・修正' color='134,194,255' />\n<subitem index='2' value='申請' color='0,255,0' />\n</item>\n</kindata>");
 		return builder.toString();
 
 	}
@@ -102,7 +109,7 @@ public class NRWebQueryScheduleXmlHtml {
 		case HAND_CORRECTION_OTHER:
 			return "134,194,255";
 		case REFLECT_APPLICATION:
-			return "'0,255,0";
+			return "0,255,0";
 		default:
 			return "";
 		}

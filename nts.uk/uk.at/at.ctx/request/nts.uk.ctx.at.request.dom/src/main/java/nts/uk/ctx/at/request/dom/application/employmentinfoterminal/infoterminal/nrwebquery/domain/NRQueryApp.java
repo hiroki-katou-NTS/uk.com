@@ -7,6 +7,8 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.nrwebquery.GetAllNRWebQueryAppDetail;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
+import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
 
 /**
  * @author thanh_nx
@@ -41,4 +43,37 @@ public class NRQueryApp {
 				app.getPrePostAtr().value, GetAllNRWebQueryAppDetail.createAppStatus(state));
 	}
 
+	public static String createValueFormatTime(String value) {
+		return createValueFormat(value, DailyAttendanceAtr.Time);
+	}
+	
+	public static String createValueFormatTimeAtr(String value) {
+		return createValueFormat(value, DailyAttendanceAtr.TimeOfDay);
+	}
+	
+	public static String createValueFormatMoney(String value) {
+		return createValueFormat(value, DailyAttendanceAtr.AmountOfMoney);
+	}
+	
+	public static String createValueFormat(String value, DailyAttendanceAtr dailyAttendanceAtr) {
+		if(value == null || value.equals("null")) 
+			return "";
+		switch (dailyAttendanceAtr) {
+		case Code:
+		case ReferToMaster:
+		case NumberOfTime:
+		case Classification:
+		case Charater:
+			return DataValueAttribute.STRING.format(value);
+		case AmountOfMoney:
+			return DataValueAttribute.MONEY.format(Double.valueOf(value));
+		case Time:
+			return DataValueAttribute.TIME.format(Integer.parseInt(value));
+		case TimeOfDay:
+			return DataValueAttribute.CLOCK.format(Integer.parseInt(value));
+		default:
+			break;
+		}
+		return value;
+	} 
 }

@@ -37,17 +37,26 @@ public class NRQueryFurikyuFurishutsuAppImport extends NRQueryAppImport {
 		String Com_SubstituteWork = TextResource.localize("Com_SubstituteWork");
 		StringBuilder builder = new StringBuilder();
 		builder.append(String.format("<subitem title='申請名' value='%s' align='1' valign='1'/>", this.getAppName()));
+		builder.append("\n");
 		builder.append(
 				String.format("<subitem title='承認状況' value='%s' align='1' valign='1' />", this.getApprovalStatus()));
-		if (furikyu)
+		builder.append("\n");
+		if (furikyu) {
 			builder.append(String.format("<subitem title='%s/%s' value='%s'  align='1' valign='1' />",
 					Com_SubstituteHoliday, Com_SubstituteWork, Com_SubstituteHoliday));
-		else
+		builder.append("\n");
+		}
+		else {
 			builder.append(String.format("<subitem title='%s/%s' value='%s'  align='1' valign='1' />",
 					Com_SubstituteHoliday, Com_SubstituteWork, Com_SubstituteWork));
+			builder.append("\n");
+		}
 		builder.append(String.format("<subitem title='勤務種類' value='%s'  align='1' valign='1' />", workTypeName));
-		workTimeName.ifPresent(data -> builder
-				.append(String.format("<subitem title='就業時間帯' value='%s'  align='1' valign='1' />", data)));
+		builder.append("\n");
+		workTimeName.ifPresent(data -> {
+			builder.append(String.format("<subitem title='就業時間帯' value='%s'  align='1' valign='1' />", data));
+			builder.append("\n");
+		});
 
 		return builder.toString();
 	}
@@ -57,16 +66,26 @@ public class NRQueryFurikyuFurishutsuAppImport extends NRQueryAppImport {
 		String Com_SubstituteHoliday = TextResource.localize("Com_SubstituteHoliday");
 		String Com_SubstituteWork = TextResource.localize("Com_SubstituteWork");
 		StringBuilder builder = new StringBuilder();
-		builder.append(String.format("<DT>申請名</DT><DD>%s</DD>", this.getAppName()));
-		builder.append(String.format("<DT>承認状況</DT><DD>%s</DD>", this.getApprovalStatus()));
-		if (furikyu)
-			builder.append(String.format("<DT>%s/%s</DT><DD>%s </DD>", Com_SubstituteHoliday, Com_SubstituteWork,
+		builder.append(String.format("<DT>申請名</DT>\n<DD>%s</DD>", this.getAppName()));
+		builder.append("\n");
+		builder.append(String.format("<DT>承認状況</DT>\n<DD>%s</DD>", this.getApprovalStatus()));
+		builder.append("\n");
+		if (furikyu) {
+			builder.append(String.format("<DT>%s/%s</DT>\n<DD>%s </DD>", Com_SubstituteHoliday, Com_SubstituteWork,
 					Com_SubstituteHoliday));
-		else
-			builder.append(String.format("<DT>%s/%s</DT><DD>%s </DD>", Com_SubstituteHoliday, Com_SubstituteWork,
+		builder.append("\n");
+		}
+		else {
+			builder.append(String.format("<DT>%s/%s</DT>\n<DD>%s </DD>", Com_SubstituteHoliday, Com_SubstituteWork,
 					Com_SubstituteWork));
-		builder.append(String.format("<DT>勤務種類</DT><DD>%s </DD>", workTypeName));
-		workTimeName.ifPresent(data -> builder.append(String.format("<DT>勤務種類</DT><DD>%s </DD>", data)));
+			builder.append("\n");
+		}
+		builder.append(String.format("<DT>勤務種類</DT>\n<DD>%s </DD>", workTypeName));
+		builder.append("\n");
+		workTimeName.ifPresent(data -> {
+			builder.append(String.format("<DT>勤務種類</DT>\n<DD>%s </DD>", data));
+			builder.append("\n");
+		});
 		return builder.toString();
 	}
 

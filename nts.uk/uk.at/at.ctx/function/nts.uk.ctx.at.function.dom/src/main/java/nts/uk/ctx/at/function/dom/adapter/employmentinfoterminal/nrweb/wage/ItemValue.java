@@ -32,21 +32,28 @@ public class ItemValue {
 	// [1] XMLアイテムを作る
 	public String createOneDataXml(String itemName, Optional<String> color) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(String.format("<subitem index='1' value=%s align='3'/>", itemName));
-		builder.append(String.format("<subitem index='2' value=%salign='3'/>", timeFormat()));
-		if (color.isPresent())
+		builder.append(String.format("<subitem index='1' value='%s' align='3'/>", itemName));
+		builder.append("\n");
+		builder.append(String.format("<subitem index='2' value='%s' align='3'/>", timeFormat()));
+		builder.append("\n");
+		if (color.isPresent()) {
 			builder.append(
-					String.format("<subitem index='3' value=%s align='3' color=%s/>", amountFormat(), color.get()));
-		else
-			builder.append(String.format("<subitem index='3' value=%s align='3'/>", amountFormat()));
+					String.format("<subitem index='3' value='%s' align='3' color=%s/>", amountFormat(), color.get()));
+			builder.append("\n");
+		}
+		else {
+			builder.append(String.format("<subitem index='3' value='%s' align='3'/>", amountFormat()));
+			builder.append("\n");
+		}
 		return builder.toString();
 	}
 
 	// [2] HTMLアイテムを作る
 	public String createOneDataHtml(String itemTimeName, String itemAmountName) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(String.format("<DT>%s</DT><DT>%s</DT><DT>%s</DT><DT>%s</DT>", itemTimeName, timeFormat(),
+		builder.append(String.format("<DT>%s</DT>\n<DT>%s</DT>\n<DT>%s</DT>\n<DT>%s</DT>", itemTimeName, timeFormat(),
 				itemAmountName, amountFormat()));
+		builder.append("\n");
 		return builder.toString();
 	}
 

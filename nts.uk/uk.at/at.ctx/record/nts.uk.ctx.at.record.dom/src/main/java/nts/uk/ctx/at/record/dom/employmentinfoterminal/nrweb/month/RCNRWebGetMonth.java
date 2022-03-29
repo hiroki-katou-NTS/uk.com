@@ -50,7 +50,7 @@ public class RCNRWebGetMonth {
 				.collect(Collectors.toMap(x -> x.getAttendanceItemId(), x -> x));
 		if (mapRecordValues.containsKey(employeeId) && !mapRecordValues.get(employeeId).isEmpty()) {
 
-			mapRecordValues.get(employeeId).get(0).getItemValues().stream().map(x -> {
+			List<RCAttendanceItemValueMonth> value = mapRecordValues.get(employeeId).get(0).getItemValues().stream().map(x -> {
 				Optional<MonthlyAttendanceItem> attendanceItem = allMaster.stream()
 						.filter(y -> y.getAttendanceItemId() == x.getItemId()).findFirst();
 
@@ -59,7 +59,7 @@ public class RCNRWebGetMonth {
 						itemName.getAttendanceItemId(), itemName.getAttendanceItemName(),
 						createValue(attendanceItem, allMasterCodeName, x.getValue()));
 			}).collect(Collectors.toList());
-
+			return Optional.of(new RCNRWebMonthData(ym, value));
 		}
 		return Optional.empty();
 	}

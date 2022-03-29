@@ -30,19 +30,19 @@ public class NRWebQueryParameter implements DomainValue {
 	private Optional<String> type;
 
 	// ym
-	private Optional<String> ym;
+	private Optional<String> date;
 
 	// NRWeb照会申請パラメータークエリ
 	private Optional<NRWebQueryAppParameter> application;
 
-	public NRWebQueryParameter(String contractCode, String cno, String ver, Optional<String> type, Optional<String> ym,
+	public NRWebQueryParameter(String contractCode, String cno, String ver, Optional<String> type, Optional<String> date,
 			Optional<NRWebQueryAppParameter> application) {
 		super();
 		this.contractCode = contractCode;
 		this.cno = cno;
 		this.ver = ver;
 		this.type = type;
-		this.ym = ym;
+		this.date = date;
 		this.application = application;
 	}
 
@@ -88,7 +88,7 @@ public class NRWebQueryParameter implements DomainValue {
 
 		default:
 			if (!queryParam.containsKey(NRWebQueryArg.CNO.value) || !queryParam.containsKey(NRWebQueryArg.VER.value)
-					|| !queryParam.containsKey(NRWebQueryArg.YM.value)) {
+					|| !queryParam.containsKey(NRWebQueryArg.DATE.value)) {
 				throw new BusinessException(NRWebQueryError.NO5.value);
 			}
 			break;
@@ -96,19 +96,19 @@ public class NRWebQueryParameter implements DomainValue {
 
 		return new NRWebQueryParameter(contractCode, cno, queryParam.getFirst(NRWebQueryArg.VER.value),
 				Optional.ofNullable(queryParam.getFirst(NRWebQueryArg.TYPE.value)),
-				Optional.ofNullable(queryParam.getFirst(NRWebQueryArg.YM.value)), application);
+				Optional.ofNullable(queryParam.getFirst(NRWebQueryArg.DATE.value)), application);
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T> T getYmFormat() {
 
-		if (!ym.isPresent())
+		if (!date.isPresent())
 			return null;
 
-		if (ym.get().length() == 6) {
-			return (T) new YearMonth(Integer.parseInt(ym.get()));
+		if (date.get().length() == 6) {
+			return (T) new YearMonth(Integer.parseInt(date.get()));
 		} else {
-			int ymdTemp = Integer.parseInt(ym.get());
+			int ymdTemp = Integer.parseInt(date.get());
 			return (T) GeneralDate.ymd(ymdTemp / 10000, (ymdTemp - (ymdTemp / 10000) * 10000) / 100, ymdTemp % 100);
 		}
 	}

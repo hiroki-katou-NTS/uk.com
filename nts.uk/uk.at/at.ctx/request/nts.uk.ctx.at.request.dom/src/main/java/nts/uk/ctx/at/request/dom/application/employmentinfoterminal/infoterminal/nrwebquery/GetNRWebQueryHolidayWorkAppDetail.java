@@ -105,7 +105,7 @@ public class GetNRWebQueryHolidayWorkAppDetail {
 							workDayOff.stream()
 									.filter(x -> x.getWorkdayoffFrNo().v().intValue() == y.getFrameNo().v().intValue())
 									.findFirst().get().getWorkdayoffFrName().v(),
-							y.getApplicationTime().v().toString()))
+									NRQueryApp.createValueFormatTime(y.getApplicationTime().v().toString())))
 					.collect(Collectors.toList());
 
 			List<String> reasonDissocsLst = new ArrayList<>();
@@ -130,7 +130,7 @@ public class GetNRWebQueryHolidayWorkAppDetail {
 						new NRQueryHolidayWorkTimeApp(appQuery, NotUseAtr.valueOf(app.getGoWorkAtr().value),
 								NotUseAtr.valueOf(app.getBackHomeAtr().value), workTimeName, workTypeName,
 								app.getApplicationTime().getOverTimeShiftNight().filter(x -> x.getOverTimeMidNight() != null)
-										.map(x -> String.valueOf(x.getOverTimeMidNight().v())),
+										.map(x -> NRQueryApp.createValueFormatTime(String.valueOf(x.getOverTimeMidNight().v()))),
 								holidayQuotaLst, reasonDissocsLst));
 			}
 		});

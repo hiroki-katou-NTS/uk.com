@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.infra.repository.employmentinfoterminal.infoterminal.nrweb;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -13,8 +14,7 @@ public class JpaNRWebQueryMonthItemRepo implements NRWebQueryMonthItemRepo {
 
 	@Override
 	public List<NRWebQueryMonthItem> findByContractCode(ContractCode contractCode) {
-		// TODO Auto-generated method stub
-		return null;
+		return Arrays.asList(new NRWebQueryMonthItem(contractCode,1, 31));
 	}
 
 }

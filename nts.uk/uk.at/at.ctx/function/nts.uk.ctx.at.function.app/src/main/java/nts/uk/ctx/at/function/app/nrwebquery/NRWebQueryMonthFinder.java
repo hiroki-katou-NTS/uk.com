@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.YearMonth;
@@ -27,7 +26,7 @@ public class NRWebQueryMonthFinder implements NRWebQueryFinder {
 	private NRWebGetMonthAdapter nrWebGetMonthAdapter;
 
 	@Override
-	public Response process(NRWebQuerySidDateParameter queryParam) {
+	public String process(NRWebQuerySidDateParameter queryParam) {
 
 		RequireImpl impl = new RequireImpl(nrWebQueryMonthItemRepo, nrWebGetMonthAdapter);
 		return NRWebQueryMonthXmlHtml.process(impl, queryParam);

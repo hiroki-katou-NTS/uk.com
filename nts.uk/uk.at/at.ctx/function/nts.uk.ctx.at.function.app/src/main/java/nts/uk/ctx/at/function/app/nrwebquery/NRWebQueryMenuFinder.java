@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.app.nrwebquery;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
 
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.CacheCarrier;
@@ -19,7 +18,7 @@ public class NRWebQueryMenuFinder implements NRWebQueryFinder {
 	private NRWebRequireImpl nrWebRequireImpl;
 
 	@Override
-	public Response process(NRWebQuerySidDateParameter queryParam) {
+	public String process(NRWebQuerySidDateParameter queryParam) {
 
 		RequireImpl impl = new RequireImpl(nrWebRequireImpl);
 		return NRWebQueryMenuXmlHtml.process(impl, queryParam);

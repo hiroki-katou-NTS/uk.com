@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.company.pub.company;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import nts.uk.ctx.bs.company.dom.company.YearAndPeriod;
 *			指定した締め期間の年期間を算出するPubImpl
 *
 */
+@Stateless
 public class YearAndPeriodPubImpl implements YearAndPeriodPub {
 
 	@Inject

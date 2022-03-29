@@ -1,11 +1,11 @@
 package nts.uk.ctx.at.function.ws.nrl;
 
+import java.io.InputStream;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
 import nts.uk.ctx.at.function.app.nrwebquery.NRWebQueryDispatcher;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.nrweb.common.NRWebQueryMenuName;
@@ -15,46 +15,46 @@ public class NRLWebQueryService {
 
 	@Inject
 	private NRWebQueryDispatcher nrWebQueryDispatcher;
-
+	
 	@POST
 	@Path("nrl1refmenu")
-	public Response menu(@Context UriInfo queryParam) {
-		return nrWebQueryDispatcher.process(queryParam.getQueryParameters(), NRWebQueryMenuName.MENU);
+	public Response menu(InputStream is) {
+		return nrWebQueryDispatcher.process(is, NRWebQueryMenuName.MENU);
 	}
 
 	@POST
 	@Path("nrl1refsche")
-	public Response schedule(@Context UriInfo queryParam) {
-		return nrWebQueryDispatcher.process(queryParam.getQueryParameters(), NRWebQueryMenuName.SCHEDULE);
+	public Response schedule(InputStream is) {
+		return nrWebQueryDispatcher.process(is, NRWebQueryMenuName.SCHEDULE);
 	}
 
 	@POST
 	@Path("nrl1refday")
-	public Response dailyrecord(@Context UriInfo queryParam) {
-		return nrWebQueryDispatcher.process(queryParam.getQueryParameters(), NRWebQueryMenuName.DAILY);
+	public Response dailyrecord(InputStream is) {
+		return nrWebQueryDispatcher.process(is, NRWebQueryMenuName.DAILY);
 	}
 
 	@POST
 	@Path("nrl1refmonth")
-	public Response monthly(@Context UriInfo queryParam) {
-		return nrWebQueryDispatcher.process(queryParam.getQueryParameters(), NRWebQueryMenuName.MONTHLY);
+	public Response monthly(InputStream is) {
+		return nrWebQueryDispatcher.process(is, NRWebQueryMenuName.MONTHLY);
 	}
 
 	@POST
 	@Path("nrl1refsinsei")
-	public Response application(@Context UriInfo queryParam) {
-		return nrWebQueryDispatcher.process(queryParam.getQueryParameters(), NRWebQueryMenuName.APPLICATION);
+	public Response application(InputStream is) {
+		return nrWebQueryDispatcher.process(is, NRWebQueryMenuName.APPLICATION);
 	}
 
 	@POST
 	@Path("l1refmonmoney")
-	public Response monthmoney(@Context UriInfo queryParam) {
-		return nrWebQueryDispatcher.process(queryParam.getQueryParameters(), NRWebQueryMenuName.MONTH_WAGE);
+	public Response monthmoney(InputStream is) {
+		return nrWebQueryDispatcher.process(is, NRWebQueryMenuName.MONTH_WAGE);
 	}
 
 	@POST
 	@Path("l1refyearmoney")
-	public Response yearmoney(@Context UriInfo queryParam) {
-		return nrWebQueryDispatcher.process(queryParam.getQueryParameters(), NRWebQueryMenuName.ANNUAL_WAGE);
+	public Response yearmoney(InputStream is) {
+		return nrWebQueryDispatcher.process(is, NRWebQueryMenuName.ANNUAL_WAGE);
 	}
 }

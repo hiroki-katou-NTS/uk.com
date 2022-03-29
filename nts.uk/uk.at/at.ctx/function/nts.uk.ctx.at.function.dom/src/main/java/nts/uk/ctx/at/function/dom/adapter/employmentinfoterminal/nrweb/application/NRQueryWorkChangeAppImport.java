@@ -45,29 +45,43 @@ public class NRQueryWorkChangeAppImport extends NRQueryAppImport {
 	public String createXml() {
 		StringBuilder builder = new StringBuilder();
 		builder.append(String.format("<subitem title='申請名' value='%s' align='1' valign='1'/>", this.getAppName()));
+		builder.append("\n");
 		builder.append(
 				String.format("<subitem title='承認状況' value='%s' align='1' valign='1' />", this.getApprovalStatus()));
+		builder.append("\n");
 
-		workTypeName.ifPresent(
-				data -> builder.append(String.format("<subitem title='勤務種類' value='%s'  align='1' valign='1' />", data)));
-		workTimeName.ifPresent(data -> builder
-				.append(String.format("<subitem title='就業時間帯' value='%s'  align='1' valign='1' />", data)));
-		if (goOutAtr == NotUseAtr.USE)
-			builder.append("<subitem title='直行直帰' value=直行  align='1' valign='1' />");
-		if (comeBackAtr == NotUseAtr.USE)
-			builder.append("<subitem title='直行直帰' value=直帰  align='1' valign='1' />");
+		workTypeName.ifPresent(data -> {
+			builder.append(String.format("<subitem title='勤務種類' value='%s'  align='1' valign='1' />", data));
+			builder.append("\n");
+		});
+		workTimeName.ifPresent(data -> {
+			builder.append(String.format("<subitem title='就業時間帯' value='%s'  align='1' valign='1' />", data));
+			builder.append("\n");
+		});
+		if (goOutAtr == NotUseAtr.USE) {
+			builder.append("<subitem title='直行直帰' value='直行'  align='1' valign='1' />");
+			builder.append("\n");
+		}
+		if (comeBackAtr == NotUseAtr.USE) {
+			builder.append("<subitem title='直行直帰' value='直帰'  align='1' valign='1' />");
+			builder.append("\n");
+		}
 
 		for (int index = 0; index < hourMinuteLst.size(); index++) {
-			if (index == 0)
+			if (index == 0) {
 				builder.append(String.format(
-						"<subitem title='出勤' value=%s align='1' valign='1' /><subitem title='退勤' value=%s  align='1' valign='1' />",
+						"<subitem title='出勤' value=%s align='1' valign='1' />\n<subitem title='退勤' value=%s  align='1' valign='1' />",
 						hourMinuteLst.get(index).getStartTime().getRawTimeWithFormat(),
 						hourMinuteLst.get(index).getEndTime().getRawTimeWithFormat()));
-			if (index == 1)
+				builder.append("\n");
+			}
+			if (index == 1) {
 				builder.append(String.format(
-						"<subitem title='出勤2' value=%s align='1' valign='1' /><subitem title='退勤2' value=%s  align='1' valign='1' />",
+						"<subitem title='出勤2' value=%s align='1' valign='1' />\n<subitem title='退勤2' value=%s  align='1' valign='1' />",
 						hourMinuteLst.get(index).getStartTime().getRawTimeWithFormat(),
 						hourMinuteLst.get(index).getEndTime().getRawTimeWithFormat()));
+				builder.append("\n");
+			}
 		}
 		return builder.toString();
 	}
@@ -75,23 +89,37 @@ public class NRQueryWorkChangeAppImport extends NRQueryAppImport {
 	@Override
 	public String createHtml() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(String.format("<DT>申請名</DT><DD>%s</DD>", this.getAppName()));
-		builder.append(String.format("<DT>承認状況</DT><DD>%s</DD>", this.getApprovalStatus()));
-		workTypeName.ifPresent(data -> builder.append(String.format("<DT>勤務種類</DT><DD>%s</DD>", data)));
-		workTimeName.ifPresent(data -> builder.append(String.format("<DT>就業時間帯</DT><DD>%s</DD>", data)));
-		if (goOutAtr == NotUseAtr.USE)
-			builder.append("<DT>直行直帰</DT><DD>直行</DD");
-		if (comeBackAtr == NotUseAtr.USE)
-			builder.append("<DT>直行直帰</DT><DD>直帰</DD>");
+		builder.append(String.format("<DT>申請名</DT>\n<DD>%s</DD>", this.getAppName()));
+		builder.append(String.format("<DT>承認状況</DT>\n<DD>%s</DD>", this.getApprovalStatus()));
+		workTypeName.ifPresent(data -> {
+			builder.append(String.format("<DT>勤務種類</DT>\n<DD>%s</DD>", data));
+			builder.append("\n");
+		});
+		workTimeName.ifPresent(data -> {
+			builder.append(String.format("<DT>就業時間帯</DT>\n<DD>%s</DD>", data));
+			builder.append("\n");
+		});
+		if (goOutAtr == NotUseAtr.USE) {
+			builder.append("<DT>直行直帰</DT>\n<DD>直行</DD");
+			builder.append("\n");
+		}
+		if (comeBackAtr == NotUseAtr.USE) {
+			builder.append("<DT>直行直帰</DT>\n<DD>直帰</DD>");
+			builder.append("\n");
+		}
 		for (int index = 0; index < hourMinuteLst.size(); index++) {
-			if (index == 0)
-				builder.append(String.format("<DT>出勤</DT><DD>%s</DD><DT>退勤</DT><DD>%s</DD>",
+			if (index == 0) {
+				builder.append(String.format("<DT>出勤</DT>\n<DD>%s</DD>\n<DT>退勤</DT>\n<DD>%s</DD>",
 						hourMinuteLst.get(index).getStartTime().getRawTimeWithFormat(),
 						hourMinuteLst.get(index).getEndTime().getRawTimeWithFormat()));
-			if (index == 1)
-				builder.append(String.format("<DT>出勤2</DT><DD>%s</DD><DT>退勤2</DT><DD>%s</DD>",
+				builder.append("\n");
+			}
+			if (index == 1) {
+				builder.append(String.format("<DT>出勤2</DT>\n<DD>%s</DD>\n<DT>退勤2</DT>\n<DD>%s</DD>",
 						hourMinuteLst.get(index).getStartTime().getRawTimeWithFormat(),
 						hourMinuteLst.get(index).getEndTime().getRawTimeWithFormat()));
+				builder.append("\n");
+			}
 		}
 		return builder.toString();
 	}

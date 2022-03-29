@@ -18,31 +18,43 @@ public class NRWebErrorPage {
 
 		StringBuilder builder = new StringBuilder();
 		builder.append("<HTML>");
+		builder.append("\n");
 		builder.append("<HEAD><TITLE>");
 		builder.append(String.format("%s", menuName.value));
 		builder.append("</TITLE></HEAD>");
-		builder.append("<BODY><DL>");
-		builder.append("<DT>エラー</DT><DD></DD>");
+		builder.append("\n");
+		builder.append("<BODY>\n<DL>");
+		builder.append("\n");
+		builder.append("<DT>エラー</DT>\n<DD></DD>");
+		builder.append("\n");
 
 		switch (errorType) {
 		case NO1:
-			builder.append("<DT>引数に誤りがあります。</DT><DD></DD>");
+			builder.append("<DT>引数に誤りがあります。</DT>\n<DD></DD>");
+			builder.append("\n");
+			break;
 
 		case NO2:
-			builder.append("<DT>カードNoの桁数に誤りがあります。</DT><DD></DD>");
-
+			builder.append("<DT>カードNoの桁数に誤りがあります。</DT>\n<DD></DD>");
+			builder.append("\n");
+			break;
 		case NO3:
-			builder.append("<DT>該当者が存在しません。/DT><DD></DD>");
-
+			builder.append("<DT>該当者が存在しません。/DT>\n<DD></DD>");
+			builder.append("\n");
+			break;
 		case NO4:
-			builder.append(String.format("<DT>%sが存在しません。</DT><DD></DD>", cno.get()));
-
+			builder.append(String.format("<DT>%sが存在しません。</DT>\n<DD></DD>", cno.get()));
+			builder.append("\n");
+			break;
 		case NO5:
-			builder.append("<DT>照会準備が整っていません</DT><DD></DD>");
+			builder.append("<DT>照会準備が整っていません</DT>\n<DD></DD>");
+			builder.append("\n");
+			break;
 		}
 
-		builder.append("<DT>管理者に連絡してください</DT><DD></DD>");
-		builder.append("</DL></BODY></HTML>");
+		builder.append("<DT>管理者に連絡してください</DT>\n<DD></DD>");
+		builder.append("\n");
+		builder.append("</DL>\n</BODY>\n</HTML>");
 		return builder.toString();
 	}
 

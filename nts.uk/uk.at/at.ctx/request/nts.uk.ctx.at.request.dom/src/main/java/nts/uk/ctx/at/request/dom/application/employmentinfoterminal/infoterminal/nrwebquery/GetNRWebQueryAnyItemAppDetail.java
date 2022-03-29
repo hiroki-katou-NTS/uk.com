@@ -68,13 +68,13 @@ public class GetNRWebQueryAnyItemAppDetail {
 				}
 				if (typeData.get().getOptionalItemAtr() == OptionalItemAtr.TIME) {
 					return new NRQueryAnyItemAppDetail(typeData.get().getOptionalItemName().v(),
-							String.valueOf(anyItem.getRowTime()));
+							NRQueryApp.createValueFormatTime(String.valueOf(anyItem.getRowTime())));
 				} else if (typeData.get().getOptionalItemAtr() == OptionalItemAtr.NUMBER) {
 					return new NRQueryAnyItemAppDetail(typeData.get().getOptionalItemName().v(),
 							String.valueOf(anyItem.getRowTimes()));
 				}
 				return new NRQueryAnyItemAppDetail(typeData.get().getOptionalItemName().v(),
-						String.valueOf(anyItem.getRowAmount()));
+						NRQueryApp.createValueFormatMoney(String.valueOf(anyItem.getRowAmount())));
 			}).filter(z -> z != null).collect(Collectors.toList());
 			return new NRQueryAnyItemApp(appQuery, anyItemDetailLst);
 		}).collect(Collectors.toList());

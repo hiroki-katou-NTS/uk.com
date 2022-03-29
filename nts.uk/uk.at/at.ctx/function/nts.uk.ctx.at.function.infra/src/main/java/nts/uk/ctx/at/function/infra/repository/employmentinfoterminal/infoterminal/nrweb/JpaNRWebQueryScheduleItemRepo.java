@@ -15,7 +15,7 @@ public class JpaNRWebQueryScheduleItemRepo implements NRWebQueryScheduleItemRepo
 	@Override
 	public List<NRWebQueryScheduleItem> findByContractCode(ContractCode contractCode) {
 		return Arrays.asList(new NRWebQueryScheduleItem(contractCode, 1, 28),
-				new NRWebQueryScheduleItem(contractCode, 1, 29), new NRWebQueryScheduleItem(contractCode, 1, 31));
+				new NRWebQueryScheduleItem(contractCode, 1, 29), new NRWebQueryScheduleItem(contractCode, 1, 31), new NRWebQueryScheduleItem(contractCode, 1, 31), new NRWebQueryScheduleItem(contractCode, 1, 1));
 	}
 
 }

@@ -38,16 +38,24 @@ public class NRQueryVacationAppImport extends NRQueryAppImport {
 	@Override
 	public String createXml() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(String.format("<subitem title='申請名' value=％s align='1' valign='1'/>", this.getAppName()));
+		builder.append(String.format("<subitem title='申請名' value='%s' align='1' valign='1'/>", this.getAppName()));
+		builder.append("\n");
 		builder.append(
-				String.format("<subitem title='承認状況' value=%s align='1' valign='1' />", this.getApprovalStatus()));
-		builder.append(String.format("<subitem title='休暇区分' value=%s  align='1' valign='1' />", this.vacationType));
-		builder.append(String.format("<subitem title='勤務種類' value=%s  align='1'  valign='1' />", this.workTypeName));
-		this.workTimeName.ifPresent(data -> builder
-				.append(String.format("<subitem title='就業時間帯' value=%s  align='1' valign='1' />", data)));
-		this.timeDigestLeavNameLst
-				.forEach(data -> builder.append(String.format("<subitem title='%s' value=%s  align='1' valign='1' />",
-						data.getTimeDigestName(), data.getTimeDigestHours())));
+				String.format("<subitem title='承認状況' value='%s' align='1' valign='1' />", this.getApprovalStatus()));
+		builder.append("\n");
+		builder.append(String.format("<subitem title='休暇区分' value='%s'  align='1' valign='1' />", this.vacationType));
+		builder.append("\n");
+		builder.append(String.format("<subitem title='勤務種類' value='%s'  align='1'  valign='1' />", this.workTypeName));
+		builder.append("\n");
+		this.workTimeName.ifPresent(data -> {
+			builder.append(String.format("<subitem title='就業時間帯' value='%s'  align='1' valign='1' />", data));
+			builder.append("\n");
+		});
+		this.timeDigestLeavNameLst.forEach(data -> {
+			builder.append(String.format("<subitem title='%s' value='%s'  align='1' valign='1' />",
+					data.getTimeDigestName(), data.getTimeDigestHours()));
+			builder.append("\n");
+		});
 
 		return builder.toString();
 
@@ -56,13 +64,21 @@ public class NRQueryVacationAppImport extends NRQueryAppImport {
 	@Override
 	public String createHtml() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(String.format("<DT>申請名</DT><DD>%s</DD>", this.getAppName()));
-		builder.append(String.format("<DT>承認状況</DT><DD>%s</DD>", this.getApprovalStatus()));
-		builder.append(String.format("<DT>休暇区分</DT><DD>%s</DD>", this.vacationType));
-		builder.append(String.format("<DT>勤務種類</DT><DD>%s</DD>", this.workTypeName));
-		this.workTimeName.ifPresent(data -> builder.append(String.format("<DT>就業時間帯</DT><DD>%s</DD>", data)));
-		this.timeDigestLeavNameLst.forEach(data -> builder
-				.append(String.format("<DT>%s</DT><DD>%s</DD>", data.getTimeDigestName(), data.getTimeDigestHours())));
+		builder.append(String.format("<DT>申請名</DT>\n<DD>%s</DD>", this.getAppName()));
+		builder.append("\n");
+		builder.append(String.format("<DT>承認状況</DT>\n<DD>%s</DD>", this.getApprovalStatus()));
+		builder.append("\n");
+		builder.append(String.format("<DT>休暇区分</DT>\n<DD>%s</DD>", this.vacationType));
+		builder.append("\n");
+		builder.append(String.format("<DT>勤務種類</DT>\n<DD>%s</DD>", this.workTypeName));
+		builder.append("\n");
+		this.workTimeName.ifPresent(data -> builder.append(String.format("<DT>就業時間帯</DT>\n<DD>%s</DD>", data)));
+		builder.append("\n");
+		this.timeDigestLeavNameLst.forEach(data -> {
+			builder.append(
+					String.format("<DT>%s</DT>\n<DD>%s</DD>", data.getTimeDigestName(), data.getTimeDigestHours()));
+			builder.append("\n");
+		});
 		return builder.toString();
 
 	}

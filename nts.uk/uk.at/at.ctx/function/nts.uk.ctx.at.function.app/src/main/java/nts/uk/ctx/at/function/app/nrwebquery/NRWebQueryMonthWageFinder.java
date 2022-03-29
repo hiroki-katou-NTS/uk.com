@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
 
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.CacheCarrier;
@@ -43,7 +42,7 @@ public class NRWebQueryMonthWageFinder implements NRWebQueryFinder {
 	private GetEstimateAmountAdapter getEstimateAmountAdapter;
 
 	@Override
-	public Response process(NRWebQuerySidDateParameter queryParam) {
+	public String process(NRWebQuerySidDateParameter queryParam) {
 		RequireImpl impl = new RequireImpl();
 		return NRWebQueryMonthWageXmlHtml.process(impl, queryParam);
 	}
