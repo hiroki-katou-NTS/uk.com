@@ -200,7 +200,7 @@ module nts.uk.com.view.cmm030.a {
       const vm = this;
       const ccg001ComponentOption: GroupOption = {
         /** Common properties */
-        systemType: 1,
+        systemType: 2,
         showEmployeeSelection: true,
         showQuickSearchTab: true,
         showAdvancedSearchTab: false,
