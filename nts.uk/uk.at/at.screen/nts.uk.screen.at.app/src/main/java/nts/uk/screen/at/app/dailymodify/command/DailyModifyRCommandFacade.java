@@ -404,8 +404,6 @@ public class DailyModifyRCommandFacade {
 					return DailyRecordDto.from(domDaily, optionalMaster);
 				}).collect(Collectors.toList());
 				//domain log 
-				//val domDailyforLog  = converter.setData(dailyEdits.get(0));
-				// 手修正を基に戻す
 				List<IntegrationOfDaily> forlog = new ArrayList<IntegrationOfDaily>();
 				for (val dom : dailyEdits) {
 					DailyRecordToAttendanceItemConverter afterConverter = attendanceItemConvertFactory

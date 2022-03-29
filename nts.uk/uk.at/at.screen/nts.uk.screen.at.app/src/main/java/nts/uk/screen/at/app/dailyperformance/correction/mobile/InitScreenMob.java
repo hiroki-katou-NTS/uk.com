@@ -255,11 +255,13 @@ public class InitScreenMob {
 		List<DailyPerformanceEmployeeDto> lstEmployeeData = new ArrayList<>();
 		if (displayFormat == 0) {
 			changeEmployeeIds.add(employeeID);
-			lstEmployeeData = findAllEmployee.findAllEmployee(changeEmployeeIds, dateRange.getEndDate());			
+			lstEmployeeData = findAllEmployee.findAllEmployee(changeEmployeeIds, dateRange.getEndDate());	
 		} else {
 			changeEmployeeIds = allIds.getLstEmpId();
 			lstEmployeeData = screenDto.getLstEmployee();
+			
 		}
+		screenDto.setEmployeeIds(changeEmployeeIds);
 
 		screenDto.setLstData(processor.getListData(lstEmployeeData, dateRange, displayFormat));
 

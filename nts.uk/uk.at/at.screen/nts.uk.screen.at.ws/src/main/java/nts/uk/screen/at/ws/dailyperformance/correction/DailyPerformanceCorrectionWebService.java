@@ -288,15 +288,16 @@ public class DailyPerformanceCorrectionWebService {
 	@SuppressWarnings("unchecked")
 	public DataResultAfterIUDto addAndUpdate(DPItemParentDto dataParentDto) {
 		setDataParent(dataParentDto);
-		DataResultAfterIU dataResultAfterIU =  dailyModifyRCommandFacade.insertItemDomain(dataParentDto.getDataParent());
+		DataResultAfterIU dataResultAfterIU = dailyModifyRCommandFacade.insertItemDomain(dataParentDto.getDataParent());
 
 		dataParentDto.getDataSessionDto().setDomainMonthOpt(null); // domainMonths
 
+		dataParentDto.getDataSessionDto()
+				.setLstSidDateErrorCalc(convertDataErrorDto(dataResultAfterIU.getLstSidDateDomainError())); // lstSidDateErrorCalc
+		dataParentDto.getDataSessionDto().setErrorAllCalc(dataResultAfterIU.isErrorAllSidDate()); // errorAllCalc
 
-		  dataParentDto.getDataSessionDto().setLstSidDateErrorCalc(convertDataErrorDto(dataResultAfterIU.getLstSidDateDomainError())); // lstSidDateErrorCalc
-		  dataParentDto.getDataSessionDto().setErrorAllCalc(dataResultAfterIU.isErrorAllSidDate()); // errorAllCalc
-		  
-		DataResultAfterIUDto dataResultAfterIUDto = new DataResultAfterIUDto(dataResultAfterIU, dataParentDto.getDataSessionDto());
+		DataResultAfterIUDto dataResultAfterIUDto = new DataResultAfterIUDto(dataResultAfterIU,
+				dataParentDto.getDataSessionDto());
 		return dataResultAfterIUDto;
 	}
 	
@@ -320,7 +321,7 @@ public class DailyPerformanceCorrectionWebService {
 		
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
 
-			dailyEdits = domainOlds;
+			dailyEdits = cloneListDto(domainOlds);
 
 		dataParentDto.getDataParent().setDailyEdits(dailyEdits);
 		dataParentDto.getDataParent().setDailyOlds(domainOlds);
@@ -392,7 +393,7 @@ public class DailyPerformanceCorrectionWebService {
 		
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
 
-		dailyEdits = domainOlds;
+		dailyEdits = cloneListDto(domainOlds);
 
 		param.getDpPramLoadRow().setDailys(dailyEdits);
 		param.getDpPramLoadRow().setLstSidDateDomainError(convertDataError(param.getDataSessionDto().getLstSidDateErrorCalc())); // lstSidDateErrorCalc
@@ -408,7 +409,9 @@ public class DailyPerformanceCorrectionWebService {
 				: (Optional<MonthlyRecordWorkDto>) objectCacheMonth;
 		param.getDpPramLoadRow().setDomainMonthOpt(domainMonthOpt);
 		val result = loadRowProcessor.reloadGrid(param.getDpPramLoadRow());
-		
+		if(!param.getDpPramLoadRow().getOnlyLoadMonth()) {
+			param.getDataSessionDto().setApprovalConfirmCache(result.getApprovalConfirmCache()); // approvalConfirm
+		}
 		result.setApprovalConfirmCache(null);
 		result.setDomainOld(Collections.emptyList());
 		//param.getDataSessionDto().setDomainEdits(null); // domainEdits
@@ -431,7 +434,7 @@ public class DailyPerformanceCorrectionWebService {
 		
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
 
-		dailyEdits = domainOlds; //domainOlds
+		dailyEdits = cloneListDto(domainOlds); //domainOlds
 
 		loadVerDataDto.getLoadVerData().setLstDomainOld(dailyEdits);
 		loadVerDataDto.getLoadVerData().setApprovalConfirmCache(loadVerDataDto.getDataSessionDto().getApprovalConfirmCache()); //approvalConfirm
@@ -513,11 +516,6 @@ public class DailyPerformanceCorrectionWebService {
 	public DailyPerformanceCalcDto calculation(DPItemParentDto dataParentDto) {
 		List<DailyRecordDto> domainOlds =  this.getDataOld(dataParentDto.getDataSessionDto().getInputGetDataOlds());
 
-//		List<DailyRecordDto> dailyEdits = new ArrayList<>();
-//
-//		dailyEdits = cloneListDto(domainOlds);
-//
-//		dataParentDto.getDataParent().setDailyEdits(dailyEdits);
 		dataParentDto.getDataParent().setDailyOlds(domainOlds); // domainOlds
 		
 		dataParentDto.getDataParent().setLstAttendanceItem(dataParentDto.getDataSessionDto().getItemIdRCs()); //itemIdRCs
@@ -618,15 +616,7 @@ public class DailyPerformanceCorrectionWebService {
     @POST
 	@Path("findWplIDByCode")
 	public GetWkpIDOutput findWplIDByCode(GetWkpIDParam param) {
-		List<DailyRecordDto> domainOlds =  this.getDataOld(param.getDataSessionDto().getInputGetDataOlds());
-		
-		//TODO: val domain  = param.getDataSessionDto().getDomainEdits();
-        List<DailyRecordDto> dailyEdits = new ArrayList<>();
-//        if(domain == null){
-            dailyEdits = cloneListDto(domainOlds);
-//        }else{
-//            dailyEdits = (List<DailyRecordDto>) domain;
-//        }
+        List<DailyRecordDto> dailyEdits = dailyCalculationService.getListEdits(param.getDataParent());
         
         Optional<DailyRecordDto> dailyEditOpt = dailyEdits.stream().filter(x -> {
             return x.getAffiliationInfo().getBaseDate().toString("yyyy/MM/dd").equals(param.getBaseDate()) 

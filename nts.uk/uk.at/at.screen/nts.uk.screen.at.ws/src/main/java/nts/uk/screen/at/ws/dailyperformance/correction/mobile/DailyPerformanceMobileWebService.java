@@ -1,6 +1,7 @@
 package nts.uk.screen.at.ws.dailyperformance.correction.mobile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -59,18 +60,13 @@ public class DailyPerformanceMobileWebService {
 	@Path("addUpMobile")
 	@SuppressWarnings("unchecked")
 	public DataResultAfterIUDto addAndUpdate(DPMobileAdUpParamDto param) {
-		List<DailyRecordDto> domainOlds =  this.getDataOld(param.getDataSessionDto().getInputGetDataOlds());
-		//TODO: val domain  = param.getDataSessionDto().getDomainEdits();
+		InputGetDataOlds inputGetDataOlds  = new InputGetDataOlds(Arrays.asList(param.getDpMobileAdUpParam().getEmployeeId()), param.getDpMobileAdUpParam().getDateRange(), 
+				param.getDpMobileAdUpParam().getMode() , new ArrayList<>());
+		List<DailyRecordDto> domainOlds =  this.getDataOld(inputGetDataOlds);
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
-//		if (domain == null) {
-			dailyEdits = cloneListDto(domainOlds);
-		//TODO: 
-//		} else {
-//			dailyEdits = (List<DailyRecordDto>) domain;
-//		}
+		dailyEdits = cloneListDto(domainOlds);
 		param.getDpMobileAdUpParam().setDailyEdits(dailyEdits);
 		param.getDpMobileAdUpParam().setDailyOlds(domainOlds);
-		//TODO: param.getDpMobileAdUpParam().setDailyOldForLog(param.getDataSessionDto().getDomainOldForLog());
 		param.getDpMobileAdUpParam().setLstAttendanceItem(param.getDataSessionDto().getItemIdRCs());
 		param.getDpMobileAdUpParam().setApprovalConfirmCache(param.getDataSessionDto().getApprovalConfirmCache());
 		param.getDpMobileAdUpParam().setStateParam(param.getDataSessionDto().getDpStateParam());
@@ -103,7 +99,9 @@ public class DailyPerformanceMobileWebService {
 	public DailyPerformanceCorrectionDto initScreen(DPCorrectionInitParam param) throws InterruptedException{
 //		param.dpStateParam = (DPCorrectionStateParam)session.getAttribute("dpStateParam");
 		param.dpStateParam = param.dpStateParamSession;
+		
 		DailyPerformanceCorrectionDto dtoResult = this.initScreenMob.initMOB(param);
+		InputGetDataOlds inputGetDataOlds  = new InputGetDataOlds(dtoResult.getEmployeeIds(), dtoResult.getDateRange(), param.displayFormat , new ArrayList<>());
 //		session.setAttribute("dpStateParam", dtoResult.getStateParam());
 		if (dtoResult.getErrorInfomation() != 0 || !dtoResult.getErrors().isEmpty()) {
 			return dtoResult;
@@ -111,10 +109,8 @@ public class DailyPerformanceMobileWebService {
 		
 		//
 		DataSessionDto dataSessionDto = new DataSessionDto();
+		dataSessionDto.setInputGetDataOlds(inputGetDataOlds);
 		dataSessionDto.setDpStateParam(dtoResult.getStateParam());
-		//dataSessionDto.setDomainOlds(dtoResult.getDomainOld());
-		//TODO: dataSessionDto.setDomainOldForLog(cloneListDto(dtoResult.getDomainOld()));
-		//TODO: dataSessionDto.setDomainEdits(null);
 		dataSessionDto.setItemIdRCs(dtoResult.getLstControlDisplayItem() == null ? null : dtoResult.getLstControlDisplayItem().getMapDPAttendance());
 		dataSessionDto.setDataSource(dtoResult.getLstData());
 		dataSessionDto.setClosureId(dtoResult.getClosureId());
@@ -124,15 +120,6 @@ public class DailyPerformanceMobileWebService {
 		dataSessionDto.setErrorAllCalc(false);
 		dtoResult.setDataSessionDto(dataSessionDto);
 		
-//		session.setAttribute("domainOlds", dtoResult.getDomainOld());		
-		//add
-//		session.setAttribute("domainOldForLog", cloneListDto(dtoResult.getDomainOld()));
-//		session.setAttribute("domainEdits", null);
-//		session.setAttribute("itemIdRCs", dtoResult.getLstControlDisplayItem() == null ? null : dtoResult.getLstControlDisplayItem().getMapDPAttendance());
-//		session.setAttribute("dataSource", dtoResult.getLstData());
-//		session.setAttribute("closureId", dtoResult.getClosureId());
-//		session.setAttribute("resultReturn", null);
-//		session.setAttribute("approvalConfirm", dtoResult.getApprovalConfirmCache());
 		dtoResult.setApprovalConfirmCache(null);
 		dtoResult.setLstCellState(dtoResult.getMapCellState().values().stream().collect(Collectors.toList()));
 		dtoResult.setMapCellState(null);
@@ -156,10 +143,6 @@ public class DailyPerformanceMobileWebService {
 		return dtos.stream().map(x -> x.clone()).collect(Collectors.toList());
 	}
 	
-//	private void removeSession() {
-//		session.setAttribute("lstSidDateErrorCalc", Collections.emptyList());
-//		session.setAttribute("errorAllCalc", false);
-//	}
 	
 	@POST
 	@Path("getFormatList")
