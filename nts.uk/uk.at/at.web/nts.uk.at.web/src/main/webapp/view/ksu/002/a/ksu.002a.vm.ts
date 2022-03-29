@@ -533,7 +533,7 @@ module nts.uk.ui.at.ksu002.a {
 			// 	vm.plansResultsData.valueHasMutated();
 			// });
 
-			vm.$ajax('at', 'screen/ksu/ksu002/getlegalworkinghours', command).then((data2: any) => {
+			vm.$ajax('at', 'screen/ksu/ksu002/getlegalworkinghours', command).done((data2: any) => {
 				vm.legalworkinghours(data2);
 				vm.workplaceId(data2.affWorkPlace);
 			}).then(() => {
@@ -545,13 +545,13 @@ module nts.uk.ui.at.ksu002.a {
 					targetOrg: { unit: 0, workplaceId: ko.unwrap(vm.workplaceId) }
 				};
 				vm.$ajax('at', 'screen/ksu/ksu002/getPlansResults', command1).done((data: any) => {
+					vm.plansResultsData(data);
+					vm.plansResultsData.valueHasMutated();
 					if (getDaily) {
 						dfd.resolve(data.workScheduleWorkDaily);
 					} else {
 						dfd.resolve(data.workScheduleWorkInfor2);
 					}
-				}).then(() => {
-					vm.plansResultsData.valueHasMutated();
 				});
 			})
 
