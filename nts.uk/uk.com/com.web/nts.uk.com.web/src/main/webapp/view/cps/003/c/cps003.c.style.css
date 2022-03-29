@@ -12,6 +12,10 @@
 	margin-left: 20px;
 }
 
+.mgrid-header td {
+	background-color: #6A6A6A !important;
+}
+
 td.required {
 	background-color: #FAC002 !important;
 }
