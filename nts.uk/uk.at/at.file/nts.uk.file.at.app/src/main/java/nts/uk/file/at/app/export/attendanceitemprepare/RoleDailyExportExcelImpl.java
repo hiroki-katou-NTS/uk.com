@@ -382,8 +382,8 @@ public class RoleDailyExportExcelImpl {
 
                     for (int i = 0, listDisplayTimeItemSize = listDisplayTimeItem.size(); i < listDisplayTimeItemSize; i++) {
                         NameAndDisplay sub = listDisplayTimeItem.get(i);
-                        disPlayName.append(sub.name);
                         disPlayName.append(sub.getOrder() == null ? "" :sub.getOrder());
+                        disPlayName.append(sub.name);
                         if(i < (listDisplayTimeItemSize -1))
                              disPlayName.append(",");
                     }
