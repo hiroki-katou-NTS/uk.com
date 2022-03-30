@@ -76,6 +76,7 @@ namespace WSISmile.Business.Link
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(new Uri(webapiUri, WebApiEnumConverter.GetWebApiName(webApi) + appendUri));
                 request.Method = "POST";
                 request.KeepAlive = false;
+                //request.Timeout = 300 * 1000; // *ミリ秒単位 300秒
 
                 request.ContentType = "application/json;";
                 request.Accept      = "application/json;";
@@ -153,6 +154,16 @@ namespace WSISmile.Business.Link
                 {
                     errorMsg += Environment.NewLine + "勤次郎サーバアドレスの指定に誤りがないかを確認してください。";
                     errorMsg += Environment.NewLine + this.serverUri.AbsoluteUri;
+                    return response;
+                }
+                #endregion
+
+                #region タイムアウトチェック
+                if (wex.Status == WebExceptionStatus.Timeout)
+                {
+                    errorMsg += Environment.NewLine + "勤次郎連携サービスが一時中止の可能性があります。";
+                    errorMsg += Environment.NewLine + this.serverUri.AbsoluteUri;
+                    return response;
                 }
                 #endregion
 
@@ -162,6 +173,7 @@ namespace WSISmile.Business.Link
                     if (((HttpWebResponse)wex.Response).StatusCode == HttpStatusCode.NotFound)
                     {
                         errorMsg = "勤次郎連携サービスが一時中止です。管理者にご連絡ください。";
+                        errorMsg += Environment.NewLine + this.serverUri.AbsoluteUri;
                         return response;
                     }
 
