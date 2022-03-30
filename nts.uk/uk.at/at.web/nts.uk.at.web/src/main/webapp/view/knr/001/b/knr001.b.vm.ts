@@ -133,8 +133,8 @@ module nts.uk.at.view.knr001.b.viewmodel {
       let vm = this;
       var dfd = $.Deferred<void>();
       blockUI.invisible();
-      blockUI.clear();
       vm.getDetails();
+      blockUI.clear();
       dfd.resolve();
       return dfd.promise();
     }
@@ -168,6 +168,7 @@ module nts.uk.at.view.knr001.b.viewmodel {
           }
         }
       }
+      blockUI.invisible();
       // Call API Register
       service.register(command).done(() => {
         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function () {
