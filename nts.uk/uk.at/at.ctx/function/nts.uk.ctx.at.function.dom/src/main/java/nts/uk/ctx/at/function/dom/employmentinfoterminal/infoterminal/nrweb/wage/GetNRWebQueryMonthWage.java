@@ -117,7 +117,7 @@ public class GetNRWebQueryMonthWage {
 		Optional<DatePeriod> periodRecord = dailyData.isPresent()
 				? dailyData.get().end().afterOrEquals(GeneralDate.today())
 						? Optional.of(new DatePeriod(dailyData.get().start(), GeneralDate.today().addDays(-1)))
-						: Optional.empty()
+						: dailyData
 				: Optional.empty();
 
 		// 予定期間を計算する

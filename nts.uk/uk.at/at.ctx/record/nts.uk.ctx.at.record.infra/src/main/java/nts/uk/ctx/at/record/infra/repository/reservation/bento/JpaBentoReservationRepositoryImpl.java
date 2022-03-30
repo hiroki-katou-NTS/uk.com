@@ -16,6 +16,7 @@ import javax.ejb.TransactionAttributeType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.database.DatabaseProduct;
 import nts.arc.time.GeneralDate;
@@ -418,12 +419,13 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		return result.toString();
 	}
 
-	private final static String REMOVE_CARDNUM_DATE = "DELETE FROM  KrcdtReservation r WHERE r.cardNo = :cardNo AND r.date = :date AND r.ordered = FALSE";
+	private final static String FIND_CARDNUM_DATE = "SELECT r FROM  KrcdtReservation r WHERE r.cardNo = :cardNo AND r.date = :date AND r.ordered = FALSE";
 
 	@Override
 	public void removeWithCardNumberDate(String cardNumber, GeneralDate date) {
-		this.queryProxy().query(REMOVE_CARDNUM_DATE, KrcdtReservation.class).setParameter("cardNo", cardNumber)
-				.setParameter("date", date).getQuery().executeUpdate();
+		val entity = this.queryProxy().query(FIND_CARDNUM_DATE, KrcdtReservation.class)
+				.setParameter("cardNo", cardNumber).setParameter("date", date).getList();
+		commandProxy().removeAll(entity);
 	}
 
 }

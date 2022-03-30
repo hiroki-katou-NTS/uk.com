@@ -35,68 +35,23 @@ public class ConvertTimeRecordReservationService {
 			return Optional.empty();
 
 		try {
-
+			boolean login = ConvertTimeRecordStampService.login(require, contractCode.v(),
+					new StampNumber(reservReceptData.getIdNumber()));
+			if(!login) {
+				return Optional.empty();
+			}
 			// $就業情報端末.予約(require, @予約受信データ)
 			AtomTask pairStampAtomTask = empInfoTerOpt.get().createReservRecord(require,
 					reservReceptData);
-//			 if (!canCreateNewData(require, contractCode, reservReceptData)) {
-//			 return Optional.empty();
-//			 }
-
-//			AtomTask atomTask = AtomTask.of(() -> {
-//				require.insert(pairStampAtomTask.getLeft());
-//				pairStampAtomTask.getRight().run();
-//			});
-			
 			 return Optional.of(pairStampAtomTask);
 		} catch (BusinessException bEx) {
-			bEx.printStackTrace();
-			// BusinessException bEx = (BusinessException) ex;
-			// 処理にエラーがある場合、別の申請受信データの処理を続行
-//			Optional<StampCard> stampCardOpt = require.getByCardNoAndContractCode(contractCode,
-//					new StampNumber(reservReceptData.getIdNumber()));
-//			if (!stampCardOpt.isPresent())
-//				return Optional.empty();
-//			AtomTask atomTaskEx = AtomTask.of(() -> {
-//
-//				Optional<TopPageAlarmEmpInfoTer> alEmpTer = createLogEmpTer(require, stampCardOpt.get().getEmployeeId(),
-//						requestSetting.get().getCompanyId().v(), empInfoTerCode.v(), reservReceptData.getIdNumber(),
-//						bEx.getMessage());
-//				if (alEmpTer.isPresent())
-//					require.insertLogAll(alEmpTer.get());
-//			});
-		return Optional.empty();
+			//bEx.printStackTrace();
+			System.out.print(bEx.getMessage());
+		    return Optional.empty();
 		}
 	}
 
-	// [pvt-1] 新しいを作成することができる
-//	private static boolean canCreateNewData(Require require, ContractCode contractCode,
-//			ReservationReceptionData reservReceptData) {
-//
-//		Optional<StampRecord> stampRecord = require.getStampRecord(contractCode,
-//				new StampNumber(reservReceptData.getIdNumber()), reservReceptData.getDateTime());
-//		return !stampRecord.isPresent();
-//	}
-
-//	// [pvt-2] 就業情報端末通信用トップページアラームを作る
-//	private static Optional<TopPageAlarmEmpInfoTer> createLogEmpTer(Require require, String sid, String companyId,
-//			String terCode, String cardNumber, String message) {
-//		List<String> lstSidApproval = require.getListEmpID(companyId, GeneralDate.today());
-//
-//		if (lstSidApproval.isEmpty())
-//			return Optional.empty();
-//
-//		List<TopPageAlarmManagerTr> lstManagerTr = lstSidApproval.stream()
-//				.map(x -> new TopPageAlarmManagerTr(x, RogerFlag.ALREADY_READ)).collect(Collectors.toList());
-//		TopPageAlEmpInfoTerDetail detail = new TopPageAlEmpInfoTerDetail(0, message, new EmployeeId(sid),
-//				new StampNumber(cardNumber));
-//
-//		return Optional.of(new TopPageAlarmEmpInfoTer(companyId, lstManagerTr, new EmpInfoTerminalCode(terCode),
-//				Arrays.asList(detail)));
-//
-//	}
-
-	public static interface Require extends EmpInfoTerminal.Require {
+	public static interface Require extends EmpInfoTerminal.Require, ConvertTimeRecordStampService.RequireLogin {
 
 		// [R-1]就業情報端末を取得する
 		public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode,

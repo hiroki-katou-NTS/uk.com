@@ -19,7 +19,7 @@ public enum NRWebQueryMenuName {
 
 	MONTH_WAGE(5, "月間勤務時間賃金状況照会", "5", "webapi/nr/process/query/l1refmonmoney"),
 
-	ANNUAL_WAGE(6, "年間勤務時間賃金状況照会", "6", "webapi/nr/process/query/l1refyearmoney");
+	ANNUAL_WAGE(6, "年間勤務時間賃金状況照会", "5", "webapi/nr/process/query/l1refyearmoney");
 
 	public final int key;
 

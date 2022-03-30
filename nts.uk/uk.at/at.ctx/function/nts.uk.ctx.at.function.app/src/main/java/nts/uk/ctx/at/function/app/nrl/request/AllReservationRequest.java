@@ -40,7 +40,7 @@ public class AllReservationRequest extends NRLRequest<Frame> {
 		int length = payload.length();
 		int q = length / DefaultValue.SINGLE_FRAME_LEN_48;
 		//
-		if (length % DefaultValue.SINGLE_FRAME_LEN != 0 || q <= 0 || q > 100) {
+		if (length % DefaultValue.SINGLE_FRAME_LEN_48 != 0 || q <= 0 || q > 100) {
 			context.responseNoAccept(ErrorCode.PARAM);
 			return;
 		}
@@ -50,8 +50,8 @@ public class AllReservationRequest extends NRLRequest<Frame> {
 				.addField(FieldName.RSV_IDNO, 20, t -> FormatPattern.isHwAlphanumericS(t))
 				.addField(FieldName.RSV_YMD, 6, t -> FormatPattern.isYymmdd(t))
 				.addField(FieldName.RSV_HMS, 6, t -> FormatPattern.isHHmmss(t))
-				.addField(FieldName.RSV_QUAN, 2, t -> FormatPattern.isNumeric(t))
-				.addField(FieldName.RSV_PRELIMINARY, 13, t -> DefaultValue.PRELIMINARY.equals(t));
+				.addField(FieldName.RSV_QUAN, 2, t -> FormatPattern.isNumeric(t) || t.trim().isEmpty())
+				.addField(FieldName.RSV_PRELIMINARY, 13, t -> DefaultValue.PRELIMINARY_YOYAKU.equals(t));
 		
 		for (int i = 0; i < q; i++) {
 			int rLen = i * DefaultValue.SINGLE_FRAME_LEN_48;
