@@ -246,20 +246,24 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 						Optional.of(WorkGroup.create(ots.workCd1, ots.workCd2, ots.workCd3, ots.workCd4, ots.workCd5)),
 						krcdtDayTsSupSupplInfo.map(si -> toWorkSuppInfo(si))), 
 				TimeSheetOfAttendanceEachOuenSheet.create(
-						new WorkNo(ots.workNo), 
-						Optional.of(new WorkTimeInformation(
-									new ReasonTimeChange(
-											ots.startTimeChangeWay == null ? TimeChangeMeans.REAL_STAMP : EnumAdaptor.valueOf(ots.startTimeChangeWay, TimeChangeMeans.class), 
-											ots.startStampMethod == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(ots.startStampMethod, EngravingMethod.class))), 
-									ots.startTime == null ? null : new TimeWithDayAttr(ots.startTime))), 
-						Optional.of(new WorkTimeInformation(
-									new ReasonTimeChange(
-											ots.endTimeChangeWay == null ? TimeChangeMeans.REAL_STAMP : EnumAdaptor.valueOf(ots.endTimeChangeWay, TimeChangeMeans.class), 
-											ots.endStampMethod == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(ots.endStampMethod, EngravingMethod.class))), 
-									ots.endTime == null ? null : new TimeWithDayAttr(ots.endTime)))), Optional.empty());
-				}).collect(Collectors.toList());
+						new WorkNo(ots.workNo),
+						createTimeInfo(ots.startTimeChangeWay, ots.startStampMethod, ots.startTime),
+						createTimeInfo(ots.endTimeChangeWay, ots.endStampMethod, ots.endTime)), 
+				Optional.empty());
+			}).collect(Collectors.toList());
 		
 		return OuenWorkTimeSheetOfDaily.create(es.get(0).pk.sid, es.get(0).pk.ymd, ouenTimeSheet);
+	}
+	
+	private Optional<WorkTimeInformation> createTimeInfo(Integer timeChangeWay, Integer stampMethod, Integer time) {
+		
+		if (timeChangeWay == null && stampMethod == null && time == null) return Optional.empty();
+		
+		return Optional.of(new WorkTimeInformation(
+				new ReasonTimeChange(
+						timeChangeWay == null ? TimeChangeMeans.AUTOMATIC_SET : EnumAdaptor.valueOf(timeChangeWay, TimeChangeMeans.class), 
+						stampMethod == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(stampMethod, EngravingMethod.class))), 
+				time == null ? null : new TimeWithDayAttr(time)));
 	}
 
 	private WorkSuppInfo toWorkSuppInfo(KrcdtDayTsSupSupplInfo ts) {
