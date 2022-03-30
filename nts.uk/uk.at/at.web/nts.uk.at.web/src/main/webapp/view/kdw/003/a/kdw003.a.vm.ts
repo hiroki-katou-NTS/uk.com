@@ -5488,27 +5488,25 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
 		 
 		            let checkDataCare: boolean = true;
-		            nts.uk.ui.block.invisible();
-		            nts.uk.ui.block.grayout();
-		            self.listErAlHolidays = [];
-		            if (!self.flagCalculation) {
-		                self.listCareError([]);
-		                self.listCareInputError([]);
-		                self.listCheck28([]);
-		                self.listCheckDeviation = [];
-		                self.listErrorMonth = [];
-		                self.lstErrorAfterCalcUpdate = [];
+		            selfParent.listErAlHolidays = [];
+		            if (!selfParent.flagCalculation) {
+		                selfParent.listCareError([]);
+		                selfParent.listCareInputError([]);
+		                selfParent.listCheck28([]);
+		                selfParent.listCheckDeviation = [];
+		                selfParent.listErrorMonth = [];
+		                selfParent.lstErrorAfterCalcUpdate = [];
 		            }
-		            self.listCheckHolidays([]);
+		            selfParent.listCheckHolidays([]);
 		            let dataChange: any = _.uniqWith($("#dpGrid").mGrid("updatedCells", true),  _.isEqual);
 		
-		            var dataSource = $("#dpGrid").mGrid("dataSource");
+		            let dataSource1 = $("#dpGrid").mGrid("dataSource");
 		            let dataChangeProcess: any = [];
 		            let dataCheckSign: any = [];
 		            let dataCheckApproval: any = [];
 		            let sprStampSourceInfo: any = null;
 		            _.each(dataChange, (data: any) => {
-		                let dataTemp = _.find(dataSource, (item: any) => {
+		                let dataTemp = _.find(dataSource1, (item: any) => {
 		                    return item.id == data.rowId;
 		                });
 		
@@ -5517,14 +5515,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 		                        if (data.columnKey.indexOf("Name") != -1) {
 		                        } else {
 		                            //get layout , and type
-		                            let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
+		                            let layoutAndType: any = _.find(selfParent.itemValueAll(), (item: any) => {
 		                                return item.itemId == data.columnKey.substring(1, data.columnKey.length);
 		                            });
-		                            let item = _.find(self.lstAttendanceItem(), (value) => {
+		                            let item = _.find(selfParent.lstAttendanceItem(), (value) => {
 		                                return String(value.id) === data.columnKey.substring(1, data.columnKey.length);
 		                            })
 		                            let value: any;
-		                            value = self.getPrimitiveValue(data.value, item.attendanceAtr, item.primitive);
+		                            value = selfParent.getPrimitiveValue(data.value, item.attendanceAtr, item.primitive);
 									if (value === true || value === false) {
 										value = value ? 1 : 0
 									}
@@ -5540,11 +5538,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 		                            columnKey = data.columnKey.substring(2, data.columnKey.length);
 		                        }
 		                        //TO Thanh: move find logic out if condition
-		                        item = _.find(self.lstAttendanceItem(), (data) => {
+		                        item = _.find(selfParent.lstAttendanceItem(), (data) => {
 		                            return String(data.id) === columnKey;
 		                        })
 		
-		                        let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
+		                        let layoutAndType: any = _.find(selfParent.itemValueAll(), (item: any) => {
 		                            return item.itemId == columnKey;
 		                        });
 		                        let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup);
@@ -5555,19 +5553,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 		                        dataCheckSign.push({ rowId: data.rowId, itemId: "sign", value: data.value, employeeId: dataTemp.employeeId, date: dataTemp.dateDetail.utc().toISOString(), flagRemoveAll: false });
 		                    } else {
 		                        let flag = false;
-		                        if (data.rowId == self.sprRemoveApprovalAll) {
+		                        if (data.rowId == selfParent.sprRemoveApprovalAll) {
 		                            flag = true;
-		                            self.sprRemoveApprovalAll = null;
+		                            selfParent.sprRemoveApprovalAll = null;
 		                        }
 		                        dataCheckApproval.push({ rowId: data.rowId, itemId: "approval", value: data.value, employeeId: dataTemp.employeeId, date: dataTemp.dateDetail.utc().toISOString(), flagRemoveAll: flag });
 		                    }
 		                }
 		            });
-		            if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null && self.initScreenSPR == 0) {
-		                if (self.sprStampSourceInfo() != null) {
-		                    sprStampSourceInfo = self.sprStampSourceInfo();
-		                    sprStampSourceInfo.employeeId = self.shareObject().initClock.employeeId;
-		                    sprStampSourceInfo.date = self.shareObject().initClock.dateSpr.utc().toISOString();
+		            if (!_.isEmpty(selfParent.shareObject()) && selfParent.shareObject().initClock != null && selfParent.initScreenSPR == 0) {
+		                if (selfParent.sprStampSourceInfo() != null) {
+		                    sprStampSourceInfo = selfParent.sprStampSourceInfo();
+		                    sprStampSourceInfo.employeeId = selfParent.shareObject().initClock.employeeId;
+		                    sprStampSourceInfo.date = selfParent.shareObject().initClock.dateSpr.utc().toISOString();
 		                }
 		            }
 		            let execMontlyAggregateAsync = true;
@@ -5575,31 +5573,31 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 		                itemValues: dataChangeProcess,
 		                dataCheckSign: dataCheckSign,
 		                dataCheckApproval: dataCheckApproval,
-		                mode: self.displayFormat(),
+		                mode: selfParent.displayFormat(),
 		                spr: sprStampSourceInfo,
-		                flagCalculation: self.flagCalculation,
-		                lstNotFoundWorkType: self.workTypeNotFound,
-		                showDialogError: self.showDialogError
+		                flagCalculation: selfParent.flagCalculation,
+		                lstNotFoundWorkType: selfParent.workTypeNotFound,
+		                showDialogError: selfParent.showDialogError
 		            }
-		            if (self.displayFormat() == 0) {
-		                if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null) {
-		                    dataParent["employeeId"] = self.shareObject().initClock.employeeId;
+		            if (selfParent.displayFormat() == 0) {
+		                if (!_.isEmpty(selfParent.shareObject()) && selfParent.shareObject().initClock != null) {
+		                    dataParent["employeeId"] = selfParent.shareObject().initClock.employeeId;
 		                } else {
-		                    dataParent["employeeId"] = dataSource.length > 0 ? dataSource[0].employeeId : null;
+		                    dataParent["employeeId"] = dataSource1.length > 0 ? dataSource1[0].employeeId : null;
 		                }
-		                dataParent["monthValue"] = self.valueUpdateMonth;
+		                dataParent["monthValue"] = selfParent.valueUpdateMonth;
 		                if (execMontlyAggregateAsync) {
 		                    dataParent["monthValue"].needCallCalc = false;
 		                }
-		                dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail._i, endDate: dataSource[dataSource.length - 1].dateDetail._i } : null;
+		                dataParent["dateRange"] = dataSource1.length > 0 ? { startDate: dataSource1[0].dateDetail._i, endDate: dataSource1[dataSource1.length - 1].dateDetail._i } : null;
 		            } else {
-		                dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail._i, endDate: dataSource[0].dateDetail._i } : null;
+		                dataParent["dateRange"] = dataSource1.length > 0 ? { startDate: dataSource1[0].dateDetail._i, endDate: dataSource1[0].dateDetail._i } : null;
 		            }
 		
-		            let checkDailyChange = (dataChangeProcess.length > 0 || dataCheckSign.length > 0 || dataCheckApproval.length > 0 || self.sprStampSourceInfo() != null) && checkDataCare;
-		            dataParent["checkDailyChange"] = (dataChangeProcess.length > 0 || self.sprStampSourceInfo()) ? true : false;
-		            dataParent["showFlex"] = self.showFlex();
-		            dataParent["checkUnLock"] = self.checkUnLock();
+		            let checkDailyChange = (dataChangeProcess.length > 0 || dataCheckSign.length > 0 || dataCheckApproval.length > 0 || selfParent.sprStampSourceInfo() != null) && checkDataCare;
+		            dataParent["checkDailyChange"] = (dataChangeProcess.length > 0 || selfParent.sprStampSourceInfo()) ? true : false;
+		            dataParent["showFlex"] = selfParent.showFlex();
+		            dataParent["checkUnLock"] = selfParent.checkUnLock();
 
                     let findWkpParam = {
                         companyId: __viewContext.user.companyId, 
