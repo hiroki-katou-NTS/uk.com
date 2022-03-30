@@ -813,6 +813,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 	                                    }
 	                                    else {
 	                                        let paramMonth: any = { loadAfterCalc: false , paramCommonAsync : self.paramCommonAsync , dpStateParam : self.dpStateParam };
+											param.screenDto = self.screenDto;
 	                                        $.when(service.loadMonth(paramMonth), service.startScreen(param)).done((dataMonth, dataDaily) => {
 												self.dataSessionDto = dataDaily.dataSessionDto;
 												self.screenDto.dataSessionDto = self.dataSessionDto;
