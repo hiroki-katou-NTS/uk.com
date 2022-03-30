@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode;
 import nts.uk.ctx.bs.employee.dom.workplace.EmployeeAffiliation;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
@@ -30,13 +29,13 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class EmpOrganizationPubImpl implements EmpOrganizationPub {
-	
+
 	@Inject
 	private AffWorkplaceGroupRespository repo;
-	
+
 	@Inject
 	private WorkplacePub wkplacePub;
-	
+
 	@Override
 	public List<EmpOrganizationExport> getEmpOrganiztion(GeneralDate baseDate, List<String> lstEmpId) {
 		RequireWorkplaceGroupGettingService require = new RequireWorkplaceGroupGettingService(repo, wkplacePub);
@@ -46,8 +45,8 @@ public class EmpOrganizationPubImpl implements EmpOrganizationPub {
 				.map(c -> new EmpOrganizationExport(
 						c.getEmployeeID(),
 						c.getEmployeeCode().isPresent() ? Optional.of(c.getEmployeeCode().get().v()) : Optional.empty(),
-						c.getBusinessName(), 
-						c.getWorkplaceID(), 
+						c.getBusinessName(),
+						c.getWorkplaceID(),
 						c.getWorkplaceGroupID()))
 				.collect(Collectors.toList());
 		return result;
@@ -57,22 +56,23 @@ public class EmpOrganizationPubImpl implements EmpOrganizationPub {
 	private static class RequireWorkplaceGroupGettingService implements WorkplaceGroupGettingService.Require{
 		@Inject
 		private AffWorkplaceGroupRespository repo;
-		
+
 		@Inject
 		private WorkplacePub wkplacePub;
+
 		@Override
-		public String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
+		public Optional<String> getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
 			//[No.650]社員が所属している職場を取得する
-			AffWorkplaceHistoryItemExport data= wkplacePub.getAffWkpHistItemByEmpDate(employeeID, date);
-			return data.getWorkplaceId();
+			AffWorkplaceHistoryItemExport data = wkplacePub.getAffWkpHistItemByEmpDate(employeeID, date);
+			return Optional.ofNullable( data ).map( d -> d.getWorkplaceId() );
 		}
 
 		@Override
 		public List<AffWorkplaceGroup> getWGInfo(List<String> WKPID) {
 			String cid = AppContexts.user().companyId();
 			//List<AffWorkplaceGroup> getByListWKPID(String CID, List<String> WKPID)
-			List<AffWorkplaceGroup> data = repo.getByListWKPID(cid, WKPID);		
-			return data;			
-		}	
+			List<AffWorkplaceGroup> data = repo.getByListWKPID(cid, WKPID);
+			return data;
+		}
 	}
 }
