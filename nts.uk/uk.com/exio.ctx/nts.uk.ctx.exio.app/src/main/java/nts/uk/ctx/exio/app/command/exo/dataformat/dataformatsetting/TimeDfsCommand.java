@@ -2,9 +2,14 @@ package nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting;
 
 import java.math.BigDecimal;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.Value;
 
-@Value
+@NoArgsConstructor
+@Setter
+@Getter
 public class TimeDfsCommand {
 
 	/**

@@ -105,7 +105,7 @@ public class WorkStamp extends DomainObject{
 		return new WorkStamp(
 				new WorkTimeInformation(
 						new ReasonTimeChange(TimeChangeMeans.APPLICATION, Optional.empty()), null),
-				null);
+				Optional.empty());
 	}
 	
 	/**

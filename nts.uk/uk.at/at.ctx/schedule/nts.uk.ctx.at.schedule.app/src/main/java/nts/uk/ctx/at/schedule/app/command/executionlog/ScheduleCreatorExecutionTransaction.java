@@ -226,14 +226,14 @@ public class ScheduleCreatorExecutionTransaction {
 
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSet;
-	
+
 	@Inject
 	protected TransactionService transactionService;
-	
+
 	@SuppressWarnings("rawtypes")
 	public void execute(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
 			Optional<AsyncCommandHandlerContext> asyncTask, String companyId, String exeId,
-			DatePeriod period, CreateScheduleMasterCache masterCache, Object companySetting, 
+			DatePeriod period, CreateScheduleMasterCache masterCache, Object companySetting,
 			ScheduleCreator scheduleCreator, CacheCarrier carrier) {
 		RegistrationListDateSchedule registrationListDateSchedule = new RegistrationListDateSchedule(new ArrayList<>());
 
@@ -252,7 +252,7 @@ public class ScheduleCreatorExecutionTransaction {
 				/**再作成じゃないとき、取得する*/
 				listBasicSchedule = this.workScheduleRepository.getListBySid(scheduleCreator.getEmployeeId(), period);
 			}
-			
+
 			// 勤務予定作成する ↓
 			this.createSchedule(command, scheduleExecutionLog, asyncTask, period, masterCache, listBasicSchedule,
 					companySetting, scheduleCreator, registrationListDateSchedule, content, carrier);
@@ -289,7 +289,7 @@ public class ScheduleCreatorExecutionTransaction {
 			OutputCreateSchedule result = this.createScheduleBasedPersonWithMultiThread(command, scheduleCreator,
 					scheduleExecutionLog, asyncTask, period, masterCache, listBasicSchedule, registrationListDateSchedule,
 					carrier);
-			
+
 			/** 勤務予定作成後の登録 */
 			registerSchedule(command, scheduleCreator, companyId, result);
 		}
@@ -297,7 +297,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 	private void registerSchedule(ScheduleCreatorExecutionCommand command, ScheduleCreator scheduleCreator,
 			String companyId, OutputCreateSchedule result) {
-		
+
 		result.getListWorkSchedule().stream().filter(ws -> ws != null).forEach(ws -> {
 			// 暫定データの登録
 			this.transactionService.execute(() -> {
@@ -305,13 +305,13 @@ public class ScheduleCreatorExecutionTransaction {
 				// 勤務予定を登録する
 				this.workScheduleRepository.deleteListDate(scheduleCreator.getEmployeeId(), dates);
 				this.workScheduleRepository.insert(ws);
-				
+
 				this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(), dates);
 			});
 		});
-		
+
 		this.transactionService.execute(() -> {
-			
+
 			// エラー一覧を繰り返す
 			result.getListError().stream().filter(e -> e != null).forEach(error -> {
 				// エラーを登録する
@@ -319,7 +319,7 @@ public class ScheduleCreatorExecutionTransaction {
 				this.scheduleErrorLogRepository.addByTransaction(error);
 			});
 		});
-		
+
 		this.transactionService.execute(() -> {
 			scheduleCreator.updateToCreated();
 			this.scheduleCreatorRepository.update(scheduleCreator);
@@ -445,7 +445,7 @@ public class ScheduleCreatorExecutionTransaction {
 	 */
 	private OutputCreateScheduleOneDate reflectWorkSchedule(ParamEmployeesTempo employeesTempo,
 			ScheduleCreatorExecutionCommand command, ScheduleCreator creator, ScheduleExecutionLog domain,
-			DatePeriod targetPeriod,GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache, 
+			DatePeriod targetPeriod,GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache,
 			List<WorkSchedule> listBasicSchedule, DateRegistedEmpSche dateRegistedEmpSche, CacheCarrier carrier) {
 
 		OutputCreateScheduleOneDate createScheduleOneDate = new OutputCreateScheduleOneDate();
@@ -527,7 +527,7 @@ public class ScheduleCreatorExecutionTransaction {
 							information.getWorkTypeCode().v());
 					//call: 勤務種類から出勤系の勤務種類設定を取得する（勤務種類）： 勤務種類設定（Optional））
 					Optional<WorkTypeSet> workTypeSet = workTypeOpt.isPresent()? this.getWorkTimeSet(workTypeOpt.get()):Optional.empty();
-					
+
 					// 取得した情報をもとに「勤務予定」を入れる (TKT-TQP)
 					// 勤務情報。勤務実績の勤務情報。勤務種類 = 処理中の勤務種類コード & 勤務情報。勤務実績の勤務情報。就業時間帯 =処理中の 就業時間帯コード
 					integrationOfDaily.getWorkInformation().setRecordInfo(prepareWorkOutput.getInformation().clone());
@@ -606,7 +606,7 @@ public class ScheduleCreatorExecutionTransaction {
 					if (command.getContent().getConfirm()) {
 						atr = ConfirmedATR.CONFIRMED;
 					}
-					
+
 					WorkSchedule workSchedule = new WorkSchedule(integrationOfDaily.getEmployeeId(),
 							integrationOfDaily.getYmd(), atr, integrationOfDaily.getWorkInformation(),
 							integrationOfDaily.getAffiliationInfor(), integrationOfDaily.getBreakTime(),
@@ -648,7 +648,7 @@ public class ScheduleCreatorExecutionTransaction {
 		// EA修正履歴 No2716
 		List<EmployeeWorkingStatus> listEmploymentInfo = masterCache.getListManaStatuTempo();
 		Optional<EmployeeWorkingStatus> optEmploymentInfo = Optional.empty();
-		
+
 		if (listEmploymentInfo != null) {
 			optEmploymentInfo = listEmploymentInfo.stream()
 					.filter(employmentInfo -> employmentInfo.getDate().equals(dateInPeriod) && employmentInfo.getEmployeeID().equals(creator.getEmployeeId())).findFirst();
@@ -695,7 +695,7 @@ public class ScheduleCreatorExecutionTransaction {
 			// ドメインモデル「スケジュール作成エラーログ」を登録する
 			ScheduleErrorLog scheduleErrorLog = ScheduleErrorLog.createErrorLog(internationalization,
 					command.getExecutionId(), creator.getEmployeeId(), dateInPeriod,"Msg_602", "#KSC001_87");
-			
+
 			DataProcessingStatusResult result = new DataProcessingStatusResult(CID, scheduleErrorLog,
 					ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY.value), null, null, null);
 			return result;
@@ -742,7 +742,7 @@ public class ScheduleCreatorExecutionTransaction {
 								nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek
 										.valueOf(dateInPeriod.dayOfWeek() - 1),
 								new ArrayList<>(), Optional.empty()),
-						null, new BreakTimeOfDailyAttd(), new ArrayList<>(), 
+						null, new BreakTimeOfDailyAttd(), new ArrayList<>(),
 						TaskSchedule.createWithEmptyList(),
 						SupportSchedule.createWithEmptyList(),
 						Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()),
@@ -816,7 +816,7 @@ public class ScheduleCreatorExecutionTransaction {
 	 */
 	public PrepareWorkOutput getWorkInfo(ParamEmployeesTempo employeesTempo, ScheduleCreatorExecutionCommand command,
 			ScheduleCreator creator, ScheduleExecutionLog domain, DatePeriod targetPeriod, GeneralDate dateInPeriod,
-			CreateScheduleMasterCache masterCache, DateRegistedEmpSche dateRegistedEmpSche, 
+			CreateScheduleMasterCache masterCache, DateRegistedEmpSche dateRegistedEmpSche,
 			Map<GeneralDate, WorkInformation> results, CacheCarrier carrier) {
 		PrepareWorkOutput prepareWorkOutput = null;
 		// パラメータの勤務Mapを確認する
@@ -836,7 +836,7 @@ public class ScheduleCreatorExecutionTransaction {
 		// 社員の在職状態を確認する
 		// if 休職中、休業中
 		// if 休職中
-		if (optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE || 
+		if (optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE ||
 				optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.CLOSED) {
 			prepareWorkOutput = this.getWorkInfoLeave( employeesTempo, command, creator, domain,
 				targetPeriod, dateInPeriod, masterCache, dateRegistedEmpSche, carrier);
@@ -900,7 +900,7 @@ public class ScheduleCreatorExecutionTransaction {
 	 */
 	public PrepareWorkOutput getWorkInfoLeave(ParamEmployeesTempo employeesTempo,
 			ScheduleCreatorExecutionCommand command, ScheduleCreator creator, ScheduleExecutionLog domain,
-			DatePeriod targetPeriod, GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache, 
+			DatePeriod targetPeriod, GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache,
 			DateRegistedEmpSche dateRegistedEmpSche, CacheCarrier carrier) {
 		// if 休職中、休業中
 		// 入力パラメータ「作成方法区分」を確認する
@@ -927,16 +927,16 @@ public class ScheduleCreatorExecutionTransaction {
 				// 取得した勤務情報の稼働日区分を確認する
 				Optional<WorkType> workType = workTypeRepo.findByPK(command.getCompanyId(),
 						preWork.getInformation().getWorkTypeCode().v());
-				
+
 				if(!workType.isPresent()) {
 					ScheduleErrorLog scheExeLog = ScheduleErrorLog.createErrorLog(internationalization,
 							command.getExecutionId(), creator.getEmployeeId(), dateInPeriod,"Msg_590");
-					
+
 					// ドメインモデル「スケジュール作成エラーログ」を返す
 					preWork.setExecutionLog(Optional.of(scheExeLog));
 					return preWork;
 				}
-				
+
 				boolean isHoliday = workType.get().isHoliday();
 				boolean isHolidayWork = workType.get().isHolidayWork();
 
@@ -967,12 +967,12 @@ public class ScheduleCreatorExecutionTransaction {
 				if(!optEmploymentInfo.isPresent()) {
 					ScheduleErrorLog scheExeLog = ScheduleErrorLog.createErrorLog(internationalization,
 							command.getExecutionId(), creator.getEmployeeId(), dateInPeriod,"Msg_1156", "#Com_Person");
-					
+
 					// ドメインモデル「スケジュール作成エラーログ」を返す
 					preWork.setExecutionLog(Optional.of(scheExeLog));
 					return preWork;
 				}
-				
+
 				Optional<WorkType> lstWorkType = Optional.empty();
 				//休職の勤務種類を取得
 				if(optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE) {
@@ -1075,7 +1075,7 @@ public class ScheduleCreatorExecutionTransaction {
 					creator.getEmployeeId(), dateInPeriod, "Msg_430", "#Com_Person");
 			return new PrepareWorkOutput(null, null, null, Optional.ofNullable(log));
 		}
-		
+
 		// if 個人スケジュールコピー
 		if (command.getContent().getSpecifyCreation().getCreationMethod().value == CreationMethod.SCHEDULE_COPY.value) {
 			int daysToAdd = targetPeriod.datesBetween().size() - 1;
@@ -1167,7 +1167,7 @@ public class ScheduleCreatorExecutionTransaction {
 				return new PrepareWorkOutput(getMonthlySetting.get().getWorkInformation(), null, null,
 						Optional.empty());
 			}
-			
+
 			ScheduleErrorLog scheduleErrorLog = ScheduleErrorLog.createErrorLog(internationalization, command.getExecutionId()
 					, creator.getEmployeeId(), dateInPeriod, "Msg_604");
 			return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheduleErrorLog));
@@ -1201,11 +1201,11 @@ public class ScheduleCreatorExecutionTransaction {
 							? new WorkingCode(monthlySetting.get().getWorkInformation().getWorkTimeCode().v()) 	: null,
 					workType.isPresent() ? workType.get() : null, dateInPeriod, creator);
 			if (workTimeCode.getKey() != null) {
-				ScheduleErrorLog scheduleErrorLog = ScheduleErrorLog.createErrorLog(internationalization, command.getExecutionId(), 
+				ScheduleErrorLog scheduleErrorLog = ScheduleErrorLog.createErrorLog(internationalization, command.getExecutionId(),
 						creator.getEmployeeId(), dateInPeriod, workTimeCode.getKey());
 				return new PrepareWorkOutput(null, null, null, Optional.of(scheduleErrorLog));
 			}
-			
+
 			WorkInformation workInformation = new WorkInformation(workType.map(m -> m.getWorkTypeCode().v()).orElse(""),
 					workTimeCode.getValue() != null ? workTimeCode.getValue().v() : null);
 			return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
@@ -1266,11 +1266,11 @@ public class ScheduleCreatorExecutionTransaction {
 				basicWorkSetting.getBasicSet().isPresent() ? basicWorkSetting.getBasicSet().get().getWorkingCode() : null,
 				workType.isPresent() ? workType.get() : null, dateInPeriod, creator);
 		if (workTimeCode.getKey() != null) {
-			ScheduleErrorLog scheduleErrorLog = ScheduleErrorLog.createErrorLog(internationalization, command.getExecutionId(), 
+			ScheduleErrorLog scheduleErrorLog = ScheduleErrorLog.createErrorLog(internationalization, command.getExecutionId(),
 					creator.getEmployeeId(), dateInPeriod, workTimeCode.getKey());
 			return new PrepareWorkOutput(null, null, null, Optional.of(scheduleErrorLog));
 		}
-		
+
 		// 「勤務種類コード」、「就業時間帯コード」を返す
 		WorkInformation workInformation = new WorkInformation(workType.map(m -> m.getWorkTypeCode().v()).orElse(""),
 				workTimeCode.getValue() == null ? null : workTimeCode.getValue().v());
@@ -1368,7 +1368,7 @@ public class ScheduleCreatorExecutionTransaction {
 		if (setupType == SetupType.NOT_REQUIRED) {
 			return Pair.of(null, null);
 		}
-		
+
 		Optional<SingleDaySchedule> optSingleDaySchedule = workingConItem.getWorkCategory().getWorkTime()
 				.getDayOfWeek().getSingleDaySchedule(ymd);
 		// 入力パラメータ「年月日」の曜日に対応する「単一日勤務時間」から、就業時間帯コードを取得する
@@ -1405,7 +1405,7 @@ public class ScheduleCreatorExecutionTransaction {
 			} else {
 				// 取得できない
 				// ドメインモデル「スケジュール作成エラーログ」を登録する(đăng ký domain「スケジュール作成エラーログ」)
-				ScheduleErrorLog scheduleErrorLog = ScheduleErrorLog.createErrorLog(internationalization, command.getExecutionId(), 
+				ScheduleErrorLog scheduleErrorLog = ScheduleErrorLog.createErrorLog(internationalization, command.getExecutionId(),
 						creator.getEmployeeId(), dateInPeriod, "Msg_588");
 				settingDto.setScheduleErrorLog(Optional.of(scheduleErrorLog));
 				return settingDto;
@@ -1615,13 +1615,13 @@ public class ScheduleCreatorExecutionTransaction {
 										.collect(Collectors.toList())))
 						.collect(Collectors.toList()),
 				masterCache.getListBusTypeOfEmpHis(),
-				masterCache.getEmpGeneralInfo().getEmpWorkplaceGroup(), 
+				masterCache.getListManaStatuTempo(),
 				masterCache.getEmpGeneralInfo().getEmpLicense());
-		
+
 		return generalInfoImport;
 
 	}
-	
+
 	// 勤務種類から出勤系の勤務種類設定を取得する（勤務種類）： 勤務種類設定（Optional））: 115638
 	private Optional<WorkTypeSet>  getWorkTimeSet(WorkType workType) {
 		Optional<WorkTypeSet> workTypeSet = Optional.empty();
@@ -1677,22 +1677,22 @@ public class ScheduleCreatorExecutionTransaction {
 		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 			return fixedWorkSetRepo.findByKey(companyId, workTimeCode.v());
 		}
-		
+
 		@Override
 		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 			return flowWorkSetRepo.find(companyId, workTimeCode.v());
 		}
-		
+
 		@Override
 		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 			return flexWorkSetRepo.find(companyId, workTimeCode.v());
 		}
-		
+
 		@Override
 		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
 			return predetemineTimeSetRepo.findByWorkTimeCode(companyId, workTimeCode.v());
 		}
-		
+
 		@Override
 		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
 			return workTypeRepo.findByPK(companyId, workTypeCode.v());
