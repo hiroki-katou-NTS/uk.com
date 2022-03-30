@@ -83,4 +83,9 @@ public interface MonthlyAttendanceItemGetMemento {
 	 * @return the display method
 	 */
 	DisplayMonthResultsMethod getTwoMonthlyDisplay();
+	
+	
+	boolean getUseAnyPeriod();
+
+	boolean getUseMonthResult();	
 }

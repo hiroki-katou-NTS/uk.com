@@ -134,4 +134,16 @@ public class JpaMonthlyAttendanceItemSetMemento implements MonthlyAttendanceItem
 		this.entity.setTwoMonthlyDisplay(twoMonthlyDisplay.value);
 	}
 
+	@Override
+	public void setUseAnyPeriod(boolean useAnyPeriod) {
+		this.entity.setUseByAnp(useAnyPeriod);
+		
+	}
+
+	@Override
+	public void setUseMonthResult(boolean useMonthResult) {
+		this.entity.setUseByMon(useMonthResult);
+		
+	}
+
 }
