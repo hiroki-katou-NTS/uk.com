@@ -517,7 +517,7 @@ public class DailyPerformanceCorrectionWebService {
 		List<DailyRecordDto> domainOlds =  this.getDataOld(dataParentDto.getDataSessionDto().getInputGetDataOlds());
 
 		dataParentDto.getDataParent().setDailyOlds(domainOlds); // domainOlds
-		
+		dataParentDto.getDataParent().setDailyEdits(cloneListDto(domainOlds));
 		dataParentDto.getDataParent().setLstAttendanceItem(dataParentDto.getDataSessionDto().getItemIdRCs()); //itemIdRCs
 		dataParentDto.getDataParent().setLstData(dataParentDto.getDataSessionDto().getDataSource()); // dataSource
 		Object objectCacheMonth = dataParentDto.getDataSessionDto().getDomainMonthOpt(); // domainMonths
