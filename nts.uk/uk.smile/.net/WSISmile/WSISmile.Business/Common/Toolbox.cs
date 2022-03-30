@@ -24,6 +24,22 @@ namespace WSISmile.Business.Common
         }
 
         /// <summary>
+        /// Nullチェック
+        /// </summary>
+        /// <param name="obj">判定オブジェクト</param>
+        /// <returns></returns>
+        public static bool IsNull(object obj)
+        {
+            #region Nullチェック
+            if (obj == DBNull.Value || obj == null)
+            {
+                return true;
+            }
+            return false;
+            #endregion
+        }
+
+        /// <summary>
         /// 処理年月(yyyyMM)をDateTimeへ変換する(*日は01固定)
         /// </summary>
         /// <param name="yyyyMM">処理年月</param>
@@ -55,7 +71,7 @@ namespace WSISmile.Business.Common
         public static string RemoveInvalidSymbol(object obj)
         {
             #region 不正な記号を除く
-            if (obj == null || obj == DBNull.Value)
+            if (Toolbox.IsNull(obj))
             {
                 return string.Empty;
             }

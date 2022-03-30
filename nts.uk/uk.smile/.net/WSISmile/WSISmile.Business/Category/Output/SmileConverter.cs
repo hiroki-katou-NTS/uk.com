@@ -203,6 +203,9 @@ namespace WSISmile.Business.Category.Output
                     return;
                 }
 
+                // 月別実績未承認社員List.
+                List<string> unApprovedEmployees = new List<string>();
+
                 foreach (string employeeCd in employeeList)
                 {
                     #region 月別実績の承認状態のチェック
@@ -239,9 +242,17 @@ namespace WSISmile.Business.Category.Output
                             }
                             if (!monthlyApprove)
                             {
-                                TI.ErrorMsgList.Add("月別実績に未確認のデータが存在します。勤次郎にてご確認ください。" + Environment.NewLine + "対象社員CD：" + employeeCd);
-                                return;
+                                unApprovedEmployees.Add(employeeCd);
                             }
+                        }
+
+                        if (unApprovedEmployees.Count > 0)
+                        {
+                            foreach (string unApprovedEmployeeCd in unApprovedEmployees)
+                            {
+                                TI.ErrorMsgList.Add("月別実績に未確認のデータが存在します。勤次郎にてご確認ください。※対象社員CD：" + unApprovedEmployeeCd);
+                            }
+                            return;
                         }
                     }
                     #endregion 月別実績の承認状態のチェック
@@ -280,8 +291,8 @@ namespace WSISmile.Business.Category.Output
             #region Smile側のデータフォーマットに合わせて、出力データを調整する
             foreach (DataRow drSmile in dtSmile.Rows)
             {
-                // 社員CD *6桁へ調整 TODO
-                drSmile[SmileRequiredItem.EMPLOYEE_CD] = drSmile[SmileRequiredItem.EMPLOYEE_CD].ToString().Substring(2, 6);
+                // *** 社員CD 6桁へ調整 ***
+                // drSmile[SmileRequiredItem.EMPLOYEE_CD] = drSmile[SmileRequiredItem.EMPLOYEE_CD].ToString().Substring(2, 6);
 
                 // 年
                 drSmile[SmileRequiredItem.YEAR] = TI.Output.SmileYear;
