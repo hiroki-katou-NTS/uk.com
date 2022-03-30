@@ -6114,6 +6114,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             setShared("dataFromA", param);
             setShared("dataTooltip", self.tooltipShare);
             nts.uk.ui.windows.sub.modal("/view/ksu/003/a/index.xhtml").onClosed(() => { 
+                $('#main-area').scrollTop(0);
                 let result = getShared('status-result');
                 if (!_.isNil(result) && result == true ) {
                     self.updateGrid();
