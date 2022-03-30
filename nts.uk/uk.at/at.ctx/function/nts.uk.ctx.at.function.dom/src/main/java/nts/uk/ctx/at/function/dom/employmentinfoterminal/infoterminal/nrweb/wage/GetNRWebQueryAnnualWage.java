@@ -106,7 +106,7 @@ public class GetNRWebQueryAnnualWage {
 			return new PeriodDetail(Optional.of(period), Optional.empty());
 		}
 
-		if (period.start().after(currentClosurePeriod.end())) {
+		if (period.start().afterOrEquals(currentClosurePeriod.start())) {
 			return new PeriodDetail(Optional.empty(), Optional.of(period));
 		}
 
