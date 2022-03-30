@@ -616,6 +616,10 @@ public class DailyPerformanceCorrectionWebService {
     @POST
 	@Path("findWplIDByCode")
 	public GetWkpIDOutput findWplIDByCode(GetWkpIDParam param) {
+		
+		List<DailyRecordDto> domainOlds =  this.getDataOld(param.getDataSessionDto().getInputGetDataOlds());
+		param.getDataParent().setDailyOlds(domainOlds);
+		param.getDataParent().setDailyEdits(cloneListDto(domainOlds));
         List<DailyRecordDto> dailyEdits = dailyCalculationService.getListEdits(param.getDataParent());
         
         Optional<DailyRecordDto> dailyEditOpt = dailyEdits.stream().filter(x -> {
