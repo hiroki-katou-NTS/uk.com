@@ -24,5 +24,7 @@ public class GetWkpIDParam {
     public String employeeId;
     
     DataSessionDto dataSessionDto;
+    
+    DPItemParent dataParent;
 
 }
