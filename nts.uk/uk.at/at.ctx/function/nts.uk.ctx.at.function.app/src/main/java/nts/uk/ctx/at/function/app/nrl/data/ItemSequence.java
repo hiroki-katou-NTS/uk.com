@@ -131,6 +131,10 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING2,
 			Element.PAYLOAD, Element.BCC);
 	
+	public static final List<String> REBOOT_REQ_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
+			Element.BCC);
+	
 	/**
 	 * From map.
 	 * 
@@ -218,6 +222,9 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			 orders = request ? MESSAGE_REQ : MESSAGE_RES;
 			 break;
 			 
+		case REBOOT:
+			 orders = request ? REBOOT_REQ_ORDER :  ACCEPT_ORDER;
+			 break;
 		default:
 			return Optional.empty();
 		}

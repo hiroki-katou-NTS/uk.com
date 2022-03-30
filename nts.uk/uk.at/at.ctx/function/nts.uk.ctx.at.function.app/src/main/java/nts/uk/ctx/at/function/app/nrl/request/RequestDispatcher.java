@@ -80,6 +80,7 @@ public class RequestDispatcher {
 		RequestMapper.put(Command.UK_SWITCH_MODE.Request, DateTimeSwitchUKModeRequest.class);
 		RequestMapper.put(Command.TR_REMOTE_SEND_SETTING.Request, ReceiveNRLRemoteDataSetting.class);
 		RequestMapper.put(Command.MESSAGE.Request, GetNotificationMessageQuery.class);
+		RequestMapper.put(Command.REBOOT.Request, RebootRequest.class);
 	}
 	
 	/**

@@ -45,7 +45,11 @@ public enum Command {
 	// レコーダの設定送信
 	TR_REMOTE_SEND_SETTING("ReceiveNRLRemoteDataSetting", "23", "01"),
 	// メッセージ
-	MESSAGE("GetNotificationMessageQuery", "1A", "06");
+	MESSAGE("GetNotificationMessageQuery", "1A", "06"),
+	
+	// 再起動の応答(24, 15)
+	REBOOT("RebootRequest", "24", "15");
+	
 
 	/**
 	 * Name
@@ -109,6 +113,7 @@ public enum Command {
 		case TR_REMOTE_SEND_SETTING:
 			// メッセージ
 		case MESSAGE:
+		case REBOOT:
 			return true;
 		default:
 			return false;

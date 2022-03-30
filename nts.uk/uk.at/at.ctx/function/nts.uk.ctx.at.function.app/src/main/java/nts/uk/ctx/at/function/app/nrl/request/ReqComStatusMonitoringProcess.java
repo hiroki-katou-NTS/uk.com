@@ -44,7 +44,7 @@ public class ReqComStatusMonitoringProcess {
 			}
 		}).orElse(-1);
 		Optional<Command> findCommand = convertRequestToCommand(requestSettingFinishNumber);
-		if (findCommand.map(x -> x == command).orElse(false)  || command.simple()) {
+		if (findCommand.map(x -> x == command).orElse(false)  || command.simple() || command == Command.REBOOT) {
 			return true;
 		} else {
 			return false;
@@ -75,6 +75,8 @@ public class ReqComStatusMonitoringProcess {
 			return Optional.of(Command.RESERVATION_INFO);
 		case 11:
 			return Optional.of(Command.APPLICATION_INFO);
+		case 17:
+			return Optional.of(Command.REBOOT);
 		default:
 			return Optional.empty();
 		}
