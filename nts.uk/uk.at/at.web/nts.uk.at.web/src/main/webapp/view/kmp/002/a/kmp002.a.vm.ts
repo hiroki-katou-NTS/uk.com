@@ -104,7 +104,7 @@ module nts.uk.at.view.kmp002.a {
             item.supportCardNumber,
             item.companyId, company.companyCode,
             company.companyName, item.workplaceId,
-            workplace.workplaceCode,
+            workplace.workplaceCode + '  ' + workplace.workplaceName,
             workplace.workplaceName) :
           new SupportCardDto(
             item.supportCardNumber,
