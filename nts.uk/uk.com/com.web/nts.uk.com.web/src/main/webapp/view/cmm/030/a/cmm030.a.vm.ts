@@ -55,11 +55,15 @@ module nts.uk.com.view.cmm030.a {
         return (vm.role().approvalAuthority && vm.role().employeeReferenceRange !== ONLY_MYSELF) || isAttendance;
       });
       vm.isEnableFuncButton = ko.computed(() => {
-        if (_.isNil(vm.role()) || vm.isNewMode()) {
+        if (_.isNil(vm.role())) {
           return false;
         }
-        const isAttendance = __viewContext.user.role.isInCharge.attendance;
-        return ((vm.role().approvalAuthority && vm.role().employeeReferenceRange !== ONLY_MYSELF) || isAttendance) && !vm.isUpdating();
+        if (vm.isNewMode()) {
+          return vm.isVisibleFuncButton();
+        } else {
+          const isAttendance = __viewContext.user.role.isInCharge.attendance;
+          return (vm.isVisibleFuncButton() || isAttendance) && !vm.isUpdating();
+        }
       });
       vm.isVisibleA4_3 = ko.computed(() => {
         return !vm.isNewMode() && moment.utc(vm.startDate(), "YYYY/MM/DD").isAfter(moment.utc());
