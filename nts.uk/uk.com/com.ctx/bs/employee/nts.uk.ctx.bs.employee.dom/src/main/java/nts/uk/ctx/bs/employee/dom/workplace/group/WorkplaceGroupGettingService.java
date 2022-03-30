@@ -36,8 +36,8 @@ public class WorkplaceGroupGettingService {
 
 
 		// 社員の所属組織を返す
-		return employeeIDs.stream()
-				.map( e -> WorkplaceGroupGettingService.create( e, empAffiliations, affWorkplaceGroups ) )
+		return empAffiliations.entrySet().stream()
+				.map( entry -> WorkplaceGroupGettingService.create( entry.getKey(), empAffiliations, affWorkplaceGroups ) )
 				.collect(Collectors.toList());
 
 	}
