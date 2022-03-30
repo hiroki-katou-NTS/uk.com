@@ -55,7 +55,7 @@ public class AnyItemByPeriodDto implements ItemConst, AttendanceItemDataGate {
                 dto.anyItemValues.add(new OptionalItemValueDto(
                         value,
                         v.getAnyItemNo(),
-                        item.getOptionalItemAtr()
+                        item.getOptionalItemAtr().value
                 ));
             }
         });
