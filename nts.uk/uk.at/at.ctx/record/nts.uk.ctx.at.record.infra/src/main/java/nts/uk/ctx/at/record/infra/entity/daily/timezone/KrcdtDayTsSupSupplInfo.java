@@ -118,11 +118,11 @@ public class KrcdtDayTsSupSupplInfo extends ContractCompanyUkJpaEntity implement
 		
 		//補足時間情報
 		List<SuppInfoTimeItem> suppInfoTimeItems = new ArrayList<>();
-		SuppInfoTimeItem suppInfoTimeItem1 = new SuppInfoTimeItem(new SuppInfoNo(1), this.supplInfoTime1 == null ? null: new AttendanceTime(ts.supplInfoTime1));
-		SuppInfoTimeItem suppInfoTimeItem2 = new SuppInfoTimeItem(new SuppInfoNo(2), this.supplInfoTime2 == null ? null: new AttendanceTime(ts.supplInfoTime2));
-		SuppInfoTimeItem suppInfoTimeItem3 = new SuppInfoTimeItem(new SuppInfoNo(3), this.supplInfoTime3 == null ? null: new AttendanceTime(ts.supplInfoTime3));
-		SuppInfoTimeItem suppInfoTimeItem4 = new SuppInfoTimeItem(new SuppInfoNo(4), this.supplInfoTime4 == null ? null: new AttendanceTime(ts.supplInfoTime4));
-		SuppInfoTimeItem suppInfoTimeItem5 = new SuppInfoTimeItem(new SuppInfoNo(5), this.supplInfoTime5 == null ? null: new AttendanceTime(ts.supplInfoTime5));
+		SuppInfoTimeItem suppInfoTimeItem1 = new SuppInfoTimeItem(new SuppInfoNo(1), this.supplInfoTime1 == null ? null: new AttendanceTime(this.supplInfoTime1));
+		SuppInfoTimeItem suppInfoTimeItem2 = new SuppInfoTimeItem(new SuppInfoNo(2), this.supplInfoTime2 == null ? null: new AttendanceTime(this.supplInfoTime2));
+		SuppInfoTimeItem suppInfoTimeItem3 = new SuppInfoTimeItem(new SuppInfoNo(3), this.supplInfoTime3 == null ? null: new AttendanceTime(this.supplInfoTime3));
+		SuppInfoTimeItem suppInfoTimeItem4 = new SuppInfoTimeItem(new SuppInfoNo(4), this.supplInfoTime4 == null ? null: new AttendanceTime(this.supplInfoTime4));
+		SuppInfoTimeItem suppInfoTimeItem5 = new SuppInfoTimeItem(new SuppInfoNo(5), this.supplInfoTime5 == null ? null: new AttendanceTime(this.supplInfoTime5));
 		suppInfoTimeItems.add(suppInfoTimeItem1);
 		suppInfoTimeItems.add(suppInfoTimeItem2);
 		suppInfoTimeItems.add(suppInfoTimeItem3);
@@ -131,11 +131,11 @@ public class KrcdtDayTsSupSupplInfo extends ContractCompanyUkJpaEntity implement
 		
 		//補足数値情報
 		List<SuppInfoNumItem> suppInfoNumItems = new ArrayList<>();
-		SuppInfoNumItem suppInfoNumItem1 = new SuppInfoNumItem(new SuppInfoNo(1), this.supplInfoNumber1 == null ? null : new SuppNumValue(ts.supplInfoNumber1));
-		SuppInfoNumItem suppInfoNumItem2 = new SuppInfoNumItem(new SuppInfoNo(2), this.supplInfoNumber2 == null ? null : new SuppNumValue(ts.supplInfoNumber2));
-		SuppInfoNumItem suppInfoNumItem3 = new SuppInfoNumItem(new SuppInfoNo(3), this.supplInfoNumber3 == null ? null : new SuppNumValue(ts.supplInfoNumber3));
-		SuppInfoNumItem suppInfoNumItem4 = new SuppInfoNumItem(new SuppInfoNo(4), this.supplInfoNumber4 == null ? null : new SuppNumValue(ts.supplInfoNumber4));
-		SuppInfoNumItem suppInfoNumItem5 = new SuppInfoNumItem(new SuppInfoNo(5), this.supplInfoNumber5 == null ? null : new SuppNumValue(ts.supplInfoNumber5));
+		SuppInfoNumItem suppInfoNumItem1 = new SuppInfoNumItem(new SuppInfoNo(1), this.supplInfoNumber1 == null ? null : new SuppNumValue(this.supplInfoNumber1));
+		SuppInfoNumItem suppInfoNumItem2 = new SuppInfoNumItem(new SuppInfoNo(2), this.supplInfoNumber2 == null ? null : new SuppNumValue(this.supplInfoNumber2));
+		SuppInfoNumItem suppInfoNumItem3 = new SuppInfoNumItem(new SuppInfoNo(3), this.supplInfoNumber3 == null ? null : new SuppNumValue(this.supplInfoNumber3));
+		SuppInfoNumItem suppInfoNumItem4 = new SuppInfoNumItem(new SuppInfoNo(4), this.supplInfoNumber4 == null ? null : new SuppNumValue(this.supplInfoNumber4));
+		SuppInfoNumItem suppInfoNumItem5 = new SuppInfoNumItem(new SuppInfoNo(5), this.supplInfoNumber5 == null ? null : new SuppNumValue(this.supplInfoNumber5));
 		suppInfoNumItems.add(suppInfoNumItem1);
 		suppInfoNumItems.add(suppInfoNumItem2);
 		suppInfoNumItems.add(suppInfoNumItem3);
@@ -144,11 +144,11 @@ public class KrcdtDayTsSupSupplInfo extends ContractCompanyUkJpaEntity implement
 		
 		//補足コメント情報
 		List<SuppInfoCommentItem> suppInfoCommentItems = new ArrayList<>();
-		SuppInfoCommentItem suppInfoCommentItem1 = new SuppInfoCommentItem(new SuppInfoNo(1), this.supplInfoComment1 == null ? null :  new WorkSuppComment(ts.supplInfoComment1));
-		SuppInfoCommentItem suppInfoCommentItem2 = new SuppInfoCommentItem(new SuppInfoNo(2), this.supplInfoComment2 == null ? null :  new WorkSuppComment(ts.supplInfoComment2));
-		SuppInfoCommentItem suppInfoCommentItem3 = new SuppInfoCommentItem(new SuppInfoNo(3), this.supplInfoComment3 == null ? null :  new WorkSuppComment(ts.supplInfoComment3));
-		SuppInfoCommentItem suppInfoCommentItem4 = new SuppInfoCommentItem(new SuppInfoNo(4), this.supplInfoComment4 == null ? null :  new WorkSuppComment(ts.supplInfoComment4));
-		SuppInfoCommentItem suppInfoCommentItem5 = new SuppInfoCommentItem(new SuppInfoNo(5), this.supplInfoComment5 == null ? null :  new WorkSuppComment(ts.supplInfoComment5));
+		SuppInfoCommentItem suppInfoCommentItem1 = new SuppInfoCommentItem(new SuppInfoNo(1), this.supplInfoComment1 == null ? null :  new WorkSuppComment(this.supplInfoComment1));
+		SuppInfoCommentItem suppInfoCommentItem2 = new SuppInfoCommentItem(new SuppInfoNo(2), this.supplInfoComment2 == null ? null :  new WorkSuppComment(this.supplInfoComment2));
+		SuppInfoCommentItem suppInfoCommentItem3 = new SuppInfoCommentItem(new SuppInfoNo(3), this.supplInfoComment3 == null ? null :  new WorkSuppComment(this.supplInfoComment3));
+		SuppInfoCommentItem suppInfoCommentItem4 = new SuppInfoCommentItem(new SuppInfoNo(4), this.supplInfoComment4 == null ? null :  new WorkSuppComment(this.supplInfoComment4));
+		SuppInfoCommentItem suppInfoCommentItem5 = new SuppInfoCommentItem(new SuppInfoNo(5), this.supplInfoComment5 == null ? null :  new WorkSuppComment(this.supplInfoComment5));
 		suppInfoCommentItems.add(suppInfoCommentItem1);
 		suppInfoCommentItems.add(suppInfoCommentItem2);
 		suppInfoCommentItems.add(suppInfoCommentItem3);
@@ -157,11 +157,11 @@ public class KrcdtDayTsSupSupplInfo extends ContractCompanyUkJpaEntity implement
 		
 		//補足選択項目情報
 		List<SuppInfoSelectionItem> suppInfoSelectionItems = new ArrayList<>();
-		SuppInfoSelectionItem suppInfoSelectionItem1 = new SuppInfoSelectionItem(new SuppInfoNo(1), this.supplInfoCode1 == null ? null : new ChoiceCode(ts.supplInfoCode1));
-		SuppInfoSelectionItem suppInfoSelectionItem2 = new SuppInfoSelectionItem(new SuppInfoNo(2), this.supplInfoCode2 == null ? null :  new ChoiceCode(ts.supplInfoCode2));
-		SuppInfoSelectionItem suppInfoSelectionItem3 = new SuppInfoSelectionItem(new SuppInfoNo(3), this.supplInfoCode3 == null ? null :  new ChoiceCode(ts.supplInfoCode3));
-		SuppInfoSelectionItem suppInfoSelectionItem4 = new SuppInfoSelectionItem(new SuppInfoNo(4), this.supplInfoCode4 == null ? null :  new ChoiceCode(ts.supplInfoCode4));
-		SuppInfoSelectionItem suppInfoSelectionItem5 = new SuppInfoSelectionItem(new SuppInfoNo(5), this.supplInfoCode5 == null ? null :  new ChoiceCode(ts.supplInfoCode5));
+		SuppInfoSelectionItem suppInfoSelectionItem1 = new SuppInfoSelectionItem(new SuppInfoNo(1), this.supplInfoCode1 == null ? null : new ChoiceCode(this.supplInfoCode1));
+		SuppInfoSelectionItem suppInfoSelectionItem2 = new SuppInfoSelectionItem(new SuppInfoNo(2), this.supplInfoCode2 == null ? null :  new ChoiceCode(this.supplInfoCode2));
+		SuppInfoSelectionItem suppInfoSelectionItem3 = new SuppInfoSelectionItem(new SuppInfoNo(3), this.supplInfoCode3 == null ? null :  new ChoiceCode(this.supplInfoCode3));
+		SuppInfoSelectionItem suppInfoSelectionItem4 = new SuppInfoSelectionItem(new SuppInfoNo(4), this.supplInfoCode4 == null ? null :  new ChoiceCode(this.supplInfoCode4));
+		SuppInfoSelectionItem suppInfoSelectionItem5 = new SuppInfoSelectionItem(new SuppInfoNo(5), this.supplInfoCode5 == null ? null :  new ChoiceCode(this.supplInfoCode5));
 		suppInfoSelectionItems.add(suppInfoSelectionItem1);
 		suppInfoSelectionItems.add(suppInfoSelectionItem2);
 		suppInfoSelectionItems.add(suppInfoSelectionItem3);
