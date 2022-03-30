@@ -121,6 +121,9 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 	// [4] 取得する
 	@Override
 	public List<Stamp> get(String contractCode, List<StampNumber> stampNumbers, GeneralDate stampDateTime) {
+		if(stampNumbers.isEmpty()) {
+			return new ArrayList<>();
+		}
 		Set<String> lstCard = stampNumbers.stream().map(x -> x.v()).collect(Collectors.toSet());
 		GeneralDateTime start = GeneralDateTime.ymdhms(stampDateTime.year(), stampDateTime.month(), stampDateTime.day(),
 				0, 0, 0);
@@ -350,6 +353,9 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 
 	@Override
 	public List<Stamp> getByDateTimeperiod(List<String> listCard, GeneralDateTime startDate, GeneralDateTime endDate) {
+		if(listCard.isEmpty()) {
+			return new ArrayList<>();
+		}
 		String contractCode = AppContexts.user().contractCode();
 		List<Stamp> data =  this.queryProxy().query(GET_STAMP_BY_DATEPERIOD_AND_CARDS_2, KrcdtStamp.class)
 				.setParameter("startStampDate", startDate)
