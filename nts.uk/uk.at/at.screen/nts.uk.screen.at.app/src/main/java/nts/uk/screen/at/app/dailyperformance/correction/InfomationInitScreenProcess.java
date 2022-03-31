@@ -166,13 +166,17 @@ public class InfomationInitScreenProcess {
         DateRange rangeMode = rangeInit;
 		if (displayFormat == 1)
 			rangeMode = new DateRange(rangeInit.getStartDate(), rangeInit.getStartDate());
-	                    
+	             
+		List<String> lstWpklIdCcg001 = new ArrayList<>();
+		if (param.initFromScreenOther)
+			lstWpklIdCcg001 = param.lstEmployee.stream().map(x -> x.getWorkplaceId()).collect(Collectors.toList());
+		
 		// 初期表示社員を取得する - EA修正履歴：No4280 & No4291
 		initDto = processor.changeListEmployeeId(employeeIds, rangeMode, mode,
-				objectShare != null, screenDto.getClosureId(), screenDto);
+				objectShare != null, screenDto.getClosureId(), screenDto, lstWpklIdCcg001);
 		DPCorrectionStateParam stateParam = processor.getDailySupportWorkers(initDto.getParam());
 		
-		if (param.initFromScreenOther == true)
+		if (param.initFromScreenOther)
 			stateParam.setLstEmpsSupport(stateParam.getLstEmpsSupport().stream().filter(x -> !stateParam.getLstEmpSelect().contains(x)).collect(Collectors.toList()));
 		
 		initDto.setParam(stateParam);
@@ -185,6 +189,8 @@ public class InfomationInitScreenProcess {
 		} else {
 			//changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 			changeEmployeeIds = initDto.getParam().getEmployeeIds();
+			
+			if (param.displayFormat != 2)
 			changeEmployeeIds.addAll(initDto.getParam().getLstEmpsSupport());
 			
 			if (param.initFromScreenOther == true)
