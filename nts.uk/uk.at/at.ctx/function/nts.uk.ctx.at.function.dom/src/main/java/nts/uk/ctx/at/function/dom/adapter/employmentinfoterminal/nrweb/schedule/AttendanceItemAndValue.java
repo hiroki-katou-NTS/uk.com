@@ -34,4 +34,7 @@ public class AttendanceItemAndValue {
 		this.state = state;
 	}
 
+	public String getName() {
+		return name.length() > 6 ? name.substring(0, 6) : name;
+	}
 }

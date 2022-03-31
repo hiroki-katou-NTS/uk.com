@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -50,6 +51,8 @@ import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveAppli
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSetRepository;
 import nts.uk.ctx.at.request.pub.application.infoterminal.AnnualHolidayReceptionDataExport;
 import nts.uk.ctx.at.request.pub.application.infoterminal.AppLateReceptionDataExport;
 import nts.uk.ctx.at.request.pub.application.infoterminal.AppOverTimeReceptionDataExport;
@@ -60,14 +63,31 @@ import nts.uk.ctx.at.request.pub.application.infoterminal.AppWorkHolidayReceptio
 import nts.uk.ctx.at.request.pub.application.infoterminal.ApplicationReceptionDataExport;
 import nts.uk.ctx.at.request.pub.application.infoterminal.ConvertTRAppServicePub;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.scherec.workinfo.GetWorkInfo;
+import nts.uk.ctx.at.shared.dom.scherec.workinfo.GetWorkInfoSchedule;
 import nts.uk.ctx.at.shared.dom.scherec.workinfo.GetWorkInfoTimeZoneFromProcess;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 @Stateless
@@ -138,17 +158,49 @@ public class ConvertTRAppServicePubImpl implements ConvertTRAppServicePub {
 	
 	@Inject
 	private GetWorkInfoTimeZoneFromProcess getWorkInfoTimeZoneFromProcess;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepo;
+
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
+
+	@Inject
+	private BasicScheduleService basicScheduleService;
+
+	@Inject
+	private FlexWorkSettingRepository flexWorkSettingRepository;
+
+	@Inject
+	private FixedWorkSettingRepository fixedWorkSettingRepository;
+
+	@Inject
+	private FlowWorkSettingRepository flowWorkSettingRepository;
+
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
+
+	@Inject
+	private GetWorkInfo getWorkInfo;
+
+	@Inject
+	private GetWorkInfoSchedule getWorkInfoSchedule;
+	
+	@Inject
+	private LateEarlyCancelAppSetRepository lateEarlyCancelAppSetRepository;
 
 	@Override
 	public <T extends ApplicationReceptionDataExport> Optional<AtomTask> converData(String empInfoTerCode,
 			String contractCode, T recept) {
 		RequireImpl impl = new RequireImpl(workTypeRepository, workingConditionItemRepository, applicationRepository,
 				appRecordImageRepository, appWorkChangeRepository, arrivedLateLeaveEarlyRepository,
-				empInfoTerminalAdapter, stampCardAdapter, topPgAlTrAdapter,
-				employeeManageRQAdapter, timeLeaveApplicationRepo, appOverTimeRepo, appHolidayWorkRepo,
-				applyForLeaveRepo, companyAdapter, IGetInfoForLogin, getMngInfoAdapter, loginUserContextManager,
-				interimRemainDataMngRegisterDateChange, collectApprovalRootServiceAdapter,
-				registerAtApproveReflectionInfoService, getWorkInfoTimeZoneFromProcess);
+				empInfoTerminalAdapter, stampCardAdapter, topPgAlTrAdapter, employeeManageRQAdapter,
+				timeLeaveApplicationRepo, appOverTimeRepo, appHolidayWorkRepo, applyForLeaveRepo, companyAdapter,
+				IGetInfoForLogin, getMngInfoAdapter, loginUserContextManager, interimRemainDataMngRegisterDateChange,
+				collectApprovalRootServiceAdapter, registerAtApproveReflectionInfoService,
+				getWorkInfoTimeZoneFromProcess, workTypeRepo, workTimeSettingRepository, basicScheduleService,
+				flexWorkSettingRepository, fixedWorkSettingRepository, flowWorkSettingRepository,
+				predetemineTimeSettingRepository, getWorkInfo, getWorkInfoSchedule, lateEarlyCancelAppSetRepository);
 
 		return ConvertTimeRecordApplicationService.converData(impl, empInfoTerCode, contractCode, covertTo(recept));
 	}
@@ -271,6 +323,26 @@ public class ConvertTRAppServicePubImpl implements ConvertTRAppServicePub {
 		
 		private final GetWorkInfoTimeZoneFromProcess getWorkInfoTimeZoneFromProcess;
 		
+		private final WorkTypeRepository workTypeRepo;
+
+		private final WorkTimeSettingRepository workTimeSettingRepository;
+
+		private final BasicScheduleService basicScheduleService;
+
+		private final FlexWorkSettingRepository flexWorkSettingRepository;
+
+		private final FixedWorkSettingRepository fixedWorkSettingRepository;
+
+		private final FlowWorkSettingRepository flowWorkSettingRepository;
+
+		private final PredetemineTimeSettingRepository predetemineTimeSettingRepository;
+
+		private final GetWorkInfo getWorkInfo;
+
+		private final GetWorkInfoSchedule getWorkInfoSchedule;
+		
+		private final LateEarlyCancelAppSetRepository lateEarlyCancelAppSetRepository;
+		
 		@Override
 		public Optional<EmpInfoTerminal> getEmpInfoTerminal(String empInfoTerCode, String contractCode,
 				Optional<String> leavCategory) {
@@ -280,11 +352,6 @@ public class ConvertTRAppServicePubImpl implements ConvertTRAppServicePub {
 		@Override
 		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
 			return workTypeRepository.findByPK(companyId, workTypeCd);
-		}
-
-		@Override
-		public Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate) {
-			return workingConditionItemRepository.getBySidAndStandardDate(employeeId, baseDate);
 		}
 
 		@Override
@@ -398,6 +465,62 @@ public class ConvertTRAppServicePubImpl implements ConvertTRAppServicePub {
 				Optional<WorkingConditionItem> workItem) {
 			return getWorkInfoTimeZoneFromProcess.getInfo(cid, employeeId, baseDate, workItem);
 		}
+
+		@Override
+		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
+			return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
+		}
+
+		@Override
+		public Optional<WorkType> getWorkType(String workTypeCd) {
+			return workTypeRepo.findByPK(AppContexts.user().companyId(), workTypeCd);
+		}
+
+		@Override
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
+			return workTimeSettingRepository.findByCode(AppContexts.user().companyId(), workTimeCode);
+		}
+
+		@Override
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			return fixedWorkSettingRepository.findByKey(AppContexts.user().companyId(), code.v()).get();
+		}
+
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			return flowWorkSettingRepository.find(AppContexts.user().companyId(), code.v()).get();
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			return flexWorkSettingRepository.find(AppContexts.user().companyId(), code.v()).get();
+		}
+
+		@Override
+		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+			return predetemineTimeSettingRepository.findByWorkTimeCode(AppContexts.user().companyId(), wktmCd.v()).get();
+		}
+
+		@Override
+		public Optional<WorkInformation> getWorkInfoSc(String employeeId, GeneralDate baseDate) {
+			return getWorkInfoSchedule.getWorkInfoSc(employeeId, baseDate);
+		}
+
+		@Override
+		public Optional<WorkInformation> getWorkInfoRc(String employeeId, GeneralDate baseDate) {
+			return getWorkInfo.getRecord(new CacheCarrier(), employeeId, baseDate);
+		}
+
+		@Override
+		public Optional<WorkingConditionItem> getWorkingConditionItem(String employeeId, GeneralDate baseDate) {
+			return workingConditionItemRepository.getBySidAndStandardDate(employeeId, baseDate);
+		}
+
+		@Override
+		public Optional<LateEarlyCancelAppSet> getLateEarlyCancelAppSetByCId(String companyId) {
+			return Optional.ofNullable(lateEarlyCancelAppSetRepository.getByCId(companyId));
+		}
+
 
 	}
 }

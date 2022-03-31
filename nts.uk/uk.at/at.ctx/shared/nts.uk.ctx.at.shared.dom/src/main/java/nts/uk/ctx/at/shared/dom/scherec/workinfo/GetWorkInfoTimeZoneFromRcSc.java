@@ -53,7 +53,7 @@ public class GetWorkInfoTimeZoneFromRcSc {
 
 	// 休日または休日出勤かどうかチェックする
 	private static Optional<WorkType> checkHolOrWorkHol(Require require, WorkInformation workInfo) {
-		Optional<WorkType> wType = require.getWorkType(workInfo.getWorkTimeCode().v());
+		Optional<WorkType> wType = require.getWorkType(workInfo.getWorkTypeCode().v());
 		if (!wType.isPresent())
 			return Optional.empty();
 		return (wType.get().isHoliday() || wType.get().isHolidayWork()) ? wType : Optional.empty();

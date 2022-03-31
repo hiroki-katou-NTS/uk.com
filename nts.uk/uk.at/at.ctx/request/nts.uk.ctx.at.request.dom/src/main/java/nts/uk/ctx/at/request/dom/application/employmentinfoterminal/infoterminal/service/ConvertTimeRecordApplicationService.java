@@ -12,12 +12,10 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.EmpInfoTerminal;
-import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.NRHelper;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.StampCard;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.log.TopPageAlarmEmpInfoTerRQ;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppStampReceptionData;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppVacationReceptionData;
-import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppWorkHolidayReceptionData;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.ApplicationCategory;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.ApplicationReceptionData;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
@@ -72,21 +70,12 @@ public class ConvertTimeRecordApplicationService {
 				return Optional.empty();
 		}
 
-		// if 申請受信データ.申請区分 = ‘３’(休暇申請)
-		Optional<WorkInfoAndTimeZone> workInfoAndTimeZone = Optional.empty();
-		if (recept.getApplicationCategory().equals(ApplicationCategory.WORK_HOLIDAY.value)) {
-			Optional<WorkingConditionItem>  workingConItemOpt = require.getBySidAndStandardDate(sid.get(),
-					NRHelper.createGeneralDate(((AppWorkHolidayReceptionData) recept).getAppYMD()));
-			workInfoAndTimeZone = require.getWorkInfo(cid.get(), sid.get(),
-					NRHelper.createGeneralDate(((AppWorkHolidayReceptionData) recept).getAppYMD()), workingConItemOpt);
-			if(!workingConItemOpt.isPresent() || !workInfoAndTimeZone.isPresent()) {
-				return Optional.empty();
-			}
-		}
-
-		Application obj = empInfoTerOpt.get().createApplication(cid.get(), recept, workTypeOpt, workInfoAndTimeZone,
+		Optional<Application> obj = empInfoTerOpt.get().createApplication(require, cid.get(), recept, workTypeOpt,
 				sid.get());
-		return createApplication(require, cid.get(), contractCode, recept, obj);
+		if(!obj.isPresent()) {
+			return Optional.empty();
+		}
+		return createApplication(require, cid.get(), contractCode, recept, obj.get());
 	}
 
 	// 申請を登録する
@@ -146,7 +135,7 @@ public class ConvertTimeRecordApplicationService {
 
 	}
 
-	public static interface Require extends RegisterApplicationFromNR.Require {
+	public static interface Require extends RegisterApplicationFromNR.Require, EmpInfoTerminal.Require {
 
 		// [R-1] 就業情報端末を取得する
 		public Optional<EmpInfoTerminal> getEmpInfoTerminal(String empInfoTerCode, String contractCode,
@@ -154,9 +143,6 @@ public class ConvertTimeRecordApplicationService {
 
 		// [R-2] 勤務種類を取得
 		public Optional<WorkType> findByPK(String companyId, String workTypeCd);
-
-		// [R-3] 労働条件項目を取得
-		public Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
 
 		// [R-4] 申請を取得する
 		// 事前事後区分, 入力日, 申請日, 申請種類, 申請者

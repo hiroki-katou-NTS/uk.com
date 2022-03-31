@@ -138,10 +138,10 @@ public class ConvertTimeRecordReservationServiceTest {
 				require.getEmpInfoTerminal((EmpInfoTerminalCode) any, (ContractCode) any);
 				result = empInfoTer;
 
-				menu.reserve((ReservationRegisterInfo) any, (ReservationDate) any, (GeneralDateTime) any,
-						(Optional<WorkLocationCode>)any,
-						((Map<Integer, BentoReservationCount>) any));
-				result = new BusinessException("System error");
+//				menu.reserve((ReservationRegisterInfo) any, (ReservationDate) any, (GeneralDateTime) any,
+//						(Optional<WorkLocationCode>)any,
+//						((Map<Integer, BentoReservationCount>) any));
+//				result = new BusinessException("System error");
 
 			}
 		};

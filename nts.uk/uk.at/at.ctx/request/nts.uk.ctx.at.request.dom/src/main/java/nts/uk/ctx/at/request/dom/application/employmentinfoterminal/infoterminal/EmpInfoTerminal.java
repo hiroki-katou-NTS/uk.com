@@ -40,11 +40,13 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
-import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.CancelAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSet;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
+import nts.uk.ctx.at.shared.dom.scherec.workinfo.GetWorkInfoTimeZoneFromRcSc;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -133,8 +135,8 @@ public class EmpInfoTerminal implements DomainAggregate {
 	}
 
 	// [３] 申請
-	public <T extends ApplicationReceptionData> Application createApplication(String companyId, T recept,
-			Optional<WorkType> workTypeOpt, Optional<WorkInfoAndTimeZone> workInfoAndTimeZone, String employeeId) {
+	public <T extends ApplicationReceptionData> Optional<Application> createApplication(Require require, String companyId, T recept,
+			Optional<WorkType> workTypeOpt, String employeeId) {
 
 		ApplicationCategory cate = ApplicationCategory.valueStringOf(recept.getApplicationCategory());
 		switch (cate) {
@@ -153,7 +155,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 					StringUtils.isEmpty(appStampData.getGoOutCategory()) ? this.goOutReason
 							: GoingOutReason.corvert(Integer.parseInt(appStampData.getGoOutCategory())),
 					appStampNew);
-			return appImg;
+			return Optional.of(appImg);
 
 		// 残業申請
 		case OVERTIME:
@@ -177,7 +179,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 			AppOverTime appOverTime = new AppOverTime(OvertimeAppAtr.EARLY_NORMAL_OVERTIME, applicationTime,
 					Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 			appOverTime.setApplication(appOverNew);
-			return appOverTime;
+			return Optional.of(appOverTime);
 
 		// 休暇申請
 		case VACATION:
@@ -196,7 +198,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 					: HolidayAppType.HOLIDAY, new SupplementInfoVacation(Optional.empty(), Optional.empty()));
 			ApplyForLeave appAbsence = new ApplyForLeave(reflectFreeTimeApp, vacationInfo);
 			appAbsence.setApplication(appAbsenceNew);
-			return appAbsence;
+			return Optional.of(appAbsence);
 
 		// 勤務変更申請
 		case WORK_CHANGE:
@@ -212,7 +214,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 			AppWorkChange appChange = new AppWorkChange(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, Optional.empty(),
 					Optional.of(new WorkTimeCode(appWorkData.getWorkTime())), new ArrayList<TimeZoneWithWorkNo>(),
 					appWorkNew);
-			return appChange;
+			return Optional.of(appChange);
 
 		// 休日出勤時間申請
 		case WORK_HOLIDAY:
@@ -232,6 +234,11 @@ public class EmpInfoTerminal implements DomainAggregate {
 			createOvertimeSetting(appHolidayData.getBreakNo3(),
 					appHolidayData.getBreakTime3(), AttendanceType_Update.BREAKTIME).ifPresent(x ->  addOvertimeAppSetting(applicationTimeHolDetail, x));
 
+			val workInfoAndTimeZone = GetWorkInfoTimeZoneFromRcSc.getInfo(require, companyId, employeeId,
+					appHolidayNew.getAppDate().getApplicationDate(), Optional.empty());
+			if(!workInfoAndTimeZone.isPresent()) {
+				return Optional.empty();
+			}
 			ApplicationTime applicationTimeHol = new ApplicationTime(applicationTimeHolDetail, Optional.empty(),
 					Optional.empty(), Optional.empty(), Optional.empty());
 			List<TimeZoneWithWorkNo> lstTimeZone = new ArrayList<>();
@@ -245,10 +252,10 @@ public class EmpInfoTerminal implements DomainAggregate {
 							workInfoAndTimeZone.get().getWorkType().getWorkTypeCode(),
 							workInfoAndTimeZone.get().getWorkTime().map(x -> x.getWorktimeCode()).orElse(null)),
 					applicationTimeHol, nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr.NOT_USE,
-					nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr.NOT_USE, Optional.of(lstTimeZone),
-					Optional.empty());
+					nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr.NOT_USE, Optional.empty(), Optional.of(lstTimeZone)
+					);
 			appHoliday.setApplication(appHolidayNew);
-			return appHoliday;
+			return Optional.of(appHoliday);
 
 		// 遅刻早退取消申請
 		case LATE:
@@ -261,12 +268,15 @@ public class EmpInfoTerminal implements DomainAggregate {
 					Optional.of(NRHelper.createGeneralDate(appLateData.getAppYMD())), appLateData.getReason());
 			ArrivedLateLeaveEarly appLate = new ArrivedLateLeaveEarly(appLateNew);
 			appLate.setLateOrLeaveEarlies(new ArrayList<>());
+			val setting = require.getLateEarlyCancelAppSetByCId(companyId);
 			List<LateCancelation> lateCancelation = new ArrayList<>();
-			lateCancelation.add(new LateCancelation(1,
-					appLateData.getReasonLeave().equals(ReasonLeaveEarly.EARLY.value) ? LateOrEarlyAtr.EARLY
-							: LateOrEarlyAtr.LATE));
+			if (setting.map(x -> x.getCancelAtr() != CancelAtr.NOT_USE).orElse(false)) {
+				lateCancelation.add(new LateCancelation(1,
+						appLateData.getReasonLeave().equals(ReasonLeaveEarly.EARLY.value) ? LateOrEarlyAtr.EARLY
+								: LateOrEarlyAtr.LATE));
+			}
 			appLate.setLateCancelation(lateCancelation);
-			return appLate;
+			return Optional.of(appLate);
 
 		// 時間年休申請
 		case ANNUAL:
@@ -292,10 +302,10 @@ public class EmpInfoTerminal implements DomainAggregate {
 													NRHelper.toMinute(appAnnual.getAnnualHolidayTime()))
 											: AttendanceTime.ZERO,
 									Optional.empty())));
-			return new TimeLeaveApplication(appAnnualHol, leaveApplicationDetails);
+			return Optional.of(new TimeLeaveApplication(appAnnualHol, leaveApplicationDetails));
 
 		default:
-			return null;
+			return Optional.empty();
 		}
 	}
 
@@ -448,5 +458,11 @@ public class EmpInfoTerminal implements DomainAggregate {
 		public EmpInfoTerminal build() {
 			return new EmpInfoTerminal(this);
 		}
+	}
+	
+	public static interface Require extends GetWorkInfoTimeZoneFromRcSc.Require{
+		
+		//LateEarlyCancelAppSetRepository
+		Optional<LateEarlyCancelAppSet> getLateEarlyCancelAppSetByCId(String companyId);
 	}
 }
