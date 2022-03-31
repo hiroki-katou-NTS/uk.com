@@ -1844,7 +1844,7 @@ public class DailyPerformanceCorrectionProcessor {
 ////		dailyPerformanceCorrectionDto.setCom60HVacationDto(this.repo.getCom60HVacationDto());
 	}
 	
-	public InitialDisplayEmployeeDto changeListEmployeeId(List<String> employeeIds, DateRange range, int mode, boolean isTranfer, Integer closureId, DailyPerformanceCorrectionDto screenDto) {
+	public InitialDisplayEmployeeDto changeListEmployeeId(List<String> employeeIds, DateRange range, int mode, boolean isTranfer, Integer closureId, DailyPerformanceCorrectionDto screenDto, List<String> lstWpklIdCcg001) {
 		//初期表示社員を取得する
 		String companyId = AppContexts.user().companyId();
 		String employeeIdLogin = AppContexts.user().employeeId();
@@ -1861,10 +1861,12 @@ public class DailyPerformanceCorrectionProcessor {
 		
 		if( mode == ScreenMode.NORMAL.value) {
 			// 応援者の情報をOutputにセットする - No4281
-			result.getParam().setLstWrkplaceId(lstWplId);
+			result.getParam().setLstWrkplaceId(lstWpklIdCcg001.isEmpty() ? lstWplId : lstWpklIdCcg001);
 			
 			List<String> lstEmp597 = lstInfoEmp.stream().map(x -> x.getSid()).collect(Collectors.toList());
 			result.getParam().setEmployeeIds(lstEmp597);
+			
+			result.getParam().setLstEmpSelect(employeeIds);
 		}
 		
 		// 「自分のみ」以外の場合
@@ -2289,10 +2291,10 @@ public class DailyPerformanceCorrectionProcessor {
 		return opTaskItem;
 	}
 	// 応援勤務者の特定
-	public DPCorrectionStateParam getDailySupportWorkers (DPCorrectionStateParam param) {
+	public DPCorrectionStateParam getDailySupportWorkers (DPCorrectionStateParam param, int displayFormat) {
 		// Input「日別実績の修正の状態．表示形式」をチェックする
 		int mode = param.getDisplayMode().intValue();
-		if (mode == ScreenMode.APPROVAL.value || mode == ScreenMode.NORMAL.value) {
+		if ((mode == ScreenMode.APPROVAL.value || mode == ScreenMode.NORMAL.value) && displayFormat != 2) {
 			// 応援勤務に来た社員を取得する
 			DatePeriod period = new DatePeriod(param.getPeriod().getStartDate(), param.getPeriod().getEndDate());
 			List<String> lstEmpSupport = employeeSupport.getEmployeesCameToSupport(period, param.getLstWrkplaceId());
