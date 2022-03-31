@@ -6,12 +6,12 @@ namespace WSISmile.Business.Enum
     public class WebApiEnumConverter
     {
         /// <summary>
-        /// Webサービスの名称一覧
+        /// WebサービスのURL一覧
         /// </summary>
         private static Dictionary<WebApi, string> webApiName = new Dictionary<WebApi, string>();
 
         /// <summary>
-        /// Webサービスの名称を取得する
+        /// WebサービスのURLを取得する
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
