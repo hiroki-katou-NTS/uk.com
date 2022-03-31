@@ -2271,10 +2271,10 @@ public class DailyPerformanceCorrectionProcessor {
 		return opTaskItem;
 	}
 	// 応援勤務者の特定
-	public DPCorrectionStateParam getDailySupportWorkers (DPCorrectionStateParam param) {
+	public DPCorrectionStateParam getDailySupportWorkers (DPCorrectionStateParam param, int displayFormat) {
 		// Input「日別実績の修正の状態．表示形式」をチェックする
 		int mode = param.getDisplayMode().intValue();
-		if ((mode == ScreenMode.APPROVAL.value || mode == ScreenMode.NORMAL.value) && param.getDisplayMode() != 2) {
+		if ((mode == ScreenMode.APPROVAL.value || mode == ScreenMode.NORMAL.value) && displayFormat != 2) {
 			// 応援勤務に来た社員を取得する
 			DatePeriod period = new DatePeriod(param.getPeriod().getStartDate(), param.getPeriod().getEndDate());
 			List<String> lstEmpSupport = employeeSupport.getEmployeesCameToSupport(period, param.getLstWrkplaceId());

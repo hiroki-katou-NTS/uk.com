@@ -174,7 +174,7 @@ public class InfomationInitScreenProcess {
 		// 初期表示社員を取得する - EA修正履歴：No4280 & No4291
 		initDto = processor.changeListEmployeeId(employeeIds, rangeMode, mode,
 				objectShare != null, screenDto.getClosureId(), screenDto, lstWpklIdCcg001);
-		DPCorrectionStateParam stateParam = processor.getDailySupportWorkers(initDto.getParam());
+		DPCorrectionStateParam stateParam = processor.getDailySupportWorkers(initDto.getParam(), param.displayFormat);
 		
 		if (param.initFromScreenOther)
 			stateParam.setLstEmpsSupport(stateParam.getLstEmpsSupport().stream().filter(x -> !stateParam.getLstEmpSelect().contains(x)).collect(Collectors.toList()));
