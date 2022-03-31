@@ -145,7 +145,7 @@ public class NRWebMonthWage {
 		builder.append("<item type = 'data'>");
 		builder.append("\n");
 		val itemCalc = this.getLastWorkDiff(dataAmountSetting);
-		builder.append(itemCalc.createOneDataXml("最終勤務", itemCalc.getColor()));
+		builder.append(itemCalc.createOneDataXml("差分", itemCalc.getColor()));
 		builder.append("</item>");
 		builder.append("\n");
 		builder.append("</kindata>");
