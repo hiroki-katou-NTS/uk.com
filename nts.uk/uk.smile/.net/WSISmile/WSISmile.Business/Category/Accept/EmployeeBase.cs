@@ -37,6 +37,12 @@ namespace WSISmile.Business.Category.Accept
                 // 社員コード
                 drSmile[EmployeeBaseItem.EMPLOYEE_CD] = Toolbox.RemoveInvalidSymbol(drSmile[EmployeeBaseItem.EMPLOYEE_CD]);
 
+                // 退職年月日
+                if (Toolbox.IsNull(drSmile[EmployeeBaseItem.RETIREMENT_DATE]) || decimal.Parse(drSmile[EmployeeBaseItem.RETIREMENT_DATE].ToString()) == 0m)
+                {
+                    drSmile[EmployeeBaseItem.RETIREMENT_DATE] = 99991231;
+                }
+
                 // 組織コード
                 drSmile[EmployeeBaseItem.ORGANIZATION_CD] = Toolbox.RemoveInvalidSymbol(drSmile[EmployeeBaseItem.ORGANIZATION_CD]);
 
@@ -117,6 +123,11 @@ namespace WSISmile.Business.Category.Accept
         /// 社員名カナ
         /// </summary>
         public const string KANA_NAME = "004";
+
+        /// <summary>
+        /// 退職年月日
+        /// </summary>
+        public const string RETIREMENT_DATE = "033";
 
         /// <summary>
         /// 組織コード

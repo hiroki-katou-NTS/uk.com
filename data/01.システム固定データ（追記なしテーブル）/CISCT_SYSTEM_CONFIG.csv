@@ -1,5 +1,5 @@
 INS_DATE,INS_CCD,INS_SCD,INS_PG,UPD_DATE,UPD_CCD,UPD_SCD,UPD_PG,EXCLUS_VER,CONFIG_NAME,CONFIG_VALUE
 ,,,,,,,,0,"SystemName","勤次郎"
 ,,,,,,,,0,"InstallationType","0"
-,,,,,,,,0,"PathToManual","http://192.168.50.6:81/manual/{PGID}.htm"
+,,,,,,,,0,"PathToManual","/manual/{PGID}.htm"
 ,,,,,,,,0,"VersionAT","0"
