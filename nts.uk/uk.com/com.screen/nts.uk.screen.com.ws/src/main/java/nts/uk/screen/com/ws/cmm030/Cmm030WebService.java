@@ -26,6 +26,7 @@ import nts.uk.screen.com.app.find.cmm030.b.dto.GetWorkplaceInfoDto;
 import nts.uk.screen.com.app.find.cmm030.b.param.GetApprovalAuthorityHoldersParam;
 import nts.uk.screen.com.app.find.cmm030.b.param.GetWorkplaceInfoParam;
 import nts.uk.screen.com.app.find.cmm030.c.GetApprovalRootLastStartDateFinder;
+import nts.uk.screen.com.app.find.cmm030.c.GetClosureStartDateFinder;
 import nts.uk.screen.com.app.find.cmm030.f.GetApproverHistoryFinder;
 import nts.uk.screen.com.app.find.cmm030.f.GetSelfApproverSettingFinder;
 import nts.uk.screen.com.app.find.cmm030.f.dto.SelfApproverSettingDto;
@@ -53,6 +54,9 @@ public class Cmm030WebService extends WebService {
 
 	@Inject
 	private GetApprovalRootLastStartDateFinder getApprovalRootLastStartDateFinder;
+	
+	@Inject
+	private GetClosureStartDateFinder getClosureStartDateFinder;
 
 	@Inject
 	private GetApproverHistoryFinder getApproverHistoryFinder;
@@ -94,6 +98,12 @@ public class Cmm030WebService extends WebService {
 	@Path("getApprovalRootLastStartDate/{sid}")
 	public GeneralDate getApprovalRootLastStartDate(@PathParam("sid") String sid) {
 		return this.getApprovalRootLastStartDateFinder.findData(sid);
+	}
+	
+	@POST
+	@Path("getClosureStartDate/{sid}")
+	public GeneralDate getClosureStartDate(@PathParam("sid") String sid) {
+		return this.getClosureStartDateFinder.findData(sid);
 	}
 	
 	@POST
