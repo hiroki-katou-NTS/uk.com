@@ -3910,12 +3910,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // update Phần Detail
             let detailHeaderDeco = dataBindGrid.detailHeaderDeco;
             let detailHeaderDs = [];
-            let detailContentDeco = dataBindGrid.detailContentDeco;
+            let detailContentDeco = [];
             let detailContentDs = dataBindGrid.detailContentDs;
             let detailColumns = dataBindGrid.detailColumns;
             let objDetailHeaderDs = dataBindGrid.objDetailHeaderDs;
             let htmlToolTip = dataBindGrid.htmlToolTip;
             let timeRanges = [];
+            
+            if (self.userInfor.disPlayFormat == ViewMode.SHIFT) {
+                if (self.mode() == UpdateMode.DETERMINE) {
+                    detailContentDeco = self.detailContentDecoModeConfirmNormal;
+                } else {
+                    detailContentDeco = self.userInfor.backgroundColor == BackGroundShiftMode.NORMAL ? self.detailContentDecoNormal : self.detailContentDecoShift;
+                }
+            } else {
+                detailContentDeco = self.mode() == UpdateMode.DETERMINE ? self.detailContentDecoModeConfirm : self.detailContentDeco;
+            }
 
             //create dataSource for detailHeader
             detailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
@@ -5719,12 +5729,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
 
                     let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
-
+                    
+                    $("#extable").exTable("saveScroll");
+                    
                     self.updateExTableAfterSortEmp(dataBindGrid, self.selectedModeDisplayInBody(), self.userInfor.updateMode, true, true, true);
 
-                    if (self.userInfor.disPlayFormat === ViewMode.TIME) {
-                        self.diseableCellsTime();
-                    }
+                    self.mode() === UpdateMode.EDIT ? self.editModeAct(false) : self.confirmModeAct(false);
                     
                     self.getAggregatedInfo(false, true);
                     
