@@ -156,6 +156,13 @@ include 'exio.ctx:nts.uk.ctx.exio.ac'
 include 'exio.ctx:nts.uk.ctx.exio.pub'
 include 'exio.ctx:nts.uk.ctx.exio.pubimp'
 
+include 'alarm.ctx:nts.uk.ctx.alarm.app'
+include 'alarm.ctx:nts.uk.ctx.alarm.dom'
+include 'alarm.ctx:nts.uk.ctx.alarm.infra'
+include 'alarm.ctx:nts.uk.ctx.alarm.ws'
+include 'alarm.ctx:nts.uk.ctx.alarm.pub'
+include 'alarm.ctx:nts.uk.ctx.alarm.pubimp'
+
 include 'query:nts.uk.query.app'
 include 'query:nts.uk.query.model'
 include 'query:nts.uk.query.infra'
