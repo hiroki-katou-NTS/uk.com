@@ -54,8 +54,6 @@ namespace WSISmile.Business.Category.Accept
                         streamWriter.Write(CsvWriter.ToCsvString_Data(data));
                     }
                 }
-
-                return;
             }
             catch
             {

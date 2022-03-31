@@ -44,6 +44,17 @@ public class EmployeeWorkingStatus {
 
 
 	/**
+	 * 所属職場グループのIDを取得する
+	 * @return 職場グループID
+	 */
+	public Optional<String> getWorkplaceGroupId() {
+
+		return this.organization.flatMap( org -> org.getWorkplaceGroupId() );
+
+	}
+
+
+	/**
 	 * 作成する
 	 * @param require Require
 	 * @param employeeID 社員ID
