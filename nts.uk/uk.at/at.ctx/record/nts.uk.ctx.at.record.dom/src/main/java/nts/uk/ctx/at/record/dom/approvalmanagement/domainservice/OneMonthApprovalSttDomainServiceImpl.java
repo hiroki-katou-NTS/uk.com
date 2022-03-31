@@ -429,6 +429,7 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 		// this.createListConditions(),
 		// this.convertFromDateToDateTime(datePeriod.end()));
 		// [No.401]社員ID（List）と期間から個人情報を取得する - fix bug 107962
+		employeeList = employeeList.stream().distinct().collect(Collectors.toList());
 		EmployeeGeneralInfoImport employeeGeneralInfoImport = this.employeeGeneralInfoService
 				.getEmployeeGeneralInfo(employeeList, new DatePeriod(datePeriod.end(), datePeriod.end()));
 

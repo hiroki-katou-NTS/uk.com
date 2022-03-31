@@ -109,7 +109,7 @@ public class SmileInforSettingWs {
 	public void register(String conditionSetCode) {
 		String companyId = AppContexts.user().companyId();
 		// B
-		int categoryId = 637;
+		int categoryId = 160;
 		int delimiter = 1;
 		int itemOutputName = 1;
 		int autoExecution = 1;
@@ -141,7 +141,7 @@ public class SmileInforSettingWs {
 		
 		StdOutputCondSetCommand command = new StdOutputCondSetCommand(companyId, conditionSetCode, categoryId, delimiter, itemOutputName, 
 																		autoExecution, conditionSetName, conditionOutputName, stringFormat, version, copyDestinationCode, 
-																		overWrite, newMode, destinationName, standType, listStandardOutputItem);
+																		overWrite, newMode, destinationName, standType, 1, null, listStandardOutputItem);
 		this.registerStdOutputCondSetCommandHandler.handle(command);
 		
 		// C
@@ -164,7 +164,7 @@ public class SmileInforSettingWs {
 		this.addStdOutItemCommandHandler.handle(outItemYear);
 		
 		List<CategoryItemCommand> comCatItem = new ArrayList<>();
-		CategoryItemCommand comCd = new CategoryItemCommand(1, 673, null, 1);
+		CategoryItemCommand comCd = new CategoryItemCommand(1, categoryId, null, 1);
 		comCatItem.add(comCd);
 		StdOutItemCommand  outItemCom = new StdOutItemCommand(isNewMode, companyId, "0003", conditionSetCode, "会社CD", 1, 
 				comCatItem, null, null, null, null, null, null, 3);
@@ -200,7 +200,7 @@ public class SmileInforSettingWs {
 		otTimeCatItem.add(otTime);
 		StdOutItemCommand outItemOtTimeCatItem = new StdOutItemCommand(isNewMode, companyId, "0109", conditionSetCode, "残業時間", 3, 
 				otTimeCatItem, null, null, null, null, null, 
-				new TimeDfsCommand(conditionSetCode, "0109", companyId, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 1, null, 1, null, null, 0),
+				new TimeDfsCommand(conditionSetCode, "0109", companyId, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, null, 1, null, null, 0),
 				7);
 		this.addStdOutItemCommandHandler.handle(outItemOtTimeCatItem);
 		

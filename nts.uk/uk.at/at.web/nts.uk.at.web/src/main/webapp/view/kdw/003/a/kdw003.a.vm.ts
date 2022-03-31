@@ -813,6 +813,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 	                                    }
 	                                    else {
 	                                        let paramMonth: any = { loadAfterCalc: false , paramCommonAsync : self.paramCommonAsync , dpStateParam : self.dpStateParam };
+											param.screenDto = self.screenDto;
 	                                        $.when(service.loadMonth(paramMonth), service.startScreen(param)).done((dataMonth, dataDaily) => {
 												self.dataSessionDto = dataDaily.dataSessionDto;
 												self.screenDto.dataSessionDto = self.dataSessionDto;
@@ -5485,12 +5486,126 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     };
 
+		 
+		            let checkDataCare: boolean = true;
+		            selfParent.listErAlHolidays = [];
+		            if (!selfParent.flagCalculation) {
+		                selfParent.listCareError([]);
+		                selfParent.listCareInputError([]);
+		                selfParent.listCheck28([]);
+		                selfParent.listCheckDeviation = [];
+		                selfParent.listErrorMonth = [];
+		                selfParent.lstErrorAfterCalcUpdate = [];
+		            }
+		            selfParent.listCheckHolidays([]);
+		            let dataChange: any = _.uniqWith($("#dpGrid").mGrid("updatedCells", true),  _.isEqual);
+		
+		            let dataSource1 = $("#dpGrid").mGrid("dataSource");
+		            let dataChangeProcess: any = [];
+		            let dataCheckSign: any = [];
+		            let dataCheckApproval: any = [];
+		            let sprStampSourceInfo: any = null;
+		            _.each(dataChange, (data: any) => {
+		                let dataTemp = _.find(dataSource1, (item: any) => {
+		                    return item.id == data.rowId;
+		                });
+		
+		                if (data.columnKey != "sign" && data.columnKey != "approval") {
+		                    if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
+		                        if (data.columnKey.indexOf("Name") != -1) {
+		                        } else {
+		                            //get layout , and type
+		                            let layoutAndType: any = _.find(selfParent.itemValueAll(), (item: any) => {
+		                                return item.itemId == data.columnKey.substring(1, data.columnKey.length);
+		                            });
+		                            let item = _.find(selfParent.lstAttendanceItem(), (value) => {
+		                                return String(value.id) === data.columnKey.substring(1, data.columnKey.length);
+		                            })
+		                            let value: any;
+		                            value = selfParent.getPrimitiveValue(data.value, item.attendanceAtr, item.primitive);
+									if (value === true || value === false) {
+										value = value ? 1 : 0
+									}
+		                            let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), 0);
+		                            dataChangeProcess.push(dataMap);
+		                        }
+		                    } else {
+		                        let columnKey: any;
+		                        let item: any;
+		                        if (data.columnKey.indexOf("Code") != -1) {
+		                            columnKey = data.columnKey.substring(4, data.columnKey.length);
+		                        } else {
+		                            columnKey = data.columnKey.substring(2, data.columnKey.length);
+		                        }
+		                        //TO Thanh: move find logic out if condition
+		                        item = _.find(selfParent.lstAttendanceItem(), (data) => {
+		                            return String(data.id) === columnKey;
+		                        })
+		
+		                        let layoutAndType: any = _.find(selfParent.itemValueAll(), (item: any) => {
+		                            return item.itemId == columnKey;
+		                        });
+		                        let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup);
+		                        dataChangeProcess.push(dataMap);
+		                    }
+		                } else {
+		                    if (data.columnKey == "sign") {
+		                        dataCheckSign.push({ rowId: data.rowId, itemId: "sign", value: data.value, employeeId: dataTemp.employeeId, date: dataTemp.dateDetail.utc().toISOString(), flagRemoveAll: false });
+		                    } else {
+		                        let flag = false;
+		                        if (data.rowId == selfParent.sprRemoveApprovalAll) {
+		                            flag = true;
+		                            selfParent.sprRemoveApprovalAll = null;
+		                        }
+		                        dataCheckApproval.push({ rowId: data.rowId, itemId: "approval", value: data.value, employeeId: dataTemp.employeeId, date: dataTemp.dateDetail.utc().toISOString(), flagRemoveAll: flag });
+		                    }
+		                }
+		            });
+		            if (!_.isEmpty(selfParent.shareObject()) && selfParent.shareObject().initClock != null && selfParent.initScreenSPR == 0) {
+		                if (selfParent.sprStampSourceInfo() != null) {
+		                    sprStampSourceInfo = selfParent.sprStampSourceInfo();
+		                    sprStampSourceInfo.employeeId = selfParent.shareObject().initClock.employeeId;
+		                    sprStampSourceInfo.date = selfParent.shareObject().initClock.dateSpr.utc().toISOString();
+		                }
+		            }
+		            let execMontlyAggregateAsync = true;
+		            let dataParent = {
+		                itemValues: dataChangeProcess,
+		                dataCheckSign: dataCheckSign,
+		                dataCheckApproval: dataCheckApproval,
+		                mode: selfParent.displayFormat(),
+		                spr: sprStampSourceInfo,
+		                flagCalculation: selfParent.flagCalculation,
+		                lstNotFoundWorkType: selfParent.workTypeNotFound,
+		                showDialogError: selfParent.showDialogError
+		            }
+		            if (selfParent.displayFormat() == 0) {
+		                if (!_.isEmpty(selfParent.shareObject()) && selfParent.shareObject().initClock != null) {
+		                    dataParent["employeeId"] = selfParent.shareObject().initClock.employeeId;
+		                } else {
+		                    dataParent["employeeId"] = dataSource1.length > 0 ? dataSource1[0].employeeId : null;
+		                }
+		                dataParent["monthValue"] = selfParent.valueUpdateMonth;
+		                if (execMontlyAggregateAsync) {
+		                    dataParent["monthValue"].needCallCalc = false;
+		                }
+		                dataParent["dateRange"] = dataSource1.length > 0 ? { startDate: dataSource1[0].dateDetail._i, endDate: dataSource1[dataSource1.length - 1].dateDetail._i } : null;
+		            } else {
+		                dataParent["dateRange"] = dataSource1.length > 0 ? { startDate: dataSource1[0].dateDetail._i, endDate: dataSource1[0].dateDetail._i } : null;
+		            }
+		
+		            let checkDailyChange = (dataChangeProcess.length > 0 || dataCheckSign.length > 0 || dataCheckApproval.length > 0 || selfParent.sprStampSourceInfo() != null) && checkDataCare;
+		            dataParent["checkDailyChange"] = (dataChangeProcess.length > 0 || selfParent.sprStampSourceInfo()) ? true : false;
+		            dataParent["showFlex"] = selfParent.showFlex();
+		            dataParent["checkUnLock"] = selfParent.checkUnLock();
+
                     let findWkpParam = {
                         companyId: __viewContext.user.companyId, 
                         wkpCode: workplaceCode, 
                         baseDate: dateParam2,
 						dataSessionDto : parent.dataSessionDto, 
-                        employeeId: row.employeeId
+                        employeeId: row.employeeId,
+						dataParent : dataParent
                     };
                     $.when(service.findWplIDByCode(findWkpParam), service.findAllCodeName(param2)).done((res1, res2) => {
                         if (res1) {

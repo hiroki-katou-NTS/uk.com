@@ -133,4 +133,14 @@ public class JpaMonthlyAttendanceItemGetMemento implements MonthlyAttendanceItem
 		return EnumAdaptor.valueOf(this.entity.getTwoMonthlyDisplay(), DisplayMonthResultsMethod.class) ;
 	}
 
+	@Override
+	public boolean getUseAnyPeriod() {
+		return this.entity.isUseByAnp();
+	}
+
+	@Override
+	public boolean getUseMonthResult() {
+		return this.entity.isUseByMon();
+	}
+
 }

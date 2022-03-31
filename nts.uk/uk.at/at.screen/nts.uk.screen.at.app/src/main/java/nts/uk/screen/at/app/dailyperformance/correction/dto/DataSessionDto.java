@@ -23,11 +23,13 @@ import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ParamCom
 @NoArgsConstructor
 public class DataSessionDto {
 	
-	List<DailyRecordDto> domainOlds;
+	InputGetDataOlds inputGetDataOlds;
 	
-	List<DailyRecordDto> domainOldForLog;
+	//List<DailyRecordDto> domainOlds;
 	
-	List<DailyRecordDto> domainEdits;
+//	List<DailyRecordDto> domainOldForLog;
+//	
+//	List<DailyRecordDto> domainEdits;
 	
 	//mapDPAttendance
 	Map<Integer, DPAttendanceItem> itemIdRCs ;
