@@ -4,16 +4,26 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.SettingRequiredByFlex;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.timeseries.PrescribedWorkingTimeOfTimeSeries;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexLegalTimeGetter;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * 月別実績の所定労働時間
@@ -150,6 +160,28 @@ public class PrescribedWorkingTimeOfMonthly implements Cloneable, Serializable {
 		return returnTime;
 	}
 	
+	/** フレックス勤務の所定労働時間の補正 */
+	public void correctInFlexWork(Require require, CacheCarrier cacheCarrier,
+			String companyId, String employeeId, YearMonth yearMonth, DatePeriod datePeriod, ClosureId closureId,
+			ClosureDate closureDate, String employmentCode,
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
+			SettingRequiredByFlex settingsByFlex,  AggregateTotalWorkingTime aggregateTotalWorkingTime, 
+			MonthlyCalculatingDailys monthlyCalculatingDailys) {
+		
+		/** 所定労動時間使用区分を確認する */
+		if (!settingsByFlex.getComFlexSetOpt().map(c -> c.isWithinTimeUsageAttr()).orElse(false)) 
+			return;
+		
+		/** 所定労働時間を求める */
+		val prescribedWorkingTime = FlexLegalTimeGetter.getFlexStatutoryLaborTime(
+				require, cacheCarrier, companySets, employeeSets, settingsByFlex, true, 
+				yearMonth, companyId, employmentCode, employeeId, datePeriod.end(), Optional.of(datePeriod),
+				closureId, closureDate, Optional.of(aggregateTotalWorkingTime), monthlyCalculatingDailys);
+		
+		/** 実績所定労働時間を補正する */
+		this.recordPrescribedWorkingTime = new AttendanceTimeMonth(prescribedWorkingTime.getSpecifiedSetting().valueAsMinutes());
+	}
+	
 	/**
 	 * 合算する
 	 * @param target 加算対象
@@ -161,4 +193,6 @@ public class PrescribedWorkingTimeOfMonthly implements Cloneable, Serializable {
 		this.recordPrescribedWorkingTime = this.recordPrescribedWorkingTime.addMinutes(
 				target.recordPrescribedWorkingTime.v());
 	}
+	
+	public static interface Require extends FlexLegalTimeGetter.RequireM1 {}
 }
