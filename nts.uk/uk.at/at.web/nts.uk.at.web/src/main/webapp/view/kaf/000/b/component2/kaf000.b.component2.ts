@@ -8,7 +8,6 @@ module nts.uk.at.view.kaf000.b.component2.viewmodel {
                     <div id="opReversionReason" data-bind="html: opReversionReason"></div>
                 </div>
             </div>
-
         `
     })
     class Kaf000BComponent2ViewModel extends ko.ViewModel {
@@ -28,6 +27,9 @@ module nts.uk.at.view.kaf000.b.component2.viewmodel {
             if (vm.opReversionReasonDisp()) {
                 let opReversionReason = vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opReversionReason;
                 vm.opReversionReason(opReversionReason.replace(/\n/g, "\<br/>"));
+                $('#kaf000-b-component2').width(800);
+            } else {
+                $('#kaf000-b-component2').width(0);
             }
 
 			vm.appDispInfoStartupOutput.subscribe(value => {
@@ -36,7 +38,10 @@ module nts.uk.at.view.kaf000.b.component2.viewmodel {
 	            if (vm.opReversionReasonDisp()) {
 	                let opReversionReason = value.appDetailScreenInfo.application.opReversionReason;
 	                vm.opReversionReason(opReversionReason.replace(/\n/g, "\<br/>"));
-	            }
+                    $('#kaf000-b-component2').width(800);
+	            } else {
+                    $('#kaf000-b-component2').width(0);
+                }
             });
         }
 

@@ -88,14 +88,12 @@
 									" class="hyperlink"></a>
 							</td>
 						</tr>
-						<!-- <tr>
-							<td></td>
-							<td class="pad_5" style="padding-left: 10px"><button tabindex="5" id="login-btn"
-									data-bind="click: SamlLogin" class="full_width proceed large">
-									<div data-bind="SAML認証"></div>
-								</button></td>
-						</tr> -->
-
+						<tr>
+							<td colspan="2" class="pad_5">
+								<button tabindex="7" id="saml-login-btn" data-bind="click: SamlLogin, visible: useSaml"
+									class="full_width proceed large">SAML認証</button>
+							</td>
+						</tr>
 					</table>
 				</div>
 			</div>

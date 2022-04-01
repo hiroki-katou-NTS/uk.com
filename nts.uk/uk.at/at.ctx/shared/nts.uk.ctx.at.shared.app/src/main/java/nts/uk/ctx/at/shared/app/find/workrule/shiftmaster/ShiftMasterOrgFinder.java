@@ -37,8 +37,8 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -190,7 +190,7 @@ public class ShiftMasterOrgFinder {
 		WorkInformation information = new WorkInformation("", "");
 
 		WorkInformation.Require require2 = new WorkInfoImpl(workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
-		Optional<WorkInfoAndTimeZone> timeZone = information.getWorkInfoAndTimeZone(require2);
+		Optional<WorkInfoAndTimeZone> timeZone = information.getWorkInfoAndTimeZone(require2, companyId);
 		Optional<WorkInfoTimeZoneTempo> tempo = timeZone.map(x-> WorkInfoTimeZoneTempo.toDto(x));
 		shiftMasterDto =  new OutPutShiftMasterDto(shiftMaster, tempo.isPresent() ? tempo.get() : null);
 		return shiftMasterDto;
@@ -273,13 +273,13 @@ public class ShiftMasterOrgFinder {
 		}
 
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeRepo.findByPK(companyId, workTypeCode.v());
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
 		}
 
 		// fix bug 113211
@@ -289,27 +289,27 @@ public class ShiftMasterOrgFinder {
 //		}
 
 		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return Optional.empty();
 		}
 
 		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return Optional.empty();
 		}
 
 		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return Optional.empty();
 		}
 
 		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
 			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return Optional.empty();
 		}
 
 	}

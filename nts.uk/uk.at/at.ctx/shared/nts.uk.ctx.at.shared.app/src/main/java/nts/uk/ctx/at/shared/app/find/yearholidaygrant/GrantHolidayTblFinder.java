@@ -1,16 +1,16 @@
 package nts.uk.ctx.at.shared.app.find.yearholidaygrant;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfService;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.UseSimultaneousGrant;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -43,25 +43,25 @@ public class GrantHolidayTblFinder {
 	 * @return
 	 */
 	public List<CalculateDateDto> calculateGrantDate(CalculateGrantHdTblParam param) {
-		List<CalculateDateDto> result = new ArrayList<>();
-		List<LengthServiceTbl> lengthServiceData = new ArrayList<>();
-		
-		// calculate date
-		for (CalculateDateDto item : param.getGrantHolidayTblList()) {
-			LengthServiceTbl lengthServiceTbl = LengthServiceTbl.createFromJavaType(item.getCompanyId(), item.getYearHolidayCode(), item.getGrantNum(), 
-					item.getAllowStatus(), item.getStandGrantDay(), item.getYear(), item.getMonth());
-			
-			lengthServiceData.add(lengthServiceTbl);
-			
-			lengthServiceTbl.calculateGrantDate(param.getReferDate(), param.getSimultaneousGrantDate(), EnumAdaptor.valueOf(param.getUseSimultaneousGrant(), UseSimultaneousGrant.class));
-			
-			item.setGrantDate(lengthServiceTbl.getGrantDate());
-			
-			result.add(item);
-		}
-		
-		LengthServiceTbl.validateInput(lengthServiceData);
-		
-		return result;
+
+		List<LengthOfService> lengthOfServices = param.getGrantHolidayTblList().stream().map(c ->
+																			LengthOfService.createFromJavaType(c.getGrantNum(),
+																													c.getAllowStatus(),
+																													c.getStandGrantDay(),
+																													c.getYear(),
+																													c.getMonth())
+		).collect(Collectors.toList());
+		LengthServiceTbl.validateInput(lengthOfServices);
+
+		return lengthOfServices.stream().map(c -> {
+			CalculateDateDto calcDate = param.getGrantHolidayTblList().get(lengthOfServices.indexOf(c));
+
+			Optional<GeneralDate> grantDate = c.calculateGrantDate(param.getUseSimultaneousGrant(),
+																					param.getReferDate(),
+																					param.getSimultaneousGrantDate(),
+																					lengthOfServices.indexOf(c) > 0 ? param.getGrantHolidayTblList().get(lengthOfServices.indexOf(c)-1).getGrantDate() : Optional.empty());
+			calcDate.setGrantDate(grantDate);
+			return calcDate;
+		}).collect(Collectors.toList());
 	}
 }

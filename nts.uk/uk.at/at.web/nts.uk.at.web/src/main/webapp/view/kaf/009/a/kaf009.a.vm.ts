@@ -126,10 +126,10 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 }
             }).fail((failData: any) => {
                 let param;
-                if (failData.message) {
-                    param = {message: failData.message, messageParams: failData.parameterIds};
+                if (failData.messageId) {
+					param = {messageId: failData.messageId, messageParams: failData.parameterIds};
                 } else {
-                    param = {messageId: failData.messageId, messageParams: failData.parameterIds}
+                    param = {message: failData.message, messageParams: failData.parameterIds};
                 }
                 vm.$dialog.error(param);
 
@@ -270,7 +270,6 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 }).done(result => {
                     if (result != undefined) {
                         vm.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-							nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
                        		CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
                         });                
                     }
@@ -287,7 +286,11 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                             param = {messageId: err.messageId, messageParams: err.parameterIds};
                         }
                     }
-                    vm.$dialog.error(param);
+                    vm.$dialog.error(param).then(() => {
+						if(err.messageId == "Msg_3267") {
+							$('#kaf000-a-component4-singleDate').focus();
+						}	
+					});
                 })
                 .always(() => vm.$blockui("hide"));
 
@@ -317,18 +320,24 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 				vm.$ajax(API.changeDate, commandChangeDate)
 				.done(res => {
 					if (res) {
+						let errorMsgLst = res.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
+						if(!_.isEmpty(errorMsgLst)) {
+							vm.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
+		 						$('#kaf000-a-component4-singleDate').focus();		
+							});
+						}
 						dataClone.lstWorkType(res.lstWorkType);
 						dataClone.workType(res.workType);
 						dataClone.workTime(res.workTime);
-	                	dataClone.appDispInfoStartup = vm.appDispInfoStartupOutput;
+	                	dataClone.appDispInfoStartup(res.appDispInfoStartup);
 						vm.dataFetch(dataClone);						
 					}
 				}).fail(res => {
 					let param;
-                    if (res.message) {
-                        param = {message: res.message, messageParams: res.parameterIds};
+                    if (res.messageId) {
+						param = {messageId: res.messageId, messageParams: res.parameterIds};
                     } else {
-                        param = {messageId: res.messageId, messageParams: res.parameterIds}
+                        param = {message: res.message, messageParams: res.parameterIds};
                     }
                     vm.$dialog.error(param);
 				}).always(res => {
@@ -359,10 +368,10 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 .fail(res => {
 
                     let param;
-                    if (res.message) {
-                        param = {message: res.message, messageParams: res.parameterIds};
+                    if (res.messageId) {
+						param = {messageId: res.messageId, messageParams: res.parameterIds};
                     } else {
-                        param = {messageId: res.messageId, messageParams: res.parameterIds}
+                        param = {message: res.message, messageParams: res.parameterIds};
                     }
                     vm.$dialog.error(param);
                 })
@@ -423,8 +432,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         startNew: "at/request/application/gobackdirectly/getGoBackCommonSettingNew",
         checkRegister: "at/request/application/gobackdirectly/checkBeforeRegisterNew",
         register: "at/request/application/gobackdirectly/registerNewKAF009",
-        changeDate: "at/request/application/gobackdirectly/getAppDataByDate",
-		reflectApp: "at/request/application/reflect-app"
+        changeDate: "at/request/application/gobackdirectly/getAppDataByDate"
     }
 
     export class ApplicationStatus {

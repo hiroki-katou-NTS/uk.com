@@ -26,7 +26,9 @@ import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
@@ -66,6 +68,9 @@ public class ProcessDailyCalc {
 	
 	@Inject
 	private RecordDomRequireService requireService;
+	
+	@Inject
+	private AttendanceItemConvertFactory convertFactory;
 
 	private Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> checkBeforeCalc(DailyCalcParam param,
 			List<DailyRecordDto> dailyEdits) {
@@ -103,11 +108,14 @@ public class ProcessDailyCalc {
 			List<DPItemValue> itemInputs = validatorDataDaily.checkInputData(itemCovert, itemValues);
 			// 開始終了時刻順序不正チェック
 			List<DPItemValue> itemInputsPlus = validatorDataDaily.checkInputDataPlus(itemCovert, itemValues);
+			// 時間休暇の消化単位チェック
+			List<DPItemValue> checkTimeVacationDigestionUnit = validatorDataDaily.timeVacationDigestionUnitCheck(itemCovert, itemValues);
 			// 任意項目の入力チェック
 			List<DPItemValue> checkInputOptionlItems = checkArbitraryItems.check(itemCovert, itemValues);
 			itemInputErors.addAll(itemInputs);
 			itemInputErors.addAll(itemInputsPlus);
 			itemInputErors.addAll(checkInputOptionlItems);
+			itemInputErors.addAll(checkTimeVacationDigestionUnit);
 			itemInputWorkType = lstNotFoundWorkType.stream().filter(
 					wt -> wt.getEmployeeId().equals(x.getKey().getLeft()) && wt.getDate().equals(x.getKey().getRight()))
 					.collect(Collectors.toList());
@@ -221,8 +229,17 @@ public class ProcessDailyCalc {
 		List<DailyRecordWorkCommand> commandOld = ProcessCommonCalc.createCommands(sid, dailyOlds, queryChange);
 		//日別実績の修正からの計算
 		resultIU = calcDaily(dailyEdits, commandNew, commandOld, dailyItemOlds, monthParam, execType);
+		//「計算後エラーチェック」内で日別勤怠(Work)が変更されてしまう為、日別勤怠(Work)だけcloneしている
+		DailyRecordToAttendanceItemConverter converter = convertFactory.createDailyConverter();
+		RCDailyCorrectionResult tempResultIU = new RCDailyCorrectionResult(
+				resultIU.getLstDailyDomain().stream().map(d -> converter.setData(d).toDomain()).collect(Collectors.toList()),
+				resultIU.getLstMonthDomain(),
+				resultIU.getCommandNew(),
+				resultIU.getCommandOld(),
+				resultIU.getDailyItems(),
+				resultIU.isUpdate());
 		//計算後エラーチェック
-		ErrorAfterCalcDaily checkErrorAfterCalcDaily = checkErrorAfterCalcDaily(resultIU, param.getResultOlds(),
+		ErrorAfterCalcDaily checkErrorAfterCalcDaily = checkErrorAfterCalcDaily(tempResultIU, param.getResultOlds(),
 				param.getDateRange(),
 				param.getDailyDtoEditAll().stream()
 						.filter(x -> !lstResultReturnDailyError.containsKey(Pair.of(x.getEmployeeId(), x.getDate())))

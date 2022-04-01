@@ -75,7 +75,7 @@ public class VacationAppReflectOption extends DomainObject {
 		if (this.getOneDayLeaveDeleteAttendance() == NotUseAtr.USE) {
 
 			// 出退勤の削除
-			val resultClean = DeleteAttendanceProcess.process(require, workInfoDto.getWorkTypeCode(), dailyApp);
+			val resultClean = DeleteAttendanceProcess.process(require, cid, workInfoDto.getWorkTypeCode(), dailyApp);
 			lstItemId.addAll(resultClean.getLstItemId());
 		}
 

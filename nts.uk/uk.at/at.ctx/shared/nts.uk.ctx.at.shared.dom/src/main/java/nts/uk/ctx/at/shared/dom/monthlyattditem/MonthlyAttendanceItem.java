@@ -59,6 +59,11 @@ public class MonthlyAttendanceItem extends AggregateRoot {
 	// 2件存在した場合の表示方法【追加予定】
 	private DisplayMonthResultsMethod twoMonthlyDisplay;
 
+	// 任意期間で利用する
+	private  boolean useAnyPeriod;
+
+	// 月別実績で利用する
+	private  boolean useMonthResult;
 	/**
 	 * Instantiates a new monthly attendance item.
 	 *
@@ -75,6 +80,8 @@ public class MonthlyAttendanceItem extends AggregateRoot {
 		this.primitiveValue = memento.getPrimitiveValue();
 		this.displayName = memento.getDisplayName();
 		this.twoMonthlyDisplay = memento.getTwoMonthlyDisplay();
+		this.useAnyPeriod = memento.getUseAnyPeriod();
+		this.useMonthResult = memento.getUseMonthResult();
 	}
 
 	/**
@@ -93,6 +100,8 @@ public class MonthlyAttendanceItem extends AggregateRoot {
 		memento.setPrimitiveValue(this.primitiveValue);
 		memento.setDisplayName(this.displayName);
 		memento.setTwoMonthlyDisplay(this.twoMonthlyDisplay);
+		memento.setUseAnyPeriod(this.useAnyPeriod);
+		memento.setUseMonthResult(this.useMonthResult);
 	}
 
 	/* (non-Javadoc)

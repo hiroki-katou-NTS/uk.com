@@ -1,3 +1,7 @@
+td {
+	text-align: left !important;
+	height: 33px !important;
+}
 
 .control-group.valign-center>* {
 	vertical-align: middle;
@@ -185,5 +189,9 @@ div.form-label.broken {
 	margin-left: 20px;
 	margin-right: 20px;
 	line-height: 40px;
+}
+
+.item .nts-fixed-body-container {
+	height: 100px;
 }
 

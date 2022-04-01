@@ -2,7 +2,7 @@ module nts.uk.ui.at.kdw013.eventheadear {
     @component({
         name: 'fc-event-header',
         template:
-        `<td data-bind="i18n: 'KDW013_20'"></td>
+        `<td id="fc-event-header-text" data-bind="i18n: 'KDW013_20'"></td>
                 <!-- ko foreach: { data: $component.params.data, as: 'day' } -->
                 <td class="fc-event-note fc-day" style='text-align: center;' data-bind="css: { 'no-data': !day.events.length }, attr: { 'data-date': day.date }">
                     <div style="display: flex;height:calc(100% - 19px);"> 
@@ -25,7 +25,7 @@ module nts.uk.ui.at.kdw013.eventheadear {
                     </div>
                     <!-- ko if: $component.showHIcon(day.date) -->
                     <div style="min-height: 20px; height:20px;">     
-                        <i class='openHIcon' data-bind="ntsIcon: { no: 232, width: 20, height: 20, extension: 'png' },click: function(day) { $component.openHDialog(day) } " > </i>
+                        <i tabindex="0" class='openHIcon' data-bind="ntsIcon: { no: 232, width: 20, height: 20 },click: function(day) { $component.openHDialog(day) } " > </i>
                     </div>
                     <!-- /ko -->
                 </td>
@@ -64,6 +64,14 @@ module nts.uk.ui.at.kdw013.eventheadear {
                     .fc-day,.text-note{
                         font-size: 12px;
                         line-height: 17px;
+                    }
+					.fc-event-note .checkbox-wrapper input[type="checkbox"]:checked+span::after{
+						top: 4px;
+						left: 1px;
+					}
+                    #fc-event-header-text{
+                        text-align: left;
+                        padding: 0 4px;
                     }
                 </style>
                 `

@@ -470,13 +470,13 @@ module nts.uk.ui.at.ksu002.a {
 		workplaceId: KnockoutObservable<string>;
 	}
 
-	interface WorkTypeResponse {
+	export interface WorkTypeResponse {
 		workStyle: WORK_STYLE;
 		workTimeSetting: WORKTIME_SETTING;
 		workTypeDto: WorkType;
 	}
 
-	interface WorkType {
+	export interface WorkType {
 		memo: string;
 		name: string;
 		abbName: string;

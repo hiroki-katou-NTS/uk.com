@@ -108,6 +108,14 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area" style="background-color: inherit;">
+				<div class="controlButtonCell_kaf000">
+					<button class="goback" data-bind="click: backtoCMM045">#{i18n.getText('KAF000_14')}</button>
+					<!-- B1_2 -->
+					<button data-bind="click: back, enable: $vm.enableBack">前頁</button>
+					<!-- B1_3 -->
+					<button data-bind="click: next, enable: $vm.enableNext">次頁</button>
+				</div>
+				
 				<!-- B1_4 -->
 				<div class="controlButtonCell_kaf000"
 					data-bind="if: displayApprovalButton">
@@ -162,6 +170,7 @@
 								enable: enableRemandButton() &amp;&amp; $root.errors.isEmpty
 								   ">#{i18n.getText('KAF000_17')}</button>
 				</div>
+
 				<!-- B1_8 -->
 				<div class="controlButtonCell_kaf000"
 					data-bind="if: displayUpdateButton">
@@ -204,11 +213,7 @@
 					</div>
 				</div>
 
-				<button class="goback" data-bind="click: backtoCMM045">申請一覧</button>
-				<!-- B1_2 -->
-				<button data-bind="click: back, enable: $vm.enableBack">前頁</button>
-				<!-- B1_3 -->
-				<button data-bind="click: next, enable: $vm.enableNext">次頁</button>
+				
 
 			</div>
 			

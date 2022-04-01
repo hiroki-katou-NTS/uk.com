@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.database.DatabaseProduct;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
@@ -327,10 +328,10 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	@Override
 	public void addAll(List<SubstitutionOfHDManagementData> domains) {
 		String INS_SQL = "INSERT INTO KRCDT_HD_SUB_MNG (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
-				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG,CONTRACT_CD," 
 				+ " SUBOFHD_ID, CID, SID, UNKNOWN_DATE, DAYOFF_DATE, NUMBER_OF_DAYS, REMAIN_DAYS)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
-				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, CONTRACT_CD_VAL,"
 				+ " SUBOFHD_ID_VAL, CID_VAL, SID_VAL, UNKNOWN_DATE_VAL, DAYOFF_DATE_VAL, NUMBER_OF_DAYS_VAL, REMAIN_DAYS_VAL); ";
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
@@ -339,7 +340,18 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 		String updCcd = insCcd;
 		String updScd = insScd;
 		String updPg = insPg;
+		String contractCd = AppContexts.user().contractCode();
 		StringBuilder sb = new StringBuilder();
+		
+		List<String> unknownDates = new ArrayList<String>();
+		
+		if (this.database().is(DatabaseProduct.MSSQLSERVER)) {
+			unknownDates.add("1");
+			unknownDates.add("0");
+		} else if (this.database().is(DatabaseProduct.POSTGRESQL)) {
+			unknownDates.add("true");
+			unknownDates.add("false");
+		}
 		domains.parallelStream().forEach(c -> {
 			String sql = INS_SQL;
 			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
@@ -351,12 +363,12 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
 			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+			sql = sql.replace("CONTRACT_CD_VAL", "'" + contractCd + "'");
 
 			sql = sql.replace("SUBOFHD_ID_VAL", "'" + c.getSubOfHDID() + "'");
 			sql = sql.replace("CID_VAL", "'" + c.getCid()+ "'");
 			sql = sql.replace("SID_VAL", "'" + c.getSID()+ "'");
-			
-			sql = sql.replace("UNKNOWN_DATE_VAL", c.getHolidayDate().isUnknownDate()== true? "1":"0");
+			sql = sql.replace("UNKNOWN_DATE_VAL",c.getHolidayDate().isUnknownDate() == true ? unknownDates.get(0) : unknownDates.get(1));
 			sql = sql.replace("DAYOFF_DATE_VAL", c.getHolidayDate().getDayoffDate().isPresent()? "'"+ c.getHolidayDate().getDayoffDate().get()+"'" : "null");
 			sql = sql.replace("NUMBER_OF_DAYS_VAL", c.getRequiredDays() == null? "null" : "" + c.getRequiredDays().v() + "");
 			sql = sql.replace("REMAIN_DAYS_VAL", c.getRemainDays() == null?  "null": "" + c.getRemainDays().v() + "");

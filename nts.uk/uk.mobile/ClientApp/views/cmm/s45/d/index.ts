@@ -477,7 +477,6 @@ export class CmmS45DComponent extends Vue {
     public reflectApp(reflectAppIdLst: Array<string>): void {
         let self = this;
         if (!_.isEmpty(reflectAppIdLst)) {
-            self.$http.post('at', API.reflectApp, reflectAppIdLst);
         }
     }
 
@@ -700,6 +699,18 @@ export class CmmS45DComponent extends Vue {
         return vm.$dt(new Date(appDate), 'YYYY/MM/DD HH:mm'); 
     }
 
+    get reasonDisplay() {
+        const vm = this;
+        if (vm.appTransferData
+            && vm.appTransferData.appDetail
+            && vm.appTransferData.appDetail.appOverTime
+            && vm.appTransferData.appDetail.appOverTime.overTimeClf == 3) {
+            return false;
+        }
+
+        return vm.comboReasonDisp || vm.textReasonDisp;
+    }
+
     get comboReasonDisp() {
         const vm = this;
         if (!vm.appTransferData.appDispInfoStartupOutput) {
@@ -769,6 +780,5 @@ const API = {
     approve: 'at/request/application/approveapp',
     deny: 'at/request/application/denyapp',
     release: 'at/request/application/releaseapp',
-    reflectApp: 'at/request/application/reflect-app',
     checkVersion: 'at/request/application/checkVersion'
 };

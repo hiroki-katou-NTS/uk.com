@@ -4,6 +4,8 @@ import lombok.Getter;
 import nts.uk.ctx.exio.dom.exo.category.CategoryCd;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+import java.util.Optional;
+
 /**
  * 条件設定（定型/ユーザ）
  */
@@ -64,16 +66,21 @@ public class CondSet {
 	 */
 	private StringFormat stringFormat;
 
+	private int encodeType;
+
+	private String fileName;
+
 	public static CondSet fromStdOutputCondSet(StdOutputCondSet domain) {
 		CondSet condSet = new CondSet(StandardAtr.STANDARD, domain.getCompanyId(), null, domain.getConditionSetCode(),
 				domain.getCategoryId(), domain.getDelimiter(), domain.getItemOutputName(), domain.getAutoExecution(),
-				domain.getConditionSetName(), domain.getConditionOutputName(), domain.getStringFormat());
+				domain.getConditionSetName(), domain.getConditionOutputName(), domain.getStringFormat(),domain.getEncodeType(),domain.getFileName());
 		return condSet;
 	}
 
 	public CondSet(StandardAtr standardAttr, String cid, String userId, ExternalOutputConditionCode conditionSetCode,
-			CategoryCd categoryId, Delimiter delimiter, NotUseAtr itemOutputName, NotUseAtr autoExecution,
-			ExternalOutputConditionName conditionSetName, NotUseAtr conditionOutputName, StringFormat stringFormat) {
+				   CategoryCd categoryId, Delimiter delimiter, NotUseAtr itemOutputName, NotUseAtr autoExecution,
+				   ExternalOutputConditionName conditionSetName, NotUseAtr conditionOutputName, StringFormat stringFormat,
+				   EncodeType encodeType, Optional<ExternalOutputFileName> fileName) {
 		super();
 		this.standardAtr = standardAttr;
 		this.cid = cid;
@@ -86,5 +93,7 @@ public class CondSet {
 		this.conditionSetName = conditionSetName;
 		this.conditionOutputName = conditionOutputName;
 		this.stringFormat = stringFormat;
+		this.encodeType = encodeType.value;
+		this.fileName = fileName.map(i->i.v()).orElse(null);
 	}
 }

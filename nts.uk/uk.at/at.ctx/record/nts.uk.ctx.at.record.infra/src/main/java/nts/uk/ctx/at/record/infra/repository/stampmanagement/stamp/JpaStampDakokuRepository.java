@@ -121,6 +121,9 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 	// [4] 取得する
 	@Override
 	public List<Stamp> get(String contractCode, List<StampNumber> stampNumbers, GeneralDate stampDateTime) {
+		if(stampNumbers.isEmpty()) {
+			return new ArrayList<>();
+		}
 		Set<String> lstCard = stampNumbers.stream().map(x -> x.v()).collect(Collectors.toSet());
 		GeneralDateTime start = GeneralDateTime.ymdhms(stampDateTime.year(), stampDateTime.month(), stampDateTime.day(),
 				0, 0, 0);
@@ -160,7 +163,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				stamp.getType().getGoOutArt().isPresent() ? stamp.getType().getGoOutArt().get().value : null,
 				stamp.getImprintReflectionStatus().isReflectedCategory(),
 				(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().isPresent())
-						? stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().get().v()
+						? Integer.parseInt(stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().get().v())
 						: null,
 				(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().isPresent())
 						? stamp.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().get().v()
@@ -212,9 +215,9 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		WorkInformationStamp workInformationStamp = new WorkInformationStamp(
 				entity.workplaceId ==  null ? Optional.empty():Optional.of(entity.workplaceId),
 				entity.timeRecordCode ==  null ? Optional.empty():Optional.of(new EmpInfoTerminalCode(entity.timeRecordCode)),
-				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)),
-				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
-
+				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
+				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(String.valueOf(entity.suportCard))));
+		
 		WorkGroup workGroup = null;
 
 		if (entity.taskCd1 != null) {
@@ -244,8 +247,8 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		WorkInformationStamp workInformationStamp = new WorkInformationStamp(
 				entity.workplaceId ==  null ? Optional.empty():Optional.of(entity.workplaceId),
 				entity.timeRecordCode ==  null ? Optional.empty():Optional.of(new EmpInfoTerminalCode(entity.timeRecordCode)),
-				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)),
-				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
+				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
+				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(String.valueOf(entity.suportCard))));
 		WorkGroup workGroup = null;
 
 		if (entity.taskCd1 != null) {
@@ -292,9 +295,9 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		WorkInformationStamp workInformationStamp = new WorkInformationStamp(
 				entity.workplaceId ==  null ? Optional.empty():Optional.of(entity.workplaceId),
 				entity.timeRecordCode ==  null ? Optional.empty():Optional.of(new EmpInfoTerminalCode(entity.timeRecordCode)),
-				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)),
-				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
-
+				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
+				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(String.valueOf(entity.suportCard))));
+		
 		Stamp stamp =  new Stamp(contractCd, new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
 				StampType.getStampType(entity.changeHalfDay,
@@ -350,6 +353,9 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 
 	@Override
 	public List<Stamp> getByDateTimeperiod(List<String> listCard, GeneralDateTime startDate, GeneralDateTime endDate) {
+		if(listCard.isEmpty()) {
+			return new ArrayList<>();
+		}
 		String contractCode = AppContexts.user().contractCode();
 		List<Stamp> data =  this.queryProxy().query(GET_STAMP_BY_DATEPERIOD_AND_CARDS_2, KrcdtStamp.class)
 				.setParameter("startStampDate", startDate)

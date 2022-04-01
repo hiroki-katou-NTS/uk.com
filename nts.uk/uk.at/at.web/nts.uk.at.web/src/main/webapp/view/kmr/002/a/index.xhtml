@@ -8,6 +8,9 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount
+			</com:ValidatorScript>
 			<com:scriptfile path="kmr002.a.service.js" />
 			<com:scriptfile path="kmr002.a.vm.js" />
 			<com:scriptfile path="kmr002.a.start.js" />
@@ -16,235 +19,154 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<div class="flex">
-					<div>
-						<!--A1_1 受取日-->
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMR002_1')}</div>
-						<!--A1_2 受取日-->
-						<div 
-							data-bind="ntsDatePicker: { name: '#[KMR002_1]', value: date, dateFormat: 'YYYY/MM/DD', required: true, fiscalMonthsMode: true, showJumpButtons: true }"></div>
-						<br />
-						<!-- A1_3注文エラー -->
-						<span class="label warning" style="float: left;"
-							data-bind="visible: isError, text: textError()"></span>
+				<button class="proceed large"
+					data-bind="click: register, enable: modeFuture() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KMR002_16')}</button>
+				<a style="margin-left: 300px;" class="goout" data-bind="ntsLinkButton: { action: toKMR005 }">#{i18n.getText('KMR002_4')}</a>
+			</div>
+			<div id="contents-area">
+				<div class="table" style="margin-left: 15px; margin-bottom: 10px;">
+					<div class="cell">
+						<span>#{i18n.getText('KMR002_17')}</span>
 					</div>
-					<!--A1_4合計表-->
-					<div>
-						<table>
-							<colgroup>
-								<col width="85px" />
-								<col width="70px" />
-							</colgroup>
-							<tbody>
-								<tr style="height: 20px;">
-									<td class="table-food-td" data-bind="text: lunch()"></td>
-									<td class="table-food-td" style="text-align: right; padding-right: 1px;" data-bind="text: txtPriceLunch()"></td>
+					<div class="cell">
+						<div style="padding-left: 20px;" id="dateSelect" data-bind="ntsDatePicker: { 
+									name: '#[KMR002_17]',
+									value: date,
+									required: true }">
+						</div>
+					</div>
+				</div>
+				<div class="table" style="margin-left: 15px; margin-bottom: 10px;">
+					<div class="cell">
+						<div data-bind="ntsSwitchButton: {
+									name: '#[KMR002_18]',
+									options: frameOption,
+									optionsValue: 'frameNo',
+									optionsText: 'receptionHours.receptionName',
+									value: currentFrameNo,
+									enable: modeFuture,
+									required: true }">
+						</div>
+					</div>
+					<div class="cell" style="vertical-align: middle; padding-left: 20px;">
+						<span data-bind="text: timeLabel"></span>
+					</div>
+				</div>
+				<div class="table" style="margin-left: 15px; margin-bottom: 10px;">
+					<div class="cell" data-bind="if: currentFrameNo()==1">
+						<table class="kmr002-table">
+							<thead>
+								<tr>
+									<th style="padding-left: 5px; width: 135px;" class="bg-green">#{i18n.getText('KMR002_20')}</th>
+									<th style="padding-left: 5px; width: 85px;" class="bg-green">#{i18n.getText('KMR002_21')}</th>
+									<th style="text-align: center; width: 255px;" class="bg-green">#{i18n.getText('KMR002_22')}</th>
+									<th style="padding-left: 5px; width: 125px;" class="bg-green">#{i18n.getText('KMR002_23')}</th>
 								</tr>
-								<tr style="height: 20px;">
-									<td class="table-food-td" data-bind="text: dinner()"></td>
-									<td class="table-food-td" style="text-align: right; padding-right: 1px;" data-bind="text: txtPriceDinner()"></td>
-								</tr>
-								<tr style="height: 20px;">
-									<td class="table-food-td" style="" data-bind="text: sum()"></td>
-									<td class="table-food-td" style="text-align: right; padding-right: 1px;"
-										data-bind="text: txtPriceSum()"></td>
+							</thead>
+							<tbody
+								data-bind="foreach: bentoFrame1List">
+								<tr>
+									<td style="padding-left: 5px; width: 135px;" data-bind="text: name"></td>
+									<td style="text-align: right; padding-right: 5px; width: 85px;" data-bind="text: amount1"></td>
+									<td style="padding: 5px; width: 245px;">
+										<div style="display: inline-block; vertical-align: middle;">
+											<button class="button-radius" data-bind="click: decreaseCount, 
+													enable: $parent.modeFuture() &amp;&amp; $parent.canOrder()">-</button>
+										</div>
+										<div style="display: inline-block; vertical-align: middle;" data-bind="attr: { class: 'bento-count-' + frameNo() }">
+											<input style="width: 25px;" data-bind="ntsNumberEditor: {
+												name: '#[KMR002_22]',
+												value: bentoCount,
+												constraint: 'BentoReservationCount',
+												enable: $parent.modeFuture() &amp;&amp; $parent.canOrder() }" />
+										</div>
+										<div style="display: inline-block; vertical-align: middle;">
+											<span data-bind="text: unit"></span>
+										</div>
+										<div style="display: inline-block; vertical-align: middle;">
+											<button class="button-radius" data-bind="click: increaseCount, 
+													enable: $parent.modeFuture() &amp;&amp; $parent.canOrder()">+</button>
+										</div>
+										<div style="display: inline-block; vertical-align: middle;">
+											<button class="danger large" style="width: 70px;" 
+													data-bind="click: resetCount, 
+													enable: $parent.modeFuture() &amp;&amp; $parent.canOrder() &amp;&amp; enableResetCount()">#{i18n.getText('KMR002_26')}</button>
+										</div>
+									</td>
+									<td style="text-align: right; padding-right: 5px; width: 125px;" data-bind="text: sum()"></td>
 								</tr>
 							</tbody>
+							<tfoot>
+								<tr>
+									<td colspan="2" style="padding-left: 5px; width: 226px;">#{i18n.getText('KMR002_27')}</td>
+									<td style="text-align: center; width: 255px;">
+										<span data-bind="text: countAllFrame1"></span>
+										<span data-bind="text: unitAllFrame1"></span>
+									</td>
+									<td style="text-align: center; width: 130px;">
+										<span data-bind="text: priceAllFrame1"></span>
+										<span>#{i18n.getText('KMR002_30')}</span>
+									</td>
+								</tr>
+							</tfoot>
 						</table>
 					</div>
-	
-					<!--A1_5予約する-->
-					<div data-bind="if: !isUpdate()">
-						<button class="proceed" style="float: left; margin-left: 10px;"
-							data-bind="click: registerFood,  enable: isEnable()">#{i18n.getText('KMR002_2')}</button>
-					</div>
-					<div data-bind="if: isUpdate()">
-						<button class="proceed" style="float: left; margin-left: 10px;"
-							data-bind="click: registerFood, enable: isEnable()">#{i18n.getText('KMR002_8')}</button>
-					</div>
-					<button style="position: absolute; right: 25px;"
-						data-bind="click: outputData">#{i18n.getText('KMR002_4')}</button>
-				</div>
-			</div>
-			<div id="contents-area" class="fixed-flex-layout">
-				<div class="fixed-flex-layout-left">
-					<div style="margin-bottom: 15px;" class="custom-label"
-						data-bind="ntsSwitchButton: {name: '#{i18n.getText('KMR002_5')}',
-									options: optionMenu,
-									optionsValue: 'code',
-									optionsText: 'name',
-									value: mealSelected,
-									enable: true,
-									required: true }">
-					</div>
-					<span data-bind="text: startTime" style="margin-left: 15px;"></span>
-					~ <span data-bind="text: endTime"></span> <span
-						class="label warning" style="margin-left: 15px;" data-bind = "visible: isVisible">#{i18n.getText('KMR002_7')}</span>
-					<table data-bind="if: mealSelected()==1">
-						<colgroup>
-							<col width="50px" />
-							<col width="50px" />
-							<col width="50px" />
-							<col width="50px" />
-						</colgroup>
-						<tbody>
-							<tr>
-								<td class="table-menu-td"
-									data-bind="foreach: menuLunch().length > 10 ? _.slice(menuLunch(), 0, 10) : menuLunch()">
-
-									<button class="button-food"
-										data-bind="style: {'background-color': status() ? '#A4EEB0' : ''}, click:  function(){$vm.updateOrderLunch(frameNo)}, enable: $vm.isEnableLunch()">
-										<span data-bind="text: name"></span><span
-											data-bind="text: unit" style="float: right"></span>
-									</button>
-								</td>
-								<td class="table-menu-td"
-									data-bind="foreach: menuLunch().length > 20 ? _.slice(menuLunch(), 10, 20) : _.slice(menuLunch(), 10, menuLunch().length), visible: menuLunch().length > 10 ? true : false">
-									<button class="button-food"
-										data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderLunch(frameNo)}, enable: $vm.isEnableLunch()">
-										<span data-bind="text: name"></span><span
-											data-bind="text: unit" style="float: right"></span>
-									</button>
-								</td>
-								<td class="table-menu-td"
-									data-bind="foreach: menuLunch().length > 30 ? _.slice(menuLunch(), 20, 30) : _.slice(menuLunch(), 20, menuLunch().length), visible: menuLunch().length > 20 ? true : false">
-									<button class="button-food"
-										data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderLunch(frameNo)}, enable: $vm.isEnableLunch()">
-										<span data-bind="text: name"></span><span
-											data-bind="text: unit" style="float: right"></span>
-									</button>
-								</td>
-								<td class="table-menu-td"
-									data-bind="foreach: _.slice(menuLunch(), 30, 40), visible: menuLunch().length > 30 ? true : false">
-									<button class="button-food"
-										data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderLunch(frameNo)}, enable: $vm.isEnableLunch()">
-										<span data-bind="text: name"></span><span
-											data-bind="text: unit" style="float: right"></span>
-									</button>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<table data-bind="if: mealSelected()==2">
-						<colgroup>
-							<col width="50px" />
-							<col width="50px" />
-							<col width="50px" />
-							<col width="50px" />
-						</colgroup>
-						<tbody>
-							<tr>
-								<td class="table-menu-td"
-									data-bind="foreach: menuDinner().length > 10 ? _.slice(menuDinner(), 0, 10) : menuDinner()">
-
-									<button class="button-food"
-										data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderDinner(frameNo)}, enable: $vm.isEnableDinner()">
-										<span data-bind="text: name"></span><span
-											data-bind="text: unit" style="float: right"></span>
-									</button>
-								</td>
-								<td class="table-menu-td"
-									data-bind="foreach: menuDinner().length > 20 ? _.slice(menuDinner(), 10, 20) : _.slice(menuDinner(), 10, menuDinner().length), visible: menuDinner().length > 10 ? true : false">
-									<button class="button-food"
-										data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderDinner(frameNo)}, enable: $vm.isEnableDinner()">
-										<span data-bind="text: name"></span><span
-											data-bind="text: unit" style="float: right"></span>
-									</button>
-								</td>
-								<td class="table-menu-td"
-									data-bind="foreach: menuDinner().length > 30 ? _.slice(menuDinner(), 20, 30) : _.slice(menuDinner(), 20, menuDinner().length), visible: menuDinner().length > 20 ? true : false">
-									<button class="button-food"
-										data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderDinner(frameNo)}, enable: $vm.isEnableDinner()">
-										<span data-bind="text: name"></span><span
-											data-bind="text: unit" style="float: right"></span>
-									</button>
-								</td>
-								<td class="table-menu-td"
-									data-bind="foreach: _.slice(menuDinner(), 30, 40), visible: menuDinner().length > 30 ? true : false">
-									<button class="button-food"
-										data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderDinner(frameNo)}, enable: $vm.isEnableDinner()">
-										<span data-bind="text: name"></span><span
-											data-bind="text: unit" style="float: right"></span>
-									</button>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-				<div class="fixed-flex-layout-right" style="float: right;">
-					<div>#{i18n.getText('KMR002_13')}</div>
-					<div data-bind="visible: isVisibleLunch" style="display: none;">
-						<div data-bind="text: lunchText()"></div>
-						<div class="menu-order" data-bind="foreach: listBentoOrderLunch">
-							<table>
-								<colgroup>
-									<col width="70px" />
-									<col width="70px" />
-									<col width="70px" />
-								</colgroup>
-								<tbody>
-									<tr>
-										<td class="table-food-td" colspan="2" data-bind="text: name"
-											style="padding: 15px;"></td>
-										<td class="table-food-td" style="text-align: right; padding-right: 1px;"
-											data-bind="text: unit"></td>
-									</tr>
-									<tr>
-										<td class="table-food-td" style="padding: 15px;"><button
-												class="button-radius"
-												data-bind="click:  function(){$vm.updateCountOrderLunch(frameNo, -1)}, enable: $vm.isEnableLunch()">-</button></td>
-										<td class="table-food-td" data-bind="text: bentoCount"
-											style="text-align: center;"></td>
-										<td class="table-food-td" style="padding: 15px;">
-											<button class="button-radius"
-												data-bind="click:  function(){$vm.updateCountOrderLunch(frameNo, 1)}, enable: $vm.isEnableLunch()">+</button>
-										</td>
-									</tr>
-									<tr>
-										<td class="table-food-td" colspan="3"><button
-												class="danger"
-												data-bind="click: function(){$vm.cancelLunch(frameNo)}, enable: $vm.isEnableLunch()">#{i18n.getText('KMR002_14')}</button></td>
-									</tr>
-								</tbody>
-							</table>
-							<br />
-						</div>
-					</div>
-					<div data-bind="visible: isVisibleDinner" style="display: none;">
-						<div style="margin-top: 15px;" data-bind="text: dinnerText()"></div>
-						<div class="menu-order" data-bind="foreach: listBentoOrderDinner">
-							<table>
-								<colgroup>
-									<col width="70px" />
-									<col width="70px" />
-									<col width="70px" />
-								</colgroup>
-								<tbody>
-									<tr>
-										<td class="table-food-td" colspan="2" data-bind="text: name"
-											style="padding: 15px;"></td>
-										<td class="table-food-td" style="text-align: right; padding-right: 1px;"
-											data-bind="text: unit"></td>
-									</tr>
-									<tr>
-										<td class="table-food-td" style="padding: 15px;"><button
-												class="button-radius"
-												data-bind="click:  function(){$vm.updateCountOrderDinner(frameNo, -1)}, enable: $vm.isEnableDinner()">-</button></td>
-										<td class="table-food-td" data-bind="text: bentoCount"
-											style="text-align: center;"></td>
-										<td class="table-food-td" style="padding: 15px;"><button
-												class="button-radius"
-												data-bind="click:  function(){$vm.updateCountOrderDinner(frameNo, 1)}, enable: $vm.isEnableDinner()">+</button></td>
-									</tr>
-									<tr>
-										<td class="table-food-td" colspan="3"><button
-												class="danger"
-												data-bind="click: function(){$vm.cancelDinner(frameNo)}, enable: $vm.isEnableDinner()">#{i18n.getText('KMR002_14')}</button></td>
-									</tr>
-								</tbody>
-							</table>
-							<br />
-						</div>
+					<div class="cell" data-bind="if: currentFrameNo()==2">
+						<table class="kmr002-table">
+							<thead>
+								<tr>
+									<th style="padding-left: 5px; width: 135px;" class="bg-green">#{i18n.getText('KMR002_20')}</th>
+									<th style="padding-left: 5px; width: 85px;" class="bg-green">#{i18n.getText('KMR002_21')}</th>
+									<th style="text-align: center; width: 255px;" class="bg-green">#{i18n.getText('KMR002_22')}</th>
+									<th style="padding-left: 5px; width: 125px;" class="bg-green">#{i18n.getText('KMR002_23')}</th>
+								</tr>
+							</thead>
+							<tbody
+								data-bind="foreach: bentoFrame2List">
+								<tr>
+									<td style="padding-left: 5px; width: 135px;" data-bind="text: name"></td>
+									<td style="text-align: right; padding-right: 5px; width: 85px;" data-bind="text: amount1"></td>
+									<td style="padding: 5px; width: 245px;">
+										<div style="display: inline-block; vertical-align: middle;">
+											<button class="button-radius" data-bind="click: decreaseCount, 
+													enable: $parent.modeFuture() &amp;&amp; $parent.canOrder()">-</button>
+										</div>
+										<div style="display: inline-block; vertical-align: middle;" data-bind="attr: { class: 'bento-count-' + frameNo() }">
+											<input style="width: 25px;" data-bind="ntsNumberEditor: {
+												value: bentoCount,
+												constraint: 'BentoReservationCount',
+												enable: $parent.modeFuture() &amp;&amp; $parent.canOrder() }" />
+										</div>
+										<div style="display: inline-block; vertical-align: middle;">
+											<span data-bind="text: unit"></span>
+										</div>
+										<div style="display: inline-block; vertical-align: middle;">
+											<button class="button-radius" data-bind="click: increaseCount, 
+													enable: $parent.modeFuture() &amp;&amp; $parent.canOrder()">+</button>
+										</div>
+										<div style="display: inline-block; vertical-align: middle;">
+											<button class="danger large" style="width: 70px;" 
+													data-bind="click: resetCount, 
+													enable: $parent.modeFuture() &amp;&amp; $parent.canOrder() &amp;&amp; enableResetCount()">#{i18n.getText('KMR002_26')}</button>
+										</div>
+									</td>
+									<td style="text-align: right; padding-right: 5px; width: 125px;" data-bind="text: sum()"></td>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<td colspan="2" style="padding-left: 5px; width: 226px;">#{i18n.getText('KMR002_27')}</td>
+									<td style="text-align: center; width: 255px;">
+										<span data-bind="text: countAllFrame2"></span>
+										<span data-bind="text: unitAllFrame2"></span>
+									</td>
+									<td style="text-align: center; width: 130px;">
+										<span data-bind="text: priceAllFrame2"></span>
+										<span>#{i18n.getText('KMR002_30')}</span>
+									</td>
+								</tr>
+							</tfoot>
+						</table>
 					</div>
 				</div>
 			</div>

@@ -1,7 +1,7 @@
 .kaf011 button.nts-switch-button{width:92px}
 .kaf011 .remainInfor .remainLable{display:inline-block;vertical-align:top;color:red;min-width:115px}
 .kaf011 .remainInfor .remainNumber{display:inline-block}
-.kaf011 table.table td, table.table th{border:1px solid #000;text-align:center;height:25px;padding:0 10px}
+.kaf011 table.table td, table.table th{border:1px solid white;text-align:center;height:25px !important;padding:0 10px}
 .kaf011 .application{margin-top: 9px;max-width:800px; margin-bottom: -16px;}
 .kaf011 .application2{margin-top:10px;max-width:800px; margin-bottom: 24px;}
 .kaf011 .application .name{margin-left:10px}
@@ -29,4 +29,14 @@
 #switchButton label.radio-wrapper span {
 	width: 97px;
     text-align: center;
+}
+
+.bg-gray{
+	background-color: #6A6A6A;
+	color: #fff;
+}
+
+td {
+	text-align: left !important;
+	height: 33px !important;
 }

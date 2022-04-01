@@ -47,6 +47,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
     public listBreakHours: TimeSetDisp[] = [];
     public listNursingHours: TimeSetDisp[] = [];
     public listParentHours: TimeSetDisp[] = [];
+    public listSupportHours: TimeSetDisp[] = [];
 
     public listDestWorkHour: Number[] = [];
     public listDestTempoHour: Number[] = [];
@@ -54,12 +55,17 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
     public listDestBreakHour: Number[] = [];
     public listDestNursingHour: Number[] = [];
     public listDestParentHour: Number[] = [];
+    public listDestSupportHour: Number[] = [];
 
     public dispTitleWorkHour: boolean = false;
     public dispTitleOutingHour: boolean = false;
     public dispTitleBreakHour: boolean = false;
     public dispTitleParentHour: boolean = false;
     public dispTitleNursingHour: boolean = false;
+    public dispTitleSupportHour: boolean = false;
+
+    public workLocationNames: any[] = [];
+    public workplaceNames: any[] = [];
 
     public appStamp: AppStamp = new AppStamp();
     public $app() {
@@ -95,6 +101,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
         self.listBreakHours = [];
         self.listNursingHours = [];
         self.listParentHours = [];
+        self.listSupportHours = [];
 
         self.listDestWorkHour = [];
         self.listDestTempoHour = [];
@@ -102,6 +109,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
         self.listDestBreakHour = [];
         self.listDestNursingHour = [];
         self.listDestParentHour = [];
+        self.listDestSupportHour = [];
     }
 
     private fetchData(params: any) {
@@ -118,6 +126,8 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
                     console.log(result);
                     self.dataFetch = result.data;
                     self.multipleWork = self.dataFetch.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
+                    self.workplaceNames = self.dataFetch.workplaceNames || [];
+                    self.workLocationNames = self.dataFetch.workLocationNames || [];
                     self.bindData();
                     self.params.appDetail = self.dataFetch;
                 }
@@ -147,13 +157,29 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
         self.listTimeStampAppOther = self.dataFetch.appStampOptional.listTimeStampAppOther;
         self.listDestinationTimeZoneApp = self.dataFetch.appStampOptional.listDestinationTimeZoneApp;
 
+        const setWorkplaceAndLocation = (item, workplaceId, workLocationCd) => {
+            const workplace = self.workplaceNames.find((wkp) => wkp && wkp.workplaceId === workplaceId);
+            const workLocation = self.workLocationNames.find((location) => location && location.workLocationCode === workLocationCd);
+
+            if (workplace) {
+                item.workplaceCD = workplace.wkpCode;
+                item.workplaceName = workplace.wkpName;
+                item.workplaceId = workplace.workplaceId;
+            }
+
+            if (workLocation) {
+                item.workLocationCD = workLocation.workLocationCode;
+                item.workLocationName = workLocation.workLocationName;
+            }
+        };
+
         /*
         *
         *    Bind data application
         *
         */
         if (!_.isEmpty(self.listTimeStampApp)) {
-            self.listTimeStampApp.forEach((item) => {
+            self.listTimeStampApp.forEach((item: TimeStampAppDto) => {
                 // loop for work hour (type = 0)
                 if (item.destinationTimeApp.timeStampAppEnum === 0) {
                     // neu trong list workHours da co item co cung frame -> thay doi start hoac end time
@@ -162,6 +188,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
                             if (x.frame === item.destinationTimeApp.engraveFrameNo) {
                                 if (item.destinationTimeApp.startEndClassification === 0) {
                                     x.appHours.startTime = item.timeOfDay;
+                                    setWorkplaceAndLocation(x, item.wkpId, item.workLocationCd);
                                 } else {
                                     x.appHours.endTime = item.timeOfDay;
                                 }
@@ -178,6 +205,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
                             workHour = new TimeSetDisp(item.destinationTimeApp.engraveFrameNo === 1 ? 'KAFS02_4' : 'KAFS02_6', item.destinationTimeApp.engraveFrameNo, null, null, null, item.timeOfDay, false);
                         }
 
+                        setWorkplaceAndLocation(workHour, item.wkpId, item.workLocationCd);
                         self.listWorkHours.push(workHour);
                     }
                 }
@@ -190,6 +218,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
                             if (x.frame === item.destinationTimeApp.engraveFrameNo) {
                                 if (item.destinationTimeApp.startEndClassification === 0) {
                                     x.appHours.startTime = item.timeOfDay;
+                                    setWorkplaceAndLocation(x, item.wkpId, item.workLocationCd);
                                 } else {
                                     x.appHours.endTime = item.timeOfDay;
                                 }
@@ -206,6 +235,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
                             tempoHour = new TimeSetDisp('KAFS02_7', item.destinationTimeApp.engraveFrameNo, null, null, null, item.timeOfDay, false);
                         }
 
+                        setWorkplaceAndLocation(tempoHour, item.wkpId, item.workLocationCd);
                         self.listTempoHours.push(tempoHour);
                     }
                 }
@@ -237,6 +267,36 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
                         }
 
                         self.listOutingHours.push(outingHour);
+                    }
+                }
+
+                // supportHour
+                if (item.destinationTimeApp.timeStampAppEnum === 3) {
+                    // neu trong list workHours da co item co cung frame -> thay doi start hoac end time
+                    if (_.filter(self.listSupportHours, { frame: item.destinationTimeApp.engraveFrameNo }).length > 0) {
+                        self.listSupportHours = _.map(self.listSupportHours, (x: TimeSetDisp) => {
+                            if (x.frame === item.destinationTimeApp.engraveFrameNo) {
+                                if (item.destinationTimeApp.startEndClassification === 0) {
+                                    x.appHours.startTime = item.timeOfDay;
+                                    setWorkplaceAndLocation(x, item.wkpId, item.workLocationCd);
+                                } else {
+                                    x.appHours.endTime = item.timeOfDay;
+                                }
+                            }
+
+                            return x;
+                        });
+                    } else {
+                        // neu chua co item trong list support hour -> tao moi
+                        let supportHour: TimeSetDisp;
+                        if (item.destinationTimeApp.startEndClassification === 0) {
+                            supportHour = new TimeSetDisp('KAFS02_32', item.destinationTimeApp.engraveFrameNo, null, null, item.timeOfDay, null, false);
+                        } else {
+                            supportHour = new TimeSetDisp('KAFS02_32', item.destinationTimeApp.engraveFrameNo, null, null, null, item.timeOfDay, false);
+                        }
+
+                        setWorkplaceAndLocation(supportHour, item.wkpId, item.workLocationCd);
+                        self.listSupportHours.push(supportHour);
                     }
                 }
 
@@ -357,6 +417,23 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
                     } else {
                         let outingHour = new TimeSetDisp('KAFS02_9', item.engraveFrameNo, null, null, null, null, true, null);
                         self.listOutingHours.push(outingHour);
+                    }
+                }
+
+                // cancel supportHour (type = 3)
+                if (item.timeStampAppEnum === 3) {
+                    self.listDestWorkHour.push(item.engraveFrameNo);
+                    if (_.filter(self.listSupportHours, (x) => x.frame === item.engraveFrameNo).length > 0) {
+                        self.listSupportHours = _.map(self.listSupportHours, (o: TimeSetDisp) => {
+                            if (o.frame === item.engraveFrameNo) {
+                                o.cancelAtr = true;
+                            }
+
+                            return o;
+                        });
+                    } else {
+                        let supportHour = new TimeSetDisp('KAFS02_32', item.engraveFrameNo, null, null, null, null, true);
+                        self.listSupportHours.push(supportHour);
                     }
                 }
             });
@@ -555,6 +632,20 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
                 //     self.listNursingHours.push(nursingHour);
                 // }
             });
+
+            // supportHours
+            stampRecord.supportTime.forEach((item: any) => {
+                if (_.filter(self.listSupportHours, { frame: item.frameNo }).length > 0) {
+                    self.listSupportHours = _.map(self.listSupportHours, (x: TimeSetDisp) => {
+                        if (x.frame === item.frameNo) {
+                            x.actualHours.startTime = item.opStartTime;
+                            x.actualHours.endTime = item.opEndTime;
+                        }
+
+                        return x;
+                    });
+                }
+            });
         }
 
         /*
@@ -568,6 +659,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
         self.listBreakHours = _.sortBy(self.listBreakHours, ['frame']);
         self.listParentHours = _.sortBy(self.listParentHours, ['frame']);
         self.listNursingHours = _.sortBy(self.listNursingHours, ['frame']);
+        self.listSupportHours = _.sortBy(self.listSupportHours, ['frame']);
 
         self.listWorkHours.forEach((item) => {
             if (item.cancelAtr || item.appHours.startTime !== null || item.appHours.endTime !== null) {
@@ -602,6 +694,12 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
         self.listNursingHours.forEach((item) => {
             if (item.cancelAtr || item.appHours.startTime !== null || item.appHours.endTime !== null) {
                 self.dispTitleNursingHour = true;
+            }
+        });
+
+        self.listSupportHours.forEach((item) => {
+            if (item.cancelAtr || item.appHours.startTime !== null || item.appHours.endTime !== null) {
+                self.dispTitleSupportHour = true;
             }
         });
     }
@@ -664,6 +762,15 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
         }
 
         return false;
+    }
+
+    // ※16
+    get condition16() {
+        const self = this;
+        
+        return self.dataFetch.useCheering
+            && self.dataFetch.appStampReflectOptional
+            && self.dataFetch.appStampReflectOptional.startAndEndSupport === 1;
     }
 
     public condition1(item: any) {

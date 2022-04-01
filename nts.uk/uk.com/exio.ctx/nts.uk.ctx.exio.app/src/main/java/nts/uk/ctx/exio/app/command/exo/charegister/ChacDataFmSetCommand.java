@@ -1,9 +1,14 @@
 package nts.uk.ctx.exio.app.command.exo.charegister;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.Value;
 
 
-@Value
+@Setter
+@Getter
+@NoArgsConstructor
 public class ChacDataFmSetCommand
 {
     
@@ -73,5 +78,25 @@ public class ChacDataFmSetCommand
     private String valueOfFixedValue;
     
     private Long version;
+
+	public ChacDataFmSetCommand(String cid, int nullValueReplace, String valueOfNullValueReplace, int cdEditting,
+			int fixedValue, int cdEdittingMethod, Integer cdEditDigit, String cdConvertCd, int spaceEditting,
+			int effectDigitLength, Integer startDigit, Integer endDigit, String valueOfFixedValue, Long version) {
+		super();
+		this.cid = cid;
+		this.nullValueReplace = nullValueReplace;
+		this.valueOfNullValueReplace = valueOfNullValueReplace;
+		this.cdEditting = cdEditting;
+		this.fixedValue = fixedValue;
+		this.cdEdittingMethod = cdEdittingMethod;
+		this.cdEditDigit = cdEditDigit;
+		this.cdConvertCd = cdConvertCd;
+		this.spaceEditting = spaceEditting;
+		this.effectDigitLength = effectDigitLength;
+		this.startDigit = startDigit;
+		this.endDigit = endDigit;
+		this.valueOfFixedValue = valueOfFixedValue;
+		this.version = version;
+	}
 
 }

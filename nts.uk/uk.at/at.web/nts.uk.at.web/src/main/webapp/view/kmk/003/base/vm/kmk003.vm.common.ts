@@ -1380,29 +1380,29 @@ module nts.uk.at.view.kmk003.a {
 
 
             export class WorkTimezoneGoOutSetModel {
-                totalRoundingSet: TotalRoundingSetModel;
+                roundingMethod: KnockoutObservable<number>;
                 diffTimezoneSetting: GoOutTimezoneRoundingSetModel;
 
                 constructor() {
-                    this.totalRoundingSet = new TotalRoundingSetModel();
+                    this.roundingMethod = ko.observable(0);
                     this.diffTimezoneSetting = new GoOutTimezoneRoundingSetModel();
                 }
 
                 updateData(data: WorkTimezoneGoOutSetDto) {
-                    this.totalRoundingSet.updateData(data.totalRoundingSet);
+                    this.roundingMethod(data.roundingMethod);
                     this.diffTimezoneSetting.updateData(data.diffTimezoneSetting);
                 }
 
                 toDto(): WorkTimezoneGoOutSetDto {
                     var dataDTO: WorkTimezoneGoOutSetDto = {
-                        totalRoundingSet: this.totalRoundingSet.toDto(),
+                        roundingMethod: this.roundingMethod(),
                         diffTimezoneSetting: this.diffTimezoneSetting.toDto()
                     };
                     return dataDTO;
                 }
 
                 resetData() {
-                    this.totalRoundingSet.resetData();
+                    this.roundingMethod(0);
                     this.diffTimezoneSetting.resetData();
                 }
             }
@@ -1634,34 +1634,36 @@ module nts.uk.at.view.kmk003.a {
 
             export class WorkTimezoneShortTimeWorkSetModel {
                 nursTimezoneWorkUse: KnockoutObservable<boolean>;
-                employmentTimeDeduct: KnockoutObservable<boolean>;
                 childCareWorkUse: KnockoutObservable<boolean>;
+                roundingSet: TimeRoundingSettingModel;
+
 
                 constructor() {
                     this.nursTimezoneWorkUse = ko.observable(false);
-                    this.employmentTimeDeduct = ko.observable(false);
                     this.childCareWorkUse = ko.observable(false);
+                    this.roundingSet = new TimeRoundingSettingModel();
+
                 }
 
                 updateData(data: WorkTimezoneShortTimeWorkSetDto) {
                     this.nursTimezoneWorkUse(data.nursTimezoneWorkUse);
-                    this.employmentTimeDeduct(data.employmentTimeDeduct);
                     this.childCareWorkUse(data.childCareWorkUse);
+                    this.roundingSet.updateData(data.roundingSet);
                 }
 
                 toDto(): WorkTimezoneShortTimeWorkSetDto {
                     var dataDTO: WorkTimezoneShortTimeWorkSetDto = {
                         nursTimezoneWorkUse: this.nursTimezoneWorkUse(),
-                        employmentTimeDeduct: this.employmentTimeDeduct(),
-                        childCareWorkUse: this.childCareWorkUse()
+                        childCareWorkUse: this.childCareWorkUse(),
+                        roundingSet: this.roundingSet.toDto(),
                     };
                     return dataDTO;
                 }
 
                 resetData() {
                     this.nursTimezoneWorkUse(false);
-                    this.employmentTimeDeduct(false);
                     this.childCareWorkUse(false);
+                    this.roundingSet.resetData();
                 }
             }
 

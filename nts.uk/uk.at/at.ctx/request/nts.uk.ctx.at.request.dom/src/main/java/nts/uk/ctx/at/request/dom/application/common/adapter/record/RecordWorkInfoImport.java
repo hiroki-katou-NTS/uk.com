@@ -7,6 +7,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.TimePlaceOutput;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
@@ -155,5 +156,8 @@ public class RecordWorkInfoImport {
 	private List<ShortWorkingTimeSheet> childCareShortWorkingTimeList;
 	// 介護時間帯
 	private List<ShortWorkingTimeSheet> careShortWorkingTimeList;
+	
+	// 応援時間帯（List）
+	private List<TimePlaceOutput> supportTimes;
 
 }

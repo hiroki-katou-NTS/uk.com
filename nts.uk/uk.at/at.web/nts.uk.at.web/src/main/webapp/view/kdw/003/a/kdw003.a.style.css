@@ -233,6 +233,10 @@
 	color: #e51010;
 }
 
+.mgrid-schedule-support{
+	background-color: #fedfe6;
+}
+
 .ui-iggrid .ui-iggrid-tablebody td {
     height: 29px;
 }
@@ -279,7 +283,7 @@
 }
 
 
-/* “ú•t‘—‚è */
+/* ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½ï¿½ */
 #daterangepicker .ntsDatepicker {
 	width: 90px;
 	height: 38px;
@@ -293,11 +297,11 @@
 #daterangepicker .label-span {
 }
 
-/* ŒŸƒf[ƒ^ */
+/* ï¿½ï¿½ï¿½ï¿½ï¿½fï¿½[ï¿½^ */
 #monthly-data-view {
 	margin-top: 10px;
 	width: calc(100% - 800px);
-	overflow-x: scroll;
+	overflow-x: hidden;
 }
 
 #monthly-data-view #miGrid_fixedContainerScroller {
@@ -305,13 +309,18 @@
 }
 
 #monthly-data-view #miGrid_scroll {
-	overflow: hidden !important;
+	/* overflow: hidden !important; */
+	overflow-x: auto visible;
+} 
+
+#miGrid_container {
+	width:auto !important;
 }
 
-/* c”ƒf[ƒ^ */
+/* ï¿½cï¿½ï¿½ï¿½fï¿½[ï¿½^ */
 #holiday-agree {
 	position: absolute;
-	z-index: 1; /* ƒOƒŠƒbƒh‚Ì‰º‚É‚È‚Á‚Ä‚µ‚Ü‚¤‚Ì‚ğ‰ñ”ğ */
+	z-index: 1; /* ï¿½Oï¿½ï¿½ï¿½bï¿½hï¿½Ì‰ï¿½ï¿½É‚È‚ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½Ì‚ï¿½ï¿½ï¿½ï¿½ */
 	left: calc(100% - 800px);
 	top: 70px;
 	margin-left: 10px;
@@ -379,6 +388,7 @@
 	display: flex;
 	align-items: center;
 	margin: 5px 0;
+    padding-top: 17px;
 }
 
 #grid-controls > * {
@@ -389,7 +399,7 @@
 	width: 95px;
 }
 
-/* ƒƒCƒ“‚ÌƒOƒŠƒbƒh */
+/* ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ÌƒOï¿½ï¿½ï¿½bï¿½h */
 .font-smaller * {
 	font-size: 0.8rem !important;
 }

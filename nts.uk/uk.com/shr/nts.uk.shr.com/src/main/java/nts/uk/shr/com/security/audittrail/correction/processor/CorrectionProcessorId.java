@@ -19,7 +19,9 @@ public enum CorrectionProcessorId {
 	
 	MONTHLY(4),
 	
-	MATRIX_REGISTER(5)
+	MATRIX_REGISTER(5),
+
+    ANY_PERIOD_AGGREGATION(6)
 	;
 	public final int value;
 	

@@ -15,16 +15,13 @@ import nts.uk.screen.at.app.ksus01.a.TimeLeavingWorkDto;
 @NoArgsConstructor
 @Data
 public class TemporaryTimeOfDailyAttdDto {
-	// 勤務回数
-	private Integer workTimes;
-
-	// 1 ~ 3
+	// 1 ~ 10
 	// 出退勤
 	private List<TimeLeavingWorkDto> timeLeavingWorks = new ArrayList<>();
 
 	public static TemporaryTimeOfDailyAttdDto fromDomain(Optional<TemporaryTimeOfDailyAttd> domain) {
 
-		return domain.map(x -> new TemporaryTimeOfDailyAttdDto(x.getWorkTimes().v(), x.getTimeLeavingWorks().stream()
+		return domain.map(x -> new TemporaryTimeOfDailyAttdDto(x.getTimeLeavingWorks().stream()
 				.map(tw -> TimeLeavingWorkDto.fromDomain(tw)).collect(Collectors.toList()))).orElse(null);
 	}
 }

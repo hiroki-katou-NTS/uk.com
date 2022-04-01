@@ -3,9 +3,10 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculatio
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.*;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.OutingCalcWithinCoreTime;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -82,11 +84,10 @@ public class ManageReGetClass {
 	 * @return 就業時間帯の設定
 	 */
 	public Optional<WorkTimeSetting> getWorkTimeSetting() {
-		if(!this.integrationOfWorkTime.isPresent())
-			return Optional.empty();
-		
-		return Optional.of(this.integrationOfWorkTime.get().getWorkTimeSetting());
+		if (!this.integrationOfWorkTime.isPresent()) return Optional.empty();
+		return Optional.ofNullable(this.integrationOfWorkTime.get().getWorkTimeSetting());
 	}
+	
 	/**
 	 * 就業時間帯別代休時間設定(List)を取得する
 	 * @return 就業時間帯別代休時間設定(List)
@@ -115,6 +116,20 @@ public class ManageReGetClass {
 	 */
 	public DailyUnit getDailyUnit() {
 		return this.personDailySetting.getDailyUnit();
+	}
+	
+	/**
+	 * 所定労働時間の取得
+	 * @return
+	 */
+	public AttendanceTime getPredWorkTime(){
+		if (this.calculationRangeOfOneDay == null) return AttendanceTime.ZERO;
+		if (!this.workType.isPresent()) return AttendanceTime.ZERO;
+		WorkType workType = this.workType.get();
+		if (!this.getWorkTimeCode().isPresent()) return AttendanceTime.ZERO;
+		if (workType.getDailyWork().isHolidayWork()) return AttendanceTime.ZERO;
+		if (this.calculationRangeOfOneDay.getPredetermineTimeSetForCalc() == null) return AttendanceTime.ZERO;
+		return this.calculationRangeOfOneDay.getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());	
 	}
 	
 	/**
@@ -154,11 +169,11 @@ public class ManageReGetClass {
 	}
 	
 	/**
-	 * 休暇の計算方法の設定を取得する
-	 * @return 休暇の計算方法の設定
+	 * 労働時間の加算設定を取得する
+	 * @return 労働時間の加算設定
 	 */
-	public HolidayCalcMethodSet getHolidayCalcMethodSet() {
-		return this.personDailySetting.getAddSetting().getVacationCalcMethodSet();
+	public AddSettingOfWorkingTime getHolidayCalcMethodSet() {
+		return this.personDailySetting.getAddSetting().getAddSetOfWorkingTime();
 	}
 	
 	/**
@@ -269,6 +284,28 @@ public class ManageReGetClass {
 	public AddSetting getAddSetting() {
 		return this.personDailySetting.getAddSetting();
 	}
+
+	/**
+	 * 就業時間帯コードを取得する
+	 * @return 就業時間帯コード
+	 */
+	public Optional<WorkTimeCode> getWorkTimeCode(){
+		Optional<WorkTimeCode> workTimeCode = Optional.empty();
+		if (this.integrationOfWorkTime.isPresent()){
+			workTimeCode = Optional.of(this.integrationOfWorkTime.get().getCode());
+		}
+		return workTimeCode;
+	}
+	
+	/**
+	 * 勤務形態区分を取得する
+	 * @return 勤務形態区分
+	 */
+	public Optional<WorkTimeDailyAtr> getWorkTimeDailyAtr(){
+		return this.getWorkTimeSetting().isPresent() ?
+				Optional.of(this.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeDailyAtr()) :
+					Optional.empty();
+	}
 	
 	/**
 	 * 重複する時間帯で作り直す
@@ -288,5 +325,19 @@ public class ManageReGetClass {
 				this.workType,
 				this.integrationOfWorkTime,
 				this.integrationOfDaily));
+	}
+	
+	/**
+	 * 逆丸めにして取得する
+	 * @return ManageReGetClass
+	 */
+	public ManageReGetClass getReverseRounding() {
+		return new ManageReGetClass(
+				this.calculationRangeOfOneDay.getReverseRounding(),
+				this.companyCommonSetting,
+				this.personDailySetting,
+				this.workType,
+				this.integrationOfWorkTime,
+				this.integrationOfDaily);
 	}
 }

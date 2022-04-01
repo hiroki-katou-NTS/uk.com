@@ -123,7 +123,7 @@ public class ScreenQueryPlanAndActual {
 	}
 	private class Require2 implements GetDailyRecordByScheduleManagementService.Require {
 
-		private NestedMapCache<String, GeneralDate, DailyRecordDto> workScheduleCache;
+		private NestedMapCache<String, GeneralDate, DailyRecordDto> workRecordCache;
 		private KeyDateHistoryCache<String, EmpEnrollPeriodImport> affCompanyHistByEmployeeCache;
 		private KeyDateHistoryCache<String, EmploymentPeriodImported> employmentPeriodCache;
 		private KeyDateHistoryCache<String, EmployeeLeaveJobPeriodImport> empLeaveJobPeriodCache;
@@ -133,9 +133,9 @@ public class ScreenQueryPlanAndActual {
 		public Require2(List<String> empIdList, DatePeriod period) {
 
 			List<DailyRecordDto> sDailyRecordDtos = dailyRecordWorkFinder.find(empIdList, period);
-			workScheduleCache = NestedMapCache.preloadedAll(sDailyRecordDtos.stream(),
-					workSchedule -> workSchedule.getEmployeeId(),
-					workSchedule -> workSchedule.getDate());
+			workRecordCache = NestedMapCache.preloadedAll(sDailyRecordDtos.stream(),
+					workRecord -> workRecord.getEmployeeId(),
+					workRecord -> workRecord.getDate());
 
 			List<EmpEnrollPeriodImport> affCompanyHists =  empComHisAdapter.getEnrollmentPeriod(empIdList, period);
 			Map<String, List<EmpEnrollPeriodImport>> data2 = affCompanyHists.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
@@ -205,7 +205,7 @@ public class ScreenQueryPlanAndActual {
 
 		@Override
 		public Optional<IntegrationOfDaily> getDailyResults(String empId, GeneralDate date) {
-			Optional<DailyRecordDto> dailyRecordDto = workScheduleCache.get(empId, date);
+			Optional<DailyRecordDto> dailyRecordDto = workRecordCache.get(empId, date);
 			if (dailyRecordDto.isPresent()) {
 				IntegrationOfDaily data = dailyRecordDto.get().toDomain(empId, date);
 				return Optional.of(data);

@@ -37,12 +37,15 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.shared.app.command.scherec.monthlyattendanceitem.RegisterPastMonthTotalResult;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.CorrectDailyAttendanceService;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
@@ -109,6 +112,15 @@ public class DailyModifyMobileCommandFacade {
 	
 	@Inject
 	private RegisterPastMonthTotalResult registerPastMonthTotalResult;
+	
+	@Inject
+	private ICorrectionAttendanceRule iCorrectionAttendanceRule;
+
+	@Inject
+	private AttendanceItemConvertFactory attendanceItemConvertFactory;
+
+	@Inject
+	private OptionalItemRepository optionalItem;
 
 	public DataResultAfterIU insertItemDomain(DPMobileAdUpParam dataParent) {
 		// Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
@@ -117,6 +129,7 @@ public class DailyModifyMobileCommandFacade {
 		Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> lstResultReturnDailyError = new HashMap<>();
 		boolean hasErrorRow = false;
 		boolean errorMonthAfterCalc = false;
+		String companyId = AppContexts.user().companyId();
 		boolean editFlex = (dataParent.getMode() == 0 && dataParent.getMonthValue() != null
 				&& !CollectionUtil.isEmpty(dataParent.getMonthValue().getItems()));
 		dataParent.setCheckDailyChange(true);
@@ -125,11 +138,11 @@ public class DailyModifyMobileCommandFacade {
 		if (dataParent.getStateParam() != null && dataParent.getStateParam().getDateInfo() != null) {
 			DatePeriodInfo paramCommon = dataParent.getStateParam().getDateInfo();
 			AggrPeriodClosure aggrClosure = paramCommon.getLstClosureCache().stream()
-					.filter(x -> x.getClosureId().value == paramCommon.getClosureId().value).findFirst().orElse(null);
+					.filter(x -> x.getClosureId() == paramCommon.getClosureId()).findFirst().orElse(null);
 			Optional<IntegrationOfMonthly> domainMonthOpt = Optional.empty();
 			if (aggrClosure != null)
 				monthParam = new UpdateMonthDailyParam(aggrClosure.getYearMonth(), dataParent.getEmployeeId(),
-						aggrClosure.getClosureId().value, ClosureDateDto.from(aggrClosure.getClosureDate()),
+						aggrClosure.getClosureId(), ClosureDateDto.from(aggrClosure.getClosureDate().convertToClosureDateDto()),
 						domainMonthOpt, new DatePeriod(dataParent.getDateRange().getStartDate(),
 								dataParent.getDateRange().getEndDate()),
 						"", true, true, 0L);
@@ -162,6 +175,23 @@ public class DailyModifyMobileCommandFacade {
 		});
 
 		processDto(dailyOlds, dailyEdits, dataParent, querys, mapSidDate, pairSidDateCheck, queryNotChanges);
+		//TODO: 
+		Map<Pair<String, GeneralDate>,List<ItemValue>> beforeItems = new HashMap<>();
+		
+		val optionalItems = 
+				optionalItem.findAll(companyId).stream()
+				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
+		
+		for( DailyRecordDto dailyEditItem : dailyOlds) {
+			List<DailyModifyQuery> data =  querys.stream().filter(x->x.getEmployeeId().equals(dailyEditItem.getEmployeeId()) && x.getBaseDate().equals(dailyEditItem.getDate())).collect(Collectors.toList());
+			
+			DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory
+					.createDailyConverter(optionalItems).setData(dailyEditItem.toDomain(dailyEditItem.getEmployeeId(), dailyEditItem.getDate())).completed();
+			List<Integer> atendanceId = data.stream().flatMap(x -> x.getItemValues().stream().map(y -> y.getItemId())).collect(Collectors.toList());
+			List<ItemValue> beforeItem = atendanceId.isEmpty() ? new ArrayList<>() : converter.convert(atendanceId);
+			beforeItems.put(Pair.of(dailyEditItem.getEmployeeId(), dailyEditItem.getDate()), beforeItem);
+		}
+		
 		// row data will insert
 		Set<Pair<String, GeneralDate>> rowWillInsert = dailyEdits.stream()
 				.map(x -> Pair.of(x.getEmployeeId(), x.getDate())).collect(Collectors.toSet());
@@ -200,14 +230,14 @@ public class DailyModifyMobileCommandFacade {
 				val changeSetting = ChangeDailyAttendance.createChangeDailyAtt(dataParent.getItemValues().stream()
 						.filter(y -> y.getEmployeeId().equals(x.getEmployeeId()) && y.getDate().equals(x.getDate()))
 						.map(y -> y.getItemId()).collect(Collectors.toList()), ScheduleRecordClassifi.RECORD);
-				val domDaily = CorrectDailyAttendanceService.processAttendanceRule(
-						correctDaiAttRequireImpl.createRequire(), x.toDomain(x.getEmployeeId(), x.getDate()),
+				val domDaily = iCorrectionAttendanceRule.process(x.toDomain(x.getEmployeeId(), x.getDate()),
 						changeSetting);
 				//振休振出として扱う日数を補正する
 				val dailyOldSameDate = dtoOldTemp.stream().filter(
 						old -> old.getEmployeeId().equals(x.getEmployeeId()) && old.getDate().equals(x.getDate()))
 						.findFirst().orElse(null);
 				CorrectDailyAttendanceService.correctFurikyu(correctDaiAttRequireImpl.createRequire(),
+						AppContexts.user().companyId(),
 						dailyOldSameDate.getWorkInfo().toDomain(x.getEmployeeId(), x.getDate()), domDaily.getWorkInformation());
 				//ootsuka mode
 				if (AppContexts.optionLicense().customize().ootsuka()) {
@@ -230,6 +260,21 @@ public class DailyModifyMobileCommandFacade {
 				}
 				return DailyRecordDto.from(domDaily, optionalMaster);
 			}).collect(Collectors.toList());
+			//domain log 
+			List<IntegrationOfDaily> forlog = new ArrayList<IntegrationOfDaily>();
+			for (val dom : dailyEdits) {
+				DailyRecordToAttendanceItemConverter afterConverter = attendanceItemConvertFactory
+						.createDailyConverter()
+						.setData(dom.toDomain(dom.getEmployeeId(), dom.getDate()))
+						.completed();
+				if(!beforeItems.isEmpty() && beforeItems.containsKey(Pair.of(dom.getEmployeeId(), dom.getDate()))) {
+					afterConverter.merge(beforeItems.get(Pair.of(dom.getEmployeeId(), dom.getDate())));
+				}
+				val domDailyforLog = afterConverter.toDomain();
+				forlog.add(domDailyforLog);
+			}
+			dataParent.setDailyOldForLog(forlog.stream().map(c->DailyRecordDto.from(c, optionalMaster)).collect(Collectors.toList()));
+			
 			DailyCalcResult daiCalcResult = processDailyCalc.processDailyCalc(
 					new DailyCalcParam(mapSidDate, dataParent.getLstNotFoundWorkType(), resultOlds,
 							dataParent.getDateRange(), dataParent.getDailyEdits(), dataParent.getItemValues()),

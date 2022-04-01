@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>
+            var dialogSize = {
+                width : 500,
+                height : 470
+            };
+        </script>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="kha003.c.style.css"/>
+        <com:scriptfile path="kha002.c.vm.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area" style="padding: 20px;">
+            <div class="control-group valign-center">
+                <div style="width: 74px;" data-bind="ntsFormLabel: {required: false, text: $vm.$i18n('KHA002_70')}"/>
+                <div id="C1_2"
+                     style="display: inline-flex;"
+                     data-bind="ntsSwitchButton: {
+                                        options: [
+                                            {code: 0, name: $vm.$i18n('KHA002_71')},
+                                            {code: 1, name: $vm.$i18n('KHA002_72'), enable: false},
+                                        ],
+                                        optionsValue: 'code',
+                                        optionsText: 'name',
+                                        value: aggregateUnit
+                                }">
+                </div>
+            </div>
+            <div class="control-group valign-top" data-bind="if: aggregateUnit() == 0">
+                <div data-bind="ntsFormLabel: {required: false, text: $vm.$i18n('KHA002_73')}"/>
+                <div data-bind="ntsRadioBoxGroup: {
+                                        options: [
+                                            {code: 0, name: $vm.$i18n('KHA002_74')},
+                                            {code: 1, name: $vm.$i18n('KHA002_75')}
+                                        ],
+                                        optionsValue: 'code',
+                                        optionsText: 'name',
+                                        enable: true,
+                                        value: judgmentAtr
+                                }" />
+            </div>
+            <div class="control-group valign-center" data-bind="if: aggregateUnit() == 0">
+                <div style="padding-left: 169px; width: 65px;"
+                     data-bind="ntsComboBox: {
+                                    options: [
+                                        {code: 1, name: $vm.$i18n('KHA002_77')},
+                                        {code: 2, name: $vm.$i18n('KHA002_78')},
+                                        {code: 3, name: $vm.$i18n('KHA002_79')},
+                                        {code: 4, name: $vm.$i18n('KHA002_80')},
+                                        {code: 5, name: $vm.$i18n('KHA002_81')},
+                                        {code: 6, name: $vm.$i18n('KHA002_82')},
+                                        {code: 7, name: $vm.$i18n('KHA002_83')},
+                                        {code: 8, name: $vm.$i18n('KHA002_84')},
+                                        {code: 9, name: $vm.$i18n('KHA002_85')}
+                                    ],
+                                    visibleItemsCount: 10,
+                                    value: standardHierarchy,
+                                    optionsValue: 'code',
+                                    optionsText: 'name',
+                                    name:'#[KHA002_76]',
+                                    required: true,
+                                    columns: [
+                                        { prop: 'name', length: 4 }
+                                    ]}">
+                </div>
+                <span data-bind="text: $vm.$i18n('KHA002_87')"/>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <button class="large proceed"
+                    data-bind="click: register">#{i18n.getText('KHA002_88')}</button>
+            <button data-bind="click: closeDialog">#{i18n.getText('KHA002_89')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

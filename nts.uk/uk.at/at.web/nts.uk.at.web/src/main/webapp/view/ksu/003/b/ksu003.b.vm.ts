@@ -38,7 +38,7 @@ module nts.uk.at.view.ksu003.b {
 
         taskPaletteOrgnization: KnockoutObservable<TaskPaletteOrgnization> = ko.observable(new TaskPaletteOrgnization());       
         sourceEmpty: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
-        isClickLink: KnockoutObservable<boolean> = ko.observable(false);
+        // isClickLink: KnockoutObservable<boolean> = ko.observable(false);
         endStatus: KnockoutObservable<string> = ko.observable("Cancel"); 
 
 		dataShareA : any = getShared("dataShareKsu003b");
@@ -136,9 +136,9 @@ module nts.uk.at.view.ksu003.b {
                             }                            
                         }                        
                     } else {
-                        if(!self.isClickLink()){
-                            self.selectedPage(1);
-                        }                        
+                        // if(!self.isClickLink()){
+                        //     self.selectedPage(1);
+                        // }                        
                         self.enableDelete(false);
                     }                   
                     self.tasks(dataSource);
@@ -229,7 +229,7 @@ module nts.uk.at.view.ksu003.b {
                     $('#pageName').focus();
                 }
             }); 
-            self.isClickLink(true);
+            // self.isClickLink(true);
             $('input#pageName').focus(); 
         }
 
@@ -240,7 +240,7 @@ module nts.uk.at.view.ksu003.b {
             self.selectedPage.valueHasMutated();
             self.selectedLinkButton(index);
             self.handleClickLinkButton(index);     
-            self.isClickLink(true);             
+            // self.isClickLink(true);             
             $('input#pageName').focus();     
         }
 

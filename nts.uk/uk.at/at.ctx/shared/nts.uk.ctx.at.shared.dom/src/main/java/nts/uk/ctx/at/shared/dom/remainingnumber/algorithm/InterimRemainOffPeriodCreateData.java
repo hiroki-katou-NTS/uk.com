@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBr
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.EmploymentHolidayMngSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
@@ -102,7 +103,7 @@ public class InterimRemainOffPeriodCreateData {
 					inputParam.getCid(),
 					inputParam.getSid(),
 					loopDate,
-					comHolidaySetting.getDayOffSetting().isManagedTime(),
+					comHolidaySetting.getDayOffSetting().isManagedTime(require),
 					dataCreate,
 					comHolidaySetting,
 					employmentHolidaySetting,
@@ -185,7 +186,7 @@ public class InterimRemainOffPeriodCreateData {
 			//ドメインモデル「雇用振休管理設定」を取得する
 			Optional<EmpSubstVacation> optEmpSubData = require.empSubstVacation(cid, emplData.getEmploymentCode());
 			//ドメインモデル「雇用代休管理設定」を取得する
-			CompensatoryLeaveEmSetting empSetting = require.compensatoryLeaveEmSetting(cid, emplData.getEmploymentCode());
+			CompensatoryLeaveEmSetting empSetting = require.compensatoryLeaveEmSetting(cid, emplData.getEmploymentCode()).orElse(null);
 			EmploymentHolidayMngSetting employmentSetting = new EmploymentHolidayMngSetting(emplData.getEmploymentCode(), optEmpSubData, empSetting);
 			lstEmplSetting.add(employmentSetting);
 		});
@@ -216,7 +217,7 @@ public class InterimRemainOffPeriodCreateData {
 			param.setAppData(lstAppData);
 		}
 		Optional<ComSubstVacation> comSetting = require.comSubstVacation(param.getCid());
-		CompensatoryLeaveComSetting leaveComSetting = require.compensatoryLeaveComSetting(param.getCid());
+		CompensatoryLeaveComSetting leaveComSetting = require.compensatoryLeaveComSetting(param.getCid()).orElse(null);
 		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(param.getCid(), comSetting, leaveComSetting);
 		InterimRemainCreateDataInputPara createDataParam = new InterimRemainCreateDataInputPara(param.getCid(),
 				param.getSid(),
@@ -285,8 +286,8 @@ public class InterimRemainOffPeriodCreateData {
 			});
 		});
 	}
-	
-	public static interface RequireM4 extends RequireM1, RequireM3, InterimRemainOffDateCreateData.RequireM9,
+
+	public static interface RequireM4 extends RequireM1, RequireM3, InterimRemainOffDateCreateData.RequireM9, TimeVacationDigestUnit.Require,
 			UpdateNumberUnoffFurikyuProcess.Require, UpdateNumberUnoffDaikyuProcess.Require {
 
 		List<SharedSidPeriodDateEmploymentImport> employmentHistory(CacheCarrier cacheCarrier, List<String> sids , DatePeriod datePeriod);
@@ -305,16 +306,11 @@ public class InterimRemainOffPeriodCreateData {
 		List<AppRemainCreateInfor> appRemainCreateInfor(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData);
 
 		Optional<ComSubstVacation> comSubstVacation(String companyId);
-
-		CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId);
 	}
 
-	public static interface RequireM1 {
+	public static interface RequireM1 extends CompensatoryLeaveComSetting.Require, CompensatoryLeaveEmSetting.Require {
 
 		Optional<EmpSubstVacation> empSubstVacation(String companyId, String contractTypeCode);
-
-		CompensatoryLeaveEmSetting compensatoryLeaveEmSetting(String companyId, String employmentCode);
-
 	}
 
 }

@@ -22,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeZoneOutput;
@@ -91,7 +90,7 @@ public class ReflectTemporaryStartEnd {
 			TimeLeavingWork timeSheet = new TimeLeavingWork(new WorkNo(tf.getFrameNo()), tf.getStart(), tf.getEnd(), false, false);
 			timeLeavingWork.add(timeSheet);
 		}
-		integrationOfDaily.setTempTime(Optional.of(new TemporaryTimeOfDailyAttd(new WorkTimes(0),timeLeavingWork)));
+		integrationOfDaily.setTempTime(Optional.of(new TemporaryTimeOfDailyAttd(timeLeavingWork)));
 		
 		return ReflectStampOuput.REFLECT;
 	}

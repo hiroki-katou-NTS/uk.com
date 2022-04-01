@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.cancelreflectapp.Cance
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -61,7 +62,7 @@ public class RecoverWorkScheduleBeforeAppReflect {
 		domainDaily = require.correct(domainDaily, changeAtt);
 
 		// 日別実績の修正からの計算
-		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(ExecutionType.NORMAL_EXECUTION,
+		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(CalculateOption.asDefault(),
 				Arrays.asList(domainDaily));
 		if (!lstAfterCalc.isEmpty()) {
 			domainDaily = lstAfterCalc.get(0);
@@ -71,7 +72,7 @@ public class RecoverWorkScheduleBeforeAppReflect {
 		WorkSchedule workScheduleReflect = new WorkSchedule(domainDaily.getEmployeeId(), domainDaily.getYmd(),
 				workSchedule.getConfirmedATR(), domainDaily.getWorkInformation(), domainDaily.getAffiliationInfor(),
 				domainDaily.getBreakTime(), domainDaily.getEditState(), 
-				workSchedule.getTaskSchedule(),
+				workSchedule.getTaskSchedule(), workSchedule.getSupportSchedule(),
 				domainDaily.getAttendanceLeave(),
 				domainDaily.getAttendanceTimeOfDailyPerformance(), domainDaily.getShortTime(),
 				domainDaily.getOutingTime());
@@ -99,7 +100,7 @@ public class RecoverWorkScheduleBeforeAppReflect {
 		public Optional<WorkSchedule> get(String employeeID, GeneralDate ymd);
 
 		// CalculateDailyRecordServiceCenterNew
-		public List<IntegrationOfDaily> calculateForSchedule(ExecutionType type,
+		public List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,
 				List<IntegrationOfDaily> integrationOfDaily);
 
 		// WorkScheduleRepository

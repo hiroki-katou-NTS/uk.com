@@ -37,4 +37,6 @@ public interface AttendanceTimeOfAnyPeriodRepository {
 	 * @param frameCode 任意集計枠コード
 	 */
 	void remove(String employeeId, String frameCode);
+
+	void remove(List<String> employeeIds, String frameCode);
 }

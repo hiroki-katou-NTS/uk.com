@@ -25,6 +25,7 @@
 			<div id="contents-area">
 				<div style="width: 300px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'all-list', 
 									items: lstAllItems,  selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+				<div style="display: flex;">
 				<table id="all-list" data-bind="ntsGridList: {
 						height: 250,
 						options: lstAllItems,
@@ -46,6 +47,7 @@
 										multiple: true,
 										value: selectedAddSubList
 									}"></table>
+				</div>
 			</div>
 			<div id="functions-area-bottom">
 				<button id="data" data-bind="click: returnData" class="proceed x-large" style="margin-right: 50px;">#{i18n.getText('KDW007_37')}</button>

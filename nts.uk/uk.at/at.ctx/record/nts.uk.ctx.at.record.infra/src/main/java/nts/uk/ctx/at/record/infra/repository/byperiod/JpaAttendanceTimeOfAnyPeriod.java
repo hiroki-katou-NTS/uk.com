@@ -46,6 +46,9 @@ public class JpaAttendanceTimeOfAnyPeriod extends JpaRepository implements Atten
 
 	private static final String WHERE_PK = "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.frameCode = :frameCode ";
+
+	private static final String WHERE_LISTSID = "WHERE a.PK.employeeId IN :employeeIds "
+			+ "AND a.PK.frameCode = :frameCode ";
 	
 	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtAnpAttendanceTime a "
 			+ "WHERE a.PK.employeeId IN :employeeIds "
@@ -382,6 +385,16 @@ public class JpaAttendanceTimeOfAnyPeriod extends JpaRepository implements Atten
 		for (val deleteTable : DELETE_TABLES){
 			this.getEntityManager().createQuery(deleteTable + WHERE_PK)
 					.setParameter("employeeId", employeeId)
+					.setParameter("frameCode", frameCode)
+					.executeUpdate();
+		}
+	}
+
+	@Override
+	public void remove(List<String> employeeIds, String frameCode) {
+		for (val deleteTable : DELETE_TABLES){
+			this.getEntityManager().createQuery(deleteTable + WHERE_LISTSID)
+					.setParameter("employeeIds", employeeIds)
 					.setParameter("frameCode", frameCode)
 					.executeUpdate();
 		}

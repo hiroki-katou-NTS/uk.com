@@ -40,35 +40,38 @@ public class KrcdtDayShorttime extends ContractUkJpaEntity implements Serializab
 	public KrcdtDayShorttimePK krcdtDayShorttimePK;
 
 	@Column(name ="TO_RECORD_TOTAL_TIME")
-	public Integer toRecordTotalTime;
+	public int toRecordTotalTime;
 	@Column(name ="TO_RECORD_IN_TIME")
-	public Integer toRecordInTime;
+	public int toRecordInTime;
 	@Column(name ="TO_RECORD_OUT_TIME")
-	public Integer toRecordOutTime;
+	public int toRecordOutTime;
 	
 	@Column(name ="DEDUCTION_TOTAL_TIME")
-	public Integer deductionTotalTime;
+	public int deductionTotalTime;
 	@Column(name ="DEDUCTION_IN_TIME")
-	public Integer deductionInTime;
+	public int deductionInTime;
 	@Column(name ="DEDUCTION_OUT_TIME")
-	public Integer deductionOutTime;
+	public int deductionOutTime;
 	
 	@Column(name ="CAL_TO_RECORD_TOTAL_TIME")
-	public Integer calToRecordTotalTime;
+	public int calToRecordTotalTime;
 	@Column(name ="CAL_TO_RECORD_IN_TIME")
-	public Integer calToRecordInTime;
+	public int calToRecordInTime;
 	@Column(name ="CAL_TO_RECORD_OUT_TIME")
-	public Integer calToRecordOutTime;
+	public int calToRecordOutTime;
 	
 	@Column(name ="CAL_DEDUCTION_TOTAL_TIME")
-	public Integer calDeductionTotalTime;
+	public int calDeductionTotalTime;
 	@Column(name ="CAL_DEDUCTION_IN_TIME")
-	public Integer calDeductionInTime;
+	public int calDeductionInTime;
 	@Column(name ="CAL_DEDUCTION_OUT_TIME")
-	public Integer calDeductionOutTime;
+	public int calDeductionOutTime;
 	
 	@Column(name ="COUNT")
-	public Integer count;
+	public int count;
+	
+	@Column(name ="ADD_TIME")
+	public int addTime;
 	
 //	@ManyToOne
 //	@JoinColumns(value = {
@@ -122,6 +125,7 @@ public class KrcdtDayShorttime extends ContractUkJpaEntity implements Serializab
 		this.calDeductionOutTime = 0;
 		
 		this.count = 0;
+		this.addTime = 0;
 		
 		if(attendanceTime != null) {
 			if(attendanceTime.getTime().getActualWorkingTimeOfDaily() != null) {
@@ -162,6 +166,8 @@ public class KrcdtDayShorttime extends ContractUkJpaEntity implements Serializab
 						if(workTimes != null) {
 							this.count = workTimes.v() == null ? 0 : workTimes.v();
 						}
+						
+						this.addTime = attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getAddTime().v();
 					}
 				}
 			}
@@ -182,6 +188,7 @@ public class KrcdtDayShorttime extends ContractUkJpaEntity implements Serializab
 									DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.deductionTotalTime), new AttendanceTime(this.calDeductionTotalTime)),
 											  			  TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.deductionInTime), new AttendanceTime(this.calDeductionInTime)),
 											  			  TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.deductionOutTime), new AttendanceTime(this.calDeductionOutTime))),
-									ChildCareAtr.valueOf(this.krcdtDayShorttimePK.childCareAtr.toString()));
+									ChildCareAtr.valueOf(this.krcdtDayShorttimePK.childCareAtr),
+									new AttendanceTime(this.addTime));
 	}
 }

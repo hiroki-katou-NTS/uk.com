@@ -15,6 +15,7 @@ public class OuenWorkTimeOfDailyCommandUpdateHandler extends CommandFacade<OuenW
 
 	@Override
 	protected void handle(CommandHandlerContext<OuenWorkTimeOfDailyCommand> context) {
-		adUpRepo.adUpOuenWorkTime(context.getCommand().getData());
+		adUpRepo.adUpOuenWorkTime(context.getCommand().getEmployeeId(), context.getCommand().getWorkDate(),
+				context.getCommand().getData());
 	}
 }

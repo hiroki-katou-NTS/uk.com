@@ -4,6 +4,7 @@ module knr002.b {
         screenModel.startPage().done(() => {
             __viewContext.bind(screenModel);
         }).then(() => {
+            $("#multi-list_sDate").attr('colspan',5);
             $('#B6_1').focus();
         });        
     });

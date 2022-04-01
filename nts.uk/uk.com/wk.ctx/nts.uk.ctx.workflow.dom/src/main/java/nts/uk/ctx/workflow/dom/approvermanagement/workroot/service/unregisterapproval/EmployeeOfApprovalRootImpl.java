@@ -35,7 +35,9 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 		List<ApprovalPhase> approvalPhases = new ArrayList<>();
 		if(!CollectionUtil.isEmpty(personRootAll)) {
 			personRootAll.stream().forEach(x -> {
-				approvalPhase.getAllApprovalPhasebyCode(x.getApprovalId()).stream()
+				approvalPhase.getAllApprovalPhasebyCode(x.getApprRoot().getHistoryItems().isEmpty()
+						? ""
+						: x.getApprRoot().getHistoryItems().get(0).getApprovalId()).stream()
 				.forEach(y -> {
 					approvalPhases.add(y);
 				});
@@ -51,7 +53,9 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 					.collect(Collectors.toList());
 			if(!CollectionUtil.isEmpty(psRootCommonAtr)) {
 				psRootCommonAtr.stream().forEach(x -> {
-					approvalPhase.getAllApprovalPhasebyCode(x.getApprovalId()).stream()
+					approvalPhase.getAllApprovalPhasebyCode(x.getApprRoot().getHistoryItems().isEmpty()
+							? ""
+							: x.getApprRoot().getHistoryItems().get(0).getApprovalId()).stream()
 					.forEach(y -> {
 						approvalPhases.add(y);
 					});
@@ -162,11 +166,13 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 				lstR = personRootAll;
 				break;
 			case 1:
-				lstR = personRootAll.stream().filter(c -> c.getApprRoot().getApplicationType().value.equals(Integer.valueOf(typeV)))
+				lstR = personRootAll.stream().filter(c -> c.getApprRoot().getApplicationType()
+						.map(value -> value.equals(Integer.valueOf(typeV))).orElse(false))
 					.collect(Collectors.toList());
 				break;
 			case 2: 
-				lstR = personRootAll.stream().filter(c -> c.getApprRoot().getConfirmationRootType().value.equals(Integer.valueOf(typeV)))
+				lstR = personRootAll.stream().filter(c -> c.getApprRoot().getConfirmationRootType()
+						.map(value -> value.equals(Integer.valueOf(typeV))).orElse(false))
 					.collect(Collectors.toList());
 				break;
 			case 4: 
@@ -190,11 +196,13 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 				lstR = comRootAll;
 				break;
 			case 1:
-				lstR = comRootAll.stream().filter(c -> c.getApprRoot().getApplicationType().value.equals(Integer.valueOf(typeV)))
+				lstR = comRootAll.stream().filter(c -> c.getApprRoot().getApplicationType()
+						.map(value -> value.equals(Integer.valueOf(typeV))).orElse(false))
 					.collect(Collectors.toList());
 				break;
 			case 2: 
-				lstR = comRootAll.stream().filter(c -> c.getApprRoot().getConfirmationRootType().value.equals(Integer.valueOf(typeV)))
+				lstR = comRootAll.stream().filter(c -> c.getApprRoot().getConfirmationRootType()
+						.map(value -> value.equals(Integer.valueOf(typeV))).orElse(false))
 					.collect(Collectors.toList());
 				break;
 			case 4: 
@@ -219,11 +227,13 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 				lstR = wpRootAll;
 				break;
 			case 1:
-				lstR = wpRootAll.stream().filter(c -> c.getApprRoot().getApplicationType().value.equals(Integer.valueOf(typeV)))
+				lstR = wpRootAll.stream().filter(c -> c.getApprRoot().getApplicationType()
+						.map(value -> value.equals(Integer.valueOf(typeV))).orElse(false))
 					.collect(Collectors.toList());
 				break;
 			case 2: 
-				lstR = wpRootAll.stream().filter(c -> c.getApprRoot().getConfirmationRootType().value.equals(Integer.valueOf(typeV)))
+				lstR = wpRootAll.stream().filter(c -> c.getApprRoot().getConfirmationRootType()
+						.map(value -> value.equals(Integer.valueOf(typeV))).orElse(false))
 					.collect(Collectors.toList());
 				break;
 			case 4: 

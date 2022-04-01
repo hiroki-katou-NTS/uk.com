@@ -119,6 +119,11 @@ public class DataDialogWithTypeProcessor {
 		List<CodeName> codeNames = repo.findWorkplace(companyId, date);
 		return CodeNameType.create(TypeLink.WORKPLACE.value, codeNames);
 	}
+	
+	public CodeNameType getWorkPlaceGroup(String companyId) {
+		List<CodeName> codeNames = repo.findWorkplaceGroup(companyId);
+		return CodeNameType.create(TypeLink.WKP_GROUP.value, codeNames);
+	}
 
 	// 分類
 	public CodeNameType getClassification(String companyId) {
@@ -369,6 +374,9 @@ public class DataDialogWithTypeProcessor {
 			case 14:
 				// CDL024
 				return toMap(this.getBussinessType(companyId).getCodeNames());
+			case 18:
+				// 
+				return toMapID(this.getWorkPlaceGroup(companyId).getCodeNames());
 			default:
 				return new HashMap<>();
 			}

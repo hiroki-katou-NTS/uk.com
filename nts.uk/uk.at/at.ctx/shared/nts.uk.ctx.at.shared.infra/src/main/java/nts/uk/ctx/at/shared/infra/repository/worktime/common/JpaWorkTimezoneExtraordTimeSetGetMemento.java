@@ -67,7 +67,7 @@ public class JpaWorkTimezoneExtraordTimeSetGetMemento
 	@Override
 	public ExtraordWorkOTFrameSet getOTFrameSet() {
 		return new ExtraordWorkOTFrameSet(new OTFrameNo(this.entity.getOtFrameNo()),
-				new OTFrameNo(this.entity.getInLegalBreakFrameNo()),
+				new OTFrameNo(this.entity.getIlLegalOtFrameNo()),
 				new SettlementOrder(this.entity.getSettlementOrder()));
 	}
 

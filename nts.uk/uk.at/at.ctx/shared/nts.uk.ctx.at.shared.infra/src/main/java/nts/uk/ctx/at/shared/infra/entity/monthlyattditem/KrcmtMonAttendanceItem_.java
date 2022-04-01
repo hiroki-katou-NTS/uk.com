@@ -31,4 +31,9 @@ public class KrcmtMonAttendanceItem_ {
 	/** The line break pos name. */
 	public static volatile SingularAttribute<KrcmtMonAttendanceItem, Integer> lineBreakPosName;
 
+
+	public static volatile SingularAttribute<KrcmtMonAttendanceItem, Boolean> useByMon;
+
+	public static volatile SingularAttribute<KrcmtMonAttendanceItem, Boolean> useByAnp;
+
 }

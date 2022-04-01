@@ -16,9 +16,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 	<div id="kaf010-b">
 	<div id="contents-area" style="background-color: inherit; height: calc(100vh - 137px);">
 		<div class="two-panel" style="height: 100%; width: 1260px">
-            <div class="left-panel" style="width: calc(1260px - 388px); padding-bottom: 5px; height: inherit">
-                <div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding: 0 10px; overflow-x: hidden">
-                    <div class="table" style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
+            <div class="left-panel" style="width: calc(1260px - 388px); padding-bottom: 5px">
+                    <div class="table form-header">
                         <div class="cell" style="vertical-align: middle;">
                             <div data-bind="component: { name: 'kaf000-b-component4',
                                                 params: {
@@ -94,28 +93,25 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 								
 				 </div>
                                             
-                </div>
             </div>
-            <div class="right-panel" style="width: 388px; padding-bottom: 5px; height: inherit; padding-right: 0px">
-                <div style="border: 1px solid #CCC; height: inherit; background-color: #fff; overflow-x: hidden; overflow-y: auto">
-                    <div data-bind="component: { name: 'kaf000-b-component1', 
-                            params: {
-                                appType: appType,
-                                appDispInfoStartupOutput: appDispInfoStartupOutput	
-                            } }"></div>
-                    <div style="padding: 15px 15px 0"
-						data-bind="component: { name: 'kaf010-share-header',
-											params: {
-												overTimeWork: overTimeWork
-											}
-											}, visible: overTimeWorkVisible"></div>        
-                    <div data-bind="component: { name: 'kaf000-b-component9',
-                            params: {
-                                appType: appType,
-                                application: application,
-                                appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
-                            } }"></div>
-                </div>
+            <div class="right-panel" style="width: 388px; padding-bottom: 5px; padding-right: 0px">
+				<div data-bind="component: { name: 'kaf000-b-component1', 
+						params: {
+							appType: appType,
+							appDispInfoStartupOutput: appDispInfoStartupOutput	
+						} }"></div>
+				<div style="padding: 15px 15px 0"
+					data-bind="component: { name: 'kaf010-share-header',
+										params: {
+											overTimeWork: overTimeWork
+										}
+										}, visible: overTimeWorkVisible"></div>        
+				<div data-bind="component: { name: 'kaf000-b-component9',
+						params: {
+							appType: appType,
+							application: application,
+							appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
+						} }"></div>
             </div>
         </div>
 	</div>
