@@ -39,14 +39,13 @@ public class AlarmListPatternByEmployee implements DomainAggregate {
      */
     public Iterable<AtomTask> check(RequireCheck require, String targetEmployeeId) {
 
-        val checkers = conditions.stream()
-                .map(c -> require.getAlarmListChecker(c.getCategory(), c.getCheckerCode())
-                        .orElseThrow(() -> new RuntimeException("not found: " + c)))
-                .collect(Collectors.toList());
-
         val context = new CheckingContextByEmployee(targetEmployeeId, checkingPeriod);
 
-        return AtomTask.iterate(checkers, checker -> {
+        return AtomTask.iterate(conditions, c -> {
+
+            val checker = require.getAlarmListChecker(c.getCategory(), c.getCheckerCode())
+                    .orElseThrow(() -> new RuntimeException("not found: " + c));
+
             return checker.check(require, context);
         });
     }
