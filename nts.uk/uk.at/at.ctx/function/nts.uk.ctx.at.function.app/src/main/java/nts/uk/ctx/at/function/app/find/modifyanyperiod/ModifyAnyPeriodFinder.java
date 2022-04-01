@@ -14,6 +14,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,7 +54,7 @@ public class ModifyAnyPeriodFinder {
                                                          i.getDisplayOrder(),
                                                          i.getColumnWidthTable().orElse(null)) )
                                                         .collect(Collectors.toList())
-                            )).collect(Collectors.toList())
+                            )).sorted(Comparator.comparing(ModifyAnyPeriodSheetlDto::getSheetNo)).collect(Collectors.toList())
                     );
             modifyAnyPeriodDtos.add(dto);
         }
@@ -85,7 +86,7 @@ public class ModifyAnyPeriodFinder {
                                                     i.getDisplayOrder(),
                                                     i.getColumnWidthTable().orElse(null)) )
                                             .collect(Collectors.toList())
-                            )).collect(Collectors.toList())
+                            )).sorted(Comparator.comparing(ModifyAnyPeriodSheetlDto::getSheetNo)).collect(Collectors.toList())
             );
         }
         return null;
