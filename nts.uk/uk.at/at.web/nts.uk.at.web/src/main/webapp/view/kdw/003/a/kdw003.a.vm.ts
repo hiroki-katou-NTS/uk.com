@@ -4098,7 +4098,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             code: data.employeeCode,
                             businessName: data.employeeName,
                             workplaceName: data.affiliationName,
-                            workplaceId: data.workplaceId,
+                            workplaceId: data.affiliationId,
                             depName: '',
                             isLoginUser: false
                         };
