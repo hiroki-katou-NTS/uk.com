@@ -8,7 +8,12 @@ import lombok.Value;
 @Value
 public class CheckingPeriod {
 
-    CheckingPeriodDaily periodDaily;
+    /** スケジュール月次 */
+    CheckingPeriodMonthly scheduleMonthly;
 
-    CheckingPeriodMonthly periodMonthly;
+    /** 日次 */
+    CheckingPeriodDaily daily;
+
+    /** 月次 */
+    CheckingPeriodMonthly monthly;
 }
