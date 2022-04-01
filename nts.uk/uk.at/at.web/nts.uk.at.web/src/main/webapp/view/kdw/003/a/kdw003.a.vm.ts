@@ -743,7 +743,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 	                            nts.uk.request.jumpToTopPage();
 	                        });
 	                    } else {
-	                        setShared("selectedPerfFmtCodeList", "");
+	                        setShared("KDW003C_Param",  { initMode: 0, selectedItem: "" });
 	                        modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
 	                            let res = nts.uk.ui.windows.getShared('KDW003C_Err');
 	                            if(!_.isEmpty(res) && res.jumpToppage){
@@ -2731,7 +2731,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             });
 
                         } else {
-                        setShared("selectedPerfFmtCodeList", "");
+                        setShared("KDW003C_Param", { initMode: 0, selectedItem: "" });
                         modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
                             let res = nts.uk.ui.windows.getShared('KDW003C_Err');
                             if(!_.isEmpty(res) && res.jumpToppage){
@@ -3303,7 +3303,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (!self.hasEmployee || self.hasErrorBuss) return;
             if (!nts.uk.ui.errors.hasError()) {
                 self.flagCalculation = false;
-                setShared("selectedPerfFmtCodeList", self.formatCodes());
+                setShared("KDW003C_Param", {initMode:0 ,selectedItem: self.formatCodes()[0]});
                 modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
                     let res = nts.uk.ui.windows.getShared('KDW003C_Err');
                     if(!_.isEmpty(res) && res.jumpToppage){
