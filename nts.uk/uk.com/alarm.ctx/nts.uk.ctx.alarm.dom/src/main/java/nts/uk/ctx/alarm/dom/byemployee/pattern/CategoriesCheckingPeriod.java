@@ -1,14 +1,14 @@
-package nts.uk.ctx.alarm.dom.pattern;
+package nts.uk.ctx.alarm.dom.byemployee.pattern;
 
 import nts.arc.layer.dom.objecttype.DomainObject;
-import nts.uk.ctx.alarm.dom.check.checkers.AlarmListCategory;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 
 /**
  * カテゴリ別のチェック対象期間
  */
 public class CategoriesCheckingPeriod implements DomainObject {
 
-    AlarmListCategory category;
+    AlarmListCategoryByEmployee category;
 
 
 }

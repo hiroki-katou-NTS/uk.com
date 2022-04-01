@@ -1,13 +1,13 @@
-package nts.uk.ctx.alarm.dom.check;
+package nts.uk.ctx.alarm.dom.byemployee.check;
 
 import lombok.Value;
-import nts.uk.ctx.alarm.dom.check.checkers.AlarmListCategory;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 
 /**
- * 1つ分のアラーム検出情報
+ * アラーム検出情報(社員別)
  */
 @Value
-public class AlarmRecord {
+public class AlarmRecordByEmployee {
 
     /** 社員ID */
     String employeeId;
@@ -16,7 +16,7 @@ public class AlarmRecord {
     String date;
 
     /** カテゴリ */
-    AlarmListCategory category;
+    AlarmListCategoryByEmployee category;
 
     /** チェック項目名 */
     String checkItemName;

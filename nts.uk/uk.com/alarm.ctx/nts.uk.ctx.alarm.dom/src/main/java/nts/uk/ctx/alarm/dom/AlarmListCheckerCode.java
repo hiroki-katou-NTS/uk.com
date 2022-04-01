@@ -1,4 +1,4 @@
-package nts.uk.ctx.alarm.dom.check.checkers;
+package nts.uk.ctx.alarm.dom;
 
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;

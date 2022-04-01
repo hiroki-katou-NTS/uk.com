@@ -1,4 +1,4 @@
-package nts.uk.ctx.alarm.dom.check.context.period;
+package nts.uk.ctx.alarm.dom.byemployee.check.context.period;
 
 import nts.arc.time.calendar.period.DatePeriod;
 
