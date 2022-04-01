@@ -9,7 +9,7 @@ import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 /**
  * アラームリストのチェック条件(スケ月次)
  */
-public class ScheduleMonthlyChecker implements AlarmListCheckerByEmployee, DomainAggregate {
+public class ScheduleMonthlyCheckerByEmployee implements AlarmListCheckerByEmployee, DomainAggregate {
 
     private TargetEmployeesFilter employeesFilter;
 

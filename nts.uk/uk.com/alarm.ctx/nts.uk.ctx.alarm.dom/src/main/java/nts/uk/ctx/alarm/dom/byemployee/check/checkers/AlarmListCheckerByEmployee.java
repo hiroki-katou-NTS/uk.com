@@ -12,7 +12,7 @@ public interface AlarmListCheckerByEmployee {
 
     interface Require extends
             // 全CheckerのRequireCheckを追加する
-            ScheduleMonthlyChecker.RequireCheck {
+            ScheduleMonthlyCheckerByEmployee.RequireCheck {
 
     }
 }
