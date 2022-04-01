@@ -3468,7 +3468,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			command.workContent = workContent;
             command.appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
             command.multipleOvertimeContents = self.multipleOvertimeContents()
-                .filter(i => !!i.start() && !!i.end())
+                .filter(i => _.isNumber(i.start()) && _.isNumber(i.end()))
                 .map((i, idx) => ({
                     frameNo: idx + 1,
                     startTime: i.start(),
