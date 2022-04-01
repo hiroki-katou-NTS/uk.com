@@ -75,6 +75,10 @@ public class ReqComStatusMonitoringProcess {
 			return Optional.of(Command.RESERVATION_INFO);
 		case 11:
 			return Optional.of(Command.APPLICATION_INFO);
+		case 12:
+			return Optional.of(Command.TR_REMOTE);
+		case 13:
+			return Optional.of(Command.UK_SWITCH_MODE);
 		case 17:
 			return Optional.of(Command.REBOOT);
 		default:

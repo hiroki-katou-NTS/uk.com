@@ -131,8 +131,6 @@ public enum Command {
 	
 	public boolean simple() {
 		switch (this) {
-		case TR_REMOTE:
-		case UK_SWITCH_MODE:
 		case TR_REMOTE_SEND_SETTING:
 		case MESSAGE:
 			return true;

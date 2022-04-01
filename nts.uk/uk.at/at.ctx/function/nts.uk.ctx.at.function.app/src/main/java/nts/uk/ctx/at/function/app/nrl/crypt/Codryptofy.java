@@ -269,4 +269,24 @@ public class Codryptofy {
 	public static String convertToShiftJIS(String text) {
 		return encode(decode(text));
 	}
+
+	public static String subStringByByte(String text, int byteSize) {
+		int sizeText = decode(text).length;
+		if (sizeText <= byteSize || text.isEmpty()) {
+			return text;
+		}
+		StringBuilder result = new StringBuilder();
+		int byteCounter = 0;
+		for (int i = 0; i < text.length(); i++) {
+			String currentText = text.substring(i, i + 1);
+			if (byteCounter + decode(currentText).length > byteSize) {
+				return result.toString();
+			} else {
+				result.append(currentText);
+				byteCounter += decode(currentText).length;
+			}
+		}
+
+		return result.toString();
+	}
 }
