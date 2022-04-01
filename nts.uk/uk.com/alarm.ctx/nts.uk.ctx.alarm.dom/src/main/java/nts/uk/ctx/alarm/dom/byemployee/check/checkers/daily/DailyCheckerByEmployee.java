@@ -1,7 +1,6 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers.daily;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
 import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.task.tran.AtomTask;
@@ -9,6 +8,7 @@ import nts.uk.ctx.alarm.dom.AlarmListCheckerCode;
 import nts.uk.ctx.alarm.dom.byemployee.check.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
+import nts.uk.ctx.alarm.dom.fixedlogic.FixedLogicSetting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class DailyCheckerByEmployee implements DomainAggregate, AlarmListChecker
     private final AlarmListCheckerCode code;
 
     /** 固定のチェック条件 */
-    private List<FixedLogic> fixedLogics;
+    private List<FixedLogicSetting<FixedLogicDailyByEmployee>> fixedLogics;
 
     /**
      * チェックする
@@ -40,7 +40,7 @@ public class DailyCheckerByEmployee implements DomainAggregate, AlarmListChecker
         List<AlarmRecordByEmployee> alarmRecords = new ArrayList<>();
 
         fixedLogics.stream()
-                .map(f -> f.logic.check(require, context.getTargetEmployeeId(), period, f.message))
+                .map(f -> f.getLogic().check(require, context.getTargetEmployeeId(), period, f.getMessage()))
                 .forEach(alarmRecords::addAll);
 
         return AtomTask.of(() -> {
@@ -50,15 +50,5 @@ public class DailyCheckerByEmployee implements DomainAggregate, AlarmListChecker
 
     public interface RequireCheck extends FixedLogicDailyByEmployee.RequireCheck {
 
-    }
-
-    @Value
-    public static class FixedLogic {
-
-        /** チェックロジック */
-        FixedLogicDailyByEmployee logic;
-
-        /** メッセージ */
-        String message;
     }
 }
