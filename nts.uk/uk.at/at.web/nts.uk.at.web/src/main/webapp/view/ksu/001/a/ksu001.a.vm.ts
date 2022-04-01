@@ -64,10 +64,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         heightGridSetting: KnockoutObservable<string> = ko.observable('');
         isEnableInputHeight: KnockoutObservable<boolean> = ko.observable(false);
 
-        // dùng cho xử lý của botton toLeft, toRight, toDown
-        indexBtnToLeft: number = 0;
-        indexBtnToRight: number = 0;
-        indexBtnToDown: number = 0;
+        // dùng cho xử lý của botton A13,A14,A15
+        indexBtnExpandLeft: number = 0;
+        indexBtnExpandRight: number = 0;
+        indexBtnExpandBottom: number = 0;
 
         enableBtnPaste: KnockoutObservable<boolean>  = ko.observable(true);
         enableBtnCoppy: KnockoutObservable<boolean>  = ko.observable(true);
@@ -126,10 +126,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         showRankCol = false;
         showQualificCol = false;
         widthMid : number = 0;
-        pathToLeft = '';
-        pathToRight = '';
-        pathToDown = '';
-        pathToUp = '';
+        pathExpandLeft = '';
+        pathExpandRight = '';
+        pathExpandBottom = '';
+        pathExpandTop = '';
         
         // param kcp015
         baseDate: KnockoutObservable<string> = ko.observable('');
@@ -352,10 +352,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             self.bindingEventCellUpdatedGrid();
             
-            self.pathToLeft  = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("152.png").serialize();
-            self.pathToRight = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("153.png").serialize();
-            self.pathToDown  = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("150.png").serialize();
-            self.pathToUp    = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("151.png").serialize();
+            self.pathExpandLeft  = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("152.svg").serialize();
+            self.pathExpandRight = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("153.svg").serialize();
+            self.pathExpandBottom  = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("150.svg").serialize();
+            self.pathExpandTop    = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("151.svg").serialize();
         }
         // end constructor
         
@@ -823,6 +823,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         destroyAndCreateGrid(dataBindGrid, viewMode) {
             let self = this; 
             $("#cacheHeightGrid").append($('#heightGrid'));
+            $("#cacheExpandBottom").append($('#btn-expand-bottom'));
             $("#cacheDiv").append($('#vertDiv'));
             $("#cacheDiv").append($('#horzDiv'));
             $("#extable").children().remove();
@@ -832,8 +833,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let updateMode = self.mode() === UpdateMode.EDIT ? UpdateMode.STICK : UpdateMode.DETERMINE;
             self.initExTable(dataBindGrid, viewMode, updateMode);
             if (!self.showA9) {
-                if (!_.isNil(document.getElementById('A13'))) {
-                    document.getElementById('A13').remove();
+                if (!_.isNil(document.getElementById('btn-expand-left'))) {
+                    document.getElementById('btn-expand-left').remove();
                 }
             }
             self.bindingEventCellUpdatedGrid();
@@ -1608,8 +1609,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
 
             if (!self.showA9) {
-                if (!_.isNil(document.getElementById('A13'))) {
-                    document.getElementById('A13').remove();
+                if (!_.isNil(document.getElementById('btn-expand-left'))) {
+                    document.getElementById('btn-expand-left').remove();
                 }
             }
 
@@ -2628,7 +2629,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             extbl.create();
 
-            $("#sub-content-main").width($('#extable').width() + 30);
+            //$("#sub-content-main").width($('#extable').width() + 30);
             console.log(performance.now() - start);
             
             if (self.showA11()) {
@@ -2642,6 +2643,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             
             if (self.showA12()) {
+                // set button A15, A16
+                $("#extable").append($('#btn-expand-bottom'));
+                $('#btn-expand-bottom').css({'display':'', 'margin-top': '50px'});
+                
                 $("#horzDropDown").html(function() { return $('#horzDiv'); });
                 $('#horzDiv').css('display', '');
             
@@ -2655,7 +2660,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             // append button A16
             $("#extable").append($('#heightGrid'));
-            $('#heightGrid').css({'display':'', 'width': '30px', 'float' : 'right', 'margin-top': '1px'});
+            $('#heightGrid').css({'display':'', 'width': '30px','height': '30px', 'float' : 'right', 'margin-top': '1px'});
         }
 
         createVertSumData() {
@@ -4218,85 +4223,107 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         setPositionButonA15() {
-            let self = this;
-            let height_ex_header_leftmost = document.getElementsByClassName('ex-header-leftmost')[0].offsetHeight;
-            let height_ex_body_leftmost = document.getElementsByClassName('ex-body-leftmost')[0].offsetHeight;
-            let heightBtn = 30;
-            let top = height_ex_header_leftmost + height_ex_body_leftmost - heightBtn;
-            $(".toDown").css({ "margin-top": top + 'px' });
+            let h_header = document.getElementsByClassName('ex-header-leftmost')[0].offsetHeight;
+            let h_body = document.getElementsByClassName('ex-body-leftmost')[0].offsetHeight;
+            let top = h_header + h_body - 30; // 30 : height button
+            $("#btn-expand-bottom").css({ "margin-top": top + 'px' });
         }
 
         // xử lý cho button A13
-        toLeft() {
+        expandLeft() {
             let self = this;
             if (!self.showA9)
                 return;
             let offsetLeftGrid = document.getElementById('extable').offsetLeft;
             let offsetWidthA8 = document.getElementsByClassName('extable-header-leftmost')[0].offsetWidth;
-            if (self.indexBtnToLeft % 2 == 0) {
+            if (self.indexBtnExpandLeft % 2 == 0) {
                 $("#extable").exTable("hideMiddle");
-                $('.iconToLeft').css('background-image', 'url(' + self.pathToRight + ')');
-                $(".toLeft").css("margin-left", offsetLeftGrid + offsetWidthA8 + "px");
+                $('.icon-expand-left').css('background-image', 'url(' + self.pathExpandRight + ')');
+                $("#btn-expand-left").css("margin-left", offsetLeftGrid + offsetWidthA8 + "px");
             } else {
                 $("#extable").exTable("showMiddle");
-                $('.iconToLeft').css('background-image', 'url(' + self.pathToLeft + ')');
+                $('.icon-expand-left').css('background-image', 'url(' + self.pathExpandLeft + ')');
                 let offsetWidthA9 = document.getElementsByClassName('ex-header-middle')[0].offsetWidth;
-                $(".toLeft").css("margin-left", offsetLeftGrid + offsetWidthA8 + offsetWidthA9 + 'px');
+                $("#btn-expand-left").css("margin-left", offsetLeftGrid + offsetWidthA8 + offsetWidthA9 + 'px');
             }
-            if (!_.isNil(document.getElementById('A14'))) {
+            if (!_.isNil(document.getElementById('btn-expand-right'))) {
                 let offsetWidthA14 = document.getElementsByClassName('ex-header-detail')[0].offsetWidth;
-                $(".toRight").css('margin-left', offsetWidthA14 - self.widthBtnToLeftToRight * 2 + 'px');
+                $("#btn-expand-right").css('margin-left', offsetWidthA14 - self.widthBtnToLeftToRight * 2 + 'px');
             }
-            self.indexBtnToLeft = self.indexBtnToLeft + 1;
+            self.indexBtnExpandLeft = self.indexBtnExpandLeft + 1;
+            
+            $("#extable").css('width', self.getWidthGrid() +'px');
+            
         }
 
-        toRight() {
+        expandRight() {
             let self = this;
             if (self.showA11() == false)
                 return;
             let marginleft = 0;
-            let offsetLeftA14 = document.getElementById('A14').offsetLeft;
-            if (self.indexBtnToRight % 2 == 0) {
-                $('.iconToRight').css('background-image', 'url(' + self.pathToLeft + ')');
+            let offsetLeftA14 = document.getElementById('btn-expand-right').offsetLeft;
+            if (self.indexBtnExpandRight % 2 == 0) {
+                $('.icon-expand-right').css('background-image', 'url(' + self.pathExpandLeft + ')');
                 $("#extable").exTable("hideVerticalSummary");
             } else {
-                $('.iconToRight').css('background-image', 'url(' + self.pathToRight + ')');
+                $('.icon-expand-right').css('background-image', 'url(' + self.pathExpandRight + ')');
                 $("#extable").exTable("showVerticalSummary");
             }
 
             let offsetWidthA10 = document.getElementsByClassName('ex-header-detail')[0].offsetWidth;
             if (self.showA9) {
-                $(".toRight").css('margin-left', offsetWidthA10 - self.widthBtnToLeftToRight * 2 + 'px');
+                $("#btn-expand-right").css('margin-left', offsetWidthA10 - self.widthBtnToLeftToRight * 2 + 'px');
             } else {
                 let offsetWidthA8 = document.getElementsByClassName('ex-header-leftmost')[0].offsetWidth;
                 let offsetLeftGrid = document.getElementById('extable').offsetLeft;
-                $(".toRight").css('margin-left', offsetLeftGrid + offsetWidthA8 + offsetWidthA10 - self.widthBtnToLeftToRight + 'px');
+                $("#btn-expand-right").css('margin-left', offsetLeftGrid + offsetWidthA8 + offsetWidthA10 - self.widthBtnToLeftToRight + 'px');
             }
-            self.indexBtnToRight = self.indexBtnToRight + 1;
+            self.indexBtnExpandRight = self.indexBtnExpandRight + 1;
+            
+            // fix bug 123640
+            if (self.indexBtnExpandBottom % 2 == 1) {
+                $("#extable").exTable("hideHorizontalSummary");
+            }
+            
+            $("#extable").css('width', self.getWidthGrid() +'px');
         }
 
-        toDown() {
+        expandBottom() {
             let self = this;
             if (!self.showA12())
                 return;
-            let heightHozSum = 200 + 30 + 2; // 200 laf height cua HozSum, 30 la khoang cach A8 va A12
-            let heightBtn = 30;
-            if (self.indexBtnToDown % 2 == 0) {
+            if (self.indexBtnExpandBottom % 2 == 0) {
                 $("#extable").exTable("hideHorizontalSummary");
-                $('.iconToDown').css('background-image', 'url(' + self.pathToUp + ')');
+                $('.icon-expand-bottom').css('background-image', 'url(' + self.pathExpandTop + ')');
 
-                let heightEtbl = $("#extable").height();
-                let margintop = heightEtbl - heightBtn - 24;
-                $(".toDown").css({ "margin-top": margintop + 'px' });
             } else {
                 $("#extable").exTable("showHorizontalSummary");
-                $('.iconToDown').css('background-image', 'url(' + self.pathToDown + ')');
-                
-                let heightEtbl = $("#extable").height();
-                let margintop = heightEtbl - heightHozSum  - heightBtn;
-                $(".toDown").css({ "margin-top": margintop + 'px' });
+                $('.icon-expand-bottom').css('background-image', 'url(' + self.pathExpandBottom + ')');
             }
-            self.indexBtnToDown = self.indexBtnToDown + 1;
+            
+            self.setPositionButonA15();
+            
+            self.indexBtnExpandBottom = self.indexBtnExpandBottom + 1;
+        }
+        
+        
+        getWidthGrid() {
+            let self = this;
+            let widthA8 = document.getElementsByClassName('ex-body-leftmost')[0].offsetWidth;
+            let widthA10 = document.getElementsByClassName('ex-body-detail')[0].offsetWidth;
+            
+            let widthA9 = 0;
+            if(self.showA9){
+                widthA9 = document.getElementsByClassName('ex-body-middle')[0].offsetWidth;
+            }
+            
+            let widthA11 = 0;
+            if(self.showA11()){
+                widthA11 = document.getElementsByClassName('ex-body-vert-sum')[0].offsetWidth;
+            }
+            
+            let wGrid = widthA8 + widthA9 + widthA10 + widthA11 + 20;
+            return wGrid;
         }
         
         setPositionButonA13A14A15() {
@@ -4304,31 +4331,31 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let offsetLeftGrid = document.getElementById('extable').offsetLeft;
             let offsetWidthA8 = document.getElementsByClassName('extable-header-leftmost')[0].offsetWidth;
             if (self.showA9) {
-                self.indexBtnToLeft = 0;
+                self.indexBtnExpandLeft = 0;
                 let offsetWidthA9 = document.getElementsByClassName('ex-header-middle')[0].offsetWidth;
-                $(".toLeft").css("margin-left", offsetLeftGrid + offsetWidthA8 + offsetWidthA9 + 'px');
-                $('.iconToLeft').css('background-image', 'url(' + self.pathToLeft + ')');
+                $("#btn-expand-left").css("margin-left", offsetLeftGrid + offsetWidthA8 + offsetWidthA9 + 'px');
+                $('.icon-expand-left').css('background-image', 'url(' + self.pathExpandLeft + ')');
             }
 
             if (self.showA11()) {
-                self.indexBtnToRight = 0;
-                $('.iconToRight').css('background-image', 'url(' + self.pathToRight + ')');
+                self.indexBtnExpandRight = 0;
+                $('.icon-expand-right').css('background-image', 'url(' + self.pathExpandRight + ')');
                 let offsetWidthA10 = document.getElementsByClassName('ex-header-detail')[0].offsetWidth;
                 if (self.showA9) {
-                    $(".toRight").css('margin-left', offsetWidthA10 - self.widthBtnToLeftToRight * 2 + 'px');
+                    $("#btn-expand-right").css('margin-left', offsetWidthA10 - self.widthBtnToLeftToRight * 2 + 'px');
                 } else {
-                    $(".toRight").css('margin-left', offsetLeftGrid + offsetWidthA8 + offsetWidthA10 - self.widthBtnToLeftToRight + 'px');
+                    $("#btn-expand-right").css('margin-left', offsetLeftGrid + offsetWidthA8 + offsetWidthA10 - self.widthBtnToLeftToRight + 'px');
                 }
             }
 
             if (self.showA12()) {
-                self.indexBtnToDown = 0;
-                let height_ex_header_leftmost = document.getElementsByClassName('ex-header-leftmost')[0].offsetHeight;
-                let height_ex_body_leftmost = document.getElementsByClassName('ex-body-leftmost')[0].offsetHeight;
-                let heightBtn = 30;
-                let top = height_ex_header_leftmost + height_ex_body_leftmost - heightBtn;
-                $(".toDown").css("margin-top" , top + 'px');
-                $('.iconToDown').css('background-image', 'url(' + self.pathToDown + ')');
+                self.indexBtnExpandBottom = 0;
+                let h_header = document.getElementsByClassName('ex-header-leftmost')[0].offsetHeight;
+                let h_body = document.getElementsByClassName('ex-body-leftmost')[0].offsetHeight;
+                let top = h_header + h_body - 30; // 30 : height button
+
+                $("#btn-expand-bottom").css("margin-top" , top + 'px');
+                $('.icon-expand-bottom').css('background-image', 'url(' + self.pathExpandBottom + ')');
             }
         }
         
@@ -4340,7 +4367,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else {
                 $("#main-area").css('overflow-y', 'scroll');
             }
-            $("#sub-content-main").width($('#extable').width() + 30);
+            //$("#sub-content-main").width($('#extable').width() + 30);
         }
         
         // call khi resize
@@ -4355,7 +4382,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else {
                 marginleftOfbtnToRight = offsetLeftGrid + widthA8 + widthA10 - self.widthBtnToLeftToRight;
             }
-            $('.toRight').css('margin-left', marginleftOfbtnToRight + 'px');
+            $('#btn-expand-right').css('margin-left', marginleftOfbtnToRight + 'px');
         }
         
         /**
