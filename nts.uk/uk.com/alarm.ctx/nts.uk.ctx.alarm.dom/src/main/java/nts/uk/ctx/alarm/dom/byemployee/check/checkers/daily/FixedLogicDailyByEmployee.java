@@ -13,10 +13,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.DailyConfirmAtr;
+import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 固定のチェック条件(社員別・日次)
@@ -33,7 +37,14 @@ public enum FixedLogicDailyByEmployee {
     未計算(3, c -> checkIntegrationOfDaily(
             c, iod -> iod.getWorkInformation().getCalculationState(), calcState -> calcState.equals(CalculationState.No_Calculated))),
 
-    
+    管理者未承認(4, c -> {
+        val approvalState = c.require.getApprovalRootStateByPeriod(c.employeeId, c.period);
+        return approvalState.stream()
+                .filter(state -> !state.getDailyConfirmAtr().equals(DailyConfirmAtr.ALREADY_APPROVED))
+                .map(state -> c.alarm(state.getDate()))
+                .collect(Collectors.toList());
+    }),
+
     ;
 
     public final int value;
@@ -112,6 +123,8 @@ public enum FixedLogicDailyByEmployee {
     public interface RequireCheck extends CheckingPeriodDaily.Require{
 
         Optional<IntegrationOfDaily> getIntegrationOfDaily(String employeeId, GeneralDate date);
+
+        List<ApprovalRootStateStatus> getApprovalRootStateByPeriod(String employeeId, DatePeriod period);
 
         boolean existsWorkType(WorkTypeCode workTypeCode);
 
