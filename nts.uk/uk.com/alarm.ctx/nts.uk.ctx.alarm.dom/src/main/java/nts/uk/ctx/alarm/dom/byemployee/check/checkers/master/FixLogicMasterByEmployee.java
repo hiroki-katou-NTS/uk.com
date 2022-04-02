@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.IsExistWeekdayWorkType;
@@ -40,8 +41,7 @@ public enum FixLogicMasterByEmployee {
 		return checkResults
 				.entrySet()
 				.stream()
-				.map(pWithw -> pWithw.getKey().stream().map(date -> context.alarm(date)).collect(Collectors.toList()))
-				.flatMap(List::stream)
+				.map(pWithw -> context.alarm(pWithw.getKey()))
 				.collect(Collectors.toList())
 				;
 	}
@@ -60,6 +60,16 @@ public enum FixLogicMasterByEmployee {
         String employeeId;
         String message;
 
+        public AlarmRecordByEmployee alarm(DatePeriod period) {
+            return new AlarmRecordByEmployee(
+                    employeeId,
+                    period.toString(),
+                    AlarmListCategoryByEmployee.MASTER,
+                    getName(),
+                    getAlarmCondition(),
+                    message);
+        }
+        
         public AlarmRecordByEmployee alarm(GeneralDate date) {
             return new AlarmRecordByEmployee(
                     employeeId,
