@@ -44,6 +44,12 @@ import nts.uk.shr.com.context.AppContexts;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ExecuteAlarmListByEmployeeRequire {
 
+	@Inject
+	private WorkTypeRepository workTypeRepo;
+	
+	@Inject
+	private WorkingConditionRepository workingConditionRepo;
+	
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(AppContexts.user().companyId()));
     }
@@ -58,12 +64,6 @@ public class ExecuteAlarmListByEmployeeRequire {
     public class RequireImpl implements Require {
 
     	private final String companyId;
-    	
-    	@Inject
-    	private WorkTypeRepository workTypeRepo;
-    	
-    	@Inject
-    	private WorkingConditionRepository workingConditionRepo;
     	
         @Getter
         private List<AlarmRecordByEmployee> alarms = new ArrayList<>();
