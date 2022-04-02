@@ -5,7 +5,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.arc.task.tran.AtomTask;
+import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.byemployee.check.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
@@ -22,18 +22,23 @@ public class MasterCheckerByEmployee implements DomainAggregate, AlarmListChecke
     
     
 	@Override
-	public AtomTask check(Require require, CheckingContextByEmployee context) {
+	public Iterable<AlarmRecordByEmployee> check(Require require, CheckingContextByEmployee context) {
 		
-        List<AlarmRecordByEmployee> alarmRecords = new ArrayList<>();
+        List<Iterable<AlarmRecordByEmployee>> alarmRecords = new ArrayList<>();
 		
-        fixedLogics.stream()
-	        .map(f -> f.checkIfEnabled((logic, message) -> logic.check(require, context.getTargetEmployeeId(), message)))
-	        .forEach(alarmRecords::addAll);
-
-		return AtomTask.of(() -> {
-		    require.save(alarmRecords);
-		});
+        alarmRecords.add(checkFixedLogics(require, context.getTargetEmployeeId()));
+        
+        return IteratorUtil.flatten(alarmRecords);
 	}
+	
+    /**
+     * 固定チェック条件
+     */
+    private Iterable<AlarmRecordByEmployee> checkFixedLogics(Require require, String employeeId) {
+        return IteratorUtil.iterableFlatten(
+                fixedLogics,
+                f -> f.checkIfEnabled((logic, message) -> logic.check(require, employeeId, message)));
+    }
 
     public interface RequireCheck extends FixLogicMasterByEmployee.RequireCheck {
 
