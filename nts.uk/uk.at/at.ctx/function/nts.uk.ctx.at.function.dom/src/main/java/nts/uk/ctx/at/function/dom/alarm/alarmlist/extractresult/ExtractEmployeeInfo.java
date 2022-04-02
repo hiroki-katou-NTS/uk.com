@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
+/**
+ * アラームリスト抽出従業員情報
+ */
 @Getter
 @AllArgsConstructor
 public class ExtractEmployeeInfo {

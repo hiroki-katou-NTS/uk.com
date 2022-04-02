@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * アラームリスト抽出データ
+ */
 @Getter
 @RequiredArgsConstructor
 @AllArgsConstructor
