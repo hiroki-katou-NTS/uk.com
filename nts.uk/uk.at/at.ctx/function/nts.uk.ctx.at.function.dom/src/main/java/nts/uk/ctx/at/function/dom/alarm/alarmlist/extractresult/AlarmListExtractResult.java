@@ -35,4 +35,8 @@ public class AlarmListExtractResult {
 	
 	/** アラームリスト抽出従業員エラー */
 	private List<ExtractEmployeeErAlData> empEralData = new ArrayList<>();
+
+	public static AlarmListExtractResult createManual(String companyId, String executeId, String executorEmployeeId) {
+		return new AlarmListExtractResult(executorEmployeeId, companyId, ExtractExecuteType.MANUAL, executeId);
+	}
 }

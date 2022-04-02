@@ -21,7 +21,7 @@ import nts.uk.ctx.alarm.dom.AlarmListPatternCode;
 import nts.uk.ctx.alarm.dom.byemployee.check.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
-import nts.uk.ctx.alarm.dom.byemployee.execute.ExecuteAlarmListByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.execute.ExecutePersistAlarmListByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.pattern.AlarmListPatternByEmployee;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
@@ -47,7 +47,7 @@ public class ExecuteAlarmListByEmployeeRequire {
         return EmbedStopwatch.embed(new RequireImpl(AppContexts.user().companyId()));
     }
 
-    public interface Require extends ExecuteAlarmListByEmployee.Require {
+    public interface Require extends ExecutePersistAlarmListByEmployee.Require {
 
         // テスト用
         List<AlarmRecordByEmployee> getAlarms();
