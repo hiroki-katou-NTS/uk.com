@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.shared.dom.workingcondition.service;
 
+import java.util.List;
 import java.util.Optional;
 
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
@@ -12,16 +12,15 @@ import nts.uk.shr.com.context.AppContexts;
  */
 public class IsExistWeekdayWorkType {
 
-	public static boolean isExistWeekDayWorkType(IsExistWeekDayWorkTypeRequire require,String employeeId, DatePeriod period) {
-		return require.getWorkingCondition(employeeId, period)
+	public static boolean isExistWeekDayWorkType(IsExistWeekDayWorkTypeRequire require,String employeeId) {
+		return require.getWorkingCondition(employeeId)
+				.stream()
 				.map(workingCondition -> workingCondition.getWorkCategory().getWorkType().getWeekdayTimeWTypeCode().v())
-				.map(workTypeCode -> require.get(AppContexts.user().companyId(), workTypeCode))
-				.isPresent();
+				.allMatch(workTypeCode -> require.get(AppContexts.user().companyId(), workTypeCode).isPresent());
 	}
 
 	public interface IsExistWeekDayWorkTypeRequire{
-		//WorkingConditionItemRepository#getBySidAndPeriodOrderByStrD
-		Optional<WorkingConditionItem> getWorkingCondition(String employeeId, DatePeriod period);
+		List<WorkingConditionItem> getWorkingCondition(String employeeId);
 		
 		Optional<WorkType> get(String companyId, String workTypeCode);
 	}
