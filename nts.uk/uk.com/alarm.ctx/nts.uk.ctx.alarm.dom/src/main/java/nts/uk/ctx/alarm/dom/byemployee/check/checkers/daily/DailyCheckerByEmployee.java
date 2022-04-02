@@ -40,7 +40,7 @@ public class DailyCheckerByEmployee implements DomainAggregate, AlarmListChecker
         List<AlarmRecordByEmployee> alarmRecords = new ArrayList<>();
 
         fixedLogics.stream()
-                .map(f -> f.getLogic().check(require, context.getTargetEmployeeId(), period, f.getMessage()))
+                .map(f -> f.checkIfEnabled((logic, message) -> logic.check(require, context.getTargetEmployeeId(), period, message)))
                 .forEach(alarmRecords::addAll);
 
         return AtomTask.of(() -> {
