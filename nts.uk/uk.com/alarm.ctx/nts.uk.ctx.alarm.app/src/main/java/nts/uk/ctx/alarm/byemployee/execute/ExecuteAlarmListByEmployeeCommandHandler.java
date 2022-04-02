@@ -3,8 +3,10 @@ package nts.uk.ctx.alarm.byemployee.execute;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.TransactionService;
 import nts.uk.ctx.alarm.dom.AlarmListPatternCode;
+import nts.uk.ctx.alarm.dom.byemployee.check.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.execute.ExecuteAlarmListByEmployee;
 
 import javax.ejb.Stateless;
@@ -16,7 +18,7 @@ import java.util.List;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class ExecuteAlarmListByEmployeeCommandHandler extends CommandHandler<ExecuteAlarmListByEmployeeCommand> {
+public class ExecuteAlarmListByEmployeeCommandHandler extends CommandHandlerWithResult<ExecuteAlarmListByEmployeeCommand, List<AlarmRecordByEmployee>> {
 
     @Inject
     private TransactionService transaction;
@@ -25,7 +27,7 @@ public class ExecuteAlarmListByEmployeeCommandHandler extends CommandHandler<Exe
     private ExecuteAlarmListByEmployeeRequire requireCreator;
 
     @Override
-    protected void handle(CommandHandlerContext<ExecuteAlarmListByEmployeeCommand> context) {
+    protected List<AlarmRecordByEmployee> handle(CommandHandlerContext<ExecuteAlarmListByEmployeeCommand> context) {
 
         val require = requireCreator.create();
 
@@ -35,6 +37,9 @@ public class ExecuteAlarmListByEmployeeCommandHandler extends CommandHandler<Exe
         val tasks = ExecuteAlarmListByEmployee.execute(require, patternCode, targetEmployeeIds);
 
         transaction.separateForEachTask(tasks);
+
+        // テスト用
+        return require.getAlarms();
     }
 
 
