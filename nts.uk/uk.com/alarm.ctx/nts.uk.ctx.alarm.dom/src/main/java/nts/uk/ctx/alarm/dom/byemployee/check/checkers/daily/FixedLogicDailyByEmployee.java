@@ -39,10 +39,10 @@ public enum FixedLogicDailyByEmployee {
 
     管理者未承認(4, c -> {
         val approvalState = c.require.getApprovalRootStateByPeriod(c.employeeId, c.period);
-        return approvalState.stream()
+        return () -> approvalState.stream()
                 .filter(state -> !state.getDailyConfirmAtr().equals(DailyConfirmAtr.ALREADY_APPROVED))
                 .map(state -> c.alarm(state.getDate()))
-                .collect(Collectors.toList());
+                .iterator();
     }),
 
     ;
