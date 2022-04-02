@@ -1,15 +1,22 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers.daily;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.IteratorUtil;
 import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.alarm.dom.byemployee.check.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -17,10 +24,6 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.DailyConfirmAtr;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * 固定のチェック条件(社員別・日次)
@@ -33,6 +36,14 @@ public enum FixedLogicDailyByEmployee {
 
     就業時間帯未登録(2, c -> checkIntegrationOfDaily(
                 c, iod -> iod.getWorkInformation().getRecordInfo().getWorkTimeCode(), code -> c.require.existsWorkTime(code))),
+    
+    手入力(3, c -> {        
+        return IteratorUtil.iterableFlatten(c.period.datesBetween(), date -> {
+           List<EditStateOfDailyAttd> handCorrects = c.require.getIntegrationOfDaily(c.employeeId, date).map(iod -> iod.getEditState()).orElse(new ArrayList<>())
+                   .stream().filter(editState -> editState.isHandCorrect()).collect(Collectors.toList());
+           return IteratorUtil.iterable(handCorrects, handCorrected -> c.alarm(date, handCorrected.getAttendanceItemId()));
+        });
+    }),
 
     未計算(3, c -> checkIntegrationOfDaily(
             c, iod -> iod.getWorkInformation().getCalculationState(), calcState -> calcState.equals(CalculationState.No_Calculated))),
@@ -64,7 +75,7 @@ public enum FixedLogicDailyByEmployee {
             String employeeId,
             CheckingPeriodDaily checkingPeriod,
             String message) {
-
+    	
         val context = new Context(require, employeeId, checkingPeriod.calculatePeriod(require, employeeId), message);
 
         return logic.apply(context);
@@ -118,6 +129,16 @@ public enum FixedLogicDailyByEmployee {
                     getAlarmCondition(),
                     message);
         }
+        
+        public AlarmRecordByEmployee alarm(GeneralDate date, Integer attendanceItemId) {
+            return new AlarmRecordByEmployee(
+                    employeeId,
+                    date.toString(),
+                    AlarmListCategoryByEmployee.DAILY,
+                    require.getItemName(attendanceItemId),
+                    getAlarmCondition(),
+                    message);
+        }
     }
 
     public interface RequireCheck extends CheckingPeriodDaily.Require{
@@ -129,5 +150,7 @@ public enum FixedLogicDailyByEmployee {
         boolean existsWorkType(WorkTypeCode workTypeCode);
 
         boolean existsWorkTime(WorkTimeCode workTimeCode);
+        
+        String getItemName(Integer attendanceItemId);
     }
 }
