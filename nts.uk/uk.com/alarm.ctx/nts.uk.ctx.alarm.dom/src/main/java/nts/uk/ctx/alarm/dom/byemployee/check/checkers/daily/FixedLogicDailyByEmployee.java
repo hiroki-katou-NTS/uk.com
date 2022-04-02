@@ -29,6 +29,7 @@ public enum FixedLogicDailyByEmployee {
     就業時間帯未登録(2, c -> checkIntegrationOfDaily(
                 c, iod -> iod.getWorkInformation().getRecordInfo().getWorkTimeCode(), code -> c.require.existsWorkTime(code))),
 
+    
     ;
 
     public final int value;
@@ -85,7 +86,7 @@ public enum FixedLogicDailyByEmployee {
                 .map(p -> context.alarm(p.getLeft().getYmd()))
                 .iterator();
     }
-
+    
     @Value
     private class Context {
         RequireCheck require;
@@ -104,7 +105,7 @@ public enum FixedLogicDailyByEmployee {
         }
     }
 
-    public interface RequireCheck extends CheckingPeriodDaily.Require {
+    public interface RequireCheck extends CheckingPeriodDaily.Require{
 
         Optional<IntegrationOfDaily> getIntegrationOfDaily(String employeeId, GeneralDate date);
 

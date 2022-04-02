@@ -32,7 +32,7 @@ public class ExecuteAlarmListByEmployeeCommandHandler extends CommandHandlerWith
         val require = requireCreator.create();
 
         val patternCode = new AlarmListPatternCode("001");
-        List<String> targetEmployeeIds = Arrays.asList("");
+        List<String> targetEmployeeIds = Arrays.asList();
 
         val alarmRecords = ExecuteAlarmListByEmployee.execute(require, patternCode, targetEmployeeIds);
 

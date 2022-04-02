@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
@@ -13,15 +12,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
  */
 public class GetEmployeeDailyPerErrorMessage {
 	
-	public static List<EmployeeDailyPerError> getEmployeeDailyPerError(HasErrorAlarmRequire require, String employeeId, DatePeriod period, List<ErrorAlarmWorkRecordCode> targetErrorAlarmCode) {
-		val strCode = targetErrorAlarmCode.stream().map(code -> code.v()).collect(Collectors.toList());
-		return require.getErrors(employeeId, period,  strCode)
+	public static List<EmployeeDailyPerError> getEmployeeDailyPerError(Require require, String employeeId, DatePeriod period, ErrorAlarmWorkRecordCode targetErrorAlarmCode) {
+		return require.getErrors(employeeId, period,  targetErrorAlarmCode.v())
 				.stream()
 				.collect(Collectors.toList());
 	}
 	
-	public interface HasErrorAlarmRequire{
+	public interface Require{
 		//JpaEmployeeDailyPerErrorRepository#findsByCodeLst が使える
-		List<EmployeeDailyPerError> getErrors(String employeeId, DatePeriod period, List<String> code);
+		List<EmployeeDailyPerError> getErrors(String employeeId, DatePeriod period, String code);
 	}
 }
