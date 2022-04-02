@@ -19,7 +19,7 @@ public enum FixedLogicMonthlyByEmployee {
 
     public final int value;
 
-    private final BiFunction<RequireCheck, CheckingPeriodMonthly, List<AlarmRecordByEmployee>> logic;
+    private final BiFunction<RequireCheck, CheckingPeriodMonthly, Iterable<AlarmRecordByEmployee>> logic;
 
     /**
      * チェックする
@@ -27,7 +27,7 @@ public enum FixedLogicMonthlyByEmployee {
      * @param checkingPeriod
      * @return
      */
-    public List<AlarmRecordByEmployee> check(RequireCheck require, CheckingPeriodMonthly checkingPeriod) {
+    public Iterable<AlarmRecordByEmployee> check(RequireCheck require, CheckingPeriodMonthly checkingPeriod) {
         return logic.apply(require, checkingPeriod);
     }
 

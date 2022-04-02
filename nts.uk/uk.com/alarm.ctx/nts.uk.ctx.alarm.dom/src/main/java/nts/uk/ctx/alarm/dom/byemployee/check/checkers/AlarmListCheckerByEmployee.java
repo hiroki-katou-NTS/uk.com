@@ -14,16 +14,12 @@ import java.util.List;
  */
 public interface AlarmListCheckerByEmployee {
 
-    AtomTask check(Require require, CheckingContextByEmployee context);
+    Iterable<AlarmRecordByEmployee> check(Require require, CheckingContextByEmployee context);
 
     interface Require extends
             // 全CheckerのRequireCheckを追加する
             ScheduleMonthlyCheckerByEmployee.RequireCheck,
             DailyCheckerByEmployee.RequireCheck,
             MonthlyCheckerByEmployee.RequireCheck {
-
-        void save(AlarmRecordByEmployee alarmRecord);
-
-        void save(List<AlarmRecordByEmployee> alarmRecords);
     }
 }

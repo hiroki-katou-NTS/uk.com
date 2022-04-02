@@ -14,10 +14,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * 固定のチェック条件(社員別・日次)
@@ -35,7 +33,7 @@ public enum FixedLogicDailyByEmployee {
 
     public final int value;
 
-    private final Function<Context, List<AlarmRecordByEmployee>> logic;
+    private final Function<Context, Iterable<AlarmRecordByEmployee>> logic;
 
     /**
      * チェックする
@@ -45,7 +43,7 @@ public enum FixedLogicDailyByEmployee {
      * @param message
      * @return
      */
-    public List<AlarmRecordByEmployee> check(
+    public Iterable<AlarmRecordByEmployee> check(
             FixedLogicDailyByEmployee.RequireCheck require,
             String employeeId,
             CheckingPeriodDaily checkingPeriod,
@@ -74,18 +72,18 @@ public enum FixedLogicDailyByEmployee {
      * @param check
      * @return
      */
-    private static <T> List<AlarmRecordByEmployee> checkIntegrationOfDaily(
+    private static <T> Iterable<AlarmRecordByEmployee> checkIntegrationOfDaily(
             Context context,
             Function<IntegrationOfDaily, T> fetch,
             Function<T, Boolean> check) {
 
-        return context.period.stream()
+        return () -> context.period.stream()
                 .map(date ->  context.require.getIntegrationOfDaily(context.employeeId, date))
                 .flatMap(OptionalUtil::stream)
                 .map(iod -> Pair.of(iod, check.apply(fetch.apply(iod))))
                 .filter(p -> !p.getRight())
                 .map(p -> context.alarm(p.getLeft().getYmd()))
-                .collect(Collectors.toList());
+                .iterator();
     }
 
     @Value

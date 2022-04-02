@@ -23,7 +23,7 @@ public class FixedLogicSetting<L> {
     /** メッセージ */
     String message;
 
-    public List<AlarmRecordByEmployee> checkIfEnabled(BiFunction<L, String, List<AlarmRecordByEmployee>> checker) {
+    public Iterable<AlarmRecordByEmployee> checkIfEnabled(BiFunction<L, String, Iterable<AlarmRecordByEmployee>> checker) {
         if (enabled) {
             return checker.apply(logic, message);
         }

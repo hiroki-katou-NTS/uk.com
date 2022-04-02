@@ -1,11 +1,11 @@
 package nts.uk.ctx.alarm.dom.byemployee.execute;
 
 import lombok.val;
-import nts.arc.task.tran.AtomTask;
+import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.AlarmListPatternCode;
+import nts.uk.ctx.alarm.dom.byemployee.check.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.pattern.AlarmListPatternByEmployee;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +21,7 @@ public class ExecuteAlarmListByEmployee {
      * @param targetEmployeeIds
      * @return
      */
-    public static Iterable<AtomTask> execute(
+    public static Iterable<AlarmRecordByEmployee> execute(
             Require require,
             AlarmListPatternCode patternCode,
             List<String> targetEmployeeIds) {
@@ -29,14 +29,7 @@ public class ExecuteAlarmListByEmployee {
         val pattern = require.getAlarmListPatternByEmployee(patternCode)
                 .orElseThrow(() -> new RuntimeException("not found: " + patternCode));
 
-        return AtomTask.iterate(targetEmployeeIds, employeeId -> {
-
-            // TODO: 本当はbundleするんじゃなくてflatすべきだと思う
-            List<AtomTask> tasks = new ArrayList<>();
-            pattern.check(require, employeeId).forEach(tasks::add);
-
-            return AtomTask.bundle(tasks);
-        });
+        return IteratorUtil.iterableFlatten(targetEmployeeIds, employeeId -> pattern.check(require, employeeId));
     }
 
 
