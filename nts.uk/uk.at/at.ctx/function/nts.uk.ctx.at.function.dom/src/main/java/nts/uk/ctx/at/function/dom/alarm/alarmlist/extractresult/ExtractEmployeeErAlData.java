@@ -6,6 +6,9 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * アラームリスト抽出従業員エラー
+ */
 @Getter
 @AllArgsConstructor
 public class ExtractEmployeeErAlData {
