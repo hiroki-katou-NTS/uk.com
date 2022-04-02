@@ -10,6 +10,7 @@ import nts.uk.ctx.alarm.dom.byemployee.check.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import org.apache.commons.lang3.tuple.Pair;
@@ -28,6 +29,9 @@ public enum FixedLogicDailyByEmployee {
 
     就業時間帯未登録(2, c -> checkIntegrationOfDaily(
                 c, iod -> iod.getWorkInformation().getRecordInfo().getWorkTimeCode(), code -> c.require.existsWorkTime(code))),
+
+    未計算(3, c -> checkIntegrationOfDaily(
+            c, iod -> iod.getWorkInformation().getCalculationState(), calcState -> calcState.equals(CalculationState.No_Calculated))),
 
     
     ;
