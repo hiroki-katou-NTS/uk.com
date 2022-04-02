@@ -8,4 +8,6 @@ public enum AlarmListCategoryByEmployee {
     SCHEDULE_MONTHLY,
 
     DAILY,
+    
+    MASTER,
 }

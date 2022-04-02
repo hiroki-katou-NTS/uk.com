@@ -1,5 +1,12 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers.daily;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.val;
@@ -12,12 +19,6 @@ import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * 固定のチェック条件(社員別・日次)
@@ -31,6 +32,7 @@ public enum FixedLogicDailyByEmployee {
     就業時間帯未登録(2, c -> checkIntegrationOfDaily(
                 c, iod -> iod.getWorkInformation().getRecordInfo().getWorkTimeCode(), code -> c.require.existsWorkTime(code))),
 
+    
     ;
 
     public final int value;
@@ -87,7 +89,7 @@ public enum FixedLogicDailyByEmployee {
                 .map(p -> context.alarm(p.getLeft().getYmd()))
                 .collect(Collectors.toList());
     }
-
+    
     @Value
     private class Context {
         RequireCheck require;
@@ -106,7 +108,7 @@ public enum FixedLogicDailyByEmployee {
         }
     }
 
-    public interface RequireCheck extends CheckingPeriodDaily.Require {
+    public interface RequireCheck extends CheckingPeriodDaily.Require{
 
         Optional<IntegrationOfDaily> getIntegrationOfDaily(String employeeId, GeneralDate date);
 

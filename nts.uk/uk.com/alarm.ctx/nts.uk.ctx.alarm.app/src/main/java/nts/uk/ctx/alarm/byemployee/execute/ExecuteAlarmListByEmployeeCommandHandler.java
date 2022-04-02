@@ -30,7 +30,7 @@ public class ExecuteAlarmListByEmployeeCommandHandler extends CommandHandler<Exe
         val require = requireCreator.create();
 
         val patternCode = new AlarmListPatternCode("001");
-        List<String> targetEmployeeIds = Arrays.asList("");
+        List<String> targetEmployeeIds = Arrays.asList("337b60d4-984f-4090-87f5-b752710b31d6");
 
         val tasks = ExecuteAlarmListByEmployee.execute(require, patternCode, targetEmployeeIds);
 

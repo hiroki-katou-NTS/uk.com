@@ -1,27 +1,36 @@
 package nts.uk.ctx.at.shared.dom.workingcondition.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 労働条件-平日時の勤務種類が登録されている 
  */
 public class IsExistWeekdayWorkType {
 
-	public static boolean isExistWeekDayWorkType(IsExistWeekDayWorkTypeRequire require,String employeeId) {
-		return require.getWorkingCondition(employeeId)
+	public static Map<DatePeriod, String> GetNotExistWeekDayWorkType(Require require,String employeeId) {
+		//マスタチェックは対象社員の全期間に対するチェックなので、期間はmin-max
+		DatePeriod period = new DatePeriod(GeneralDate.min(), GeneralDate.max());
+		return require.getWorkingConditions(employeeId, period)
 				.stream()
-				.map(workingCondition -> workingCondition.getWorkCategory().getWorkType().getWeekdayTimeWTypeCode().v())
-				.allMatch(workTypeCode -> require.get(AppContexts.user().companyId(), workTypeCode).isPresent());
+				.filter(wcWithItem -> !require.get(wcWithItem.getWorkingConditionItem().getWorkCategory().getWorkType().getWeekdayTimeWTypeCode().v()).isPresent())
+				
+				.collect(Collectors.toMap(wcWithItemPeriod -> (DatePeriod)wcWithItemPeriod.getDatePeriod(), 
+														 wcWithItemPeriod -> (String)wcWithItemPeriod.getWorkingConditionItem().getWorkCategory().getWorkType().getWeekdayTimeWTypeCode().v()))
+				;
 	}
 
-	public interface IsExistWeekDayWorkTypeRequire{
-		List<WorkingConditionItem> getWorkingCondition(String employeeId);
+	public interface Require{
+//		JpaWorkingConditionRepository#getWorkingConditionItemWithPeriod
+		List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, DatePeriod period);
 		
-		Optional<WorkType> get(String companyId, String workTypeCode);
+		Optional<WorkType> get(String workTypeCode);
 	}
 }
