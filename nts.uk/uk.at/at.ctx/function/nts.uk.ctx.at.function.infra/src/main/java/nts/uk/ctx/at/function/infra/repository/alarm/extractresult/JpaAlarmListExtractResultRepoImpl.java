@@ -94,11 +94,10 @@ public class JpaAlarmListExtractResultRepoImpl extends JpaRepository implements 
 	@Override
 	public void insert(List<AlarmListExtractResult> result) {
 		if(result.isEmpty()){
-			
+			return;
 		}
-		List<String> executeIds = findExecuteIds(result.get(0).getCid(), result.get(0).getExecuteEmpId(), result.get(0).getExecuteType());
-		
-		removeBeforeData(executeIds);
+
+		removeBeforeData(result.get(0));
 
 		List<Object> entities = new ArrayList<>();
 		result.stream().forEach(r -> {
@@ -117,9 +116,19 @@ public class JpaAlarmListExtractResultRepoImpl extends JpaRepository implements 
 		
 		this.commandProxy().insertAll(entities);
 	}
-	
+
+	private void removeBeforeData(AlarmListExtractResult result) {
+
+		List<String> removeExecuteIds = findExecuteIds(result.getCid(), result.getExecuteEmpId(), result.getExecuteType())
+				.stream()
+				.filter(id -> !id.equals(result.getExecuteId()))
+				.collect(Collectors.toList());
+
+		removeById(removeExecuteIds);
+	}
+
 	@SneakyThrows
-	private void removeBeforeData(List<String> executeIds) {
+	private void removeById(List<String> executeIds) {
 		if(executeIds.isEmpty()){
 			return;
 		}
