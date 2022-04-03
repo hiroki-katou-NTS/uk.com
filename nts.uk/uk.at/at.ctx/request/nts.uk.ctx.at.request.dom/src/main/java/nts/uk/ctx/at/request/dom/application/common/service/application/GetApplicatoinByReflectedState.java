@@ -1,9 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.common.service.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 
@@ -12,12 +11,11 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState;
  */
 public class GetApplicatoinByReflectedState {
 	
-	public List<Application> get(Require require, String employeeId, List<ReflectedState> states){
-		val parseIntStates = states.stream().map(state -> state.value).collect(Collectors.toList());
-		return require.getApplicationBy(employeeId, parseIntStates);
+	public List<Application> get(Require require, String employeeId, GeneralDate targetDate, ReflectedState states){
+		return require.getApplicationBy(employeeId, targetDate, states);
 	}
 	
 	public interface Require{
-		List<Application> getApplicationBy(String employeeId, List<Integer> states);
+		List<Application> getApplicationBy(String employeeId, GeneralDate targetDate, ReflectedState states);
 	}
 }
