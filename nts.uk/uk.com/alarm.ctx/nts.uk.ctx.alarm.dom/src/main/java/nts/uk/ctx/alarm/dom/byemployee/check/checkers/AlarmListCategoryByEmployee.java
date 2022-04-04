@@ -10,4 +10,6 @@ public enum AlarmListCategoryByEmployee {
     DAILY,
     
     MASTER,
+    
+    APPLICATION_APPROVAL,
 }

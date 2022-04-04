@@ -37,15 +37,12 @@ public class AppApprovalCheckerByEmployee implements DomainAggregate, AlarmListC
 
     /**
      * 固定チェック条件
-     * @param require
-     * @param employeeId
-     * @param period
      * @return
      */
     private Iterable<AlarmRecordByEmployee> checkFixedLogics(Require require, String employeeId, CheckingPeriodDaily period) {
         return IteratorUtil.iterableFlatten(
                 fixedLogics,
-                f -> f.checkIfEnabled((logic, message) -> logic.check(require, employeeId, period, message)));
+                f -> f.checkIfEnabled((logic, message) -> logic.check(require, employeeId, message)));
     }
 
     public interface RequireCheck extends FixedLogicAppApprovalByEmployee.RequireCheck {
