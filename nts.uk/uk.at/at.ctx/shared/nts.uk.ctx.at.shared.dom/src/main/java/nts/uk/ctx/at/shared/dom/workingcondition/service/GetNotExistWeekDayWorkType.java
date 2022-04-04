@@ -13,24 +13,22 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 /**
  * 労働条件-平日時の勤務種類が登録されている 
  */
-public class IsExistWeekdayWorkType {
+public class GetNotExistWeekDayWorkType {
 
-	public static Map<DatePeriod, String> GetNotExistWeekDayWorkType(Require require,String employeeId) {
+	public static Map<DatePeriod, String> get(Require require,String employeeId) {
 		//マスタチェックは対象社員の全期間に対するチェックなので、期間はmin-max
 		DatePeriod period = new DatePeriod(GeneralDate.min(), GeneralDate.max());
 		return require.getWorkingConditions(employeeId, period)
 				.stream()
-				.filter(wcWithItem -> !require.get(wcWithItem.getWorkingConditionItem().getWorkCategory().getWorkType().getWeekdayTimeWTypeCode().v()).isPresent())
-				
+				.filter(wcWithItem -> !require.getWorkType(wcWithItem.getWorkingConditionItem().getWorkCategory().getWorkType().getWeekdayTimeWTypeCode().v()).isPresent())
 				.collect(Collectors.toMap(wcWithItemPeriod -> (DatePeriod)wcWithItemPeriod.getDatePeriod(), 
 														 wcWithItemPeriod -> (String)wcWithItemPeriod.getWorkingConditionItem().getWorkCategory().getWorkType().getWeekdayTimeWTypeCode().v()))
 				;
 	}
 
 	public interface Require{
-//		JpaWorkingConditionRepository#getWorkingConditionItemWithPeriod
 		List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, DatePeriod period);
 		
-		Optional<WorkType> get(String workTypeCode);
+		Optional<WorkType> getWorkType(String workTypeCode);
 	}
 }
