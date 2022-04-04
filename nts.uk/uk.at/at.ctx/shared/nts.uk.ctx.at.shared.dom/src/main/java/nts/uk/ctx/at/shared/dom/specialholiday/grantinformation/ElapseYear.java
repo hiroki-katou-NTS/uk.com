@@ -138,7 +138,7 @@ public class ElapseYear extends AggregateRoot {
 				.sorted(Comparator.comparing(ElapseYearMonthTbl::getGrantCnt).reversed())
 				.findFirst().get();		
 		
-		if(lastTbl.getGrantCnt() < elapseNo && this.getGrantCycleAfterTbl().isPresent()){
+		if(lastTbl.getGrantCnt() < elapseNo && isFixedAssign() && this.getGrantCycleAfterTbl().isPresent()){
 			tblList.addAll(this.getGrantCycleAfterTbl().get().getElapseYearMonthTbltheGrantCnt(lastTbl, elapseNo));
 		}
 		
