@@ -9,7 +9,7 @@ module nts.uk.at.view.kaf000.b.component4.viewmodel {
 						<div class="cell valign-center" data-bind="ntsFormLabel:{}, text: $i18n('KAF000_44')"></div>
 					</div>
 					<div class="valign-center">
-						<div style="max-width: calc(100% - 26px)">
+						<div style="max-width: calc(100% - 26px);min-width: 150px;">
 							<div class='applicant limited-label' data-bind="text: applicant"></div>
 							<div data-bind="if: inputPerson">
 								<div class='inputPerson limited-label' data-bind="text: inputPerson"></div>

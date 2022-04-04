@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +31,7 @@ public class SupportWorkDataImportHelper {
                         GeneralDate.today(),
                         Arrays.asList(new OuenWorkTimeSheetOfDailyAttendance(
                                 new SupportFrameNo(1),
+                                SupportType.TIMEZONE,
                                 WorkContent.create(
                                         WorkplaceOfWorkEachOuen.create(
                                                 new WorkplaceId(workplaceId1),
@@ -51,7 +53,10 @@ public class SupportWorkDataImportHelper {
                                 workplaceId2, // workplaceId
                                 null, // classificationCode
                                 Optional.empty(), // businessTypeCode
-                                Optional.empty() //bonusPaySettingCode
+                                Optional.empty(), //bonusPaySettingCode
+                                Optional.empty(), //workplaceGroupId
+                                Optional.empty(), //nursingLicenseClass
+                                Optional.empty() //isNursingManager
                         )
                 ))
         );

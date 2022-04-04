@@ -4206,12 +4206,6 @@ public class ProgramsManager {
     public static final Program SMM001B = new Program(WebAppId.COM, ProgramIdConsts.SMM001B, "SMM001_1",
             "/view/smm/001/b/index.xhtml");
     
-    /** KHA001 */
-    public static final Program KHA001A = new Program(WebAppId.AT
-            , ProgramIdConsts.KHA001A
-            , "KHA001_50"
-            , "/view/kha/001/a/index.xhtml");
-
     /**
      * All programs map.
      */

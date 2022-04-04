@@ -30,6 +30,8 @@ module nts.uk.com.view.cmf001.f.viewmodel {
     allDomains: KnockoutObservableArray<DomainIdEnum> = ko.observableArray(__viewContext.enums.ImportingDomainId);
     selectedIdInAllDomains: KnockoutObservable<DomainId> = ko.observable();
 
+    isSelectedInAllDomains: KnockoutComputed<boolean>;
+
     /** 受入の対象に設定されたドメイン一覧 */
     targetDomains: KnockoutComputed<ImportableDomain[]>;
 
@@ -62,6 +64,11 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 
 			this.settingCode = params.settingCode;
       this.defaultDomainId = params.domainId;
+
+      this.isSelectedInAllDomains = ko.computed(() => {
+        let id = this.selectedIdInAllDomains();
+        return id !== undefined && id !== null;
+      });
 
       this.targetDomains = ko.computed(() => {
         let domains = this.layouts().map(l => new ImportableDomain(l.domainId));

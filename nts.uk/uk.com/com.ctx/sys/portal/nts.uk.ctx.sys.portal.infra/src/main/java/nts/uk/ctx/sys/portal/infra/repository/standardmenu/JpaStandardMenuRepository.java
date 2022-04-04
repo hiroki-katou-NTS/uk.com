@@ -316,7 +316,7 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 
 	@Override
 	public void insertStandardMenu(StandardMenu standardMenu) {
-		this.commandProxy().insert(insertToEntity(standardMenu));
+		this.commandProxy().insert(toEntity(standardMenu));
 	}
 
 	@Override

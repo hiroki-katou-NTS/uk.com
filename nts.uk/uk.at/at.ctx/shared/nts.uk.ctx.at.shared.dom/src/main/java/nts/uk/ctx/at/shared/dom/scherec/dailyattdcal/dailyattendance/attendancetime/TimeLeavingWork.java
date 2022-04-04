@@ -241,8 +241,7 @@ public class TimeLeavingWork extends DomainObject{
 	
 	public boolean existsTimeWithDay() {
 		// 出勤・退勤のどちらか存在すれば、true
-		if (this.checkStampLeakState() == TLWStampLeakState.NOT_EXIST) return true;
-		return false;
+		return this.checkStampLeakState() != TLWStampLeakState.NOT_EXIST;
 	}
 	
 	//NOとデフォルトを作成する

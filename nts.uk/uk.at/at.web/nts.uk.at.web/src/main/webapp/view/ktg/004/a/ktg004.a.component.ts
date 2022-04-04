@@ -271,7 +271,8 @@ module nts.uk.ui.ktg004.a {
               detailedWorkStatusSettings,
               itemsSetting,
               attendanceInfor,
-              remainingNumberInfor
+              remainingNumberInfor, 
+              vacationSetting
           } = data;
           const {
               dailyErrors,
@@ -416,30 +417,34 @@ module nts.uk.ui.ktg004.a {
                               })
                           break;
                       case 31:
-                          itemsDisplay
-                              .push({
-                                  name: 'KTG004_13',
-                                  item: item,
-                                  text: 
-              nursingRemainingNumberOfChildren.time == ZERO_TIME
-              ?
-              vm.$i18n('KTG004_15', [`${nursingRemainingNumberOfChildren.day}`])
-              :
-              vm.$i18n('KTG004_28', [`${nursingRemainingNumberOfChildren.day}`, `${nursingRemainingNumberOfChildren.time}`])
-                              })
+                        if (vacationSetting.childCaremanage) {
+                            itemsDisplay
+                                .push({
+                                    name: 'KTG004_13',
+                                    item: item,
+                                    text: 
+                              nursingRemainingNumberOfChildren.time == ZERO_TIME
+                              ?
+                              vm.$i18n('KTG004_15', [`${nursingRemainingNumberOfChildren.day}`])
+                              :
+                              vm.$i18n('KTG004_28', [`${nursingRemainingNumberOfChildren.day}`, `${nursingRemainingNumberOfChildren.time}`])
+                                              })
+                        }
                           break;
                       case 32:
-                          itemsDisplay
-                              .push({
-                                  name: 'KTG004_14',
-                                  item: item,
-                                  text:
-              longTermCareRemainingNumber.time == ZERO_TIME
-              ? 
-              vm.$i18n('KTG004_15', [`${longTermCareRemainingNumber.day}`])
-              :
-              vm.$i18n('KTG004_28', [`${longTermCareRemainingNumber.day}`, `${longTermCareRemainingNumber.time}`])
-                              })
+                        if (vacationSetting.nursingManage) {
+                            itemsDisplay
+                                .push({
+                                    name: 'KTG004_14',
+                                    item: item,
+                                    text:
+                              longTermCareRemainingNumber.time == ZERO_TIME
+                              ? 
+                              vm.$i18n('KTG004_15', [`${longTermCareRemainingNumber.day}`])
+                              :
+                              vm.$i18n('KTG004_28', [`${longTermCareRemainingNumber.day}`, `${longTermCareRemainingNumber.time}`])
+                                              })
+                        }
                           break;
                   }
               })

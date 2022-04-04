@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.*;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +38,11 @@ public class SupportWorkDataOfDayTest {
                         "workplace-id-0001",
                         "0001",
                         Arrays.asList(1, 2, 3),
-                        new OuenWorkTimeSheetOfDailyAttendance(new SupportFrameNo(1), null, null,
+                        new OuenWorkTimeSheetOfDailyAttendance(
+                        		new SupportFrameNo(1), 
+                        		SupportType.TIMEZONE,
+                        		null, 
+                        		null,
                                 Optional.empty()),
                         OuenWorkTimeOfDailyAttendance.create(
                                 SupportFrameNo.of(1),
@@ -63,7 +68,11 @@ public class SupportWorkDataOfDayTest {
                         "workplace-id-0001",
                         "0001",
                         Arrays.asList(1, 2, 3),
-                        new OuenWorkTimeSheetOfDailyAttendance(new SupportFrameNo(1), null, null,
+                        new OuenWorkTimeSheetOfDailyAttendance(
+                        		new SupportFrameNo(1), 
+                        		SupportType.TIMEZONE,
+                        		null, 
+                        		null,
                                 Optional.empty()),
                         OuenWorkTimeOfDailyAttendance.create(
                                 SupportFrameNo.of(1),
@@ -89,7 +98,11 @@ public class SupportWorkDataOfDayTest {
                         "workplace-id-0001",
                         "0001",
                         Arrays.asList(1, 2, 3),
-                        new OuenWorkTimeSheetOfDailyAttendance(new SupportFrameNo(1), null, null,
+                        new OuenWorkTimeSheetOfDailyAttendance(
+                        		new SupportFrameNo(1), 
+                        		SupportType.TIMEZONE,
+                        		null,
+                        		null,
                                 Optional.empty()),
                         OuenWorkTimeOfDailyAttendance.create(
                                 SupportFrameNo.of(1),

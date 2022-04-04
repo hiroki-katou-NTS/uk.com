@@ -67,16 +67,19 @@ namespace WSISmile.Business.Link.Linker
                     }
                 }
 
-                object errorId = jobject.GetValue("msgErrorId").ToObject<object>();
-                if (errorId == null)
+                if (jobject["msgErrorId"] != null)
                 {
-                    // msgErrorId = nullÇÃèÍçáÇ…ÅAsuccessÇ∆å©Ç»Ç∑
-                    return true;
-                }
-                else
-                {
-                    errorMsg = failMessage + Environment.NewLine;
-                    errorMsg += errorId.ToString();
+                    object errorId = jobject.GetValue("msgErrorId").ToObject<object>();
+                    if (errorId == null)
+                    {
+                        // msgErrorId = nullÇÃèÍçáÇ…ÅAsuccessÇ∆å©Ç»Ç∑
+                        return true;
+                    }
+                    else
+                    {
+                        errorMsg = failMessage + Environment.NewLine;
+                        errorMsg += errorId.ToString();
+                    }
                 }
             }
 

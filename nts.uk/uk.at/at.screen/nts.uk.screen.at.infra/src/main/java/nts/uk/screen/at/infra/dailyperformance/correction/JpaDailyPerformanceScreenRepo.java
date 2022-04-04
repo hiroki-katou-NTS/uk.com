@@ -1284,7 +1284,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		try (PreparedStatement statement = this.connection().prepareStatement(SEL_ALL_WORKPLACE_JDBC)) {
 			statement.setString(1, companyId);
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> {
-				return new CodeName(rs.getString("WKP_CD"), rs.getString("WKP_NAME"), rs.getString("WKP_ID"));
+				return new CodeName(rs.getString("WKP_CD").trim(), rs.getString("WKP_NAME").trim(), rs.getString("WKP_ID").trim());
 			});
 
 		} catch (SQLException e) {

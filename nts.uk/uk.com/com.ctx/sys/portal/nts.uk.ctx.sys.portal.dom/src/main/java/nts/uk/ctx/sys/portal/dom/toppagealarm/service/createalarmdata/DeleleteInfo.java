@@ -30,4 +30,9 @@ public class DeleleteInfo {
 	 * パターンコード
 	 */
 	private Optional<String> alarmListParttenCode;
+
+	/**
+	 * 部下のエラーがない社員IDList：社員ID（List）
+	 */
+	private List<String> subEmpNoErrs;
 }

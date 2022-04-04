@@ -87,10 +87,13 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		condition30: KnockoutObservable<boolean> = ko.observable(true);
 		condition12: KnockoutObservable<boolean> = ko.observable(true);
 		condition19Over60: KnockoutObservable<boolean> = ko.observable(true);
+		condition19_1Over60: KnockoutObservable<boolean> = ko.observable(true);
 		condition19Substitute: KnockoutObservable<boolean> = ko.observable(true);
 		condition19Annual: KnockoutObservable<boolean> = ko.observable(true);
 		condition19ChildNursing: KnockoutObservable<boolean> = ko.observable(true);
+		condition19_1ChildNursing: KnockoutObservable<boolean> = ko.observable(true);
 		condition19Nursing: KnockoutObservable<boolean> = ko.observable(true);
+		condition19_1Nursing: KnockoutObservable<boolean> = ko.observable(true);
 		condition14: KnockoutObservable<boolean> = ko.observable(true);
 		condition15: KnockoutObservable<boolean> = ko.observable(true);
 		condition21: KnockoutObservable<boolean> = ko.observable(true);
@@ -1472,19 +1475,38 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						vm.annualTime(null);
 					}
 				if (vm.data.vacationApplicationReflect.timeLeaveReflect.childNursing === 1 
-					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.childNursingManagement === 1) {
+					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.childNursingManagement === 1
+					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.timeChildNursingManagement === 1) {
 						vm.condition19ChildNursing(true);
 					} else {
 						vm.condition19ChildNursing(false);
 						vm.childNursing(null);
 					}
 				if (vm.data.vacationApplicationReflect.timeLeaveReflect.nursing === 1 
-					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.longTermCareManagement === 1) {
+					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.longTermCareManagement === 1
+					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.timeCareManagement === 1) {
 						vm.condition19Nursing(true);
 					} else {
 						vm.condition19Nursing(false);
 						vm.nursing(null);
 					}
+
+				// condition 19-1
+                if (vm.data.remainVacationInfo.nursingCareLeaveManagement.childNursingManagement === 1) {
+                    vm.condition19_1ChildNursing(true);
+                } else {
+                    vm.condition19_1ChildNursing(false);
+                }
+                if (vm.data.remainVacationInfo.nursingCareLeaveManagement.longTermCareManagement === 1) {
+                    vm.condition19_1Nursing(true);
+                } else {
+                    vm.condition19_1Nursing(false);
+                }
+                if (vm.data.remainVacationInfo.overtime60hManagement.overrest60HManagement === 1) {
+                    vm.condition19_1Over60(true);
+                } else {
+                    vm.condition19_1Over60(false);
+                }
 			}
 		}
 

@@ -43,6 +43,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.person.EmployeeInfoFunAdapterDto;
 import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyAttendanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.query.tasksupinforitemsetting.TaskSupInfoChoiceDetailsQuery;
 import nts.uk.ctx.at.record.app.query.tasksupinforitemsetting.TaskSupInfoItemAndSelectInforQueryDto;
 import nts.uk.ctx.at.record.dom.adapter.employment.EmploymentHisOfEmployeeImport;
@@ -268,6 +269,9 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	@Inject
 	private CompanyDailyItemService companyDailyItemService;
+
+	@Inject
+	private DailyRecordWorkFinder fullFinder;
 	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
@@ -489,6 +493,22 @@ public class DailyPerformanceCorrectionProcessor {
 				dateRange, mode, lstConfirmStatusActualResultKDW003Dto,
 				lstApprovalStatusActualResultKDW003Dto));
 		return screenDto;
+	}
+	
+	//get domainOlds
+	public List<DailyRecordDto> getDailyRecordOldDto(List<String> sids, DateRange dateRange, Set<Pair<String, GeneralDate>> setErrorEmpDate) {
+		List<DailyRecordDto> dtoOlds = new ArrayList<>();
+		if(!setErrorEmpDate.isEmpty()) {
+			Map<String, List<GeneralDate>> param = setErrorEmpDate.stream()
+					.collect(Collectors.groupingBy(x -> x.getKey(), Collectors.collectingAndThen(Collectors.toList(),
+							list -> list.stream().map(y -> y.getRight()).distinct().collect(Collectors.toList()))));
+			dtoOlds = this.fullFinder.find(param);
+			dtoOlds = dtoOlds.stream().filter(x -> setErrorEmpDate.contains(Pair.of(x.getEmployeeId(), x.getDate()))).collect(Collectors.toList());
+		}else {
+			dtoOlds = this.fullFinder.find(sids, dateRange.convertToPeriod() );
+		}
+		return dtoOlds;
+		
 	}
 
 	public void mapDataIntoGrid(DailyPerformanceCorrectionDto screenDto, String sId, Map<String, String> appMapDateSid, List<String> listEmployeeId, 
@@ -1852,6 +1872,7 @@ public class DailyPerformanceCorrectionProcessor {
 			
 			if(!employeeIds.isEmpty()) {
 				result.setLstEmpId(employeeIds);
+				result.getParam().getEmployeeIds().addAll(employeeIds);
 				return result;
 			}
 			//社員参照範囲を取得する

@@ -112,9 +112,12 @@ public class DPMonthFlexProcessor {
 		// フォーマット．月次の勤怠項目一覧が存在するかチェックする
 		List<Integer> itemIdsOld = getItemIds(companyId, formatDaily);
 		
-		//EA 4248
-		//会社の月次項目を取得する
-		List<AttItemName> listAttItemName = companyMonthlyItemService.getMonthlyItems(companyId, Optional.empty(), itemIdsOld, new ArrayList<>());
+		List<AttItemName> listAttItemName = new ArrayList<>();
+		if(!itemIdsOld.isEmpty()) {
+			//EA 4248
+			//会社の月次項目を取得する
+			listAttItemName = companyMonthlyItemService.getMonthlyItems(companyId, Optional.empty(), itemIdsOld, new ArrayList<>());
+		}
 		List<Integer> itemIds = listAttItemName.stream().map(c->c.getAttendanceItemId()).collect(Collectors.toList());
 		
 		// ドメインモデル「月の本人確認」を取得する

@@ -40,6 +40,7 @@ namespace KinErp.WSISmile
         #region Webメソッド
 
         #region 共通処理
+
         #region 初期化処理 : StartUp
         /// <summary>
         /// 初期化処理 : StartUp
@@ -263,6 +264,63 @@ namespace KinErp.WSISmile
             }
         }
         #endregion メッセージの取得 : GetErrMsg
+
+        #region プロセス強制終了
+        /// <summary>
+        /// マスタ連携処理強制終了
+        /// </summary>
+        /// <returns>True：エラーなし / False：エラー発生</returns>
+        [WebMethod(Description = "Webサービスから実行されている全ての受入処理を中断します。")]
+        public bool KillAcceptProcess()
+        {
+            string errMsg = "";
+
+            TaskInfo TI = TaskInfo.Load(GetContractCode(), GetServerPath());
+            if (TI != null)
+            {
+                TI.ErrorMsgList = new List<string>();
+
+                // タスク情報クリア
+                TI.Clear(ref errMsg);
+                if (errMsg != "")
+                {
+                    TI.ErrorMsgList.Add("マスタ連携の終了処理に失敗しました。" + Environment.NewLine + errMsg);
+                    TI.Save();
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 変動項目取込処理強制終了
+        /// </summary>
+        /// <returns>True：エラーなし / False：エラー発生</returns>
+        [WebMethod(Description = "Webサービスから実行されている全ての出力処理を中断します。")]
+        public bool KillOutputProcess()
+        {
+            string errMsg = "";
+
+            TaskInfo TI = TaskInfo.Load(GetContractCode(), GetServerPath());
+            if (TI != null)
+            {
+                TI.ErrorMsgList = new List<string>();
+
+                // タスク情報クリア
+                TI.Clear(ref errMsg);
+                if (errMsg != "")
+                {
+                    TI.ErrorMsgList.Add("変動項目取込の終了処理に失敗しました。" + Environment.NewLine + errMsg);
+                    TI.Save();
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        #endregion プロセス強制終了
+
         #endregion 共通処理
 
         #region 個人情報連携 : SetParsonalInfo
@@ -349,12 +407,18 @@ namespace KinErp.WSISmile
                     return false;
                 }
 
+                if (TI.Accept.RowCounter == 0)
+                {
+                    // 総件数クリア
+                    TI.Accept.TotalCount = 0;
+                }
+
                 TI.Accept.RowCounter = ds.Tables[0].Rows.Count;
                 // 総件数
                 TI.Accept.TotalCount += TI.Accept.RowCounter;
 
                 // 総件数チェック： 全てのデータ(intMaxCnt件)を受け取るまで、ここから先の処理にはいかない。
-                if (TI.Accept.RowCounter < intMaxCnt)
+                if (TI.Accept.TotalCount < intMaxCnt)
                 {
                     // 次のデータ受取へ
                     TI.Save();
@@ -382,12 +446,10 @@ namespace KinErp.WSISmile
         /// <summary>
         /// 職場情報連携データの受入 : SetOrganizeInfo
         /// </summary>
-        /// <param name="pData">職場情報データセット</param>
-        /// <param name="intMaxCnt">今回連携する最大件数</param>
+        /// <param name="ds">職場情報データセット</param>
+        /// <param name="intCnt">受入成功データ件数</param>
         /// <returns>True:正常終了 | False:異常終了</returns>
-        /// <remarks>Smile側で設定した組織情報を勤次郎の職場情報として保持する。
-        /// 戻り値をBool型に変更・メッセージを内部変数で持つように変更
-        /// </remarks>
+        /// <remarks>Smile側で設定した組織情報を勤次郎の職場情報として保持する</remarks>
         [WebMethod(Description = "Smile側で設定した組織情報を勤次郎の職場情報として保持する。")]
         public bool SetOrganizeInfo(DataSet ds, ref int intCnt)
         {
@@ -500,6 +562,7 @@ namespace KinErp.WSISmile
             TI.ErrorMsgList.Add("*** 住所情報連携がサポートされていません。 ***");
             if (TI.ErrorMsgList.Count > 0)
             {
+                TI.Save();
                 return false;
             }
 
@@ -1003,6 +1066,7 @@ namespace KinErp.WSISmile
             TI.ErrorMsgList.Add("*** 社員マスター連携がサポートされていません。 ***");
             if (TI.ErrorMsgList.Count > 0)
             {
+                TI.Save();
                 return false;
             }
 
@@ -1028,6 +1092,7 @@ namespace KinErp.WSISmile
             TI.ErrorMsgList.Add("*** 所属マスター連携がサポートされていません。 ***");
             if (TI.ErrorMsgList.Count > 0)
             {
+                TI.Save();
                 return false;
             }
 
@@ -1470,7 +1535,7 @@ namespace KinErp.WSISmile
                 return false;
             }
 
-            if (acceptTaskInfo.Pending == false || acceptTaskInfo.Running == false)
+            if (acceptTaskInfo.Pending == false && acceptTaskInfo.Running == false)
             {
                 if (acceptTaskInfo.Succeeded == true)
                 {
@@ -1725,58 +1790,6 @@ namespace KinErp.WSISmile
             return blnRet;
         }
         #endregion 勤怠実績連携データの取得 : GetWorkResult
-
-        #region プロセス強制終了
-        /// <summary>
-        /// 連携強制終了
-        /// </summary>
-        /// <returns>True：エラーなし / False：エラー発生</returns>
-        [WebMethod(Description="Webサービスから実行されている全ての受入処理を中断します。")]
-        public bool KillAcceptProcess()
-        {
-            string errMsg = "";
-
-            TaskInfo TI = TaskInfo.Load(GetContractCode(), GetServerPath());
-            if (TI != null)
-            {
-                TI.ErrorMsgList = new List<string>();
-
-                // タスク情報クリア
-                TI.Clear(ref errMsg);
-                if (errMsg != "")
-                {
-                    TI.ErrorMsgList.Add("マスタ連携の終了処理に失敗しました。" + Environment.NewLine + errMsg);
-                    TI.Save();
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        [WebMethod(Description = "Webサービスから実行されている全ての出力処理を中断します。")]
-        public bool KillOutputProcess()
-        {
-            string errMsg = "";
-
-            TaskInfo TI = TaskInfo.Load(GetContractCode(), GetServerPath());
-            if (TI != null)
-            {
-                TI.ErrorMsgList = new List<string>();
-
-                // タスク情報クリア
-                TI.Clear(ref errMsg);
-                if (errMsg != "")
-                {
-                    TI.ErrorMsgList.Add("変動項目取込の終了処理に失敗しました。" + Environment.NewLine + errMsg);
-                    TI.Save();
-                    return false;
-                }
-            }
-
-            return true;
-        }
-        #endregion プロセス強制終了
 
         #endregion Webメソッド
 

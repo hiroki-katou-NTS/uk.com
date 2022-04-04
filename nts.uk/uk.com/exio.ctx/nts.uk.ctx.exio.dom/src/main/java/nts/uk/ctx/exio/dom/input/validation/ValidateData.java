@@ -34,10 +34,11 @@ public class ValidateData {
 		val errors = new ArrayList<ItemError>();
 
 		for (val item : record.getItems()) {
-			validateBySystem(require, context, item)
-					.ifRight(__ -> correctedItems.add(CorrectValueByType.correct(require, context, item)))
-					.mapEither(__ -> validateByUserCondition(require, context, item))
-					.ifLeft(err -> errors.add(new ItemError(item.getItemNo(), err.getText())));
+			val corrected = CorrectValueByType.correct(require, context, item);
+			validateBySystem(require, context, corrected)
+					.mapEither(__ -> validateByUserCondition(require, context, corrected))
+					.ifRight(__ -> correctedItems.add(corrected))
+					.ifLeft(err -> errors.add(new ItemError(corrected.getItemNo(), err.getText())));
 		}
 
 		if (!errors.isEmpty()) {

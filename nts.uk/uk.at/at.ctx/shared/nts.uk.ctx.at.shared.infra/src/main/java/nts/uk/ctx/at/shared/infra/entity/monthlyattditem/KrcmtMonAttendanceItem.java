@@ -102,6 +102,8 @@ public class KrcmtMonAttendanceItem extends ContractUkJpaEntity implements Seria
 		this.primitiveValue = domain.getPrimitiveValue().map(x -> x.value).orElse(null);
 		this.displayName = domain.getDisplayName().isPresent() ? domain.getDisplayName().get().v() : null;
 		this.twoMonthlyDisplay = domain.getTwoMonthlyDisplay().value;
+		this.useByAnp = domain.isUseAnyPeriod();
+		this.useByMon = domain.isUseMonthResult();
 	}
 
 	/*

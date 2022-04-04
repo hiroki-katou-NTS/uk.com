@@ -6113,7 +6113,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             setShared("dataFromA", param);
             setShared("dataTooltip", self.tooltipShare);
-            nts.uk.ui.windows.sub.modal("/view/ksu/003/a/index.xhtml").onClosed(() => { });
+            nts.uk.ui.windows.sub.modal("/view/ksu/003/a/index.xhtml").onClosed(() => { 
+                let result = getShared('status-result');
+                if (!_.isNil(result) && result == true ) {
+                    self.updateGrid();
+                }
+            });
         }
 
         // check cell edit truoc khi open ksu003
@@ -6127,6 +6132,50 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else {
                 self.openKsu003(ui, detailContentDs);
             }
+        }
+        
+        updateGrid(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            nts.uk.ui.block.grayout();
+            let userInfor: IUserInfor = self.userInfor;
+            let param = {
+                viewMode: userInfor.disPlayFormat,
+                startDate: self.dateTimePrev(),
+                endDate: self.dateTimeAfter(),
+                shiftPalletUnit: userInfor.shiftPalletUnit, // 1: company , 2 : workPlace 
+                pageNumberCom: userInfor.shiftPalettePageNumberCom,
+                pageNumberOrg: userInfor.shiftPalettePageNumberOrg,
+                getActualData: userInfor.achievementDisplaySelected,
+                listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, // List of shifts không cần lấy mới
+                unit: userInfor.unit,
+                wkpId: userInfor.unit == WorkPlaceUnit.WORKPLACE ? userInfor.workplaceId : userInfor.workplaceGroupId,
+                day: self.closeDate.day,
+                isLastDay: self.closeDate.lastDay,
+                personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
+                workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
+            };
+
+            service.getDataGrid(param).done((data: IDataStartScreen) => {
+
+                self.saveDataGrid(data);
+
+                let dataBindGrid = self.convertDataToGrid(data, self.selectedModeDisplayInBody());
+                // updatelaiA1112
+                // remove va tao lai grid
+                self.destroyAndCreateGrid(dataBindGrid, self.selectedModeDisplayInBody());
+
+                self.mode() == UpdateMode.DETERMINE ? self.confirmModeAct(false) : self.editModeAct(false);
+
+                self.setPositionButonA13A14A15();
+
+                nts.uk.ui.block.clear();
+
+            }).fail(function(error) {
+                nts.uk.ui.block.clear();
+                nts.uk.ui.dialog.alertError(error);
+                dfd.reject();
+            });
+            return dfd.promise();
         }
         
         // get lại data A11, A12

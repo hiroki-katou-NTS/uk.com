@@ -80,7 +80,7 @@ public class StdOutputCondSetCommand implements StdOutputCondSet.MementoGetter {
 	public StdOutputCondSetCommand(String companyId, String conditionSetCode, int categoryId, int delimiter,
 			int itemOutputName, int autoExecution, String conditionSetName, int conditionOutputName, int stringFormat,
 			Long version, String copyDestinationCode, boolean overWrite, boolean newMode, String destinationName,
-			int standType, List<StdOutItemOrderCommand> listStandardOutputItem) {
+			int standType, int encodeType, String fileName, List<StdOutItemOrderCommand> listStandardOutputItem) {
 		super();
 		this.companyId = companyId;
 		this.conditionSetCode = conditionSetCode;
@@ -97,7 +97,9 @@ public class StdOutputCondSetCommand implements StdOutputCondSet.MementoGetter {
 		this.newMode = newMode;
 		this.destinationName = destinationName;
 		this.standType = standType;
+		this.encodeType = encodeType;
+		this.fileName = fileName;
 		this.listStandardOutputItem = listStandardOutputItem;
 	}
-	
+
 }

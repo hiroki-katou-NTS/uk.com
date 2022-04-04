@@ -74,7 +74,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 			String businessTypeCode = domain.getAffiliationInfor().getBusinessTypeCode().isPresent() ? "'" + domain.getAffiliationInfor().getBusinessTypeCode().get().v() + "'" : null;
 			String workplaceGroupId = domain.getAffiliationInfor().getWorkplaceGroupId().isPresent() ? domain.getAffiliationInfor().getWorkplaceGroupId().get() : null; 
 			Integer	nursingLicenseClass =  domain.getAffiliationInfor().getNursingLicenseClass().isPresent() ? domain.getAffiliationInfor().getNursingLicenseClass().get().value : null;
-			boolean nursingManager = domain.getAffiliationInfor().getIsNursingManager().isPresent() ? domain.getAffiliationInfor().getIsNursingManager().get() : false;
+			Boolean nursingManager = domain.getAffiliationInfor().getIsNursingManager().isPresent() ? domain.getAffiliationInfor().getIsNursingManager().get() : null;
 			
 			String insertTableSQL = "INSERT INTO KRCDT_DAY_AFF_INFO ( SID , YMD , EMP_CODE, JOB_ID , CLS_CODE , WKP_ID , BONUS_PAY_CODE, WORK_TYPE_CODE, WKP_GROUP_ID, NURSE_LICENSE_ATR, IS_NURSE_ADMINISTRATOR ) "
 					+ "VALUES( '" + domain.getEmployeeId() + "' , '"
@@ -111,7 +111,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 
 		entity.workplaceGroupId = domain.getAffiliationInfor().getWorkplaceGroupId().isPresent()? domain.getAffiliationInfor().getWorkplaceGroupId().get() : null;
 		entity.nursingLicenseClass = domain.getAffiliationInfor().getNursingLicenseClass().isPresent()? domain.getAffiliationInfor().getNursingLicenseClass().get().value : null;
-		entity.nursingManager = domain.getAffiliationInfor().getIsNursingManager().isPresent()? domain.getAffiliationInfor().getIsNursingManager().get(): false;
+		entity.nursingManager = domain.getAffiliationInfor().getIsNursingManager().isPresent()? domain.getAffiliationInfor().getIsNursingManager().get(): null;
 		
 		return entity;
 	}
@@ -156,7 +156,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		String businessTypeCode = domain.getAffiliationInfor().getBusinessTypeCode().isPresent() ? "'" + domain.getAffiliationInfor().getBusinessTypeCode().get().v() + "'" : null;
 		String workplaceGroupId = domain.getAffiliationInfor().getWorkplaceGroupId().isPresent() ? domain.getAffiliationInfor().getWorkplaceGroupId().get() : null; 
 		Integer	nursingLicenseClass =  domain.getAffiliationInfor().getNursingLicenseClass().isPresent() ? domain.getAffiliationInfor().getNursingLicenseClass().get().value : null;
-		Integer nursingManager = domain.getAffiliationInfor().getIsNursingManager().isPresent() ? (domain.getAffiliationInfor().getIsNursingManager().get() ? 1 : 0 ) : null;
+		Boolean nursingManager = domain.getAffiliationInfor().getIsNursingManager().isPresent() ? domain.getAffiliationInfor().getIsNursingManager().get() : null;
 		
 		String updateTableSQL = " UPDATE KRCDT_DAY_AFF_INFO SET EMP_CODE = '"
 				+ domain.getAffiliationInfor().getEmploymentCode().v() + "' , JOB_ID = '" + domain.getAffiliationInfor().getJobTitleID()

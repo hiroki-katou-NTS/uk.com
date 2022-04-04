@@ -88,7 +88,7 @@ public class Cmf001fSaveCommand {
 	public static class LayoutItem {
 		
 		int itemNo;
-		boolean isFixedValue;
+		boolean fixedValue;
 		Integer csvColumnNo;
 		
 		public ImportingItemMapping createNew() {
@@ -104,7 +104,7 @@ public class Cmf001fSaveCommand {
 		private ImportingItemMapping toDomain(Optional<StringifiedValue> fixedValue) {
 			return new ImportingItemMapping(
 					itemNo,
-					isFixedValue,
+					this.isFixedValue(),
 					Optional.ofNullable(csvColumnNo),
 					fixedValue);
 		}

@@ -27,4 +27,9 @@ public class DeleteInfoExport {
 	 * パターンコード
 	 */
 	private Optional<String> patternCode;
+
+	/**
+	 * 部下のエラーがない社員IDList：社員ID（List）
+	 */
+	private List<String> subEmpNoErrs;
 }
