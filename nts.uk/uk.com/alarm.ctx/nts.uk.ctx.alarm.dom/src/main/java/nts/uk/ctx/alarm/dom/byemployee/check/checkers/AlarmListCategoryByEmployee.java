@@ -13,6 +13,8 @@ public enum AlarmListCategoryByEmployee {
     DAILY(2),
     
     MASTER(3),
+    	
+    APPLICATION_APPROVAL(4),
 
     ;
 
