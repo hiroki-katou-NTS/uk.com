@@ -114,7 +114,8 @@ module nts.uk.com.view.cmm030.a {
     public openDialogC() {
       const vm = this;
       const param = {
-        sid: vm.selectedEmployee()
+        sid: vm.selectedEmployee(),
+        isNewMode: vm.isNewMode()
       };
       vm.$window.modal("/view/cmm/030/c/index.xhtml", param)
       .then(result => {
