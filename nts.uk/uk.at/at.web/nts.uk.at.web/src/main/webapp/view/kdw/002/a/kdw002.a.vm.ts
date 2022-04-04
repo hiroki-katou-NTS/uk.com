@@ -58,7 +58,8 @@ module nts.uk.at.view.kdw002.a {
                 self.aICurrentCode.subscribe(displayNumber => {
                     if (displayNumber) {
                         let attendanceItem = _.find(self.attendanceItems(), { displayNumber: Number(displayNumber) });
-                        self.txtItemName(attendanceItem.oldName);
+                        if(attendanceItem) {
+                            self.txtItemName(attendanceItem.oldName);
                         // ver8
                         if(attendanceItem.frameCategory != null && attendanceItem.frameCategory != undefined) {
                             self.displayName(attendanceItem.attendanceItemName);
@@ -87,6 +88,8 @@ module nts.uk.at.view.kdw002.a {
                         }).always(() => {
                             self.$blockui("hide");
                         });
+                        }
+                        
                     } else {
                         $(document).on('click', '.search-btn', function(evt) {
                             self.txtItemId(null);

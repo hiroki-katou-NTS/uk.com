@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.employee.pubimp.workplace.workplacegroup;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -229,10 +230,10 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 		}
 
 		@Override
-		public String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
+		public Optional<String> getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
 			// [No.650]社員が所属している職場を取得する
 			AffWorkplaceHistoryItemExport data = wkplacePub.getAffWkpHistItemByEmpDate(employeeID, date);
-			return data.getWorkplaceId();
+			return Optional.ofNullable( data ).map( d -> d.getWorkplaceId() );
 		}
 
 		@Override

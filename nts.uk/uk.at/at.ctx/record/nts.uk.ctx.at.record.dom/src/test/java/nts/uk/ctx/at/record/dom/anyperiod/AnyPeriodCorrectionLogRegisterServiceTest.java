@@ -129,6 +129,14 @@ public class AnyPeriodCorrectionLogRegisterServiceTest {
             public int getAttendanceItemId() {
                 return itemId;
             }
+			@Override
+			public boolean getUseAnyPeriod() {
+				return true;
+			}
+			@Override
+			public boolean getUseMonthResult() {
+				return true;
+			}
         });
         return obj;
     }
