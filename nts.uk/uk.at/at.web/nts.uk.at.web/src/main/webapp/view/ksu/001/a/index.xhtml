@@ -417,25 +417,21 @@
 							</div>
 							<div style="width: fit-content;">
 								<div id = "btnControlLeftRight">
-									<button id = "A13" class="toLeft inline" data-bind="click : toLeft"> <i class="iconToLeft" data-bind="ntsIcon : { no: 152, width: 15, height: 20 }"></i></button>
-									<button id = "A14" class="toRight inline" data-bind="visible: showA11, click: toRight"><i class="iconToRight " data-bind="ntsIcon: { no: 153, width: 15, height: 20 }"></i></button>
+									<button id ="btn-expand-left" class="inline" data-bind="click : expandLeft"> <i class="icon-expand-left" data-bind="ntsIcon : { no: 152, width: 15, height: 20 }"></i></button>
+									<button id='btn-expand-right' class="inline" data-bind="visible: showA11, click: expandRight"> <i class="icon-expand-right" data-bind="ntsIcon: { no: 153, width: 15, height: 20 }"></i> </button>
 								</div>
 								<div id = "sub-content-main">
-									<div style="float: left;width: 28px; height: 349px;">
-										<div data-bind="if: showA12">
-											<button class="toDown inline" data-bind="click : toDown"><i class="iconToDown" data-bind="ntsIcon : { no: 150,width: 15, height: 20 }"></i></button>
-										</div>
-									</div>
-									<div id="extable-outside" style="float: left">
-										<div id="extable"></div>
-									</div>
+									<div id="extable" style="float: left; margin-left: 28px"></div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div id="cacheHeightGrid">
-					<button style="display: none;" id = 'heightGrid' class="settingHeightGrid"> <i data-bind="ntsIcon: { no: 3 }"></i> </button>
+					<button style="display: none" id='heightGrid' class="settingHeightGrid"> <i data-bind="ntsIcon: { no: 3 }"></i> </button>
+				</div>
+				<div id="cacheExpandBottom">
+					<button style="display:'none'" id="btn-expand-bottom" data-bind="click : expandBottom"><i class="icon-expand-bottom" data-bind="ntsIcon : { no: 150,width: 15, height: 20 }"></i></button>
 				</div>
 				<div id="cacheDiv">
 					<div id="vertDiv" style="display: none; text-align: left;">
