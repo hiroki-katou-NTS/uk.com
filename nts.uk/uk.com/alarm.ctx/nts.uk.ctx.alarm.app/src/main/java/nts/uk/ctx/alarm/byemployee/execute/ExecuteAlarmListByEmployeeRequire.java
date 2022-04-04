@@ -23,6 +23,9 @@ import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmploye
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.execute.ExecuteAlarmListByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.pattern.AlarmListPatternByEmployee;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
@@ -42,6 +45,9 @@ public class ExecuteAlarmListByEmployeeRequire {
 	
 	@Inject
 	private WorkingConditionRepository workingConditionRepo;
+	
+	@Inject
+	private ApplicationRepository applicatoinRepo;
 	
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(AppContexts.user().companyId()));
@@ -104,5 +110,10 @@ public class ExecuteAlarmListByEmployeeRequire {
         public boolean existsWorkTime(WorkTimeCode workTimeCode) {
             return false;
         }
+
+		@Override
+		public List<Application> getApplicationBy(String employeeId, GeneralDate targetDate, ReflectedState states) {
+			return applicatoinRepo.getByListRefStatus(this.companyId, employeeId, targetDate, targetDate, Arrays.asList(states.value));
+		}
     }
 }
