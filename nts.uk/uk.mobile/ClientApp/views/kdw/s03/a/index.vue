@@ -73,7 +73,7 @@
             <thead class="uk-bg-headline">
                 <tr>
                     <th c-width="58" style="height: 50px; text-align:center"></th>
-                    <th v-for="(item, i) of displayHeaderLst" v-bind:style="{ 'background-color': item.color}"><span class="crop-text">{{item.headerText}}</span></th>
+                    <th v-for="(item, i) of displayHeaderLst" v-bind:style="{ 'background-color': item.color}"><tag class="crop-text" v-html="item.headerText"></tag></th>
                     <th c-width="48"></th>
                 </tr>
             </thead>
