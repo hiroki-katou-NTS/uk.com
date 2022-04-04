@@ -274,8 +274,8 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 		emailSetting() {
 			const vm = this;
 			let height = screen.availHeight;
-			if(screen.availHeight > 475) {
-				height = 475
+			if(screen.availHeight > 500) {
+				height = 500;
 			}
 			if(screen.availHeight < 400) {
 				height = 400;

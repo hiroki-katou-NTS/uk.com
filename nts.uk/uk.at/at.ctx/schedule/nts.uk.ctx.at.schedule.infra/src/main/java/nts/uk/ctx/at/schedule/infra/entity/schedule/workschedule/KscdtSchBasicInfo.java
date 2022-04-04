@@ -22,10 +22,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportScheduleDetail;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskScheduleDetail;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.support.supportschedule.KscdtSchSupport;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
@@ -68,8 +71,11 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.At
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.StayingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -167,6 +173,10 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 	@JoinTable(name = "KSCDT_SCH_GOING_OUT_TS")
 	public List<KscdtSchGoingOutTs> kscdtSchGoingOutTs;
 	
+	@OneToMany(targetEntity = KscdtSchSupport.class, mappedBy = "kscdtSchBasicInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "KSCDT_SCH_SUPPORT")
+	public List<KscdtSchSupport> kscdtSchSupport;
+	
 	@OneToMany(targetEntity = KscdtSchTask.class, mappedBy = "kscdtSchBasicInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "KSCDT_SCH_TASK")
 	public List<KscdtSchTask> kscdtSchTask;
@@ -240,8 +250,13 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				.stream().map(c-> KscdtSchGoingOutTs.toEntity(sID, yMD, cID, c)).collect(Collectors.toList());
 			listKscdtSchGoingOutTs.addAll(listKscdtSchComeLate);
 		}
-
+		
+		// QA122923
 		AtomicInteger index = new AtomicInteger(1);
+		List<KscdtSchSupport> lstKscdtSchSupport = workSchedule.getSupportSchedule().getDetails().stream()
+				.map(c -> KscdtSchSupport.toEntity(cID, sID, yMD, index.getAndIncrement(), c))
+				.collect(Collectors.toList());
+
 		List<KscdtSchTask> lstKscdtSchTask = task.getDetails().stream()
 				.map(c -> KscdtSchTask.toEntity(sID, yMD, cID, c, index.getAndIncrement())).collect(Collectors.toList());
 
@@ -259,7 +274,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				workInfo.getIsNursingManager().isPresent()? workInfo.getIsNursingManager().get() : null,
                 workInfo.getBonusPaySettingCode().isPresent() ? workInfo.getBonusPaySettingCode().get().toString() : null,
 				kscdtSchTimes, kscdtEditStates, kscdtSchAtdLvwTimes,
-				kscdtSchShortTimeTs, kscdtSchBreakTs,listKscdtSchGoingOutTs, lstKscdtSchTask);
+				kscdtSchShortTimeTs, kscdtSchBreakTs,listKscdtSchGoingOutTs, lstKscdtSchSupport, lstKscdtSchTask);
 		return basicInfo;
 	}
 
@@ -365,7 +380,23 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			outingTime = new OutingTimeOfDailyAttd(outingTimeSheets);
 		}
 		
-		
+		// ver6 #122997
+		// SupportTime - ver6
+		SupportSchedule supportSchedule = SupportSchedule.createWithEmptyList();
+		List<SupportScheduleDetail> supports = kscdtSchSupport.stream()
+				.map(support -> {
+					TargetOrgIdenInfor supportDestination = new TargetOrgIdenInfor(
+							EnumAdaptor.valueOf(support.recipientTargerUnit, TargetOrganizationUnit.class), 
+							Optional.ofNullable(support.recipientTargerUnit == TargetOrganizationUnit.WORKPLACE.value ? support.recipientTargerId : null) ,
+							Optional.ofNullable(support.recipientTargerUnit == TargetOrganizationUnit.WORKPLACE_GROUP.value ? support.recipientTargerId : null));
+					TimeWithDayAttr start = support.start == null ? null : new TimeWithDayAttr(support.start);
+					TimeWithDayAttr end = support.end == null ? null : new TimeWithDayAttr(support.end);
+					Optional<TimeSpanForCalc> timeSpan = Optional.of(new TimeSpanForCalc(start, end));
+					if(support.supportType == SupportType.ALLDAY.value)
+						timeSpan = Optional.empty();
+					return new SupportScheduleDetail(supportDestination, support.supportType == 0 ? SupportType.ALLDAY : SupportType.TIMEZONE, timeSpan);
+				}).collect(Collectors.toList());
+		supportSchedule = new SupportSchedule(supports);
 		
 		return new WorkSchedule(
 				sID, 
@@ -376,6 +407,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				breakTime, 
 				lstEditState, 
 				taskSchedule, 
+				supportSchedule, 
 				Optional.ofNullable(optTimeLeaving), 
 				Optional.ofNullable(attendance), 
 				Optional.ofNullable(optSortTimeWork), 

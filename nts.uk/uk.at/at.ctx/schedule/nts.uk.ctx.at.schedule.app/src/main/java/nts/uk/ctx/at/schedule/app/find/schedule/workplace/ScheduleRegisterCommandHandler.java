@@ -51,6 +51,8 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.Nur
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
@@ -141,6 +143,9 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
 
     @Inject
     private ManagedParallelWithContext parallel;
+    
+    @Inject
+	private SupportOperationSettingRepository supportOperationSettingRepo;
     
     @Inject
 	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
@@ -235,6 +240,7 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
                 .map(x -> GeneralDate.fromString(x.getDate(), "yyyy/MM/dd"))
                 .distinct().sorted().collect(Collectors.toList());
         DatePeriod period = dates.size() > 0 ? new DatePeriod(dates.get(0), dates.get(dates.size() - 1)) : null;
+
         RequireImp requireImp = new RequireImp(importCodes, employeeList, period, empAffiliationInforAdapter, empMedicalWorkStyleHistoryRepo, nurseClassificationRepo);
 
         String companyId = AppContexts.user().companyId();
@@ -325,12 +331,6 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
 
         private final Map<String, ShiftMaster> shiftMasterCache;
         
-        private EmpAffiliationInforAdapter empAffiliationInforAdapter;
-		
-		private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
-		
-		private NurseClassificationRepository nurseClassificationRepo;
-
         public RequireImp(List<String> importCodes, List<String> employeeIds, DatePeriod period, EmpAffiliationInforAdapter empAffiliationInforAdapter,
         		EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo, NurseClassificationRepository nurseClassificationRepo) {
             List<ShiftMaster> shiftMasters = shiftMasterRepository.getByListImportCodes(AppContexts.user().companyId(), importCodes);
@@ -526,7 +526,12 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
             interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(), employeeId, Arrays.asList(date));
         }
 
-        @Override
+		@Override
+		public SupportOperationSetting getSupportOperationSetting() {
+			return supportOperationSettingRepo.get(AppContexts.user().companyId());
+		}
+
+		@Override
 		public EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate) {
 			List<EmpOrganizationImport> results = empAffiliationInforAdapter.getEmpOrganization(standardDate, Arrays.asList(employeeId));
 			if(results.isEmpty())
@@ -545,5 +550,6 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
 			String companyId = AppContexts.user().companyId();
 			return nurseClassificationRepo.getListCompanyNurseCategory(companyId);
 		}
+
     }
 }

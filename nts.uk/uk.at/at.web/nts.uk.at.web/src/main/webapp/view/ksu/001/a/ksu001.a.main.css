@@ -31,6 +31,11 @@
     text-align: left;
 }
 
+.extable-body-leftmost  .x-link {
+    width: 98%;
+    vertical-align: middle;
+}
+
 #tab-1, #tab-2 {
 	height: 525px;
 }
@@ -181,7 +186,6 @@
 	border-radius: 3.5px !important;
 	box-shadow: 1px 1px 5px 2px #888 !important;
 	padding: 12px;
-	background-color: #F8EFD4 !important;
 	display: none;
 }
 
@@ -410,13 +414,14 @@
 	width: 65px
 }
 
-.icon-leftmost { 
+.icon-do-not-go-to-support { 
 	background-image:
 		url(/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/7.png);
 	height: 20px;
 	width: 20px;
 	left: 2px !important;
-	margin-top: -4px !important
+	margin-top: -4px !important;
+	background-repeat: no-repeat;
 }
 
 .mb-5 {
@@ -587,12 +592,6 @@ html {
 }
 
 
-.background-attendance {background-color: #0000ff !important;}
-.background-holiday {background-color: #ff0000 !important;}
-.background-half-day-work {background-color: #FF7F27 !important; }
-.background-schedule-performance {background-color:#008000 !important;}
-.bg-daily-alter-self {background-color:#94B7FE;}
-.bg-daily-alter-other {background-color:#CEE6FF;}
 .background-white {background-color: white}
 .color-default {color : #595959;}
 .bg-schedule-uncorrectable-ksu001 {background-color:#ddddd2;}
@@ -618,81 +617,30 @@ html {
 	text-align: left;
 }
 
-.bg-schedule-that-day{
-	background-color: #ffff00 !important;
-}
-.bg-schedule-specific-date{
-	background-color: #ffc0cb !important;
-}
+.xseal { background-color: #B8B8B8 !important; }
+.extable div.xdet, .extable td.xdet { background-color: #bfc5ff; }
 
-.bg-schedule-saturday{
-	background-color: #1973b5 !important;
-}
+.bg-schedule-uncorrectable-v6-5 { background-color: #B8B8B8; }
+.bg-daily-alter-self-v6-5 {background-color:#C1E6FE;}
+.bg-daily-alter-other-v6-5 {background-color:#4ca8f8;}
+.bg-daily-reflect-application-v6-5 {background-color:#cbf3d2;}
+.bg-schedule-fixed-v6-5 {background-color:#bfc5ff;}
+.bg-schedule-support-v6-5 {background-color:#fedfe6;}
 
-.bg-schedule-sunday{
-	background-color: #db4f51 !important;
-}
+.background-attendance-v6-5 {background-color: #1973b5 ;}
+.background-holiday-v6-5 {background-color: #db4f51;}
+.background-half-day-work-v6-5 {background-color: #e6a322; }
+.background-schedule-performance-v6-5 {background-color:#258f7e;}
 
-.bg-schedule-sunday-color-schedule-sunday{
-	background-color: #db4f51 !important;
-	color: #ffffff !important;
-}
+.bg-schedule-saturday-v6-5 {background-color:#1973b5 !important;}
+.bg-schedule-sunday-v6-5 {background-color:#db4f51 !important;}
+.bg-schedule-specific-date-v6-5 {background-color:#b18768 !important;}
+.bg-schedule-that-day-v6-5 {background-color:#258f7e !important;}
 
-.bg-schedule-saturday-color-schedule-saturday{
-	background-color: #1973b5 !important;
-	color: #ffffff !important;
-}
+.color-schedule-performance-v6-5 {color: #258f7e;}
+.color-attendance-v6-5 {color: #1973b5;}
+.color-half-day-work-v6-5 {color: #e6a322;}
+.color-holiday-v6-5 {color: #db4f51;}
 
-.bg-schedule-that-day-color-schedule-sunday{
-	background-color: #ffff00 !important;
-	color: #ffffff !important;
-}
-
-.bg-schedule-that-day-color-schedule-sunday a{
-	color: #ffffff !important;
-}
-
-.bg-schedule-that-day-color-schedule-saturday{
-	background-color: #ffff00 !important;
-	color: #ffffff !important;
-}
-
-.bg-schedule-that-day-color-schedule-saturday a{
-	color: #ffffff !important;
-}
-
-.bg-schedule-that-day-color-schedule-weekdays{
-	background-color: #ffff00 !important;
-	color: #404040 !important;
-}
-
-.bg-schedule-that-day-color-schedule-weekdays a{
-	color: #404040 !important;
-}
-
-.bg-schedule-specific-date-color-schedule-sunday{
-	background-color: #ffc0cb !important;
-	color: #ffffff !important;
-}
-
-.bg-schedule-specific-date-color-schedule-sunday a{
-	color: #ffffff !important;
-}
-
-.bg-schedule-specific-date-color-schedule-saturday{
-	background-color: #ffc0cb !important;
-	color: #ffffff !important;
-}
-
-.bg-schedule-specific-date-color-schedule-saturday a{
-	color: #0000ff !important;
-}
-
-.bg-schedule-specific-date-color-schedule-weekdays{
-	background-color: #ffc0cb !important;
-	color: #404040 !important;
-}
-
-.bg-schedule-specific-date-color-schedule-weekdays a{
-	color: #404040 !important;
-}
+.extable div.other-edited, .extable td.other-edited { background-color: #4ca8f8 ; }
+.extable div.target-edited, .extable td.target-edited { background-color: #C1E6FE ;}

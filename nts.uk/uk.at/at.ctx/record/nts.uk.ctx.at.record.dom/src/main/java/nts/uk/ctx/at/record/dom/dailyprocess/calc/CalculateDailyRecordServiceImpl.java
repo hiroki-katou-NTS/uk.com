@@ -1077,7 +1077,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// 任意項目の計算
 		integrationOfDaily.setAnyItemValue(Optional.of(
 				AnyItemValueOfDaily.caluculationAnyItem(companyId, employeeId, targetDate, optionalItems, formulaList,
-						formulaOrderList, empCondition, Optional.of(converter), bsEmploymentHistOpt, resultProcedure).getAnyItem()));
+						formulaOrderList, empCondition, Optional.of(converter), bsEmploymentHistOpt, resultProcedure, itemValueList).getAnyItem()));
 
 		IntegrationOfDaily calcResultIntegrationOfDaily = integrationOfDaily;
 

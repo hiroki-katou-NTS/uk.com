@@ -110,7 +110,21 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 			interm = Items.fillNewData(context, interm);
 		}
 		
+		interm = nameSpace(interm);
+		
 		require.save(context, interm.complete());
+	}
+	
+	/**
+	 * 個人名の半角スペースを全角スペースに変換
+	 * @param interm
+	 * @return
+	 */
+	private static IntermediateResult nameSpace(IntermediateResult interm) {
+		
+		String name = interm.getItemByNo(Items.個人名).map(i -> i.getString()).orElse("");
+		String corrected = name.replace(" ", "　");
+		return interm.addCanonicalized(CanonicalItem.of(Items.個人名, corrected));
 	}
 	
 	/**

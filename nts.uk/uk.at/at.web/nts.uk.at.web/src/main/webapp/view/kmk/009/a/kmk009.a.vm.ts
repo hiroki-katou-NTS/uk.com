@@ -388,6 +388,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                                         nts.uk.ui.windows.setShared('SelectedAttendanceId', selectID[0].attendanceItemId, true);
                                         if (self.checkSelectUse() && selectID[0].attendanceItemName) self.enableUse(true);
                                         self.isAllowShowAttendance(selectID[0].attendanceItemId < 426 || selectID[0].attendanceItemId > 435);
+                                    } else {
+                                        self.attendanceModel.update(self.attendanceModel.attendanceItemId(), text('KMK009_31'));
+                                        nts.uk.ui.windows.setShared('SelectedAttendanceId', self.attendanceModel.attendanceItemId(), true);
+
                                     }
                                 }
 

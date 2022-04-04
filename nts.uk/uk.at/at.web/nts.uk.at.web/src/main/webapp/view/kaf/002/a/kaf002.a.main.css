@@ -198,3 +198,6 @@ div.form-label.broken {
  	margin-left: 120px;
  	width: auto !important
 }
+#contents-area .left-panel {
+	overflow: hidden !important;
+}

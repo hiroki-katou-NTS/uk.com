@@ -26,7 +26,7 @@ public class ReflectAttendanceLeav {
 		List<Integer> lstItemId = new ArrayList<>();
 		// 申請から反映する時刻を作成する
 		List<TimeReflectFromApp> reflectTimeLst = listTimeStampApp.stream()
-				.map(x -> new TimeReflectFromApp(new WorkNo(x.getDestinationTimeApp().getEngraveFrameNo()),
+				.map(x -> new TimeReflectFromApp(new WorkNo(x.getDestinationTimeApp().getStampNo()),
 						x.getDestinationTimeApp().getStartEndClassification(), x.getTimeOfDay(), x.getWorkLocationCd()))
 				.collect(Collectors.toList());
 

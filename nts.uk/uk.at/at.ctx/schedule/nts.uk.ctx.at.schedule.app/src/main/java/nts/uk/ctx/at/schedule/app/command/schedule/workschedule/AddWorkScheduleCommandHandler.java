@@ -37,6 +37,8 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.Nur
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
@@ -102,6 +104,8 @@ public class AddWorkScheduleCommandHandler extends CommandHandler<AddWorkSchedul
 	@Inject
 	private SyClassificationAdapter syClassificationAdapter;
 	@Inject
+	private SupportOperationSettingRepository supportOperationSettingRepo;
+	@Inject
 	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 	@Inject
 	private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
@@ -118,7 +122,9 @@ public class AddWorkScheduleCommandHandler extends CommandHandler<AddWorkSchedul
 				flowWorkSet, flexWorkSet, predetemineTimeSet, workScheduleRepo, correctWorkSchedule,
 				interimRemainDataMngRegisterDateChange, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
 				sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter,
+				supportOperationSettingRepo,
 				empAffiliationInforAdapter, empMedicalWorkStyleHistoryRepo, nurseClassificationRepo);
+		
 		List<WorkSchedule> lstWorkSchedule = new ArrayList<WorkSchedule>();
 		for (String item : lstEmt) {
 			// 1.1:get(社員ID、年月日) : Optional<勤務予定>
@@ -189,6 +195,8 @@ public class AddWorkScheduleCommandHandler extends CommandHandler<AddWorkSchedul
 		private BusinessTypeEmpService businessTypeEmpService;
 		@Inject
 		private SyClassificationAdapter syClassificationAdapter;
+		@Inject
+		private SupportOperationSettingRepository supportOperationSettingRepo;
 		
 		private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 		
@@ -293,6 +301,11 @@ public class AddWorkScheduleCommandHandler extends CommandHandler<AddWorkSchedul
 		@Override
 		public String getLoginEmployeeId() {
 			return AppContexts.user().employeeId();
+		}
+		
+		@Override
+		public SupportOperationSetting getSupportOperationSetting() {
+			return supportOperationSettingRepo.get(AppContexts.user().companyId());
 		}
 
 		@Override

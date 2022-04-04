@@ -399,6 +399,11 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 				// 項目名＝#KAF002_69（介護時間）：枠NO
 				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_69", itemTmp.getStampFrameNo().v().toString())));
 			}
+			// 時刻時間項目＝0&打刻分類区分＝応援
+			if (itemTmp.getTimeItem() == 0 && itemTmp.getStampAtr() == TimeStampAppEnum.CHEERING.value) {
+				// 項目名＝#KAF002_86（応援時間）：打刻枠NO
+				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_86", itemTmp.getStampFrameNo().v().toString())));
+			}
 		}
 		// アルゴリズム「申請内容（打刻申請）」を実行する
 		String content = appContentService.getAppStampContent(

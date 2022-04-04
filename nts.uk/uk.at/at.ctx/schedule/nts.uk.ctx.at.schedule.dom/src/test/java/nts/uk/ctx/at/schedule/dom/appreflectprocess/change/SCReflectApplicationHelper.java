@@ -8,6 +8,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.change.state.SCReflectStatusResult;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.change.state.SCReflectedState;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
@@ -139,8 +140,8 @@ public class SCReflectApplicationHelper {
 		return new WorkSchedule("1", GeneralDate.today(), ConfirmedATR.UNSETTLED,
 				new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"), CalculationState.No_Calculated,
 						NotUseAttribute.Not_use, NotUseAttribute.Not_use, DayOfWeek.FRIDAY, new ArrayList<>(), Optional.empty()),
-				null, breakTime, new ArrayList<>(), TaskSchedule.createWithEmptyList(), attendanceLeave, attTimeOpt,
-				shortTime, Optional.empty());
+				null, breakTime, new ArrayList<>(), TaskSchedule.createWithEmptyList(), SupportSchedule.createWithEmptyList(),
+				attendanceLeave, attTimeOpt, shortTime, Optional.empty());
 	}
 
 	public static StampAppReflect createReflectAppSet() {

@@ -200,6 +200,15 @@ public class TimeActualStamp {
 				Optional.empty());
 	}
 	
+	public TimeActualStamp createByAutomaticSet() {
+			
+			return new TimeActualStamp(
+					this.actualStamp, 
+					this.stamp.map(x -> x.createByAutomaticSet()),
+					this.numberOfReflectionStamp, 
+					this.overtimeDeclaration, 
+					this.timeVacation);
+		}
 	//時刻変更手段とデフォルトを作成する
 	public static TimeActualStamp createDefaultWithReason(TimeChangeMeans reason) {
 		return new TimeActualStamp(null, new WorkStamp(

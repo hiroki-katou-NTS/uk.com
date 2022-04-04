@@ -102,6 +102,9 @@ module nts.uk.com.view.kcp011.share {
                         let wpl = _.filter(self.workplaceGroups(), (val) => { return val.id == setting.alreadySettingList()[0]; });
                         setting.currentIds(_.map(wpl, (wkp) => { return wkp.id }));                        
                         }
+					if (self.setting().multiple){
+                        setting.currentIds(setting.alreadySettingList());   
+					}
                 }
             });
         }

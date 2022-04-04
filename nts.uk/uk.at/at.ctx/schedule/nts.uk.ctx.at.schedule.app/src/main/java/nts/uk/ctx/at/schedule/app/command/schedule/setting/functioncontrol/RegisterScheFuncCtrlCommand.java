@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.app.command.schedule.setting.functioncontrol;
 
 import lombok.Value;
 import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.ScheFunctionControl;
+import nts.uk.ctx.at.schedule.dom.schedule.support.SupportFunctionControl;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -49,6 +50,12 @@ public class RegisterScheFuncCtrlCommand {
      */
     private int displayActual;
 
+    /** 応援予定を利用するか **/
+    private int use;
+
+    /** 時間帯応援を利用するか **/
+    private boolean useSupportInTimezone;
+
     public ScheFunctionControl toDomain(List<WorkType> lstWorkType) {
         List<WorkTimeForm> lstWork = new ArrayList<>();
         if (this.changeableFix == 1)
@@ -72,5 +79,9 @@ public class RegisterScheFuncCtrlCommand {
                 (this.displayActual == 1),
                 NotUseAtr.valueOf(this.displayWorkTypeControl),
                 workTypeCodes);
+    }
+
+    public SupportFunctionControl toSupportFunc(){
+        return new SupportFunctionControl(use==1,useSupportInTimezone);
     }
 }

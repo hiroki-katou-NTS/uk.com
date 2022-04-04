@@ -31,6 +31,8 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.Nur
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
@@ -105,6 +107,8 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 	@Inject
 	private BusinessTypeEmpService businessTypeEmpService;
 	
+    @Inject
+	private SupportOperationSettingRepository supportOperationSettingRepo;
 	@Inject
 	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 	@Inject
@@ -122,7 +126,9 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 				basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository,
 				predetemineTimeSettingRepository, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
 				sharedAffWorkPlaceHisAdapter, syClassificationAdapter, workingConditionRepo, businessTypeEmpService,
+				supportOperationSettingRepo,
 				empAffiliationInforAdapter, empMedicalWorkStyleHistoryRepo, nurseClassificationRepo);
+		
 		/**loop:社員ID in 社員IDリスト */
 		command.getEmployeeIds().stream().forEach(empId -> {
 			/** 1.1: get(社員ID、年月日):Optional<勤務予定>*/
@@ -171,10 +177,14 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 
 		private BusinessTypeEmpService businessTypeEmpService;
 		
+	    @Inject
+		private SupportOperationSettingRepository supportOperationSettingRepo;
+		
+	    @Inject		
 		private EmpAffiliationInforAdapter empAffiliationInforAdapter;
-		
+	    @Inject
 		private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
-		
+	    @Inject
 		private NurseClassificationRepository nurseClassificationRepo;
 
 		@Override
@@ -265,6 +275,10 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 		}
 
 		@Override
+		public SupportOperationSetting getSupportOperationSetting() {
+			return supportOperationSettingRepo.get(AppContexts.user().companyId());
+		}		
+
 		public EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate) {
 			List<EmpOrganizationImport> results = empAffiliationInforAdapter.getEmpOrganization(standardDate, Arrays.asList(employeeId));
 			if(results.isEmpty())
@@ -283,5 +297,6 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 			String companyId = AppContexts.user().companyId();
 			return nurseClassificationRepo.getListCompanyNurseCategory(companyId);
 		}
+		
 	}
 }

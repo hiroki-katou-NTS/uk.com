@@ -24,15 +24,23 @@ public interface AppCommonDomainServiceRegister {
 	
 	/**
 	 * Refactor4
-	 * 打刻申請の更新登録
-	 * @param application
-	 * @param appStamp
-	 * @param recoderFlag
-	 * @return
+	 * 打刻申請の更新登録.
+	 *
+	 * @param application the application
+	 * @param appStampOptional the app stamp optional
+	 * @param appRecoderImageOptional the app recoder image optional
+	 * @param recoderFlag the recoder flag
+	 * @param appDispInfoStartupOutput the app disp info startup output
+	 * @param appStampOutput 打刻申請起動時の表示情報
+	 * @return the process result
 	 */
 	
-	public ProcessResult updateAppStamp(Application application, Optional<AppStamp> appStampOptional, Optional<AppRecordImage> appRecoderImageOptional, Boolean recoderFlag,
-			AppDispInfoStartupOutput appDispInfoStartupOutput);
+	public ProcessResult updateAppStamp(Application application
+									  , Optional<AppStamp> appStampOptional
+									  , Optional<AppRecordImage> appRecoderImageOptional
+									  , Boolean recoderFlag
+									  , AppDispInfoStartupOutput appDispInfoStartupOutput
+									  , AppStampOutput appStampOutput);
 	
 	
 	

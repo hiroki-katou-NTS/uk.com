@@ -10,6 +10,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.StampRe
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.ErrorStampInfo;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 
 public interface AppCommonDomainService {
@@ -72,5 +73,20 @@ public interface AppCommonDomainService {
 	 * @return 打刻申請起動時の表示情報打刻申請（新規）起動前処理 
 	 */
 	public AppStampOutput getDataDetailCommon(String companyId, String appId, AppDispInfoStartupOutput appDispInfoStartupOutput, Boolean recoderFlag);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF002_打刻申請.B：打刻申請（新規）→A・B画面.打刻申請（新規）共通アルゴリズム.職場名・場所名を取得する.職場名・場所名を取得する
+	 *
+	 * @param isGetWorkPlaceName 職場名を取得する（boolean）
+	 * @param isGetWorkLocationName 場所名を取得する
+	 * @param workPlaceIds 職場ID
+	 * @param workLocationCds 勤務場所コード
+	 * @return the list
+	 */
+	public WkpWorkLocationName findWkpAndWorkLocationName(boolean isGetWorkPlaceName
+			 , boolean isGetWorkLocationName
+			 , List<WorkplaceId> workPlaceIds
+			 , List<String> workLocationCds
+			 , GeneralDate baseDate);
 	
 }

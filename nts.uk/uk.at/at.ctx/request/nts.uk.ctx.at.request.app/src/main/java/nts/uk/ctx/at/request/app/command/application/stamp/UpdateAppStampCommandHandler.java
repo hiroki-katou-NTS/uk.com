@@ -47,7 +47,8 @@ public class UpdateAppStampCommandHandler extends CommandHandlerWithResult<Regis
 				asOp,
 				arOp,
 				param.getRecoderFlag(),
-				param.getAppStampOutputDto().appDispInfoStartupOutput.toDomain());
+				param.getAppStampOutputDto().appDispInfoStartupOutput.toDomain(),
+				param.getAppStampOutputDto().toDomain());
 	}
 	
 

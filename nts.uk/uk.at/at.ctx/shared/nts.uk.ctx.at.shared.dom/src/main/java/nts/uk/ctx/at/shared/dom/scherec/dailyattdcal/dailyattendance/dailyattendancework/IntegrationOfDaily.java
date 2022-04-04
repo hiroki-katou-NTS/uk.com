@@ -1,16 +1,22 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.algorithm.CancelAppStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.GettingTimeVacactionService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimeVacation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
@@ -33,9 +39,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworkti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportInfoOfEmployee;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.GetAttendanceItemIdService;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.MaximumNumberOfSupport;
 
 /**
  * 日別勤怠(Work)
@@ -410,5 +421,69 @@ public class IntegrationOfDaily {
 	 */
 	public void clearEditedStates() {
 		this.editState.clear();
+	}
+	/**
+	 * 社員の応援情報を取得する
+	 * @return
+	 */
+	public SupportInfoOfEmployee getSupportInfoOfEmployee() {
+		
+		if ( this.ouenTimeSheet.isEmpty() ) {
+			
+			return SupportInfoOfEmployee.createWithoutSupport(
+					new EmployeeId(this.employeeId), 
+					this.ymd, 
+					this.affiliationInfor.getAffiliationOrg() );
+		}
+		
+		if ( this.ouenTimeSheet.get(0).getSupportType() == SupportType.ALLDAY ) {
+			return SupportInfoOfEmployee.createWithAllDaySupport(
+					new EmployeeId(this.employeeId), 
+					this.ymd, 
+					this.affiliationInfor.getAffiliationOrg(),
+					this.ouenTimeSheet.get(0).getWorkContent().getWorkplace().getRecipientOrg() );
+		} else {
+			val recipientList = this.ouenTimeSheet.stream()
+					.map(timeSheet -> timeSheet.getWorkContent().getWorkplace().getRecipientOrg())
+					.collect(Collectors.toList());
+			
+			return SupportInfoOfEmployee.createWithTimezoneSupport(
+					new EmployeeId(this.employeeId), 
+					this.ymd, 
+					this.affiliationInfor.getAffiliationOrg(),
+					recipientList);
+		}
+	}
+		
+	/**
+	 * 応援別勤務職場の編集状態と応援別勤務場所の編集状態をクリアする
+	 * 
+	 * @param List<勤怠項目ID>
+	 * @return void
+	 */
+	public void clearEditStateByDeletedTimeSheet(List<Integer> lstExcludedApp) {
+		val itemIds = IntStream.range(1, MaximumNumberOfSupport.getMax() + 1).boxed()
+				.filter(y -> !this.ouenTimeSheet.stream()
+						.filter(x -> x.getTimeSheet().getStartTimeWithDayAttr().isPresent()
+								&& x.getTimeSheet().getEndTimeWithDayAttr().isPresent())
+						.map(x -> x.getWorkNo().v()).collect(Collectors.toList()).contains(y))
+				.map(x -> new SupportFrameNo(x)).collect(Collectors.toList());
+
+		this.editState.removeIf(x -> {
+			return GetAttendanceItemIdService.getAttendanceItemIds(itemIds)
+					.contains(x.getAttendanceItemId()) && !lstExcludedApp.contains(x.getAttendanceItemId());
+		});
+	}
+	
+	/**
+	 * 応援別勤務職場の勤怠項目IDと応援別勤務場所の勤怠項目IDを取得する
+	 * 
+	 * @return List<勤怠項目ID>
+	 */
+	public List<Integer> getListWplLocationIdFromOuen(){
+		return this.ouenTimeSheet.stream().flatMap(x -> {
+			return Arrays.asList(CancelAppStamp.createItemId(921, x.getWorkNo().v(), 10),
+					CancelAppStamp.createItemId(922, x.getWorkNo().v(), 10)).stream();
+		}).collect(Collectors.toList());
 	}
 }

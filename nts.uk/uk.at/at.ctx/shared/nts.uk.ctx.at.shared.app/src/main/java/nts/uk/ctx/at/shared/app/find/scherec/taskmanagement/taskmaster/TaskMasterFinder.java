@@ -35,6 +35,8 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv
+ * 	UKDesign.UniversalK.就業.KDL_ダイアログ.KDLS12_作業選択ダイアログ（スマホ）.メニュー別OCD.作業選択ダイアログの初期起動
+ *	UKDesign.UniversalK.就業.KDL_ダイアログ.KDL012_作業選択ダイアログ.メニュー別OCD.作業選択ダイアログの初期起動
  *
  */
 @Stateless
@@ -59,9 +61,11 @@ public class TaskMasterFinder {
 	public List<TaskMasterDto> getListTask(TaskDto request) {
         val taskFrameNo = Collections.singletonList(new TaskFrameNo(request.getTaskFrameNo()));
         List<Task> data = new ArrayList<Task>();
-		if (!StringUtil.isNullOrEmpty(request.getSid(), true) && !StringUtil.isNullOrEmpty(request.getTaskCode(), true)) {
+        //	社員IDが存在するか？
+		if (!StringUtil.isNullOrEmpty(request.getSid(), true)) {
 			RequireImpl require = new RequireImpl(taskingRepo, taskAssignEmployeeRepo, taskFrameUsageSettingRepository,
 					workplaceAdapter, narrowRepo);
+			//	1.1.取得する(@Require, 会社ID, 社員ID, 年月日, 作業枠NO, 作業コード)：List<作業>
 			data = getWorkAvailableToEmployeesService.get(
 					require, 
 					AppContexts.user().companyId(), 
@@ -70,6 +74,7 @@ public class TaskMasterFinder {
 					new TaskFrameNo(request.getTaskFrameNo()), 
 					Optional.of(new TaskCode(request.getTaskCode())));
 		} else {
+			//	１．取得する(作業枠NO, 基準日)：List<作業>
 			data = getAvailableTaskMasterQuery.getListTask(request.getBaseDate(), taskFrameNo);
 		}
 

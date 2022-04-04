@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Value;
+import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainValue;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
@@ -54,14 +56,36 @@ public class TaskScheduleDetail implements DomainValue, Comparable<TaskScheduleD
 	}
 	
 	/**
-	 * 同じコードと連続か
-	 * check whether @This is same task code and continuous right after the @other
-	 * @param other 
+	 * 連続した作業か
+	 * @param other
 	 * @return
 	 */
-	public boolean isSameTaskCodeAndContinuous (TaskScheduleDetail other) {
+	public boolean isContinuousTask(TaskScheduleDetail other) {
 		
 		return this.getTaskCode().equals(other.getTaskCode()) &&
 				this.getTimeSpan().getStart().equals(other.getTimeSpan().getEnd());
+	}
+	
+	/**
+	 * 指定時間帯と重複するか
+	 * @param otherTimeSpan 時間帯
+	 * @return
+	 */
+	public boolean isDuplicateWith(TimeSpanForCalc otherTimeSpan) {
+		
+		return this.timeSpan.checkDuplication(otherTimeSpan) != TimeSpanDuplication.NOT_DUPLICATE;
+	}
+	
+	/**
+	 * 指定時間帯に収まるか
+	 * @param targetTimeSpan 時間帯
+	 * @return
+	 */
+	public boolean isContainedIn(TimeSpanForCalc targetTimeSpan) {
+		
+		val duplicateCheckResult =  this.timeSpan.checkDuplication(targetTimeSpan);
+		
+		return duplicateCheckResult == TimeSpanDuplication.SAME_SPAN
+				|| duplicateCheckResult == TimeSpanDuplication.CONTAINED;
 	}
 }

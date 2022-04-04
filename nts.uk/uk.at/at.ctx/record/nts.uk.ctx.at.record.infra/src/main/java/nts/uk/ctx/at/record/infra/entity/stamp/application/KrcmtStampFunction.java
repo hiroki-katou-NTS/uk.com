@@ -40,14 +40,14 @@ public class KrcmtStampFunction  extends ContractUkJpaEntity implements Serializ
 	public String cid;
 	
 	/** 使用区分*/
-	@Column(name = "RECORD_DISPLAY_ART")
+	@Column(name = "RECORD_DISPLAY_ATR")
 	public int recordDisplayArt;
 	
 	/**
 	 * GoogleMap利用するか
 	 */
 	@Basic(optional = false)
-	@Column(name = "GOOGLE_MAP_USE_ART")
+	@Column(name = "GOOGLE_MAP_USE_ATR")
 	public int googleMapUseArt;
 
 	/**
@@ -56,13 +56,7 @@ public class KrcmtStampFunction  extends ContractUkJpaEntity implements Serializ
 	@Basic(optional = true)
 	@Column(name = "MAP_ADDRESS")
 	public String mapAddress;
-	
-	/**
-	 * GoogleMap利用するか
-	 */
-	@Basic(optional = false)
-	@Column(name = "SUPPORT_USE_ART")
-	public int supportUseArt;
+
 	
 	@OneToMany(targetEntity = KrccpStampRecordDis.class, mappedBy = "krccpStampFunction", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinTable(name = "KRCMT_STAMP_RECORD_DIS")
@@ -85,7 +79,6 @@ public class KrcmtStampFunction  extends ContractUkJpaEntity implements Serializ
 		this.recordDisplayArt = display.isPresent() ? display.get().getUsrAtr().value : 0;
 		this.googleMapUseArt = domain.isGooglemap() ? 1 : 0;
 		domain.getMapAddres().ifPresent(c-> this.mapAddress = c.v());
-		this.supportUseArt = domain.getSupportUseArt().value;
 	}
 }
 																			

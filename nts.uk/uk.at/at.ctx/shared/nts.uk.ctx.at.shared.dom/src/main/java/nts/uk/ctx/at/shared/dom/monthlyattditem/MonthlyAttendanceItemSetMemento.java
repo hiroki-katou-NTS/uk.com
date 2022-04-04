@@ -84,4 +84,8 @@ public interface MonthlyAttendanceItemSetMemento {
 	 * @param displayMonthResultsMethod the new display method
 	 */
 	void setTwoMonthlyDisplay(DisplayMonthResultsMethod twoMonthlyDisplay);
+	
+	void setUseAnyPeriod(boolean useAnyPeriod);
+
+	void setUseMonthResult(boolean useMonthResult);
 }

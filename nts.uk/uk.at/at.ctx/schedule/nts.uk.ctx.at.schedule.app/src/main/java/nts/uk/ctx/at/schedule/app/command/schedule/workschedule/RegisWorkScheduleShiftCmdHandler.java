@@ -42,6 +42,7 @@ import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpService;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
@@ -51,6 +52,11 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.Nur
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTicket;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployee;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployeeRepository;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
@@ -130,6 +136,10 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 	private EmpEmployeeAdapter empAdapter;
 	
 	@Inject
+	private SupportOperationSettingRepository supportOperationSettingRepo;
+	@Inject
+	private SupportableEmployeeRepository supportableEmployeeRepo;
+	@Inject
 	private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
 	@Inject
 	private NurseClassificationRepository nurseClassificationRepo;
@@ -138,7 +148,6 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 
 	private final String STATUS_REGISTER = "STATUS_REGISTER";
 	private final String STATUS_ERROR = "STATUS_ERROR";
-	private final String LIST_ERROR = "LIST_ERROR";
 	
 	@Override
 	protected void handle(CommandHandlerContext<List<WorkScheduleSaveCommand<T>>> context) {
@@ -146,6 +155,8 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 		List<WorkScheduleSaveCommand<T>> commands = context.getCommand();
 		
 		val asyncTask = context.asAsync();
+		
+		String companyId = AppContexts.user().companyId();
 		
         TaskDataSetter setter = asyncTask.getDataSetter();
 
@@ -155,10 +166,9 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 				fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet, workScheduleRepo, correctWorkSchedule,
 				interimRemainDataMngRegisterDateChange, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
 				sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter,
-				shiftMasterRepo, empMedicalWorkStyleHistoryRepo, nurseClassificationRepo, empAffInforAdapter);
-		List<ResultOfRegisteringWorkSchedule> lstRsOfRegisWorkSchedule = new ArrayList<ResultOfRegisteringWorkSchedule>();
+				shiftMasterRepo, supportOperationSettingRepo, empMedicalWorkStyleHistoryRepo, nurseClassificationRepo, empAffInforAdapter);
 		
-		String cid = AppContexts.user().companyId();
+		List<ResultOfRegisteringWorkSchedule> lstRsOfRegisWorkSchedule = new ArrayList<ResultOfRegisteringWorkSchedule>();
 		
 		// step 1
 		// loop:社員ID in 社員IDリスト
@@ -167,9 +177,27 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 			List<WorkScheduleSaveCommand<T>> scheduleOfEmps = v;
 			// loop:年月日 in 年月日リスト
 			for (WorkScheduleSaveCommand<T> data : scheduleOfEmps) {
-				// step 1.1
+				
+				// step 1.1 : 社員と期間を指定して取得する(社員ID, 期間：年月日): List<応援可能な社員>
+				List<SupportableEmployee> supportableEmpList = supportableEmployeeRepo
+						.findByEmployeeIdWithPeriod(new EmployeeId(sid), DatePeriod.oneDay(data.ymd));
+				
+				// step 1.2 :  応援チケットを作成する(年月日): Optional<応援チケット>
+				List<SupportTicket> supportTicketList = new ArrayList<>();
+				supportableEmpList.forEach(supportableEmp -> {
+					Optional<SupportTicket> supportTicketOpt = supportableEmp.createTicket(data.ymd);
+					if (supportTicketOpt.isPresent())
+						supportTicketList.add(supportTicketOpt.get());
+				});
+				
+				// step 1.3 call DomainService 勤務予定を作る
 				ResultOfRegisteringWorkSchedule rsOfRegisteringWorkSchedule = CreateWorkScheduleByShift.create(
-						requireImpl, cid, sid, data.ymd, new ShiftMasterCode(data.shiftCode));
+						requireImpl,
+						companyId,
+						sid, 
+						data.ymd, 
+						new ShiftMasterCode(data.shiftCode),
+						supportTicketList);
 				
 				lstRsOfRegisWorkSchedule.add(rsOfRegisteringWorkSchedule);
 			}
@@ -268,6 +296,8 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 		@Inject
 		private ShiftMasterRepository shiftMasterRepo;
 		
+		@Inject
+		private SupportOperationSettingRepository supportOperationSettingRepo;
 		@Inject
 		private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
 		@Inject
@@ -413,6 +443,11 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 		public Optional<ShiftMaster> getShiftMaster(ShiftMasterCode shiftMasterCode) {
 			Optional<ShiftMaster> rs = shiftMasterRepo.getByShiftMaterCd(companyId, shiftMasterCode  == null ? null : shiftMasterCode.toString());
 			return rs;
+		}
+
+		@Override
+		public SupportOperationSetting getSupportOperationSetting() {
+			return supportOperationSettingRepo.get(companyId);
 		}
 
 		// GetEmpLicenseClassificationService

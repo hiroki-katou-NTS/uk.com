@@ -14,7 +14,8 @@ module nts.uk.ui.at.ksu002.a {
 		GSCHE: '/screen/ksu/ksu002/displayInWorkInformation',
 		GSCHER: '/screen/ksu/ksu002/getDataDaily',
 		SAVE_DATA: '/screen/ksu/ksu002/regisWorkSchedule',
-		GET_START_DAY_OF_WEEK: '/ctx/at/shared/workrule/weekmanage/find'
+		GET_START_DAY_OF_WEEK: '/ctx/at/shared/workrule/weekmanage/find',
+		WTYPE: '/screen/ksu/ksu002/getWorkType'
 	};
 
 	const memento: m.Options = {
@@ -172,6 +173,7 @@ module nts.uk.ui.at.ksu002.a {
 		isSelectedStartWeek: KnockoutObservable<boolean> = ko.observable(false);
 
 		storageDataStartWeek: KnockoutObservable<any> = ko.observable(null);
+		workTypes: KnockoutObservableArray<WorkTypeResponse> = ko.observableArray([]);
 
 		readyLoadData: boolean = false;
 
@@ -306,6 +308,7 @@ module nts.uk.ui.at.ksu002.a {
 					vm.loadData();
 					return;
 				});
+
 		}
 
 		rebidingData() {
@@ -475,8 +478,9 @@ module nts.uk.ui.at.ksu002.a {
 					self.$dialog.error(error);
 				});
 			let sv3 = self.$window.storage("KSU002.USER_DATA");
+			let sv4 = self.$ajax('at', API.WTYPE);
 
-			$.when(sv, sv1, sv2, sv3).done((data: any, data1: any, data2: any, data3: any) => {
+			$.when(sv, sv1, sv2, sv3, sv4).done((data: any, data1: any, data2: any, data3: any, data4: any) => {
 				if (data) {
 					self.startupProcessingInformation(data);
 					self.employeeInputList(data.employeeInfos.employeeInfos);
@@ -492,6 +496,9 @@ module nts.uk.ui.at.ksu002.a {
 				}
 				if (data2) {
 					self.listOfPeriodsClose(data2);
+				}
+				if (data4) {
+					self.workTypes(data4);
 				}
 			});
 		}
@@ -512,19 +519,42 @@ module nts.uk.ui.at.ksu002.a {
 				actualData: vm.achievement() === ACHIEVEMENT.YES
 			};
 
-			let sv1 = vm.$ajax('at', 'screen/ksu/ksu002/getPlansResults', command).done((data: any) => {
-				if (getDaily) {
-					dfd.resolve(data.workScheduleWorkDaily);
-				} else {
-					dfd.resolve(data.workScheduleWorkInfor2);
-				}
-			});
-			let sv2 = vm.$ajax('at', 'screen/ksu/ksu002/getlegalworkinghours', command);
-			$.when(sv1, sv2).done((data1: any, data2: any) => {
+			// let sv1 = vm.$ajax('at', 'screen/ksu/ksu002/getPlansResults', command).done((data: any) => {
+			// 	if (getDaily) {
+			// 		dfd.resolve(data.workScheduleWorkDaily);
+			// 	} else {
+			// 		dfd.resolve(data.workScheduleWorkInfor2);
+			// 	}
+			// });
+			// let sv2 = vm.$ajax('at', 'screen/ksu/ksu002/getlegalworkinghours', command);
+			// $.when(sv1, sv2).done((data1: any, data2: any) => {
+			// 	vm.legalworkinghours(data2);
+			// 	vm.plansResultsData(data1);
+			// 	vm.plansResultsData.valueHasMutated();
+			// });
+
+			vm.$ajax('at', 'screen/ksu/ksu002/getlegalworkinghours', command).done((data2: any) => {
 				vm.legalworkinghours(data2);
-				vm.plansResultsData(data1);
-				vm.plansResultsData.valueHasMutated();
-			});
+				vm.workplaceId(data2.affWorkPlace);
+			}).then(() => {
+				const command1 = {
+					listSid: [ko.unwrap(vm.employeeId)],
+					startDate: moment(begin).format('YYYY/MM/DD'),
+					endDate: moment(finish).format('YYYY/MM/DD'),
+					actualData: vm.achievement() === ACHIEVEMENT.YES,
+					targetOrg: { unit: 0, workplaceId: ko.unwrap(vm.workplaceId) }
+				};
+				vm.$ajax('at', 'screen/ksu/ksu002/getPlansResults', command1).done((data: any) => {
+					vm.plansResultsData(data);
+					vm.plansResultsData.valueHasMutated();
+					if (getDaily) {
+						dfd.resolve(data.workScheduleWorkDaily);
+					} else {
+						dfd.resolve(data.workScheduleWorkInfor2);
+					}
+				});
+			})
+
 			return dfd.promise();
 		}
 
@@ -638,6 +668,15 @@ module nts.uk.ui.at.ksu002.a {
 											data.value.finish(wtime.value.finish);
 										} else {
 											data.value.finish.valueHasMutated();
+										}
+									}
+
+									const wTypeExist: WorkTypeResponse = _.find(ko.unwrap(vm.workTypes), ((value: WorkTypeResponse) => { return value.workTypeDto.workTypeCode === ko.unwrap(data.wtype.code) }));
+
+									if (wTypeExist) {
+										if (wTypeExist.workStyle == 0) {
+											data.value.finish(null);
+											data.value.begin(null);
 										}
 									}
 								})
@@ -1014,8 +1053,8 @@ function calculateDaysStartEndWeek(start: Date, end: Date, settingDayStart: numb
 	}
 }
 function converNumberToTime(number: number): string {
-	const minute : string = Math.abs(number % 60) > 9 ? Math.abs(number % 60).toString() : '0' + Math.abs(number % 60).toString();
-	
+	const minute: string = Math.abs(number % 60) > 9 ? Math.abs(number % 60).toString() : '0' + Math.abs(number % 60).toString();
+
 	if (-60 < number && number < 0) {
 		return ('-' + Math.ceil(number / 60).toString() + ':' + (Math.abs(number % 60) == 0 ? '00' : minute));
 	}

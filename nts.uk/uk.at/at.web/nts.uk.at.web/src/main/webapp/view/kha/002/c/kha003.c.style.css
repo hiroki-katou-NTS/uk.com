@@ -1,0 +1,13 @@
+.radio-wrappers:not(.switchbox-wrappers) {
+    display: inline-block;
+}
+
+.radio-wrappers:not(.switchbox-wrappers) .radio-wrapper {
+    display: table;
+}
+
+.switchbox-wrappers .radio-wrapper {
+    width: 75px;
+    flex-direction: column;
+    text-align: center;
+}

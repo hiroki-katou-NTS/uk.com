@@ -15,7 +15,6 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectStatusResult;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectedState;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectedStateShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.StampRequestModeShare;
@@ -28,10 +27,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.CorrectDail
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.CorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
 /**
  * @author thanh_nx
@@ -84,15 +83,19 @@ public class ReflectApplicationWorkRecord {
 		}
 
 		// 日別実績の補正処理 --- create default ???? sau xu ly phan anh check lai
-		IntegrationOfDaily domainCorrect = CorrectDailyAttendanceService.processAttendanceRule(require,
-				dailyRecordApp.getDomain(), changeAtt);
+		IntegrationOfDaily domainCorrect = CorrectionAttendanceRule.process(require, cid,
+				dailyRecordApp, changeAtt);
 
 		// 振休振出として扱う日数を補正する
 		WorkInfoOfDailyAttendance workInfoAfter = CorrectDailyAttendanceService.correctFurikyu(require, cid,
 				domainBeforeReflect.getWorkInformation(), domainCorrect.getWorkInformation());
 		domainCorrect.setWorkInformation(workInfoAfter);
+		if (domainCorrect instanceof DailyRecordOfApplication) {
+			dailyRecordApp.setAttendanceBeforeReflect(
+					((DailyRecordOfApplication) domainCorrect).getAttendanceBeforeReflect());
+		}
 		dailyRecordApp.setDomain(domainCorrect);
-
+		
 		// 日別実績の修正からの計算 -- co xu ly tinh toan khac ko hay cua lich
 		List<IntegrationOfDaily> lstAfterCalc = require.calculateForRecord(CalculateOption.asDefault(),
 				Arrays.asList(domainCorrect), Optional.empty());
@@ -126,14 +129,8 @@ public class ReflectApplicationWorkRecord {
 	}
 
 	public static interface Require extends GetTargetDateRecordApplication.Require,
-			CorrectDailyAttendanceService.Require, CreateApplicationReflectionHist.Require,
-			TimeStampApplicationNRMode.Require, RCCreateDailyAfterApplicationeReflect.Require {
-		/**
-		 * 
-		 * require{ 社員の作業データ設定を取得する(社員ID） }
-		 * 
-		 */
-		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId);
+	        CorrectionAttendanceRule.Require, CreateApplicationReflectionHist.Require,
+			TimeStampApplicationNRMode.Require, RCCreateDailyAfterApplicationeReflect.Require, CorrectDailyAttendanceService.Require {
 
 		// DailyRecordShareFinder
 		public Optional<IntegrationOfDaily> findDaily(String employeeId, GeneralDate date);

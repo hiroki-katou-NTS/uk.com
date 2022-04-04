@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<!--<ui:composition template="/master/dialog.xhtml">-->
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="kmt013.b.css" />
+        <com:scriptfile path="kmt013.b.vm.js" />
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="contents-area">
+            <div class="kmt013-b-content">
+                <div>
+                    <label data-bind="text: $vm.$i18n('KMT013_11')"/>
+                </div>
+                <table id="single-list" data-bind="ntsGridList: {
+                    height: height(),
+                    dataSource: items,
+                    primaryKey: 'destination',
+                    columns: ko.observableArray([
+                        { headerText: $i18n('KMT013_12'), key: 'destination', width: 370 },
+                        { headerText: $i18n('KMT013_13'), key: 'state', width: 70 },
+                    ]),
+                    deleteOptions : {visible : false},
+                    features: [],
+                    multiple: false,
+                    value: currentCode,
+                    enable: false,
+                }"></table>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <button id="B3_btn" class="large" data-bind="text: $vm.$i18n('KMT013_14'),click: closeModal"/>
+        </div>
+
+    </ui:define>
+
+</ui:composition>
+</body>
+</html>

@@ -34,7 +34,6 @@ import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.EventCorrectRe
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceDto;
-import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ContentApproval;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ParamDayApproval;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.RegisterDayApproval;
@@ -58,16 +57,18 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EmpProvisionalInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RegisterProvisionalData;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil;
-import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.CorrectDailyAttendanceService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
@@ -107,7 +108,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.LeaveDayErrorDto;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IGetDataClosureStart;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
-import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -188,6 +188,15 @@ public class DailyModifyRCommandFacade {
 	
 	@Inject
 	private RegisterPastMonthTotalResult registerPastMonthTotalResult;
+	
+	@Inject
+	private ICorrectionAttendanceRule iCorrectionAttendanceRule;
+	
+	@Inject
+	private AttendanceItemConvertFactory attendanceItemConvertFactory;
+
+	@Inject
+	private OptionalItemRepository optionalItem;
 
 	public DataResultAfterIU insertItemDomain(DPItemParent dataParent) {
 		// Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
@@ -198,6 +207,7 @@ public class DailyModifyRCommandFacade {
 		boolean flagTempCalc = dataParent.isFlagCalculation();
 		dataParent.setFlagCalculation(false);
 		List<DPItemValue> dataCheck = new ArrayList<>();
+		String companyId = AppContexts.user().companyId();
 		// insert flex
 		UpdateMonthDailyParam monthParam = null;
 		if (dataParent.getMonthValue() != null) {
@@ -208,7 +218,7 @@ public class DailyModifyRCommandFacade {
 		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
 				.findAll(AppContexts.user().companyId()).stream()
 				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
-
+		//sửa tay
 		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate = dataParent.getItemValues().stream()
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
@@ -222,6 +232,23 @@ public class DailyModifyRCommandFacade {
 		List<DailyRecordDto> dailyOlds = new ArrayList<>(), dailyEdits = new ArrayList<>();
 
 		processDto(dailyOlds, dailyEdits, dataParent, querys, mapSidDate, queryNotChanges);
+		
+		Map<Pair<String, GeneralDate>,List<ItemValue>> beforeItems = new HashMap<>();
+		
+		val optionalItems = 
+				optionalItem.findAll(companyId).stream()
+				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
+		
+		for( DailyRecordDto dailyEditItem : dailyOlds) {
+			List<DailyModifyQuery> data =  querys.stream().filter(x->x.getEmployeeId().equals(dailyEditItem.getEmployeeId()) && x.getBaseDate().equals(dailyEditItem.getDate())).collect(Collectors.toList());
+			
+			DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory
+					.createDailyConverter(optionalItems).setData(dailyEditItem.toDomain(dailyEditItem.getEmployeeId(), dailyEditItem.getDate())).completed();
+			List<Integer> atendanceId = data.stream().flatMap(x -> x.getItemValues().stream().map(y -> y.getItemId())).collect(Collectors.toList());
+			List<ItemValue> beforeItem = atendanceId.isEmpty() ? new ArrayList<>() : converter.convert(atendanceId);
+			beforeItems.put(Pair.of(dailyEditItem.getEmployeeId(), dailyEditItem.getDate()), beforeItem);
+		}
+		
 		// row data will insert
 		Set<Pair<String, GeneralDate>> rowWillInsert = dailyEdits.stream()
 				.map(x -> Pair.of(x.getEmployeeId(), x.getDate())).collect(Collectors.toSet());
@@ -346,8 +373,7 @@ public class DailyModifyRCommandFacade {
 					val changeSetting = ChangeDailyAttendance.createChangeDailyAtt(dataParent.getItemValues().stream()
 							.filter(y -> y.getEmployeeId().equals(x.getEmployeeId()) && y.getDate().equals(x.getDate()))
 							.map(y -> y.getItemId()).collect(Collectors.toList()), ScheduleRecordClassifi.RECORD);
-					val domDaily = CorrectDailyAttendanceService.processAttendanceRule(
-							correctDaiAttRequireImpl.createRequire(), x.toDomain(x.getEmployeeId(), x.getDate()),
+					val domDaily = iCorrectionAttendanceRule.process(x.toDomain(x.getEmployeeId(), x.getDate()),
 							changeSetting);
 					//振休振出として扱う日数を補正する
 					val dailyOldSameDate = dtoOldTemp.stream().filter(
@@ -377,6 +403,22 @@ public class DailyModifyRCommandFacade {
 					}
 					return DailyRecordDto.from(domDaily, optionalMaster);
 				}).collect(Collectors.toList());
+				//domain log 
+				List<IntegrationOfDaily> forlog = new ArrayList<IntegrationOfDaily>();
+				for (val dom : dailyEdits) {
+					DailyRecordToAttendanceItemConverter afterConverter = attendanceItemConvertFactory
+							.createDailyConverter()
+							.setData(dom.toDomain(dom.getEmployeeId(), dom.getDate()))
+							.completed();
+					if(!beforeItems.isEmpty() && beforeItems.containsKey(Pair.of(dom.getEmployeeId(), dom.getDate()))) {
+						afterConverter.merge(beforeItems.get(Pair.of(dom.getEmployeeId(), dom.getDate())));
+					}
+					val domDailyforLog = afterConverter.toDomain();
+					forlog.add(domDailyforLog);
+				}
+				dataParent.setDailyOldForLog(forlog.stream().map(c->DailyRecordDto.from(c, optionalMaster)).collect(Collectors.toList()));
+				
+				
 				//日別実績の計算
 				DailyCalcResult daiCalcResult = processDailyCalc.processDailyCalc(
 						new DailyCalcParam(mapSidDate, dataParent.getLstNotFoundWorkType(), resultOlds,
