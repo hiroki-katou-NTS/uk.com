@@ -32,12 +32,12 @@ import nts.uk.ctx.at.function.app.nrlremote.SendToNRLRemote;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.DeleteRequestSettingTRAdapter;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.FuncEmpInfoTerminalImport;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.RQEmpInfoTerminalAdapter;
-import nts.uk.ctx.at.function.dom.adapter.stamp.FuncStampCardAdapter;
-import nts.uk.ctx.at.function.dom.adapter.stamp.StampCard;
-import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.AuthenticateNRCommunicationQuery;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.ReqComStatusMonitoringAdapter;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.SendNRDataAdapter;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.SendTimeRecordSettingImport;
+import nts.uk.ctx.at.function.dom.adapter.stamp.FuncStampCardAdapter;
+import nts.uk.ctx.at.function.dom.adapter.stamp.StampCard;
+import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.AuthenticateNRCommunicationQuery;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.ContractCode;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.EmpInfoTerComAbPeriod;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
@@ -45,6 +45,7 @@ import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.EmpInfoTer
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.RecordCommunicationStatus;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.repo.EmpInfoTerComAbPeriodRepository;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.repo.EmpInfoTerminalComStatusRepository;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.repo.TimeRecordSetUpdateListRepository;
 import nts.uk.shr.com.system.property.UKServerSystemProperties;
 import nts.uk.shr.infra.data.TenantLocatorService;
 
@@ -109,6 +110,9 @@ public class RequestDispatcher {
 	
 	@Inject
 	private DeleteRequestSettingTRAdapter deleteRequestSettingTRAdapter;
+	
+	@Inject
+	private TimeRecordSetUpdateListRepository timeRecordSetUpdateListRepository;
 	
 	/**
 	 * Ignite.
@@ -260,6 +264,11 @@ public class RequestDispatcher {
 		public void removeAllSetting(String empInfoTerCode, String contractCode) {
 			deleteRequestSettingTRAdapter.remove(empInfoTerCode, contractCode).run();
 		}
-		
+
+		@Override
+		public void deleteNRRemote(String empInfoTerCode, String contractCode) {
+			timeRecordSetUpdateListRepository.delete(empInfoTerCode, contractCode);
+		}
+
 	}
 }

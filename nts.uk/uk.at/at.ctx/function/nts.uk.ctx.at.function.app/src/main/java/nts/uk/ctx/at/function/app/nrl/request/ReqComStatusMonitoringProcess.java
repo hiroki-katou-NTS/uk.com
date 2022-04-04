@@ -25,6 +25,9 @@ public class ReqComStatusMonitoringProcess {
 				&& checkFinish(require, command, contractCode, terminalCode)) {
 			if (!command.simple()) {
 				require.removeAllSetting(terminalCode, contractCode);
+				if(command == Command.TR_REMOTE) {
+					require.deleteNRRemote(terminalCode, contractCode);
+				}
 			}
 			require.updateReqComStatusMonitor(contractCode, terminalCode, false);
 		}
@@ -96,6 +99,9 @@ public class ReqComStatusMonitoringProcess {
 
 		//DeleteRequestSettingTRAdapter
 		public void removeAllSetting(String empInfoTerCode, String contractCode);
+		
+		//TimeRecordSetUpdateListRepository
+		public void deleteNRRemote(String empInfoTerCode, String contractCode);
 	}
 
 }
