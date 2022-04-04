@@ -80,6 +80,8 @@ public class MonthlyAttendanceItem extends AggregateRoot {
 		this.primitiveValue = memento.getPrimitiveValue();
 		this.displayName = memento.getDisplayName();
 		this.twoMonthlyDisplay = memento.getTwoMonthlyDisplay();
+		this.useAnyPeriod = memento.getUseAnyPeriod();
+		this.useMonthResult = memento.getUseMonthResult();
 	}
 
 	/**
@@ -98,6 +100,8 @@ public class MonthlyAttendanceItem extends AggregateRoot {
 		memento.setPrimitiveValue(this.primitiveValue);
 		memento.setDisplayName(this.displayName);
 		memento.setTwoMonthlyDisplay(this.twoMonthlyDisplay);
+		memento.setUseAnyPeriod(this.useAnyPeriod);
+		memento.setUseMonthResult(this.useMonthResult);
 	}
 
 	/* (non-Javadoc)

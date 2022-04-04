@@ -3,6 +3,8 @@ package nts.uk.ctx.exio.app.command.exo.outputitem;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.Value;
 import nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting.AtWorkClsDfsCommand;
 import nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting.CharacterDfsCommand;
@@ -11,8 +13,9 @@ import nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting.InstantTimeD
 import nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting.NumberDfsCommand;
 import nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting.TimeDfsCommand;
 
-@Value
 @Getter
+@Setter
+@NoArgsConstructor
 public class StdOutItemCommand {
 	private boolean isNewMode;
 	/**

@@ -181,7 +181,7 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 		itemIds.addAll(lstHeader.keySet());
 		List<KfnmtAuthorityMonthlyItem> items = this.getListAuthorityFormatDailyByCollection(companyId, formatCodes)
 				.stream().map(x -> toEntity(x)).collect(Collectors.toList());
-		List<KfnmtAuthorityMonthlyItem> entities = items.stream()
+		List<KfnmtAuthorityMonthlyItem> entities = items.stream().filter(x->lstHeader.get(x.kfnmtAuthorityMonthlyItemPK.attendanceItemId)!= null)
 				.map(x -> new KfnmtAuthorityMonthlyItem(x.kfnmtAuthorityMonthlyItemPK, x.displayOrder,
 						new BigDecimal(lstHeader.get(x.kfnmtAuthorityMonthlyItemPK.attendanceItemId))))
 				.collect(Collectors.toList());

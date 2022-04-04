@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class AnyItemByPeriodDto implements ItemConst, AttendanceItemDataGate {
 
     /** 任意項目値: 集計任意項目 */
-    @AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = OPTIONAL_ITEM_VALUE, listMaxLength = 200, indexField = DEFAULT_INDEX_FIELD_NAME)
+    @AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = OPTIONAL_ITEM_VALUE, listMaxLength = 100, indexField = DEFAULT_INDEX_FIELD_NAME)
     private List<OptionalItemValueDto> anyItemValues = new ArrayList<>();
 
     public AnyItemByPeriod toDomain() {
@@ -73,7 +73,7 @@ public class AnyItemByPeriodDto implements ItemConst, AttendanceItemDataGate {
     @Override
     public int size(String path) {
         if (OPTIONAL_ITEM_VALUE.equals(path)) {
-            return 200;
+            return 100;
         }
         return AttendanceItemDataGate.super.size(path);
     }
