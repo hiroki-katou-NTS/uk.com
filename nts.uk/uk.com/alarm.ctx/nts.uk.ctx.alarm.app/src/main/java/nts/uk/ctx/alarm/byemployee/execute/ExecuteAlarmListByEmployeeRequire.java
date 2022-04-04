@@ -110,7 +110,7 @@ public class ExecuteAlarmListByEmployeeRequire {
 		}
 
 		@Override
-		public Optional<WorkType> get(String workTypeCode) {
+		public Optional<WorkType> getWorkType(String workTypeCode) {
 			return workTypeRepo.findByPK(this.companyId, workTypeCode);
 		}
 
