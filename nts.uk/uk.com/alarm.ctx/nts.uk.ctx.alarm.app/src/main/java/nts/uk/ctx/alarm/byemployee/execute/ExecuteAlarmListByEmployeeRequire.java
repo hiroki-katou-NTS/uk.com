@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -14,6 +15,7 @@ import javax.inject.Inject;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.alarm.dom.AlarmListCheckerCode;
@@ -23,7 +25,13 @@ import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmploye
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.execute.ExecuteAlarmListByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.pattern.AlarmListPatternByEmployee;
+import nts.uk.ctx.at.aggregation.dom.adapter.dailyrecord.DailyRecordAdapter;
+import nts.uk.ctx.at.aggregation.dom.adapter.workschedule.WorkScheduleAdapter;
+import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
+import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -42,7 +50,13 @@ public class ExecuteAlarmListByEmployeeRequire {
 	
 	@Inject
 	private WorkingConditionRepository workingConditionRepo;
-	
+
+    @Inject
+    private WorkScheduleAdapter workScheduleAdapter;
+
+    @Inject
+    private DailyRecordAdapter dailyRecordAdapter;
+
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(AppContexts.user().companyId()));
     }
@@ -104,5 +118,28 @@ public class ExecuteAlarmListByEmployeeRequire {
         public boolean existsWorkTime(WorkTimeCode workTimeCode) {
             return false;
         }
+
+        @Override
+        public int getBaseUnitPrice(GeneralDate date, String employeeId) {
+            return 0;
+        }
+
+        @Override
+        public List<IntegrationOfDaily> getIntegrationOfDaily(DatePeriod period, String employeeId) {
+            return DailyAttendanceGettingService.get(
+                    new DailyAttendanceGettingService.Require() {
+                        @Override
+                        public List<IntegrationOfDaily> getSchduleList(List<EmployeeId> list, DatePeriod datePeriod) {
+                            return workScheduleAdapter.getList(Arrays.asList(employeeId), period);
+                        }
+                        @Override
+                        public List<IntegrationOfDaily> getRecordList(List<EmployeeId> list, DatePeriod datePeriod) {
+                            return dailyRecordAdapter.getDailyRecordByScheduleManagement(Arrays.asList(employeeId), period);
+                        }
+                    },
+                    Arrays.asList(new EmployeeId(employeeId)),
+                    period,
+                    ScheRecGettingAtr.SCHEDULE_WITH_RECORD
+            ).get(ScheRecGettingAtr.SCHEDULE_WITH_RECORD);
     }
 }
