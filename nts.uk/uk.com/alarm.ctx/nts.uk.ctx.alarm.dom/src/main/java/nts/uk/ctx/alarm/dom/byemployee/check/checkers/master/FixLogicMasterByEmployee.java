@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
-import nts.uk.ctx.at.shared.dom.workingcondition.service.IsExistWeekdayWorkType;
+import nts.uk.ctx.at.shared.dom.workingcondition.service.GetNotExistWeekDayWorkType;
 
 /**
  *固定のチェック条件(社員別・マスタ) 
@@ -37,7 +37,7 @@ public enum FixLogicMasterByEmployee {
 	}
 	
 	private static List<AlarmRecordByEmployee> checkWeekdayWorkType(Context context){
-		val checkResults = IsExistWeekdayWorkType.GetNotExistWeekDayWorkType(context.require, context.employeeId);
+		val checkResults = GetNotExistWeekDayWorkType.get(context.require, context.employeeId);
 		return checkResults
 				.entrySet()
 				.stream()
@@ -81,7 +81,7 @@ public enum FixLogicMasterByEmployee {
         }
     }
     
-    public interface RequireCheck extends IsExistWeekdayWorkType.Require{
+    public interface RequireCheck extends GetNotExistWeekDayWorkType.Require{
 
     }
 }

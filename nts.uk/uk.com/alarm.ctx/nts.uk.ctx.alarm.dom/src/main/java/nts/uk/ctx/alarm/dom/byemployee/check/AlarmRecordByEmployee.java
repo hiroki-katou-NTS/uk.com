@@ -1,7 +1,9 @@
 package nts.uk.ctx.alarm.dom.byemployee.check;
 
 import lombok.Value;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeErAlData;
 
 /**
  * アラーム検出情報(社員別)
@@ -26,4 +28,22 @@ public class AlarmRecordByEmployee {
 
     /** メッセージ */
     String message;
+
+    public ExtractEmployeeErAlData toPersist(String executeId) {
+        String recordId = IdentifierUtil.randomUniqueId();
+        String comment = "";
+        String endDate = "";
+        return new ExtractEmployeeErAlData(
+                executeId,
+                employeeId,
+                recordId,
+                date,
+                category.value,
+                category.categoryName(),
+                checkItemName,
+                message,
+                comment,
+                alarmCondition,
+                endDate);
+    }
 }

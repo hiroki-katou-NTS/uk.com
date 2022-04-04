@@ -79,6 +79,5 @@ public class ScheduleMonthlyCheckerByEmployee implements DomainAggregate, AlarmL
         int getBaseUnitPrice(GeneralDate date, String employeeId);
         List<IntegrationOfDaily> getIntegrationOfDaily(DatePeriod period, String employeeId);
         List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, DatePeriod period);
-        Double getBaseTime(GeneralDate date, String employeeId);
     }
 }

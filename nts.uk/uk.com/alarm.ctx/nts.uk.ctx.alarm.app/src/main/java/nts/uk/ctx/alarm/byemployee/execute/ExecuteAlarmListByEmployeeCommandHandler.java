@@ -7,7 +7,7 @@ import nts.arc.task.tran.TransactionService;
 import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.AlarmListPatternCode;
 import nts.uk.ctx.alarm.dom.byemployee.check.AlarmRecordByEmployee;
-import nts.uk.ctx.alarm.dom.byemployee.execute.ExecuteAlarmListByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.execute.ExecutePersistAlarmListByEmployee;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -34,9 +34,8 @@ public class ExecuteAlarmListByEmployeeCommandHandler extends CommandHandlerWith
         val patternCode = new AlarmListPatternCode("001");
         List<String> targetEmployeeIds = Arrays.asList();
 
-        val alarmRecords = ExecuteAlarmListByEmployee.execute(require, patternCode, targetEmployeeIds);
-
-        return IteratorUtil.toList(alarmRecords);
+        //val alarmRecords = ExecutePersistAlarmListByEmployee.execute(require, patternCode, targetEmployeeIds);
+        return null;
     }
 
 

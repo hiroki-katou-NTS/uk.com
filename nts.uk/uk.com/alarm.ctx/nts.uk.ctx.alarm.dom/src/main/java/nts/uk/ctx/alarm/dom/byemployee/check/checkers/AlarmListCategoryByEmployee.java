@@ -1,13 +1,26 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * アラームリストのカテゴリ
  */
+@RequiredArgsConstructor
 public enum AlarmListCategoryByEmployee {
 
-    SCHEDULE_MONTHLY,
+    SCHEDULE_MONTHLY(1),
 
-    DAILY,
+    DAILY(2),
     
-    MASTER,
+    MASTER(3),
+    	
+    APPLICATION_APPROVAL(4),
+
+    ;
+
+    public final int value;
+
+    public String categoryName() {
+        return "";
+    }
 }

@@ -23,13 +23,18 @@ import nts.uk.ctx.alarm.dom.AlarmListPatternCode;
 import nts.uk.ctx.alarm.dom.byemployee.check.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
-import nts.uk.ctx.alarm.dom.byemployee.execute.ExecuteAlarmListByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.execute.ExecutePersistAlarmListByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.pattern.AlarmListPatternByEmployee;
 import nts.uk.ctx.at.aggregation.dom.adapter.dailyrecord.DailyRecordAdapter;
 import nts.uk.ctx.at.aggregation.dom.adapter.workschedule.WorkScheduleAdapter;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.AlarmListExtractResult;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeErAlData;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
@@ -38,6 +43,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 import nts.uk.shr.com.context.AppContexts;
 
 
@@ -56,12 +62,17 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private DailyRecordAdapter dailyRecordAdapter;
+	
+	@Inject
+	private ApplicationRepository applicatoinRepo;
 
     public Require create() {
-        return EmbedStopwatch.embed(new RequireImpl(AppContexts.user().companyId()));
+        return EmbedStopwatch.embed(new RequireImpl(
+                AppContexts.user().companyId(),
+                AppContexts.user().employeeId()));
     }
 
-    public interface Require extends ExecuteAlarmListByEmployee.Require {
+    public interface Require extends ExecutePersistAlarmListByEmployee.Require {
 
         // テスト用
         List<AlarmRecordByEmployee> getAlarms();
@@ -71,13 +82,35 @@ public class ExecuteAlarmListByEmployeeRequire {
     public class RequireImpl implements Require {
 
     	private final String companyId;
+
+        private final String loginEmployeeId;
     	
         @Getter
         private List<AlarmRecordByEmployee> alarms = new ArrayList<>();
 
         @Override
+        public String getCompanyId() {
+            return companyId;
+        }
+
+        @Override
+        public String getLoginEmployeeId() {
+            return loginEmployeeId;
+        }
+
+        @Override
         public Optional<AlarmListPatternByEmployee> getAlarmListPatternByEmployee(AlarmListPatternCode patternCode) {
             return Optional.empty();
+        }
+
+        @Override
+        public void save(AlarmListExtractResult result) {
+
+        }
+
+        @Override
+        public void save(ExtractEmployeeErAlData alarm) {
+
         }
 
         @Override
@@ -90,23 +123,14 @@ public class ExecuteAlarmListByEmployeeRequire {
 			return workingConditionRepo.getWorkingConditionItemWithPeriod(this.companyId, Arrays.asList(employeeId), period);
 		}
 
-		@Override
-		public Optional<WorkType> get(String workTypeCode) {
-			return workTypeRepo.findByPK(this.companyId, workTypeCode);
-		}
-        @Override
-        public void save(AlarmRecordByEmployee alarmRecord) {
-            alarms.add(alarmRecord);
-        }
-
-        @Override
-        public void save(List<AlarmRecordByEmployee> alarmRecords) {
-            alarms.addAll(alarmRecords);
-        }
-
         @Override
         public Optional<IntegrationOfDaily> getIntegrationOfDaily(String employeeId, GeneralDate date) {
             return Optional.empty();
+        }
+
+        @Override
+        public List<ApprovalRootStateStatus> getApprovalRootStateByPeriod(String employeeId, DatePeriod period) {
+            return null;
         }
 
         @Override
@@ -132,6 +156,7 @@ public class ExecuteAlarmListByEmployeeRequire {
                         public List<IntegrationOfDaily> getSchduleList(List<EmployeeId> list, DatePeriod datePeriod) {
                             return workScheduleAdapter.getList(Arrays.asList(employeeId), period);
                         }
+
                         @Override
                         public List<IntegrationOfDaily> getRecordList(List<EmployeeId> list, DatePeriod datePeriod) {
                             return dailyRecordAdapter.getDailyRecordByScheduleManagement(Arrays.asList(employeeId), period);
@@ -141,5 +166,16 @@ public class ExecuteAlarmListByEmployeeRequire {
                     period,
                     ScheRecGettingAtr.SCHEDULE_WITH_RECORD
             ).get(ScheRecGettingAtr.SCHEDULE_WITH_RECORD);
+        }
+
+        @Override
+        public String getItemName(Integer attendanceItemId) {
+            return null;
+        }
+
+        @Override
+		public List<Application> getApplicationBy(String employeeId, GeneralDate targetDate, ReflectedState states) {
+			return applicatoinRepo.getByListRefStatus(this.companyId, employeeId, targetDate, targetDate, Arrays.asList(states.value));
+		}
     }
 }
