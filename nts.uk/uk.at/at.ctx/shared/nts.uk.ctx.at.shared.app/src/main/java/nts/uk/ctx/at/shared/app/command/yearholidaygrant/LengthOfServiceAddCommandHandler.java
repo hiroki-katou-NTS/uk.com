@@ -42,7 +42,7 @@ public class LengthOfServiceAddCommandHandler extends CommandHandler<List<GrantH
 		validateViewData(companyId, command);
 		// Remove items case
 		lengthServiceRepository.remove(companyId, command.get(0).getYearHolidayCode());
-		grantYearHolidayRepo.remove(companyId, command.get(0).getYearHolidayCode());
+		grantYearHolidayRepo.remove(companyId, command.get(0).getConditionNo(), command.get(0).getYearHolidayCode());
 		// add data
 		command.forEach(item -> {
 
