@@ -67,7 +67,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			+ " FROM BsymtEmployeeDataMngInfo e "
 			+ " INNER JOIN BsymtAffCompanyHist h ON e.bsymtEmployeeDataMngInfoPk.pId = h.bsymtAffCompanyHistPk.pId "
 			+ " INNER JOIN BpsmtPerson ps ON  e.bsymtEmployeeDataMngInfoPk.pId = ps.bpsmtPersonPk.pId "
-			+ " WHERE e.companyId = :companyId AND h.startDate <= :baseDate AND h.endDate >= :baseDate ";
+			+ " WHERE e.companyId = :companyId AND h.startDate <= :baseDate AND h.endDate >= :baseDate AND e.delStatus = 0 ";
 
 	private static final String GET_LAST_EMPLOYEE = "SELECT c.employeeCode FROM BsymtEmployeeDataMngInfo c "
 			+ " WHERE c.companyId = :companyId AND c.delStatus = 0 AND c.employeeCode LIKE CONCAT(:emlCode, '%')"
