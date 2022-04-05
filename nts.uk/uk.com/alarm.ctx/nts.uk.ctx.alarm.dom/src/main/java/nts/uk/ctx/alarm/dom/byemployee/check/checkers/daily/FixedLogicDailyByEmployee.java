@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -11,10 +12,10 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.IteratorUtil;
-import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.alarm.dom.byemployee.check.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodDaily;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
@@ -22,7 +23,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.DailyConfirmAtr;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
-import org.apache.commons.lang3.tuple.Pair;
 
 
 /**
@@ -31,11 +31,11 @@ import org.apache.commons.lang3.tuple.Pair;
 @RequiredArgsConstructor
 public enum FixedLogicDailyByEmployee {
 
-    勤務種類未登録(1, c -> checkIntegrationOfDaily(
-                c, iod -> iod.getWorkInformation().getRecordInfo().getWorkTypeCode(), code -> c.require.existsWorkType(code))),
+    勤務種類未登録(1, c -> alarmToIntegrationOfDaily(
+            c, (iod) -> c.require.existsWorkType(iod.getWorkInformation().getRecordInfo().getWorkTypeCode()))),
 
-    就業時間帯未登録(2, c -> checkIntegrationOfDaily(
-                c, iod -> iod.getWorkInformation().getRecordInfo().getWorkTimeCode(), code -> c.require.existsWorkTime(code))),
+    就業時間帯未登録(2, c -> alarmToIntegrationOfDaily(
+            c, (iod) -> c.require.existsWorkTime(iod.getWorkInformation().getRecordInfo().getWorkTimeCode()))),
     
     手入力(3, c -> {        
         return IteratorUtil.iterableFlatten(c.period.datesBetween(), date -> {
@@ -45,8 +45,8 @@ public enum FixedLogicDailyByEmployee {
         });
     }),
 
-    未計算(3, c -> checkIntegrationOfDaily(
-            c, iod -> iod.getWorkInformation().getCalculationState(), calcState -> calcState.equals(CalculationState.No_Calculated))),
+    未計算(3, c -> alarmToIntegrationOfDaily(
+            c, iod -> iod.getWorkInformation().getCalculationState().equals(CalculationState.No_Calculated))),
 
     管理者未承認(4, c -> {
         val approvalState = c.require.getApprovalRootStateByPeriod(c.employeeId, c.period);
@@ -55,6 +55,8 @@ public enum FixedLogicDailyByEmployee {
                 .map(state -> c.alarm(state.getDate()))
                 .iterator();
     }),
+    
+    本人未確認(5, c-> alarm(c, date -> c.require.getIdentification(c.employeeId, date).isPresent()))
 
     ;
 
@@ -92,27 +94,40 @@ public enum FixedLogicDailyByEmployee {
     public Context createContext(RequireCheck require, String employeeId, CheckingPeriodDaily checkingPeriod, String message) {
         return new Context(require, employeeId, checkingPeriod.calculatePeriod(require, employeeId), message);
     }
-
+    
     /**
-     * IntegrationOfDaily(日別実績)の整合性チェック
+     * IntegrationOfDaily(日別実績）からアラームを発生させるメソッド
+     * @param <T>
      * @param context
-     * @param check
-     * @return
+     * @param checker
+     * @return 
      */
-    private static <T> Iterable<AlarmRecordByEmployee> checkIntegrationOfDaily(
+    private static <T> Iterable<AlarmRecordByEmployee> alarmToIntegrationOfDaily(
             Context context,
-            Function<IntegrationOfDaily, T> fetch,
-            Function<T, Boolean> check) {
-
+            Function<IntegrationOfDaily, Boolean> checker) {
+        return alarm(context, (date) -> {
+            return context.require.getIntegrationOfDaily(context.employeeId, date)
+                    .map(iod -> checker.apply(iod)).orElse(Boolean.FALSE);
+        });
+    }
+    
+    /**
+     * 日付からアラームを発生させるメソッド
+     * @param <T>
+     * @param context
+     * @param checker
+     * @return 
+     */
+    private static <T> Iterable<AlarmRecordByEmployee> alarm(
+            Context context,
+            Predicate<GeneralDate> checker) {
         return () -> context.period.stream()
-                .map(date ->  context.require.getIntegrationOfDaily(context.employeeId, date))
-                .flatMap(OptionalUtil::stream)
-                .map(iod -> Pair.of(iod, check.apply(fetch.apply(iod))))
-                .filter(p -> !p.getRight())
-                .map(p -> context.alarm(p.getLeft().getYmd()))
+                .filter(checker)
+                .map(date -> context.alarm(date))
                 .iterator();
     }
     
+            
     @Value
     private class Context {
         RequireCheck require;
@@ -146,6 +161,8 @@ public enum FixedLogicDailyByEmployee {
         Optional<IntegrationOfDaily> getIntegrationOfDaily(String employeeId, GeneralDate date);
 
         List<ApprovalRootStateStatus> getApprovalRootStateByPeriod(String employeeId, DatePeriod period);
+        
+        Optional<Identification> getIdentification(String employeeId, GeneralDate date);
 
         boolean existsWorkType(WorkTypeCode workTypeCode);
 
