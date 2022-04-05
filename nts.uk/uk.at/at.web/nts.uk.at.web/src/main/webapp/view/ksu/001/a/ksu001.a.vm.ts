@@ -1123,11 +1123,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 if (objShiftMasterWithWorkStyle.length > 0) {
                                     let color = '#' + objShiftMasterWithWorkStyle[0].color;
                                     detailContentDecoShift.push(new CellColor('_' + ymd, rowId, color, 0));
-                                } else {
-                                    detailContentDecoShift.push(new CellColor('_' + ymd, rowId, "background-white", 0));
                                 }
-                            } else {
-                                detailContentDecoShift.push(new CellColor('_' + ymd, rowId, "background-white", 0));
                             }
                         }
 
@@ -1150,11 +1146,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 if (objShiftMasterWithWorkStyle.length > 0) {
                                     let color = '#' + objShiftMasterWithWorkStyle[0].color;
                                     detailContentDecoModeConfirmShift.push(new CellColor('_' + ymd, rowId, color, 0));
-                                } else {
-                                    detailContentDecoModeConfirmShift.push(new CellColor('_' + ymd, rowId, "background-white", 0));
                                 }
-                            } else {
-                                detailContentDecoModeConfirmShift.push(new CellColor('_' + ymd, rowId, "background-white", 0));
                             }
                         }
                         
@@ -6060,6 +6052,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             setShared("dataFromA", param);
             setShared("dataTooltip", self.tooltipShare);
             nts.uk.ui.windows.sub.modal("/view/ksu/003/a/index.xhtml").onClosed(() => { 
+                $('#main-area').scrollTop(0);
                 let result = getShared('status-result');
                 if (!_.isNil(result) && result == true ) {
                     self.updateGrid();
