@@ -211,6 +211,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
                 
             })
+            self.selectedTab.valueHasMutated();
             self.isPreAtr.subscribe((value) => {
                 if (!_.isNull(value) && self.mode() == 0) {
                     self.loadAll();
@@ -715,7 +716,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                     { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: 140 },
                     {
                         headerText: self.$i18n('KAF002_81'), key: 'workplaceId', dataType: 'string', width: 230,
-                        ntsControl: 'Button_WorkPlace', hidden: true, //self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0,
+                        ntsControl: 'Button_WorkPlace', hidden: self.selectedTemp() === STAMPTYPE.ATTENDENCE, //self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0,
                     },
                     {
                         headerText: self.$i18n('KAF002_82'), key: 'workLocationCD', dataType: 'string', width: 230,

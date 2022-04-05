@@ -366,7 +366,7 @@
               <div class="card-body">
                 <nts-time-range-input class="mb-1" v-model="itemSP.workHours" v-bind:showTile="false" v-bind:disabled="checkboxSP.filter((x) => x === itemSP.frame).length > 0 && condition2" />
                 <div class="mt-1 mb-1">
-                  <template v-if="false"> <!-- condition14 --> 
+                  <template v-if="condition14">
                     <!-- A12_5 -->
                     <span class="uk-text-dark-gray fs-smaller">{{ "KAFS02_33" | i18n }}</span>
                     <!-- A12_6 -->
