@@ -1858,19 +1858,14 @@ public class DailyPerformanceCorrectionProcessor {
 		InitialDisplayEmployeeDto result = screenDto.getStateParam() != null ? new InitialDisplayEmployeeDto(lstEmployeeId, screenDto.getStateParam()) :
 			new InitialDisplayEmployeeDto(lstEmployeeId, new DPCorrectionStateParam(range, employeeIds, mode, 
 					new ArrayList<>(), null, null, isTranfer, new ArrayList<>(), new ArrayList<>()));
-		boolean isAddSidLogin = true;
-		if(!employeeIdLogin.isEmpty())
-			isAddSidLogin = employeeIds.stream().anyMatch(x -> x.equals(employeeIdLogin));
 		
 		if( mode == ScreenMode.NORMAL.value) {
 			// 応援者の情報をOutputにセットする - No4281
 			result.getParam().setLstWrkplaceId(lstWpklIdCcg001.isEmpty() ? lstWplId : lstWpklIdCcg001);
 			
 			List<String> lstEmp597 = lstInfoEmp.stream().map(x -> x.getSid()).collect(Collectors.toList());
-			//if(!isAddSidLogin)
-			//lstEmp597 = lstEmp597.stream().filter(x -> !x.equals(employeeIdLogin)).collect(Collectors.toList());
-				
 			result.getParam().setEmployeeIds(lstEmp597);
+			
 			result.getParam().setLstEmpSelect(employeeIds);
 		}
 		
@@ -1886,8 +1881,6 @@ public class DailyPerformanceCorrectionProcessor {
 			Optional<Role> role = roleRepository.findByRoleId(AppContexts.user().roles().forAttendance());
 			if (!role.isPresent() || role.get().getEmployeeReferenceRange() == null || role.get()
 					.getEmployeeReferenceRange() == nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange.ONLY_MYSELF) {
-				
-				if (isAddSidLogin)
 				result.setLstEmpId(Arrays.asList(employeeIdLogin));
 				return result;
 			}
@@ -1908,18 +1901,12 @@ public class DailyPerformanceCorrectionProcessor {
 //				
 //				lstEmployeeId = narrowEmployeeAdapter.findByEmpId(listEmp, 3);
 			if (lstInfoEmp.isEmpty()) {
-				
-				if (isAddSidLogin)
 				result.setLstEmpId(Arrays.asList(employeeIdLogin));
-				
 				return result;
 			}
 			
 			lstEmployeeId = lstInfoEmp.stream().map(x -> x.getSid()).distinct().collect(Collectors.toList());
-			
-			if (isAddSidLogin)
 			lstEmployeeId.add(employeeIdLogin);
-			
 			lstEmployeeId = lstEmployeeId.stream().distinct().collect(Collectors.toList());
 //			if (closureId != null) {
 //				Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, lstEmployeeId,
