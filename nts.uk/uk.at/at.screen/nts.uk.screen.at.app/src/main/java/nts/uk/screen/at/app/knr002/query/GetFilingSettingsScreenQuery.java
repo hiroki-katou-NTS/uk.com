@@ -1,8 +1,10 @@
 package nts.uk.screen.at.app.knr002.query;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -45,11 +47,14 @@ public class GetFilingSettingsScreenQuery {
 		List<OvertimeWorkFrame> optionalOvertimeWorkFrames = overtimeWorkFrameRepository
 				.getOvertimeWorkFrameByFrameByCom(companyId, 1);
 		List<OvertimeWorkFrameDto> optionalOvertimeWorkFrameDto = this
-				.toOvertimeWorkFrameDto(optionalOvertimeWorkFrames);
+				.toOvertimeWorkFrameDto(optionalOvertimeWorkFrames).stream()
+				.sorted(Comparator.comparingInt(e -> e.getOvertimeWorkFrNo().intValue())).collect(Collectors.toList());
 
 		// Step 2: get 休出枠 with ログイン会社ID、使用区分＝する
 		List<WorkdayoffFrame> optionalWorkdayoffFrames = workdayoffFrameRepository.findByUseAtr(companyId, 1);
-		List<WorkdayoffFrameDto> optionalWorkdayoffFrameDto = this.toWorkdayoffFrameDto(optionalWorkdayoffFrames);
+		List<WorkdayoffFrameDto> optionalWorkdayoffFrameDto = this.toWorkdayoffFrameDto(optionalWorkdayoffFrames)
+				.stream().sorted(Comparator.comparingInt(e -> e.getWorkdayoffFrNo().intValue()))
+				.collect(Collectors.toList());
 
 		// Step 3: get 申告設定 with ログイン会社ID
 		Optional<DeclareSet> optionalDeclareSet = declareSetRepository.find(companyId);

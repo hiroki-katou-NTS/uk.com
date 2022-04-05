@@ -10,17 +10,22 @@ module nts.uk.at.view.knr001.b.viewmodel {
       vm.name = name;
     }
   }
+
+  enum IS_USED {
+    No = 0,
+    Yes = 1,
+  }
   export class ScreenModel extends ko.ViewModel {
     // Start: Init variable
     selectFirstIfNull: KnockoutObservable<boolean> = ko.observable(true);
     usageAtrSwitchList: KnockoutObservableArray<any>;
-    usageAtr: KnockoutObservable<number> = ko.observable(0);
+    usageAtr: KnockoutObservable<number> = ko.observable(IS_USED.No);
 
     frameSetItemList: KnockoutObservableArray<any>;
-    frameSet: KnockoutObservable<number> = ko.observable(0);
+    frameSet: KnockoutObservable<number> = ko.observable(IS_USED.Yes);
 
     midnightAutoCalcSwitchList: KnockoutObservableArray<any>;
-    midnightAutoCalc: KnockoutObservable<number> = ko.observable(0);
+    midnightAutoCalc: KnockoutObservable<number> = ko.observable(IS_USED.Yes);
 
     earlyOvertime: KnockoutObservable<number> = ko.observable(0);
     earlyOvertimeMn: KnockoutObservable<number> = ko.observable(0);
@@ -47,7 +52,12 @@ module nts.uk.at.view.knr001.b.viewmodel {
       vm.midnightAutoCalc.valueHasMutated();
       vm.usageAtr.subscribe(value => {
         vm.usageAtr(value);
-      })
+      });
+      vm.frameSet.subscribe(() => {
+        if (vm.frameSet() == IS_USED.Yes) {
+          vm.midnightAutoCalc(IS_USED.Yes);
+        }
+      });
     }
 
     /**
