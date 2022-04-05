@@ -87,12 +87,15 @@ public enum TimeBase60Delimiter {
 	private Either<ErrorMessage, Integer> convertDelimiter(String target) {
 		// 区切り文字で文字列を2分割
 		String[] strParts = target.split(character);
-		
-		if (strParts.length != 2) {
+
+		if (strParts.length > 1) {
+
+			return convert(strParts[0], strParts[1]);
+		} else {
+
 			return Either.left(new ErrorMessage("時間の区切り文字が正しく含まれていません。"));
 		}
-		
-		return convert(strParts[0], strParts[1]);
+
 	}
 
 	private static Either<ErrorMessage, Integer> convert(String hourString, String minString) {
