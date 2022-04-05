@@ -1874,6 +1874,7 @@ public class DailyPerformanceCorrectionProcessor {
 			
 			if(!employeeIds.isEmpty()) {
 				result.setLstEmpId(employeeIds);
+				result.getParam().getEmployeeIds().addAll(employeeIds);
 				return result;
 			}
 			//社員参照範囲を取得する

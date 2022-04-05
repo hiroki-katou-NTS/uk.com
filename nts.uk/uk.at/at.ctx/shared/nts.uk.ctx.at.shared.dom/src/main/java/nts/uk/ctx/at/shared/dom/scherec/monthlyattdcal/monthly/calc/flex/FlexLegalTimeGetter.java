@@ -31,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworking
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyFlexStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryLaborDivisionService;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -188,6 +189,16 @@ public class FlexLegalTimeGetter {
 					new MonthlyEstimateTime(prescribedTime),
 					workingTime.getWeekAveSetting());
 		}
+		
+		/** 社員の労働条件を取得する */
+		val workCondition = require.workingConditionItem(sid, ym.lastGeneralDate());
+		if (workCondition.map(c -> c.getLaborSystem() != WorkingSystem.FLEX_TIME_WORK).orElse(true))
+			return new MonthlyFlexStatutoryLaborTime(
+					new MonthlyEstimateTime(0),
+					new MonthlyEstimateTime(0),
+					new MonthlyEstimateTime(0));
+			
+			
 		// 月別実績の勤怠時間を取得する
 		val attendanceTime = require.attendanceTimeOfMonthly(sid, ym, closureId, closureDate);
 		return attendanceTime.map(c -> {

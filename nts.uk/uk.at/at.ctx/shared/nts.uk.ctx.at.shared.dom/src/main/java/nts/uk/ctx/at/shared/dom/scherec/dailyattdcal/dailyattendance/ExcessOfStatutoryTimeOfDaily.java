@@ -354,17 +354,12 @@ public class ExcessOfStatutoryTimeOfDaily {
 			&& this.getWorkHolidayTime().get().getHolidayMidNightWork().isPresent()) {
 			holidayMidTime = this.getWorkHolidayTime().get().getHolidayMidNightWork().get().calcAllMidTime();
 		}
-		int temporaryMidnMinutes = 0;
-		if (this.temporaryTime.getTemporaryTime().size() > 0){
-			temporaryMidnMinutes = this.temporaryTime.getTemporaryTime().stream()
-					.mapToInt(c -> c.getTemporaryLateNightTime().valueAsMinutes()).sum();
-		}
 		this.excessOfStatutoryMidNightTime = new ExcessOfStatutoryMidNightTime(
 				TimeDivergenceWithCalculation.createTimeWithCalculation(
 						overMidTime.getTime().getTime().addMinutes(
-								holidayMidTime.getTime().valueAsMinutes() + temporaryMidnMinutes),
+								holidayMidTime.getTime().valueAsMinutes()),
 						overMidTime.getTime().getCalcTime().addMinutes(
-								holidayMidTime.getCalcTime().valueAsMinutes() + temporaryMidnMinutes)),
+								holidayMidTime.getCalcTime().valueAsMinutes())),
 				this.excessOfStatutoryMidNightTime.getBeforeApplicationTime());
 	}
 	
