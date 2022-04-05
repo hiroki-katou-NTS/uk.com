@@ -25,7 +25,7 @@ public class SpecialLeaveGrantNextDateServiceImpl implements SpecialLeaveGrantNe
 		//アルゴリズム「次回特別休暇付与日を取得」を実行
 		SpeGrantNextDateByGetInput inputParam = new SpeGrantNextDateByGetInput(param.getCid(),
 				param.getSpecialCode(),
-				new DatePeriod(startDate, GeneralDate.max()),
+				new DatePeriod(startDate, startDate.addYears(100)),
 				param.getSpecialDate(),
 				param.getSpecialSetting(),
 				param.getSpeGrantDataCode(),
@@ -86,7 +86,7 @@ public class SpecialLeaveGrantNextDateServiceImpl implements SpecialLeaveGrantNe
 					c.getSid(),
 					c.getCid(),
 					c.getSpecialCode(),
-					new DatePeriod(startDate, GeneralDate.max()),
+					new DatePeriod(startDate, startDate.addYears(100)),
 					c.getSpecialDate(),
 					c.getSpecialSetting(),
 					c.getSpeGrantDataCode(),

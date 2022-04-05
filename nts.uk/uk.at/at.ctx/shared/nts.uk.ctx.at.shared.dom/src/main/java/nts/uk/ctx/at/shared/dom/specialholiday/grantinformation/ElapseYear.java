@@ -66,6 +66,13 @@ public class ElapseYear extends AggregateRoot {
 			yearMonth.add(currentYearMonth);
 		}
 		
+		if(isFixedAssign() && grantCycleAfterTbl.isPresent()){
+			if(grantCycleAfterTbl.get().getElapseYearMonth().getYear() == 0 && grantCycleAfterTbl.get().getElapseYearMonth().getMonth() == 0){
+				errors.add("Msg_95");
+			}
+		}
+		
+		
 		return errors;
 	}
 	
