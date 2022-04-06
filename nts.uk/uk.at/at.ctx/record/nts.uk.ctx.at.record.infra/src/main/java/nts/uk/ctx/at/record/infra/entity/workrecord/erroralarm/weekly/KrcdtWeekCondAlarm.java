@@ -8,7 +8,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.C
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ContinuousPeriod;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeekly;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.WeeklyCheckItemType;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareRange;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareSingle;
@@ -59,7 +59,7 @@ public class KrcdtWeekCondAlarm extends ContractUkJpaEntity {
         return this.pk;
     }
 
-    public ExtractionCondScheduleWeekly toDomain(KrcstErAlCompareSingle single, KrcstErAlSingleFixed singleFixed, KrcstErAlCompareRange range){
+    public ExtractionCondWeekly toDomain(KrcstErAlCompareSingle single, KrcstErAlSingleFixed singleFixed, KrcstErAlCompareRange range){
         CheckedCondition checkedCondition = null;
         if (single != null) {
             checkedCondition = new CompareSingleValue<>(single.compareAtr, single.conditionType);
@@ -69,7 +69,7 @@ public class KrcdtWeekCondAlarm extends ContractUkJpaEntity {
             ((CompareRange) checkedCondition).setStartValue(range.startValue);
             ((CompareRange) checkedCondition).setEndValue(range.endValue);
         }
-        return new ExtractionCondScheduleWeekly(
+        return new ExtractionCondWeekly(
         		pk.checkId, checkedCondition, 
         		EnumAdaptor.valueOf(checkType, WeeklyCheckItemType.class),
         		pk.condNo, useAtr,

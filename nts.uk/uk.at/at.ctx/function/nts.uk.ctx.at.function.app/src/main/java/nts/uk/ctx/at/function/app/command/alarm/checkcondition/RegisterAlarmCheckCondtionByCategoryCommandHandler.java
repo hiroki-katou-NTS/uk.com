@@ -27,7 +27,6 @@ import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapterDto;
-import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErAlConAttendanceItemAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErrorAlarmConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ScheMonCondDto;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.WorkTimeConAdapterDto;
@@ -67,7 +66,6 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCon
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCondEvent;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.doevent.MulMonCheckCondDomainEventDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AddSubAttendanceItems;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CountableTarget;
@@ -105,7 +103,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfCon
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfDays;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfTime;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfVacations;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeekly;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeeklyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.WeeklyCheckItemType;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
@@ -1084,7 +1082,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 	 */
 	private void saveScheduleAnyCondWeekly(String companyId, String eralCheckId, List<WorkRecordExtraConAdapterDto> scheAnyCondDays) {
 		String contractCode = AppContexts.user().contractCode();
-		List<ExtractionCondScheduleWeekly> listOptionalItem = extraCondScheWeeklyRepository.getScheAnyCond(contractCode, companyId, eralCheckId);
+		List<ExtractionCondWeekly> listOptionalItem = extraCondScheWeeklyRepository.getScheAnyCond(contractCode, companyId, eralCheckId);
 		
 		int alarmNo = 0;
 		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
@@ -1098,7 +1096,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			ErrorAlarmConAdapterDto errorAlarmCondition = item.getErrorAlarmCondition();
 			ScheMonCondDto monthlyCondition = errorAlarmCondition.getMonthlyCondition();
 			
-			ExtractionCondScheduleWeekly domain = ExtractionCondScheduleWeekly.create(
+			ExtractionCondWeekly domain = ExtractionCondWeekly.create(
 					eralCheckId, item.getSortOrderBy(), item.isUseAtr(), item.getNameWKRecord(),
 					item.getErrorAlarmCondition().getDisplayMessage(),
 					checkItemType,
@@ -1132,7 +1130,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 		}
 		
 		// sync again item when user remove in list
-		for(ExtractionCondScheduleWeekly item: listOptionalItem) {
+		for(ExtractionCondWeekly item: listOptionalItem) {
 			if (!scheAnyCondDays.stream().anyMatch(x -> item.getErrorAlarmId().equals(eralCheckId) && item.getSortOrder() == x.getSortOrderBy())) {
 				extraCondScheWeeklyRepository.delete(contractCode, companyId, eralCheckId, item.getSortOrder());
 			}

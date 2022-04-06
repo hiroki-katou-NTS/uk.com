@@ -5,7 +5,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.A
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CountableTarget;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeekly;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeeklyRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtEralstCndexprange;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlAtdTargetPK;
@@ -44,25 +44,25 @@ public class JpaExtractCondScheduleWeeklyRepository extends JpaRepository implem
 	private static final String BY_COMPARE_RANGE_SINGLE_FIXED_NO = " AND a.krcstEralSingleFixedPK.atdItemConNo = :atdItemConNo ";
 	
     @Override
-    public List<ExtractionCondScheduleWeekly> getAll() {
+    public List<ExtractionCondWeekly> getAll() {
         List<KrcdtWeekCondAlarm> entities = new ArrayList<>();
         return null;
     }
 
 	@Override
-	public List<ExtractionCondScheduleWeekly> getScheAnyCond(String contractCode, String companyId,
-			String eralCheckIds) {
+	public List<ExtractionCondWeekly> getScheAnyCond(String contractCode, String companyId,
+                                                     String eralCheckIds) {
 		List<KrcdtWeekCondAlarm> entities = this.queryProxy().query(SELECT_BASIC + BY_CONTRACT_COMPANY + BY_ERAL_CHECK_ID + ORDER_BY_NO, KrcdtWeekCondAlarm.class)
 				.setParameter("contractCode", contractCode)
 				.setParameter("companyId", companyId)
 				.setParameter("eralCheckIds", eralCheckIds)
 				.getList();
-        List<ExtractionCondScheduleWeekly> domain = new ArrayList<>();
+        List<ExtractionCondWeekly> domain = new ArrayList<>();
     	for(KrcdtWeekCondAlarm item: entities) {
     		Optional<KrcstErAlCompareSingle> single = this.queryProxy().find(new KrcstErAlCompareSinglePK(eralCheckIds, item.pk.condNo), KrcstErAlCompareSingle.class);
     		Optional<KrcstErAlSingleFixed> singleFixed = this.queryProxy().find(new KrcstErAlSingleFixedPK(eralCheckIds, item.pk.condNo), KrcstErAlSingleFixed.class);
     		Optional<KrcstErAlCompareRange> range = this.queryProxy().find(new KrcstErAlCompareRangePK(eralCheckIds, item.pk.condNo), KrcstErAlCompareRange.class);
-    		ExtractionCondScheduleWeekly toDomain = item.toDomain(
+    		ExtractionCondWeekly toDomain = item.toDomain(
     				single.isPresent() ? single.get() : null, 
 					singleFixed.isPresent() ? singleFixed.get() : null, 
     				range.isPresent() ? range.get() : null);
@@ -89,7 +89,7 @@ public class JpaExtractCondScheduleWeeklyRepository extends JpaRepository implem
 	}
 
 	@Override
-	public void add(String contractCode, String companyId, ExtractionCondScheduleWeekly domain) {
+	public void add(String contractCode, String companyId, ExtractionCondWeekly domain) {
 		KrcdtWeekCondAlarm entity = fromDomain(contractCode, companyId, domain);
 		
 		updateErAlCompare(contractCode, companyId, domain);
@@ -98,7 +98,7 @@ public class JpaExtractCondScheduleWeeklyRepository extends JpaRepository implem
 	}
 
 	@Override
-	public void update(String contractCode, String companyId, ExtractionCondScheduleWeekly domain) {
+	public void update(String contractCode, String companyId, ExtractionCondWeekly domain) {
 		KrcdtWeekCondAlarmPk pk = new KrcdtWeekCondAlarmPk(companyId, domain.getErrorAlarmId(), domain.getSortOrder());
 		Optional<KrcdtWeekCondAlarm> entityOpt = this.queryProxy().find(pk, KrcdtWeekCondAlarm.class);
 		
@@ -172,7 +172,7 @@ public class JpaExtractCondScheduleWeeklyRepository extends JpaRepository implem
 		}
 	}
 	
-	private KrcdtWeekCondAlarm fromDomain(String contractCode, String companyId, ExtractionCondScheduleWeekly domain) {
+	private KrcdtWeekCondAlarm fromDomain(String contractCode, String companyId, ExtractionCondWeekly domain) {
 		KrcdtWeekCondAlarmPk pk = new KrcdtWeekCondAlarmPk(companyId, domain.getErrorAlarmId(), domain.getSortOrder());
 		KrcdtWeekCondAlarm entity = new KrcdtWeekCondAlarm(
 				pk, domain.getName().v(), 
@@ -188,7 +188,7 @@ public class JpaExtractCondScheduleWeeklyRepository extends JpaRepository implem
 	/**
 	 * The update for MonCheckItemType=Contrast
 	 */
-	private void updateErAlCompare(String contractCode, String companyId, ExtractionCondScheduleWeekly domain) {
+	private void updateErAlCompare(String contractCode, String companyId, ExtractionCondWeekly domain) {
 		if (domain.getCheckConditions() == null) {
 			removeCheckCondition(contractCode, companyId, domain.getErrorAlarmId(), domain.getSortOrder());
 			return;
