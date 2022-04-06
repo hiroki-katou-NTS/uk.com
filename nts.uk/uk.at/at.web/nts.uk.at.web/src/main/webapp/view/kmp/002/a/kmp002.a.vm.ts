@@ -97,7 +97,8 @@ module nts.uk.at.view.kmp002.a {
       data.supportCards.forEach((item: SupportCard) => {
         const workplace = vm.getWorkplaceInfo(data.workplaceInfors, item.workplaceId);
         const company = vm.getCompanyInfo(data.companyInfos, item.companyId);
-        const supportCard = vm.$user.companyId === item.companyId ?
+        const contractCode = vm.getContractCode(item.companyId);
+        const supportCard = vm.$user.contractCode === contractCode ?
           new SupportCardDto(
             item.supportCardNumber,
             item.supportCardNumber,
@@ -162,6 +163,14 @@ module nts.uk.at.view.kmp002.a {
         }
       });
       return companyInfo;
+    }
+
+    getContractCode(companyId: string) {
+      const separator = '-';
+      if (companyId.indexOf(separator) >= 0) {
+        return companyId.substring(0, companyId.indexOf(separator));
+      }
+      return companyId;
     }
 
     getSupportCardById(supportCardId: any): SupportCardDto {
