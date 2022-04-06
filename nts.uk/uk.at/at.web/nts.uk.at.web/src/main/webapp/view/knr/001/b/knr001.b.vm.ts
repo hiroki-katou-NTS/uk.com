@@ -54,7 +54,7 @@ module nts.uk.at.view.knr001.b.viewmodel {
         vm.usageAtr(value);
       });
       vm.frameSet.subscribe(() => {
-        if (vm.frameSet() == IS_USED.Yes) {
+        if (vm.frameSet() == IS_USED.No) {
           vm.midnightAutoCalc(IS_USED.Yes);
         }
       });
