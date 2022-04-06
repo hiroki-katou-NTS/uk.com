@@ -1,4 +1,4 @@
-package nts.uk.ctx.alarm.dom.byemployee.check.checkers.daily;
+package nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.daily;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

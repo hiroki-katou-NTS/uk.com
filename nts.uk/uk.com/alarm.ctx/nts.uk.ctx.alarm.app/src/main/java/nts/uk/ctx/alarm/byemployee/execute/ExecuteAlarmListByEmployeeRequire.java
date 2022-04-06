@@ -29,6 +29,7 @@ import nts.uk.ctx.at.aggregation.dom.adapter.dailyrecord.DailyRecordAdapter;
 import nts.uk.ctx.at.aggregation.dom.adapter.workschedule.WorkScheduleAdapter;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.AlarmListExtractResult;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeErAlData;
@@ -124,6 +125,11 @@ public class ExecuteAlarmListByEmployeeRequire {
 		}
 
         @Override
+        public Optional<WorkType> getWorkType(String workTypeCode) {
+            return Optional.empty();
+        }
+
+        @Override
         public Optional<IntegrationOfDaily> getIntegrationOfDaily(String employeeId, GeneralDate date) {
             return Optional.empty();
         }
@@ -131,6 +137,11 @@ public class ExecuteAlarmListByEmployeeRequire {
         @Override
         public List<ApprovalRootStateStatus> getApprovalRootStateByPeriod(String employeeId, DatePeriod period) {
             return null;
+        }
+
+        @Override
+        public Optional<Identification> getIdentification(String employeeId, GeneralDate date) {
+            return Optional.empty();
         }
 
         @Override

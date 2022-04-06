@@ -1,6 +1,7 @@
 package nts.uk.ctx.alarm.byemployee.execute;
 
 import lombok.val;
+import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.TransactionService;
@@ -18,7 +19,7 @@ import java.util.List;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class ExecuteAlarmListByEmployeeCommandHandler extends CommandHandlerWithResult<ExecuteAlarmListByEmployeeCommand, List<AlarmRecordByEmployee>> {
+public class ExecuteAlarmListByEmployeeCommandHandler extends AsyncCommandHandler<ExecuteAlarmListByEmployeeCommand> {
 
     @Inject
     private TransactionService transaction;
@@ -27,7 +28,7 @@ public class ExecuteAlarmListByEmployeeCommandHandler extends CommandHandlerWith
     private ExecuteAlarmListByEmployeeRequire requireCreator;
 
     @Override
-    protected List<AlarmRecordByEmployee> handle(CommandHandlerContext<ExecuteAlarmListByEmployeeCommand> context) {
+    protected void handle(CommandHandlerContext<ExecuteAlarmListByEmployeeCommand> context) {
 
         val require = requireCreator.create();
 
@@ -35,7 +36,6 @@ public class ExecuteAlarmListByEmployeeCommandHandler extends CommandHandlerWith
         List<String> targetEmployeeIds = Arrays.asList();
 
         //val alarmRecords = ExecutePersistAlarmListByEmployee.execute(require, patternCode, targetEmployeeIds);
-        return null;
     }
 
 

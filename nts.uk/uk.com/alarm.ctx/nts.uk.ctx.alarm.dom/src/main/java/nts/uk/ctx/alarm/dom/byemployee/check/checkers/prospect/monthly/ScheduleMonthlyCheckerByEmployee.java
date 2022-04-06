@@ -1,4 +1,4 @@
-package nts.uk.ctx.alarm.dom.byemployee.check.checkers.schemonthly;
+package nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.monthly;
 
 import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
@@ -7,18 +7,12 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.TargetEmployeesFilter;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfDaily;
-import nts.uk.ctx.alarm.dom.byemployee.check.atditem.CheckBySummingAttendanceItem;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
-import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
-import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
-import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,8 +22,6 @@ import java.util.stream.Collectors;
 public class ScheduleMonthlyCheckerByEmployee implements DomainAggregate, AlarmListCheckerByEmployee {
 
     private TargetEmployeesFilter employeesFilter;
-
-    private CheckBySummingAttendanceItem checkBySummingAttendanceItem;
 
     @Override
     public Iterable<AlarmRecordByEmployee> check(Require require, CheckingContextByEmployee context) {

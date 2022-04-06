@@ -1,5 +1,6 @@
 package nts.uk.ctx.alarm;
 
+import nts.arc.task.AsyncTaskInfo;
 import nts.uk.ctx.alarm.byemployee.execute.ExecuteAlarmListByEmployeeCommand;
 import nts.uk.ctx.alarm.byemployee.execute.ExecuteAlarmListByEmployeeCommandHandler;
 import nts.uk.ctx.alarm.dom.byemployee.check.AlarmRecordByEmployee;
@@ -20,7 +21,7 @@ public class ExecuteAlarmListWebService {
 
     @POST
     @Path("employee")
-    public List<AlarmRecordByEmployee> executeByEmployee() {
+    public AsyncTaskInfo executeByEmployee() {
         return executeEmployeeHandler.handle(new ExecuteAlarmListByEmployeeCommand());
     }
 }

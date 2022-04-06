@@ -1,4 +1,4 @@
-package nts.uk.ctx.alarm.dom.byemployee.check.checkers.monthly;
+package nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.monthly;
 
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.task.tran.AtomTask;
