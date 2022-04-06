@@ -46,9 +46,7 @@ public class JpaApprovalSettingRepository extends JpaRepository implements Appro
 	@Override
 	public void update(ApprovalSetting appro) {
 		WwfmtApprovalSetting entity = toEntity(appro);
-		WwfmtApprovalSetting oldEntity = this.queryProxy().find(entity.companyId, WwfmtApprovalSetting.class).get();
-		oldEntity.selfApprovalAtr = entity.selfApprovalAtr;
-		this.commandProxy().update(oldEntity);
+		this.commandProxy().update(entity);
 	}
 	/**
 	 * convert from entity to domain
