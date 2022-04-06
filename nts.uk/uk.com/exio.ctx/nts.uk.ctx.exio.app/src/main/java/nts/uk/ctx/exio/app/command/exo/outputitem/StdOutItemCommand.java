@@ -3,6 +3,8 @@ package nts.uk.ctx.exio.app.command.exo.outputitem;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.Value;
 import nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting.AtWorkClsDfsCommand;
 import nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting.CharacterDfsCommand;
@@ -11,8 +13,9 @@ import nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting.InstantTimeD
 import nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting.NumberDfsCommand;
 import nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting.TimeDfsCommand;
 
-@Value
 @Getter
+@Setter
+@NoArgsConstructor
 public class StdOutItemCommand {
 	private boolean isNewMode;
 	/**
@@ -53,4 +56,26 @@ public class StdOutItemCommand {
 	private TimeDfsCommand timeDataFormatSetting;
 	
 	private int dispOrder;
+
+	public StdOutItemCommand(boolean isNewMode, String cid, String outItemCd, String condSetCd, String outItemName,
+			int itemType, List<CategoryItemCommand> categoryItems, AtWorkClsDfsCommand atWorkDataOutputItem,
+			CharacterDfsCommand characterDataFormatSetting, DateDfsCommand dateDataFormatSetting,
+			InstantTimeDfsCommand inTimeDataFormatSetting, NumberDfsCommand numberDataFormatSetting,
+			TimeDfsCommand timeDataFormatSetting, int dispOrder) {
+		super();
+		this.isNewMode = isNewMode;
+		this.cid = cid;
+		this.outItemCd = outItemCd;
+		this.condSetCd = condSetCd;
+		this.outItemName = outItemName;
+		this.itemType = itemType;
+		this.categoryItems = categoryItems;
+		this.atWorkDataOutputItem = atWorkDataOutputItem;
+		this.characterDataFormatSetting = characterDataFormatSetting;
+		this.dateDataFormatSetting = dateDataFormatSetting;
+		this.inTimeDataFormatSetting = inTimeDataFormatSetting;
+		this.numberDataFormatSetting = numberDataFormatSetting;
+		this.timeDataFormatSetting = timeDataFormatSetting;
+		this.dispOrder = dispOrder;
+	}
 }

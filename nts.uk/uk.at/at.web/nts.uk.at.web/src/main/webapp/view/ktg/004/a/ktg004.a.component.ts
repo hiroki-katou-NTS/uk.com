@@ -146,7 +146,8 @@ module nts.uk.ui.ktg004.a {
                             </tr>
                         </tbody>
                         <tbody data-bind="foreach: { data: $component.specialHolidaysRemainings, as: 'row'}"> 
-                            <tr class="row-show-ktg004">
+                            <tr class="row-show-ktg004" data-bind="if: (_.find($component.responseData.vacationSetting.speHolidayRemainInfos, { 'specialHolidayCode': $data.code }).manage
+                                                                    && _.find($component.responseData.itemsSetting, { 'item': $data.code}).displayType)">
                                 <td>
 									<div style="display: flex">
 	                                    <div style="position: relative; width: 50%" data-bind=" ntsFormLabel: { required: false, text: row.name }"></div>
@@ -270,7 +271,8 @@ module nts.uk.ui.ktg004.a {
               detailedWorkStatusSettings,
               itemsSetting,
               attendanceInfor,
-              remainingNumberInfor
+              remainingNumberInfor, 
+              vacationSetting
           } = data;
           const {
               dailyErrors,
@@ -415,30 +417,34 @@ module nts.uk.ui.ktg004.a {
                               })
                           break;
                       case 31:
-                          itemsDisplay
-                              .push({
-                                  name: 'KTG004_13',
-                                  item: item,
-                                  text: 
-              nursingRemainingNumberOfChildren.time == ZERO_TIME
-              ?
-              vm.$i18n('KTG004_15', [`${nursingRemainingNumberOfChildren.day}`])
-              :
-              vm.$i18n('KTG004_28', [`${nursingRemainingNumberOfChildren.day}`, `${nursingRemainingNumberOfChildren.time}`])
-                              })
+                        if (vacationSetting.childCaremanage) {
+                            itemsDisplay
+                                .push({
+                                    name: 'KTG004_13',
+                                    item: item,
+                                    text: 
+                              nursingRemainingNumberOfChildren.time == ZERO_TIME
+                              ?
+                              vm.$i18n('KTG004_15', [`${nursingRemainingNumberOfChildren.day}`])
+                              :
+                              vm.$i18n('KTG004_28', [`${nursingRemainingNumberOfChildren.day}`, `${nursingRemainingNumberOfChildren.time}`])
+                                              })
+                        }
                           break;
                       case 32:
-                          itemsDisplay
-                              .push({
-                                  name: 'KTG004_14',
-                                  item: item,
-                                  text:
-              longTermCareRemainingNumber.time == ZERO_TIME
-              ? 
-              vm.$i18n('KTG004_15', [`${longTermCareRemainingNumber.day}`])
-              :
-              vm.$i18n('KTG004_28', [`${longTermCareRemainingNumber.day}`, `${longTermCareRemainingNumber.time}`])
-                              })
+                        if (vacationSetting.nursingManage) {
+                            itemsDisplay
+                                .push({
+                                    name: 'KTG004_14',
+                                    item: item,
+                                    text:
+                              longTermCareRemainingNumber.time == ZERO_TIME
+                              ? 
+                              vm.$i18n('KTG004_15', [`${longTermCareRemainingNumber.day}`])
+                              :
+                              vm.$i18n('KTG004_28', [`${longTermCareRemainingNumber.day}`, `${longTermCareRemainingNumber.time}`])
+                                              })
+                        }
                           break;
                   }
               })
@@ -608,6 +614,11 @@ module nts.uk.ui.ktg004.a {
         vacationSetting: VacationSetting;
     }
 
+    interface SpeHolidayRemainInfos {
+        manage: boolean;
+        specialHolidayCode: number;
+    }
+
     interface ItemSetting {
         displayType: boolean;
         item: 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32;
@@ -677,6 +688,8 @@ module nts.uk.ui.ktg004.a {
 		
 		// 年休残数管理する
 		annualManage: boolean;
+
+        speHolidayRemainInfos: SpeHolidayRemainInfos[];
 	}
 
     interface SpecialHolidaysRemainings {

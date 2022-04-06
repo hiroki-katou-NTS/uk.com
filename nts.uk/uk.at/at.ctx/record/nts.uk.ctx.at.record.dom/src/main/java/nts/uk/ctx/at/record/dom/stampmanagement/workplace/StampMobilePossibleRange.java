@@ -24,7 +24,7 @@ public class StampMobilePossibleRange implements DomainValue {
 	public StampMobilePossibleRange(RadiusAtr radius, GeoCoordinate geoCoordinate) {
 		super();
 		this.radius = radius;
-		this.geoCoordinate = geoCoordinate;
+		this.geoCoordinate = geoCoordinate; 
 	}
 	
 	/**

@@ -81,7 +81,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		MakeShiftMasterService.Require createRequired = new MakeShiftMasterRequireImpl(shiftMasterRepo, basicScheduleService, workTypeRepo, workTimeSettingRepository, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository);
 		UpdateShiftMasterService.Require updateRequired = new UpdateShiftMasterRequireImpl(shiftMasterRepo, basicScheduleService, workTypeRepo, workTimeSettingRepository, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository);
 		ShiftMaster dom = cmd.toDomain();
-		dom.checkError(createRequired);
+		dom.checkError(createRequired, companyId);
 
 		AtomTask persist;
 
@@ -96,6 +96,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 						);
 		} else {
 			persist = UpdateShiftMasterService.update(updateRequired
+							, companyId
 							, new ShiftMasterCode(cmd.getShiftMasterCode())
 							, dom.getDisplayInfor()
 							, new WorkInformation(cmd.getWorkTypeCd(), cmd.getWorkTimeSetCd())
@@ -161,13 +162,13 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		}
 
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeRepo.findByPK(companyId, workTypeCode.v());
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
 		}
 
 
@@ -177,23 +178,23 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		}
 
 		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-		    return fixedWorkSettingRepository.findByKey(AppContexts.user().companyId(), code.v()).get();
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+		    return fixedWorkSettingRepository.findByKey(AppContexts.user().companyId(), workTimeCode.v());
 		}
 
 		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-		    return flowWorkSettingRepository.find(AppContexts.user().companyId(), code.v()).get();
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+		    return flowWorkSettingRepository.find(AppContexts.user().companyId(), workTimeCode.v());
 		}
 
 		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-		    return flexWorkSettingRepository.find(AppContexts.user().companyId(), code.v()).get();
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+		    return flexWorkSettingRepository.find(AppContexts.user().companyId(), workTimeCode.v());
 		}
 
 		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-		    return predetemineTimeSettingRepository.findByWorkTimeCode(AppContexts.user().companyId(), wktmCd.v()).get();
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+		    return predetemineTimeSettingRepository.findByWorkTimeCode(AppContexts.user().companyId(), workTimeCode.v());
 		}
 
 	}
@@ -249,15 +250,14 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		}
 
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeRepo.findByPK(companyId, workTypeCode.v());
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
 		}
-
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -265,23 +265,23 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		}
 
 		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-		    return fixedWorkSettingRepository.findByKey(AppContexts.user().companyId(), code.v()).get();
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return fixedWorkSettingRepository.findByKey(companyId, workTimeCode.v());
 		}
 
 		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-		    return flowWorkSettingRepository.find(AppContexts.user().companyId(), code.v()).get();
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flowWorkSettingRepository.find(companyId, workTimeCode.v());
 		}
 
 		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-		    return flexWorkSettingRepository.find(AppContexts.user().companyId(), code.v()).get();
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flexWorkSettingRepository.find(companyId, workTimeCode.v());
 		}
 
 		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-		    return predetemineTimeSettingRepository.findByWorkTimeCode(AppContexts.user().companyId(), wktmCd.v()).get();
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode.v());
 		}
 
 	}

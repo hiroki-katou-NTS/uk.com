@@ -50,7 +50,7 @@ public class GetNextAnnualLeaveGrant {
 	public static List<NextAnnualLeaveGrant> algorithm(RequireM1 require, CacheCarrier cacheCarrier,
 			String companyId, String employeeId,
 			String grantTableCode, GeneralDate entryDate, GeneralDate criteriaDate, DatePeriod period,
-			boolean isSingleDay, Optional<GrantHdTblSet> grantHdTblSet, Optional<List<LengthServiceTbl>> lengthServiceTbls) {
+			boolean isSingleDay, Optional<GrantHdTblSet> grantHdTblSet, Optional<LengthServiceTbl> lengthServiceTbls) {
 
 		return algorithm(require, cacheCarrier, companyId, employeeId, grantTableCode, entryDate, criteriaDate, period,
 						isSingleDay,grantHdTblSet, lengthServiceTbls, Optional.empty());
@@ -60,7 +60,7 @@ public class GetNextAnnualLeaveGrant {
 		RequireM1 require, CacheCarrier cacheCarrier,
 		String companyId, String employeeId,
 		String grantTableCode, GeneralDate entryDate, GeneralDate criteriaDate, DatePeriod period,
-		boolean isSingleDay, Optional<GrantHdTblSet> grantHdTblSet, Optional<List<LengthServiceTbl>> lengthServiceTbls,
+		boolean isSingleDay, Optional<GrantHdTblSet> grantHdTblSet, Optional<LengthServiceTbl> lengthServiceTbls,
 		Optional<GeneralDate> closureStartDate) {
 
 		return GetNextAnnualLeaveGrantProc.algorithm(require, cacheCarrier,

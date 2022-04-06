@@ -11,8 +11,8 @@ import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentomenuAdapter;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.SWkpHistExport;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSetting;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -37,7 +37,7 @@ public class ForceUpdateBentoReserveCommandHandler extends CommandHandler<ForceU
     private BentomenuAdapter bentomenuAdapter;
 
     @Inject
-    private BentoReservationSettingRepository bentoReservationSettingRepo;
+    private ReservationSettingRepository bentoReservationSettingRepo;
 
     @Override
     protected void handle(CommandHandlerContext<ForceUpdateBentoReserveCommand> context) {
@@ -62,9 +62,9 @@ public class ForceUpdateBentoReserveCommandHandler extends CommandHandler<ForceU
             bentoReservationInfos.add(reservation);
         }
 
-        Optional<BentoReservationSetting> bentoReservationSettingOpt = bentoReservationSettingRepo.findByCId(companyId);
+        Optional<ReservationSetting> bentoReservationSettingOpt = bentoReservationSettingRepo.findByCId(companyId);
         if (!bentoReservationSettingOpt.isPresent()) return;
-        BentoReservationSetting bentoReservationSetting = bentoReservationSettingOpt.get();
+        ReservationSetting bentoReservationSetting = bentoReservationSettingOpt.get();
 
         Optional<WorkLocationCode> workLocationCode = Optional.empty();
         GeneralDateTime dateTime = GeneralDateTime.now();

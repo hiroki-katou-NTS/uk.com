@@ -16,7 +16,7 @@ public interface WorkTimezoneLateEarlySetGetMemento {
   *
   * @return the common set
   */
- EmTimezoneLateEarlyCommonSet getCommonSet();
+ TreatLateEarlyTime getCommonSet();
 
 	/**
 	 * Gets the other class set.

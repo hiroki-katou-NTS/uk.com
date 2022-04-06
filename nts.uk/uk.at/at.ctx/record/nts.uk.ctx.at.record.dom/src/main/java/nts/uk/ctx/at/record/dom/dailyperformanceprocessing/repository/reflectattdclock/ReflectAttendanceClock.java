@@ -10,7 +10,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimePrintDestinationOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInformationDomainService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
@@ -35,8 +34,11 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.MultiStampTimePiorityAtr;
@@ -69,6 +71,10 @@ public class ReflectAttendanceClock {
 	@Inject
 	private WorkTypeRepository workTypeRepository;
 	
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
+	
+	
 	@Inject 
 	private RecordDomRequireService requireService;
 	/**
@@ -78,7 +84,9 @@ public class ReflectAttendanceClock {
 	 * @param workNo 1~2	
 	 * @param integrationOfDaily 1~2
 	 */
-	public ReflectStampOuput reflect(String companyId, Stamp stamp,AttendanceAtr attendanceAtr,ActualStampAtr actualStampAtr,int workNo,IntegrationOfDaily integrationOfDaily) {
+	public ReflectStampOuput reflect(String companyId, Stamp stamp, AttendanceAtr attendanceAtr,
+			ActualStampAtr actualStampAtr, int workNo, IntegrationOfDaily integrationOfDaily,
+			ChangeDailyAttendance changeDailyAtt) {
 		//反映先を取得する
 			
 		TimePrintDestinationOutput timePrintDestinationOutput = getDestination(attendanceAtr, actualStampAtr, workNo, integrationOfDaily, stamp);
@@ -94,19 +102,25 @@ public class ReflectAttendanceClock {
 			if(!reflectDirectBounce(stamp, integrationOfDaily)) {
 				// 打刻を反映する
 				reflectStampOuput =  reflectStamping(actualStampAtr, stamp, integrationOfDaily, attendanceAtr, workNo);
+				changeDailyAtt.setAttendance(true);
+			} else {
+				
+				/** 日別勤怠の何が変更されたかを更新する */
+				changeDailyAtt.setDirectBounceClassifi(true);
 			}
 		}
-		TimeLeavingWork timeLeavingWork = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream()
-				.filter(c -> c.getWorkNo().v().intValue() == workNo).findFirst().get();
+		Optional<TimeLeavingWork> timeLeavingWork = integrationOfDaily.getAttendanceLeave().flatMap(x ->x.getTimeLeavingWorks().stream()
+				.filter(c -> c.getWorkNo().v().intValue() == workNo).findFirst());
 		Optional<TimeActualStamp> timeActualStamp = Optional.empty();
+		
 		if(attendanceAtr == AttendanceAtr.GOING_TO_WORK) {
-			timeActualStamp = timeLeavingWork.getAttendanceStamp();
+			timeActualStamp = timeLeavingWork.flatMap(x -> x.getAttendanceStamp());
 		}else {
-			timeActualStamp = timeLeavingWork.getLeaveStamp();
+			timeActualStamp = timeLeavingWork.flatMap(x -> x.getLeaveStamp());
 		}
 		//打刻反映回数を更新　（Update số lần phản ánh 打刻 ） 	
 		if(timeActualStamp.isPresent())
-		this.updateNumberStampReflect(actualStampAtr, timeActualStamp.get());
+		this.updateNumberStampReflect(actualStampAtr, timeActualStamp);
 		
 		return reflectStampOuput;
 		
@@ -371,8 +385,13 @@ public class ReflectAttendanceClock {
 			//日別実績の計算区分を取得する
 			CalAttrOfDailyAttd calAttr = integrationOfDaily.getCalAttr();
 			//休日出勤に変更するか
-			boolean check = stamp.getType().changeWorkOnHolidays(new RequireStampTypeImpl(),
-					calAttr.getHolidayTimeSetting(), recordWorkInformation.getWorkTypeCode().v());
+			boolean check = stamp.getType().changeWorkOnHolidays(
+					new RequireStampTypeImpl(),
+					calAttr.getHolidayTimeSetting(),
+					recordWorkInformation.getWorkTypeCode().v(),
+					integrationOfDaily.getEmployeeId(),
+					integrationOfDaily.getYmd()
+					);
 			if(check) {
 				// 勤務情報を変更する
 				this.reflectWorkInformationDomainService.changeWorkInformation(integrationOfDaily,
@@ -565,13 +584,16 @@ public class ReflectAttendanceClock {
 	/**
 	 * 打刻反映回数を更新 (new_2020)
 	 */
-	public void updateNumberStampReflect(ActualStampAtr actualStampAtr,TimeActualStamp timeActualStamp) {
+	public void updateNumberStampReflect(ActualStampAtr actualStampAtr, Optional<TimeActualStamp> timeActualStamp) {
+		if(!timeActualStamp.isPresent()) {
+			return;
+		}
 		//パラメータ「実打刻区分」を確認する (Xác nhận param 「実打刻区分」)
 		if (actualStampAtr == ActualStampAtr.STAMP_REAL) {
 			//打刻反映回数を1増やす (Số lần 打刻反映回数(Số lần phản ánh check tay) tăng lên 1)
-			timeActualStamp.setPropertyTimeActualStamp(timeActualStamp.getActualStamp(), timeActualStamp.getStamp(),
-					timeActualStamp.getNumberOfReflectionStamp() == null ? 1
-							: timeActualStamp.getNumberOfReflectionStamp() + 1);
+			timeActualStamp.get().setPropertyTimeActualStamp(timeActualStamp.get().getActualStamp(), timeActualStamp.get().getStamp(),
+					timeActualStamp.get().getNumberOfReflectionStamp() == null ? 1
+							: timeActualStamp.get().getNumberOfReflectionStamp() + 1);
 		}
 	}
 	
@@ -585,12 +607,19 @@ public class ReflectAttendanceClock {
 		
 	}
 	
-	public class RequireStampTypeImpl implements StampType.Require{
+	public class RequireStampTypeImpl implements StampType.Require {
 		
 		@Override
 		public Optional<WorkType> findByPK(String workTypeCd) {
 			String companyId = AppContexts.user().companyId();
 			return workTypeRepository.findByPK(companyId, workTypeCd);
 		}
+
+		@Override
+		public Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate ymd) {
+			 return workingConditionItemRepository
+					 	.getBySidAndStandardDate(employeeId, ymd);
+		}
+
 	}
 }

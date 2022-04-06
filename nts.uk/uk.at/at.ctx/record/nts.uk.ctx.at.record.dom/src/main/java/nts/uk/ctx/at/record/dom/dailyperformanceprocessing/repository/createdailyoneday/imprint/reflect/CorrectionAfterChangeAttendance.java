@@ -6,20 +6,19 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdai
  *
  */
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.SupportDataWork;
 
-@Stateless
 public class CorrectionAfterChangeAttendance {
-	@Inject
-	private CorrectSupportDataWork supportDataWork;
 	
-	public SupportDataWork correctionAfterChangeAttendance(IntegrationOfDaily integrationOfDaily) {
+	public static SupportDataWork correctionAfterChangeAttendance(Require require, IntegrationOfDaily integrationOfDaily) {
 		// 出退勤で応援データ補正する
-		SupportDataWork dataWork = supportDataWork.correctSupportDataWork(integrationOfDaily);
+		SupportDataWork dataWork = CorrectSupportDataWork.correctSupportDataWork(require, integrationOfDaily);
 		// 日別実績workを返す
 		return dataWork;
+	}
+	
+	public static interface Require extends CorrectSupportDataWork.Require{
+		
 	}
 }

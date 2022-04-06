@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -21,10 +19,11 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.service.application.ApproveAppProcedure;
+import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApproveAppProcedureOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -63,9 +62,6 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 	private NewBeforeRegister newBeforeRegister;
 
 	@Inject
-	private RegisterAtApproveReflectionInfoService registerService;
-
-	@Inject
 	private ArrivedLateLeaveEarlyRepository lateEarlyRepository;
 
 	@Inject
@@ -85,6 +81,9 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 
 	@Inject
 	private ApplicationRepository applicationRepository;
+	
+	@Inject
+	private ApproveAppProcedure approveAppProcedure;
 
 	/*
 	 * (non-Javadoc)
@@ -185,13 +184,13 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 
 		if (appDate.isPresent()) {
 			if (!lateEarlyActualResults.isPresent()) {
-				errorMsg = Optional.of("Msg_1707");
+				
 			} else {
 				if (lateEarlyActualResults.get().getScheAttendanceTime1() == null
 						&& !lateEarlyActualResults.get().getScheAttendanceTime2().isPresent()
 						&& lateEarlyActualResults.get().getScheDepartureTime1() == null
 						&& !lateEarlyActualResults.get().getScheDepartureTime2().isPresent()) {
-					errorMsg = Optional.of("Msg_1707");
+					
 				}
 			}
 		}
@@ -462,9 +461,22 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		// ドメインモデル「遅刻早退取消申請」の新規登録する (đăng ký mới domain 「遅刻早退取消申請」)
 		this.registerDomain(application, infoOutput);
 
-
-		// 2-2.新規画面登録時承認反映情報の整理
-		String reflectAppId = this.registerService.newScreenRegisterAtApproveInfoReflect(employeeId, application);
+		// 申請承認する時の手続き
+		List<String> autoSuccessMail = new ArrayList<>();
+		List<String> autoFailMail = new ArrayList<>();
+		List<String> autoFailServer = new ArrayList<>();
+		ApproveAppProcedureOutput approveAppProcedureOutput = approveAppProcedure.approveAppProcedure(
+        		AppContexts.user().companyId(), 
+        		Arrays.asList(application), 
+        		Collections.emptyList(), 
+        		AppContexts.user().employeeId(), 
+        		Optional.empty(), 
+        		infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings(), 
+        		false,
+        		true);
+		autoSuccessMail.addAll(approveAppProcedureOutput.getSuccessList().stream().distinct().collect(Collectors.toList()));
+		autoFailMail.addAll(approveAppProcedureOutput.getFailList().stream().distinct().collect(Collectors.toList()));
+		autoFailServer.addAll(approveAppProcedureOutput.getFailServerList().stream().distinct().collect(Collectors.toList()));
 
 		// 2-3.新規画面登録後の処理
 		AppTypeSetting appTypeSetting = infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting()
@@ -473,9 +485,12 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 				appTypeSetting,
 				infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet(),
 				false);
-		if(Strings.isNotBlank(reflectAppId)) {
-			processResult.setReflectAppIdLst(Arrays.asList(reflectAppId));
-		}
+		processResult.getAutoSuccessMail().addAll(autoSuccessMail);
+		processResult.getAutoFailMail().addAll(autoFailMail);
+		processResult.getAutoFailServer().addAll(autoFailServer);
+		processResult.setAutoSuccessMail(processResult.getAutoSuccessMail().stream().distinct().collect(Collectors.toList()));
+		processResult.setAutoFailMail(processResult.getAutoFailMail().stream().distinct().collect(Collectors.toList()));
+		processResult.setAutoFailServer(processResult.getAutoFailServer().stream().distinct().collect(Collectors.toList()));
 		return processResult;
 	}
 

@@ -10,6 +10,7 @@ import nts.uk.ctx.exio.dom.exo.execlog.ExecutionForm;
 @Setter
 @Getter
 public class ExOutSetting {
+	private String companyId;
 	private String conditionSetCd;
 	private String userId;
 	private Integer categoryId;
@@ -24,8 +25,9 @@ public class ExOutSetting {
 	private String cid;
 	private String conditionSetName;
 	
-	public ExOutSetting(String conditionSetCd, String userId, Integer categoryId, GeneralDate startDate, GeneralDate endDate,
+	public ExOutSetting(String companyId, String conditionSetCd, String userId, Integer categoryId, GeneralDate startDate, GeneralDate endDate,
 			GeneralDate referenceDate, String processingId, boolean standardType, List<String> sidList) {
+		this.companyId = companyId;
 		this.conditionSetCd = conditionSetCd;
 		this.userId = userId;
 		this.categoryId = categoryId;

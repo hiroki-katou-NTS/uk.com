@@ -40,7 +40,7 @@ public class ConvertAlarmListToTopPageAlarmDataService {
         if (!isDisplayByAdmin && !isDisplayByPerson) return Collections.emptyList();
 
         //永続化のアラームリスト抽出結果を取得する
-        Optional<PersistenceAlarmListExtractResult> extractResult = require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v());
+        Optional<PersistenceAlarmListExtractResult> extractResult = require.getAlarmListExtractionResult(companyId, patternCode.v(), executionCode.v(), employeeIDs);
 
         //$アラームリストの集約結果　＝　Empty：
         List<AlarmEmployeeList> alarmListAggregateResults = new ArrayList<>();
@@ -48,10 +48,11 @@ public class ConvertAlarmListToTopPageAlarmDataService {
         String patternName = null;
         Map<String, GeneralDateTime> alarmListAggreRsMap = null;
         if (extractResult.isPresent()) {
+            // $パターン名　＝　$抽出結果.パラメータ名称
             patternName = extractResult.get().getAlarmPatternName().v();
             //$アラームリストの集約結果Map = [prv-1]  アラームリストを集約する(会社ID, $アラームリストパターンの抽出結果)
             alarmListAggreRsMap = aggregateAlarmList(extractResult.get());
-
+            // $アラームリストの集約結果 = $抽出結果.アラームリスト抽出結果;
             alarmListAggregateResults = extractResult.get().getAlarmListExtractResults();
         }
 
@@ -70,16 +71,17 @@ public class ConvertAlarmListToTopPageAlarmDataService {
                     .sids(empIdListNoErrors)
                     .displayAtr(0)
                     .patternCode(Optional.of(patternCode.v()))
+                    .subEmpNoErrs(Collections.emptyList())
                     .build());
         }
 
         //	$トップアラーム　＝　$エラーがある社員IDList：　map　トップアラームParam
         Map<String, GeneralDateTime> finalAlarmListAggreRsMap = alarmListAggreRsMap;
         String finalPatternName = patternName;
-        List<TopPageAlarmImport> topAlarmList = employeeIdListError.stream().map(x -> new TopPageAlarmImport(
+        List<TopPageAlarmImport> topAlarmList = employeeIdListError.stream().map(empErrId -> new TopPageAlarmImport(
                 0,
-                finalAlarmListAggreRsMap.get(x),
-                x,
+                finalAlarmListAggreRsMap != null ? finalAlarmListAggreRsMap.get(empErrId) : GeneralDateTime.now(),
+                empErrId,
                 0,
                 Optional.of(patternCode.v()),
                 Optional.ofNullable(finalPatternName),
@@ -97,7 +99,7 @@ public class ConvertAlarmListToTopPageAlarmDataService {
         }
         if (isDisplayByAdmin) {
             //	$AtomTask．Add(上長のトップページアラームデータを作成する#作成する（require,会社ID、$トップアラーム、$削除の情報）
-            atomTask.add(CreateAlarmDataTopPageService.create(require, deleteInfo, topAlarmList));
+            atomTask.add(CreateAlarmDataTopPageService.create(require, companyId,deleteInfo, topAlarmList));
         }
         return atomTask;
     }
@@ -140,7 +142,7 @@ public class ConvertAlarmListToTopPageAlarmDataService {
          * @param autoRunCode 自動実行コード
          * @return
          */
-        Optional<PersistenceAlarmListExtractResult> getAlarmListExtractionResult(String companyId, String patternCode, String autoRunCode);
+        Optional<PersistenceAlarmListExtractResult> getAlarmListExtractionResult(String companyId, String patternCode, String autoRunCode, List<String> empIds);
 
         /**
          * [R-2] 更新処理自動実行の設定を取得する
@@ -148,7 +150,6 @@ public class ConvertAlarmListToTopPageAlarmDataService {
          * @param companyId  会社ID
          * @param execItemCd 更新処理自動実行コード
          */
-//        Optional<ExecutionTaskSetting> getUpdateProcessingAutoRunSetting(String companyId, String execItemCd);
         Optional<UpdateProcessAutoExecution> getUpdateProcessExecutionByCidAndExecCd(String companyId, String execItemCd);
     }
 }

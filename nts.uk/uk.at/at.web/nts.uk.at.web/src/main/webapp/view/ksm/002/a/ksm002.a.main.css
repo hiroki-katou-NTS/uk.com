@@ -1,5 +1,5 @@
 .panel.panel-frame {
-	width: 570px;
+	width: 576px;
 	margin: 20px;
 }
 
@@ -41,8 +41,16 @@
 	margin-top:10px;
 }
 .contents-area {
-	width: 1150px;
+	/* width: 1150px; */
 }
 #sidebar-area {
 	min-width: 60px;
+}
+
+#screenA {
+	height: calc(100vh - 190px);
+}
+
+#screenB {
+	height: calc(100vh - 165px);
 }

@@ -152,9 +152,10 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public WorkTimezoneShortTimeWorkSet getShortTimeWorkSet() {
-		return new WorkTimezoneShortTimeWorkSet(BooleanGetAtr.getAtrByInteger(this.entity.getNurTimezoneWorkUse()),
-				BooleanGetAtr.getAtrByInteger(this.entity.getEmpTimeDeduct()),
-				BooleanGetAtr.getAtrByInteger(this.entity.getChildCareWorkUse()));
+		return new WorkTimezoneShortTimeWorkSet(
+				BooleanGetAtr.getAtrByInteger(this.entity.getNurTimezoneWorkUse()),
+				BooleanGetAtr.getAtrByInteger(this.entity.getChildCareWorkUse()),
+				new TimeRoundingSetting(this.entity.getShorttimeUnit(), this.entity.getShorttimeRounding()));
 	}
 
 	/*

@@ -14,8 +14,10 @@ import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.DigestionLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.RemNumShiftListWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfoAfterDigestion;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 
@@ -103,8 +105,6 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 	/**
 	 * ファクトリー
 	 * 
-	 * @param cid
-	 *            会社ID
 	 * @param employeeId
 	 *            社員ID
 	 * @param grantDate
@@ -155,22 +155,20 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			List<LeaveGrantRemainingData> targetRemainingDatas, RemNumShiftListWork remNumShiftListWork,
 			LeaveUsedNumber leaveUsedNumber, String companyId, String employeeId, GeneralDate baseDate) {
 
-		// 取得した「付与残数」でループ
-		for (val targetRemainingData : targetRemainingDatas) {
-
-			// 休暇付与残数を追加する
-			remNumShiftListWork.AddLeaveGrantRemainingData(targetRemainingData);
-
-			// 休暇使用数を消化できるかチェック
-			if (remNumShiftListWork.canDigest(require, leaveUsedNumber, companyId, employeeId, baseDate)) {
-				// 消化できないときはループ
-				break;
+		// 休暇使用数を消化する
+		remNumShiftListWork = DigestionLeaveGrantRemainingData.digest(companyId, targetRemainingDatas, leaveUsedNumber, baseDate, require);
+		
+		//参照の付与残数データの明細を更新
+		for(LeaveGrantRemainingData x: targetRemainingDatas){
+			val updateValue = remNumShiftListWork.getRemNumShiftWorkListOpt().stream().map(y -> {
+				return y.getRefLeaveGrantRemainingData();
+			}).filter(y -> y.getGrantDate().equals(x.getGrantDate())).findFirst();
+			
+			if(updateValue.isPresent()){
+				x.updateDetails(updateValue.get().getDetails());
 			}
 		}
-
-		// 休暇使用数を消化する
-		remNumShiftListWork.digest(require, leaveUsedNumber, companyId, employeeId, baseDate);
-
+		
 		// 残数不足で一部消化できなかったとき
 		if (remNumShiftListWork.getUnusedNumber().isLargerThanZero()) {
 
@@ -205,5 +203,60 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 
 		return cloned;
 	}
+	
+	/**
+	 * [1]消化する
+	 * @param require
+	 * @param companyId
+	 * @param baseDate
+	 * @param usedNumber
+	 * @return
+	 */
+	public GrantRemainingDataAfterDigestion digest(LeaveRemainingNumber.RequireM3 require, String companyId,
+			GeneralDate baseDate, LeaveUsedNumber usedNumber){
+		
+		LeaveNumberInfoAfterDigestion digestedInfo = this.details.digest(require, companyId, this.employeeId, baseDate, usedNumber);
+		
+		return new GrantRemainingDataAfterDigestion(new LeaveGrantRemainingData(this.leaveID, this.employeeId, this.grantDate,
+				this.deadline, this.expirationStatus, this.registerType, digestedInfo.getLeaveNumberInfo()),
+				digestedInfo.getUnUsedNumber());
+	}
 
+	/**
+	 * [2]消化しきれるか
+	 * @param require
+	 * @param companyId
+	 * @param baseDate
+	 * @param usedNumber
+	 * @return
+	 */
+	public boolean canDigest(LeaveRemainingNumber.RequireM3 require, String companyId,
+			GeneralDate baseDate, LeaveUsedNumber usedNumber){
+		return this.details.canDigest(require, companyId, this.employeeId, baseDate, usedNumber);
+	}
+	
+
+	
+	/**
+	 * [3] 消化できず残った数を取得
+	 * @param require
+	 * @param companyId
+	 * @param baseDate
+	 * @param usedNumber
+	 * @return
+	 */
+	public LeaveGrantRemainingData getUndigestedNumber(LeaveRemainingNumber.RequireM3 require, String companyId,
+			GeneralDate baseDate, LeaveUsedNumber usedNumber){
+		return new LeaveGrantRemainingData(this.leaveID, this.employeeId, this.grantDate,
+				this.deadline, this.expirationStatus, this.registerType, 
+				this.details.getUndigestedNumber(require, companyId, this.employeeId, baseDate, usedNumber));
+	}
+	
+	/**
+	 * [4]明細更新
+	 * @param updateDetails
+	 */
+	public void updateDetails(LeaveNumberInfo updateDetails){
+		this.details = updateDetails;
+	}
 }

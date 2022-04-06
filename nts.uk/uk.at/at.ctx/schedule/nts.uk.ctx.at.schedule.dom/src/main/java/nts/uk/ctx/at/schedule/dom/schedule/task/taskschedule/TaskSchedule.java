@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Value;
+import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 
@@ -68,6 +69,40 @@ public class TaskSchedule implements DomainValue {
 		
 		notDuplicatedDetailList.add( newDetail );
 		return TaskSchedule.create(notDuplicatedDetailList);
+	}
+	
+	/**
+	 * 作業が付与されているか
+	 * @return
+	 */
+	public boolean isTaskScheduleGranted() {
+		
+		return !this.details.isEmpty();
+	}
+	
+	/**
+	 * 指定時間帯内に作業が付与されているか
+	 * @param timeSpan 時間帯
+	 * @return
+	 */
+	public boolean isTaskScheduleGrantedIn(TimeSpanForCalc timeSpan) {
+		
+		return this.details.stream()
+				.anyMatch(detail -> detail.isDuplicateWith(timeSpan));
+	}
+	
+	/**
+	 * 指定時間帯に重複する作業を削除する
+	 * @param timeSpan 時間帯
+	 * @return
+	 */
+	public TaskSchedule removeTaskScheduleDetailIn(TimeSpanForCalc timeSpan) {
+		
+		val tasksWhichAreNotDuplicated = this.details.stream()
+				.filter(detail -> ! detail.isDuplicateWith(timeSpan))
+				.collect(Collectors.toList());
+		
+		return TaskSchedule.create(tasksWhichAreNotDuplicated);
 	}
 	
 	@AllArgsConstructor
@@ -154,7 +189,7 @@ public class TaskSchedule implements DomainValue {
 				
 				TaskScheduleDetailList theLastList = listOfDetailList.get( listOfDetailList.size() - 1 );
 				
-				if ( detail.isSameTaskCodeAndContinuous( theLastList.last())) {
+				if ( detail.isContinuousTask( theLastList.last())) {
 					theLastList.add(detail);
 				} else {
 					listOfDetailList.add( TaskScheduleDetailList.init(detail) );

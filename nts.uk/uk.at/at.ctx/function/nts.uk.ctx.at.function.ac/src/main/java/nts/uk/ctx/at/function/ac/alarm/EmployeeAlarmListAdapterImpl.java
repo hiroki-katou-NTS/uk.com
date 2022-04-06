@@ -20,7 +20,7 @@ public class EmployeeAlarmListAdapterImpl implements EmployeeAlarmListAdapter {
     private EmployeePublisher employeePub;
 
     @Override
-    public List<String> getListEmployeeId(String workplaceId, GeneralDate referenceDate) {
-        return employeePub.getListEmployeeId(workplaceId, referenceDate);
+    public List<String> getListEmployeeId(String cid, GeneralDate referenceDate) {
+        return employeePub.getListEmployeeId(cid, referenceDate);
     }
 }

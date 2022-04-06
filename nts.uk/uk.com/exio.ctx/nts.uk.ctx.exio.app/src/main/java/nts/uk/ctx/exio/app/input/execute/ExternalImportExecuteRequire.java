@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.app.input.execute;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -162,7 +161,7 @@ public class ExternalImportExecuteRequire {
 		
 		@Override
 		public ExternalImportSetting getExternalImportSetting(ExternalImportCode settingCode) {
-			return settingRepo.get(Optional.empty(), companyId, settingCode)
+			return settingRepo.get(companyId, settingCode)
 					.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
 		}
 

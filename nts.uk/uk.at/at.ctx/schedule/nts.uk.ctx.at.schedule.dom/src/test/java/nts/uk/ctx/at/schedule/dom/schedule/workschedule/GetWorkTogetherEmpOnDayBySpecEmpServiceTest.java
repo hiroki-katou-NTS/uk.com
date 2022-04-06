@@ -15,6 +15,7 @@ import mockit.Injectable;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -50,6 +51,7 @@ public class GetWorkTogetherEmpOnDayBySpecEmpServiceTest {
 	@Test
 	public void getWorkTogetherEmployeeOnDay(@Mocked GetTargetIdentifiInforService targetOrgService
 			, @Mocked GetEmpCanReferService empSameOrgService) {
+		val cid = "cid_0";
 		val sid = "sid_0";
 		val baseDate = GeneralDate.today();
 		val empSameOrgs = Arrays.asList("sid_1", "sid_2", "sid_3");
@@ -72,19 +74,19 @@ public class GetWorkTogetherEmpOnDayBySpecEmpServiceTest {
 				require.getWorkSchedule(empSameOrgs, baseDate);
 				result = Arrays.asList(workSchedule1, workSchedule2, workSchedule3);
 
-				workSchedule1.getWorkInfo().isAttendanceRate(require);
+				workSchedule1.getWorkInfo().isAttendanceRate(require, anyString);
 				result = true;
 
-				workSchedule2.getWorkInfo().isAttendanceRate(require);
+				workSchedule2.getWorkInfo().isAttendanceRate(require, anyString);
 				result = true;
 
-				workSchedule3.getWorkInfo().isAttendanceRate(require);
+				workSchedule3.getWorkInfo().isAttendanceRate(require, anyString);
 				result = false;
 			}
 
 		};
 
-		val result = GetWorkTogetherEmpOnDayBySpecEmpService.get(require, sid, baseDate);
+		val result = GetWorkTogetherEmpOnDayBySpecEmpService.get(require, cid, sid, baseDate);
 
 		assertThat(result).containsExactly("sid_1", "sid_2");
 
@@ -104,6 +106,7 @@ public class GetWorkTogetherEmpOnDayBySpecEmpServiceTest {
 					, null
 					, Collections.emptyList()
 					, TaskSchedule.createWithEmptyList()
+					, SupportSchedule.createWithEmptyList()
 					, Optional.empty()
 					, Optional.empty()
 					, Optional.empty()

@@ -24,8 +24,10 @@ import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
@@ -43,7 +45,7 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 	private TimeRecordReqSettingRepository timeRecordReqSettingRepository;
 
 	@Inject
-	private BentoMenuRepository bentoMenuRepository;
+	private BentoMenuHistRepository bentoMenuRepository;
 
 	@Inject
 	private BentoReservationRepository bentoReservationRepository;
@@ -56,18 +58,22 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 
 	@Inject
 	private TopPgAlTrRepository executionLog;
+	
+	@Inject
+	private ReservationSettingRepository reservationSettingRepository;
 
 	@Override
 	public Optional<AtomTask> convertData(String empInfoTerCode, String contractCode,
-			ReservReceptDataExport reservReceptData) {
+			ReservReceptDataExport reservReceptData, String companyID) {
 
 		RequireImpl requireImpl = new RequireImpl("", empInfoTerminalRepository, timeRecordReqSettingRepository,
 				employeeManageRCAdapter, bentoMenuRepository, bentoReservationRepository,
-				stampCardRepository, executionLog);
+				stampCardRepository, executionLog, reservationSettingRepository);
 		return ConvertTimeRecordReservationService.convertData(requireImpl, new EmpInfoTerminalCode(empInfoTerCode),
 				new ContractCode(contractCode),
 				new ReservationReceptionData(reservReceptData.getIdNumber(), reservReceptData.getMenu(),
-						reservReceptData.getYmd(), reservReceptData.getTime(), reservReceptData.getQuantity()));
+						reservReceptData.getYmd(), reservReceptData.getTime(), reservReceptData.getQuantity()),
+				companyID);
 	}
 
 	@AllArgsConstructor
@@ -82,13 +88,15 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 
 		private final EmployeeManageRCAdapter employeeManageRCAdapter;
 
-		private final BentoMenuRepository bentoMenuRepository;
+		private final BentoMenuHistRepository bentoMenuRepository;
 
 		private final BentoReservationRepository bentoReservationRepository;
 
 		private final StampCardRepository stampCardRepository;
 
 		private final TopPgAlTrRepository executionLog;
+		
+		private final ReservationSettingRepository reservationSettingRepository;
 
 		@Override
 		public void reserve(BentoReservation bentoReservation) {
@@ -132,9 +140,15 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 		}
 
 		@Override
-		public BentoMenu getBentoMenu(ReservationDate reservationDate, Optional<WorkLocationCode> workLocationCode) {
+		public BentoMenuHistory getBentoMenu(ReservationDate reservationDate, Optional<WorkLocationCode> workLocationCode) {
 			return bentoMenuRepository.getBentoMenu(companyId, reservationDate.getDate(), workLocationCode);
 
+		}
+
+		@Override
+		public ReservationRecTimeZone getReservationSetByOpDistAndFrameNo(String companyID, int frameNo,
+				int operationDistinction) {
+			return reservationSettingRepository.getReservationSetByOpDistAndFrameNo(companyID, frameNo, operationDistinction);
 		}
 	}
 

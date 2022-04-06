@@ -85,10 +85,13 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         condition30: KnockoutObservable<boolean> = ko.observable(true);
         condition12: KnockoutObservable<boolean> = ko.observable(true);
         condition19Over60: KnockoutObservable<boolean> = ko.observable(true);
+        condition19_1Over60: KnockoutObservable<boolean> = ko.observable(true);
         condition19Substitute: KnockoutObservable<boolean> = ko.observable(true);
         condition19Annual: KnockoutObservable<boolean> = ko.observable(true);
         condition19ChildNursing: KnockoutObservable<boolean> = ko.observable(true);
+        condition19_1ChildNursing: KnockoutObservable<boolean> = ko.observable(true);
         condition19Nursing: KnockoutObservable<boolean> = ko.observable(true);
+        condition19_1Nursing: KnockoutObservable<boolean> = ko.observable(true);
         condition14: KnockoutObservable<boolean> = ko.observable(true);
         condition15: KnockoutObservable<boolean> = ko.observable(true);
         condition21: KnockoutObservable<boolean> = ko.observable(true);
@@ -829,7 +832,6 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			}).done((result) => {
 				if (result) {
 					return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
-						nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
 						return CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 					});	
 				}
@@ -1325,19 +1327,39 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     vm.condition19Annual(false);
                 }
                 if (vm.data.vacationApplicationReflect.timeLeaveReflect.childNursing === 1
-                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.childNursingManagement === 1) {
+                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.childNursingManagement === 1
+                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.timeChildNursingManagement === 1) {
                     vm.condition19ChildNursing(true);
                 } else {
                     vm.condition19ChildNursing(false);
                 }
                 if (vm.data.vacationApplicationReflect.timeLeaveReflect.nursing === 1
-                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.longTermCareManagement === 1) {
+                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.longTermCareManagement === 1
+                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.timeCareManagement === 1) {
                     vm.condition19Nursing(true);
                 } else {
                     vm.condition19Nursing(false);
                 }
+
+                // condition 19-1
+                if (vm.data.remainVacationInfo.nursingCareLeaveManagement.childNursingManagement === 1) {
+                    vm.condition19_1ChildNursing(true);
+                } else {
+                    vm.condition19_1ChildNursing(false);
+                }
+                if (vm.data.remainVacationInfo.nursingCareLeaveManagement.longTermCareManagement === 1) {
+                    vm.condition19_1Nursing(true);
+                } else {
+                    vm.condition19_1Nursing(false);
+                }
+                if (vm.data.remainVacationInfo.overtime60hManagement.overrest60HManagement === 1) {
+                    vm.condition19_1Over60(true);
+                } else {
+                    vm.condition19_1Over60(false);
+                }
             }
         }
+        
 
         checkCondition15(data: any) {
             const vm = this;
@@ -1639,7 +1661,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         openKDL020() {
             let vm = this;
             nts.uk.ui.windows.setShared('KDL020_DATA', vm.application().employeeIDLst());
-            if (vm.application().employeeIDLst().length > 1) {
+            if (vm.application().employeeIDLst().length > 1)
                 nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 1040, height: 660 });
 			else
 				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 730, height: 660 });
@@ -1719,8 +1741,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         changeWorkType: 'at/request/application/appforleave/findChangeWorkType',
         changeWorkTime: 'at/request/application/appforleave/findChangeWorkTime',
         changeUseingWorkTime: 'at/request/application/appforleave/findChangeUsingWorkTime',
-        changeRela: 'at/request/application/appforleave/changeRela',
-		reflectApp: "at/request/application/reflect-app"
+        changeRela: 'at/request/application/appforleave/changeRela'
     }
 
     interface DataTransfer {

@@ -43,7 +43,8 @@
 				<div>
 					<div id="label2-B5_1" class="label"
 						data-bind="ntsFormLabel: {required: true, constraint:['AnyAggrName']}">
-						#{i18n.getText('KFP001_16')}</div>
+						<span>#{i18n.getText('KFP001_16')}</span>
+					</div>
 					<div id="code-text-d4" style="margin-top: -30px">
 						<input id="code-text-d4-21" style="margin-left: 130px ! important"
 							tabindex="5"
@@ -57,16 +58,30 @@
 					data-bind="ntsFormLabel: {required: true}">
 					#{i18n.getText('KFP001_18')}</div>
 		<div id = "data-range" style="margin-top: -33px; margin-left: 340px;">
-			<div id="daterangepicker" tabindex="6" style="margin-left: 130px"
-				data-bind="ntsDateRangePicker: { required: true,  
-												showNextPrevious: false, 
-												value: dateValue, 
-												maxRange: 'oneYear'}" />
-		</div>
+				<div id="daterangepicker" tabindex="6" style="margin-left: 130px"
+					 data-bind="ntsDateRangePicker: { required: true,
+												enable:  mode() == 0  || reintegration() ,
+												showNextPrevious: false,
+												value: dateValue,
 
+												maxRange: 'oneYear'}" />
+			<div>
+				<div data-bind="if: mode() != 0">
+					<div style="margin-left: 130px; margin-top: 10px"
+						 data-bind="ntsCheckBox: { text: '#{i18n.getText('KFP001_62')}', checked: reintegration }"/>
+					<div style="margin-left: 130px;">
+						<span>
+					#{i18n.getText('KFP001_63')}
+				</span>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="text-comment">集計実行時に指定内容が登録されます。</div>
-		<button id="next-button-B" class="proceed x-large"
-			data-bind="click : opendScreenBorJ,enable: $root.errors.isEmpty" tabindex="9" >#{i18n.getText('KFP001_25')}</button>
+		<div >
+			<button id="next-button-B" class="proceed x-large"
+					data-bind="click : opendScreenBorJ,enable: $root.errors.isEmpty &amp;&amp; currentItem().aggrFrameCode() &amp;&amp; currentItem().optionalAggrName()" tabindex="9" >#{i18n.getText('KFP001_25')}</button>
+		</div>
 	</ui:composition>
 </body>
 </html>

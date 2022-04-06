@@ -6,6 +6,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.schedule.WorkingDayCategory;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
@@ -162,5 +163,31 @@ public class WorkByIndividualWorkDay extends DomainObject{
 
 		return Optional.of(new WorkInformation(workType.getWorkTypeCode(), this.getWorkInformationWorkDay().getWorkTimeCode()));
 
+	}
+	// 稼働日区分で勤務情報を取得する
+	public WorkInformation getWorkInfo(WorkingDayCategory type) {
+		switch (type) {
+			case workingDay:
+				
+				return this.getWorkInformationWorkDay();
+				
+			case nonWorkingDay_inlaw:
+				Optional<WorkTypeCode> workInLawOp = this.workType.getInLawBreakTimeWTypeCode();
+				if (workInLawOp.isPresent()) {
+					return new WorkInformation(workInLawOp.get(), this.workTime.getHolidayWork().getWorkTimeCode().orElse(null));
+				}
+				
+				break;
+			case nonWorkingDay_Outrage:
+				Optional<WorkTypeCode> workOutsideOp = this.workType.getOutsideLawBreakTimeWTypeCode();
+				if (workOutsideOp.isPresent()) {
+					return new WorkInformation(workOutsideOp.get(), this.workTime.getHolidayWork().getWorkTimeCode().orElse(null));
+				}
+				break;
+			default:
+				break;
+		}
+		
+		return new WorkInformation(this.workType.getHolidayWorkWTypeCode(), this.workTime.getHolidayWork().getWorkTimeCode().orElse(null));
 	}
 }

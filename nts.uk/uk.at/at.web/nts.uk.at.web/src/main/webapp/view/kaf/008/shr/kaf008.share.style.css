@@ -83,3 +83,8 @@
     overflow-x: auto !important;
 }
 
+td {
+	text-align: left !important;
+	height: 33px !important;
+}
+

@@ -5,7 +5,7 @@ import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificName;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;

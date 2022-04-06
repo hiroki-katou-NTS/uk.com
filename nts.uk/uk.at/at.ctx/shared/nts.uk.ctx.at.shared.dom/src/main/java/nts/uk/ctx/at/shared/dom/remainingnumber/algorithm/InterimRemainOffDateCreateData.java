@@ -831,7 +831,7 @@ public class InterimRemainOffDateCreateData {
 		// 出勤時の勤務情報を取得する
 
 		return require.getHolidayWorkScheduleNew(cid, sid, ymd, wkTypeCd,WorkingDayCategory.workingDay)
-				.map(x -> x.getWorkTimeCodeNotNull().map(y->y.v()).orElse(null)).orElse(null);
+				.map(x -> x.getWorkTimeCodeNotNull().map(y -> y.v()).orElse("")).orElse("");
 
 	}
 	

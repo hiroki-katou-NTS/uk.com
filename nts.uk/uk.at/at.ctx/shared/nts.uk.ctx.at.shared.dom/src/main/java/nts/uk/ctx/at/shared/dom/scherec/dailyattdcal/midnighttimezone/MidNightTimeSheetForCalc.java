@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -20,7 +21,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * 深夜時間帯
  * @author keisuke_hoshina
  */
-public class MidNightTimeSheetForCalc extends CalculationTimeSheet {
+public class MidNightTimeSheetForCalc extends CalculationTimeSheet implements Cloneable {
 
 	public MidNightTimeSheetForCalc(TimeSpanForDailyCalc timeSheet, TimeRoundingSetting rounding, List<TimeSheetOfDeductionItem> recorddeductionSheets,List<TimeSheetOfDeductionItem> deductionSheets) {
 		super(timeSheet, rounding, recorddeductionSheets,deductionSheets);
@@ -196,5 +197,23 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet {
 			return inOut;
 		}
 		return inOut;
+	}
+	
+	public MidNightTimeSheetForCalc clone() {
+		MidNightTimeSheetForCalc clone = new MidNightTimeSheetForCalc(
+				this.timeSheet,
+				this.rounding,
+				this.recordedTimeSheet,
+				this.deductionTimeSheet);
+		try {
+			clone.timeSheet = this.timeSheet.clone();
+			clone.rounding = this.rounding.clone();
+			clone.recordedTimeSheet = this.recordedTimeSheet.stream().map(r -> r.clone()).collect(Collectors.toList());
+			clone.deductionTimeSheet = this.deductionTimeSheet.stream().map(d -> d.clone()).collect(Collectors.toList());
+		}
+		catch (Exception e) {
+			throw new RuntimeException("MidNightTimeSheetForCalc clone error.");
+		}
+		return clone;
 	}
 }

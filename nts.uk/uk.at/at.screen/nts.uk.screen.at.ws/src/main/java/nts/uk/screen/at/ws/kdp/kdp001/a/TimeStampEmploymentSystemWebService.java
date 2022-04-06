@@ -20,10 +20,8 @@ import nts.uk.screen.at.app.command.kdp.kdp001.a.RegisterStampInputResult;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.DisplayListStampForStampInput;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.DisplaySuppressStampButtonInStampInput;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.GetSettingStampInput;
-import nts.uk.screen.at.app.query.kdp.kdp001.a.LocationStampInput;
-import nts.uk.screen.at.app.query.kdp.kdp001.a.LocationStampInputDto;
-import nts.uk.screen.at.app.query.kdp.kdp001.a.LocationStampInputParam;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.SettingPotalStampInputDto;
+import nts.uk.screen.at.app.query.kdp.kdp001.a.SettingPotalStampInputParam;
 import nts.uk.screen.at.app.query.kdp.kdp002.a.DailyAttdErrorInfoDto;
 import nts.uk.screen.at.app.query.kdp.kdp002.a.GetOmissionContentsFinder;
 
@@ -48,17 +46,14 @@ public class TimeStampEmploymentSystemWebService extends WebService {
 
 	@Inject
 	private DisplaySuppressStampButtonInStampInput displaySuppressStampButtonInStampInput;
-	
-	@Inject
-	private LocationStampInput locationStampInput;
 
 	/**
 	 * 打刻入力(ポータル)の打刻履歴一覧を表示する
 	 */
 	@POST
 	@Path("get_employee_stamp_data")
-	public List<StampDataOfEmployeesDto> getEmployeeStampData() {
-		return this.displayListStamp.getEmployeeStampData();
+	public List<StampDataOfEmployeesDto> getEmployeeStampData(SettingPotalStampInputParam param) {
+		return this.displayListStamp.getEmployeeStampData(param);
 	}
 
 	/**
@@ -87,9 +82,8 @@ public class TimeStampEmploymentSystemWebService extends WebService {
 	 */
 	@POST
 	@Path("get_setting_stamp_input")
-	public SettingPotalStampInputDto getSettingStampInput() {
-
-		return this.getSettingStampInput.getSettingPotalStampInput();
+	public SettingPotalStampInputDto getSettingStampInput(SettingPotalStampInputParam param) {
+		return this.getSettingStampInput.getSettingPotalStampInput(param);
 	}
 
 	/**
@@ -110,15 +104,5 @@ public class TimeStampEmploymentSystemWebService extends WebService {
 	@Path("get_stamp_to_suppress")
 	public StampToSuppress getStampToSuppress() {
 		return this.displaySuppressStampButtonInStampInput.getStampToSuppress();
-	}
-
-	/**
-	 * 打刻入力の場所を取得する
-	 * @return
-	 */
-	@POST
-	@Path("get_location_stamp_input")
-	public LocationStampInputDto getLocationStampInput(LocationStampInputParam param) {
-		return this.locationStampInput.get(param);
 	}
 }

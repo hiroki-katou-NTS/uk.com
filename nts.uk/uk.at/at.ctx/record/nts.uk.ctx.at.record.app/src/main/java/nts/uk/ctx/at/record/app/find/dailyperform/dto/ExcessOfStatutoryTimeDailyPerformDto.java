@@ -32,18 +32,24 @@ public class ExcessOfStatutoryTimeDailyPerformDto implements ItemConst, Attendan
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = HOLIDAY_WORK)
 	private WorkHolidayTimeDailyPerformDto workHolidayTime;
 	
+	/** 臨時時間: 日別実績の臨時時間 */
+	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = TEMPORARY)
+	private TemporaryTimeDailyPerformDto temporaryTime;
+
 	public static ExcessOfStatutoryTimeDailyPerformDto fromExcessOfStatutoryTimeDailyPerform(ExcessOfStatutoryTimeOfDaily domain){
 		return domain == null ? null : new ExcessOfStatutoryTimeDailyPerformDto(
 				getExcessStatutory(domain.getExcessOfStatutoryMidNightTime()), 
 				OverTimeWorkDailyPerformDto.fromOverTimeWorkDailyPerform(domain.getOverTimeWork().orElse(null)), 
-				WorkHolidayTimeDailyPerformDto.fromOverTimeWorkDailyPerform(domain.getWorkHolidayTime().orElse(null)));
+				WorkHolidayTimeDailyPerformDto.fromOverTimeWorkDailyPerform(domain.getWorkHolidayTime().orElse(null)),
+				TemporaryTimeDailyPerformDto.fromDomain(domain.getTemporaryTime()));
 	}
 	
 	@Override
 	public ExcessOfStatutoryTimeDailyPerformDto clone() {
 		return new ExcessOfStatutoryTimeDailyPerformDto(excessOfStatutoryMidNightTime == null ? null : excessOfStatutoryMidNightTime.clone(),
 														overTimeWork == null ? null : overTimeWork.clone(),
-														workHolidayTime == null ? null : workHolidayTime.clone());
+														workHolidayTime == null ? null : workHolidayTime.clone(),
+														temporaryTime == null ? null : temporaryTime.clone());
 	}
 
 	private static ExcessOfStatutoryMidNightTimeDto getExcessStatutory(ExcessOfStatutoryMidNightTime domain) {
@@ -56,11 +62,15 @@ public class ExcessOfStatutoryTimeDailyPerformDto implements ItemConst, Attendan
 		return new ExcessOfStatutoryTimeOfDaily(
 				toExcessOfStatutory(),
 				overTimeWork == null ? Optional.empty() : Optional.of(overTimeWork.toDomain()), 
-				workHolidayTime == null ? Optional.empty() : Optional.of(workHolidayTime.toDomain()));
+				workHolidayTime == null ? Optional.empty() : Optional.of(workHolidayTime.toDomain()),
+				temporaryTime.toDomain());
 	}
 	
 	public static ExcessOfStatutoryTimeOfDaily defaultDomain() {
-		return new ExcessOfStatutoryTimeOfDaily(ExcessOfStatutoryMidNightTimeDto.defaultDomain(), Optional.empty(), Optional.empty());
+		return new ExcessOfStatutoryTimeOfDaily(
+				ExcessOfStatutoryMidNightTimeDto.defaultDomain(),
+				Optional.empty(), Optional.empty(),
+				TemporaryTimeDailyPerformDto.defaultDomain());
 	}
 
 	private ExcessOfStatutoryMidNightTime toExcessOfStatutory() {
@@ -87,6 +97,8 @@ public class ExcessOfStatutoryTimeDailyPerformDto implements ItemConst, Attendan
 			return new OverTimeWorkDailyPerformDto();
 		case HOLIDAY_WORK:
 			return new WorkHolidayTimeDailyPerformDto();
+		case TEMPORARY:
+			return new TemporaryTimeDailyPerformDto();
 		default:
 			break;
 		}
@@ -102,6 +114,8 @@ public class ExcessOfStatutoryTimeDailyPerformDto implements ItemConst, Attendan
 			return Optional.ofNullable(overTimeWork);
 		case HOLIDAY_WORK:
 			return Optional.ofNullable(workHolidayTime);
+		case TEMPORARY:
+			return Optional.ofNullable(temporaryTime);
 		default:
 			break;
 		}
@@ -119,6 +133,9 @@ public class ExcessOfStatutoryTimeDailyPerformDto implements ItemConst, Attendan
 			break;
 		case HOLIDAY_WORK:
 			workHolidayTime = (WorkHolidayTimeDailyPerformDto) value;
+			break;
+		case TEMPORARY:
+			temporaryTime = (TemporaryTimeDailyPerformDto) value;
 			break;
 		default:
 			break;

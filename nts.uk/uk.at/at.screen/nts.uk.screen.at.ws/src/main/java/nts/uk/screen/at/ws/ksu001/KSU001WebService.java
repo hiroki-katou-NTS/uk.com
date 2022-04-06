@@ -8,14 +8,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.arc.task.AsyncTaskInfo;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExecutionInfor;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.ChangeConfirmedStateCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.ChangeConfirmedStateCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.RegisterWorkSchedule;
-import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.ResultRegisWorkSchedule;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.WorkScheduleCommand;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.screen.at.app.ksu001.changepage.ChangePageParam;
@@ -44,10 +42,10 @@ import nts.uk.screen.at.app.ksu001.processcommon.CorrectWorkTimeHalfDayParam;
 import nts.uk.screen.at.app.ksu001.processcommon.CorrectWorkTimeHalfDayRs;
 import nts.uk.screen.at.app.ksu001.start.ChangeMonthParam;
 import nts.uk.screen.at.app.ksu001.start.ChangePeriodModeParam;
+import nts.uk.screen.at.app.ksu001.start.KSU001Finder;
 import nts.uk.screen.at.app.ksu001.start.OrderEmployeeParam;
-import nts.uk.screen.at.app.ksu001.start.StartKSU001Dto;
+import nts.uk.screen.at.app.ksu001.start.StartKSU001Result;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001Param;
-import nts.uk.screen.at.app.ksu001.start.StartKSU001Ver5;
 import nts.uk.screen.at.app.ksu001.validwhenedittime.ValidDataWhenEditTime;
 import nts.uk.screen.at.app.ksu001.validwhenedittime.ValidDataWhenEditTimeParam;
 import nts.uk.screen.at.app.ksu001.validwhenpaste.ValidDataWhenPaste;
@@ -64,7 +62,7 @@ import nts.uk.screen.at.app.ksu001.validwhenpaste.ValidDataWhenPasteParam;
 public class KSU001WebService extends WebService{
 
 	@Inject
-	private StartKSU001Ver5 startKSU001Ver5;
+	private KSU001Finder finder;
 	@Inject
 	private ChangeMonthFinder changeMonthFinder;
 	@Inject
@@ -96,29 +94,29 @@ public class KSU001WebService extends WebService{
 	
 	@POST
 	@Path("start")
-	public StartKSU001Dto getDataStartScreenVer5(StartKSU001Param param){
-		StartKSU001Dto data = startKSU001Ver5.getData(param);
+	public StartKSU001Result getDataStartScreenVer5(StartKSU001Param param){
+		StartKSU001Result data = finder.getData(param);
 		return data;
 	}
 	
 	@POST
 	@Path("shift")
-	public StartKSU001Dto getDataShiftMode(StartKSU001Param param){
-		StartKSU001Dto data = startKSU001Ver5.getData(param);
+	public StartKSU001Result getDataShiftMode(StartKSU001Param param){
+		StartKSU001Result data = finder.getData(param);
 		return data;
 	}
 	
 	@POST
 	@Path("shortname")
-	public StartKSU001Dto getDataShortNameMode(StartKSU001Param param){
-		StartKSU001Dto data = startKSU001Ver5.getData(param);
+	public StartKSU001Result getDataShortNameMode(StartKSU001Param param){
+		StartKSU001Result data = finder.getData(param);
 		return data;
 	}
 	
 	@POST
 	@Path("time")
-	public StartKSU001Dto getDataTimeMode(StartKSU001Param param){
-		StartKSU001Dto data = startKSU001Ver5.getData(param);
+	public StartKSU001Result getDataTimeMode(StartKSU001Param param){
+		StartKSU001Result data = finder.getData(param);
 		return data;
 	}
 	
@@ -167,9 +165,9 @@ public class KSU001WebService extends WebService{
 	}
 	
 	@POST
-	@Path("change-workplace") 
-	public StartKSU001Dto getDataWhenChangeWkp(ChangeWorkPlaceParam param) {
-		StartKSU001Dto data = changeWorkPlaceFinder.getData(param);
+	@Path("get-data-grid") 
+	public StartKSU001Result getDataGrid(ChangeWorkPlaceParam param) {
+		StartKSU001Result data = changeWorkPlaceFinder.getData(param);
 		return data;
 	}
 	

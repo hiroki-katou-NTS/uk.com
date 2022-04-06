@@ -58,11 +58,14 @@ import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.GetDataDaily;
+import nts.uk.screen.at.app.dailyperformance.correction.InitialDisplayEmployeeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeNameType;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalStatusActualResultKDW003Dto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ConfirmStatusActualResultKDW003Dto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCellDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPControlDisplayItem;
@@ -92,6 +95,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindAllEmployee;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
+import nts.uk.screen.at.app.dailyperformance.support.GetDailySupportWorkers;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.FormatDailyDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -140,6 +144,9 @@ public class InitScreenMob {
 	
 	@Inject
 	private TaskSupInfoChoiceDetailsQuery taskSupInfoChoiceDetailsQuery;
+	
+	@Inject
+	private GetDailySupportWorkers supportWorkers;
 
 	private static final Integer[] DEVIATION_REASON = { 436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456,
 			458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822 };
@@ -230,25 +237,31 @@ public class InitScreenMob {
 		screenDto.setPeriodInfo(resultPeriod);
 
 		// 対象社員の特定
-		List<String> allIds = new ArrayList<>();
 		List<String> changeEmployeeIds = new ArrayList<>();
+		InitialDisplayEmployeeDto allIds = null;
 
 		allIds = processor.changeListEmployeeId(new ArrayList<>(), rangeInit, screenMode, false,
 				screenDto.getClosureId(), screenDto);
+		
+		//
+		DPCorrectionStateParam stateParam = supportWorkers.getDailySupportWorkers(allIds.getParam());
+		screenDto.setStateParam(stateParam);
 
 		// ログイン社員の日別実績の権限を取得する
 		screenDto.setAuthorityDto(processor.getAuthority(screenDto));
 
-		screenDto.setLstEmployee(findAllEmployee.findAllEmployee(allIds, dateRange.getEndDate()));
+		screenDto.setLstEmployee(findAllEmployee.findAllEmployee(allIds.getLstEmpId(), dateRange.getEndDate()));
 
 		List<DailyPerformanceEmployeeDto> lstEmployeeData = new ArrayList<>();
 		if (displayFormat == 0) {
 			changeEmployeeIds.add(employeeID);
-			lstEmployeeData = findAllEmployee.findAllEmployee(changeEmployeeIds, dateRange.getEndDate());			
+			lstEmployeeData = findAllEmployee.findAllEmployee(changeEmployeeIds, dateRange.getEndDate());	
 		} else {
-			changeEmployeeIds = allIds;
+			changeEmployeeIds = allIds.getLstEmpId();
 			lstEmployeeData = screenDto.getLstEmployee();
+			
 		}
+		screenDto.setEmployeeIds(changeEmployeeIds);
 
 		screenDto.setLstData(processor.getListData(lstEmployeeData, dateRange, displayFormat));
 
@@ -285,7 +298,7 @@ public class InitScreenMob {
 		if (listEmployeeId.isEmpty()) {
 			// screenDto.setLstEmployee(Collections.emptyList());
 			screenDto.setErrorInfomation(DCErrorInfomation.NOT_EMP_IN_HIST.value);
-			setStateParam(screenDto, resultPeriod, displayFormat, false);
+			setStateParam(screenDto, resultPeriod, displayFormat, false, allIds);
 			return screenDto;
 		}
 
@@ -296,7 +309,7 @@ public class InitScreenMob {
 		if (disItem == null || !disItem.getErrors().isEmpty()) {
 			if (disItem != null)
 				screenDto.setErrors(disItem.getErrors());
-			setStateParam(screenDto, resultPeriod, displayFormat, false);
+			setStateParam(screenDto, resultPeriod, displayFormat, false, allIds);
 			return screenDto;
 		}
 		screenDto.setDisItem(disItem);
@@ -494,11 +507,20 @@ public class InitScreenMob {
 			if(lockDay || lockHist || dataSign == null || (!dataSign.isStatus() ? (!dataSign.notDisableForConfirm() ? true : false) : !dataSign.notDisableForConfirm())){
 				screenDto.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
 			}
+			
+			if (displayFormat == 1 || displayFormat == 2) {
+				if (screenDto.getStateParam().getLstEmpsSupport().contains(data.getEmployeeId())) {
+					cellEditColor(screenDto,data.getId(), "employeeName", 9);
+					cellEditColor(screenDto,data.getId(), "employeeCode", 9);
+				}
+			}
 		}
 		screenDto.setLstData(lstData);
-		setStateParam(screenDto, resultPeriod, displayFormat, false);
+		setStateParam(screenDto, resultPeriod, displayFormat, false, allIds);
+		List<ConfirmStatusActualResultKDW003Dto> lstConfirmStatusActualResultKDW003Dto = confirmResults.stream().map(c->ConfirmStatusActualResultKDW003Dto.fromDomain(c)).collect(Collectors.toList());
+		List<ApprovalStatusActualResultKDW003Dto> lstApprovalStatusActualResultKDW003Dto = approvalResults.stream().map(c->ApprovalStatusActualResultKDW003Dto.fromDomain(c)).collect(Collectors.toList());
 		screenDto.setApprovalConfirmCache(new ApprovalConfirmCache(sId, listEmployeeId,
-				new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), 0, confirmResults, approvalResults));
+				dateRange, 0, lstConfirmStatusActualResultKDW003Dto, lstApprovalStatusActualResultKDW003Dto));
 		return screenDto;
 	}
 
@@ -544,7 +566,7 @@ public class InitScreenMob {
 		monthActualReferButtonDis = formatDailyDto != null && !formatDailyDto.isEmpty() && displayFormat == 0 ? true : false;
 
 		DaiPerformanceFunDto daiPerformanceFunDto = daiPerformanceFunFinder.getDaiPerformanceFunById(companyId);
-		timeExcessReferButtonDis = daiPerformanceFunDto.getDisp36Atr() == 1 && displayFormat == 0 ? true : false;
+		timeExcessReferButtonDis = (daiPerformanceFunDto != null ? daiPerformanceFunDto.getDisp36Atr() == 1: false) && (displayFormat == 0 ? true : false);
 
 		Optional<DailyPerformanceAuthorityDto> authorityDto = authorityDtos.stream().filter(x -> x.getFunctionNo().compareTo(new BigDecimal(25)) == 0).findFirst();
 		if (authorityDto.isPresent()) {
@@ -869,12 +891,21 @@ public class InitScreenMob {
 
 	public void cellEditColor(DailyPerformanceCorrectionDto screenDto, String rowId, String columnKey,
 			Integer cellEdit) {
+		// 日別実績の編集状態:
+		// 0: 手修正（本人）
+		// 1: 手修正（他人）
+		// 2: 申請反映
+		// 3: 打刻反映
+		// 4: 申告反映
+		// 9: 応援
 		// set color edit
 		if (cellEdit != null) {
 			if (cellEdit == 0) {
 				screenDto.setCellSate(rowId, columnKey, DPText.HAND_CORRECTION_MYSELF);
 			} else if (cellEdit == 1) {
 				screenDto.setCellSate(rowId, columnKey, DPText.HAND_CORRECTION_OTHER);
+			} else if (cellEdit == 9) {
+				screenDto.setCellSate(rowId, columnKey, DPText.COLOR_SUPPORT);
 			} else {
 				screenDto.setCellSate(rowId, columnKey, DPText.REFLECT_APPLICATION);
 			}
@@ -882,11 +913,13 @@ public class InitScreenMob {
 	}
 
 	private void setStateParam(DailyPerformanceCorrectionDto screenDto, DatePeriodInfo info, int displayFormat,
-			Boolean transferDesScreen) {
+			Boolean transferDesScreen, InitialDisplayEmployeeDto initDto) {
 		DPCorrectionStateParam cacheParam = new DPCorrectionStateParam(
-				new DatePeriod(screenDto.getDateRange().getStartDate(), screenDto.getDateRange().getEndDate()),
+				new DateRange(screenDto.getDateRange().getStartDate(), screenDto.getDateRange().getEndDate()),
 				screenDto.getEmployeeIds(), displayFormat, screenDto.getEmployeeIds(),
-				screenDto.getLstControlDisplayItem(), info, transferDesScreen);
+				screenDto.getLstControlDisplayItem(), info, transferDesScreen,
+				initDto != null && initDto.getParam() != null ? initDto.getParam().getLstWrkplaceId() : new ArrayList<>(),
+				initDto != null && initDto.getParam() != null ? initDto.getParam().getLstEmpsSupport() : new ArrayList<>());
 		screenDto.setStateParam(cacheParam);
 
 	}

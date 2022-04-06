@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import lombok.val;
+import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
@@ -39,6 +40,26 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOver;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AcquisitionSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ContractTimeRound;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DayTimeAnnualLeave;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.HalfDayManage;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxTimeDay;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumberSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualLeaveTimeDay;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualMaxDay;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearLyOfNumberDays;
+import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
@@ -90,7 +111,7 @@ public class GetTempAnnualLeaveMngsFromUsedNumberServiceTest {
 		val digestion = GetAnnualLeaveUsedNumberFromRemDataService.getAnnualLeaveGrantRemainingData(companyId, employeeId, remainingData, usedNumber, require);
 
 		// 期待値：付与日数10.0日、付与時間8:00、使用数3.0日、使用時間2:00、残日数7.0日、残時間6:00
-		val expect2 = leaveGrantRemainingData(10.0, 480, 3.0, 120, 0d, 0d, 7.0, 360,  null, new BigDecimal(0));
+		val expect2 = leaveGrantRemainingData(10.0, 480, 3.0, 120, 0d, 0d, 7.0, 360,  null, new BigDecimal(30.0));
 
 		assertThat(digestion.get(0).getGrantDate()).isEqualTo(expect2.get(0).getGrantDate());
 		assertThat(digestion.get(0).getDeadline()).isEqualTo(expect2.get(0).getDeadline());
@@ -130,7 +151,7 @@ public class GetTempAnnualLeaveMngsFromUsedNumberServiceTest {
 		val digestion = GetAnnualLeaveUsedNumberFromRemDataService.getAnnualLeaveGrantRemainingData(companyId, employeeId, remainingData, usedNumber, require);
 
 		// 期待値：付与日数10.0日、付与時間8:00、使用数0.5日、使用時間0:00、残日数9.5日、残時間8:00
-		val expect2 = leaveGrantRemainingData(10.0, 480, 0.5, 0, 0d, 0d, 9.5, 480,  null, new BigDecimal(0));
+		val expect2 = leaveGrantRemainingData(10.0, 480, 0.5, 0, 0d, 0d, 9.5, 480,  null, new BigDecimal(5.0));
 
 		assertThat(digestion.get(0).getGrantDate()).isEqualTo(expect2.get(0).getGrantDate());
 		assertThat(digestion.get(0).getDeadline()).isEqualTo(expect2.get(0).getDeadline());
@@ -180,7 +201,8 @@ public class GetTempAnnualLeaveMngsFromUsedNumberServiceTest {
 
 		// 期待値：[0]付与日数10.0日、付与時間8:00、残日数0.0日、残時間7:00、使用数10.0日、使用時間1:00
 		// 期待値：[1]付与日数0.0日、付与時間0:00(empty)、残日数-0.5日、残時間0:00、使用数0.5日、使用時間0:00(empty)
-		val expect2 = leaveGrantRemainingData(10.0, 480, 10.0, 60, 0d, 0d, 0.0, 420,  null, new BigDecimal(0));
+		val expect2 = leaveGrantRemainingData(10.0, 480, 10.0, 0, 0d, 0d, 0.0, 0,  null, new BigDecimal(100.0));
+	
 
 		assertThat(digestion.get(0).getGrantDate()).isEqualTo(expect2.get(0).getGrantDate());
 		assertThat(digestion.get(0).getDeadline()).isEqualTo(expect2.get(0).getDeadline());
@@ -194,7 +216,7 @@ public class GetTempAnnualLeaveMngsFromUsedNumberServiceTest {
 		assertThat(digestion.get(0).getDetails().getUsedNumber().getDays()).isEqualTo(expect2.get(0).getDetails().getUsedNumber().getDays());
 		assertThat(digestion.get(0).getDetails().getUsedNumber().getMinutes()).isEqualTo(expect2.get(0).getDetails().getUsedNumber().getMinutes());
 		assertThat(digestion.get(0).getDetails().getUsedPercent()).isEqualTo(expect2.get(0).getDetails().getUsedPercent());
-
+		
 	}
 
 	// パターン4：月別実績の使用数1.0日と0:00の時
@@ -220,7 +242,61 @@ public class GetTempAnnualLeaveMngsFromUsedNumberServiceTest {
 		val digestion = GetAnnualLeaveUsedNumberFromRemDataService.getAnnualLeaveGrantRemainingData(companyId, employeeId, remainingData, usedNumber, require);
 
 		// 期待値：付与日数10.0日、付与時間8:00、使用数1.0日、使用時間0:00、残日数9.0日、残時間8:00
-		val expect2 = leaveGrantRemainingData(10.0, 480, 1.0, 0, 0d, 0d, 9.0, 480, null,  new BigDecimal(0));
+		val expect2 = leaveGrantRemainingData(10.0, 480, 1.0, 0, 0d, 0d, 9.0, 480, null,  new BigDecimal(10.0));
+
+		assertThat(digestion.get(0).getGrantDate()).isEqualTo(expect2.get(0).getGrantDate());
+		assertThat(digestion.get(0).getDeadline()).isEqualTo(expect2.get(0).getDeadline());
+		assertThat(digestion.get(0).getExpirationStatus()).isEqualTo(expect2.get(0).getExpirationStatus());
+		assertThat(digestion.get(0).getRegisterType()).isEqualTo(expect2.get(0).getRegisterType());
+
+		assertThat(digestion.get(0).getDetails().getGrantNumber().getDays()).isEqualTo(expect2.get(0).getDetails().getGrantNumber().getDays());
+		assertThat(digestion.get(0).getDetails().getGrantNumber().getMinutes()).isEqualTo(expect2.get(0).getDetails().getGrantNumber().getMinutes());
+		assertThat(digestion.get(0).getDetails().getRemainingNumber().getDays()).isEqualTo(expect2.get(0).getDetails().getRemainingNumber().getDays());
+		assertThat(digestion.get(0).getDetails().getRemainingNumber().getMinutes()).isEqualTo(expect2.get(0).getDetails().getRemainingNumber().getMinutes());
+		assertThat(digestion.get(0).getDetails().getUsedNumber().getDays()).isEqualTo(expect2.get(0).getDetails().getUsedNumber().getDays());
+		assertThat(digestion.get(0).getDetails().getUsedNumber().getMinutes()).isEqualTo(expect2.get(0).getDetails().getUsedNumber().getMinutes());
+		assertThat(digestion.get(0).getDetails().getUsedPercent()).isEqualTo(expect2.get(0).getDetails().getUsedPercent());
+
+	}
+	
+	
+	// パターン5：月別実績の使用数1.0日と5:00の時
+	@Test
+	public void AnnLeaMngsFromUsedNumber5(){
+
+		String companyId = "0001";
+		String employeeId = "000001";
+		LeaveUsedNumber usedNumber = usedNumber(1.0, 300, 0.0, null, null); // 月別実績の使用数 // 1.0日と5:00
+
+		
+		new Expectations() {
+			{
+				require.annualPaidLeaveSetting(companyId);
+				result = annualPaidLeaveSetting(companyId);
+				
+			}
+		};
+		// 使用数を暫定年休管理データに変換する
+		val  tempAnn =GetTempAnnualLeaveMngsFromUsedNumberService.tempAnnualLeaveMngs(employeeId, usedNumber);
+
+		// 年休付与残数データ：付与日数10.0日、付与時間0:00、使用数1.0日、使用時間12:00、残日数7.0日、残時間6:00
+		val remainingData = leaveGrantRemainingData(10.0, 0, 0d, 0, 0d, 0d, 10.0, 0, null, new BigDecimal(0.0));
+
+		val expect = tempAnnualLeaveMngs4();
+		assertThat(tempAnn.get(0).getYmd()).isEqualTo(expect.get(0).getYmd());
+		assertThat(tempAnn.get(0).getUsedNumber().getUsedDayNumber()).isEqualTo(expect.get(0).getUsedNumber().getUsedDayNumber());
+		assertThat(tempAnn.get(0).getUsedNumber().getUsedTime()).isEqualTo(expect.get(0).getUsedNumber().getUsedTime());
+
+		assertThat(tempAnn.get(1).getYmd()).isEqualTo(expect.get(1).getYmd());
+		assertThat(tempAnn.get(1).getUsedNumber().getUsedDayNumber()).isEqualTo(expect.get(1).getUsedNumber().getUsedDayNumber());
+		assertThat(tempAnn.get(1).getUsedNumber().getUsedTime()).isEqualTo(expect.get(1).getUsedNumber().getUsedTime());
+
+		
+		// 消化
+		val digestion = GetAnnualLeaveUsedNumberFromRemDataService.getAnnualLeaveGrantRemainingData(companyId, employeeId, remainingData, usedNumber, require);
+
+		// 期待値：付与日数10.0日、付与時間0:00、使用数1.0日、使用時間12:00、残日数7.0日、残時間6:00
+		val expect2 = leaveGrantRemainingData(10.0, 0, 1.0, 300, 2d, 0d, 8.0, 180, null,  new BigDecimal(10));
 
 		assertThat(digestion.get(0).getGrantDate()).isEqualTo(expect2.get(0).getGrantDate());
 		assertThat(digestion.get(0).getDeadline()).isEqualTo(expect2.get(0).getDeadline());
@@ -297,5 +373,33 @@ public class GetTempAnnualLeaveMngsFromUsedNumberServiceTest {
 				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 16), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new TempAnnualLeaveUsedNumber(1.0, null),  Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK)))),
 				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 16), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new TempAnnualLeaveUsedNumber(0.5, null),  Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK)))),
 				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 17), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new TempAnnualLeaveUsedNumber(null, 60),  Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK)))));
+	}
+	
+	// 暫定年休管理データ
+	private List<TempAnnualLeaveMngs> tempAnnualLeaveMngs4(){
+		return Arrays.asList(
+				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 16), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new TempAnnualLeaveUsedNumber(1.0, null),  Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK)))),
+				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 16), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new TempAnnualLeaveUsedNumber(null, 300),  Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK)))));
+	}
+	
+	private AnnualPaidLeaveSetting annualPaidLeaveSetting(String companyId){
+		return new AnnualPaidLeaveSetting(
+				companyId,
+				AcquisitionSetting.builder().annualPriority(AnnualPriority.FIFO).build(),
+				ManageDistinct.YES,
+				new ManageAnnualSetting(
+						HalfDayManage.builder().manageType(ManageDistinct.NO).build(),
+						RemainingNumberSetting.builder().retentionYear(new RetentionYear(2)).build(),
+						new YearLyOfNumberDays(200.0)),
+				new TimeAnnualSetting(
+						new TimeAnnualMaxDay(ManageDistinct.NO, MaxDayReference.CompanyUniform, new MaxTimeDay(10)),
+						TimeAnnualRoundProcesCla.RoundUpToOneDay,
+						new TimeAnnualLeaveTimeDay(
+								DayTimeAnnualLeave.Company_wide_Uniform, 
+								Optional.of(new LaborContractTime(480)),
+								Optional.of(ContractTimeRound.Do_not_round)),
+						new TimeVacationDigestUnit(ManageDistinct.YES, TimeDigestiveUnit.OneMinute)
+						)
+				);
 	}
 }

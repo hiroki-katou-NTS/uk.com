@@ -2,9 +2,14 @@ package nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting;
 
 import java.math.BigDecimal;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.Value;
 
-@Value
+@NoArgsConstructor
+@Setter
+@Getter
 public class TimeDfsCommand {
 
 	/**
@@ -101,5 +106,32 @@ public class TimeDfsCommand {
 	 * 固定長整数桁
 	 */
 	private int fixedLongIntegerDigit;
+
+	public TimeDfsCommand(String condSetCd, String outItemCd, String cid, int nullValueSubs, int outputMinusAsZero,
+			int minuteFractionDigitProcessCls, int delimiterSetting, int fixedValue, int fixedValueOperation,
+			int fixedValueOperationSymbol, int fixedLengthOutput, int fixedLengthEditingMethod, int selectHourMinute,
+			int decimalSelection, String valueOfNullValueSubs, int minuteFractionDigit, String valueOfFixedValue,
+			BigDecimal fixedCalculationValue, int fixedLongIntegerDigit) {
+		super();
+		this.condSetCd = condSetCd;
+		this.outItemCd = outItemCd;
+		this.cid = cid;
+		this.nullValueSubs = nullValueSubs;
+		this.outputMinusAsZero = outputMinusAsZero;
+		this.minuteFractionDigitProcessCls = minuteFractionDigitProcessCls;
+		this.delimiterSetting = delimiterSetting;
+		this.fixedValue = fixedValue;
+		this.fixedValueOperation = fixedValueOperation;
+		this.fixedValueOperationSymbol = fixedValueOperationSymbol;
+		this.fixedLengthOutput = fixedLengthOutput;
+		this.fixedLengthEditingMethod = fixedLengthEditingMethod;
+		this.selectHourMinute = selectHourMinute;
+		this.decimalSelection = decimalSelection;
+		this.valueOfNullValueSubs = valueOfNullValueSubs;
+		this.minuteFractionDigit = minuteFractionDigit;
+		this.valueOfFixedValue = valueOfFixedValue;
+		this.fixedCalculationValue = fixedCalculationValue;
+		this.fixedLongIntegerDigit = fixedLongIntegerDigit;
+	}
 
 }

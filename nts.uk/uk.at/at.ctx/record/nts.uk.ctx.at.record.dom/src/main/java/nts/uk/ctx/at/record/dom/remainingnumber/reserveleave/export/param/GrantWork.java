@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeave
  * @author shuichu_ishida
  */
 @Getter
+@AllArgsConstructor
 public class GrantWork {
 
 	/** 付与年月日 */
@@ -20,35 +22,9 @@ public class GrantWork {
 	private LeaveGrantDayNumber grantDays;
 	/** 付与回数 */
 	private int grantNumber = 0;
+	/** 期限日 */
+	private GeneralDate deadLine;
 
-	/**
-	 * コンストラクタ
-	 */
-	public GrantWork() {
-
-		this.grantYmd = GeneralDate.today();
-		this.grantDays = new LeaveGrantDayNumber(0.0);
-		this.grantNumber = 0;
-	}
-
-	/**
-	 * ファクトリー
-	 * 
-	 * @param grantYmd
-	 *            付与年月日
-	 * @param grantDays
-	 *            付与日数
-	 * @return 積立年休付与WORK
-	 */
-	public static GrantWork of(
-			GeneralDate grantYmd, LeaveGrantDayNumber grantDays, int grantNumber) {
-		
-		GrantWork domain = new GrantWork();
-		domain.grantYmd = grantYmd;
-		domain.grantDays = grantDays;
-		domain.grantNumber = grantNumber;
-		return domain;
-	}
 
 	/**
 	 * 端数処理

@@ -21,16 +21,14 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
-
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
-
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.TimeRoundingOfExcessOutsideTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeBreakdown;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
@@ -38,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overti
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNote;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 
 /**
@@ -384,6 +383,13 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 	private void getBreakDownTimes(RequireM1 require, MonthlyCalculation monthlyCalculation,
 			AgreementTimeBreakdown breakdown, Optional<RoundingSetOfMonthly> roundSet, List<Integer> breakdownItems) {
 		
+		/**　対象項目ID一覧　*/
+		val targetItems = new ArrayList<>(breakdownItems);
+		if (targetItems.contains(AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value)) {
+			/**　フレックス法定外時間を含む場合、時間外のフレックス週平均超過時間も取得する　*/
+			targetItems.add(AttendanceItemOfMonthly.CUR_MONTH_EXC_WA_TIME_OT.value);
+		}
+		
 		/** 取得した件数分ループ */
 		val converter = require.createMonthlyConverter();
 		val attendanceTime = new AttendanceTimeOfMonthly(monthlyCalculation.getEmployeeId(), 
@@ -393,14 +399,76 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 														monthlyCalculation.getProcPeriod());
 		attendanceTime.setMonthlyCalculation(monthlyCalculation);
 		converter.withAttendanceTime(attendanceTime);
-		val attendanceItemValues = converter.convert(breakdownItems);
+		val attendanceItemValues = converter.convert(targetItems);
+		
+		/** ⁂複数月対応で、複数の場合（フレックスと変形）以下の項目を値を補正する */
+		if (isMultiMonthMode(monthlyCalculation)) {
+			correctItems(attendanceItemValues, converter);
+		}
 		
 		/** ○丸め処理 */
 		attendanceItemValues.stream().forEach(v -> {
 			val value = new AttendanceTimeMonth(v.valueOrDefault());
-			val rounded = roundSet.map(r -> r.itemRound(v.getItemId(), value)).orElse(value);
+			val roundItemId = getRoundItemId(v.getItemId());
+			val rounded = roundSet.map(r -> r.itemRound(roundItemId, value)).orElse(value);
 			breakdown.addTimeByAttendanceItemId(v.getItemId(), rounded);
 		});
+	}
+	
+	private int getRoundItemId(int itemId) {
+		
+		/** ⁂項目IDがフレックス法定内時間、フレックス法定外時間、時間外の週平均超過時間の場合、フレックスの丸め設定を見る */
+		if (itemId == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value
+				|| itemId == AttendanceItemOfMonthly.FLEX_LEGAL_TIME.value
+				|| itemId == AttendanceItemOfMonthly.CUR_MONTH_EXC_WA_TIME_OT.value) {
+			
+			return AttendanceItemOfMonthly.FLEX_TIME.value;
+		}
+		
+		return itemId;
+	}
+	
+	private void correctItems(List<ItemValue> attendanceItemValues, MonthlyRecordToAttendanceItemConverter converter) {
+		
+		val alterItemMap = attendanceItemValues.stream().collect(Collectors.toMap(c -> c.getItemId(), c -> {
+			if (c.getItemId() == AttendanceItemOfMonthly.FLEX_TIME.value) 
+				return AttendanceItemOfMonthly.CUR_MONTH_FLEX_TIME_OT.value;
+			if (c.getItemId() == AttendanceItemOfMonthly.FLEX_LEGAL_TIME.value) 
+				return AttendanceItemOfMonthly.CUR_MONTH_FLEX_LEGAL_TIME_OT.value;
+			if (c.getItemId() == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value) 
+				return AttendanceItemOfMonthly.CUR_MONTH_FLEX_ILLEGAL_TIME_OT.value;
+			if (c.getItemId() == AttendanceItemOfMonthly.MONTHLY_TOTAL_PREMIUM_TIME.value) 
+				return AttendanceItemOfMonthly.DEFOR_PERIOD_CARRY_TIME.value;
+			return 0;
+		}));
+		
+		val alterItemIds = alterItemMap.values().stream().filter(c -> c > 0).collect(Collectors.toList());
+		
+		if (!alterItemIds.isEmpty()) {
+			
+			val alterItems = converter.convert(alterItemIds);
+			
+			alterItems.stream().forEach(c -> {
+				attendanceItemValues.stream().filter(i -> alterItemMap.get(i.getItemId()) == c.getItemId())
+									.findFirst().ifPresent(ai -> {
+					ai.value(c.value());
+				});
+			});
+		}
+	}
+	
+	private boolean isMultiMonthMode(MonthlyCalculation monthlyCalculation) {
+		
+		if (monthlyCalculation.getWorkingSystem() == WorkingSystem.FLEX_TIME_WORK) {
+			
+			return monthlyCalculation.getSettingsByFlex().getFlexAggrSet().isMultiMonthSettlePeriod();
+			
+		} else if (monthlyCalculation.getWorkingSystem() == WorkingSystem.VARIABLE_WORKING_TIME_WORK) {
+			
+			return monthlyCalculation.getSettingsByDefo().getDeforAggrSet().isMultiMonthSettlePeriod(monthlyCalculation.getYearMonth());
+		}
+		
+		return false;
 	}
 	
 	/** clones from 36協定対象時間を取得 */
@@ -541,4 +609,46 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 	}
 	
 	public static interface Require extends WorkdayoffFrame.Require {}
+	
+	/**
+	 * 	[1] 時間外超過に対応する月次の勤怠項目を取得する
+	 * @return
+	 */
+	public List<Integer> getMonthlyAttendanceIdByNo() {
+		List<Integer> listAttdId = new ArrayList<>();
+		this.overtimes.forEach(item ->{
+			listAttdId.addAll(item.getMonthlyAttendanceIdByNo());
+		});
+		this.breakdownItems.forEach(item ->{
+			listAttdId.addAll(item.getMonthlyAttendanceIdByNo());
+		});
+		return listAttdId.stream().distinct().collect(Collectors.toList());
+	}
+	
+	/**
+	 * 	[2] 利用できない月次の勤怠項目を取得する
+	 * @return
+	 */
+	public List<Integer> getMonthlyAttendanceIdNotAvailable() {
+		List<Integer> listAttdId = new ArrayList<>();
+		this.overtimes.forEach(item ->{
+			listAttdId.addAll(item.getMonthlyAttendanceIdNotAvailable());
+		});
+		this.breakdownItems.forEach(item ->{
+			listAttdId.addAll(item.getMonthlyAttendanceIdNotAvailable());
+		});
+		return listAttdId.stream().distinct().collect(Collectors.toList());
+	}
+
+	public OutsideOTSetting(String companyId, OvertimeNote note, List<OutsideOTBRDItem> breakdownItems,
+			List<Overtime> overtimes) {
+		this.companyId = companyId;
+		this.note = note;
+		this.breakdownItems = breakdownItems;
+		this.overtimes = overtimes;
+	}
+	
+	
+	
+	
 }

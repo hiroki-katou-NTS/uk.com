@@ -12,10 +12,8 @@ import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculationMinusExist;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayMidnightWork;
@@ -25,20 +23,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidaywork
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.FlexTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.OutsideWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -54,22 +46,26 @@ public class ExcessOfStatutoryTimeOfDaily {
 	private Optional<OverTimeOfDaily> overTimeWork;
 	//休出時間
 	private Optional<HolidayWorkTimeOfDaily> workHolidayTime;
-	
+	/** 日別実績の臨時時間 */
+	private TemporaryTimeOfDaily temporaryTime;
 	
 	/**
 	 * Constructor
 	 * @param excessOfStatutoryMidNightTime
 	 * @param overTimeWork
 	 * @param workHolidayTime
+	 * @param temporaryTime
 	 */
 	public ExcessOfStatutoryTimeOfDaily(
 			ExcessOfStatutoryMidNightTime excessOfStatutoryMidNightTime,
 			Optional<OverTimeOfDaily> overTimeWork,
-			Optional<HolidayWorkTimeOfDaily> workHolidayTime) {
+			Optional<HolidayWorkTimeOfDaily> workHolidayTime,
+			TemporaryTimeOfDaily temporaryTime) {
 		super();
 		this.excessOfStatutoryMidNightTime = excessOfStatutoryMidNightTime;
 		this.overTimeWork = overTimeWork;
 		this.workHolidayTime = workHolidayTime;
+		this.temporaryTime = temporaryTime;
 	}
 	
 	public void updateOverTime(OverTimeOfDaily ot){
@@ -83,30 +79,14 @@ public class ExcessOfStatutoryTimeOfDaily {
 	/**
 	 * 各時間の計算を指示するクラス
 	 * アルゴリズム：日別実績の所定外時間
-	 * @param recordReget 実績
-	 * @param workType 勤務種類
-	 * @param flexCalcMethod フレックス勤務の設定
-	 * @param vacationClass 休暇クラス
-	 * @param siftCode 就業時間帯コード
-	 * @param workTimeDailyAtr 勤務形態区分
-	 * @param eachCompanyTimeSet 会社別代休時間設定
-	 * @param conditionItem 労働条件項目
-	 * @param predetermineTimeSetByPersonInfo 計算用所定時間設定（個人）
-	 * @param coreTimeSetting コアタイム時間帯設定
+	 * @param recordReget 再取得クラス
+	 * @param settingOfFlex フレックス勤務の設定
 	 * @param declareResult 申告時間帯作成結果
 	 * @return 日別実績の所定外時間
 	 */
 	public static ExcessOfStatutoryTimeOfDaily calculationExcessTime(
 			ManageReGetClass recordReget,
-			WorkType workType,
-			Optional<SettingOfFlexWork> flexCalcMethod,
-			VacationClass vacationClass,
-			Optional<WorkTimeCode> siftCode,
-			Optional<WorkTimeDailyAtr> workTimeDailyAtr,
-			List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
-			WorkingConditionItem conditionItem,
-			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			Optional<CoreTimeSetting> coreTimeSetting,
+			Optional<SettingOfFlexWork> settingOfFlex,
 			DeclareTimezoneResult declareResult) {
 		
 		//所定外深夜事前申請取り出し処理
@@ -125,26 +105,26 @@ public class ExcessOfStatutoryTimeOfDaily {
 		//残業時間
 		val overTime = calculationOverTime(
 				recordReget,
-				workType,
-				flexCalcMethod,
-				vacationClass,
-				siftCode,
-				flexPreAppTime,conditionItem,predetermineTimeSetByPersonInfo,coreTimeSetting,beforeApplicationTime,
+				settingOfFlex,
+				flexPreAppTime,
+				beforeApplicationTime,
 				declareResult);
 		
 		//休出時間
 		val workHolidayTime = calculationHolidayTime(
 				recordReget,
-				recordReget.getIntegrationOfDaily().getCalAttr().getHolidayTimeSetting().getRestTime(),
-				workType,
-				siftCode.map(x -> x.v()),
-				recordReget.getIntegrationOfDaily(),beforeApplicationTime,
+				beforeApplicationTime,
 				declareResult);
 		
 		//所定外深夜
-		val excessOfStatutoryMidNightTime = ExcessOfStatutoryMidNightTime.calcExcessTime(Optional.of(overTime),Optional.of(workHolidayTime));
+		val excessOfStatutoryMidNightTime = ExcessOfStatutoryMidNightTime.calcExcessTime(
+				Optional.of(overTime),Optional.of(workHolidayTime),recordReget);
 		
-		return new ExcessOfStatutoryTimeOfDaily(excessOfStatutoryMidNightTime, Optional.of(overTime), Optional.of(workHolidayTime));
+		// 臨時時間
+		TemporaryTimeOfDaily temporaryTime = TemporaryTimeOfDaily.calcProcess(recordReget);
+		
+		return new ExcessOfStatutoryTimeOfDaily(
+				excessOfStatutoryMidNightTime, Optional.of(overTime), Optional.of(workHolidayTime), temporaryTime);
 	}
 	
 
@@ -152,30 +132,16 @@ public class ExcessOfStatutoryTimeOfDaily {
 	/**
 	 * 残業時間の計算
 	 * @param oneDay 実績
-	 * @param workType 勤務種類
-	 * @param flexCalcMethod フレックス勤務の設定
-	 * @param vacationClass 休暇クラス
-	 * @param siftCode 就業時間帯
-	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
-	 * @param eachCompanyTimeSet 会社別代休時間設定
+	 * @param settingOfFlex フレックス勤務の設定
 	 * @param flexPreAppTime 事前フレ以下
-	 * @param conditionItem 労働条件項目
-	 * @param predetermineTimeSetByPersonInfo 計算用所定時間設定（個人）
-	 * @param coreTimeSetting コアタイム時間帯設定
 	 * @param beforeApplicationTime 事前深夜時間
 	 * @param declareResult 申告時間帯作成結果
 	 * @return 日別実績の残業時間
 	 */
 	private static OverTimeOfDaily calculationOverTime(
 			ManageReGetClass oneDay,
-			WorkType workType,
-			Optional<SettingOfFlexWork> flexCalcMethod,
-			VacationClass vacationClass,
-			Optional<WorkTimeCode> siftCode,
+			Optional<SettingOfFlexWork> settingOfFlex,
 			AttendanceTime flexPreAppTime,
-			WorkingConditionItem conditionItem,
-			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			Optional<CoreTimeSetting> coreTimeSetting,
 			AttendanceTime beforeApplicationTime,
 			DeclareTimezoneResult declareResult) {
 		
@@ -183,14 +149,8 @@ public class ExcessOfStatutoryTimeOfDaily {
 			if(oneDay.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().isPresent()) {
 				return OverTimeOfDaily.calculationTime(
 						oneDay,
-						workType,
-						flexCalcMethod,
-						vacationClass,
-						siftCode,
+						settingOfFlex,
 						flexPreAppTime,
-						conditionItem,
-						predetermineTimeSetByPersonInfo,
-						coreTimeSetting,
 						beforeApplicationTime,
 						declareResult);
 			}
@@ -209,41 +169,32 @@ public class ExcessOfStatutoryTimeOfDaily {
 	/**
 	 * 休出時間の計算
 	 * アルゴリズム：日別実績の休出時間
-	 * @param recordReget 実績
-	 * @param autoCalSetting 自動計算設定（休出時間）
-	 * @param workType 勤務種類
-	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
-	 * @param eachCompanyTimeSet 会社別代休時間設定
-	 * @param integrationOfDaily 日別実績(Work)
+	 * @param recordReget 再取得クラス
 	 * @param beforeApplicationTime 事前深夜時間
 	 * @param declareResult 申告時間帯作成結果
 	 * @return 日別実績の休出時間
 	 */
 	private static HolidayWorkTimeOfDaily calculationHolidayTime(
 			ManageReGetClass recordReget,
-			AutoCalSetting autoCalSetting,
-			WorkType workType,
-			Optional<String> workTimeCode,
-			IntegrationOfDaily integrationOfDaily,
 			AttendanceTime beforeApplicationTime,
 			DeclareTimezoneResult declareResult) {
 		
-		if(recordReget.getCalculatable() && recordReget.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().isPresent()) {
-			if(recordReget.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getHolidayWorkTimeSheet().isPresent()) {
+		Finally<OutsideWorkTimeSheet> outsideWorkTimeSheet = recordReget.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet();
+		if(recordReget.getCalculatable() && outsideWorkTimeSheet.isPresent()) {
+			if(outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
 				return HolidayWorkTimeOfDaily.calculationTime(
 						recordReget,
-						recordReget.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getHolidayWorkTimeSheet().get(),
-						autoCalSetting,
-						workType,
-						workTimeCode,
-						integrationOfDaily,
+						outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get(),
 						beforeApplicationTime,
-						recordReget.getIntegrationOfDaily().getCalAttr().getHolidayTimeSetting().getLateNightTime(),
 						declareResult);
 			}
 		}
 		
 		//休日出勤時間帯が存在せず、時間を求められない場合
+		return createEmplyHolidayWorkTime();
+	}
+	
+	private static HolidayWorkTimeOfDaily createEmplyHolidayWorkTime(){
 		List<HolidayWorkFrameTime> calcHolidayTimeWorkTimeList = new ArrayList<>();
 		List<HolidayWorkMidNightTime> addList = new ArrayList<>();
 		addList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork));
@@ -384,7 +335,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 		Optional<OverTimeOfDaily> overtime = this.overTimeWork.isPresent()?Optional.of(this.overTimeWork.get().calcDiverGenceTime()):Optional.empty();
 		Optional<HolidayWorkTimeOfDaily> holiday = this.workHolidayTime.isPresent()?Optional.of(this.workHolidayTime.get().calcDiverGenceTime()):Optional.empty();
 		ExcessOfStatutoryMidNightTime excessOfStatutoryMidNightTime = this.excessOfStatutoryMidNightTime!=null?this.excessOfStatutoryMidNightTime.calcDiverGenceTime():this.excessOfStatutoryMidNightTime;
-		return new ExcessOfStatutoryTimeOfDaily(excessOfStatutoryMidNightTime,overtime,holiday); 
+		return new ExcessOfStatutoryTimeOfDaily(excessOfStatutoryMidNightTime,overtime,holiday,this.temporaryTime); 
 	}
 	
 	/**
@@ -403,9 +354,13 @@ public class ExcessOfStatutoryTimeOfDaily {
 			&& this.getWorkHolidayTime().get().getHolidayMidNightWork().isPresent()) {
 			holidayMidTime = this.getWorkHolidayTime().get().getHolidayMidNightWork().get().calcAllMidTime();
 		}
-		this.excessOfStatutoryMidNightTime = new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(overMidTime.getTime().getTime().addMinutes(holidayMidTime.getTime().valueAsMinutes()),
-																																	   overMidTime.getTime().getCalcTime().addMinutes(holidayMidTime.getCalcTime().valueAsMinutes())),
-																			   this.excessOfStatutoryMidNightTime.getBeforeApplicationTime());
+		this.excessOfStatutoryMidNightTime = new ExcessOfStatutoryMidNightTime(
+				TimeDivergenceWithCalculation.createTimeWithCalculation(
+						overMidTime.getTime().getTime().addMinutes(
+								holidayMidTime.getTime().valueAsMinutes()),
+						overMidTime.getTime().getCalcTime().addMinutes(
+								holidayMidTime.getCalcTime().valueAsMinutes())),
+				this.excessOfStatutoryMidNightTime.getBeforeApplicationTime());
 	}
 	
 	/**
