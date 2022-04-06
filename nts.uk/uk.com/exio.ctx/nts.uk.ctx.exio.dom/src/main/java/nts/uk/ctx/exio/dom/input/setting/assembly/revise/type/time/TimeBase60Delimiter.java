@@ -91,10 +91,8 @@ public enum TimeBase60Delimiter {
 		if (strParts.length > 1) {
 
 			return convert(strParts[0], strParts[1]);
-		} else {
-
-			return Either.left(new ErrorMessage("時間の区切り文字が正しく含まれていません。"));
 		}
+			return Either.left(new ErrorMessage("時間の区切り文字が正しく含まれていません。"));
 
 	}
 
