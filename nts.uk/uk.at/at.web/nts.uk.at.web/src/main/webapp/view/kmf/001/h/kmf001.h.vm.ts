@@ -421,7 +421,7 @@ module nts.uk.pr.view.kmf001.h {
             }
 
             public toSubstVacationSettingDto(): SubstVacationSettingDto {
-                return new SubstVacationSettingDto(this.isManage(), this.expirationDate(), this.allowPrepaidLeave() , this.manageDeadline() , 0);
+                return new SubstVacationSettingDto(this.isManage(), this.expirationDate(), this.allowPrepaidLeave() , this.manageDeadline() , 1);
             }
         }
 
