@@ -998,9 +998,9 @@ public class DPCorrectionProcessorMob {
 		List<String> lstWplId = new ArrayList<>();
 		DatePeriod period = new DatePeriod(range.getStartDate(), range.getEndDate());
 		List<ResultRequest597Export> lstInfoEmp = new ArrayList<>();
-		InitialDisplayEmployeeDto result = screenDto.getStateParam() != null ? new InitialDisplayEmployeeDto(lstEmployeeId, screenDto.getStateParam()) :
+		InitialDisplayEmployeeDto result = screenDto.getStateParam() != null ? new InitialDisplayEmployeeDto(lstEmployeeId, screenDto.getStateParam(), true) :
 			new InitialDisplayEmployeeDto(lstEmployeeId, new DPCorrectionStateParam(range, employeeIds, mode, 
-					new ArrayList<>(), null, null, isTranfer, new ArrayList<>(), new ArrayList<>()));
+					new ArrayList<>(), null, null, isTranfer, new ArrayList<>(), new ArrayList<>()), true);
 		if (mode == ScreenMode.NORMAL.value) {
 
 			if (!employeeIds.isEmpty()){
