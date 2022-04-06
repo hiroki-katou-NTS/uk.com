@@ -134,7 +134,7 @@ public class SupportWorkReflection {
 	 * @param stampReflectRangeOutput
 	 * @return
 	 */
-	private static boolean judgCorrectionProces(Require require, String cid, boolean timePriorityFlag,
+	public static boolean judgCorrectionProces(Require require, String cid, boolean timePriorityFlag,
 			Optional<WorkTimeInformation> timeDay, StampReflectRangeOutput stampReflectRangeOutput) {
 
 		/** 応援の運用設定を取得する */
