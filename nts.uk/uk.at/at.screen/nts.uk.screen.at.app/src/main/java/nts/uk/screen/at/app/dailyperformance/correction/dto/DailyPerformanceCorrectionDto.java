@@ -306,7 +306,7 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 					if(!errorTypeTemp.equals("")) data.setErrorOther(true);
 					// add error alarm to response data
 					if (!data.getError().isEmpty()) {
-						if (!errorType.equals(data.getError()) && !errorType.isEmpty()) {
+						if (this.checkErrorAlEr(errorType,data.getError()) && !errorType.isEmpty()) {
 							data.setError(TextResource.localize("KDW003_129"));
 						}
 					} else {
@@ -324,6 +324,15 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 				}
 			});
 		});
+	}
+	private boolean checkErrorAlEr(String error1,String error2) {
+		if(error1.equals("AL") && error2.equals(TextResource.localize("KDW003_131"))) {
+			return false;
+		}
+		if(error1.equals("ER") && error2.equals(TextResource.localize("KDW003_130"))) {
+			return false;
+		}
+		return true;
 	}
 
 	private String getErrorType(List<DPErrorSettingDto> lstErrorSetting, DPErrorDto error, boolean showTextError) {
