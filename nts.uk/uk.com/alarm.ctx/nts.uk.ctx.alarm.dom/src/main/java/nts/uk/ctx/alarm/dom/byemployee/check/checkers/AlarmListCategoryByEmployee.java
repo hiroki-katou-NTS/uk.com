@@ -8,13 +8,54 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum AlarmListCategoryByEmployee {
 
-    SCHEDULE_MONTHLY(1),
+    /** スケジュール日次 */
+    SCHEDULE_DAILY(1),
 
-    DAILY(2),
-    
-    MASTER(3),
-    	
-    APPLICATION_APPROVAL(4),
+    /** スケジュール複数日 */
+    SCHEDULE_MULTI_DAY(2),
+
+    /** 見込み月次 */
+    PROSPECT_MONTHLY(3),
+
+    /** 見込み年次 */
+    PROSPECT_YEARLY(4),
+
+    /** 日次 */
+    RECORD_DAILY(5),
+
+    /** 複数日 */
+    RECORD_MULTI_DAY(6),
+
+    /** 週次 */
+    RECORD_WEEKLY(7),
+
+    /** 複数週 */
+    RECORD_MULTI_WEEK(8),
+
+    /** 月次 */
+    RECORD_MONTHLY(9),
+
+    /** 複数月 */
+    RECORD_MULTI_MONTH(10),
+
+    /** 任意期間 */
+    RECORD_ANY_PERIOD(11),
+
+    /** 休日 */
+    DAY_OFF(20),
+
+    /** 36協定月次 */
+    AGREE36_MONTHLY(21),
+
+    /** 36協定年次 */
+    AGREE36_YEARLY(22),
+
+    /** 申請承認 */
+    APPLICATION_APPROVAL(30),
+
+    /** マスタ */
+    MASTER(90),
+
 
     ;
 

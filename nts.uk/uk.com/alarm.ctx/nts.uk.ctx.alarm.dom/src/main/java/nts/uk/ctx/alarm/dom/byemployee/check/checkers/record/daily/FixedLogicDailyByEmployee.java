@@ -1,4 +1,4 @@
-package nts.uk.ctx.alarm.dom.byemployee.check.checkers.daily;
+package nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.daily;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -139,7 +139,7 @@ public enum FixedLogicDailyByEmployee {
             return new AlarmRecordByEmployee(
                     employeeId,
                     date.toString(),
-                    AlarmListCategoryByEmployee.DAILY,
+                    AlarmListCategoryByEmployee.RECORD_DAILY,
                     getName(),
                     getAlarmCondition(),
                     message);
@@ -149,7 +149,7 @@ public enum FixedLogicDailyByEmployee {
             return new AlarmRecordByEmployee(
                     employeeId,
                     date.toString(),
-                    AlarmListCategoryByEmployee.DAILY,
+                    AlarmListCategoryByEmployee.RECORD_DAILY,
                     require.getItemName(attendanceItemId),
                     getAlarmCondition(),
                     message);
