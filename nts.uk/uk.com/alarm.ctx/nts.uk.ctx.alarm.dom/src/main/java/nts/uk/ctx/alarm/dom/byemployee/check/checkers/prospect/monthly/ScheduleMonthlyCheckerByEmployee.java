@@ -7,7 +7,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.TargetEmployeesFilter;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfDaily;
-import nts.uk.ctx.alarm.dom.byemployee.check.atditem.CheckBySummingAttendanceItem;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
