@@ -41,7 +41,7 @@ public class KshmtWorkTypeSet extends ContractUkJpaEntity implements Serializabl
 	public int sumAbsenseNo;
 	
 	@Column(name = "SUM_SPHD_NO")
-	public int sumSpHolidayNo;
+	public Integer sumSpHolidayNo;
 	
 	@Column(name = "TIME_LEAVE_WORK")
 	public int timeLeaveWork;
@@ -68,7 +68,7 @@ public class KshmtWorkTypeSet extends ContractUkJpaEntity implements Serializabl
 	}
 
 	public KshmtWorkTypeSet(KshmtWorkTypeSetPK kshmtWorkTypeSetPK, int digestPublicHd, int hodidayAtr, int countHoliday,
-			Integer closeAtr, int sumAbsenseNo, int sumSpHolidayNo, int timeLeaveWork, int attendanceTime,
+			Integer closeAtr, int sumAbsenseNo, Integer sumSpHolidayNo, int timeLeaveWork, int attendanceTime,
 			int genSubHoliday, int dayNightTimeAsk) {
 		super();
 		this.kshmtWorkTypeSetPK = kshmtWorkTypeSetPK;
