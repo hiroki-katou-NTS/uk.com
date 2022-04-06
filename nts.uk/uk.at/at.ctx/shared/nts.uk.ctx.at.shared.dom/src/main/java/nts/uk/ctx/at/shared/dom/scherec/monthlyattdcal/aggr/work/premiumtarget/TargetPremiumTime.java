@@ -16,4 +16,6 @@ public class TargetPremiumTime {
 	private AttendanceTimeMonth targetPremiumTime;
 	/** 加算した休暇使用時間 */
 	private AttendanceTimeMonth addedVacationUseTime;
+	/** 変形法定内残業 */
+	private AttendanceTimeMonth irgLegalOt;
 }

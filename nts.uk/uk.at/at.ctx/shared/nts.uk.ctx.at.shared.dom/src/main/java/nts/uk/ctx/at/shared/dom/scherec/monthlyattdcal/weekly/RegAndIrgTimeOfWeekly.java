@@ -33,6 +33,8 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 
 	/** 週割増合計時間 */
 	private AttendanceTimeMonth weeklyTotalPremiumTime;
+	/** 変形法定内残業: 勤怠月間時間*/
+	private AttendanceTimeMonth irgLegalOt;
 	
 	/** 週割増処理期間 */
 	private DatePeriod weekPremiumProcPeriod;
@@ -45,6 +47,7 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 	public RegAndIrgTimeOfWeekly(){
 		
 		this.weeklyTotalPremiumTime = new AttendanceTimeMonth(0);
+		this.irgLegalOt = new AttendanceTimeMonth(0);
 		
 		this.weekPremiumProcPeriod = new DatePeriod(GeneralDate.min(), GeneralDate.min());
 		this.errorInfos = new ArrayList<>();
@@ -56,10 +59,12 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 	 * @return 週別の通常変形時間
 	 */
 	public static RegAndIrgTimeOfWeekly of(
-			AttendanceTimeMonth weeklyTotalPremiumTime){
+			AttendanceTimeMonth weeklyTotalPremiumTime,
+			AttendanceTimeMonth irgLegalOt){
 
 		RegAndIrgTimeOfWeekly domain = new RegAndIrgTimeOfWeekly();
 		domain.weeklyTotalPremiumTime = weeklyTotalPremiumTime;
+		domain.irgLegalOt = irgLegalOt;
 		return domain;
 	}
 	
@@ -210,6 +215,9 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 				premiumTimeOfPrevMonLast, true, WorkingSystem.VARIABLE_WORKING_TIME_WORK, 
 				monthlyCalcDailys, aggregateAtr);
 		val targetPremiumTimeWeek = targetPremiumTimeWeekOfIrg.getPremiumTimeWeek();
+		
+		/** 変形法定内残業に入れる */
+		this.irgLegalOt = targetPremiumTimeWeekOfIrg.getIrgLegalOt();
 
 		// （計画）所定労働時間を取得する
 		val prescribedWorkingTime = aggregateTotalWorkingTime.getPrescribedWorkingTime();
@@ -337,6 +345,7 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 		this.weekPremiumProcPeriod = new DatePeriod(startDate, endDate);
 		
 		this.weeklyTotalPremiumTime = this.weeklyTotalPremiumTime.addMinutes(target.weeklyTotalPremiumTime.v());
+		this.irgLegalOt = this.irgLegalOt.addMinutes(target.irgLegalOt.v());
 		this.errorInfos.addAll(target.errorInfos);
 	}
 	

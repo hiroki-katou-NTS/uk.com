@@ -36,6 +36,16 @@ public class TargetPremiumTimeGetter {
 		// 週割増時間に休出時間を加算する
 		premiumTime = premiumTime.addMinutes(legalHolidayWorkTime.v());
 		
+		/** 変形法定内残業時間を求める*/
+		val irgLegalOt = monthlyCalcDailys.getAttendanceTimeOfDailyMap().entrySet().stream()
+				.filter(a -> period.contains(a.getKey())).map(a -> a.getValue())
+				.mapToInt(a -> a.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+						.getExcessOfStatutoryTimeOfDaily().getOverTimeWork()
+						.map(ot -> ot.getIrregularWithinPrescribedOverTimeWork().valueAsMinutes()).orElse(0))
+				.sum();
+		/** 変形法定内残業時間を集計対象時間に加算する*/
+		premiumTime = premiumTime.addMinutes(irgLegalOt);
+		
 		// 休暇加算を確認する
 		if (isAddVacation){
 			
@@ -45,10 +55,10 @@ public class TargetPremiumTimeGetter {
 					workingSystem, companyId, aggregateAtr, Optional.of(addSet));
 			
 			// 週割増時間に休暇加算時間を加算する
-			return new TargetPremiumTime(premiumTime.addMinutes(addVacationTime.v()), addVacationTime);
+			return new TargetPremiumTime(premiumTime.addMinutes(addVacationTime.v()), addVacationTime, new AttendanceTimeMonth(irgLegalOt));
 		}
 
-		return new TargetPremiumTime(premiumTime, new AttendanceTimeMonth(0));
+		return new TargetPremiumTime(premiumTime, new AttendanceTimeMonth(0), new AttendanceTimeMonth(irgLegalOt));
 	}
 	
 	public static interface Require extends WorkTimeAddtionTimeGetter.Require {}
