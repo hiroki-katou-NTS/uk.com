@@ -301,6 +301,12 @@ module nts.uk.com.view.ccg003.c {
           return 'Msg_1834';
         }
       }
+
+      const regex = new RegExp('\r\n | \r | \n');
+      const msgAfterRegex = vm.messageText().replace(regex, '');
+      if (_.isEmpty(_.trim(msgAfterRegex))) {
+        return 'Msg_3342';
+      }
     }
 
     /**

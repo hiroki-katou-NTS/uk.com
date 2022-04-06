@@ -10,12 +10,12 @@ module nts.uk.at.view.kaf000.a.component2.viewmodel {
 					</div>
 					<div class="valign-center" data-bind="if: employeeLst().length <= 1">
 						<div style="display: inline-block; max-width: calc(100% - 26px);">
-							<div style="min-width: 112px; vertical-align: bottom; padding-right: 10px; font-size: 1.3rem" class="limited-label" data-bind="text: employeeName"></div>
+							<div style="min-width: 150px; vertical-align: bottom; padding-right: 10px; font-size: 1.3rem" class="limited-label" data-bind="text: employeeName"></div>
 						</div>
 					</div>
 					<div class="valign-center" data-bind="if: employeeLst().length > 1">
 						<div style="display: inline-block; max-width: calc(100% - 26px);">
-							<div style="min-width: 112px; vertical-align: bottom; padding-right: 10px; font-size: 1.3rem" class="limited-label" data-bind="text: employeeName"></div>
+							<div style="min-width: 150px; vertical-align: bottom; padding-right: 10px; font-size: 1.3rem" class="limited-label" data-bind="text: employeeName"></div>
 						</div>
 						<div style="display: inline-block;">
 							<button class="popup-btn" style="width: 20px; height: 20px; padding: 0 2px;">
@@ -36,7 +36,7 @@ module nts.uk.at.view.kaf000.a.component2.viewmodel {
 						</div>
 					</div>
 					<div style="width: 150px;" data-bind="if: isAgentMode">
-						<div class='inputPerson limited-label' data-bind="text: inputPerson"></div>
+						<div class='inputPerson limited-label' style="font-size: 0.8rem;" data-bind="text: inputPerson"></div>
 					</div>
 				</div>
 			</div>

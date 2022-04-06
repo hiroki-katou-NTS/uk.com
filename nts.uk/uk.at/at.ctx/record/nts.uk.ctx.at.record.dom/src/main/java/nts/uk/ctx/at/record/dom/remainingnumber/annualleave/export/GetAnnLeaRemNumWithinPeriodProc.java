@@ -607,6 +607,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			annualLeaveInfo.setGrantRemainingDataList(grantRemainingDatas);
 			if ( annLeaMaxDataOpt.isPresent() ) {
 				annualLeaveInfo.setMaxData(annLeaMaxDataOpt.get());
+			}else{
+				annualLeaveInfo.setMaxData(new AnnualLeaveMaxData(employeeId, Optional.empty(), Optional.empty()));
 			}
 			return annualLeaveInfo;
 	}
