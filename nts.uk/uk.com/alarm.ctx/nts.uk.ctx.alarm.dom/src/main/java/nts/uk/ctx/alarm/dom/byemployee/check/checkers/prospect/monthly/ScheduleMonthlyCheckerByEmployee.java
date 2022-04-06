@@ -24,8 +24,6 @@ public class ScheduleMonthlyCheckerByEmployee implements DomainAggregate, AlarmL
 
     private TargetEmployeesFilter employeesFilter;
 
-    private CheckBySummingAttendanceItem checkBySummingAttendanceItem;
-
     @Override
     public Iterable<AlarmRecordByEmployee> check(Require require, CheckingContextByEmployee context) {
         DatePeriod period = context.getCheckingPeriod().getMonthly().calclateDatePeriod();
