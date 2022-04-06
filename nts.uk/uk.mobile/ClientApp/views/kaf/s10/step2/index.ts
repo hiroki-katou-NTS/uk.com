@@ -532,9 +532,17 @@ export class KafS10Step2Component extends Vue {
     public getReasonDivergence() {
         const self = this;
         let reason = {} as ReasonDivergence;
-        reason.diviationTime = 3;
-        reason.reasonCode = self.reason.selectedValue;
-        reason.reason = self.reason.reason;
+        if (self.$appContext.c11_1) {
+            if (self.reason.selectedValue) {
+                reason.reasonCode = self.reason.selectedValue;
+            }
+            if (self.reason.reason) {
+                reason.reason = self.reason.reason;
+            }
+            if (self.reason.selectedValue || self.reason.reason) {
+                reason.diviationTime = 3;
+            }
+        }
 
         return reason;
     }
