@@ -16,7 +16,7 @@ public class MonthlyCheckerByEmployee implements DomainAggregate, AlarmListCheck
         return null;
     }
 
-    public interface RequireCheck {
+    public interface RequireCheck extends FixedLogicMonthlyByEmployee.RequireCheck {
 
     }
 }

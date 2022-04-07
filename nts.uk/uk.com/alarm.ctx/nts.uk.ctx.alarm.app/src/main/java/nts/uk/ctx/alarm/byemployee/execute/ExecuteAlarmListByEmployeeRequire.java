@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
@@ -29,7 +30,10 @@ import nts.uk.ctx.at.aggregation.dom.adapter.dailyrecord.DailyRecordAdapter;
 import nts.uk.ctx.at.aggregation.dom.adapter.workschedule.WorkScheduleAdapter;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.AlarmListExtractResult;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeErAlData;
@@ -44,8 +48,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.closure.ClosureMonth;
 
 
 @Stateless
@@ -66,6 +72,9 @@ public class ExecuteAlarmListByEmployeeRequire {
 	
 	@Inject
 	private ApplicationRepository applicatoinRepo;
+
+    @Inject
+    private ApprovalStatusAdapter approvalStatusAdapter;
 
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
@@ -188,5 +197,18 @@ public class ExecuteAlarmListByEmployeeRequire {
 		public List<Application> getApplicationBy(String employeeId, GeneralDate targetDate, ReflectedState states) {
 			return applicatoinRepo.getByListRefStatus(this.companyId, employeeId, targetDate, targetDate, Arrays.asList(states.value));
 		}
+
+        @Override
+        public Optional<ConfirmationMonth> getConfirmationMonth(String employeeId, ClosureMonth closureMonth) {
+            return Optional.empty();
+        }
+
+        @Override
+        public List<ApproveRootStatusForEmpImport> getApprovalStateMonth(String employeeId, ClosureMonth closureMonth) {
+            return approvalStatusAdapter.getApprovalByListEmplAndListApprovalRecordDateNew(
+                    closureMonth.defaultPeriod().datesBetween(),
+                    Arrays.asList(employeeId),
+                    RecordRootType.CONFIRM_WORK_BY_MONTH.value);
+        }
     }
 }

@@ -10,6 +10,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import lombok.Value;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.shr.com.time.closure.ClosureMonth;
 
@@ -25,7 +27,13 @@ public enum FixedLogicMonthlyByEmployee {
                 .map(closureMonth -> c.alarm(closureMonth)).iterator();
     }),
 
-    
+    管理者未承認(2, c -> {
+        return () -> c.period.stream()
+                .filter(closureMonth -> !c.require.getApprovalStateMonth(c.employeeId, closureMonth).get(0).getApprovalStatus().equals(ApprovalStatusForEmployee.APPROVED))
+                .map(closureMonth -> c.alarm(closureMonth))
+                .iterator();
+    }),
+
     ;
 
     public final int value;
@@ -72,5 +80,7 @@ public enum FixedLogicMonthlyByEmployee {
 
     public interface RequireCheck {
         Optional<ConfirmationMonth> getConfirmationMonth(String employeeId, ClosureMonth closureMonth);
+
+        List<ApproveRootStatusForEmpImport> getApprovalStateMonth(String employeeId, ClosureMonth closureMonth);
     }
 }
