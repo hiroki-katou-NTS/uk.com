@@ -326,6 +326,8 @@ public class DPCorrectionProcessorMob {
 				screenDto.setCellSate(rowId, columnKey, DPText.HAND_CORRECTION_MYSELF);
 			} else if (cellEdit == 1) {
 				screenDto.setCellSate(rowId, columnKey, DPText.HAND_CORRECTION_OTHER);
+			} else if (cellEdit == 9) {
+				screenDto.setCellSate(rowId, columnKey, DPText.COLOR_SUPPORT);
 			} else {
 				screenDto.setCellSate(rowId, columnKey, DPText.REFLECT_APPLICATION);
 			}
@@ -995,14 +997,24 @@ public class DPCorrectionProcessorMob {
 		String companyId = AppContexts.user().companyId();
 		String employeeIdLogin = AppContexts.user().employeeId();
 		List<String> lstEmployeeId = new ArrayList<>();
-		List<String> lstWplId = new ArrayList<>();
+		// [No.598]社員が所属している職場を取得する
 		DatePeriod period = new DatePeriod(range.getStartDate(), range.getEndDate());
-		List<ResultRequest597Export> lstInfoEmp = new ArrayList<>();
+		List<String> lstWplId = workplacePub.getLstWorkplaceIdBySidAndPeriod(employeeIdLogin, period);
+		// [No.597]職場の所属社員を取得する
+		List<ResultRequest597Export> lstInfoEmp = workplacePub.getLstEmpByWorkplaceIdsAndPeriod(lstWplId, period);
+		
 		InitialDisplayEmployeeDto result = screenDto.getStateParam() != null ? new InitialDisplayEmployeeDto(lstEmployeeId, screenDto.getStateParam(), true) :
 			new InitialDisplayEmployeeDto(lstEmployeeId, new DPCorrectionStateParam(range, employeeIds, mode, 
 					new ArrayList<>(), null, null, isTranfer, new ArrayList<>(), new ArrayList<>()), true);
 		if (mode == ScreenMode.NORMAL.value) {
 
+			// 応援者の情報をOutputにセットする - No4281
+			result.getParam().setLstWrkplaceId(lstWplId);
+			
+			List<String> lstEmp597 = lstInfoEmp.stream().map(x -> x.getSid()).collect(Collectors.toList());
+			result.getParam().setEmployeeIds(lstEmp597);
+			result.getParam().setLstEmpSelect(employeeIds);
+			
 			if (!employeeIds.isEmpty()){
 				result.setLstEmpId(employeeIds);
 				return result;
@@ -1014,9 +1026,6 @@ public class DPCorrectionProcessorMob {
 				result.setLstEmpId(Arrays.asList(employeeIdLogin));
 				return result;
 			}
-			
-			lstWplId = workplacePub.getLstWorkplaceIdBySidAndPeriod(employeeIdLogin, period);
-			lstInfoEmp = workplacePub.getLstEmpByWorkplaceIdsAndPeriod(lstWplId, period);
 
 //			List<RegulationInfoEmployeeQueryR> regulationRs = regulationInfoEmployeePub.search(
 //					createQueryEmployee(new ArrayList<>(), range.getStartDate(), range.getEndDate()));
