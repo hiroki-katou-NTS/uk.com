@@ -45,6 +45,7 @@ import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
+import nts.uk.ctx.sys.shared.dom.user.builtin.BuiltInUser;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
@@ -729,6 +730,9 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		Optional<EmpRegHistory> optRegHist = this.empHisRepo.getRegHistById(currentEmpId);
 		EmpRegHistory newEmpRegHistory = EmpRegHistory.createFromJavaType(currentEmpId, companyId,
 				GeneralDateTime.now(), employeeId, "");
+
+		if (currentEmpId.equals(BuiltInUser.EMPLOYEE_ID)) return;	// #124113 ビルトインユーザーの場合は複数契約で同一の固有SIDになってしまうため記録しない
+
 		if (optRegHist.isPresent()) {
 			this.empHisRepo.update(newEmpRegHistory);
 		} else {
