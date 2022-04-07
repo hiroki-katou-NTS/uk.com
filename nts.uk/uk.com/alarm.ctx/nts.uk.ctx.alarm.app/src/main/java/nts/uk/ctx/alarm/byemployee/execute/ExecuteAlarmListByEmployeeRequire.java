@@ -41,6 +41,7 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeE
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
@@ -52,6 +53,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 import nts.uk.shr.com.context.AppContexts;
@@ -85,6 +87,12 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private AttendanceItemNameService attendanceItemNameService;
+
+    @Inject
+    private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
+
+    @Inject
+    private YearHolidayRepository yearHolidayRepo;
 
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
@@ -145,7 +153,7 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public Optional<WorkType> getWorkType(String workTypeCode) {
-            return Optional.empty();
+            return workTypeRepo.findByPK(this.companyId, workTypeCode);
         }
 
         @Override
@@ -237,12 +245,12 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public Optional<AnnualLeaveEmpBasicInfo> getBasicInfo(String employeeId) {
-            return Optional.empty();
+            return annLeaEmpBasicInfoRepo.get(employeeId);
         }
 
         @Override
-        public Optional<GrantHdTblSet> getTable(String tableCode) {
-            return Optional.empty();
+        public Optional<GrantHdTblSet> getTable(String yearHolidayCode) {
+            return yearHolidayRepo.findByCode(this.companyId, yearHolidayCode);
         }
     }
 }
