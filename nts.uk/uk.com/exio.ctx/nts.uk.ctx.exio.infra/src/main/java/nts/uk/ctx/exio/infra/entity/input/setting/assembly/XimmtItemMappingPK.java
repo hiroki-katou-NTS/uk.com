@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.infra.entity.input.setting.XimmtDomainImportSettingPK;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,4 +33,8 @@ public class XimmtItemMappingPK implements Serializable{
 	/* 受入項目NO */
 	@Column(name = "ITEM_NO")
 	private int itemNo;
+	
+	public static XimmtItemMappingPK create(XimmtDomainImportSettingPK parent, int itemNo) {
+		return new XimmtItemMappingPK(parent.getCompanyId(), parent.getCode(), parent.getDomainId(), itemNo);
+	}
 }

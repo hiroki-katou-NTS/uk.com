@@ -6,7 +6,8 @@ import nts.arc.primitive.constraint.IntegerRange;
 /**
  * 外部受入の読み取り文字位位置
  */
-@IntegerRange(min = 1, max = 999999)
+@SuppressWarnings("serial")
+@IntegerRange(min = -999999, max = 999999)
 public class ExternalImportFetchPosition extends IntegerPrimitiveValue<ExternalImportFetchPosition> {
 
     /**
