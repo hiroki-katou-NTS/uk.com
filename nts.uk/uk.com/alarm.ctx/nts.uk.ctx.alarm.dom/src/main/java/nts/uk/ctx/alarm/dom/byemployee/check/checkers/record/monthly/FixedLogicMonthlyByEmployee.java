@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import nts.uk.ctx.alarm.dom.byemployee.check.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodMonthly;
+import nts.uk.ctx.alarm.dom.byemployee.check.result.DateInfo;
 
 import java.util.List;
 import java.util.Optional;
@@ -62,7 +63,7 @@ public enum FixedLogicMonthlyByEmployee {
             return new AlarmRecordByEmployee(
                     employeeId,
                     // どのように　アラームリスト上でどう出すかは後回し
-                    closureMonth.getYearMonth().toString() + closureMonth.closureDate().getClosureDay().toString() + "締め",
+                    new DateInfo(closureMonth),
                     AlarmListCategoryByEmployee.MASTER,
                     getName(),
                     getAlarmCondition(),

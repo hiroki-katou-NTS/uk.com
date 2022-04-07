@@ -12,6 +12,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.GetNotExistWeekDayWorkType;
+import nts.uk.ctx.alarm.dom.byemployee.check.result.DateInfo;
 
 /**
  *固定のチェック条件(社員別・マスタ) 
@@ -63,7 +64,7 @@ public enum FixLogicMasterByEmployee {
         public AlarmRecordByEmployee alarm(DatePeriod period) {
             return new AlarmRecordByEmployee(
                     employeeId,
-                    period.toString(),
+                    new DateInfo(period),
                     AlarmListCategoryByEmployee.MASTER,
                     getName(),
                     getAlarmCondition(),
@@ -73,7 +74,7 @@ public enum FixLogicMasterByEmployee {
         public AlarmRecordByEmployee alarm(GeneralDate date) {
             return new AlarmRecordByEmployee(
                     employeeId,
-                    date.toString(),
+                    new DateInfo(date),
                     AlarmListCategoryByEmployee.MASTER,
                     getName(),
                     getAlarmCondition(),

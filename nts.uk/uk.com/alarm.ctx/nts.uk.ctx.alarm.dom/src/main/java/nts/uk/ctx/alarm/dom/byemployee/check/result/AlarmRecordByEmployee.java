@@ -14,8 +14,8 @@ public class AlarmRecordByEmployee {
     /** 社員ID */
     String employeeId;
 
-    /** 日付（年月、期間など） */
-    String date;
+    /** 日付情報 */
+    DateInfo dateInfo;
 
     /** カテゴリ */
     AlarmListCategoryByEmployee category;
@@ -37,7 +37,7 @@ public class AlarmRecordByEmployee {
                 executeId,
                 employeeId,
                 recordId,
-                date,
+                dateInfo.getFormatted(),
                 category.value,
                 category.categoryName(),
                 checkItemName,

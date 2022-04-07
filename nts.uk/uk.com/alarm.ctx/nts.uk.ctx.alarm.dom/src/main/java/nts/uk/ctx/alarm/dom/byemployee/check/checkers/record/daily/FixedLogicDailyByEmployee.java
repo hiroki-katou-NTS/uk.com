@@ -15,6 +15,7 @@ import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.byemployee.check.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodDaily;
+import nts.uk.ctx.alarm.dom.byemployee.check.result.DateInfo;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
@@ -138,7 +139,7 @@ public enum FixedLogicDailyByEmployee {
         public AlarmRecordByEmployee alarm(GeneralDate date) {
             return new AlarmRecordByEmployee(
                     employeeId,
-                    date.toString(),
+                    new DateInfo(date),
                     AlarmListCategoryByEmployee.RECORD_DAILY,
                     getName(),
                     getAlarmCondition(),
@@ -148,7 +149,7 @@ public enum FixedLogicDailyByEmployee {
         public AlarmRecordByEmployee alarm(GeneralDate date, Integer attendanceItemId) {
             return new AlarmRecordByEmployee(
                     employeeId,
-                    date.toString(),
+                    new DateInfo(date),
                     AlarmListCategoryByEmployee.RECORD_DAILY,
                     require.getItemName(attendanceItemId),
                     getAlarmCondition(),
