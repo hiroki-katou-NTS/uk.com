@@ -211,19 +211,19 @@ export class KdpS01AComponent extends Vue {
                     },
                     usrArt: 1,
                     stampType: null,
-                    icon:'',
+                    icon: '',
                     taskChoiceArt: 0
                 };
 
             if (button) {
                 let btnType = vm.checkType(
-                    button.stampType == null ? null : button.stampType.changeClockArt, 
-                    button.stampType == null ? null : button.stampType.changeCalArt, 
-                    button.stampType == null ? null : button.stampType.setPreClockArt, 
-                    button.stampType == null ? null : button.stampType.changeHalfDay, 
-                    0 
-                    );
-                
+                    button.stampType == null ? null : button.stampType.changeClockArt,
+                    button.stampType == null ? null : button.stampType.changeCalArt,
+                    button.stampType == null ? null : button.stampType.setPreClockArt,
+                    button.stampType == null ? null : button.stampType.changeHalfDay,
+                    0
+                );
+
                 // 応援利用＝Trueの場合				
                 if (vm.settingStampCommon.supportUse === true && _.includes([14, 15, 16, 17, 18], btnType)) {
                     buttonSetting = button;
@@ -243,10 +243,10 @@ export class KdpS01AComponent extends Vue {
                     buttonSetting = button;
                 }
 
-                buttonSetting.icon = vm.getIcon(button.stampType == null ? null : button.stampType.changeClockArt, 
-                    button.stampType == null ? null : button.stampType.changeCalArt, 
+                buttonSetting.icon = vm.getIcon(button.stampType == null ? null : button.stampType.changeClockArt,
+                    button.stampType == null ? null : button.stampType.changeCalArt,
                     button.stampType == null ? null : button.stampType.setPreClockArt,
-                    button.stampType == null ? null : button.stampType.changeHalfDay, 
+                    button.stampType == null ? null : button.stampType.changeHalfDay,
                     0) + '.png';
 
                 buttonSetting.taskChoiceArt = button.taskChoiceArt;
@@ -275,7 +275,7 @@ export class KdpS01AComponent extends Vue {
             navigator.geolocation.getCurrentPosition((position) => {
                 let { coords } = position,
                     { latitude, longitude } = coords;
-                    
+
                 return resolve({ latitude, longitude });
             }, (error) => {
                 return resolve({ latitude, longitude });
@@ -444,26 +444,45 @@ export class KdpS01AComponent extends Vue {
         let backGroundColor = _.get(buttonSetting, 'buttonDisSet.backGroundColor', DEFAULT_GRAY),
             valueType = backGroundColor;
 
-        switch (buttonSetting.buttonValueType) {
-            case ButtonType.GOING_TO_WORK:
-                valueType = !stampToSuppress.goingToWork ? backGroundColor : DEFAULT_GRAY;
-                break;
+        if (!stampToSuppress.goingToWork) {
+            switch (buttonSetting.buttonValueType) {
+                case ButtonType.GOING_TO_WORK:
+                    valueType = backGroundColor;
+                    break;
 
-            case ButtonType.WORKING_OUT:
-                valueType = !stampToSuppress.departure ? backGroundColor : DEFAULT_GRAY;
-                break;
+                case ButtonType.WORKING_OUT:
+                case ButtonType.GO_OUT:
+                case ButtonType.RETURN:
+                    valueType = DEFAULT_GRAY;
+                    break;
 
-            case ButtonType.GO_OUT:
-                valueType = !stampToSuppress.goOut ? backGroundColor : DEFAULT_GRAY;
-                break;
+                default:
+                    valueType = backGroundColor;
+                    break;
+            }
+        } else {
 
-            case ButtonType.RETURN:
-                valueType = !stampToSuppress.turnBack ? backGroundColor : DEFAULT_GRAY;
-                break;
+            switch (buttonSetting.buttonValueType) {
+                case ButtonType.GOING_TO_WORK:
+                    valueType = !stampToSuppress.goingToWork ? backGroundColor : DEFAULT_GRAY;
+                    break;
 
-            default:
-                valueType = backGroundColor;
-                break;
+                case ButtonType.WORKING_OUT:
+                    valueType = !stampToSuppress.departure ? backGroundColor : DEFAULT_GRAY;
+                    break;
+
+                case ButtonType.GO_OUT:
+                    valueType = !stampToSuppress.goOut ? backGroundColor : DEFAULT_GRAY;
+                    break;
+
+                case ButtonType.RETURN:
+                    valueType = !stampToSuppress.turnBack ? backGroundColor : DEFAULT_GRAY;
+                    break;
+
+                default:
+                    valueType = backGroundColor;
+                    break;
+            }
         }
         buttonSetting.buttonDisSet.backGroundColor = backGroundColor;
         buttonSetting.buttonDisSet.displayBackGroundColor = valueType;

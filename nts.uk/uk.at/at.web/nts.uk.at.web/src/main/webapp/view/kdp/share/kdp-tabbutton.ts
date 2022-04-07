@@ -182,12 +182,12 @@ module nts.uk.at.view.kdp.share {
 				.css({
 					'color': data.btnTextColor,
 					'background-color': data.btnBackGroundColor,
-					'visibility': data.btnPositionNo === -1 || data.usrArt === 0 || (supportUse === false && _.includes([14, 15, 16, 17, 18], btnType)) 
-					|| (temporaryUse === false && _.includes([12, 13], btnType)) || (entranceExitUse === false && _.includes([10, 11], btnType)) ? 'hidden' : 'visible'
+					'visibility': data.btnPositionNo === -1 || data.usrArt === 0 || (supportUse === false && _.includes([14, 15, 16, 17, 18], btnType))
+						|| (temporaryUse === false && _.includes([12, 13], btnType)) || (entranceExitUse === false && _.includes([10, 11], btnType)) ? 'hidden' : 'visible'
 				});
 			changeHeightBtn(true);
 			if (data.btnPositionNo === 1 || data.btnPositionNo === 2) {
-				changeFontSize(element, 0);	
+				changeFontSize(element, 0);
 			} else {
 				changeFontSize(element, 1);
 			}
@@ -233,7 +233,7 @@ module nts.uk.at.view.kdp.share {
 		entranceExitUse: KnockoutObservable<boolean> = ko.observable(false);
 
 		kdp002: KnockoutObservable<boolean> = ko.observable(false);
-		
+
 		constructor(public params: StampParam) {
 			super();
 
@@ -249,12 +249,12 @@ module nts.uk.at.view.kdp.share {
 			if (!params.tabs) {
 				params.tabs = ko.observableArray([]);
 			}
-			
-			if(!params.pageComment){
+
+			if (!params.pageComment) {
 				params.pageComment = ko.observable('');
 			}
-			
-			if(!params.commentColor){
+
+			if (!params.commentColor) {
 				params.commentColor = ko.observable('');
 			}
 
@@ -313,18 +313,18 @@ module nts.uk.at.view.kdp.share {
 
 					vm.params.pageComment(currentTab.stampPageComment);
 					vm.params.commentColor(currentTab.stampPageCommentColor);
-					
+
 					if (vm.$el) {
 						if (currentTab.stampPageComment) {
 							vm.$el.classList.add('has-comment');
 						} else {
 							vm.$el.classList.remove('has-comment');
 						}
-						
+
 						if (filteredTabs.length > 1) {
-							vm.$el.classList.add('has-tab');							
+							vm.$el.classList.add('has-tab');
 						} else {
-							vm.$el.classList.remove('has-tab');							
+							vm.$el.classList.remove('has-tab');
 						}
 					}
 					vm.setSize();
@@ -363,28 +363,41 @@ module nts.uk.at.view.kdp.share {
 								const btn = _.find(buttonSettings, (btn) => btn.btnPositionNo === j);
 
 								if (btn) {
-									switch (btn.btnDisplayType) {
-										default:
-										case 1:
-											if (setting.goingToWork) {
+									if (!setting.goingToWork) {
+										switch (btn.btnDisplayType) {
+											default:
+												break;
+											case 2:
+											case 3:
+											case 4:
 												btn.btnBackGroundColor = DEFAULT_GRAY;
-											}
-											break;
-										case 2:
-											if (setting.departure) {
-												btn.btnBackGroundColor = DEFAULT_GRAY;
-											}
-											break;
-										case 3:
-											if (setting.goOut) {
-												btn.btnBackGroundColor = DEFAULT_GRAY;
-											}
-											break;
-										case 4:
-											if (setting.turnBack) {
-												btn.btnBackGroundColor = DEFAULT_GRAY;
-											}
-											break
+												break
+										}
+									} else {
+										switch (btn.btnDisplayType) {
+											default:
+												break;
+											case 1:
+												if (setting.goingToWork) {
+													btn.btnBackGroundColor = DEFAULT_GRAY;
+												}
+												break;
+											case 2:
+												if (setting.departure) {
+													btn.btnBackGroundColor = DEFAULT_GRAY;
+												}
+												break;
+											case 3:
+												if (setting.goOut) {
+													btn.btnBackGroundColor = DEFAULT_GRAY;
+												}
+												break;
+											case 4:
+												if (setting.turnBack) {
+													btn.btnBackGroundColor = DEFAULT_GRAY;
+												}
+												break
+										}
 									}
 
 									const constance = ((buttonLayoutType === LARGE_2_SMALL_4 && j < 3)) ? 3 : 1.5;
@@ -433,7 +446,7 @@ module nts.uk.at.view.kdp.share {
 					return filters;
 				}
 			});
-			
+
 			//打刻入力で共通設定を取得する
 			vm.$ajax('at/record/stamp/settings_stamp_common')
 				.done((data: ISettingsStampCommon) => {
@@ -441,19 +454,19 @@ module nts.uk.at.view.kdp.share {
 					vm.temporaryUse(!!data.temporaryUse);
 					vm.entranceExitUse(!!data.entranceExitUse);
 				});
-			window.onresize = function() {vm.setSize();params.reCalGridWidthHeight();}
+			window.onresize = function () { vm.setSize(); params.reCalGridWidthHeight(); }
 		}
-		
-		setSize = function() {
+
+		setSize = function () {
 			changeHeightBtn(false);
-			$('.btn-layout-type-0>div:first-child button').each(function() {
-				changeFontSize(this, 0);	
+			$('.btn-layout-type-0>div:first-child button').each(function () {
+				changeFontSize(this, 0);
 			});
-			$('.btn-layout-type-0>div:not(:first-child) button').each(function() {
-				changeFontSize(this, 1);	
+			$('.btn-layout-type-0>div:not(:first-child) button').each(function () {
+				changeFontSize(this, 1);
 			});
-			$('.btn-layout-type-1>div button').each(function() {
-				changeFontSize(this, 1);	
+			$('.btn-layout-type-1>div button').each(function () {
+				changeFontSize(this, 1);
 			});
 		}
 		mounted() {
@@ -626,28 +639,28 @@ module nts.uk.at.view.kdp.share {
 		entranceExitUse: boolean;
 
 	}
-	let changeFontSize = function(element: HTMLButtonElement, type : number){
-		let text = element.innerText.replace(/(\r\n|\n|\r)/gm,"");
-		if(text.length < 9){
-			if(type == 0 && $(element).parentsUntil($('.btn-layout-type-0')).length === 1) {
-				element.style.fontSize = '34px';	
-			}else{
+	let changeFontSize = function (element: HTMLButtonElement, type: number) {
+		let text = element.innerText.replace(/(\r\n|\n|\r)/gm, "");
+		if (text.length < 9) {
+			if (type == 0 && $(element).parentsUntil($('.btn-layout-type-0')).length === 1) {
+				element.style.fontSize = '34px';
+			} else {
 				element.style.fontSize = '24px';
 			}
 			return;
 		}
-		let maxSize : number = 16;
-		if(type == 0 && $(element).parentsUntil($('.btn-layout-type-0')).length === 1) {
-			maxSize = 20;	
-		} 
+		let maxSize: number = 16;
+		if (type == 0 && $(element).parentsUntil($('.btn-layout-type-0')).length === 1) {
+			maxSize = 20;
+		}
 		let fontSize = (element.offsetWidth / text.length) + (type == 0 && $(element).parentsUntil($('.btn-layout-type-0')).length === 1
-			?	4
+			? 4
 			: $(element).parentsUntil($('.btn-layout-type-0')).length === 1 ? 4 : 1);
-		if(fontSize > maxSize) fontSize = maxSize;
+		if (fontSize > maxSize) fontSize = maxSize;
 		element.style.fontSize = fontSize + 'px';
 	}
-	let changeHeightBtn = function(check :boolean){
-		$('.btn-layout-type-0>div:first-child button').css({'height':$('.btn-layout-type-0>div:first-child button').width() / 1.8 - (check ? 10 : 0) +'px'});
-		$('.btn-layout-type-0>div:not(:first-child) button').css({'height':$('.btn-layout-type-0>div:not(:first-child) button').width()/2.8 - (check ? 5 : 0) + 'px'});
+	let changeHeightBtn = function (check: boolean) {
+		$('.btn-layout-type-0>div:first-child button').css({ 'height': $('.btn-layout-type-0>div:first-child button').width() / 1.8 - (check ? 10 : 0) + 'px' });
+		$('.btn-layout-type-0>div:not(:first-child) button').css({ 'height': $('.btn-layout-type-0>div:not(:first-child) button').width() / 2.8 - (check ? 5 : 0) + 'px' });
 	}
 }
