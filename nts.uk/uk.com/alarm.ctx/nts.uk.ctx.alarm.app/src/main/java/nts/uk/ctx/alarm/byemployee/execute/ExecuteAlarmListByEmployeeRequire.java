@@ -19,7 +19,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.alarm.dom.AlarmListCheckerCode;
 import nts.uk.ctx.alarm.dom.AlarmListPatternCode;
-import nts.uk.ctx.alarm.dom.byemployee.check.result.AlarmRecordByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.execute.ExecutePersistAlarmListByEmployee;
