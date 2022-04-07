@@ -24,7 +24,7 @@ public enum FixLogicMasterByEmployee {
 
 	平日時勤務種類確認(3, c -> checkWeekdayWorkType(c)),
 
-	休出時勤務種類確認(5, c -> checkWeekdayWorkType(c)),
+	休出時勤務種類確認(5, c -> checkHolidayWorkWorkType(c)),
 
 	;
 
