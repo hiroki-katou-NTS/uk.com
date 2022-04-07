@@ -3,11 +3,11 @@ package nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.daily;
 import lombok.Value;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.IteratorUtil;
-import nts.uk.ctx.alarm.dom.byemployee.check.result.AlarmRecordByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
-import nts.uk.ctx.alarm.dom.byemployee.check.result.DateInfo;
+import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 
 import java.util.List;
 import java.util.stream.Collectors;

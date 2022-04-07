@@ -10,7 +10,7 @@ import nts.uk.ctx.alarm.dom.AlarmListCheckerCode;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodDaily;
-import nts.uk.ctx.alarm.dom.byemployee.check.result.AlarmRecordByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.fixedlogic.FixedLogicSetting;
 
 import java.util.Arrays;
