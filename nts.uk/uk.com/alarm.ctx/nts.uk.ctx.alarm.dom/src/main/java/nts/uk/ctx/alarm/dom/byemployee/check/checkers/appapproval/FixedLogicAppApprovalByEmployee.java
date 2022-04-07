@@ -8,7 +8,7 @@ import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.alarm.dom.byemployee.check.AlarmRecordByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;

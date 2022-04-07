@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.gul.collection.IteratorUtil;
-import nts.uk.ctx.alarm.dom.byemployee.check.AlarmRecordByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.alarm.dom.fixedlogic.FixedLogicSetting;

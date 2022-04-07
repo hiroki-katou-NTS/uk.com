@@ -1,10 +1,9 @@
 package nts.uk.ctx.alarm.dom.fixedlogic;
 
 import lombok.Value;
-import nts.uk.ctx.alarm.dom.byemployee.check.AlarmRecordByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.result.AlarmRecordByEmployee;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.function.BiFunction;
 
 /**

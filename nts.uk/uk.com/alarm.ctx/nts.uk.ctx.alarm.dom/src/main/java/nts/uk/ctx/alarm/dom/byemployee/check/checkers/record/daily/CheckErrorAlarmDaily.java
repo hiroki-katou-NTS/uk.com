@@ -3,7 +3,7 @@ package nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.daily;
 import lombok.Value;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.IteratorUtil;
-import nts.uk.ctx.alarm.dom.byemployee.check.AlarmRecordByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.alarm.dom.byemployee.check;
+package nts.uk.ctx.alarm.dom.byemployee.check.result;
 
 import lombok.Value;
 import nts.gul.text.IdentifierUtil;
