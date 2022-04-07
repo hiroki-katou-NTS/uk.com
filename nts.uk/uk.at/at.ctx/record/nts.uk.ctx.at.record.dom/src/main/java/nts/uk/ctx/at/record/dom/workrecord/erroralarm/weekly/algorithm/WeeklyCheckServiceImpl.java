@@ -34,7 +34,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.Work
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceIdAndPeriodImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.HolidayTime;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeekly;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeeklyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.WeeklyCheckItemType;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.ContinuousCount;
@@ -90,7 +90,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		// ドメインモデル「週別実績の抽出条件」を取得する
 		// 条件: ID　＝　Input．週次のアラームチェック条件．チェック条件．任意抽出条件
 		// Output: List＜週別実績の任意抽出条件＞
-		List<ExtractionCondScheduleWeekly> weeklyConds = extractionCondScheduleWeeklyRepository.getScheAnyCond(
+		List<ExtractionCondWeekly> weeklyConds = extractionCondScheduleWeeklyRepository.getScheAnyCond(
 				contractCode, cid, listOptionalItem).stream().filter(x -> x.isUse()).collect(Collectors.toList());
 		
 		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
@@ -105,7 +105,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
                 List<AlarmExtractInfoResult> lstExtractInfoResult = new ArrayList<>();
                 
 				// 取得したList＜週別実績の任意抽出条件＞をループする
-				for (ExtractionCondScheduleWeekly weeklyCond: weeklyConds) {
+				for (ExtractionCondWeekly weeklyCond: weeklyConds) {
 					// アカウント　＝　0
 					int count = 0;
 					
@@ -224,7 +224,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 	 */
 	private ExtractResultDetailAndCount createAlarmExtraction(
 			AttendanceTimeOfWeekly attWeekly,
-			ExtractionCondScheduleWeekly weeklyCond,
+			ExtractionCondWeekly weeklyCond,
 			int count,
 			Map<Integer, String> attendanceItemMap,
 			String cid,
@@ -394,7 +394,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 	 * @return ErAlAttendanceItemCondition
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private WeeklyAttendanceItemCondition convertToErAlAttendanceItem(String cid, ExtractionCondScheduleWeekly weeklyCond) {
+	private WeeklyAttendanceItemCondition convertToErAlAttendanceItem(String cid, ExtractionCondWeekly weeklyCond) {
 		WeeklyAttendanceItemCondition cond = new WeeklyAttendanceItemCondition<>();
 		
 		if(weeklyCond.getCheckedTarget().isPresent()) {
@@ -418,8 +418,8 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 	}
 	
 	private ContinuousOutput checkPerformanceOfConsecutiveItem(AttendanceTimeOfWeekly attWeekly,
-			ExtractionCondScheduleWeekly weeklyCond, WeeklyAttendanceItemCondition<?> erAlAtdItemCon, List<ItemValue> convert, int count,
-			int currentIndex, int sizeLoop, List<AttendanceTimeOfWeekly> attWeeklyBySid) {
+                                                               ExtractionCondWeekly weeklyCond, WeeklyAttendanceItemCondition<?> erAlAtdItemCon, List<ItemValue> convert, int count,
+                                                               int currentIndex, int sizeLoop, List<AttendanceTimeOfWeekly> attWeeklyBySid) {
 		ContinuousOutput ouput = new ContinuousOutput();
 		// 勤怠項目をチェックする
 		// Output: 該当区分

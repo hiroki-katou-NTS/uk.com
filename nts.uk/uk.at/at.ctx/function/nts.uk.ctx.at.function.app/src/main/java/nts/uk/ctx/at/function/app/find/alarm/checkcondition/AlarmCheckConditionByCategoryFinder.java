@@ -89,7 +89,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedExtr
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.PublicHolidayCheckCond;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.ScheduleMonRemainCheckCond;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TimeCheckCond;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeekly;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeeklyRepository;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.com.context.AppContexts;
@@ -777,7 +777,7 @@ public class AlarmCheckConditionByCategoryFinder {
 	 * @param domain
 	 * @return
 	 */
-	private WorkRecordExtraConAdapterDto schedAnyCondWeeklyToDto(ExtractionCondScheduleWeekly domain) {
+	private WorkRecordExtraConAdapterDto schedAnyCondWeeklyToDto(ExtractionCondWeekly domain) {
 		ScheMonCondDto monthlyCondition = new ScheMonCondDto();
 		
 		if (domain.getCheckedTarget() != null && domain.getCheckedTarget().isPresent()) {

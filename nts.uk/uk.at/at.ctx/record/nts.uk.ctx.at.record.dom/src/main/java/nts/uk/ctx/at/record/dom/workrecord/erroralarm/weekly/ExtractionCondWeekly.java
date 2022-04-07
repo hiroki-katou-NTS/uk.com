@@ -15,12 +15,12 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * 週別実績の任意抽出条件
+ * 週別実績の抽出条件
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class ExtractionCondScheduleWeekly extends AggregateRoot {
+public class ExtractionCondWeekly extends AggregateRoot {
 
     // ID
     private String errorAlarmId;
@@ -63,8 +63,8 @@ public class ExtractionCondScheduleWeekly extends AggregateRoot {
      * @param message error alarm message
      * @return domain
      */
-    public static ExtractionCondScheduleWeekly create(String errorAlarmId, int sortOrder, boolean isUse, String name, String message, WeeklyCheckItemType checkType, Integer continuousPeriod) {
-    	ExtractionCondScheduleWeekly domain = new ExtractionCondScheduleWeekly();
+    public static ExtractionCondWeekly create(String errorAlarmId, int sortOrder, boolean isUse, String name, String message, WeeklyCheckItemType checkType, Integer continuousPeriod) {
+    	ExtractionCondWeekly domain = new ExtractionCondWeekly();
     	domain.errorAlarmId = errorAlarmId;
     	domain.sortOrder = sortOrder;
     	domain.isUse = isUse;

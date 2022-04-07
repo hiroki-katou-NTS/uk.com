@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly;
 import java.util.List;
 
 public interface ExtractionCondScheduleWeeklyRepository {
-    List<ExtractionCondScheduleWeekly> getAll();
+    List<ExtractionCondWeekly> getAll();
     
     /**
      * Get Schedule fix condition weekly
@@ -12,7 +12,7 @@ public interface ExtractionCondScheduleWeeklyRepository {
      * @param eralCheckIds error alarm check Id
      * @return schedule fix condition weekly
      */
-    List<ExtractionCondScheduleWeekly> getScheAnyCond(String contractCode, String companyId, String eralCheckIds);
+    List<ExtractionCondWeekly> getScheAnyCond(String contractCode, String companyId, String eralCheckIds);
     
     /**
      * Add new 
@@ -20,7 +20,7 @@ public interface ExtractionCondScheduleWeeklyRepository {
      * @param companyId company id
      * @param domain ExtractionCondScheduleWeekly
      */
-	void add(String contractCode, String companyId, ExtractionCondScheduleWeekly domain);
+	void add(String contractCode, String companyId, ExtractionCondWeekly domain);
 	
 	/**
 	 * Update
@@ -28,7 +28,7 @@ public interface ExtractionCondScheduleWeeklyRepository {
 	 * @param companyId company id
 	 * @param domain ExtractionCondScheduleWeekly
 	 */
-	void update(String contractCode, String companyId, ExtractionCondScheduleWeekly domain);
+	void update(String contractCode, String companyId, ExtractionCondWeekly domain);
 	
 	/**
 	 * Remove
