@@ -596,15 +596,14 @@ module nts.uk.ui.at.kdw013.a {
                     vm.$window
                     .storage('KDW013_SETTING')
                     .then((value: any) => {
-                        if (value) {
+                        let isSameEmployee = value && value.sId == vm.$user.employeeId && value.cId == vm.$user.companyId;
+                        if (isSameEmployee) {
                             vm.initialView(value.initialView || 'fullWeek');
                             vm.showConfirm(value.showConfirm || false);
                             vm.firstDay(value.firstDay !== undefined ? value.firstDay : 1);
                             vm.scrollTime(value.scrollTime || 420);
                             vm.slotDuration(value.slotDuration || 30);
                         }
-
-
                     });
                 })
                 .then(() => vm.$ajax('at', API.START, { inputDate }))
@@ -785,7 +784,8 @@ module nts.uk.ui.at.kdw013.a {
                     vm.$window
                         .storage('KDW013_SETTING')
                         .then((value: any) => {
-                            if (value) {
+                            let isSameEmployee = value && value.sId == vm.$user.employeeId && value.cId == vm.$user.companyId;
+                            if (isSameEmployee) {
                                 vm.initialView(value.initialView || 'fullWeek');
                                 vm.showConfirm(value.showConfirm || false);
                                 vm.firstDay(value.firstDay !== undefined ? value.firstDay : 1);

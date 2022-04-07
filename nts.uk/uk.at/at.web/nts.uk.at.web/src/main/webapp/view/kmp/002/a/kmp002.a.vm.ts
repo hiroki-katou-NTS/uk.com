@@ -20,7 +20,7 @@ module nts.uk.at.view.kmp002.a {
     columns = ko.observableArray([
       {headerText: getText("KMP002_6"), key: 'supportCardId', width: 120},
       {headerText: getText("Com_Company"), key: 'companyCode', width: 100},
-      {headerText: getText("Com_Workplace"), key: 'workplaceCode', width: 250}
+      {headerText: getText("Com_Workplace"), key: 'workplace', width: 250}
     ]);
     supportCardList: KnockoutObservableArray<SupportCardDto> = ko.observableArray([]);
     supportCard: KnockoutObservable<SupportCardDto> = ko.observable(null);
@@ -69,10 +69,11 @@ module nts.uk.at.view.kmp002.a {
           const companyId = self.supportCard().companyId;
           const companyCode = self.supportCard().companyCode;
           const companyName = self.supportCard().companyName;
+          const workplace = self.supportCard().workplace;
           const workplaceId = self.supportCard().workplaceId;
           const workplaceCode = self.supportCard().workplaceCode;
           const workplaceName = self.supportCard().workplaceName;
-          self.supportCard(new SupportCardDto(supportCardNo, '', supportCardNumber, companyId, companyCode, companyName, workplaceId, workplaceCode, workplaceName));
+          self.supportCard(new SupportCardDto(supportCardNo, '', supportCardNumber, companyId, companyCode, companyName, workplace, workplaceId, workplaceCode, workplaceName));
         }
       });
     }
@@ -103,8 +104,10 @@ module nts.uk.at.view.kmp002.a {
             item.supportCardNumber,
             item.supportCardNumber,
             item.companyId, company.companyCode,
-            company.companyName, item.workplaceId,
+            company.companyName,
             workplace.workplaceCode + '  ' + workplace.workplaceName,
+            item.workplaceId,
+            workplace.workplaceCode,
             workplace.workplaceName) :
           new SupportCardDto(
             item.supportCardNumber,
@@ -113,6 +116,7 @@ module nts.uk.at.view.kmp002.a {
             item.companyId,
             company.companyCode,
             '',
+            workplace.workplaceCode,
             item.workplaceId,
             workplace.workplaceCode,
             '');
@@ -130,7 +134,7 @@ module nts.uk.at.view.kmp002.a {
     initSupportCard(indexSupportCard: number) {
       const vm = this;
       if (vm.supportCardList().length === 0) {
-        vm.supportCard(new SupportCardDto('', '', '', vm.loginCompanyInfo().companyId, vm.loginCompanyInfo().companyCode, vm.loginCompanyInfo().companyName, '', '', ''));
+        vm.supportCard(new SupportCardDto('', '', '', vm.loginCompanyInfo().companyId, vm.loginCompanyInfo().companyCode, vm.loginCompanyInfo().companyName, '', '', '', ''));
         $('#A2_2').focus();
       } else {
         indexSupportCard = indexSupportCard >= vm.supportCardList().length ? indexSupportCard - 1 : indexSupportCard;
@@ -209,7 +213,7 @@ module nts.uk.at.view.kmp002.a {
       const vm = this;
       vm.mode(vm.NEW_MODE);
       vm.currentCard(null);
-      vm.supportCard(new SupportCardDto('', '', '', vm.loginCompanyInfo().companyId, vm.loginCompanyInfo().companyCode, vm.loginCompanyInfo().companyName, '', '', ''));
+      vm.supportCard(new SupportCardDto('', '', '', vm.loginCompanyInfo().companyId, vm.loginCompanyInfo().companyCode, vm.loginCompanyInfo().companyName, '', '', '', ''));
       $('#A2_2').focus();
     }
 
@@ -299,7 +303,7 @@ module nts.uk.at.view.kmp002.a {
         vm.editSupportCardNumber(vm.supportCard().supportCardNumber),
         vm.supportCard().supportCardNumber,
         vm.supportCard().companyId, vm.supportCard().companyCode,
-        vm.supportCard().companyName, vm.supportCard().workplaceId,
+        vm.supportCard().companyName, vm.supportCard().workplace, vm.supportCard().workplaceId,
         vm.supportCard().workplaceCode,
         vm.supportCard().workplaceName);
       vm.supportCard(data);
@@ -321,6 +325,7 @@ module nts.uk.at.view.kmp002.a {
           const companyId = vm.supportCard().companyId;
           const companyCode = vm.supportCard().companyCode;
           const companyName = vm.supportCard().companyName;
+          const workplace = vm.supportCard().workplace;
           const workplaceId = vm.supportCard().workplaceId;
           const workplaceCode = vm.supportCard().workplaceCode;
           let workplaceName = '';
@@ -329,7 +334,7 @@ module nts.uk.at.view.kmp002.a {
           } else {
             workplaceName = vm.$i18n("KMP002_14", [param.baseDate]);
           }
-          vm.supportCard(new SupportCardDto(supportCardNo, supportCardNo, supportCardNumber, companyId, companyCode, companyName, workplaceId, workplaceCode, workplaceName));
+          vm.supportCard(new SupportCardDto(supportCardNo, supportCardNo, supportCardNumber, companyId, companyCode, companyName, workplace, workplaceId, workplaceCode, workplaceName));
         }).always(() => vm.$blockui("clear"));
     }
 
@@ -356,7 +361,8 @@ module nts.uk.at.view.kmp002.a {
         const workplaceId = workplaceInfor.id;
         const workplaceCode = workplaceInfor.code;
         const workplaceName = workplaceInfor.name;
-        vm.supportCard(new SupportCardDto(supportCardNo, supportCardNo, supportCardNumber, companyId, companyCode, companyName, workplaceId, workplaceCode, workplaceName));
+        const workplace = workplaceCode + '  ' + workplaceName;
+        vm.supportCard(new SupportCardDto(supportCardNo, supportCardNo, supportCardNumber, companyId, companyCode, companyName, workplace, workplaceId, workplaceCode, workplaceName));
         vm.$blockui("clear");
       });
     }
@@ -463,18 +469,20 @@ module nts.uk.at.view.kmp002.a {
     companyId: string;
     companyCode: string;
     companyName: string;
+    workplace: string;
     workplaceId: string;
     workplaceCode: string;
     workplaceName: string;
 
     constructor(supportCardNo: string, supportCardId: string, supportCardNumber: string, companyId: string, companyCode: string,
-      companyName: string, workplaceId: string, workplaceCode: string, workplaceName: string) {
+      companyName: string, workplace: string, workplaceId: string, workplaceCode: string, workplaceName: string) {
       this.supportCardNo = ko.observable(supportCardNo);
       this.supportCardId = supportCardId;
       this.supportCardNumber = supportCardNumber;
       this.companyId = companyId;
       this.companyCode = companyCode;
       this.companyName = companyName;
+      this.workplace = workplace;
       this.workplaceId = workplaceId;
       this.workplaceCode = workplaceCode;
       this.workplaceName = workplaceName;
