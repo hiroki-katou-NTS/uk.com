@@ -444,44 +444,48 @@ export class KdpS01AComponent extends Vue {
         let backGroundColor = _.get(buttonSetting, 'buttonDisSet.backGroundColor', DEFAULT_GRAY),
             valueType = backGroundColor;
 
-        if (!stampToSuppress.goingToWork) {
-            switch (buttonSetting.buttonValueType) {
-                case ButtonType.GOING_TO_WORK:
-                    valueType = backGroundColor;
-                    break;
-
-                case ButtonType.WORKING_OUT:
-                case ButtonType.GO_OUT:
-                case ButtonType.RETURN:
-                    valueType = DEFAULT_GRAY;
-                    break;
-
-                default:
-                    valueType = backGroundColor;
-                    break;
-            }
+        if (!stampToSuppress.goingToWork && !stampToSuppress.departure && !stampToSuppress.goOut && !stampToSuppress.turnBack) {
+            valueType = backGroundColor;
         } else {
+            if (!stampToSuppress.goingToWork) {
+                switch (buttonSetting.buttonValueType) {
+                    case ButtonType.GOING_TO_WORK:
+                        valueType = backGroundColor;
+                        break;
 
-            switch (buttonSetting.buttonValueType) {
-                case ButtonType.GOING_TO_WORK:
-                    valueType = !stampToSuppress.goingToWork ? backGroundColor : DEFAULT_GRAY;
-                    break;
+                    case ButtonType.WORKING_OUT:
+                    case ButtonType.GO_OUT:
+                    case ButtonType.RETURN:
+                        valueType = DEFAULT_GRAY;
+                        break;
 
-                case ButtonType.WORKING_OUT:
-                    valueType = !stampToSuppress.departure ? backGroundColor : DEFAULT_GRAY;
-                    break;
+                    default:
+                        valueType = backGroundColor;
+                        break;
+                }
+            } else {
 
-                case ButtonType.GO_OUT:
-                    valueType = !stampToSuppress.goOut ? backGroundColor : DEFAULT_GRAY;
-                    break;
+                switch (buttonSetting.buttonValueType) {
+                    case ButtonType.GOING_TO_WORK:
+                        valueType = !stampToSuppress.goingToWork ? backGroundColor : DEFAULT_GRAY;
+                        break;
 
-                case ButtonType.RETURN:
-                    valueType = !stampToSuppress.turnBack ? backGroundColor : DEFAULT_GRAY;
-                    break;
+                    case ButtonType.WORKING_OUT:
+                        valueType = !stampToSuppress.departure ? backGroundColor : DEFAULT_GRAY;
+                        break;
 
-                default:
-                    valueType = backGroundColor;
-                    break;
+                    case ButtonType.GO_OUT:
+                        valueType = !stampToSuppress.goOut ? backGroundColor : DEFAULT_GRAY;
+                        break;
+
+                    case ButtonType.RETURN:
+                        valueType = !stampToSuppress.turnBack ? backGroundColor : DEFAULT_GRAY;
+                        break;
+
+                    default:
+                        valueType = backGroundColor;
+                        break;
+                }
             }
         }
         buttonSetting.buttonDisSet.backGroundColor = backGroundColor;

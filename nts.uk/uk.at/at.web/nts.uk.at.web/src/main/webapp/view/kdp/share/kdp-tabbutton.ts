@@ -363,40 +363,44 @@ module nts.uk.at.view.kdp.share {
 								const btn = _.find(buttonSettings, (btn) => btn.btnPositionNo === j);
 
 								if (btn) {
-									if (!setting.goingToWork) {
-										switch (btn.btnDisplayType) {
-											default:
-												break;
-											case 2:
-											case 3:
-											case 4:
-												btn.btnBackGroundColor = DEFAULT_GRAY;
-												break
-										}
+									if (!setting.goingToWork && !setting.departure && !setting.goOut && !setting.turnBack) {
+										btn.btnBackGroundColor = btn.btnBackGroundColor;
 									} else {
-										switch (btn.btnDisplayType) {
-											default:
-												break;
-											case 1:
-												if (setting.goingToWork) {
+										if (!setting.goingToWork) {
+											switch (btn.btnDisplayType) {
+												default:
+													break;
+												case 2:
+												case 3:
+												case 4:
 													btn.btnBackGroundColor = DEFAULT_GRAY;
-												}
-												break;
-											case 2:
-												if (setting.departure) {
-													btn.btnBackGroundColor = DEFAULT_GRAY;
-												}
-												break;
-											case 3:
-												if (setting.goOut) {
-													btn.btnBackGroundColor = DEFAULT_GRAY;
-												}
-												break;
-											case 4:
-												if (setting.turnBack) {
-													btn.btnBackGroundColor = DEFAULT_GRAY;
-												}
-												break
+													break
+											}
+										} else {
+											switch (btn.btnDisplayType) {
+												default:
+													break;
+												case 1:
+													if (setting.goingToWork) {
+														btn.btnBackGroundColor = DEFAULT_GRAY;
+													}
+													break;
+												case 2:
+													if (setting.departure) {
+														btn.btnBackGroundColor = DEFAULT_GRAY;
+													}
+													break;
+												case 3:
+													if (setting.goOut) {
+														btn.btnBackGroundColor = DEFAULT_GRAY;
+													}
+													break;
+												case 4:
+													if (setting.turnBack) {
+														btn.btnBackGroundColor = DEFAULT_GRAY;
+													}
+													break
+											}
 										}
 									}
 
