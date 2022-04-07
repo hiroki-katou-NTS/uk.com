@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.daily.ouen;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,12 +15,35 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.infra.entity.daily.timezone.KrcdtDayTsSupSupplInfo;
 import nts.uk.ctx.at.record.infra.entity.daily.timezone.KrcdtDayTsSupSupplInfoPk;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.ChoiceCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SuppInfoCommentItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SuppInfoNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SuppInfoNumItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SuppInfoSelectionItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SuppInfoTimeItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SuppNumValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkSuppComment;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkSuppInfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 @Entity
@@ -192,5 +216,32 @@ public class KrcdtDayOuenTimeSheet extends ContractCompanyUkJpaEntity implements
 			if (si.getSuppInfoSelectionNo().v() == 5) { supInfo.supplInfoCode5 =  si.getChoiceCode() == null ? null : si.getChoiceCode().v();}
 		});
 		return supInfo;
+	}
+	
+	public OuenWorkTimeSheetOfDailyAttendance domain(Optional<KrcdtDayTsSupSupplInfo> krcdtDayTsSupSupplInfo) {
+		
+		return OuenWorkTimeSheetOfDailyAttendance.create(
+				SupportFrameNo.of(this.pk.ouenNo), 
+				WorkContent.create(
+						WorkplaceOfWorkEachOuen.create(new WorkplaceId(this.workplaceId), new WorkLocationCD(this.workLocationCode)),
+						(this.workCd1 == null && this.workCd2 == null && this.workCd3 == null && this.workCd4 == null && this.workCd5 == null) ? Optional.empty() :
+						Optional.of(WorkGroup.create(this.workCd1, this.workCd2, this.workCd3, this.workCd4, this.workCd5)),
+						krcdtDayTsSupSupplInfo.map(si -> si.domain())), 
+				TimeSheetOfAttendanceEachOuenSheet.create(
+						new WorkNo(this.workNo),
+						createTimeInfo(this.startTimeChangeWay, this.startStampMethod, this.startTime),
+						createTimeInfo(this.endTimeChangeWay, this.endStampMethod, this.endTime)), 
+				Optional.empty());
+	}
+	
+	private Optional<WorkTimeInformation> createTimeInfo(Integer timeChangeWay, Integer stampMethod, Integer time) {
+		
+		if (timeChangeWay == null && stampMethod == null && time == null) return Optional.empty();
+		
+		return Optional.of(new WorkTimeInformation(
+				new ReasonTimeChange(
+						timeChangeWay == null ? TimeChangeMeans.AUTOMATIC_SET : EnumAdaptor.valueOf(timeChangeWay, TimeChangeMeans.class), 
+						stampMethod == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(stampMethod, EngravingMethod.class))), 
+				time == null ? null : new TimeWithDayAttr(time)));
 	}
 }

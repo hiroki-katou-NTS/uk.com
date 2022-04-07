@@ -4,12 +4,14 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
@@ -79,12 +81,6 @@ public class Stamp implements DomainAggregate, Cloneable {
 	// tạo tạm để lưu biến TimeWithDayAttr
 	@Getter
 	private Optional<AttendanceTime> attendanceTime = Optional.empty();
-	
-	/**
-	 * 打刻記録ID
-	 */
-//	@Getter
-//	private String stampRecordId;
 
 	/**
 	 * [C-1] 初回打刻データを作成する
@@ -108,30 +104,6 @@ public class Stamp implements DomainAggregate, Cloneable {
 		this.imprintReflectionStatus = new ImprintReflectionState(false, Optional.empty());
 		this.locationInfor = locationInfor;
 	}
-	
-	/**
-	 * [C-2] 打刻記録から打刻作成する
-	 * @param stampRecord
-	 * @param relieve
-	 * @param stampType
-	 * @param refActualResults
-	 * @param locationInfor
-	 */
-//	public Stamp(StampRecord stampRecord, Relieve relieve, StampType stampType, RefectActualResult refActualResults,
-//			Optional<GeoCoordinate> locationInfor) {
-//		super();
-//		this.contractCode = stampRecord.getContractCode(); //ver2　属性追加
-//		this.cardNumber = stampRecord.getStampNumber();
-//		this.stampDateTime = stampRecord.getStampDateTime();
-//		this.relieve = relieve;
-//		this.type = stampType;
-//		this.refActualResults = refActualResults;
-//		this.locationInfor = locationInfor;
-//		//this.stampRecordId = stampRecord.getStampRecordId();
-//		this.imprintReflectionStatus = new ImprintReflectionState(false, Optional.empty());
-//	}
-	
-	
 	
 	/**
 	 * [1] 勤怠打刻に変換する
@@ -170,17 +142,27 @@ public class Stamp implements DomainAggregate, Cloneable {
 	public String retriveKey() {
 		return this.getCardNumber().v() + this.getStampDateTime().toString();
 	}
-
-	@Override
-	public Stamp clone() {
+	
+	/** [4] 時刻変更区分を渡して新しい打刻を作る　*/
+	public Stamp createNewStamp(ChangeClockAtr atr) {
+		
+		val stampType = new StampType(this.type.isChangeHalfDay(), this.type.getGoOutArt(), 
+				this.type.getSetPreClockArt(), atr, this.type.getChangeCalArt());
+		
 		return new Stamp(new ContractCode(contractCode.v()),
 				new StampNumber(cardNumber.v()),
 				stampDateTime,
 				relieve.clone(),
-				type.clone(),
+				stampType,
 				refActualResults.clone(),
 				imprintReflectionStatus.clone(),
 				locationInfor.map(x -> new GeoCoordinate(x.getLatitude(), x.getLongitude())),
 				attendanceTime.map(x -> new AttendanceTime(x.v())));
+	}
+
+	@Override
+	public Stamp clone() {
+		
+		return createNewStamp(this.type.getChangeClockArt());
 	}
 }

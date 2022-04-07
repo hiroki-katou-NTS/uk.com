@@ -2,9 +2,9 @@ package nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.monthly;
 
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
-import nts.uk.ctx.alarm.dom.byemployee.check.result.AlarmRecordByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodMonthly;
-import nts.uk.ctx.alarm.dom.byemployee.check.result.DateInfo;
+import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 
 import java.util.List;
 import java.util.Optional;
