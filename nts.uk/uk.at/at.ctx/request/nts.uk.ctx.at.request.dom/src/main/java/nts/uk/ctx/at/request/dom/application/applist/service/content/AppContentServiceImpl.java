@@ -12,13 +12,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
-import nts.arc.primitive.PrimitiveValueBase;
-import nts.uk.ctx.at.request.dom.application.overtime.*;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
@@ -63,6 +60,14 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
+import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeHour;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeReason;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeWorkMultipleTimes;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
@@ -81,6 +86,7 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStan
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonForFixedForm;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonTypeItem;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -1143,35 +1149,36 @@ public class AppContentServiceImpl implements AppContentService {
 		if(!CollectionUtil.isEmpty(actualContentDisplayLst)) {
 			actualContentDisplay = Optional.of(actualContentDisplayLst.get(0));
 		}
-		// アルゴリズム「07-02_実績取得・状態チェック」を実行する(thực hiện thuật toán「07-02_get thực tế・check trạng thái」 )
-		List<DeductionTime> breakTimes = Collections.emptyList();
-		if(application.getAppType()==ApplicationType.OVER_TIME_APPLICATION) {
-			if(preAppContentDisplay.getApOptional().isPresent()) {
-				breakTimes = preAppContentDisplay.getApOptional().get().getBreakTimeOp()
-						.map(x -> x.stream().map(y -> new DeductionTime(y.getTimeZone().getStartTime(), y.getTimeZone().getEndTime())).collect(Collectors.toList()))
-						.orElse(Collections.emptyList());
-			}
-		} else {
-			if(preAppContentDisplay.getAppHolidayWork().isPresent()) {
-				breakTimes = preAppContentDisplay.getAppHolidayWork().get().getBreakTimeList()
-						.map(x -> x.stream().map(y -> new DeductionTime(y.getTimeZone().getStartTime(), y.getTimeZone().getEndTime())).collect(Collectors.toList()))
-						.orElse(Collections.emptyList());
-			}
-		}
-		ApplicationTime achiveOp = preActualColorCheck.checkStatus(
-				companyID, 
-				application.getEmployeeID(), 
-				application.getAppDate().getApplicationDate(), 
-				application.getAppType(),
-				workType, 
-				workTime, 
-				overtimeLeaveAppCommonSet.getOverrideSet(),
-				Optional.empty(), 
-				breakTimes,
-				actualContentDisplay);
+		ApplicationTime achiveOp = null;
 		PostAppData postAppData = null;
 		if(actualContentDisplay.isPresent()) {
 			if(actualContentDisplay.get().getOpAchievementDetail().isPresent()) {
+				// アルゴリズム「07-02_実績取得・状態チェック」を実行する(thực hiện thuật toán「07-02_get thực tế・check trạng thái」 )
+				List<DeductionTime> breakTimes = Collections.emptyList();
+				if(application.getAppType()==ApplicationType.OVER_TIME_APPLICATION) {
+					if(preAppContentDisplay.getApOptional().isPresent()) {
+						breakTimes = preAppContentDisplay.getApOptional().get().getBreakTimeOp()
+								.map(x -> x.stream().map(y -> new DeductionTime(y.getTimeZone().getStartTime(), y.getTimeZone().getEndTime())).collect(Collectors.toList()))
+								.orElse(Collections.emptyList());
+					}
+				} else {
+					if(preAppContentDisplay.getAppHolidayWork().isPresent()) {
+						breakTimes = preAppContentDisplay.getAppHolidayWork().get().getBreakTimeList()
+								.map(x -> x.stream().map(y -> new DeductionTime(y.getTimeZone().getStartTime(), y.getTimeZone().getEndTime())).collect(Collectors.toList()))
+								.orElse(Collections.emptyList());
+					}
+				}
+				achiveOp = preActualColorCheck.checkStatus(
+						companyID, 
+						application.getEmployeeID(), 
+						application.getAppDate().getApplicationDate(), 
+						application.getAppType(),
+						workType, 
+						workTime, 
+						overtimeLeaveAppCommonSet.getOverrideSet(),
+						Optional.empty(), 
+						breakTimes,
+						actualContentDisplay);
 				AchievementDetail achievementDetail = actualContentDisplay.get().getOpAchievementDetail().get();
 				Integer calculationMidnightOutsideWork = null;
 				if(application.getAppType()==ApplicationType.OVER_TIME_APPLICATION) {
@@ -1232,9 +1239,9 @@ public class AppContentServiceImpl implements AppContentService {
 		boolean actualStatus = false;
 		String backgroundColor = "";
 		if(actualContentDisplay.isPresent()) {
-			actualStatus = true;
-		} else {
-			actualStatus = false;
+			if(actualContentDisplay.get().getOpAchievementDetail().isPresent()) {
+				actualStatus = true;
+			}
 		}
 		if(!actualStatus) {
 			backgroundColor = "bg-workinh-result-excess";
