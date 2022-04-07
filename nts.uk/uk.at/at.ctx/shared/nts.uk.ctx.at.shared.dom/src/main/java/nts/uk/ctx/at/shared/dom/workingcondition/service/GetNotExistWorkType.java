@@ -32,6 +32,14 @@ public class GetNotExistWorkType {
 		return getBy(require, employeeId, getWorkTypeCode);
 	}
 
+	public static Map<DatePeriod, String> getByHoliday(Require require,String employeeId) {
+		// 労働条件から休出時勤務種類を取り出す処理
+		Function<WorkingConditionItemWithPeriod, String> getWorkTypeCode = condition -> {
+			return condition.getWorkingConditionItem().getWorkCategory().getWorkType().getHolidayTimeWTypeCode().v();
+		};
+		return getBy(require, employeeId, getWorkTypeCode);
+	}
+
 	private static Map<DatePeriod, String> getBy(Require require, String employeeId, Function<WorkingConditionItemWithPeriod, String> getWorkTypeCode) {
 
 		//マスタチェックは対象社員の全期間に対するチェックなので、期間はmin-max

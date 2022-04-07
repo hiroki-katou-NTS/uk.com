@@ -26,6 +26,8 @@ public enum FixLogicMasterByEmployee {
 
 	休出時勤務種類確認(5, c -> checkHolidayWorkWorkType(c)),
 
+	休日時勤務種類確認(7, c -> checkHolidayWorkType(c)),
+
 	;
 
 	public final int value;
@@ -60,6 +62,15 @@ public enum FixLogicMasterByEmployee {
 
 	private static Iterable<AlarmRecordByEmployee> checkHolidayWorkWorkType(Context context){
 		val checkResults = GetNotExistWorkType.getByHolidayWork(context.require, context.employeeId);
+		return () -> checkResults
+				.entrySet()
+				.stream()
+				.map(pWithw -> context.alarm(pWithw.getKey()))
+				.iterator();
+	}
+
+	private static Iterable<AlarmRecordByEmployee> checkHolidayWorkType(Context context){
+		val checkResults = GetNotExistWorkType.getByHoliday(context.require, context.employeeId);
 		return () -> checkResults
 				.entrySet()
 				.stream()
