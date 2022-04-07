@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -81,30 +82,6 @@ public class GetFlowWorkBreakTimesFromSpecifiedElementsPubImpl implements GetFlo
 
         GetFlowWorkBreakTimesFromSpecifiedElements.Require require = new GetFlowWorkBreakTimesFromSpecifiedElements.Require() {
             @Override
-            public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-                return fixedWorkSettingRepo.findByKey(AppContexts.user().companyId(), code.v()).orElse(null);
-            }
-            @Override
-            public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-                return flowWorkSettingRepo.find(AppContexts.user().companyId(), code.v()).orElse(null);
-            }
-            @Override
-            public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-                return flexWorkSettingRepo.find(AppContexts.user().companyId(), code.v()).orElse(null);
-            }
-            @Override
-            public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-                return predetemineTimeSettingRepo.findByWorkTimeCode(AppContexts.user().companyId(), wktmCd.v()).orElse(null);
-            }
-            @Override
-            public Optional<WorkType> getWorkType(String workTypeCd) {
-                return workTypeRepo.findByPK(AppContexts.user().companyId(), workTypeCd);
-            }
-            @Override
-            public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-                return workTimeRepo.findByCode(AppContexts.user().companyId(), workTimeCode);
-            }
-            @Override
             public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
                 return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
             }
@@ -119,6 +96,31 @@ public class GetFlowWorkBreakTimesFromSpecifiedElementsPubImpl implements GetFlo
             @Override
             public AffiliationInforState createAffiliationInforOfDailyPerfor(String companyId, String employeeId, GeneralDate ymd, String empCalAndSumExecLogID) {
                 return reflectWorkInforDomainServiceImpl.createAffiliationInforOfDailyPerfor(companyId, employeeId, ymd, empCalAndSumExecLogID);
+            }
+            @Override
+            public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+                return workTimeRepo.findByCode(companyId, workTimeCode.v());
+            }
+            @Override
+            public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+                return fixedWorkSettingRepo.findByKey(companyId, workTimeCode.v());
+            }
+            @Override
+            public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+                return flowWorkSettingRepo.find(companyId, workTimeCode.v());
+            }
+            @Override
+            public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+                return flexWorkSettingRepo.find(companyId, workTimeCode.v());
+            }
+            @Override
+            public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId,
+                                                                           WorkTimeCode workTimeCode) {
+                return predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode.v());
+            }
+            @Override
+            public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+                return workTypeRepo.findByPK(companyId, workTypeCode.toString());
             }
         };
 
