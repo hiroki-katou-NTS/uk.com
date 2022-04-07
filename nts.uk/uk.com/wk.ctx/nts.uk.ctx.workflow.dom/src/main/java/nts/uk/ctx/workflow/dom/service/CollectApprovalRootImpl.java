@@ -25,6 +25,8 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.SimpleJobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmployment;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceManagerAdaptor;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceManagerImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApproverRegisterSet;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
@@ -94,6 +96,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	
 	@Inject
 	private ApprovalSettingService approvalSettingService;
+	
+	@Inject
+	private WorkplaceManagerAdaptor workplaceManagerAdaptor;
 	
 	@Override
 	public ApprovalRootContentOutput getApprovalRootOfSubjectRequest(String companyID, String employeeID, EmploymentRootAtr rootAtr, 
@@ -306,10 +311,14 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			if(systemAtr==SystemAtr.WORK) {
 				// 所属職場を取得する
 				String paramID = wkApproverAdapter.getWorkplaceIDByEmpDate(emp.getEmployeeId(), baseDate);
-				if(paramID.equals(wkpId)) {
-					// 所属職場は職場ID（申請本人の所属職場）と一致するかチェックする(check workplaceID lay duoc co trung voi nguoi viet don hay khong)
-					approvers.add(emp.getEmployeeId());
+				if(!paramID.equals(wkpId)) {
+					Optional<WorkplaceManagerImport> opWorkplaceManagerImport = workplaceManagerAdaptor.findWkpMngByEmpWkpDate(emp.getEmployeeId(), wkpId, baseDate);
+					if(!opWorkplaceManagerImport.isPresent()) {
+						continue;
+					}
 				}
+				// 所属職場は職場ID（申請本人の所属職場）と一致するかチェックする(check workplaceID lay duoc co trung voi nguoi viet don hay khong)
+				approvers.add(emp.getEmployeeId());
 			} else {
 				// 社員と基準日から所属職場履歴項目を取得する
 				String paramID = wkApproverAdapter.getDepartmentIDByEmpDate(emp.getEmployeeId(), baseDate);

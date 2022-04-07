@@ -1,7 +1,7 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.monthly;
 
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.uk.ctx.alarm.dom.byemployee.check.result.AlarmRecordByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 

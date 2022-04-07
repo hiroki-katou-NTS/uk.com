@@ -680,7 +680,7 @@ export class KafS05Component extends KafS00ShrComponent {
             }
             if (self.overTimeClf == 3) {
                 appOverTimeInsert.multipleOvertimeContents = step1.multiOverTimes
-                    .filter((item) => item.valueHours && (!!item.valueHours.start || !!item.valueHours.end))
+                    .filter((item) => item.valueHours && (_.isNumber(item.valueHours.start) || _.isNumber(item.valueHours.end)))
                     .map((item, index) => ({
                         frameNo: index + 1,
                         startTime: item.valueHours.start,

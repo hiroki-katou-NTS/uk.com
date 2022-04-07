@@ -1,11 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -959,4 +954,14 @@ public class OverTimeOfDaily {
 		}
 		return false;
 	}
+
+    /**
+     * [7] 残業開始時刻を求める
+     */
+	public Optional<TimeWithDayAttr> getOvertimeStart() {
+        if (overTimeWorkFrameTimeSheet.isEmpty()) return Optional.empty();
+        return overTimeWorkFrameTimeSheet.stream()
+                .min(Comparator.comparing(i -> i.getTimeSpan().getStart()))
+                .map(i -> i.getTimeSpan().getStart());
+    }
 }

@@ -415,7 +415,13 @@ public class IntegrationOfDaily {
 				,	this.attendanceTimeOfDailyPerformance
 				,	this.outingTime);
 	}
-	
+
+	/**
+	 * [3] 編集状態を削除
+	 */
+	public void clearEditedStates() {
+		this.editState.clear();
+	}
 	/**
 	 * 社員の応援情報を取得する
 	 * @return

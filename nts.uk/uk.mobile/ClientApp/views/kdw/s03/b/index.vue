@@ -37,7 +37,7 @@
   <div v-for="(rowData, key) in screenData[0]" v-bind:key="key">
     <div class="row">
       <div class="col-12">
-        <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
+        <div class="row pl-2 mb-1"><tag v-html="getItemText(key)"></tag></div>
         <div class="row mb-1">
           <div class="col-2 p-1 text-right">
             <button class="border-0 bg-transparent" v-on:click="openDScreen(key)"><i :class="`${getIcon(key) }`"></i></button>

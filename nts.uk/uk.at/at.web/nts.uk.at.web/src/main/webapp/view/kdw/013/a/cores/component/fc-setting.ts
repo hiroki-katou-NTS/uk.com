@@ -2,7 +2,10 @@ module nts.uk.ui.at.kdw013.setting {
     
     const storeSetting = (setting?: SettingStore): JQueryPromise<SettingStore | undefined> => {
         const vm = new ko.ViewModel();
-
+        if (setting) {
+            setting.sId = vm.$user.employeeId;
+            setting.cId = vm.$user.companyId;
+        }
         return vm.$window
             .storage('KDW013_SETTING', setting)
             .then((value: any) => value);
@@ -159,7 +162,8 @@ module nts.uk.ui.at.kdw013.setting {
                 // store when popup opened
                 if (state.open) {
                     storeSetting().then((value) => {
-                        value = value ? value : {
+                        let isSameEmployee = value && value.sId == vm.$user.employeeId && value.cId == vm.$user.companyId;
+                        value = isSameEmployee ? value : {
                             firstDay: fd,
                             scrollTime: sc,
                             slotDuration: sd,
