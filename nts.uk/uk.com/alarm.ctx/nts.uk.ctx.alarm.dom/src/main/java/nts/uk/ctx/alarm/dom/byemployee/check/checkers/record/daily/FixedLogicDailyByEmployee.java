@@ -107,7 +107,7 @@ public enum FixedLogicDailyByEmployee {
             Function<IntegrationOfDaily, Boolean> checker) {
         return alarm(context, (date) -> {
             return context.require.getIntegrationOfDaily(context.employeeId, date)
-                    .map(iod -> checker.apply(iod)).orElse(Boolean.FALSE);
+                    .map(iod -> checker.apply(iod)).orElse(false);
         });
     }
     
