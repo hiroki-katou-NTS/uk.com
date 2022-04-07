@@ -632,7 +632,10 @@ module nts.uk.ui.at.kdw013.calendar {
 
     let storeSetting = (setting?: SettingStore): JQueryPromise<SettingStore | undefined> => {
         let vm = new ko.ViewModel();
-
+        if (setting) {
+            setting.sId = vm.$user.employeeId;
+            setting.cId = vm.$user.companyId;
+        }
         return vm.$window
             .storage('KDW013_SETTING', setting)
             .then((value: any) => value);
@@ -1507,7 +1510,9 @@ module nts.uk.ui.at.kdw013.calendar {
 
                 storeSetting()
                 .then((value) => {
-                    value = value ? value : { initialView: view };
+                    let vm = new ko.ViewModel();
+                    let isSameEmployee = value && value.sId == vm.$user.employeeId && value.cId == vm.$user.companyId;
+                    value = isSameEmployee ? value : { initialView: view };
                     value.initialView = view;
                 storeSetting(value);
                 });
@@ -1516,7 +1521,9 @@ module nts.uk.ui.at.kdw013.calendar {
                 
                 storeSetting()
                     .then((value) => {
-                        value = value ? value : { showConfirm: isShow };
+                        let vm = new ko.ViewModel();
+                        let isSameEmployee = value && value.sId == vm.$user.employeeId && value.cId == vm.$user.companyId;
+                        value = isSameEmployee ? value : { showConfirm: isShow };
                         value.showConfirm = isShow;
                         storeSetting(value);
                     });
@@ -3612,7 +3619,10 @@ module nts.uk.ui.at.kdw013.calendar {
             storeSetting()
                 // update setting from domain charactergistic
                 .then((value) => {
-                    if (value) {
+                    let vm = new ko.ViewModel();
+                    let isSameEmployee = value && value.sId == vm.$user.employeeId && value.cId == vm.$user.companyId;
+                    
+                    if (isSameEmployee) {
                         let { setting } = popupData;
                         let { firstDay, scrollTime, slotDuration } = value;
 
