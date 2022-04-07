@@ -445,6 +445,7 @@ public class ApplicationListFinder {
 		if(opApprovalListDisplaySetting.isPresent()) {
 			appListInfo.getDisplaySet().setWorkplaceNameDisp(opApprovalListDisplaySetting.get().getDisplayWorkPlaceName().value);
 			appListInfo.getDisplaySet().setAppDateWarningDisp(opApprovalListDisplaySetting.get().getWarningDateDisAtr().v());
+			appListInfo.getDisplaySet().setUseApprovalFunction(opApprovalListDisplaySetting.get().getUseApprovalFunction().value);
 		}
     	return AppListInitDto.fromDomain(repoAppListInit.getApplicationList(param.toDomain(), 0, appListInfo));
 	}

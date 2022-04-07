@@ -14,17 +14,28 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.val;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.dom.anyperiodcorrection.formatsetting.AnyPeriodCorrectionDefaultFormat;
+import nts.uk.ctx.at.function.dom.anyperiodcorrection.formatsetting.AnyPeriodCorrectionDefaultFormatRepository;
+import nts.uk.ctx.at.function.dom.anyperiodcorrection.formatsetting.AnyPeriodCorrectionFormatSetting;
+import nts.uk.ctx.at.function.dom.anyperiodcorrection.formatsetting.AnyPeriodCorrectionFormatSettingRepository;
+import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.DisplayTimeItem;
+import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.SheetCorrectedMonthly;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.BusinessTypeSortedFinder;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.BusinessTypesFinder;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeSortedDto;
 import nts.uk.ctx.at.record.app.find.workrecord.authfuncrest.EmployeeRoleDto;
 import nts.uk.ctx.at.record.app.find.workrecord.authfuncrest.EmploymentRoleFinder;
+import nts.uk.ctx.at.record.app.query.kdw008.InitialDisplayFormatArbitraryPeriodQuery;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatMonthly;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatMonthlyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformance;
 import nts.uk.ctx.at.shared.app.find.scherec.attitem.AttItemFinder;
+import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyAttdItemSharedDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemAuthority;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
@@ -90,6 +101,13 @@ public class RoleDailyExportExcelImpl {
     
     @Inject
     PerAuthFormatExport perAuthFormatExport;
+    @Inject
+    AnyPeriodCorrectionFormatSettingRepository anyPeriodCorrectionFormatSettingRepository;
+    @Inject
+    InitialDisplayFormatArbitraryPeriodQuery displayFormatArbitraryPeriodQuery;
+
+    @Inject
+    AnyPeriodCorrectionDefaultFormatRepository anyPeriodCorrectionDefaultFormatRepository;
     
     
 
@@ -154,9 +172,30 @@ public class RoleDailyExportExcelImpl {
         sheetDatas.addAll(errorAlarmWorkRecordExportImpl.addSheet3(query)); //add sheet3 separately because of sheets' order
         sheetDatas.addAll(roleMonthlyExportExcelImpl.extraSheets(query,listEmployeeRoleDto,mapAttNameMonthlys,listAttItemNameMonthly,mode));
 
+        // Any period
+        SheetData sheetAnyPeriod = new SheetData(getMasterDatas(companyId),
+                initHeader(), null, null, "任意期間の修正 表示フォーマットの登録", MasterListMode.NONE);
+        sheetDatas.add(sheetAnyPeriod);
+
+
         return sheetDatas;
     }
-    
+    List<MasterHeaderColumn> initHeader(){
+        List<MasterHeaderColumn> columns = new ArrayList<>();
+        columns.add(new MasterHeaderColumn("P10_1", TextResource.localize("KDW006_106"),
+                ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn("P10_2", TextResource.localize("KDW006_90"),
+                ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn("P10_3", TextResource.localize("KDW006_225"),
+                ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn("P10_4", TextResource.localize("KDW006_208"),
+                ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn("P10_5", TextResource.localize("KDW006_90"),
+                ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn("P10_6", TextResource.localize("KDW006_209"),
+                ColumnTextAlign.LEFT, "", true));
+        return columns;
+    }
 	private void initSheet6(List<EmploymentDto> listEmp, Map<String, Map<Integer, List<WorkTypeDtoExcel>>> mapTypeByEmpAndGroup) {
         listEmp.addAll(finderEmp.findAll());
         listEmp.sort(Comparator.comparing(EmploymentDto::getCode));
@@ -305,7 +344,74 @@ public class RoleDailyExportExcelImpl {
         }
         return datas;
     }
-    
+    public List<MasterData> getMasterDatas(String companyId){
+        List<MasterData> datas = new ArrayList<>();
+        List<AnyPeriodCorrectionFormatSetting> settingList = anyPeriodCorrectionFormatSettingRepository.getAll(companyId);
+
+        if(!settingList.isEmpty()){
+            Map<Integer,MonthlyAttdItemSharedDto> mapIdAnName = displayFormatArbitraryPeriodQuery.getAll(companyId)
+                    .stream().collect(Collectors.toMap(MonthlyAttdItemSharedDto::getAttendanceItemId,e->e));
+            Optional<AnyPeriodCorrectionDefaultFormat>  optionalFormat  = anyPeriodCorrectionDefaultFormatRepository.get(companyId);
+            for (val item: settingList ) {
+                Map<String, Object> data = new HashMap<>();
+                List<SheetCorrectedMonthly> listSheetCorrectedMonthly = item.getSheetSetting()
+                        .getListSheetCorrectedMonthly();
+                boolean check  = optionalFormat.isPresent() && optionalFormat.get().getCode().equals(item.getCode());
+                for (val sheet: listSheetCorrectedMonthly){
+                    if(sheet.getSheetNo() == 1){
+                        data.put("P10_1",item.getCode());
+                        data.put("P10_2",item.getName());
+                        data.put("P10_3",check ? "○" : "-");
+                    }else {
+                        data.put("P10_1","");
+                        data.put("P10_2","");
+                        data.put("P10_3","");
+                    }
+                    data.put("P10_4",sheet.getSheetNo());
+                    data.put("P10_5",sheet.getSheetName().v());
+                    StringBuilder disPlayName = new StringBuilder();
+                    List<NameAndDisplay> nameAndDisplays = new ArrayList<>();
+                    sheet.getListDisplayTimeItem().forEach(e->{
+                        val sub = mapIdAnName.getOrDefault(e.getItemDaily(), null);
+                        nameAndDisplays.add(new NameAndDisplay(
+                                sub != null ? sub.getAttendanceItemName() :"",
+                                sub != null ? sub.getDisplayNumber(): null));
+                    });
+                    List<NameAndDisplay> listDisplayTimeItem = nameAndDisplays.stream()
+                            .sorted(Comparator.comparing(NameAndDisplay::getOrder)).collect(Collectors.toList());
+
+                    for (int i = 0, listDisplayTimeItemSize = listDisplayTimeItem.size(); i < listDisplayTimeItemSize; i++) {
+                        NameAndDisplay sub = listDisplayTimeItem.get(i);
+                        disPlayName.append(sub.getOrder() == null ? "" :sub.getOrder());
+                        disPlayName.append(sub.name);
+                        if(i < (listDisplayTimeItemSize -1))
+                             disPlayName.append(",");
+                    }
+                    data.put("P10_6",disPlayName.toString());
+                    datas.add(alignMasterDataSheetAny(data));
+                }
+
+            }
+        }
+
+        return datas;
+    }
+    @AllArgsConstructor
+    @Getter
+    public class NameAndDisplay{
+        public String name;
+        public Integer order;
+    }
+    private MasterData alignMasterDataSheetAny(Map<String, Object> data) {
+        MasterData masterData = new MasterData(data, null, "");
+        masterData.cellAt("P10_1").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+        masterData.cellAt("P10_2").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+        masterData.cellAt("P10_3").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+        masterData.cellAt("P10_4").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+        masterData.cellAt("P10_5").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+        masterData.cellAt("P10_6").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+        return masterData;
+    }
     private void putAuthor(Map<String, Object> data, AttItemAuthority attItemAuthor, int isCanUpDate) {
         if(attItemAuthor.isToUse()){
         data.put("利用区分", "○");

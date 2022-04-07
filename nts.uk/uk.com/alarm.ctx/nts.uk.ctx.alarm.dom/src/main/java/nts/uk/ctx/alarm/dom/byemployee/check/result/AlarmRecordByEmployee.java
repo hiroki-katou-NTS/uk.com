@@ -1,4 +1,4 @@
-package nts.uk.ctx.alarm.dom.byemployee.check;
+package nts.uk.ctx.alarm.dom.byemployee.check.result;
 
 import lombok.Value;
 import nts.gul.text.IdentifierUtil;
@@ -14,8 +14,8 @@ public class AlarmRecordByEmployee {
     /** 社員ID */
     String employeeId;
 
-    /** 日付（年月、期間など） */
-    String date;
+    /** 日付情報 */
+    DateInfo dateInfo;
 
     /** カテゴリ */
     AlarmListCategoryByEmployee category;
@@ -37,7 +37,7 @@ public class AlarmRecordByEmployee {
                 executeId,
                 employeeId,
                 recordId,
-                date,
+                dateInfo.getFormatted(),
                 category.value,
                 category.categoryName(),
                 checkItemName,

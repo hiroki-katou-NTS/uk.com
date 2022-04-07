@@ -48,6 +48,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.actualworkin
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexLegalTimeGetter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.PrescribedWorkingTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.Flex;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flex.CalcFlexChangeDto;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flex.ConditionCalcResult;
@@ -885,6 +886,11 @@ public class MonthlyCalculation implements SerializableWithOptional {
 					aggrAtr, this.employmentCd, this.companySets, this.employeeSets, this.settingsByFlex,
 					this.aggregateTime, monthlyCalculatingDailys);
 			
+			/** フレックス勤務の所定労働時間の補正 */
+			this.aggregateTime.getPrescribedWorkingTime().correctInFlexWork(require, cacheCarrier, this.companyId, 
+					this.employeeId, this.yearMonth, aggrPeriod, this.closureId, this.closureDate, this.employmentCd, 
+					this.companySets, this.employeeSets, this.settingsByFlex, this.aggregateTime, this.monthlyCalculatingDailys);
+			
 			/** 大塚モードかを確認する */
 			if (AppContexts.optionLicense().customize().ootsuka()) { 
 				// 控除時間が余分に入れられていないか確認する
@@ -900,7 +906,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 
 		ConcurrentStopwatches.stop("12226:総労働時間：");
 	}
-
+	
 	/**
 	 * 総労働時間と36協定時間の再計算
 	 */
@@ -1572,7 +1578,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 	
 	public static interface RequireM4 extends AggregateTotalWorkingTime.RequireM3,
 		RegularAndIrregularTimeOfMonthly.RequireM3, RegularAndIrregularTimeOfMonthly.RequireM1,
-		FlexTimeOfMonthly.RequireM6, FlexTimeOfMonthly.RequireM5 {}
+		FlexTimeOfMonthly.RequireM6, FlexTimeOfMonthly.RequireM5, PrescribedWorkingTimeOfMonthly.Require {}
 	
 	public static interface RequireM2 extends RequireM5, RequireM4, RequireM1, 
 		AgreementTimeOfManagePeriod.RequireM2 {}

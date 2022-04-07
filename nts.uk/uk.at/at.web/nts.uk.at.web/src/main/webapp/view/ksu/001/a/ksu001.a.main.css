@@ -1,5 +1,6 @@
 #sub-content-main {
-	float: left;	
+	float: left;
+	width: 100%
 }
 
 .header-image-no-event {
@@ -551,7 +552,7 @@ html {
 	display: inline-block;
 }
 
-.toLeft {
+#btn-expand-left {
 	margin-left: 230px;  
 	float: left;
     height: 18px;
@@ -559,31 +560,30 @@ html {
     width: 30px;
 }
 
-.toRight {
+#btn-expand-right {
 	float: left;
     height: 18px;
     padding-top: 2px;
     width: 30px;
 }
 
-.toDown {
-	margin-left: 11px; 
-	margin-right: 1px;
+#btn-expand-bottom {
+	margin-left: -16px; 
 	float: left;
 	width: 15px;
 	box-shadow: 1px 0px 0px 0px rgb(0 0 0 / 40%) !important;
 }
 
-.iconToDown {
-	margin-left: -8px;
+.icon-expand-bottom {
+	margin-left: -7px;
 	margin-top: 2px;
 }
 
-.iconToLeft {
+.icon-expand-left {
 	margin-top: -7px;
 }
 
-.iconToRight {
+.icon-expand-right {
 	margin-top: -7px;
 }
 

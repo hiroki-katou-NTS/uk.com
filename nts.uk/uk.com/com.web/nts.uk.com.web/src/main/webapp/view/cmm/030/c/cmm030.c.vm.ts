@@ -3,19 +3,22 @@
 module nts.uk.com.view.cmm030.c {
 
   const API = {
-    getApprovalRootLastStartDate: "screen/com/cmm030/getApprovalRootLastStartDate/{0}"
+    getApprovalRootLastStartDate: "screen/com/cmm030/getApprovalRootLastStartDate/{0}",
+    getClosureStartDate: "screen/com/cmm030/getClosureStartDate/{0}",
   };
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
     sid: string;
-    startDate: KnockoutObservable<string> = ko.observable(moment.utc().format("YYYY/MM/DD"));
+    isNewMode: boolean;
+    startDate: KnockoutObservable<string> = ko.observable(null);
     transferList: KnockoutObservableArray<any> = ko.observableArray([]);
     selectedTransfer: KnockoutObservable<number> = ko.observable(0);
 
     created(params?: any): void {
       const vm = this;
       vm.sid = params.sid;
+      vm.isNewMode = params.isNewMode;
       vm.transferList([
         { id: 0, name: vm.$i18n("CMM030_55") },
         { id: 1, name: vm.$i18n("CMM030_56") }
@@ -25,6 +28,10 @@ module nts.uk.com.view.cmm030.c {
     mounted(): void {
       const vm = this;
       vm.$nextTick(() => $("#C1_3").focus());
+      if (vm.isNewMode) {
+        vm.$blockui("grayout");
+        vm.getClosureStartDate().always(() => vm.$blockui("clear"));
+      } 
     }
 
     public processSave() {
@@ -60,6 +67,15 @@ module nts.uk.com.view.cmm030.c {
         }
         return true;
       });
+    }
+
+    /**
+     * Ｃ：締め初日を取得する
+     */
+    private getClosureStartDate(): JQueryPromise<any> {
+      const vm = this;
+      return vm.$ajax(nts.uk.text.format(API.getClosureStartDate, vm.sid))
+      .then(result => vm.startDate(result));
     }
   }
 }

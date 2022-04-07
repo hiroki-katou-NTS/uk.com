@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.pubimp.remainnumber.annualleave;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -769,6 +770,9 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 
 				listClosurePeriodEachYear.add(new ClosurePeriodEachYear(item.getKey(), new DatePeriod(start, end)));
 			}
+			
+			listClosurePeriodEachYear.sort(Comparator.comparing(ClosurePeriodEachYear::getYearMonth));
+					
             List<AggrResultOfAnnualLeaveEachMonth> result = new ArrayList<AggrResultOfAnnualLeaveEachMonth>();
             Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeave = Optional.empty();
             for (ClosurePeriodEachYear item : listClosurePeriodEachYear) {
