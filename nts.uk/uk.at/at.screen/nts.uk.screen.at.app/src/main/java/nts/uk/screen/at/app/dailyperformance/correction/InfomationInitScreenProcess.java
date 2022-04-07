@@ -196,6 +196,9 @@ public class InfomationInitScreenProcess {
 			if (param.initFromScreenOther == true)
 				changeEmployeeIds.addAll(stateParam.getLstEmpSelect());
 			
+			if (!initDto.isAddSidLogin())
+				changeEmployeeIds = changeEmployeeIds.stream().filter(x -> !x.equals(AppContexts.user().employeeId())).collect(Collectors.toList());
+				
 			changeEmployeeIds = changeEmployeeIds.stream().distinct().collect(Collectors.toList());
 		}
 		// 応援勤務者の特定 - No1291

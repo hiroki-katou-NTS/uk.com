@@ -516,6 +516,13 @@ export class Kdws03AComponent extends Vue {
                     _.forEach(classArray, (x) => cell.class = cell.class + ' ' + x);
                 }
             });
+            if (!_.isNil(_.find(states, (x) => x.columnKey == 'employeeName'))) {
+                row.color = '';
+                let classArray = _.find(states, (x) => x.columnKey == 'employeeName').state;
+                if (_.includes(classArray, 'mgrid-schedule-support')) {
+                    row.color = '#fedfe6';
+                }
+            }
             if (!_.isNil(_.find(states, (x) => x.columnKey == 'date'))) {
                 row.dateColor = '';
                 let classArray = _.find(states, (x) => x.columnKey == 'date').state;

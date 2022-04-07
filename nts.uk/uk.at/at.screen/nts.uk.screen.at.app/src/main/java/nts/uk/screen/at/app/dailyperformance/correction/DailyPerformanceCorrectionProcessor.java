@@ -1855,16 +1855,38 @@ public class DailyPerformanceCorrectionProcessor {
 		// [No.597]職場の所属社員を取得する
 		List<ResultRequest597Export> lstInfoEmp =  workplacePub.getLstEmpByWorkplaceIdsAndPeriod(lstWplId, period);
 		
-		InitialDisplayEmployeeDto result = screenDto.getStateParam() != null ? new InitialDisplayEmployeeDto(lstEmployeeId, screenDto.getStateParam()) :
+		InitialDisplayEmployeeDto result = screenDto.getStateParam() != null ? new InitialDisplayEmployeeDto(lstEmployeeId, screenDto.getStateParam(), true) :
 			new InitialDisplayEmployeeDto(lstEmployeeId, new DPCorrectionStateParam(range, employeeIds, mode, 
-					new ArrayList<>(), null, null, isTranfer, new ArrayList<>(), new ArrayList<>()));
-		
+					new ArrayList<>(), null, null, isTranfer, new ArrayList<>(), new ArrayList<>()), true);
+		boolean isAddSidLogin = true;
+		if(!lstWpklIdCcg001.isEmpty())
+			isAddSidLogin = employeeIds.stream().anyMatch(x -> x.equals(employeeIdLogin));
+		else {
+			if (!employeeIds.contains(employeeIdLogin))
+				isAddSidLogin = false;
+		}
+		result.setAddSidLogin(isAddSidLogin);
 		if( mode == ScreenMode.NORMAL.value) {
 			// 応援者の情報をOutputにセットする - No4281
 			result.getParam().setLstWrkplaceId(lstWpklIdCcg001.isEmpty() ? lstWplId : lstWpklIdCcg001);
+			// Get workplaceId when not sid login
+			if (lstWpklIdCcg001.isEmpty() && !isAddSidLogin) {
+				List<String> lstWplIdNew = new ArrayList<>();
+				employeeIds.stream().forEach(x -> {
+					lstWplIdNew.addAll(workplacePub.getLstWorkplaceIdBySidAndPeriod(x, period));
+				});
+				result.getParam().setLstWrkplaceId(lstWplIdNew);
+			}
 			
 			List<String> lstEmp597 = lstInfoEmp.stream().map(x -> x.getSid()).collect(Collectors.toList());
-			result.getParam().setEmployeeIds(lstEmp597);
+			
+			if(lstWpklIdCcg001.isEmpty() || (!lstWpklIdCcg001.isEmpty() && isAddSidLogin))
+				result.getParam().setEmployeeIds(lstEmp597);
+			
+			if (!lstWpklIdCcg001.isEmpty() && !isAddSidLogin) {
+				lstEmp597 = lstEmp597.stream().filter(x -> !x.equals(employeeIdLogin)).collect(Collectors.toList());
+				result.getParam().setEmployeeIds(lstEmp597);
+			}
 			
 			result.getParam().setLstEmpSelect(employeeIds);
 		}
@@ -1874,6 +1896,7 @@ public class DailyPerformanceCorrectionProcessor {
 			
 			if(!employeeIds.isEmpty()) {
 				result.setLstEmpId(employeeIds);
+				result.getParam().getEmployeeIds().addAll(employeeIds);
 				return result;
 			}
 			//社員参照範囲を取得する
