@@ -467,9 +467,10 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 workType.oneDayCls(0);
             }
 
-            if (workType.workAtr() === WorkAtr.MORNING && workType.morningCls() !== 4) { // 特別休暇
+            if (workType.morningCls() !== 4) { // 特別休暇
               workType.morning().sumSpHodidayNo(null);
-            } else if (workType.workAtr() === WorkAtr.AFTERNOON && workType.afternoonCls() !== 4) {
+            }
+            if (workType.afternoonCls() !== 4) {
               workType.afternoon().sumSpHodidayNo(null);
             }
 
