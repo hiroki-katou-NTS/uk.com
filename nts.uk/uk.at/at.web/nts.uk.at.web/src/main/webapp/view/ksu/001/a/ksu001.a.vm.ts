@@ -3973,8 +3973,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                     }
                 } else if (self.userInfor.disPlayFormat == ViewMode.TIME) {
-                    let workStyle = data.workHolidayCls;
                     if (!_.isNil(data)) {
+                        // check data stick và data trên grid có giống nhau không, giống nhau thì không set style nữa.
+                        if (self.isEqual(ViewMode.TIME, data, rowIdx, key)) {
+                            return;
+                        }
+
+                        let workStyle = data.workHolidayCls;
                         // case coppy từ cell là ngày lễ, ngày nghỉ nên phải disable cell starttime, endtime đi.
                         if (workStyle == WorkStyle.ONE_DAY_REST) {
                             self.diseableCellStartEndTime(rowIdx + '', key);
@@ -4005,6 +4010,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                 } else if (self.userInfor.disPlayFormat == ViewMode.SHORTNAME) {
                     if (!_.isNil(data)) {
+                        // check data stick và data trên grid có giống nhau không, giống nhau thì không set style nữa.
+                        if (self.isEqual(ViewMode.SHORTNAME, data, rowIdx, key)) {
+                            return;
+                        }
+                        
                         let workStyle = data.workHolidayCls;
                         if (workStyle == WorkStyle.ONE_DAY_WORK) {
                             if (innerIdx === 0 || innerIdx === 1) return { textColor: "#1973b5" }; // color-attendance
@@ -4024,6 +4034,28 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                 }
             });
+        }
+
+        isEqual(viewMode, dataStick, rowIdx, key) {
+            let dataSource = $("#extable").exTable('dataSource', 'detail').body;
+            let cellData = dataSource[rowIdx][key];
+            if (viewMode == ViewMode.TIME) {
+                if (dataStick.workTypeCode == cellData.workTypeCode &&
+                    dataStick.workTimeCode == cellData.workTimeCode &&
+                    dataStick.startTime == cellData.startTime &&
+                    dataStick.endTime == cellData.endTime) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if (viewMode == ViewMode.SHORTNAME) {
+                if (dataStick.workTypeCode == cellData.workTypeCode &&
+                    dataStick.workTimeCode == cellData.workTimeCode) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         }
         
         // update detail a10
@@ -4785,10 +4817,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     } else {
                         // enable | disable cell startTime,endtime
                         if (userInfor.disPlayFormat == ViewMode.TIME) {
-                            if (data.workHolidayCls == 0) {
-                                self.diseableCellStartEndTime(rowIdx+'', key);
-                            } else {
-                                self.enableCellStartEndTime(rowIdx+'', key);
+                            if (!self.isEqual(ViewMode.TIME, data, rowIdx, key)) {
+                                if (data.workHolidayCls == 0) {
+                                    self.diseableCellStartEndTime(rowIdx + '', key);
+                                } else {
+                                    self.enableCellStartEndTime(rowIdx + '', key);
+                                }
                             }
                         }
                         dfd.resolve(true);
@@ -4944,7 +4978,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                                 // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
                                 // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
-                                if (!_.isNil(cellDisableTime)) {
+                                if ((data.workTypeCode != cellData.workTypeCode) && !_.isNil(cellDisableTime)) {
                                     self.enableCellStartEndTime(rowIdx + '', key);
                                 }
 
@@ -4974,7 +5008,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                                     // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
                                     // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
-                                    if (!_.isNil(cellDisableTime)) {
+                                    if ((data.workTypeCode != cellData.workTypeCode) && !_.isNil(cellDisableTime)) {
                                         self.enableCellStartEndTime(rowIdx + '', key);
                                     }
                                     
@@ -5019,7 +5053,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                                 // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
                                 // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
-                                if (!_.isNil(cellDisableTime)) {
+                                if ((data.workTypeCode != cellData.workTypeCode) && !_.isNil(cellDisableTime)) {
                                     self.enableCellStartEndTime(rowIdx + '', key);
                                 }
 
@@ -5049,7 +5083,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                                     // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
                                     // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
-                                    if (!_.isNil(cellDisableTime)) {
+                                    
+                                    if ((data.workTypeCode != cellData.workTypeCode) && !_.isNil(cellDisableTime)) {
                                         self.enableCellStartEndTime(rowIdx + '', key);
                                     }
 
