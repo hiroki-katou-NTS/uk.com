@@ -20,6 +20,8 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState;
 @RequiredArgsConstructor
 public enum FixedLogicAppApprovalByEmployee {
 
+	未承認(6, c -> getApplicatoinBy(c, ReflectedState.NOTREFLECTED)),
+
 	否認(7, c -> getApplicatoinBy(c, ReflectedState.DENIAL)),
 
 	未反映(8, c -> getApplicatoinBy(c, ReflectedState.WAITREFLECTION)),
