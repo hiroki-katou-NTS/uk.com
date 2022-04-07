@@ -60,7 +60,7 @@ public class RegularAndIrregularTimeOfMonthlyDto implements ItemConst, Attendanc
 		RegularAndIrregularTimeOfMonthlyDto dto = new RegularAndIrregularTimeOfMonthlyDto();
 		if(domain != null) {
 			dto.setIrregularWorkingTime(new IrregularWorkingTimeOfMonthlyDto(0, 0, 0, 
-											domain.getIrgLegalOt().v(), 0, 0));
+											domain.getIrregularLegalOverTime().v(), 0, 0));
 			dto.setWeeklyTotalPremiumTime(domain.getWeeklyTotalPremiumTime().valueAsMinutes());
 		}
 		return dto;

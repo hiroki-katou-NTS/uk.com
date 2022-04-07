@@ -19,8 +19,6 @@ public class TargetPremiumTimeWeek {
 
 	/** 週割増時間 */
 	private AttendanceTimeMonth premiumTimeWeek;
-	/** 変形法定内残業 */
-	private AttendanceTimeMonth irgLegalOt;
 	/** 当月の週割増対象時間 */
 	private AttendanceTimeMonth premiumTimeOfCurrentMonth;
 	/** 前月の最終週の週割増時間 */
@@ -55,7 +53,6 @@ public class TargetPremiumTimeWeek {
 		// 「当月の週割増対象時間」を求める
 		domain.premiumTimeWeek = targetPre.getTargetPremiumTime();
 		domain.premiumTimeOfCurrentMonth = new AttendanceTimeMonth(domain.premiumTimeWeek.v());
-		domain.irgLegalOt = targetPre.getIrgLegalOt();
 
 		// 「前月の最終週の週割増対象時間」を加算する
 		domain.premiumTimeWeek = domain.premiumTimeWeek.addMinutes(domain.premiumTimeOfPrevMonth.v());

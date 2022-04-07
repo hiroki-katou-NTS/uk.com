@@ -143,7 +143,7 @@ public class KrcdtWekAttendanceTime extends ContractUkJpaEntity implements Seria
 	public int weekTotalPremiumTime;
 	/** 変形法定内残業 */
 	@Column(name = "IRG_LEGAL_OVER_TIME")
-	public int irgLegalOt;
+	public int irregularLegalOverTime;
 	
 	/** フレックス時間 */
 	@Column(name = "FLEX_TIME")
@@ -699,7 +699,7 @@ public class KrcdtWekAttendanceTime extends ContractUkJpaEntity implements Seria
 		// 週別の通常変形時間
 		val regAndIrgTime = RegAndIrgTimeOfWeekly.of(
 				new AttendanceTimeMonth(this.weekTotalPremiumTime),
-				new AttendanceTimeMonth(irgLegalOt));
+				new AttendanceTimeMonth(irregularLegalOverTime));
 		
 		// 期間別のフレックス時間
 		val flexTime = FlexTimeByPeriod.of(
@@ -1017,7 +1017,7 @@ public class KrcdtWekAttendanceTime extends ContractUkJpaEntity implements Seria
 		val weeklyCalculation = domain.getWeeklyCalculation();
 		val regAndIrgTime = weeklyCalculation.getRegAndIrgTime();
 		this.weekTotalPremiumTime = regAndIrgTime.getWeeklyTotalPremiumTime().v();
-		this.irgLegalOt = regAndIrgTime.getIrgLegalOt().v();
+		this.irregularLegalOverTime = regAndIrgTime.getIrregularLegalOverTime().v();
 		this.premiumAmountTotal = domain.getVerticalTotal().getWorkTime().getPremiumTime().getPremiumAmountTotal().v();
 		
 		val flexTime = weeklyCalculation.getFlexTime();
