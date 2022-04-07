@@ -114,13 +114,24 @@
 													</td>
 													<td>
 														<span>
-															<input data-bind="attr: { id: 'BP' + timeSheetNO() }, ntsTimeEditor: { 
-								constraint: 'BonusPayTime',value: startTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: Boolean(useAtr()==1) }" />
+															<input id="start-time"
+																data-bind="attr: { id: 'BP' + timeSheetNO() },
+																	ntsTimeWithDayEditor: {
+																		name: '#{i18n.getText('KMK005_65')}',
+																		constraint: 'BonusPayTime',
+																		value: startTime,
+																		enable: Boolean(useAtr()==1),
+																		option: { width: '50px' } }" />
 														</span>
 														<span>～</span>
 														<span>
-															<input data-bind="ntsTimeEditor: { 
-								constraint: 'BonusPayTime',value: endTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: Boolean(useAtr()==1) }" />	
+															<input id="end-time"
+																data-bind="ntsTimeWithDayEditor: {
+																	name: '#{i18n.getText('KMK005_66')}',
+																	constraint: 'BonusPayTime',
+																	value: endTime,
+																	enable: Boolean(useAtr()==1),
+																	option: { width: '50px' } }" />
 														</span>
 													</td>
 													<td>
@@ -220,13 +231,24 @@
 													</td>
 													<td>
 														<span>
-															<input data-bind="attr: { id: 'SBP' + timeSheetNO() }, ntsTimeEditor: { 
-								constraint: 'BonusPayTime',value: startTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: Boolean(useAtr()==1) }" />
+															<input id="start-time"
+																data-bind="attr: { id: 'SBP' + timeSheetNO() },
+																	ntsTimeWithDayEditor: {
+																		name: '#{i18n.getText('KMK005_65')}',
+																		constraint: 'BonusPayTime',
+																		value: startTime,
+																		enable: Boolean(useAtr()==1),
+																		option: { width: '50px' } }" />
 														</span>
 														<span>～</span>
 														<span>
-															<input data-bind="ntsTimeEditor: { 
-								constraint: 'BonusPayTime',value: endTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: Boolean(useAtr()==1) }" />	
+															<input id="end-time"
+																data-bind="ntsTimeWithDayEditor: {
+																	name: '#{i18n.getText('KMK005_66')}',
+																	constraint: 'BonusPayTime',
+																	value: endTime,
+																	enable: Boolean(useAtr()==1),
+																	option: { width: '50px' } }" />
 														</span>
 													</td>
 													<td>
