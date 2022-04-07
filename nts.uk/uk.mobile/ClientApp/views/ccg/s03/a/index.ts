@@ -69,7 +69,7 @@ export class Ccgs03AComponent extends Vue {
     this.$mask('show');
     const param: any = {
       regionalTime: 0
-    }
+    };
     this.$http.post('com', this.API.getEmployeeNotification, param)
       .then((response: any) => {
         if (response && response.data) {
