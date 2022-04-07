@@ -880,16 +880,6 @@ public class InitScreenMob {
 					String anyChar = mergeString(DPText.ADD_CHARACTER, itemIdAsString);
 					if (screenDto.getStateParam().getLstEmpsSupport().contains(data.getEmployeeId())) {
 						cellEditColor(screenDto,data.getId(), "employeeName", 9);
-						cellEditColor(screenDto,data.getId(), "employeeCode", 9);
-						cellEditColor(screenDto,data.getId(), "sign", 9);
-						cellEditColor(screenDto,data.getId(), "id", 9);
-						cellEditColor(screenDto,data.getId(), "picture-person", 9);
-						cellEditColor(screenDto,data.getId(), "approval", 9);
-						cellEditColor(screenDto,data.getId(), "date", 9);
-						cellEditColor(screenDto,data.getId(), "error", 9);
-						cellEditColor(screenDto,data.getId(), "state", 9);
-						cellEditColor(screenDto,data.getId(), "Code1", 9);
-						cellEditColor(screenDto,data.getId(), "Name1", 9);
 					}
 				}
 			} 
