@@ -13,9 +13,9 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 /**
  * 労働条件-平日時の勤務種類が登録されている 
  */
-public class GetNotExistWeekDayWorkType {
+public class GetNotExistWorkType {
 
-	public static Map<DatePeriod, String> get(Require require,String employeeId) {
+	public static Map<DatePeriod, String> getByWeekDay(Require require,String employeeId) {
 		//マスタチェックは対象社員の全期間に対するチェックなので、期間はmin-max
 		DatePeriod period = new DatePeriod(GeneralDate.min(), GeneralDate.max());
 		return require.getWorkingConditions(employeeId, period)
