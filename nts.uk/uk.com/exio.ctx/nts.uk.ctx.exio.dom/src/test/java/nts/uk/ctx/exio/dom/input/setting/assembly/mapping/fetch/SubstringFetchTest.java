@@ -24,6 +24,20 @@ public class SubstringFetchTest {
     }
 
     @Test
+    public void emptyStart() {
+        val target = new SubstringFetch(Optional.empty(), fromStart(3));
+        String actual = target.fetch("12345");
+        assertThat(actual).isEqualTo("123");
+    }
+
+    @Test
+    public void emptyEnd() {
+        val target = new SubstringFetch(fromStart(3), Optional.empty());
+        String actual = target.fetch("12345");
+        assertThat(actual).isEqualTo("345");
+    }
+
+    @Test
     public void oneChar() {
         val target = new SubstringFetch(fromStart(3), fromEnd(3));
         String actual = target.fetch("12345");
