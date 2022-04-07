@@ -40,13 +40,13 @@ public class CheckErrorAlarmDaily {
         Iterable<EmployeeDailyPerError> getEmployeeDailyPerErrors(
                 String employeeId, DatePeriod period, List<ErrorAlarmWorkRecordCode> targetCodes);
 
-        String getAttendanceItemName(int attendanceItemId);
+        String getDailyAttendanceItemName(int attendanceItemId);
     }
 
     private static AlarmRecordByEmployee toAlarmRecord(RequireCheck require, EmployeeDailyPerError e) {
 
         String checkItemName = e.getAttendanceItemList().stream()
-                .map(id -> require.getAttendanceItemName(id))
+                .map(id -> require.getDailyAttendanceItemName(id))
                 .collect(Collectors.joining(", "));
 
         return new AlarmRecordByEmployee(

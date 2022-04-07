@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -27,6 +28,9 @@ import nts.uk.ctx.at.aggregation.dom.adapter.dailyrecord.DailyRecordAdapter;
 import nts.uk.ctx.at.aggregation.dom.adapter.workschedule.WorkScheduleAdapter;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
+import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.AlarmListExtractResult;
@@ -35,6 +39,8 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -63,6 +69,12 @@ public class ExecuteAlarmListByEmployeeRequire {
 	
 	@Inject
 	private ApplicationRepository applicatoinRepo;
+
+    @Inject
+    private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepo;
+
+    @Inject
+    private AttendanceItemNameService attendanceItemNameService;
 
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
@@ -185,5 +197,19 @@ public class ExecuteAlarmListByEmployeeRequire {
 		public List<Application> getApplicationBy(String employeeId, GeneralDate targetDate, ReflectedState states) {
 			return applicatoinRepo.getByListRefStatus(this.companyId, employeeId, targetDate, targetDate, Arrays.asList(states.value));
 		}
+
+        @Override
+        public Iterable<EmployeeDailyPerError> getEmployeeDailyPerErrors(String employeeId, DatePeriod period, List<ErrorAlarmWorkRecordCode> targetCodes) {
+            return employeeDailyPerErrorRepo.findsByCodeLst(
+                    Arrays.asList(employeeId),
+                    period,
+                    targetCodes.stream().map(t -> t.v()).collect(Collectors.toList()));
+        }
+
+        @Override
+        public String getDailyAttendanceItemName(int attendanceItemId) {
+            return attendanceItemNameService.getNameOfAttendanceItem(Arrays.asList(attendanceItemId), TypeOfItem.Daily)
+                    .get(0).getAttendanceItemName();
+        }
     }
 }
