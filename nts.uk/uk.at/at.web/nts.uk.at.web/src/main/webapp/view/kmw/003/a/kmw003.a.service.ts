@@ -9,6 +9,7 @@ module nts.uk.at.view.kmw003.a.service {
         addAndUpdate: "screen/at/monthlyperformance/addAndUpdate",
         getApplication: "screen/at/correctionofdailyperformance/getApplication",
         updateScreen: "screen/at/monthlyperformance/updateScreen",
+        getMonthlyFormatList: "screen/at/monthlyperformance/getFormatCodeList",
     }
 
     export function startScreen(param) {
@@ -50,6 +51,10 @@ module nts.uk.at.view.kmw003.a.service {
     export function getApplication(param) {
         return nts.uk.request.ajax(paths.getApplication, param);
 
+    }
+
+    export function getMonthlyFormatList() {
+        return nts.uk.request.ajax(paths.getMonthlyFormatList);
     }
 
 }

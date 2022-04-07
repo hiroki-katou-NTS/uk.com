@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 <div class="two-panel" style="height: 100%; display: inline-flex;">
                     <div class="left-panel"
                         style="padding-bottom: 5px; min-width: calc(1260px - 385px - 230px); height: inherit; padding-left: 0;">
-                        <div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding: 0 10px;overflow-x: auto;">
+                        <div style="border: 1px solid #CCC; overflow-y: auto; background-color: #fff; padding: 0 10px;overflow-x: auto;">
                             <div class="table form-header">
                                 <div class="cell" style="vertical-align: middle;">
                                     <div

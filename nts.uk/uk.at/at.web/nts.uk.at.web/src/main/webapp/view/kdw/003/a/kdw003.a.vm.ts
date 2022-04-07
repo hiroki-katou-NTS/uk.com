@@ -1187,6 +1187,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.dpData = data.lstData;
             self.cellStates(data.lstCellState);
             self.optionalHeader = data.lstControlDisplayItem.lstHeader;
+			for(let i = 0;i< data.lstControlDisplayItem.lstSheet.length;i++){
+				data.lstControlDisplayItem.lstSheet[i].name = "Sheet"+data.lstControlDisplayItem.lstSheet[i].name;
+			}
             self.sheetsGrid(data.lstControlDisplayItem.lstSheet);
             self.sheetsGrid.valueHasMutated();
             if (self.showTextStyle || self.clickFromExtract) {
