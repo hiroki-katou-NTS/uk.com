@@ -462,4 +462,12 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 		}
 		return false;
 	}
+
+	/**
+	 * [8] 使用可能な所定時間帯を取得する
+	 * @return List<時間帯(使用区分付き)>
+	 */
+	public List<TimezoneUse> getAvailableTimeZone() {
+		return this.prescribedTimezoneSetting.getUseableTimeZone();
+	}
 }

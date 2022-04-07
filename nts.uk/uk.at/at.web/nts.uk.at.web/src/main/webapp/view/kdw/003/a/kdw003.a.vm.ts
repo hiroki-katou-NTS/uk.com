@@ -293,6 +293,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         dataSessionDto : any;
         paramCommonAsync : any;
         dpStateParam : any;
+		
+		//inputProcess count
+		countInputProcess: number = 0;
+
         constructor(dataShare: any) {
             var self = this;
 
@@ -1187,6 +1191,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.dpData = data.lstData;
             self.cellStates(data.lstCellState);
             self.optionalHeader = data.lstControlDisplayItem.lstHeader;
+			for(let i = 0;i< data.lstControlDisplayItem.lstSheet.length;i++){
+				data.lstControlDisplayItem.lstSheet[i].name = "Sheet"+data.lstControlDisplayItem.lstSheet[i].name;
+			}
             self.sheetsGrid(data.lstControlDisplayItem.lstSheet);
             self.sheetsGrid.valueHasMutated();
             if (self.showTextStyle || self.clickFromExtract) {
@@ -5038,6 +5045,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 } else {
                     //nts.uk.ui.block.invisible();
                     nts.uk.ui.block.grayout();
+					self.countInputProcess = self.countInputProcess + 1;
                     let e = document.createEvent("HTMLEvents");
                     e.initEvent("mouseup", false, true);
                     $("#dpGrid")[0].dispatchEvent(e);
@@ -5152,13 +5160,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         _.each(value.clearStates, itemResult => {
                             $("#dpGrid").mGrid("clearState", itemResult.rowId, itemResult.columnKey, itemResult.state);
                         })
-
-                        nts.uk.ui.block.clear();
+						self.countInputProcess = self.countInputProcess - 1;
+						if(self.countInputProcess == 0){
+                        	nts.uk.ui.block.clear();
+						}
                         //dfd.resolve(value.cellEdits);
                         dfd.resolve({});
                     }).fail(error => {
                         __viewContext.vm.listCheck28.push({ itemId: keyId, layoutCode: error.message, rowId: rowId });
-                        nts.uk.ui.block.clear();
+                       self.countInputProcess = self.countInputProcess - 1;
+						if(self.countInputProcess == 0){
+                        	nts.uk.ui.block.clear();
+						}
                         nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                         let e = document.createEvent("HTMLEvents");
                         e.initEvent("mouseup", false, true);

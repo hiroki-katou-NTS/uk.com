@@ -66,5 +66,7 @@ public interface WorkplaceManagerRepository {
 	 * @param sid 社員ID
 	 */
 	void deleteByWorkplaceIdAndSid(String workplaceId, String sid);
+	
+	Optional<WorkplaceManager> findWkpMngByEmpWkpDate(String employeeID, String workplaceID, GeneralDate date);
 
 }

@@ -216,5 +216,14 @@ public class WorkplaceListPubImp implements WorkplaceListPub{
 		
 		
 	}
+
+	@Override
+	public Optional<WorkplaceManagerExport> findWkpMngByEmpWkpDate(String employeeID, String workplaceID,
+			GeneralDate date) {
+		return workplaceManagerRepo.findWkpMngByEmpWkpDate(employeeID, workplaceID, date).map(i -> {
+			WorkplaceManagerExport export = new WorkplaceManagerExport(i.getWorkplaceManagerId(), i.getEmployeeId(), i.getWorkplaceId(), i.getHistoryPeriod());
+			return export;
+		});
+	}
 }
 

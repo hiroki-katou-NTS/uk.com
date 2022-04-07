@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -495,11 +497,20 @@ public class CreateExOutTextService extends ExportService<Object> {
 			delimiter = stdOutputCondSet.getDelimiter();
 			stringFormat = stdOutputCondSet.getStringFormat();
 		}
-		
+		String stereoFile = "csvfile";
 		// fixbug 102767
 		// if(delimiter == Delimiter.COMMA) {
 		if (stdOutputCondSet.getFileName().isPresent()){
 			fileName = stdOutputCondSet.getFileName().get().v() + CSV;
+			Pattern notAllow1 = Pattern.compile("^[^.]*$");
+			Matcher matcher = notAllow1.matcher(stdOutputCondSet.getFileName().get().v());
+
+			if (!matcher.matches()){
+				fileName = stdOutputCondSet.getFileName().get().v();
+				val fileArr = fileName.split("\\.");
+				stereoFile = (fileArr.length > 1 ? (fileArr[1].equals("xlsx") || fileArr[1].equals("xls") ? "excel" : fileArr[1])  : fileArr[0]) + "File";
+			}
+
 		} else {
 			fileName = fileName + CSV;
 		}
@@ -586,7 +597,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		// create file
 		Path pathTemp = generatorContext.getWorkingFiles().get(0).getTempFile().getPath();
-		StoredFileInfo fileInfo = fileStorage.store(pathTemp, fileName, STEREO_TYPE);
+		StoredFileInfo fileInfo = fileStorage.store(pathTemp, fileName, stereoFile);
 
 		return new OperationStateResult(ExIoOperationState.EXPORT_FINISH, fileInfo.getId());
 	}

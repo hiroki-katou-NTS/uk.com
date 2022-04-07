@@ -9,7 +9,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.TemporarilyReflectStampDailyAttd;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.EmpInfoTerminalRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSetting;
 import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSettingRepository;
@@ -25,6 +27,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsettings.TaskOperationSetting;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.operationsettings.TaskOperationSettingRepository;
@@ -63,13 +66,16 @@ public class ReflectStampSupport {
 	@Inject 
 	private SupportOperationSettingRepository supportOperationSettingRepo;
 
+	@Inject
+	private TemporarilyReflectStampDailyAttd tempReflectStamp;
+	
 	/**
 	 * @param stamp-打刻
 	 * @param integrationOfDaily-日別勤怠(Work)
 	 * @param stampReflectRangeOutput-打刻反映範囲
 	 */
 	public void reflect(String cid, Stamp stamp, IntegrationOfDaily integrationOfDaily,
-			StampReflectRangeOutput stampReflectRangeOutput) {
+			StampReflectRangeOutput stampReflectRangeOutput, ChangeDailyAttendance changeDailyAtt) {
 		
 		// 勤怠打刻を取得する
 		WorkTimeInformation workTimeInfor = stamp.convertToAttendanceStamp(integrationOfDaily.getYmd());
@@ -83,7 +89,6 @@ public class ReflectStampSupport {
 			workInfoStampTempo = stamp.getRefActualResults().getWorkInforStamp().get().getWorkInformation(supportCardRepo, empInfoTerminalRepo, cid);
 		}
 		
-		// 応援作業反映
 		SupportParam param = new SupportParam();
 		param.setTimePriorityFlag(false); // 時刻優先フラグ＝False
 		param.setTimeDay(Optional.of(workTimeInfor));  // 勤怠打刻＝取得した勤怠打刻
@@ -91,13 +96,41 @@ public class ReflectStampSupport {
 		param.setWorkplaceId(workInfoStampTempo  == null ? Optional.empty() : workInfoStampTempo.getWorkplaceID()); // 職場ID＝勤務先情報Temporary。職場ID
 		param.setStartAtr(startAtr); // 開始区分＝取得した開始区分
 		param.setWorkGroup(stamp.getRefActualResults().getWorkGroup()); /** 作業グループ＝打刻。実績への反映内容。作業グループ */
-		ReflectionAtr reflectionAtr = SupportWorkReflection.supportWorkReflect(new RequireImpl(), cid, param, integrationOfDaily, stampReflectRangeOutput);
+		val require = new RequireImpl();
+		
+		/** 出退勤を反映する */
+		reflectAttendanceLeave(require, cid, param.isTimePriorityFlag(), param.getTimeDay(), 
+				integrationOfDaily, stamp, stampReflectRangeOutput, changeDailyAtt);
+		
+		/** 応援作業反映 */
+		ReflectionAtr reflectionAtr = SupportWorkReflection.supportWorkReflect(require, cid, param, integrationOfDaily, stampReflectRangeOutput);
 		
 		// 反映状態を確認する
 		if (reflectionAtr == ReflectionAtr.REFLECTED) {
 			// 打刻は反映済みをする
 			stamp.getImprintReflectionStatus().markAsReflected(integrationOfDaily.getYmd());
 		}
+	}
+	
+	/** 出退勤を反映する */
+	private void reflectAttendanceLeave(SupportWorkReflection.Require require, String cid, boolean prioFlag,
+			Optional<WorkTimeInformation> workTimeInfor, IntegrationOfDaily integrationOfDaily, Stamp stamp, 
+			StampReflectRangeOutput stampReflectRangeOutput, ChangeDailyAttendance changeDailyAtt) {
+		
+		/** 補正処理を行うかどうか判定 */
+		if (!SupportWorkReflection.judgCorrectionProces(require, cid, prioFlag, 
+									workTimeInfor, stampReflectRangeOutput)) 
+			return;
+		
+		/** 出退勤の時刻変更区分に変換する */
+		val atdType = stamp.getType().getChangeClockArt() == ChangeClockAtr.START_OF_SUPPORT 
+				? ChangeClockAtr.GOING_TO_WORK : ChangeClockAtr.WORKING_OUT; 
+		
+		/** 時刻変更区分を渡して新しい打刻を作る */
+		val atdStamp = stamp.createNewStamp(atdType);
+		
+		/** 打刻を反映する */
+		this.tempReflectStamp.reflectStamp(cid, atdStamp, stampReflectRangeOutput, integrationOfDaily, changeDailyAtt);
 	}
 	
 	// 開始区分を確認する -> 開始区分を取得する
@@ -114,7 +147,7 @@ public class ReflectStampSupport {
 		}
 	}
 	
-	public class RequireImpl implements SupportWorkReflection.Require{
+	public class RequireImpl implements SupportWorkReflection.Require {
 
 		@Override
 		public List<StampCard> stampCard(String contractCode, String sid) {

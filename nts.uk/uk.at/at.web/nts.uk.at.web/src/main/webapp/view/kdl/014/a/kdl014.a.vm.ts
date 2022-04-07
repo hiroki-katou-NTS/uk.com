@@ -95,7 +95,7 @@ module nts.uk.at.view.kdl014.a {
                     });
                 }).fail(function(res) {
                     error({ messageId: res.messageId }).then(() => {
-                        self.cancel_Dialog();
+                        //self.cancel_Dialog();
                     });
 					block.clear();
                 }).always(function() {

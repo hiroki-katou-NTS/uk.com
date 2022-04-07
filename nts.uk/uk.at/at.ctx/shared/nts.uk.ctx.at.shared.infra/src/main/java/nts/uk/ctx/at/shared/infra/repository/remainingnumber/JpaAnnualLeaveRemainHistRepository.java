@@ -96,7 +96,7 @@ public class JpaAnnualLeaveRemainHistRepository extends JpaRepository implements
 				.setParameter("yearMonth", ym)
 				.setParameter("closureID", closureID.value)
 				.setParameter("closeDay", closureDate.getClosureDay().v())
-				.setParameter("isLastDay", closureDate.getLastDayOfMonth() ? 1 : 0)
+				.setParameter("isLastDay", closureDate.getLastDayOfMonth())
 				.setParameter("expStatus", expStatus.value)
 				.setParameter("startDate", datePeriod.start())
 				.setParameter("endDate", datePeriod.end())

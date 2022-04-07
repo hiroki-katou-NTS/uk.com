@@ -1,6 +1,15 @@
 package nts.uk.ctx.at.record.infra.repository.daily.supportwork;
 
-import nts.arc.enums.EnumAdaptor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -18,22 +27,7 @@ import nts.uk.ctx.at.record.infra.entity.daily.ouen.KrcdtDayOuenTime;
 import nts.uk.ctx.at.record.infra.entity.daily.ouen.KrcdtDayOuenTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.ouen.KrcdtDayOuenTimeSheet;
 import nts.uk.ctx.at.record.infra.entity.daily.timezone.KrcdtDayTsSupSupplInfo;
-import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.*;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.*;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
-import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
-import nts.uk.shr.com.time.TimeWithDayAttr;
-import org.apache.commons.lang3.tuple.Pair;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 
 @Stateless
 public class JpaDailyPerformanceSupportWorkRepository extends JpaRepository implements DailyPerformanceSupportWorkRepository {
@@ -291,83 +285,9 @@ public class JpaDailyPerformanceSupportWorkRepository extends JpaRepository impl
                     .filter(i -> i.pk.sid.equals(ots.pk.sid) && i.pk.date.equals(ots.pk.ymd) && i.pk.supNo == ots.pk.ouenNo)
                     .findFirst();
 
-            return OuenWorkTimeSheetOfDailyAttendance.create(
-                    SupportFrameNo.of(ots.pk.ouenNo),
-                    WorkContent.create(
-                            WorkplaceOfWorkEachOuen.create(new WorkplaceId(ots.workplaceId), new WorkLocationCD(ots.workLocationCode)),
-                            (ots.workCd1 == null && ots.workCd2 == null && ots.workCd3 == null && ots.workCd4 == null && ots.workCd5 == null) ? Optional.empty() :
-                                    Optional.of(WorkGroup.create(ots.workCd1, ots.workCd2, ots.workCd3, ots.workCd4, ots.workCd5)),
-                            krcdtDayTsSupSupplInfo.map(si -> toWorkSuppInfo(si))),
-                    TimeSheetOfAttendanceEachOuenSheet.create(
-                            new WorkNo(ots.workNo),
-                            Optional.of(new WorkTimeInformation(
-                                    new ReasonTimeChange(
-                                            ots.startTimeChangeWay == null ? TimeChangeMeans.REAL_STAMP : EnumAdaptor.valueOf(ots.startTimeChangeWay, TimeChangeMeans.class),
-                                            ots.startStampMethod == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(ots.startStampMethod, EngravingMethod.class))),
-                                    ots.startTime == null ? null : new TimeWithDayAttr(ots.startTime))),
-                            Optional.of(new WorkTimeInformation(
-                                    new ReasonTimeChange(
-                                            ots.endTimeChangeWay == null ? TimeChangeMeans.REAL_STAMP : EnumAdaptor.valueOf(ots.endTimeChangeWay, TimeChangeMeans.class),
-                                            ots.endStampMethod == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(ots.endStampMethod, EngravingMethod.class))),
-                                    ots.endTime == null ? null : new TimeWithDayAttr(ots.endTime)))), Optional.empty());
+            return ots.domain(krcdtDayTsSupSupplInfo);
         }).collect(Collectors.toList());
 
         return OuenWorkTimeSheetOfDaily.create(es.get(0).pk.sid, es.get(0).pk.ymd, ouenTimeSheet);
-    }
-
-    private WorkSuppInfo toWorkSuppInfo(KrcdtDayTsSupSupplInfo ts) {
-        //補足時間情報
-        List<SuppInfoTimeItem> suppInfoTimeItems = new ArrayList<>();
-        SuppInfoTimeItem suppInfoTimeItem1 = new SuppInfoTimeItem(new SuppInfoNo(1), ts.supplInfoTime1 == null ? null: new AttendanceTime(ts.supplInfoTime1));
-        SuppInfoTimeItem suppInfoTimeItem2 = new SuppInfoTimeItem(new SuppInfoNo(2), ts.supplInfoTime2 == null ? null: new AttendanceTime(ts.supplInfoTime2));
-        SuppInfoTimeItem suppInfoTimeItem3 = new SuppInfoTimeItem(new SuppInfoNo(3), ts.supplInfoTime3 == null ? null: new AttendanceTime(ts.supplInfoTime3));
-        SuppInfoTimeItem suppInfoTimeItem4 = new SuppInfoTimeItem(new SuppInfoNo(4), ts.supplInfoTime4 == null ? null: new AttendanceTime(ts.supplInfoTime4));
-        SuppInfoTimeItem suppInfoTimeItem5 = new SuppInfoTimeItem(new SuppInfoNo(5), ts.supplInfoTime5 == null ? null: new AttendanceTime(ts.supplInfoTime5));
-        suppInfoTimeItems.add(suppInfoTimeItem1);
-        suppInfoTimeItems.add(suppInfoTimeItem2);
-        suppInfoTimeItems.add(suppInfoTimeItem3);
-        suppInfoTimeItems.add(suppInfoTimeItem4);
-        suppInfoTimeItems.add(suppInfoTimeItem5);
-
-        //補足数値情報
-        List<SuppInfoNumItem> suppInfoNumItems = new ArrayList<>();
-        SuppInfoNumItem suppInfoNumItem1 = new SuppInfoNumItem(new SuppInfoNo(1), ts.supplInfoNumber1 == null ? null : new SuppNumValue(ts.supplInfoNumber1));
-        SuppInfoNumItem suppInfoNumItem2 = new SuppInfoNumItem(new SuppInfoNo(2), ts.supplInfoNumber2 == null ? null : new SuppNumValue(ts.supplInfoNumber2));
-        SuppInfoNumItem suppInfoNumItem3 = new SuppInfoNumItem(new SuppInfoNo(3), ts.supplInfoNumber3 == null ? null : new SuppNumValue(ts.supplInfoNumber3));
-        SuppInfoNumItem suppInfoNumItem4 = new SuppInfoNumItem(new SuppInfoNo(4), ts.supplInfoNumber4 == null ? null : new SuppNumValue(ts.supplInfoNumber4));
-        SuppInfoNumItem suppInfoNumItem5 = new SuppInfoNumItem(new SuppInfoNo(5), ts.supplInfoNumber5 == null ? null : new SuppNumValue(ts.supplInfoNumber5));
-        suppInfoNumItems.add(suppInfoNumItem1);
-        suppInfoNumItems.add(suppInfoNumItem2);
-        suppInfoNumItems.add(suppInfoNumItem3);
-        suppInfoNumItems.add(suppInfoNumItem4);
-        suppInfoNumItems.add(suppInfoNumItem5);
-
-        //補足コメント情報
-        List<SuppInfoCommentItem> suppInfoCommentItems = new ArrayList<>();
-        SuppInfoCommentItem suppInfoCommentItem1 = new SuppInfoCommentItem(new SuppInfoNo(1), ts.supplInfoComment1 == null ? null :  new WorkSuppComment(ts.supplInfoComment1));
-        SuppInfoCommentItem suppInfoCommentItem2 = new SuppInfoCommentItem(new SuppInfoNo(2), ts.supplInfoComment2 == null ? null :  new WorkSuppComment(ts.supplInfoComment2));
-        SuppInfoCommentItem suppInfoCommentItem3 = new SuppInfoCommentItem(new SuppInfoNo(3), ts.supplInfoComment3 == null ? null :  new WorkSuppComment(ts.supplInfoComment3));
-        SuppInfoCommentItem suppInfoCommentItem4 = new SuppInfoCommentItem(new SuppInfoNo(4), ts.supplInfoComment4 == null ? null :  new WorkSuppComment(ts.supplInfoComment4));
-        SuppInfoCommentItem suppInfoCommentItem5 = new SuppInfoCommentItem(new SuppInfoNo(5), ts.supplInfoComment5 == null ? null :  new WorkSuppComment(ts.supplInfoComment5));
-        suppInfoCommentItems.add(suppInfoCommentItem1);
-        suppInfoCommentItems.add(suppInfoCommentItem2);
-        suppInfoCommentItems.add(suppInfoCommentItem3);
-        suppInfoCommentItems.add(suppInfoCommentItem4);
-        suppInfoCommentItems.add(suppInfoCommentItem5);
-
-        //補足選択項目情報
-        List<SuppInfoSelectionItem> suppInfoSelectionItems = new ArrayList<>();
-        SuppInfoSelectionItem suppInfoSelectionItem1 = new SuppInfoSelectionItem(new SuppInfoNo(1), ts.supplInfoCode1 == null ? null : new ChoiceCode(ts.supplInfoCode1));
-        SuppInfoSelectionItem suppInfoSelectionItem2 = new SuppInfoSelectionItem(new SuppInfoNo(2), ts.supplInfoCode2 == null ? null :  new ChoiceCode(ts.supplInfoCode2));
-        SuppInfoSelectionItem suppInfoSelectionItem3 = new SuppInfoSelectionItem(new SuppInfoNo(3), ts.supplInfoCode3 == null ? null :  new ChoiceCode(ts.supplInfoCode3));
-        SuppInfoSelectionItem suppInfoSelectionItem4 = new SuppInfoSelectionItem(new SuppInfoNo(4), ts.supplInfoCode4 == null ? null :  new ChoiceCode(ts.supplInfoCode4));
-        SuppInfoSelectionItem suppInfoSelectionItem5 = new SuppInfoSelectionItem(new SuppInfoNo(5), ts.supplInfoCode5 == null ? null :  new ChoiceCode(ts.supplInfoCode5));
-        suppInfoSelectionItems.add(suppInfoSelectionItem1);
-        suppInfoSelectionItems.add(suppInfoSelectionItem2);
-        suppInfoSelectionItems.add(suppInfoSelectionItem3);
-        suppInfoSelectionItems.add(suppInfoSelectionItem4);
-        suppInfoSelectionItems.add(suppInfoSelectionItem5);
-
-        return new WorkSuppInfo(suppInfoTimeItems, suppInfoNumItems, suppInfoCommentItems, suppInfoSelectionItems);
     }
 }

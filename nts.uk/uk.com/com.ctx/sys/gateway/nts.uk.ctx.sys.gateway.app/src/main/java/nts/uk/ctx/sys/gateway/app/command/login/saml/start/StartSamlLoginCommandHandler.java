@@ -12,6 +12,7 @@ import nts.uk.ctx.sys.gateway.dom.login.sso.saml.operate.SamlOperation;
 import nts.uk.ctx.sys.gateway.dom.login.sso.saml.operate.SamlOperationRepository;
 import nts.uk.ctx.sys.gateway.dom.login.sso.saml.UkRelayState;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.*;
+import nts.uk.shr.com.system.property.UKServerSystemProperties;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -30,11 +31,12 @@ public class StartSamlLoginCommandHandler extends CommandHandlerWithResult<Start
 	protected StartSamlLoginResult handle(CommandHandlerContext<StartSamlLoginCommand> context) {
 
 		StartSamlLoginCommand command = context.getCommand();
-		command.checkInput();
-
 		Require require = EmbedStopwatch.embed(new RequireImpl());
 
-		authTenant(require, command);
+		if (UKServerSystemProperties.isCloud()) {
+			command.checkInput();
+			authTenant(require, command);
+		}
 
 		return checkSamlOperation(require, command);
 	}

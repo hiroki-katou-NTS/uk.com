@@ -64,6 +64,7 @@ public interface OvertimeService {
 			Boolean agent,
 			List<OvertimeHour> overtimeHours,
 			List<OvertimeReason> overtimeReasons,
+			Optional<AchievementDetail> opAchievementDetail,
 			boolean managementMultipleWorkCycles
 	);
 	/**
@@ -471,6 +472,7 @@ public interface OvertimeService {
 			List<OvertimeReason> overtimeReasons,
 			List<TimeZoneWithWorkNo> workingHours,
 			WorkInformation workInformation,
+			Optional<AchievementDetail> opAchievementDetail,
 			boolean managementMultipleWorkCycles
 	);
 }
