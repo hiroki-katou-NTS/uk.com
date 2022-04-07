@@ -1,6 +1,5 @@
 package nts.uk.ctx.alarm.byemployee.execute;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +15,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.alarm.dom.AlarmListCheckerCode;
 import nts.uk.ctx.alarm.dom.AlarmListPatternCode;
@@ -41,6 +41,7 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeE
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -59,25 +60,24 @@ import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.closure.ClosureMonth;
 
-
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ExecuteAlarmListByEmployeeRequire {
 
-	@Inject
-	private WorkTypeRepository workTypeRepo;
-	
-	@Inject
-	private WorkingConditionRepository workingConditionRepo;
+    @Inject
+    private WorkTypeRepository workTypeRepo;
+
+    @Inject
+    private WorkingConditionRepository workingConditionRepo;
 
     @Inject
     private WorkScheduleAdapter workScheduleAdapter;
 
     @Inject
     private DailyRecordAdapter dailyRecordAdapter;
-	
-	@Inject
-	private ApplicationRepository applicatoinRepo;
+
+    @Inject
+    private ApplicationRepository applicatoinRepo;
 
     @Inject
     private ApprovalStatusAdapter approvalStatusAdapter;
@@ -109,10 +109,10 @@ public class ExecuteAlarmListByEmployeeRequire {
     @RequiredArgsConstructor
     public class RequireImpl implements Require {
 
-    	private final String companyId;
+        private final String companyId;
 
         private final String loginEmployeeId;
-    	
+
         @Getter
         private List<AlarmRecordByEmployee> alarms = new ArrayList<>();
 
@@ -146,10 +146,10 @@ public class ExecuteAlarmListByEmployeeRequire {
             return Optional.empty();
         }
 
-		@Override
-		public List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, DatePeriod period) {
-			return workingConditionRepo.getWorkingConditionItemWithPeriod(this.companyId, Arrays.asList(employeeId), period);
-		}
+        @Override
+        public List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, DatePeriod period) {
+            return workingConditionRepo.getWorkingConditionItemWithPeriod(this.companyId, Arrays.asList(employeeId), period);
+        }
 
         @Override
         public Optional<WorkType> getWorkType(String workTypeCode) {
@@ -190,16 +190,16 @@ public class ExecuteAlarmListByEmployeeRequire {
         public List<IntegrationOfDaily> getIntegrationOfDaily(DatePeriod period, String employeeId) {
             return DailyAttendanceGettingService.get(
                     new DailyAttendanceGettingService.Require() {
-                        @Override
-                        public List<IntegrationOfDaily> getSchduleList(List<EmployeeId> list, DatePeriod datePeriod) {
-                            return workScheduleAdapter.getList(Arrays.asList(employeeId), period);
-                        }
+                @Override
+                public List<IntegrationOfDaily> getSchduleList(List<EmployeeId> list, DatePeriod datePeriod) {
+                    return workScheduleAdapter.getList(Arrays.asList(employeeId), period);
+                }
 
-                        @Override
-                        public List<IntegrationOfDaily> getRecordList(List<EmployeeId> list, DatePeriod datePeriod) {
-                            return dailyRecordAdapter.getDailyRecordByScheduleManagement(Arrays.asList(employeeId), period);
-                        }
-                    },
+                @Override
+                public List<IntegrationOfDaily> getRecordList(List<EmployeeId> list, DatePeriod datePeriod) {
+                    return dailyRecordAdapter.getDailyRecordByScheduleManagement(Arrays.asList(employeeId), period);
+                }
+            },
                     Arrays.asList(new EmployeeId(employeeId)),
                     period,
                     ScheRecGettingAtr.SCHEDULE_WITH_RECORD
@@ -212,9 +212,9 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
-		public List<Application> getApplicationBy(String employeeId, GeneralDate targetDate, ReflectedState states) {
-			return applicatoinRepo.getByListRefStatus(this.companyId, employeeId, targetDate, targetDate, Arrays.asList(states.value));
-		}
+        public List<Application> getApplicationBy(String employeeId, GeneralDate targetDate, ReflectedState states) {
+            return applicatoinRepo.getByListRefStatus(this.companyId, employeeId, targetDate, targetDate, Arrays.asList(states.value));
+        }
 
         @Override
         public Optional<ConfirmationMonth> getConfirmationMonth(String employeeId, ClosureMonth closureMonth) {
@@ -251,6 +251,16 @@ public class ExecuteAlarmListByEmployeeRequire {
         @Override
         public Optional<GrantHdTblSet> getTable(String yearHolidayCode) {
             return yearHolidayRepo.findByCode(this.companyId, yearHolidayCode);
+        }
+
+        @Override
+        public List<AlarmRecordByEmployee> getAlarms() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public Optional<AgreementTimeOfManagePeriod> getAgeementTime(String employeeId, YearMonth yearMonth) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
 }

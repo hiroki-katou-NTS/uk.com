@@ -16,4 +16,7 @@ public class CheckingPeriod {
 
     /** 月次 */
     CheckingPeriodMonthly monthly;
+    
+    /** ３６協定月次 */
+    CheckingPeriodMonthlyAgreement monthlyAgreement;
 }

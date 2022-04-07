@@ -1,6 +1,7 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers;
 
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agreement.monthly.MonthlyAgreementCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.appapproval.AppApprovalCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.daily.DailyCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.master.MasterCheckerByEmployee;
@@ -21,7 +22,8 @@ public interface AlarmListCheckerByEmployee {
             DailyCheckerByEmployee.RequireCheck,
             MonthlyCheckerByEmployee.RequireCheck,
             MasterCheckerByEmployee.RequireCheck,
-            AppApprovalCheckerByEmployee.RequireCheck
+            AppApprovalCheckerByEmployee.RequireCheck,
+            MonthlyAgreementCheckerByEmployee.RequireCheck
             {
     }
 }
