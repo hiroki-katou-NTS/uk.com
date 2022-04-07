@@ -1,5 +1,6 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers.master;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.service.CheckNotExistAnnualLeaveTable;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.GetNotExistWeekDayWorkType;
 import nts.uk.ctx.alarm.dom.byemployee.check.result.DateInfo;
 
@@ -19,6 +21,8 @@ import nts.uk.ctx.alarm.dom.byemployee.check.result.DateInfo;
  */
 @RequiredArgsConstructor
 public enum FixLogicMasterByEmployee {
+
+	年休付与テーブル確認(2, c -> checkAnnualLeaveBasicInfo(c)),
 	
 	平日時勤務種類確認(3, c -> checkWeekdayWorkType(c)),
 	
@@ -35,6 +39,14 @@ public enum FixLogicMasterByEmployee {
 		
 		val contex = new Context(require, employeeId, message);
 		return logic.apply(contex);
+	}
+
+	private static Iterable<AlarmRecordByEmployee> checkAnnualLeaveBasicInfo(Context context){
+		val result = new ArrayList<AlarmRecordByEmployee>();
+		if(CheckNotExistAnnualLeaveTable.check(context.require, context.employeeId)){
+			result.add(context.alarm());
+		}
+		return result;
 	}
 	
 	private static List<AlarmRecordByEmployee> checkWeekdayWorkType(Context context){
@@ -80,9 +92,21 @@ public enum FixLogicMasterByEmployee {
                     getAlarmCondition(),
                     message);
         }
+
+		public AlarmRecordByEmployee alarm() {
+			return new AlarmRecordByEmployee(
+					employeeId,
+					DateInfo.none(),
+					AlarmListCategoryByEmployee.MASTER,
+					getName(),
+					getAlarmCondition(),
+					message);
+		}
     }
     
-    public interface RequireCheck extends GetNotExistWeekDayWorkType.Require{
+    public interface RequireCheck extends
+			GetNotExistWeekDayWorkType.Require,
+			CheckNotExistAnnualLeaveTable.Require {
 
     }
 }
