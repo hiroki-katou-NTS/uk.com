@@ -65,11 +65,11 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                 reportContext.saveAsCSV(this.createNewFile(context, this.getReportName(dataSource.getSupportWorkOutputSetting().getName().v() + CSV_EXT)));
             } else {
                 worksheet.setViewType(ViewType.PAGE_LAYOUT_VIEW);
-                worksheet.getCells().setStandardWidth(11);
+                worksheet.getCells().setStandardWidth(12);
                 worksheet.getCells().setColumnWidth(0, 9.5);
-                worksheet.getCells().setColumnWidth(1, 14);
-                worksheet.getCells().setColumnWidth(2, 12);
-                worksheet.getCells().setColumnWidth(maxColumnInHeader - 1, 5.4);
+                worksheet.getCells().setColumnWidth(1, 15);
+                worksheet.getCells().setColumnWidth(2, 14);
+                worksheet.getCells().setColumnWidth(maxColumnInHeader - 1, 9);
                 reportContext.saveAsExcel(this.createNewFile(context, this.getReportName(dataSource.getSupportWorkOutputSetting().getName().v() + EXCEL_EXT)));
             }
         } catch (Exception e) {
@@ -84,18 +84,17 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         pageSetup.setFitToPagesTall(0);
         pageSetup.setFitToPagesWide(1);
-        pageSetup.setTopMarginInch(2.5);
-        pageSetup.setBottomMarginInch(1);
-        pageSetup.setLeftMarginInch(1);
-        pageSetup.setRightMarginInch(1);
-        pageSetup.setHeaderMarginInch(1);
-        pageSetup.setFooterMarginInch(0.8);
-//        pageSetup.setCenterHorizontally(true);
+        pageSetup.setTopMargin(2.5);
+        pageSetup.setBottomMargin(1);
+        pageSetup.setLeftMargin(1);
+        pageSetup.setRightMargin(1);
+        pageSetup.setHeaderMargin(1);
+        pageSetup.setFooterMargin(0.8);
+        pageSetup.setCenterHorizontally(true);
         pageSetup.setHeader(0, "&9&\"" + FONT_NAME + "\"" + companyName);
         pageSetup.setHeader(1, "&16&\"" + FONT_NAME + ",Bold\"" + dataSource.getSupportWorkOutputSetting().getName());
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm", Locale.JAPAN);
         pageSetup.setHeader(2, "&9&\"" + FONT_NAME + "\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage&P ");
-//        pageSetup.setPrintTitleRows("$3");
     }
 
     private void printHeader(Worksheet worksheet, SupportWorkListDataSource dataSource) {

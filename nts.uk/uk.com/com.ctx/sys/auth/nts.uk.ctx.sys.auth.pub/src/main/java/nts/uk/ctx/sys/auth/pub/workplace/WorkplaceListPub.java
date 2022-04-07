@@ -57,7 +57,7 @@ public interface WorkplaceListPub {
 	
 	ReferenceableWorkplaceExport getWorkPlaceByReference(String employeeID, GeneralDate date);
 	
-	/**
-	 */
+	// 職場管理者かチェックする
+	Optional<WorkplaceManagerExport> findWkpMngByEmpWkpDate(String employeeID, String workplaceID, GeneralDate date);
 }
 

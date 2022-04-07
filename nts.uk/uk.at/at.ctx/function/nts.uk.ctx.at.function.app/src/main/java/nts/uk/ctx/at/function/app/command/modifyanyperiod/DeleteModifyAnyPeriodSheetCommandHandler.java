@@ -17,6 +17,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,6 +52,9 @@ public class DeleteModifyAnyPeriodSheetCommandHandler extends CommandHandler<Del
                 List<SheetCorrectedMonthly> sheetSetting = domain
                         .getSheetSetting()
                         .getListSheetCorrectedMonthly();
+                sheetSetting = sheetSetting.stream()
+                        .sorted(Comparator.comparing(SheetCorrectedMonthly::getSheetNo))
+                        .collect(Collectors.toList());
                 sheetSetting.removeIf(i->i.getSheetNo() == sheetNo);
                 for (int i = 0; i < sheetSetting.size() ; i++) {
                     val sheet = sheetSetting.get(i);

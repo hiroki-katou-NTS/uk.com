@@ -40,19 +40,19 @@ module nts.uk.at.view.kaf000.a.component8.viewmodel {
 										<td><span data-bind="style: { color: $component.getColor(opAchievementDetail) }, i18n: 'KAF000_58'"></span></td>
 										<td>
 											<div data-bind="if: opAchievementDetail">
-												<span data-bind="if: opAchievementDetail.opWorkTime">
+												<span data-bind="if: _.isNumber(opAchievementDetail.opWorkTime)">
 													<span data-bind="style: { color: $component.getColor(opAchievementDetail) }, text: $parent.formatTime(opAchievementDetail.opWorkTime)"></span>
 												</span>
-												<span data-bind="if: !opAchievementDetail.opWorkTime">
+												<span data-bind="if: !_.isNumber(opAchievementDetail.opWorkTime)">
 													<span style="visibility: hidden;">null</span>
 												</span>
-												<span data-bind="if: opAchievementDetail.opWorkTime || opAchievementDetail.opLeaveTime">
+												<span data-bind="if: _.isNumber(opAchievementDetail.opWorkTime) || _.isNumber(opAchievementDetail.opLeaveTime)">
 													<span data-bind="style: { color: $component.getColor(opAchievementDetail) }"> ～ </span>
 												</span>
-												<span data-bind="if: opAchievementDetail.opLeaveTime">
+												<span data-bind="if: _.isNumber(opAchievementDetail.opLeaveTime)">
 													<span data-bind="style: { color: $component.getColor(opAchievementDetail) }, text: $parent.formatTime(opAchievementDetail.opLeaveTime)"></span>
 												</span>
-												<span data-bind="if: !opAchievementDetail.opLeaveTime">
+												<span data-bind="if: !_.isNumber(opAchievementDetail.opLeaveTime)">
 													<span style="visibility: hidden;">null</span>
 												</span>
 											</div>
