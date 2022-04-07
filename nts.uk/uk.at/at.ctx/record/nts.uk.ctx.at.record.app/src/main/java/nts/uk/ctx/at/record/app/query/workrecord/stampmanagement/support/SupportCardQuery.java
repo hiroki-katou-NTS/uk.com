@@ -47,10 +47,12 @@ public class SupportCardQuery {
 	 */
 	public InitialStartupDto initialStartupSupportCard() {
 		String companyId = AppContexts.user().companyId();
+		String contractCode = AppContexts.user().contractCode();
 		GeneralDate baseDate = GeneralDate.today();
 		
 		// get 応援カード
-		List<SupportCardDto> listSupportCard = this.supportCardRepository.getAll().stream()
+		List<SupportCardDto> listSupportCard = this.supportCardRepository.getByContractCode(contractCode)
+				.stream()
 				.map(SupportCardDto::toDto)
 				.collect(Collectors.toList());
 		
