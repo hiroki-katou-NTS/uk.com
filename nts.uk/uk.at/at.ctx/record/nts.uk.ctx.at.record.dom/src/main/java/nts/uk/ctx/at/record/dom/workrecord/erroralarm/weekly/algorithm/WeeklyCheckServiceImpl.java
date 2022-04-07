@@ -155,30 +155,21 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 								continue;
 							}
 
-							if (lstExtractInfoResult.stream().anyMatch(i -> i.getAlarmCategory() == AlarmCategory.WEEKLY
-									&& i.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
-									&& i.getAlarmListCheckType() == AlarmListCheckType.FreeCheck
-									&& i.getAlarmCheckConditionNo().equals(alarmCode))) {
-								for (AlarmExtractInfoResult i : lstExtractInfoResult) {
-									if (i.getAlarmCategory() == AlarmCategory.WEEKLY
-											&& i.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
-											&& i.getAlarmListCheckType() == AlarmListCheckType.FreeCheck
-											&& i.getAlarmCheckConditionNo().equals(alarmCode)) {
-										List<ExtractResultDetail> tmp = new ArrayList<>(i.getExtractionResultDetails());
-										tmp.add(extractDetail.detail);
-										i.setExtractionResultDetails(tmp);
-										break;
-									}
-								}
+							List<ExtractResultDetail> listDetail = new ArrayList<>(Arrays.asList(extractDetail.detail));
+							AlarmExtractInfoResult newResult = new AlarmExtractInfoResult(
+									alarmCode,
+									new AlarmCheckConditionCode(alarmCheckConditionCode),
+									AlarmCategory.WEEKLY,
+									AlarmListCheckType.FreeCheck,
+									listDetail
+							);
+							Optional<AlarmExtractInfoResult> existentResult = lstExtractInfoResult.stream()
+									.filter(i -> i.equals(newResult))
+									.findFirst();
+							if (existentResult.isPresent()) {
+								existentResult.get().getExtractionResultDetails().add(extractDetail.detail);
 							} else {
-								List<ExtractResultDetail> listDetail = new ArrayList<>(Arrays.asList(extractDetail.detail));
-								lstExtractInfoResult.add(new AlarmExtractInfoResult(
-										alarmCode,
-										new AlarmCheckConditionCode(alarmCheckConditionCode),
-										AlarmCategory.WEEKLY,
-										AlarmListCheckType.FreeCheck,
-										listDetail
-								));
+								lstExtractInfoResult.add(newResult);
 							}
 
                             List<AlarmExtractionCondition> lstExtractCondition = alarmExtractConditions.stream()
