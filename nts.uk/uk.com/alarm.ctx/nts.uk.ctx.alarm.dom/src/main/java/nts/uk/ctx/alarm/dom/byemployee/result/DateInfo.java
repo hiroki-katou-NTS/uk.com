@@ -39,6 +39,10 @@ public class DateInfo {
         formatted = closureMonth.getYearMonth().toString() + closureMonth.closureDate().getClosureDay().toString() + "締め";
     }
 
+    public GeneralDate toGeneralDate() {
+        return GeneralDate.fromString(formatted, "yyyy/M/d");
+    }
+
     public static DateInfo none(){
         return new DateInfo("");
     }

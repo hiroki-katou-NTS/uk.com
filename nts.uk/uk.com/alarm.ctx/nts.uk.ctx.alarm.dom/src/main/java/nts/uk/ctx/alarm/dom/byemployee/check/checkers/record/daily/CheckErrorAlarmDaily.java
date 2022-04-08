@@ -3,14 +3,15 @@ package nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.daily;
 import lombok.Value;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.IteratorUtil;
-import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
-import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 /**
  * 日別実績のエラーアラームをチェックする
@@ -35,27 +36,28 @@ public class CheckErrorAlarmDaily {
                 e -> toAlarmRecord(require, e));
     }
 
-    public interface RequireCheck {
+    private static AlarmRecordByEmployee toAlarmRecord(RequireCheck require, EmployeeDailyPerError dailyError) {
+
+        String errorAlarmName = require.getErrorAlarmWorkRecord(dailyError.getErrorAlarmWorkRecordCode())
+                .map(ea -> ea.getName().v())
+                .orElseGet(() -> dailyError.getErrorAlarmWorkRecordCode().v() + " マスタ未登録");
+
+        return AlarmRecordByEmployee.fromErrorAlarm(
+                require,
+                dailyError.getEmployeeID(),
+                new DateInfo(dailyError.getDate()),
+                AlarmListCategoryByEmployee.RECORD_DAILY,
+                errorAlarmName,
+                dailyError.getAttendanceItemList(),
+                dailyError.getErrorAlarmMessage().map(m -> m.v()).orElse("")
+        );
+    }
+
+    public interface RequireCheck extends AlarmRecordByEmployee.RequireFromErrorAlarm {
 
         Iterable<EmployeeDailyPerError> getEmployeeDailyPerErrors(
                 String employeeId, DatePeriod period, List<ErrorAlarmWorkRecordCode> targetCodes);
 
-        String getDailyAttendanceItemName(int attendanceItemId);
-    }
-
-    private static AlarmRecordByEmployee toAlarmRecord(RequireCheck require, EmployeeDailyPerError e) {
-
-        String checkItemName = e.getAttendanceItemList().stream()
-                .map(id -> require.getDailyAttendanceItemName(id))
-                .collect(Collectors.joining(", "));
-
-        return new AlarmRecordByEmployee(
-                e.getEmployeeID(),
-                new DateInfo(e.getDate()),
-                AlarmListCategoryByEmployee.RECORD_DAILY,
-                checkItemName,
-                "",
-                e.getErrorAlarmMessage().map(m -> m.v()).orElse("")
-        );
+        Optional<ErrorAlarmWorkRecord> getErrorAlarmWorkRecord(ErrorAlarmWorkRecordCode code);
     }
 }
