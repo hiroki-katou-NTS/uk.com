@@ -26,7 +26,7 @@ public enum FixedLogicScheduleDailyByEmployee {
 	スケジュール未作成(1, c -> checkNotCreated(c)),
 
 	勤務種類未登録(2, c -> alarmToBasicSchedule(
-			c, bs -> c.require.existsWorkType(new WorkTypeCode(bs.getWorkTypeCode())))),
+			c, bs -> c.require.existsWorkType(bs.getWorkTypeCode()))),
 	;
 
 	public final int value;
@@ -115,7 +115,7 @@ public enum FixedLogicScheduleDailyByEmployee {
 
 		Optional<BasicSchedule> getSchedule(String employeeId, GeneralDate date);
 
-		boolean existsWorkType(WorkTypeCode workTypeCode);
+		boolean existsWorkType(String workTypeCode);
 
 	}
 }
