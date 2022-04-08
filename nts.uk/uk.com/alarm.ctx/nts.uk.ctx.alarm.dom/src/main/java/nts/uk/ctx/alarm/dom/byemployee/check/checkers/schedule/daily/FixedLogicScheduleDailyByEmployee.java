@@ -6,12 +6,9 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.daily.FixedLogicDailyByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -93,7 +90,6 @@ public enum FixedLogicScheduleDailyByEmployee {
 				.map(date -> context.alarm(date))
 				.iterator();
 	}
-
 
 	@Value
 	private class Context {

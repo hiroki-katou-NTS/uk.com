@@ -35,6 +35,7 @@ import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameS
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.AlarmListExtractResult;
@@ -156,11 +157,16 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
+        public Optional<BasicSchedule> getSchedule(String employeeId, GeneralDate date) {
+            return scheduleRepo.find(employeeId, date);
+        }
+
+        @Override
         public boolean isExists(String employeeId, GeneralDate date) {
             return scheduleRepo.isExists(employeeId, date);
         }
 
-		@Override
+        @Override
 		public List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, DatePeriod period) {
 			return workingConditionRepo.getWorkingConditionItemWithPeriod(this.companyId, Arrays.asList(employeeId), period);
 		}
