@@ -51,8 +51,8 @@ public class MonthlyAgreementCheckerByEmployee implements DomainAggregate, Alarm
                     AgreementTimeOfMonthly targetTime = this.getTargetTime(agreementTime);
                     OneMonthTime adjustedThreshold = this.adjustRules.adjust(targetTime.getThreshold());
                     ExcessState adjustedState = adjustedThreshold.check(targetTime.getAgreementTime());
-                    return this.messages.getMessage(adjustedState)
-                            .map(m -> Stream.of(this.createRecord(ym, agreementTime, m))).orElse(Stream.empty());
+                    return this.detect(employeeId, ym, targetTime, adjustedState)
+                            .map(record -> Stream.of(record)).orElse(Stream.empty());
                 }).iterator();
     }
     
@@ -67,15 +67,19 @@ public class MonthlyAgreementCheckerByEmployee implements DomainAggregate, Alarm
         }
     }
     
-    private AlarmRecordByEmployee createRecord(YearMonth yearMonth, AgreementTimeOfManagePeriod agreementTime, String message) {
-        return new AlarmRecordByEmployee(
-             agreementTime.getSid(),
+    private Optional<AlarmRecordByEmployee> detect(String employeeId, YearMonth yearMonth, AgreementTimeOfMonthly agreementTime, ExcessState state) {
+        if(state.equals(ExcessState.NORMAL)) {
+            return Optional.empty();
+        }
+        
+        return Optional.of(new AlarmRecordByEmployee(
+             employeeId,
              new DateInfo(yearMonth),
              AlarmListCategoryByEmployee.AGREE36_MONTHLY,
              "項目名",
              "アラーム条件",
-             message
-        );
+             this.messages.getMessage(state)
+        ));
     }
     
     public interface RequireCheck {
