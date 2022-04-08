@@ -51,6 +51,9 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.Flex;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.aggframe.OuenAggregateFrameSetOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.GetPeriodExcluseEntryRetireTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualLeaveTimeDay;
+import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
@@ -203,7 +206,7 @@ public class AggregateMonthlyRecordServiceProc {
 		this.IntegrateHistoryOfSameWorkSys(require, workingConditionItems);
 
 		// 所属情報の作成
-		val affiliationInfo = this.createAffiliationInfo(monthPeriod, workingConditions);
+		val affiliationInfo = this.createAffiliationInfo(require, monthPeriod, workingConditions);
 
 		if (affiliationInfo == null) {
 			for (val errorInfo : this.errorInfos.values()) {
@@ -817,7 +820,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 * @param datePeriod 期間
 	 * @return 月別実績の所属情報
 	 */
-	private AffiliationInfoOfMonthly createAffiliationInfo(DatePeriod datePeriod, 
+	private AffiliationInfoOfMonthly createAffiliationInfo(RequireM16 require, DatePeriod datePeriod, 
 			List<WorkingConditionItemWithPeriod> workConditions) {
 
 		List<String> employeeIds = new ArrayList<>();
@@ -858,6 +861,21 @@ public class AggregateMonthlyRecordServiceProc {
 		val latsWorkCondition = workConditions.stream().filter(c -> c.getDatePeriod().contains(datePeriod.end()))
 				.findFirst().map(c -> c.getWorkingConditionItem()).get();
 		
+		LaborContractTime contractTime = latsWorkCondition.getContractTime();
+		
+		/** 年間設定を取得する */
+		val annualPaidLeaveSetting = require.annualPaidLeaveSetting(this.companyId);
+		if (annualPaidLeaveSetting != null) {
+			contractTime = annualPaidLeaveSetting.getTimeSetting().getTimeAnnualLeaveTimeDay()
+					.getContractTime(new TimeAnnualLeaveTimeDay.Require() {
+						
+							@Override
+							public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
+								return Optional.of(latsWorkCondition);
+							}
+						}, this.employeeId, datePeriod.end()).get();
+		}
+		
 		// 月初の情報を作成
 		val firstInfo = AggregateAffiliationInfo.of(
 				firstInfoOfDaily.getEmploymentCode(),
@@ -871,7 +889,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 			// 月別実績の所属情報を返す
 			return AffiliationInfoOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate,
-					firstInfo, firstInfo, latsWorkCondition.getContractTime());
+					firstInfo, firstInfo, contractTime);
 		}
 
 		// 月末の所属情報を取得
@@ -880,7 +898,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 			// 月別実績の所属情報を返す （エラーにせず、月末に月初の情報を入れる）
 			return AffiliationInfoOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate,
-					firstInfo, firstInfo, latsWorkCondition.getContractTime());
+					firstInfo, firstInfo, contractTime);
 		}
 
 		// 月末の情報を作成
@@ -893,7 +911,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 		// 月別実績の所属情報を返す
 		return AffiliationInfoOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate, firstInfo,
-				lastInfo, latsWorkCondition.getContractTime());
+				lastInfo, contractTime);
 	}
 
 	public static interface RequireM13 extends AttendanceTimeOfMonthly.RequireM3 {
@@ -950,8 +968,13 @@ public class AggregateMonthlyRecordServiceProc {
 		Optional<WorkingCondition> workingCondition(String historyId);
 	}
 
+	public static interface RequireM16 {
+
+		AnnualPaidLeaveSetting annualPaidLeaveSetting(String cid);
+	}
+
 	public static interface RequireM15 extends MonthlyCalculatingDailys.RequireM4, RequireM13,
-		RequireM14, RequireM8, RequireM10, AttendanceTimeOfMonthly.RequireM2, 
+		RequireM14, RequireM8, RequireM10, AttendanceTimeOfMonthly.RequireM2, RequireM16,
 		AgreementTimeAggregateService.Require , AnyItemAggregateService.Require {
 
 		List<WorkingConditionItemWithPeriod> workingCondition(String employeeId, DatePeriod datePeriod);
