@@ -397,7 +397,10 @@ export class KafS10Component extends KafS00ShrComponent {
                 self.toHolidayMidNightTime(item, applicationTime);
             }
         });
-        appHolidayWork.applicationTime.reasonDissociation = [step2.getReasonDivergence()];
+        let reasonDivergence = step2.getReasonDivergence();
+        if (!_.isEmpty(reasonDivergence)) {
+            appHolidayWork.applicationTime.reasonDissociation = [reasonDivergence];
+        }
         if (!self.modeNew) {
             appHolidayWork.application.opAppReason = self.application.opAppReason || self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason as any;
             appHolidayWork.application.opAppStandardReasonCD = self.application.opAppStandardReasonCD || self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD as any;
