@@ -16,9 +16,9 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateCode;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantElapseYearMonth;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspGrantTbl;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspElapsedGrantDaysTbl;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspElapsedGrantDaysTblPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspGrantTbl;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstGrantDateTblPK;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -51,7 +51,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 			+ "AND e.pk.specialHolidayCode =:specialHolidayCode ";
 
 	private final static String SELECT_GD_BY_SPHDCD_QUERY
-		= "SELECT e.pk.companyId ,  e.pk.specialHolidayCode,  e.pk.grantDateCd, e.grantName, e.isSpecified, e.numberOfDays "
+		= "SELECT e "
 			+ "FROM KshmtHdspGrantTbl e "
 			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode "
 			+ "ORDER BY e.pk.grantDateCd ASC";
@@ -324,22 +324,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 
 	}
 
-	/**
-	 * Create Grant Date Domain From Entity
-	 * @param c
-	 * @return
-	 */
-	private GrantDateTbl createGdDomainFromEntity(Object[] c) {
-		String companyId = String.valueOf(c[0]);
-		int specialHolidayCode = Integer.parseInt(String.valueOf(c[1]));
-		String grantDateCd = String.valueOf(c[2]);
-		String grantName = String.valueOf(c[3]);
-		boolean isSpecified = Integer.parseInt(String.valueOf(c[4])) == 1 ? true : false;
-		int numberOfDays = c[5] != null ? Integer.parseInt(String.valueOf(c[5])) : 0;
 
-		return GrantDateTbl.createFromJavaType(
-				companyId, specialHolidayCode, grantDateCd, grantName, isSpecified, numberOfDays);
-	}
 
 	/**
 	 * Find all Grant Date Table data by Special Holiday Code
@@ -355,11 +340,11 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 
 	@Override
 	public List<GrantDateTbl> findBySphdCd(String companyId, int specialHolidayCode) {
-		List<GrantDateTbl> grantDateTblList = this.queryProxy().query(SELECT_GD_BY_SPHDCD_QUERY, Object[].class)
+		List<GrantDateTbl> grantDateTblList = this.queryProxy().query(SELECT_GD_BY_SPHDCD_QUERY, KshmtHdspGrantTbl.class)
 				.setParameter("companyId", companyId)
 				.setParameter("specialHolidayCode", specialHolidayCode)
 				.getList(c -> {
-					return createGdDomainFromEntity(c);
+					return createDomainFromEntity(c);
 				});
 		
 		return grantDateTblList.stream().map(x ->{

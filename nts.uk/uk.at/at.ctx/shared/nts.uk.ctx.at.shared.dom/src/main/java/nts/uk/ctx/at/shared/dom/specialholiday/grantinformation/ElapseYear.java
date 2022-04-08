@@ -66,6 +66,13 @@ public class ElapseYear extends AggregateRoot {
 			yearMonth.add(currentYearMonth);
 		}
 		
+		if(isFixedAssign() && grantCycleAfterTbl.isPresent()){
+			if(grantCycleAfterTbl.get().getElapseYearMonth().getYear() == 0 && grantCycleAfterTbl.get().getElapseYearMonth().getMonth() == 0){
+				errors.add("Msg_95");
+			}
+		}
+		
+		
 		return errors;
 	}
 	
@@ -138,7 +145,7 @@ public class ElapseYear extends AggregateRoot {
 				.sorted(Comparator.comparing(ElapseYearMonthTbl::getGrantCnt).reversed())
 				.findFirst().get();		
 		
-		if(lastTbl.getGrantCnt() < elapseNo && this.getGrantCycleAfterTbl().isPresent()){
+		if(lastTbl.getGrantCnt() < elapseNo && isFixedAssign() && this.getGrantCycleAfterTbl().isPresent()){
 			tblList.addAll(this.getGrantCycleAfterTbl().get().getElapseYearMonthTbltheGrantCnt(lastTbl, elapseNo));
 		}
 		
