@@ -25,6 +25,7 @@ public class SupportCardRepoImpl extends JpaRepository implements SupportCardRep
 	
 	private static final String SELECT_ALL = " SELECT c FROM KrcmtSupportCard c ";
 	private static final String SELECT_BY_SUPPORT_CARD_NO = SELECT_ALL + " WHERE c.pk.supportCardNo = :supportCardNo";
+	private static final String SELECT_BY_CONTRACT_CODE = SELECT_ALL + " WHERE c.contractCd = :contractCd";
 
 	@Override
 	public Optional<SupportCard> get(String cid, String supportCardNo) {
@@ -106,6 +107,16 @@ public class SupportCardRepoImpl extends JpaRepository implements SupportCardRep
 	@Override
 	public void delete(String cid, String supportCardNo) {
 		this.commandProxy().remove(KrcmtSupportCard.class, new KrcmtSupportCardPk(cid, supportCardNo));
+	}
+
+	@Override
+	public List<SupportCard> getByContractCode(String contractCode) {
+		return this.queryProxy().query(SELECT_BY_CONTRACT_CODE, KrcmtSupportCard.class)
+				.setParameter("contractCd", contractCode)
+				.getList()
+				.stream()
+				.map(t -> toDomain(t))
+				.collect(Collectors.toList());
 	}
 	
 }
