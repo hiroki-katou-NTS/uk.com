@@ -41,6 +41,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.task.TaskAssignWkpC
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.WorkLocationCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.WorkLocationIpCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.shift.businesscalendar.PublicHolidayCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeContactCanonicalization;
 
 /**
  * 受入グループID
@@ -147,6 +148,9 @@ public enum ImportingDomainId {
 
 	/** 打刻データE版 */
 	STAMP_ENTERPRISE(131, EnterpriseStampCanonicalization::new),
+
+	/** 社員連絡先 */
+	EMPLOYEE_CONTACT(132, EmployeeContactCanonicalization::new),
 
 	/** 職場別作業の絞込 */
 	TASK_ASSIGN_WORKPLACE(143, TaskAssignWkpCanonicalization::new),
