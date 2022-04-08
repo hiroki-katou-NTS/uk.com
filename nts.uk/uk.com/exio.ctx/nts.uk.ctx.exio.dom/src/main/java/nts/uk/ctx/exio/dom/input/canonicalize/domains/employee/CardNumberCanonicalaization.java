@@ -52,14 +52,16 @@ public class CardNumberCanonicalaization implements DomainCanonicalization{
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
 		// 受入データ内の重複チェック用
 		Set<KeyValues> importingKeys = new HashSet<>();
-		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interms ->{
+		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interms -> {
+
+			// 全DELETEの場合、この社員に紐づくカードNoを全て削除
+			if (context.getMode() == ImportingMode.DELETE_DOMAIN_BEFOREHAND) {
+				String employeeId = interms.get(0).getItemByNo(Items.SID).get().getString();
+				require.save(context, toDelete(context, employeeId));
+			}
+
 			for(val interm : interms) {
-				//if (context.getMode() == ImportingMode.DELETE_DOMAIN_BEFOREHAND) {
-				if (context.getMode() != ImportingMode.INSERT_ONLY && context.getMode() != ImportingMode.UPDATE_ONLY) {
-					// 既存データがあれば削除する（ドメイン全消し）
-					require.save(context, toDelete(context));
-				}
-				
+
 				// 重複チェック
 				val keyValues = getPrimaryKeys(interm);
 				if (importingKeys.contains(keyValues)) {
@@ -115,10 +117,11 @@ public class CardNumberCanonicalaization implements DomainCanonicalization{
 		.addKey(Items.CARD_ID, StringifiedValue.of(stampCardId));
 	}
 	
-	private AnyRecordToDelete toDelete(ExecutionContext context) {
+	private AnyRecordToDelete toDelete(ExecutionContext context, String employeeId) {
 		
 		return AnyRecordToDelete.create(context)
-		.addKey(Items.CARD_ID, StringifiedValue.of("ALL"));
+				.addKey(Items.CARD_ID, StringifiedValue.of("SID"))
+				.addKey(Items.SID, StringifiedValue.of(employeeId));
 	}
 
 	@Override
@@ -130,11 +133,14 @@ public class CardNumberCanonicalaization implements DomainCanonicalization{
 		
 		return AtomTask.of(() -> {
 			for (val record : recordsToDelete) {
+
 				val delKey = record.getKey(Items.CARD_ID).asString();
-				if(delKey.equals("ALL")) {
-					require.deleteStampCardByTenant(AppContexts.user().contractCode());
+
+				if(delKey.equals("SID")) {
+					require.deleteStampCardByEmployeeId(record.getKey(Items.SID).asString());
+				} else {
+					require.deleteStampCardById(record.getKey(Items.CARD_ID).asString());
 				}
-				require.deleteStampCardById(record.getKey(Items.CARD_ID).asString());
 			}
 		});
 
@@ -154,6 +160,6 @@ public class CardNumberCanonicalaization implements DomainCanonicalization{
 		
 		void deleteStampCardById(String stampCardId);
 		
-		void deleteStampCardByTenant(String tenantCode);
+		void deleteStampCardByEmployeeId(String employeeId);
 	}
 }
