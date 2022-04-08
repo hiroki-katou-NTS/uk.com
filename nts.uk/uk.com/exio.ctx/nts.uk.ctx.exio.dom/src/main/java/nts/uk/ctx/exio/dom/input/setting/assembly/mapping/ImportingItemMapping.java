@@ -2,7 +2,9 @@ package nts.uk.ctx.exio.dom.input.setting.assembly.mapping;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
@@ -14,6 +16,7 @@ import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.errors.ItemError;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
+import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.fetch.SubstringFetch;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
 import nts.gul.util.Either;
 
@@ -21,6 +24,7 @@ import nts.gul.util.Either;
  * 項目マッピング
  */
 @Getter
+@AllArgsConstructor
 public class ImportingItemMapping {
 
 	/** 項目NO */
@@ -32,19 +36,15 @@ public class ImportingItemMapping {
 	/** CSV列番号 */
 	private Optional<Integer> csvColumnNo;
 
+	/** CSV項目の読み取り位置 */
+	@Setter
+	private Optional<SubstringFetch> substringFetch;
+
 	/** 固定値 */
 	private Optional<StringifiedValue> fixedValue;
 
 	public static ImportingItemMapping noSetting(int itemNo, int csvColumn) {
-		return new ImportingItemMapping(itemNo, false, Optional.of(csvColumn), Optional.empty());
-	}
-
-	public ImportingItemMapping(int itemNo, boolean isFixedValue, Optional<Integer> csvColumnNo, Optional<StringifiedValue> fixedValue) {
-
-		this.isFixedValue = isFixedValue;
-		this.itemNo = itemNo;
-		this.csvColumnNo = csvColumnNo;
-		this.fixedValue = fixedValue;
+		return new ImportingItemMapping(itemNo, false, Optional.of(csvColumn), Optional.empty(), Optional.empty());
 	}
 
 	/**
@@ -66,11 +66,13 @@ public class ImportingItemMapping {
 	public void setNoSetting() {
 		isFixedValue = true;
 		csvColumnNo = Optional.empty();
+		substringFetch = Optional.empty();
 		fixedValue = Optional.empty();
 	}
 
-	public void setCsvColumnNo(int columnNo) {
+	public void setCsvColumnNo(int columnNo, Optional<SubstringFetch> substringFetch) {
 		csvColumnNo = Optional.ofNullable(columnNo);
+		this.substringFetch = substringFetch;
 		fixedValue = Optional.empty();
 		isFixedValue = !csvColumnNo.isPresent();
 	}
@@ -115,7 +117,9 @@ public class ImportingItemMapping {
 						record.getRowNo(),
 						csvColumnNo.get()))));
 
-		return new ImportingCsvItem(itemNo, value);
+		String substrValue = substringFetch.map(sf -> sf.fetch(value)).orElse(value);
+
+		return new ImportingCsvItem(itemNo, substrValue);
 	}
 
 	private static Either<ItemError, DataItem> noRevise(RequireAssemble require, ExecutionContext context, ImportingCsvItem csvItem) {
