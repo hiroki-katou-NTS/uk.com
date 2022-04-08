@@ -174,10 +174,10 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 		switch (rootAtr) {
 			case APPLICATION:
 				return approvalRoot.getApplicationType() != null
-						&& approvalRoot.getApplicationType().value.toString().equals(appTarget);
+						&& approvalRoot.getApplicationType().get().value.toString().equals(appTarget);
 			case CONFIRMATION:
 				return approvalRoot.getConfirmationRootType() != null
-						&& approvalRoot.getConfirmationRootType().value.toString().equals(appTarget);
+						&& approvalRoot.getConfirmationRootType().get().value.toString().equals(appTarget);
 			case NOTICE:
 				return approvalRoot.getNoticeId() != null
 						&& approvalRoot.getNoticeId().toString().equals(appTarget);
