@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.setting.dto.
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.infoterminal.EmpInfoTerminalAdapter;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.EmpInfoTerminal.EmpInfoTerminalBuilder;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
 /**
  * @author ThanhNX 就業情報端末Repository
@@ -22,14 +23,16 @@ public class EmpInfoTerminalAdapterImpl implements EmpInfoTerminalAdapter {
 	private EmpInfoTerminalPub pub;
 
 	@Override
-	public Optional<EmpInfoTerminal> getEmpInfoTerminal(String empInfoTerCode, String contractCode) {
-		return pub.getEmpInfoTerminal(empInfoTerCode, contractCode).map(x -> convertTo(x));
+	public Optional<EmpInfoTerminal> getEmpInfoTerminal(String empInfoTerCode, String contractCode, Optional<String> leavCategory) {
+		return pub.getEmpInfoTerminal(empInfoTerCode, contractCode, leavCategory).map(x -> convertTo(x));
 	}
 
 	private EmpInfoTerminal convertTo(EmpInfoTerminalExport setting) {
 		return new EmpInfoTerminalBuilder(setting.getIpAddress(), setting.getMacAddress(), setting.getEmpInfoTerCode(),
 				setting.getTerSerialNo(), setting.getEmpInfoTerName(), setting.getContractCode())
 						.modelEmpInfoTer(setting.getModelEmpInfoTer()).intervalTime(setting.getIntervalTime())
-						.empInfoTerMemo(setting.getEmpInfoTerMemo()).build();
+						.empInfoTerMemo(setting.getEmpInfoTerMemo())
+						.goOutReason(setting.getGoOutReason().map(x -> GoingOutReason.valueOf(x)))
+						.build();
 	}
 }

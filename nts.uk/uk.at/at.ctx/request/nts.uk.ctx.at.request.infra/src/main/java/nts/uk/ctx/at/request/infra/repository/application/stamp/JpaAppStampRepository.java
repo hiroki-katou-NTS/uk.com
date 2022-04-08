@@ -6,13 +6,21 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeApp;
@@ -24,6 +32,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.TimeStampAppOther;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeZoneStampClassification;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStamp;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStampPK;
+import nts.uk.ctx.at.request.infra.repository.application.FindAppCommonForNR;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
@@ -32,12 +41,15 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.TimeZone;
 @Stateless
-public class JpaAppStampRepository extends JpaRepository implements AppStampRepository{
+public class JpaAppStampRepository extends JpaRepository implements AppStampRepository, FindAppCommonForNR<AppStamp> {
 	public static final String FIND_BY_APPID = "SELECT * FROM KRQDT_APP_STAMP WHERE CID = @cid and APP_ID = @appId";
 	public static final Integer START_CANCEL = 1;
 	public static final Integer START_NOT_CANCEL = 0;
 	public static final Integer END_CANCEL = 1;
 	public static final Integer END_NOT_CANCEL = 0;
+	
+	@Inject 
+	private ApplicationRepository applicationRepo;
 
 	@Override
 	public Optional<AppStamp> findByAppID(String companyID, String appID) {
@@ -414,4 +426,42 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		});
 	}
 
+	private final String FIND_BY_APPID_IN = "SELECT * FROM KRQDT_APP_STAMP WHERE CID = @cid and APP_ID IN @appId";
+
+	@Override
+	public List<AppStamp> findWithSidDate(String companyId, String sid, GeneralDate date) {
+		List<Application> lstApp = applicationRepo.findAppWithSidDate(companyId, sid, date, ApplicationType.STAMP_APPLICATION.value);
+		return mapToDom(companyId, lstApp);
+	}
+
+		@Override
+		public List<AppStamp> findWithSidDateApptype(String companyId, String sid, GeneralDate date,
+				GeneralDateTime inputDate, PrePostAtr prePostAtr) {
+			List<Application> lstApp = applicationRepo.findAppWithSidDateApptype(companyId, sid, date, inputDate, prePostAtr, ApplicationType.STAMP_APPLICATION.value);
+			return mapToDom(companyId, lstApp);
+		}
+
+		@Override
+		public List<AppStamp> findWithSidDatePeriod(String companyId, String sid, DatePeriod period) {
+			List<Application> lstApp = applicationRepo.findAppWithSidDatePeriod(companyId, sid, period, ApplicationType.STAMP_APPLICATION.value);
+			return mapToDom(companyId, lstApp);
+		}
+		
+	private List<AppStamp> mapToDom(String cid, List<Application> lstApp) {
+		if (lstApp.isEmpty())
+			return new ArrayList<>();
+		List<KrqdtAppStamp> krqdtAppStampList = new NtsStatement(FIND_BY_APPID_IN, this.jdbcProxy())
+				.paramString("cid", cid)
+				.paramString("appId", lstApp.stream().map(x -> x.getAppID()).collect(Collectors.toList()))
+				.getList(res -> toEntity(res));
+		return krqdtAppStampList.stream().collect(Collectors.groupingBy(x -> x.krqdtAppStampPK.appID)).entrySet()
+				.stream().map(x -> {
+					val dom = toDomain(x.getValue());
+					return dom.map(y -> {
+						return new AppStamp(this.findAppId(lstApp, x.getValue().get(0).krqdtAppStampPK.appID).orElse(null), y.getListTimeStampApp(),
+								y.getListDestinationTimeApp(), y.getListTimeStampAppOther(),
+								y.getListDestinationTimeZoneApp());
+					}).orElse(null);
+				}).filter(x -> x != null).collect(Collectors.toList());
+	}
 }

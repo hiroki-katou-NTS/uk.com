@@ -8,6 +8,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceDto;
 
 /**
  * 
@@ -23,7 +24,6 @@ public interface SyWorkplaceAdapter {
 	
 	List<SWkpHistRcImported> findBySid(List<String>employeeIds, GeneralDate baseDate);
 
-	
 	List<WorkplaceInforImport> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
 			GeneralDate baseDate);
 
@@ -47,6 +47,8 @@ public interface SyWorkplaceAdapter {
 	 * @return
 	 */
 	String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date);
+	
+	public List<AffWorkplaceDto> getAllActiveWorkplaceInfor(String companyId, GeneralDate baseDate);
 	
 	public List<SWkpHistRcImported> findWpkBySIDandPeriod(String sID, DatePeriod datePeriod);
 }

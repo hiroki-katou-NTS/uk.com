@@ -13,6 +13,7 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.scherec.convert.ConvertApplicationToShare;
+import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkSchedule;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkSchedule.PreCheckProcessResult;
@@ -33,7 +34,8 @@ public class ProcessReflectWorkSchedule {
 			GeneralDate targetDate, ReflectStatusResult statusWorkSchedule, List<SEmpHistImport> empHist, String execId) {
 
 		// [input. 処理中の申請. 事前事後区分]をチェック
-		if (application.getPrePostAtr() == PrePostAtr.POSTERIOR) {
+		if (application.getPrePostAtr() == PrePostAtr.POSTERIOR
+				|| (application.getPrePostAtr() == PrePostAtr.PREDICT && application instanceof AppRecordImage)) {
 			// 勤務予定の反映状態を「反映済み」にする
 			statusWorkSchedule.setReflectStatus(ReflectedState.REFLECTED);
 			return Pair.of(statusWorkSchedule, Optional.empty());

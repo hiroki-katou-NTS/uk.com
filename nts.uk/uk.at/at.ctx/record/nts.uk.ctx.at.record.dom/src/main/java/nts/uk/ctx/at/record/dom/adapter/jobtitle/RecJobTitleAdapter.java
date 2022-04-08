@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrweb.master.AllMasterAttItem.MasterAttItemDetail;
 
 /**
  * 
@@ -15,4 +16,6 @@ import nts.arc.time.GeneralDate;
 public interface RecJobTitleAdapter {
 
 	Map<Pair<String, GeneralDate>, Pair<String,String>> getJobTitleMapIdBaseDateName(String companyId, List<String> jobIds, List<GeneralDate> baseDates);
+	
+	List<MasterAttItemDetail> findAll(String companyId, GeneralDate baseDate);
 }

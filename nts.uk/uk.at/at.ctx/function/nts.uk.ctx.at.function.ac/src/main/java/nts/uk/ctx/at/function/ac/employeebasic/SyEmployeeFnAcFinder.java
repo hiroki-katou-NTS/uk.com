@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.ac.employeebasic;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -71,6 +72,10 @@ public class SyEmployeeFnAcFinder implements SyEmployeeFnAdapter {
 	@Override
 	public List<String> filterSidByCidAndPeriod(String cid, DatePeriod period) {
 		return syEmployeePub.filterSidByCidAndPeriod(cid, period);
+	}
+	@Override
+	public Optional<String> getCompanyId(String employeeId) {
+		return syEmployeePub.getCompanyId(employeeId);
 	}
 
 }
