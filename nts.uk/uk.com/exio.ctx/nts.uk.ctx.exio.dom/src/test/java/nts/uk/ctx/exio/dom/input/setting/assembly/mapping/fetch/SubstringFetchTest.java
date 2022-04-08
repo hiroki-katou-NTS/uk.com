@@ -45,8 +45,36 @@ public class SubstringFetchTest {
     }
 
     @Test
-    public void error() {
+    public void error_reverse() {
         val target = new SubstringFetch(fromStart(4), fromEnd(3));
+        String actual = target.fetch("12345");
+        assertThat(actual).isEqualTo("");
+    }
+
+    @Test
+    public void startIndexIsOutOfRange1() {
+        val target = new SubstringFetch(fromStart(100), Optional.empty());
+        String actual = target.fetch("12345");
+        assertThat(actual).isEqualTo("");
+    }
+
+    @Test
+    public void startIndexIsOutOfRange2() {
+        val target = new SubstringFetch(fromEnd(100), Optional.empty());
+        String actual = target.fetch("12345");
+        assertThat(actual).isEqualTo("12345");
+    }
+
+    @Test
+    public void endIndexIsOutOfRange1() {
+        val target = new SubstringFetch(Optional.empty(), fromStart(100));
+        String actual = target.fetch("12345");
+        assertThat(actual).isEqualTo("12345");
+    }
+
+    @Test
+    public void endIndexIsOutOfRange2() {
+        val target = new SubstringFetch(Optional.empty(), fromEnd(100));
         String actual = target.fetch("12345");
         assertThat(actual).isEqualTo("");
     }

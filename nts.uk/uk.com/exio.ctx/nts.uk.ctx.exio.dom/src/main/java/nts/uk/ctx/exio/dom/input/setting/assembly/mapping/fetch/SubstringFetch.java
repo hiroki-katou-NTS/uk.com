@@ -31,6 +31,13 @@ public class SubstringFetch {
             return "";
         }
 
+        if (startIndex < 0) {
+            startIndex = 0;
+        }
+        if (endIndex > source.length() - 1) {
+            endIndex = source.length() - 1;
+        }
+
         // String#substringは、endIndexの位置の文字を含めないので +1 が必要
         return source.substring(startIndex, endIndex + 1);
     }
