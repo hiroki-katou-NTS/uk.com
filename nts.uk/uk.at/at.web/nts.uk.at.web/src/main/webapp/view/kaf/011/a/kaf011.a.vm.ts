@@ -63,11 +63,15 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.params = params;
 				}
 			}
-			let paramDate,
+			let empLst: Array<string> = [],
+				paramDate,
 				screenCode: number = null;
 			if(vm.params){
 				if (!nts.uk.util.isNullOrUndefined(params.screenCode)) {
 					screenCode = params.screenCode;
+				}
+				if (!_.isEmpty(vm.params.employeeIds)) {
+					empLst = params.employeeIds;
 				}
 				if (!_.isEmpty(vm.params.baseDate)) {
 					paramDate = moment(vm.params.baseDate).format('YYYY/MM/DD');
@@ -83,7 +87,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				}
 			}
 			let paramKAF000 = {
-				empLst: vm.params?vm.params.employeeIDs:[], 
+				empLst: empLst, 
 				dateLst: paramDate?[paramDate]:[], 
 				appType: vm.appType(),
 				screenCode
