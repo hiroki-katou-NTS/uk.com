@@ -9,6 +9,7 @@ import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmploye
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.CheckDuplicateTimeSpan;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -27,6 +28,9 @@ public enum FixedLogicScheduleDailyByEmployee {
 
 	就業時間帯未登録(3, c -> alarmToBasicSchedule(
 			c, bs -> c.require.existsWorkTime(bs.getWorkTimeCode()))),
+
+	時間帯の重複(4, c -> alarmToBasicSchedule(
+			c, bs -> CheckDuplicateTimeSpan.checkDuplicatePreviousAndNext(c.require, bs))),
 	;
 
 	public final int value;
@@ -70,7 +74,7 @@ public enum FixedLogicScheduleDailyByEmployee {
 			Context context,
 			Function<BasicSchedule, Boolean> checker) {
 		return alarm(context, (date) -> {
-			return context.require.getSchedule(context.employeeId, date)
+			return context.require.getBasicSchedule(context.employeeId, date)
 					.map(bs -> checker.apply(bs)).orElse(false);
 		});
 	}
@@ -109,10 +113,10 @@ public enum FixedLogicScheduleDailyByEmployee {
 		}
 	}
 
-	public interface RequireCheck {
+	public interface RequireCheck extends CheckDuplicateTimeSpan.Require{
 		boolean isExists(String employeeId, GeneralDate date);
 
-		Optional<BasicSchedule> getSchedule(String employeeId, GeneralDate date);
+		Optional<BasicSchedule> getBasicSchedule(String employeeId, GeneralDate date);
 
 		boolean existsWorkType(String workTypeCode);
 

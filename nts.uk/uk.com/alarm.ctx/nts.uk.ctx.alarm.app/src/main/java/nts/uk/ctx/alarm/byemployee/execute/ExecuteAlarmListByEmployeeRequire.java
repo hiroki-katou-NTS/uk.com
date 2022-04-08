@@ -157,7 +157,7 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
-        public Optional<BasicSchedule> getSchedule(String employeeId, GeneralDate date) {
+        public Optional<BasicSchedule> getBasicSchedule(String employeeId, GeneralDate date) {
             return scheduleRepo.find(employeeId, date);
         }
 
