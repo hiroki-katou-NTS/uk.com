@@ -28,13 +28,13 @@ public class GetWorkInfoTimeZoneFromRcSc {
 
 		//  実績データから勤務情報を取得する
 		Optional<WorkInformation> workInfoScheWork = require.getWorkInfoRc(employeeId, baseDate);
-		Optional<WorkType> wTypeOpt = workInfoScheWork.isPresent() ? checkHolOrWorkHol(require, workInfoScheWork.get())
+		Optional<WorkType> wTypeOpt = workInfoScheWork.isPresent() ? checkHolOrWorkHol(require, cid, workInfoScheWork.get())
 				: Optional.empty();
 		if (!wTypeOpt.isPresent()) {
 			// 予定データから勤務情報を取得する
 			workInfoScheWork = require.getWorkInfoSc(employeeId, baseDate);
 			if (workInfoScheWork.isPresent()) {
-				wTypeOpt = checkHolOrWorkHol(require, workInfoScheWork.get());
+				wTypeOpt = checkHolOrWorkHol(require, cid, workInfoScheWork.get());
 			}
 		}
 		
@@ -47,19 +47,19 @@ public class GetWorkInfoTimeZoneFromRcSc {
 
 		}
 
-		return workInfo.getWorkInfoAndTimeZone(require);
+		return workInfo.getWorkInfoAndTimeZone(require, cid);
 
 	}
 
 	// 休日または休日出勤かどうかチェックする
-	private static Optional<WorkType> checkHolOrWorkHol(Require require, WorkInformation workInfo) {
-		Optional<WorkType> wType = require.getWorkType(workInfo.getWorkTypeCode().v());
+	private static Optional<WorkType> checkHolOrWorkHol(Require require, String cid, WorkInformation workInfo) {
+		Optional<WorkType> wType = require.workType(cid, workInfo.getWorkTypeCode());
 		if (!wType.isPresent())
 			return Optional.empty();
 		return (wType.get().isHoliday() || wType.get().isHolidayWork()) ? wType : Optional.empty();
 	}
 
-	public static interface Require extends WorkInformation.Require {
+	public static interface Require extends WorkInformation.Require, WorkInformation.RequireM1 {
 
 		// [R-1] 労働条件項目を取得
 		public Optional<WorkingConditionItem> getWorkingConditionItem(String employeeId, GeneralDate baseDate);
