@@ -15,12 +15,12 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.log.infra.entity.log.startpage.SrcdtStartPageInfo;
 import nts.uk.shr.com.security.audittrail.start.StartPageLog;
 import nts.uk.shr.com.security.audittrail.start.StartPageLogRepository;
 import nts.uk.shr.com.security.audittrail.start.StartPageLogStorageRepository;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaStartPageLogInfoIRepository extends JpaRepository
@@ -222,13 +222,15 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 		}
 		List<StartPageLog> result = new ArrayList<>();
 		CollectionUtil.split(listEmployeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT TOP 1000 * FROM SRCDT_START_PAGE_INFO  WHERE "
+			String sql = "SELECT * FROM SRCDT_START_PAGE_INFO  WHERE "
 					+ " CID = ?"
 					+ " AND START_DT >= ?"
 					+ " AND START_DT <= ?"
 					//CLI003: fix bug #109039
 					+ " AND SID IN ("+  NtsStatement.In.createParamsString(subList) + ")"
-					+ " ORDER BY START_DT DESC";
+					+ " ORDER BY START_DT DESC"
+					+ " OFFSET 0 ROWS"
+					+ " FETCH FIRST 1000 ROWS ONLY";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, companyId);
 				stmt.setTimestamp(2,  java.sql.Timestamp.valueOf(start.localDateTime()));
@@ -269,11 +271,14 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 	@Override
 	public List<StartPageLog> findByScreenF(String companyId, GeneralDateTime start, GeneralDateTime end) {
 		List<StartPageLog> result = new ArrayList<>();
-		String sql = "SELECT TOP 1000 * FROM SRCDT_START_PAGE_INFO  WHERE "
+		
+		String sql = "SELECT * FROM SRCDT_START_PAGE_INFO  WHERE "
 				+ " CID = ?"
 				+ " AND START_DT >= ?"
 				+ " AND START_DT <= ?"
-				+ " ORDER BY START_DT DESC";
+				+ " ORDER BY START_DT DESC"
+				+ " OFFSET 0 ROWS"
+				+ " FETCH FIRST 1000 ROWS ONLY";
 		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 			stmt.setString(1, companyId);
 			stmt.setTimestamp(2,  java.sql.Timestamp.valueOf(start.localDateTime()));
@@ -305,5 +310,4 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 		}	
 	return result;
 	}
-
 }

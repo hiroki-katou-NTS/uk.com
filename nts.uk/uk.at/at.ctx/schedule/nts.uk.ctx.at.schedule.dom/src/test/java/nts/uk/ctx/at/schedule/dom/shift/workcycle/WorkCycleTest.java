@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.schedule.dom.shift.workcycle;
 
-import lombok.val;
-import mockit.Deencapsulation;
 import mockit.Expectations;
 import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
@@ -74,7 +72,8 @@ public class WorkCycleTest {
 
     @Test
     public void testGetErrorList() {
-        WorkCycle item = WorkCycle.create("CID001", "COD001", "Name001", Arrays.asList(
+    	String cid = "CID001";
+        WorkCycle item = WorkCycle.create(cid, "COD001", "Name001", Arrays.asList(
                 WorkCycleInfo.create(2, new WorkInformation("WType001", "WTime001")),
                 WorkCycleInfo.create(3, new WorkInformation("WType002", "WTime002")),
                 WorkCycleInfo.create(4, new WorkInformation("WType004", null)),
@@ -85,13 +84,13 @@ public class WorkCycleTest {
         );
         new Expectations(WorkInformation.class) {
             {
-                item.getInfos().get(0).getWorkInformation().checkErrorCondition(require);
+                item.getInfos().get(0).getWorkInformation().checkErrorCondition(require, cid);
                 returns(ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE,ErrorStatusWorkInfo.WORKTYPE_WAS_ABOLISHED,
                         ErrorStatusWorkInfo.WORKTIME_ARE_REQUIRE_NOT_SET,ErrorStatusWorkInfo.NORMAL,
                         ErrorStatusWorkInfo.NORMAL,ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY);
             }
         };
-        List<ErrorStatusWorkInfo> errorStatusWorkInfos = item.checkError(require);
+        List<ErrorStatusWorkInfo> errorStatusWorkInfos = item.checkError(require, cid);
         assertThat(errorStatusWorkInfos.get(0)).isEqualByComparingTo(ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE);
         assertThat(errorStatusWorkInfos.get(1)).isEqualByComparingTo(ErrorStatusWorkInfo.WORKTYPE_WAS_ABOLISHED);
         assertThat(errorStatusWorkInfos.get(2)).isEqualByComparingTo(ErrorStatusWorkInfo.WORKTIME_ARE_REQUIRE_NOT_SET);

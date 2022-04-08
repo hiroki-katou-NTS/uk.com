@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceAdapter;
@@ -30,9 +30,11 @@ import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceAuthorityRepository;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.auth.pub.wkpmanager.WorkPlaceAuthorityExport;
+import nts.uk.ctx.sys.auth.pub.workplace.ReferenceableWorkplaceExport;
 import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceInfoExport;
 import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceListPub;
 import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceManagerExport;
+import nts.uk.ctx.sys.auth.pubimp.wkpmanager.GetWorkPlaceRegerence;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -74,6 +76,12 @@ public class WorkplaceListPubImp implements WorkplaceListPub{
 	
 	@Inject
 	private WorkplaceAdapter workplaceAdapter;
+	
+	@Inject
+	private GetWorkPlaceFromReferenceRange getWorkPlaceFromReferenceRange;
+	
+	@Inject
+	private GetWorkPlaceRegerence getWorkPlaceRegerence;
 
 	/*
 	 * (non-Javadoc)
@@ -176,18 +184,46 @@ public class WorkplaceListPubImp implements WorkplaceListPub{
 	}
 
 	@Override
-	public Map<String, String> getWorkPlace(String userID, String employeeID, GeneralDate date) {
-		//$参照範囲 = 社員参照範囲を取得する(ユーザID,ロール種類 .就業,基準日)
-		Integer range = roleExportRepo.getEmployeeReferenceRange(userID, RoleType.EMPLOYMENT.value, date);
-		//	if $参照範囲 == 自分のみ
-		if(range != null && range == EmployeeReferenceRange.ONLY_MYSELF.value) {
-			//return 所属職場を取得するAdapter.取得する(社員ID,基準日)
-			return workplaceAdapter.getAWorkplace(employeeID, date);
+	public ReferenceableWorkplaceExport getWorkPlace(String userID, String employeeID, GeneralDate date) {
+		// return 参照可能社員の所属職場を取得する#取得する(require,ユーザID,社員ID,基準日)
+		
+		return ReferenceableWorkplaceExport.fromDomain(this.getWorkPlaceRegerence.get(userID, employeeID, date));
+	}
+
+	@Override
+	public ReferenceableWorkplaceExport getWorkPlaceByReference(String employeeID, GeneralDate date) {
+		// $参照範囲 = 社員参照範囲.全社員
+
+		Integer range = EmployeeReferenceRangeExport.ALL_EMPLOYEE.value;
+		// return 参照範囲から参照できる職場・社員を取得する#取得する(require,社員ID,基準日,$参照範囲)
+		
+		return ReferenceableWorkplaceExport.fromDomain(this.getWorkPlaceFromReferenceRange.get(new RequireImpl(workplaceAdapter), employeeID, date, range));
+	}
+	
+	@AllArgsConstructor 
+	private class RequireImpl implements GetWorkPlaceFromReferenceRange.Require {
+		private WorkplaceAdapter workplaceAdapter;
+
+		@Override
+		public Map<String, String> getAWorkplace(String employeeID, GeneralDate date) {
+			return this.workplaceAdapter.getAWorkplace(employeeID, date);
 		}
-		//$職場リスト = 指定社員が参照可能な職場リストを取得する(基準日,$参照範囲,社員ID)
-		List<String> workplaceList = this.getListWorkPlaceIDNoWkpAdmin(employeeID, range, date);
-		//return 所属職場リストを取得するAdapter.取得する(基準日,職場リスト)
-		return workplaceAdapter.getByListIds(workplaceList, date);
+
+		@Override
+		public Map<String, String> getByListIds(List<String> workPlaceIds, GeneralDate baseDate) {
+			return this.workplaceAdapter.getByListIds(workPlaceIds, baseDate);
+		}
+		
+		
+	}
+
+	@Override
+	public Optional<WorkplaceManagerExport> findWkpMngByEmpWkpDate(String employeeID, String workplaceID,
+			GeneralDate date) {
+		return workplaceManagerRepo.findWkpMngByEmpWkpDate(employeeID, workplaceID, date).map(i -> {
+			WorkplaceManagerExport export = new WorkplaceManagerExport(i.getWorkplaceManagerId(), i.getEmployeeId(), i.getWorkplaceId(), i.getHistoryPeriod());
+			return export;
+		});
 	}
 }
 

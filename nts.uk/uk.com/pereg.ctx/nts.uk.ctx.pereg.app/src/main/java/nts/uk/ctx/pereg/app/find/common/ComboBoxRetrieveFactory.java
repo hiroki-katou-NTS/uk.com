@@ -24,6 +24,8 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
 import nts.uk.ctx.at.shared.app.find.workingcondition.WorkingConditionDto;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.repository.BusinessTypesRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.MedicalCareWorkStyle;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.excessleave.PaymentMethod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
@@ -138,6 +140,9 @@ public class ComboBoxRetrieveFactory {
 
 	@Inject
 	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
+	
+	@Inject
+	private NurseClassificationRepository nurseClassificationRepository;
 
 	private static final Map<String, Class<?>> enumMap;
 	static {
@@ -174,6 +179,8 @@ public class ComboBoxRetrieveFactory {
 		aMap.put("E00015", LeaveExpirationStatus.class);
 		// 算定区分
 		aMap.put("E00042", CalculationAtr.class);
+		// 医療勤務形態
+		aMap.put("E00052", MedicalCareWorkStyle.class);
 
 		enumMap = Collections.unmodifiableMap(aMap);
 	}
@@ -402,6 +409,12 @@ public class ComboBoxRetrieveFactory {
 			return socialInsuranceOfficeRepository.findByCid(companyId)
 					.stream()
 					.map(x -> new ComboBoxObject(x.getCode().v(), x.getCode().v() + JP_SPACE + x.getName().v())).collect(Collectors.toList());
+		case "M00027":
+			//看護区分コード
+			return nurseClassificationRepository.getListCompanyNurseCategory(companyId).stream()
+					.map(nurseClassification -> new ComboBoxObject(nurseClassification.getNurseClassifiCode().v(), 
+							nurseClassification.getNurseClassifiCode().v() + JP_SPACE + nurseClassification.getNurseClassifiName().v()))
+					.collect(Collectors.toList());
 		default:
 			break;
 		}

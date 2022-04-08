@@ -6,19 +6,27 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.task.tran.TransactionService;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.function.dom.adapter.alarm.AdministratorReceiveAlarmMailAdapter;
-import nts.uk.ctx.at.function.dom.adapter.alarm.AffAtWorkplaceExport;
-import nts.uk.ctx.at.function.dom.adapter.alarm.EmployeeAlarmListAdapter;
-import nts.uk.ctx.at.function.dom.adapter.alarm.EmployeeWorkplaceAdapter;
+import nts.uk.ctx.at.auth.dom.adapter.workplace.AffWorkplaceHistoryItemImport;
+import nts.uk.ctx.at.auth.dom.adapter.workplace.AuthWorkPlaceAdapter;
+import nts.uk.ctx.at.function.dom.adapter.alarm.*;
+import nts.uk.ctx.at.function.dom.adapter.role.AlarmMailSettingsAdapter;
+import nts.uk.ctx.at.function.dom.adapter.role.RoleSetExportAdapter;
+import nts.uk.ctx.at.function.dom.adapter.role.RoleSetExportDto;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.DeleteInfoAlarmImport;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.TopPageAlarmAdapter;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.TopPageAlarmImport;
+import nts.uk.ctx.at.function.dom.adapter.user.UserEmployeeAdapter;
+import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerAdapter;
+import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerImport;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmMailSendingRole;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmMailSendingRoleRepository;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.AffWorkplaceAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -31,18 +39,43 @@ import java.util.stream.Collectors;
 
 @Stateless
 public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessingService {
+
     @Inject
     private PersisAlarmListExtractResultRepository alarmExtractResultRepo;
+
     @Inject
     private TopPageAlarmAdapter topPageAlarmAdapter;
+
     @Inject
     private EmployeeWorkplaceAdapter employeeWorkplaceAdapter;
-    @Inject
-    private EmployeeAlarmListAdapter employeeAlarmListAdapter;
+
     @Inject
     protected TransactionService transaction;
+
     @Inject
     private AdministratorReceiveAlarmMailAdapter adminReceiveAlarmMailAdapter;
+
+    @Inject
+    private AlarmMailSettingsAdapter mailAdapter;
+
+    @Inject
+    private RoleSetExportAdapter roleAdapter;
+
+    @Inject
+    private UserEmployeeAdapter userEmployeeAdapter;
+
+    @Inject
+    private AffWorkplaceAdapter affWorkplaceAdapter;
+
+    @Inject
+    private WkpManagerAdapter workplaceAdapter;
+
+    @Inject
+    private AlarmMailSendingRoleRepository alarmMailSendingRoleRepo;
+
+    @Inject
+    private AuthWorkPlaceAdapter authWorkPlaceAdapter;
+
 
     /**
      * アラーム（トップページ）永続化の処理
@@ -58,10 +91,11 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
      */
     @Override
     public void persisTopPageProcessing(String runCode, String pattentCd, List<String> lstSid,
-                                      List<PeriodByAlarmCategory> lstCategoryPeriod,
-                                      PersistenceAlarmListExtractResult alarmResult,
-                                      List<AlarmExtractionCondition> alarmExtractConds,
-                                      boolean isDisplayByAdmin, boolean isDisplayByPerson) {
+                                        List<PeriodByAlarmCategory> lstCategoryPeriod,
+                                        PersistenceAlarmListExtractResult alarmResult,
+                                        List<AlarmExtractionCondition> alarmExtractConds,
+                                        boolean isDisplayByAdmin, boolean isDisplayByPerson) {
+        String cid = AppContexts.user().companyId();
         if (runCode.equals("Z")) {
             return;
         }
@@ -147,8 +181,9 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
         }
 
         //アラームリストからトップページアラームデータに変換する
-        RequireImpl require = new RequireImpl(alarmExtractResultRepo, topPageAlarmAdapter, employeeWorkplaceAdapter, adminReceiveAlarmMailAdapter);
-        List<AtomTask> atomTasks = ConvertAlarmListToTopPageAlarmDataService.convert(require, AppContexts.user().companyId(), lstSid,
+        RequireImpl require = new RequireImpl(alarmExtractResultRepo, topPageAlarmAdapter, employeeWorkplaceAdapter, adminReceiveAlarmMailAdapter,
+                mailAdapter, roleAdapter, userEmployeeAdapter, affWorkplaceAdapter, workplaceAdapter, alarmMailSendingRoleRepo, authWorkPlaceAdapter);
+        List<AtomTask> atomTasks = ConvertAlarmListToTopPageAlarmDataService.convert(require, cid, lstSid,
                 new AlarmPatternCode(pattentCd), new ExecutionCode(runCode), isDisplayByAdmin, isDisplayByPerson);
 
         if (!atomTasks.isEmpty()) {
@@ -243,15 +278,21 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
 
     @AllArgsConstructor
     public class RequireImpl implements ConvertAlarmListToTopPageAlarmDataService.Require, CreateAlarmDataTopPageService.Require,
-            CreateTopPageAlarmDataOfPersonService.Require{
+            CreateTopPageAlarmDataOfPersonService.Require {
         private PersisAlarmListExtractResultRepository alarmExtractResultRepo;
         private TopPageAlarmAdapter topPageAlarmAdapter;
         private EmployeeWorkplaceAdapter employeeWorkplaceAdapter;
-//        private EmployeeAlarmListAdapter employeeAlarmListAdapter;
         private AdministratorReceiveAlarmMailAdapter adminReceiveAlarmMailAdapter;
+        private AlarmMailSettingsAdapter mailAdapter;
+        private RoleSetExportAdapter roleAdapter;
+        private UserEmployeeAdapter userEmployeeAdapter;
+        private AffWorkplaceAdapter affWorkplaceAdapter;
+        private WkpManagerAdapter workplaceAdapter;
+        private AlarmMailSendingRoleRepository alarmMailSendingRoleRepo;
+        private AuthWorkPlaceAdapter authWorkPlaceAdapter;
 
         @Override
-        public Optional<PersistenceAlarmListExtractResult> getAlarmListExtractionResult(String companyId, String patternCode, String autoRunCode) {
+        public Optional<PersistenceAlarmListExtractResult> getAlarmListExtractionResult(String companyId, String patternCode, String autoRunCode, List<String> empIds) {
             return alarmExtractResultRepo.getAlarmExtractResult(companyId, patternCode, autoRunCode);
         }
 
@@ -265,11 +306,6 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
             return employeeWorkplaceAdapter.getWorkplaceId(sIds, baseDate);
         }
 
-//        @Override
-//        public List<String> getListEmployeeId(String workplaceId, GeneralDate referenceDate) {
-//            return employeeAlarmListAdapter.getListEmployeeId(workplaceId, referenceDate).stream().distinct().collect(Collectors.toList());
-//        }
-
         @Override
         public void create(String companyId, List<TopPageAlarmImport> alarmInfos, Optional<DeleteInfoAlarmImport> delInfoOpt) {
             topPageAlarmAdapter.create(companyId, alarmInfos, delInfoOpt);
@@ -278,6 +314,41 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
         @Override
         public Map<String, List<String>> getAdminReceiveAlarmMailByWorkplaceIds(List<String> workplaceIds) {
             return adminReceiveAlarmMailAdapter.getAdminReceiveAlarmMailByWorkplaceIds(workplaceIds);
+        }
+
+        @Override
+        public Optional<String> getUserIDByEmpID(String employeeID) {
+            return userEmployeeAdapter.getUserIDByEmpID(employeeID);
+        }
+
+        @Override
+        public Optional<RoleSetExportDto> getRoleSetFromUserId(String userId, GeneralDate baseDate) {
+            return roleAdapter.getRoleSetFromUserId(userId, baseDate);
+        }
+
+        @Override
+        public Optional<AlarmMailSendingRole> findAlarmMailSendRole(String cid, int individualWkpClassify) {
+            return alarmMailSendingRoleRepo.find(cid, individualWkpClassify);
+        }
+
+        @Override
+        public List<MailExportRolesDto> findRoleByCID(String companyId) {
+            return mailAdapter.findByCompanyId(companyId);
+        }
+
+        @Override
+        public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId) {
+            return affWorkplaceAdapter.getWorkplaceIdAndUpper(companyId, baseDate, workplaceId);
+        }
+
+        @Override
+        public List<WkpManagerImport> findByPeriodAndBaseDate(String wkpId, GeneralDate baseDate) {
+            return workplaceAdapter.findByPeriodAndBaseDate(wkpId, baseDate);
+        }
+
+        @Override
+        public List<AffWorkplaceHistoryItemImport> getWorkHisItemfromWkpIdAndBaseDate(String workPlaceId, GeneralDate baseDate) {
+            return authWorkPlaceAdapter.getWorkHisItemfromWkpIdAndBaseDate(workPlaceId, baseDate);
         }
     }
 }

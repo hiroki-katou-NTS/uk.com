@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterapproval.ErrorContent;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
@@ -25,6 +26,8 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.SimpleJobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmployment;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceManagerAdaptor;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceManagerImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApproverRegisterSet;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
@@ -94,6 +97,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	
 	@Inject
 	private ApprovalSettingService approvalSettingService;
+	
+	@Inject
+	private WorkplaceManagerAdaptor workplaceManagerAdaptor;
 	
 	@Override
 	public ApprovalRootContentOutput getApprovalRootOfSubjectRequest(String companyID, String employeeID, EmploymentRootAtr rootAtr, 
@@ -306,10 +312,14 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			if(systemAtr==SystemAtr.WORK) {
 				// 所属職場を取得する
 				String paramID = wkApproverAdapter.getWorkplaceIDByEmpDate(emp.getEmployeeId(), baseDate);
-				if(paramID.equals(wkpId)) {
-					// 所属職場は職場ID（申請本人の所属職場）と一致するかチェックする(check workplaceID lay duoc co trung voi nguoi viet don hay khong)
-					approvers.add(emp.getEmployeeId());
+				if(!paramID.equals(wkpId)) {
+					Optional<WorkplaceManagerImport> opWorkplaceManagerImport = workplaceManagerAdaptor.findWkpMngByEmpWkpDate(emp.getEmployeeId(), wkpId, baseDate);
+					if(!opWorkplaceManagerImport.isPresent()) {
+						continue;
+					}
 				}
+				// 所属職場は職場ID（申請本人の所属職場）と一致するかチェックする(check workplaceID lay duoc co trung voi nguoi viet don hay khong)
+				approvers.add(emp.getEmployeeId());
 			} else {
 				// 社員と基準日から所属職場履歴項目を取得する
 				String paramID = wkApproverAdapter.getDepartmentIDByEmpDate(emp.getEmployeeId(), baseDate);
@@ -496,7 +506,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						approvalPhase.getApprovalAtr());
 				levelInforOutput.setApproverLst(Arrays.asList(new LevelApproverList(1, "", false, upperLevelApproverInfo)));
 			}
-			if(!opLowerOrderFlg.isPresent() || (opLowerOrderFlg.isPresent() && opLowerOrderFlg.get())) {
+			if(!(levelInforOutput.getApproverLst().isEmpty()
+					&& approvalPhase.getApprovalAtr() == ApprovalAtr.APPROVER_GROUP
+					&& opLowerOrderFlg.isPresent() && opLowerOrderFlg.get())) {
 				result.getLevelInforLst().add(levelInforOutput);
 			}
 		}
@@ -790,5 +802,43 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		}
 		approverInfoLst.removeAll(removeLst);
 		return approverInfoLst;
+	}
+
+	@Override
+	public List<ErrorContent> checkApprovalRootSequentially(LevelOutput levelOutput) {
+		List<ErrorContent> result = new ArrayList<>();
+		List<LevelInforOutput> levelInforLst = levelOutput.getLevelInforLst();
+		if(CollectionUtil.isEmpty(levelInforLst)){
+			return result;
+		}
+		for(int i = 0; i < levelInforLst.size(); i++) {
+			LevelInforOutput levelInforOutput = levelInforLst.get(i);
+			// check số lượng người approve
+			Integer approverCount = levelInforOutput.getApproverLst().stream().collect(Collectors.summingInt(x -> x.getApproverInfoLst().size()));
+			// >= 10 người
+			if(approverCount >= 10) {
+				result.add(new ErrorContent(levelInforOutput.getLevelNo(), ErrorFlag.APPROVER_UP_10));
+				continue;
+			}
+			// <= 0 người
+			if(approverCount <= 0) {
+				result.add(new ErrorContent(levelInforOutput.getLevelNo(), ErrorFlag.NO_APPROVER));
+				continue;
+			}
+			if(levelInforOutput.getApprovalForm() != ApprovalForm.SINGLE_APPROVED.value){
+				continue;
+			}
+			// check frame confirm không có người
+			for(int j = 0; j < levelInforOutput.getApproverLst().size(); j++){
+				LevelApproverList levelApproverList = levelInforOutput.getApproverLst().get(j);
+				if(!levelApproverList.isComfirmAtr()){
+					continue;
+				}
+				if(CollectionUtil.isEmpty(levelApproverList.getApproverInfoLst())){
+					result.add(new ErrorContent(levelInforOutput.getLevelNo(), ErrorFlag.NO_CONFIRM_PERSON));
+				}
+			}
+		}
+		return result;
 	}
 }

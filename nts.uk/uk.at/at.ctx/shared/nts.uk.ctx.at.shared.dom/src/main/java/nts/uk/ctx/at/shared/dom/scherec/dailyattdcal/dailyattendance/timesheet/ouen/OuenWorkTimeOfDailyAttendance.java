@@ -108,4 +108,12 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 		this.moveTime = inputTime.getMoveTime();
 		this.amount = inputTime.getAmount();
 	}
+
+	public void setWorkNo(int workNo) {
+		this.workNo = SupportFrameNo.of(workNo);
+	}
+	public OuenWorkTimeOfDailyAttendance allZeroValue() {
+		return new OuenWorkTimeOfDailyAttendance(this.workNo, OuenAttendanceTimeEachTimeSheet.createAllZero(),
+				OuenMovementTimeEachTimeSheet.createAllZero(), new AttendanceAmountDaily(0));
+	}
 }

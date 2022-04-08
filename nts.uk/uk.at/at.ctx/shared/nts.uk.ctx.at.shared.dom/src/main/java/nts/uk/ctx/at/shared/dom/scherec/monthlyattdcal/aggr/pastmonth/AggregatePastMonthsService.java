@@ -13,7 +13,11 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetManageWorkHour;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc;
@@ -72,6 +76,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.license.option.OptionLicense;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -299,11 +304,6 @@ public class AggregatePastMonthsService {
 			}
 			
 			@Override
-			public Optional<PredetemineTimeSetting> predetemineTimeSetByWorkTimeCode(String companyId, String workTimeCode) {
-				return require.predetemineTimeSetByWorkTimeCode(companyId, workTimeCode);
-			}
-			
-			@Override
 			public Optional<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth,
 					ClosureId closureId, ClosureDate closureDate) {
 				/** ・Requireで前月のデータを取得するとき、結果一覧から先に優先し、なければRepoから取得する */
@@ -468,16 +468,6 @@ public class AggregatePastMonthsService {
 			}
 			
 			@Override
-			public Optional<WkpFlexMonthActCalSet> monthFlexCalcSetByWorkplace(String cid, String wkpId) {
-				return require.monthFlexCalcSetByWorkplace(cid, wkpId);
-			}
-			
-			@Override
-			public Optional<EmpFlexMonthActCalSet> monthFlexCalcSetByEmployment(String cid, String empCode) {
-				return require.monthFlexCalcSetByEmployment(cid, empCode);
-			}
-			
-			@Override
 			public Optional<WkpDeforLaborMonthActCalSet> monthDeforCalcSetByWorkplace(String cid, String wkpId) {
 				return require.monthDeforCalcSetByWorkplace(cid, wkpId);
 			}
@@ -529,51 +519,89 @@ public class AggregatePastMonthsService {
 				return require.closureClones(companyId, closureId);
 			}
 
-			
-
-			@Override
-			public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
-				return require.findCompensatoryLeaveComSet(companyId);
-			}
-
-			@Override
-			public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-				return require.getWorkSettingForFixedWork(code);
-			}
-
-			@Override
-			public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-				return require.getWorkSettingForFlowWork(code);
-			}
-
-			@Override
-			public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-				return require.getWorkSettingForFlexWork(code);
-			}
-
 			@Override
 			public Optional<HolidayAddtionSet> holidayAddtionSet(String cid) {
 				return require.holidayAddtionSet(cid);
 			}
-
-			@Override
-			public Optional<PredetemineTimeSetting> predetemineTimeSetting(String cid, String workTimeCode) {
-				return require.predetemineTimeSetByWorkTimeCode(cid, workTimeCode);
-			}
-
-			@Override
-			public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
-				return require.getWorkTime(cid,workTimeCode);
-			}
-
+			
 			@Override
 			public WorkDaysNumberOnLeaveCount workDaysNumberOnLeaveCount(String cid) {
 				return require.workDaysNumberOnLeaveCount(cid);
 			}
 
 			@Override
+			public Optional<WkpFlexMonthActCalSet> wkpFlexMonthActCalSet(String companyId, String workplaceId) {
+				return require.wkpFlexMonthActCalSet(companyId, workplaceId);
+			}
+
+			@Override
+			public Optional<EmpFlexMonthActCalSet> empFlexMonthActCalSet(String companyId, String employmentCode) {
+				return require.empFlexMonthActCalSet(companyId, employmentCode);
+			}
+
+			@Override
+			public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+				return require.workType(companyId, workTypeCode);
+			}
+
+			@Override
+			public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+				return require.workTimeSetting(companyId, workTimeCode);
+			}
+
+			@Override
+			public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+				return require.fixedWorkSetting(companyId, workTimeCode);
+			}
+
+			@Override
+			public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+				return require.flowWorkSetting(companyId, workTimeCode);
+			}
+
+			@Override
+			public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+				return require.flexWorkSetting(companyId, workTimeCode);
+			}
+
+			@Override
+			public Optional<AddSetManageWorkHour> addSetManageWorkHour(String cid) {
+				return require.addSetManageWorkHour(cid);
+			}
+
+			@Override
+			public Optional<WorkFlexAdditionSet> workFlexAdditionSet(String cid) {
+				return require.workFlexAdditionSet(cid);
+			}
+
+			@Override
+			public Optional<WorkRegularAdditionSet> workRegularAdditionSet(String cid) {
+				return require.workRegularAdditionSet(cid);
+			}
+
+			@Override
+			public Optional<WorkDeformedLaborAdditionSet> workDeformedLaborAdditionSet(String cid) {
+				return require.workDeformedLaborAdditionSet(cid);
+			}
+
+			@Override
+			public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+				return require.predetemineTimeSetting(companyId, workTimeCode);
+			}
+
+			@Override
 			public OptionLicense getOptionLicense() {
 				return AppContexts.optionLicense();
+			}
+
+			@Override
+			public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
+				return require.workTimeSetting(cid, workTimeCode);
+			}
+
+			@Override
+			public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+				return require.findCompensatoryLeaveComSet(companyId);
 			}
 		};
 	}

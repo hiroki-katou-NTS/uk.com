@@ -49,4 +49,6 @@ public interface SyWorkplaceAdapter {
 	String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date);
 	
 	public List<AffWorkplaceDto> getAllActiveWorkplaceInfor(String companyId, GeneralDate baseDate);
+	
+	public List<SWkpHistRcImported> findWpkBySIDandPeriod(String sID, DatePeriod datePeriod);
 }

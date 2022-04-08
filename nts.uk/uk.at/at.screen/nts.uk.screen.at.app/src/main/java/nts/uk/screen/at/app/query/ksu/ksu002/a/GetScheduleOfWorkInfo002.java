@@ -50,6 +50,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.screen.at.app.ksu001.processcommon.CreateWorkScheduleWorkInfor;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.DateInfoDuringThePeriodDto;
@@ -99,7 +100,7 @@ public class GetScheduleOfWorkInfo002 {
 				.getScheduleManagement(RequireImpl, param.listSid, period);
 
 
-		List<nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto> listDtoCommon = scheduleWorkInfor.getDataScheduleOfWorkInfo(mngStatusAndWScheMap);
+		List<nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto> listDtoCommon = scheduleWorkInfor.getDataScheduleOfWorkInfo(mngStatusAndWScheMap, param.targetOrg.convertFromDomain());
 		
 		List<DateInformation> dateInformation = kSU002Finder.getDateInformation(param.listSid.stream().map(e -> new EmployeeId(e)).collect(Collectors.toList()), period);
 
@@ -192,35 +193,35 @@ public class GetScheduleOfWorkInfo002 {
 		}
 
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeRepo.findByPK(companyId, workTypeCode.v());
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
 		}
 
 		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}
 
 		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}
 
 		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}
 
 		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}

@@ -1,0 +1,236 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/011/kcp.011.vm.js" of="/nts.uk.com.web"/>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="ksu008.a.main.css"/>
+        <com:scriptfile path="ksu008.a.vm.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area">
+            <!--A1_1-->
+            <button id="A1_1" tabindex="1" data-bind="click: exportExcel, enable: !!periodStart() &amp;&amp; comboItemList().length > 0 &amp;&amp; $root.errors.isEmpty()">#{i18n.getText('KSU008_5')}</button>
+            <!--A1_2-->
+            <button tabindex="2" data-bind="click:openKsu008D">#{i18n.getText('KSU008_6')}</button>
+        </div>
+        <div id="contents-area">
+            <div class="two-panel">
+                <div class="left-panel" style="padding-left: 15px;">
+                    <!--A2_0-->
+                    <div class="panel panel-frame">
+                        <div class="control-group valign-top" style="margin-right: 15px;">
+                            <!--A2_1-->
+                            <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('Com_WorkplaceGroup')}</div>
+                            <!--A2_2-->
+                            <div data-bind="component: {
+                                            name: 'workplace-group',
+                                            params: {options: options}
+                                        }"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="right-panel" style="padding-left: 0;">
+                    <!--A3_0-->
+                    <div class="panel panel-frame">
+                        <div class="control-group valign-center">
+                            <!--A3_1-->
+                            <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU008_7')}</div>
+                            <!--A3_2-->
+                            <div style="display: inline-block;"
+                                 tabindex="4"
+                                 data-bind="ntsRadioBoxGroup: {
+                                                options: [
+                                                    {value: 0, name: $i18n('KSU008_9')},
+                                                    {value: 1, name: $i18n('KSU008_10')}
+                                                ],
+                                                optionsValue: 'value',
+                                                optionsText: 'name',
+                                                value: targetPeriod,
+                                                enable: true
+                                            }">
+                            </div>
+                        </div>
+                        <div class="control-group valign-center">
+                            <!--A4_1-->
+                            <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU008_11')}</div>
+                            <!--A4_2-->
+                            <button tabindex="5" data-bind="click: prevPeriodStart">◀</button>
+                            <!--A4_3-->
+                            <div tabindex="6" id="periodStart" data-bind="ntsDatePicker: { value: periodStart, name: $i18n('KSU011_13'), required: true }"></div>
+                            <!--A4_4-->
+                            <button tabindex="7" data-bind="click: nextPeriodStart">▶</button>
+                        </div>
+                        <div class="control-group valign-center">
+                            <div class="form-label"></div>
+                            <!--A4_5-->
+                            <span data-bind="text: displayPeriod"/>
+                        </div>
+                    </div>
+                    <!--A5_0-->
+                    <div class="panel panel-frame">
+                        <div class="control-group valign-center">
+                            <!--A5_1-->
+                            <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU008_13')}</div>
+                            <!--A5_2-->
+                            <div tabindex="8"
+								 id="A5_2"
+                                 data-bind="ntsComboBox: {
+                                    name: '#[KSU008_14]',
+                                    options: comboItemList,
+                                    optionsValue: 'code',
+                                    visibleItemsCount: 10,
+                                    value: selectedCode,
+                                    optionsText: 'name',
+                                    required: true,
+                                    selectFirstIfNull: true,
+                                    width:'530px',
+                                    columns: [
+                                        { prop: 'code', length: 4 },
+                                        { prop: 'name', length: 10 },
+                                        { prop: 'type', length: 4 },
+	                            ]}"></div>
+                            <!--A5_3-->
+                            <button id="A5_3" tabindex="9" data-bind="click:openKsu008B">#{i18n.getText('KSU008_15')}</button>
+                        </div>
+                        <div class="control-group valign-center">
+                            <!--A6_1-->
+                            <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU008_16')}</div>
+                            <!--A6_2-->
+                            <div  tabindex="10"
+                                  style="display: inline-flex;"
+                                  data-bind="ntsSwitchButton: {
+                                            name: $i18n('KSU011_19'),
+                                            options: [
+                                                {value: 0, name: $i18n('KSU008_18')},
+                                                {value: 1, name: $i18n('KSU008_19')},
+                                                {value: 2, name: $i18n('KSU008_20')}
+                                            ],
+                                            optionsValue: 'value',
+                                            optionsText: 'name',
+                                            value: printTarget,
+                                            required: true
+                                        }">
+                            </div>
+                        </div>
+                    </div>
+                    <!--A7_0-->
+                    <div class="panel panel-frame">
+                        <div class="control-group valign-top">
+                            <!--A7_1-->
+                            <div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU008_21')}</div>
+                            <!--A7_2-->
+                            <table id="color-setting">
+                                <tr class="table_row">
+                                    <td class="ui-widget-header">
+                                        <!--A7_3-->
+                                        <div tabindex="11" data-bind="ntsCheckBox: { checked: deductionDateFromDeliveryTime }">#{i18n.getText('KSU008_22')}</div>
+                                    </td>
+                                    <td>
+                                        <!--A7_3_1-->
+                                        <div tabindex="12"
+                                             class="margin-5"
+                                             style="width: 100px;"
+                                             data-bind="ntsComboBox: {
+                                                    name: '#[KSU008_23]',
+                                                    options: [
+                                                        {code: 0, name: $i18n('Enum_Form9DisplayTarget_TEXT_COLOR')},
+                                                        {code: 1, name: $i18n('Enum_Form9DisplayTarget_BACKGROUND_COLOR')}
+                                                    ],
+                                                    optionsValue: 'code',
+                                                    visibleItemsCount: 2,
+                                                    value: deductionDateFromDeliveryTimeTarget,
+                                                    optionsText: 'name',
+                                                    enable: deductionDateFromDeliveryTime,
+                                                    selectFirstIfNull: true,
+                                                    columns: [
+                                                        { prop: 'name'},
+                                                    ]}">
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <!--A7_3_3-->
+                                        <div tabindex="13"
+                                             id="colorpicker"
+                                             data-bind="ntsColorPicker: {
+                                                value: deductionDateFromDeliveryTimeColor,
+                                                name:'#[KSU008_24]',
+                                                enable: deductionDateFromDeliveryTime
+                                                }"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="ui-widget-header">
+                                        <!--A7_4-->
+                                        <div tabindex="14" data-bind="ntsCheckBox: { checked: workingHours }">#{i18n.getText('KSU008_25')}</div>
+                                    </td>
+                                    <td>
+                                        <!--A7_4_1-->
+                                        <div tabindex="15"
+                                             class="margin-5"
+                                             style="width: 100px;"
+                                            data-bind="ntsComboBox: {
+                                                        name: '#[KSU008_26]',
+                                                        options: [
+                                                            {code: 0, name: $i18n('Enum_Form9DisplayTarget_TEXT_COLOR')},
+                                                            {code: 1, name: $i18n('Enum_Form9DisplayTarget_BACKGROUND_COLOR')},
+                                                        ],
+                                                        optionsValue: 'code',
+                                                        visibleItemsCount: 2,
+                                                        value: workingHoursTarget,
+                                                        selectFirstIfNull: true,
+                                                        enable: workingHours,
+                                                        optionsText: 'name',
+                                                        columns: [
+                                                            { prop: 'name'},
+                                                        ]}"></div>
+                                    </td>
+                                    <td>
+                                        <!--A7_4_3-->
+                                        <div class="label">#{i18n.getText('KSU008_27')}</div>
+                                    </td>
+                                    <td>
+                                        <!--A7_4_4-->
+                                        <div tabindex="16" id="A7_4_4"
+                                            data-bind="ntsColorPicker: {
+                                                    value: workingHoursScheduleColor,
+                                                    name:'#[KSU008_28]',
+                                                    enable: workingHours
+                                                    }"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="ui-widget-header"></td>
+                                    <td></td>
+                                    <td>
+                                        <!--A7_4_5-->
+                                        <div class="label">#{i18n.getText('KSU008_29')}</div>
+                                    </td>
+                                    <td>
+                                        <!--A7_4_5-->
+                                        <div tabindex="17"
+                                            data-bind="ntsColorPicker: {
+                                                        value: workingHoursRecordColor,
+                                                        enable: workingHours,
+                                                        name:'#[KSU008_30]'
+                                                        }"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

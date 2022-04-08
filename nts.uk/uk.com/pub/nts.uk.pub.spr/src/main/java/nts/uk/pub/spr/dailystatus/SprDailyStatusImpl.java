@@ -44,7 +44,7 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 	@Override
 	public List<DailyStatusSpr> getStatusOfDaily(String loginEmpCD, String employeeCD, String startDate,
 			String endDate) {
-		String companyID = "000000000000-0001";
+		String companyID = "000000000004-0018";
 		// アルゴリズム「パラメータチェック」を実行する
 		this.checkParam(loginEmpCD, employeeCD, startDate, endDate);
 		// （基幹・社員Export）アルゴリズム「「会社ID」「社員コード」より社員基本情報を取得」を実行する　RequestList No.18

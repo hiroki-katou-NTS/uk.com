@@ -5,7 +5,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,12 +21,15 @@ import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.database.DatabaseProduct;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
+import nts.uk.ctx.at.record.dom.reservation.bento.ReservationCorrect;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
@@ -62,7 +67,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a.CID, a.RESERVATION_ID, a.CONTRACT_CD, a.RESERVATION_YMD, a.RESERVATION_FRAME, a.CARD_NO, a.ORDERED,");
-		builderString.append("b.MANU_FRAME, b.REGIST_DATETIME, b.QUANTITY, b.AUTO_RESERVATION_ATR, a.WORK_LOCATION_CD ");
+		builderString.append("b.MENU_FRAME, b.REGIST_DATETIME, b.QUANTITY, b.AUTO_RESERVATION_ATR, a.WORK_LOCATION_CD ");
 		builderString.append("FROM KRCDT_RESERVATION a LEFT JOIN KRCDT_RESERVATION_DETAIL b ON a.CID = b.CID AND a.RESERVATION_ID = b.RESERVATION_ID ");
 		SELECT = builderString.toString();
 		
@@ -111,7 +116,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		builderString = new StringBuilder();
 		builderString.append(SELECT);
 		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate'" +
-				" AND a.RESERVATION_FRAME = closingTimeFrame AND b.MANU_FRAME = frameNoValue AND a.CID = 'companyID' ");
+				" AND a.RESERVATION_FRAME = closingTimeFrame AND b.MENU_FRAME = frameNoValue AND a.CID = 'companyID' ");
 		FIND_ALL_RESERVATION_OF_A_BENTO = builderString.toString();
 	}
 	
@@ -136,7 +141,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 	private List<FullJoinBentoReservation> createFullJoinBentoReservation(ResultSet rs){
 		List<FullJoinBentoReservation> listFullData = new ArrayList<>();
 		while (rs.next()) {
-			String frameNo = rs.getString("MANU_FRAME");
+			String frameNo = rs.getString("MENU_FRAME");
 			Timestamp registerDate = rs.getTimestamp("REGIST_DATETIME"); 
 			String quantity = rs.getString("QUANTITY");
 			String autoReservation = rs.getString("AUTO_RESERVATION_ATR");
@@ -147,7 +152,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 					GeneralDate.fromString(rs.getString("RESERVATION_YMD"), DATE_FORMAT), 
 					Integer.valueOf(rs.getString("RESERVATION_FRAME")), 
 					rs.getString("CARD_NO"),
-					Integer.valueOf(rs.getString("ORDERED")) == 1 ? true : false,
+					rs.getString("ORDERED").equals("1") || rs.getString("ORDERED").equals("t") ? true : false,
 					rs.getString("WORK_LOCATION_CD"),
 					frameNo == null ? null : Integer.valueOf(frameNo),
 					registerDate == null ? null : GeneralDateTime.localDateTime(registerDate.toLocalDateTime()),
@@ -228,6 +233,23 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 			throw new RuntimeException(ex);
 		}
 	}
+	
+	@Override
+    public void deleteByPK(String cardNo, String date, int frameAtr) {
+        String query = FIND_BY_ID_DATE;
+        query = query.replaceFirst("cardNo", cardNo);
+        query = query.replaceFirst("date", date);
+        query = query.replaceFirst("frameAtr", String.valueOf(frameAtr));
+        try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            KrcdtReservation beforeKrcdtReservation = toEntity(createFullJoinBentoReservation(rs)).get(0);
+            
+            commandProxy().remove(KrcdtReservation.class, beforeKrcdtReservation.pk);
+            this.getEntityManager().flush();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
 	@Override
 	public List<BentoReservation> findList(ReservationRegisterInfo registerInfor, ReservationDate reservationDate) {
@@ -380,6 +402,8 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		}
+		
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -426,6 +450,102 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		val entity = this.queryProxy().query(FIND_CARDNUM_DATE, KrcdtReservation.class)
 				.setParameter("cardNo", cardNumber).setParameter("date", date).getList();
 		commandProxy().removeAll(entity);
+	}
+	
+	@Override
+	public List<BentoReservation> findByCardNoPeriodFrame(List<ReservationRegisterInfo> inforLst, DatePeriod period,
+			int closingTimeFrame) {
+		String query = SELECT;
+		query += "WHERE a.CARD_NO in @cardNoLst AND a.RESERVATION_YMD >= @startDate AND a.RESERVATION_YMD <= @endDate AND a.RESERVATION_FRAME = @closingTimeFrame";
+		List<Map<String, Object>> mapLst = new NtsStatement(query, this.jdbcProxy())
+				.paramString("cardNoLst", inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList()))
+				.paramDate("startDate", period.start())
+				.paramDate("endDate", period.end())
+				.paramInt("closingTimeFrame", closingTimeFrame)
+				.getList(rec -> toObject(rec));
+		List<KrcdtReservation> krcdtReservationLst = convertToEntity(mapLst);
+		return krcdtReservationLst.stream().map(x -> x.toDomain()).collect(Collectors.toList());
+	}
+	
+	private Map<String, Object> toObject(NtsResultRecord rec) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		// KRCDT_RESERVATION
+		map.put("CID", rec.getString("CID"));
+		map.put("RESERVATION_ID", rec.getString("RESERVATION_ID"));
+		map.put("CONTRACT_CD", rec.getString("CONTRACT_CD"));
+		map.put("RESERVATION_YMD", rec.getGeneralDate("RESERVATION_YMD"));
+		map.put("RESERVATION_FRAME", rec.getInt("RESERVATION_FRAME"));
+		map.put("CARD_NO", rec.getString("CARD_NO"));
+		map.put("ORDERED", rec.getBoolean("ORDERED"));
+		map.put("WORK_LOCATION_CD", rec.getString("WORK_LOCATION_CD"));
+		// KRCDT_RESERVATION_DETAIL
+		map.put("MENU_FRAME", rec.getInt("MENU_FRAME"));
+		map.put("REGIST_DATETIME", rec.getGeneralDateTime("REGIST_DATETIME"));
+		map.put("QUANTITY", rec.getInt("QUANTITY"));
+		map.put("AUTO_RESERVATION_ATR", rec.getBoolean("AUTO_RESERVATION_ATR"));
+		return map;
+	}
+	
+	private List<KrcdtReservation> convertToEntity(List<Map<String, Object>> mapLst) {
+		List<KrcdtReservation> result = mapLst.stream().collect(Collectors.groupingBy(x -> x.get("RESERVATION_ID"))).entrySet()
+			.stream().map(x -> {
+				List<KrcdtReservationDetail> detailLst = x.getValue().stream()
+							.collect(Collectors.groupingBy(y -> {
+								return y.get("MENU_FRAME").toString() + " " + y.get("REGIST_DATETIME").toString();
+							})).entrySet().stream().map(y -> {
+								return new KrcdtReservationDetail(
+										new KrcdtReservationDetailPK(
+												(String) y.getValue().get(0).get("CID"), 
+												(String) y.getValue().get(0).get("RESERVATION_ID"), 
+												(int) y.getValue().get(0).get("MENU_FRAME"),
+												(GeneralDateTime) y.getValue().get(0).get("REGIST_DATETIME")), 
+										(int) y.getValue().get(0).get("QUANTITY"), 
+										(boolean) y.getValue().get(0).get("AUTO_RESERVATION_ATR"), 
+										null);
+							}).collect(Collectors.toList());
+				return new KrcdtReservation(
+						new KrcdtReservationPK(
+								(String) x.getValue().get(0).get("CID"), 
+								(String) x.getValue().get(0).get("RESERVATION_ID")), 
+						(GeneralDate) x.getValue().get(0).get("RESERVATION_YMD"), 
+						(int) x.getValue().get(0).get("RESERVATION_FRAME"),
+						(String) x.getValue().get(0).get("CARD_NO"),
+						(boolean) x.getValue().get(0).get("ORDERED"),
+						(String) x.getValue().get(0).get("WORK_LOCATION_CD"),
+						detailLst);
+			}).collect(Collectors.toList());
+		return result;
+	}
+
+	@Override
+	public List<BentoReservation> findByExtractionCondition(List<ReservationRegisterInfo> inforLst, DatePeriod period,
+			int closingTimeFrame, ReservationCorrect bentoReservationSearchCondition) {
+		// 	$List<弁当予約> =  [8]打刻カード番号一覧・期間・受付時間帯から取得する(打刻カード番号一覧,期間, 受付時間帯NO)
+		List<BentoReservation> bentoReservationLst = this.findByCardNoPeriodFrame(inforLst, period, closingTimeFrame);
+		// 	if(抽出条件 == 予約した全部)
+		if(bentoReservationSearchCondition==ReservationCorrect.ALL_RESERVE) {
+			// 	return	$List<弁当予約>
+			return bentoReservationLst;
+		}
+		// 	if(予約修正抽出条件 == １商品２件以上)
+		if(bentoReservationSearchCondition==ReservationCorrect.MORE_THAN_2_ITEMS) {
+			// 	$List<弁当予約>  = $List<弁当予約>	&& any(弁当予約.弁当予約明細.個数 ≧　２)
+			bentoReservationLst = bentoReservationLst.stream().filter(x -> {
+				return x.getBentoReservationDetails().stream().filter(y -> y.getBentoCount().v() >= 2).findAny().isPresent();
+			}).collect(Collectors.toList());
+		}
+		// 	if(予約修正抽出条件 == 発注済み)
+		if(bentoReservationSearchCondition==ReservationCorrect.ORDER) {
+			// 	$List<弁当予約>  = $List<弁当予約>	&& 弁当予約.発注済み　＝＝　True
+			bentoReservationLst = bentoReservationLst.stream().filter(x -> x.isOrdered()).collect(Collectors.toList());
+		}
+		// 	if(予約修正抽出条件 == 未発注)
+		if(bentoReservationSearchCondition==ReservationCorrect.NOT_ORDERING) {
+			// 	$List<弁当予約>  = $List<弁当予約>	&& 弁当予約.発注済み　＝＝　False
+			bentoReservationLst = bentoReservationLst.stream().filter(x -> !x.isOrdered()).collect(Collectors.toList());
+		}
+		// 	return	$List<弁当予約>
+		return bentoReservationLst;
 	}
 
 }

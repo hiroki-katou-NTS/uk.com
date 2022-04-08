@@ -101,6 +101,11 @@ public class AppDispInfoWithDateCmd {
 	 */
 	private List<WorkTimeSettingDto> opWorkTimeLst;
 	
+	/**
+	 * エラーメッセージ
+	 */
+	private List<String> errorMsgLst;
+	
 	public AppDispInfoWithDateOutput toDomain() {
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = new AppDispInfoWithDateOutput(
 				approvalFunctionSet.toDomain(), 
@@ -128,6 +133,9 @@ public class AppDispInfoWithDateCmd {
 		}
 		if(opWorkTimeLst != null) {
 			appDispInfoWithDateOutput.setOpWorkTimeLst(Optional.of(opWorkTimeLst.stream().map(x -> AppDispInfoWithDateCmd.toDomainWorkTime(x)).collect(Collectors.toList())));
+		}
+		if(!CollectionUtil.isEmpty(errorMsgLst)) {
+			appDispInfoWithDateOutput.setErrorMsgLst(errorMsgLst);
 		}
 		return appDispInfoWithDateOutput;
 	}

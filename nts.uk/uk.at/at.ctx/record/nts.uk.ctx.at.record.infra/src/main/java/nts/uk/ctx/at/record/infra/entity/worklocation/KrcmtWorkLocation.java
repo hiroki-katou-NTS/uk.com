@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.worklocation;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,8 +23,8 @@ import nts.uk.ctx.at.record.dom.stampmanagement.workplace.RadiusAtr;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.StampMobilePossibleRange;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationName;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -52,15 +50,19 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 	
 	/** 半径 */
 	@Column(name = "RADIUS")
-	public int radius;
+	public Integer radius;
 	
 	/** 緯度 */
 	@Column(name = "LATITUDE")
-	public double latitude;
+	public Double latitude;
 	
 	/** 経度 */
 	@Column(name = "LONGITUDE")
-	public double longitude;
+	public Double longitude;
+	
+	/** 地域コード */
+	@Column(name = "REGIONAL_CD")
+	public Integer regionalCd;
 	
 	@OneToOne(targetEntity = KrcmtWorkplacePossible.class, mappedBy = "krcmtWorkLocation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "KRCMT_POSSIBLE_WKP")
@@ -77,11 +79,14 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 	
 	public static KrcmtWorkLocation toEntity(WorkLocation workLocation) {
 		
-		return new KrcmtWorkLocation(new KwlmtWorkLocationPK(workLocation.getContractCode().v(), workLocation.getWorkLocationCD().v()),
+		return new KrcmtWorkLocation(new KwlmtWorkLocationPK(
+											workLocation.getContractCode().v(), 
+											workLocation.getWorkLocationCD().v()),
 				workLocation.getWorkLocationName().v(),
-				workLocation.getStampRange().getRadius().value,
-				workLocation.getStampRange().getGeoCoordinate().getLatitude(),
-				workLocation.getStampRange().getGeoCoordinate().getLongitude(),
+				workLocation.getStampRange().map(s -> s.getRadius().value).orElse(null),
+				workLocation.getStampRange().map(s -> s.getGeoCoordinate().getLatitude()).orElse(null),
+				workLocation.getStampRange().map(s -> s.getGeoCoordinate().getLongitude()).orElse(null),
+				workLocation.getRegionCode().map(m -> m.v()).orElse(null),
 				workLocation.getWorkplace().isPresent() ? KrcmtWorkplacePossible.toEntiy(
 						workLocation.getContractCode().v(),
 						workLocation.getWorkLocationCD().v(),
@@ -97,11 +102,12 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 		return new WorkLocation(
 				new ContractCode(this.kwlmtWorkLocationPK.contractCode),
 				new WorkLocationCD(this.kwlmtWorkLocationPK.workLocationCD), 
-				new WorkLocationName(this.workLocationName), 
-				new StampMobilePossibleRange(
-						RadiusAtr.toEnum(this.radius), 
-						new GeoCoordinate(this.latitude, this.longitude)),
+				new WorkLocationName(this.workLocationName),
+				Optional.ofNullable((this.radius == null || this.latitude == null || this.longitude == null) ? null
+						: new StampMobilePossibleRange(RadiusAtr.toEnum(this.radius),
+								new GeoCoordinate(this.latitude.doubleValue(), this.longitude.doubleValue()))),
 				this.krcmtIP4Address.stream().map(c->c.toDomain()).collect(Collectors.toList()),
-				Optional.ofNullable(this.krcmtWorkplacePossible == null ? null : this.krcmtWorkplacePossible.toDomain()));
+				Optional.ofNullable(this.krcmtWorkplacePossible == null ? null : this.krcmtWorkplacePossible.toDomain()),
+				this.regionalCd == null ? Optional.empty() : Optional.of(new RegionCode(this.regionalCd)));
 	}
 }

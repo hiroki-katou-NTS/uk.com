@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.Attenda
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 
 /**
  * 計算内部で使用する処理計算完了か、未完了かと実績データを保持するクラス
@@ -77,13 +78,15 @@ public class ManageCalcStateAndResult {
 		Optional<AttendanceTimeOfDailyPerformance> peform = Optional.of(AttendanceTimeOfDailyPerformance
 				.allZeroValue(integrationOfDaily.getEmployeeId(),
 						integrationOfDaily.getYmd()));
-
+		List<OuenWorkTimeOfDailyAttendance> ouenTimes = integrationOfDaily.getOuenTime().stream().map(c->c.allZeroValue()).collect(Collectors.toList());
 		DailyRecordToAttendanceItemConverter converterForAllZero = attendanceItemConvertFactory
 				.createDailyConverter();
 		DailyRecordToAttendanceItemConverter beforDailyRecordDto = converterForAllZero.setData(integrationOfDaily);
 		// 複製に対してsetしないと引数：integrationOfDailyが書き換わる(※参照型)
 		val recordAllZeroValueIntegration = beforDailyRecordDto.toDomain();
 		recordAllZeroValueIntegration.setAttendanceTimeOfDailyPerformance(peform.map(c -> c.getTime()));
+		recordAllZeroValueIntegration.setOuenTime(ouenTimes);
+		
 		List<ItemValue> itemValueList = Collections.emptyList();
 		if (!attendanceItemIdList.isEmpty()) {
 

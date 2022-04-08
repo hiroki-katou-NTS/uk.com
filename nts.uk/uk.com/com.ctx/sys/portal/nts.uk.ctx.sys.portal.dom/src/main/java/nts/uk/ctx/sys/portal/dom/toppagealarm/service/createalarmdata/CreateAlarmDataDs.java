@@ -37,7 +37,7 @@ public class CreateAlarmDataDs {
 			
 			if (delExInfo.getAlarmClassification() == AlarmClassification.ALARM_LIST) {
 				UpdateAlarmDataDs.create(rq2, cid, delExInfo.getSids(), delExInfo.getAlarmListParttenCode().orElse(""), 
-						new ArrayList<>(), delExInfo.getDisplayEmpClassfication().value)
+						delExInfo.getSubEmpNoErrs(), delExInfo.getDisplayEmpClassfication().value)
 				.run();
 				
 			}

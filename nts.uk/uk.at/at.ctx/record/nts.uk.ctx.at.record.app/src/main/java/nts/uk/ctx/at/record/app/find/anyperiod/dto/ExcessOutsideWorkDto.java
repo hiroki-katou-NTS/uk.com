@@ -23,11 +23,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.Exc
 /** 時間外超過 */
 @NoArgsConstructor
 public class ExcessOutsideWorkDto implements ItemConst, AttendanceItemDataGate {
-
-    private int no;
-
     /** 内訳NO: int */
-    private int breakdownNo;
+    private int no;
 
     /** 超過時間: 勤怠月間時間 */
     @AttendanceItemValue(type = ValueType.TIME)
@@ -37,12 +34,11 @@ public class ExcessOutsideWorkDto implements ItemConst, AttendanceItemDataGate {
     public ExcessOutsideWorkDto(int breakdownNo, Integer excessTime) {
         super();
         this.no = breakdownNo;
-        this.breakdownNo = breakdownNo;
         this.excessTime = excessTime == null ? 0 : excessTime;
     }
 
     public ExcessOutsideItemByPeriod toDomain() {
-        return ExcessOutsideItemByPeriod.of(this.breakdownNo, new AttendanceTimeMonth(this.excessTime));
+        return ExcessOutsideItemByPeriod.of(this.no, new AttendanceTimeMonth(this.excessTime));
     }
 
     public static ExcessOutsideWorkDto from(ExcessOutsideItemByPeriod domain) {

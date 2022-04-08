@@ -108,29 +108,21 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 			Optional<ApprovalPhase> commonPhase = repoAppPhase.getApprovalFirstPhase(commonRoot.getApprovalId());
 			//common
 			if(commonPhase.isPresent()){
-				List<Approver> lstApprNew = new ArrayList<>();
 				//承認フェーズ・承認形態　＝　誰か一人
 				ApprovalPhase phase = commonPhase.get();
 				if(phase.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){
 					phase.setApprovalForm(ApprovalForm.SINGLE_APPROVED);
 					phase.setApprovalAtr(ApprovalAtr.PERSON);
+					phase.getApprovers().clear();
+					if(dailyDisplay){//common insert 2 record
+						//a210
+						phase.getApprovers().add(Approver.createSimpleFromJavaType(approverOrder1, null, a210, ConfirmPerson.NOT_CONFIRM.value, null));
+						//a27
+						phase.getApprovers().add(Approver.createSimpleFromJavaType(approverOrder2, null, a27, ConfirmPerson.NOT_CONFIRM.value, null));
+					}else{//common insert 1 record
+						phase.getApprovers().add(Approver.createSimpleFromJavaType(approverOrder1, null, a27, ConfirmPerson.NOT_CONFIRM.value, null));
+					}
 					repoAppPhase.updateApprovalPhase(phase);
-				}
-				String approvalId = commonRoot.getApprovalId();
-				//delete approver old
-				repoApprover.deleteAllApproverByAppPhId(approvalId, phaseOrder);
-				//insert approver moi
-				//common
-				if(dailyDisplay){//common insert 2 record
-					//a210
-					lstApprNew.add(Approver.createSimpleFromJavaType(approverOrder1, null, a210, ConfirmPerson.NOT_CONFIRM.value, null));
-					//a27
-					lstApprNew.add(Approver.createSimpleFromJavaType(approverOrder2, null, a27, ConfirmPerson.NOT_CONFIRM.value, null));
-				}else{//common insert 1 record
-					lstApprNew.add(Approver.createSimpleFromJavaType(approverOrder1, null, a27, ConfirmPerson.NOT_CONFIRM.value, null));
-				}
-				if(Strings.isNotBlank(approvalId) && !lstApprNew.isEmpty()){
-					repoApprover.addAllApprover(approvalId, phaseOrder, lstApprNew);
 				}
 	 		}
 		}
@@ -138,20 +130,21 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 			//monthly A27
 			Optional<ApprovalPhase> monthlyPhase = repoAppPhase.getApprovalFirstPhase(monthlyRoot.getApprovalId());
 			if(monthlyPhase.isPresent()){
-				List<Approver> lstApprM = new ArrayList<>();
 				ApprovalPhase mphase = monthlyPhase.get();
 				//承認フェーズ・承認形態　＝　誰か一人
 				if(mphase.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){
 					mphase.setApprovalForm(ApprovalForm.SINGLE_APPROVED);
 					mphase.setApprovalAtr(ApprovalAtr.PERSON);
+					mphase.getApprovers().clear();
+					mphase.getApprovers().add(Approver.createSimpleFromJavaType(
+							approverOrder1,
+							null,
+							a27,
+							ConfirmPerson.NOT_CONFIRM.value,
+							null
+					));
 					repoAppPhase.updateApprovalPhase(mphase);
 				}
-				String approvalId = mphase.getApprovalId();
-				//delete approver old
-				repoApprover.deleteAllApproverByAppPhId(approvalId, phaseOrder);
-				lstApprM.add(Approver.createSimpleFromJavaType(
-						approverOrder1, null, a27,  ConfirmPerson.NOT_CONFIRM.value, null));
-				repoApprover.addAllApprover(approvalId, phaseOrder, lstApprM);
 			}
 		}
 		

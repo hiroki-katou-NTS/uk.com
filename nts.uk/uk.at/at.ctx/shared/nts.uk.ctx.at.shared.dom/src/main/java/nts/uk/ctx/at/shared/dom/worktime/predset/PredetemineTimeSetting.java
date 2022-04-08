@@ -14,12 +14,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -113,6 +115,25 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 		this.prescribedTimezoneSetting = prescribedTimezoneSetting;
 		this.startDateClock = startDateClock;
 		this.predetermine = predetermine;
+	}
+	
+	/**
+	 * 全て0で作成する
+	 * @param workTimeCode 就業時間帯コード
+	 * @return 所定時間設定
+	 */
+	public static PredetemineTimeSetting createAllZeroValue(WorkTimeCode workTimeCode){
+		return new PredetemineTimeSetting(
+				AppContexts.user().companyId(),
+				new AttendanceTime(0),
+				workTimeCode,
+				new PredetermineTime(
+						new BreakDownTimeDay(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0)),
+						new BreakDownTimeDay(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))),
+				new PrescribedTimezoneSetting(
+						new TimeWithDayAttr(0), new TimeWithDayAttr(0), Collections.emptyList()),
+				new TimeWithDayAttr(0),
+				false);
 	}
 
 	/* (non-Javadoc)
@@ -227,6 +248,10 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 			return false;
 		return true;
 	}
+	
+	public static interface Require {
+		Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode);
+	}
 
 	/**
 	 * Restore disabled data from.
@@ -239,7 +264,6 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 			this.prescribedTimezoneSetting.restoreDisabledDataFrom(domain.getPrescribedTimezoneSetting());
 		}
 	}
-
 
 	/**
 	 * 日付終了時刻
@@ -437,5 +461,13 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 			if (timezoneUse.get().getUseAtr() == UseSetting.USE) return true;
 		}
 		return false;
+	}
+
+	/**
+	 * [8] 使用可能な所定時間帯を取得する
+	 * @return List<時間帯(使用区分付き)>
+	 */
+	public List<TimezoneUse> getAvailableTimeZone() {
+		return this.prescribedTimezoneSetting.getUseableTimeZone();
 	}
 }

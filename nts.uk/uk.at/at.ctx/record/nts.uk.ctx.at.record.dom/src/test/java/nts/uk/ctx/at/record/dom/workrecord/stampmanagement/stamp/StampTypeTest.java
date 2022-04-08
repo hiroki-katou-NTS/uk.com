@@ -15,6 +15,7 @@ import mockit.MockUp;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
@@ -23,6 +24,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOv
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -472,6 +475,14 @@ public class StampTypeTest {
 	public void testChangeWorkOnHolidays_1() {
 		StampType stampType = StampHelper.getStampTypeDefault();
 		String workTypeCode = "workType";
+		String employeeId = "emp";
+		GeneralDate baseDate = GeneralDate.today();
+		
+		new Expectations() {
+			{
+				require.getBySidAndStandardDate(employeeId, baseDate);
+			}
+		};
 		
 		AutoCalSetting restTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT, AutoCalAtrOvertime.APPLYMANUALLYENTER);
 		AutoCalSetting lateNightTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT, AutoCalAtrOvertime.APPLYMANUALLYENTER);
@@ -482,7 +493,7 @@ public class StampTypeTest {
 				require.findByPK(workTypeCode);
 			}
 		};
-		boolean result = stampType.changeWorkOnHolidays(require, holidayTimeSetting, workTypeCode);
+		boolean result = stampType.changeWorkOnHolidays(require, holidayTimeSetting, workTypeCode, employeeId, baseDate);
 		assertThat(result).isFalse();
 	}
 	
@@ -494,6 +505,14 @@ public class StampTypeTest {
 	public void testChangeWorkOnHolidays_2() {
 		StampType stampType = StampHelper.getStampTypeDefault();
 		String workTypeCode = "workType";
+		String employeeId = "emp";
+		GeneralDate baseDate = GeneralDate.today();
+		
+		new Expectations() {
+			{
+				require.getBySidAndStandardDate(employeeId, baseDate);
+			}
+		};
 		
 		AutoCalSetting restTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT, AutoCalAtrOvertime.APPLYMANUALLYENTER);//dummy
 		AutoCalSetting lateNightTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT, AutoCalAtrOvertime.APPLYMANUALLYENTER);//dummy
@@ -514,7 +533,7 @@ public class StampTypeTest {
 			}
 		};
 		
-		boolean result = stampType.changeWorkOnHolidays(require, holidayTimeSetting, workTypeCode);
+		boolean result = stampType.changeWorkOnHolidays(require, holidayTimeSetting, workTypeCode, employeeId, baseDate);
 		assertThat(result).isFalse();
 	}
 	
@@ -527,20 +546,30 @@ public class StampTypeTest {
 	public void testChangeWorkOnHolidays_3() {
 		StampType stampType = StampHelper.getStampTypeDefault();
 		String workTypeCode = "workType";
+		String employeeId = "emp";
+		String companyId = "companyId";
+		GeneralDate baseDate = GeneralDate.today();
 		
+		new Expectations() {
+			{
+				require.getBySidAndStandardDate(employeeId, baseDate);
+			}
+		};
 		AutoCalSetting restTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT,//dummy
 				AutoCalAtrOvertime.CALCULATEMBOSS);
 		AutoCalSetting lateNightTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT,////dummy 
 				AutoCalAtrOvertime.APPLYMANUALLYENTER);////dummy
 		AutoCalRestTimeSetting holidayTimeSetting = new AutoCalRestTimeSetting(restTime, lateNightTime);
 		
-		WorkType wt = new WorkType("companyId", new WorkTypeCode(workTypeCode), new ArrayList<>());
+		WorkType wt = new WorkType(companyId, new WorkTypeCode(workTypeCode), new ArrayList<>());
 		new Expectations() {
 			{
 				require.findByPK(workTypeCode);
 				result = Optional.of(wt);
+				
 			}
 		};
+		
 		
 		new MockUp<WorkType>() {
 			@Mock
@@ -549,7 +578,7 @@ public class StampTypeTest {
 			}
 		};
 		
-		boolean result = stampType.changeWorkOnHolidays(require, holidayTimeSetting, workTypeCode);
+		boolean result = stampType.changeWorkOnHolidays(require, holidayTimeSetting, workTypeCode, employeeId, baseDate);
 		assertThat(result).isTrue();
 	}
 	
@@ -562,6 +591,14 @@ public class StampTypeTest {
 	public void testChangeWorkOnHolidays_4() {
 		StampType stampType = StampHelper.getStampTypeDefault();
 		String workTypeCode = "workType";
+		String employeeId = "emp";
+		GeneralDate baseDate = GeneralDate.today();
+		
+		new Expectations() {
+			{
+				require.getBySidAndStandardDate(employeeId, baseDate);
+			}
+		};
 		
 		AutoCalSetting restTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT,//dummy
 				AutoCalAtrOvertime.APPLYMANUALLYENTER);
@@ -584,7 +621,7 @@ public class StampTypeTest {
 			}
 		};
 		
-		boolean result = stampType.changeWorkOnHolidays(require, holidayTimeSetting, workTypeCode);
+		boolean result = stampType.changeWorkOnHolidays(require, holidayTimeSetting, workTypeCode, employeeId, baseDate);
 		assertThat(result).isFalse();
 	}
 	
@@ -603,6 +640,14 @@ public class StampTypeTest {
         		ChangeClockAtr.valueOf(0), //dummy
         		ChangeCalArt.valueOf(3));
 		String workTypeCode = "workType";
+		String employeeId = "emp";
+		GeneralDate baseDate = GeneralDate.today();
+		
+		new Expectations() {
+			{
+				require.getBySidAndStandardDate(employeeId, baseDate);
+			}
+		};
 		
 		AutoCalSetting restTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT,//dummy
 				AutoCalAtrOvertime.TIMERECORDER);
@@ -625,7 +670,7 @@ public class StampTypeTest {
 			}
 		};
 		
-		boolean result = stampType.changeWorkOnHolidays(require, holidayTimeSetting, workTypeCode);
+		boolean result = stampType.changeWorkOnHolidays(require, holidayTimeSetting, workTypeCode, employeeId, baseDate);
 		assertThat(result).isTrue();
 	}
 	
@@ -644,6 +689,14 @@ public class StampTypeTest {
         		ChangeClockAtr.valueOf(0), //dummy
         		ChangeCalArt.valueOf(2));
 		String workTypeCode = "workType";
+		String employeeId = "emp";
+		GeneralDate baseDate = GeneralDate.today();
+		
+		new Expectations() {
+			{
+				require.getBySidAndStandardDate(employeeId, baseDate);
+			}
+		};
 		
 		AutoCalSetting restTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT,//dummy
 				AutoCalAtrOvertime.TIMERECORDER);
@@ -666,9 +719,25 @@ public class StampTypeTest {
 			}
 		};
 		
-		boolean result = stampType.changeWorkOnHolidays(require, holidayTimeSetting, workTypeCode);
+		boolean result = stampType.changeWorkOnHolidays(require, holidayTimeSetting, workTypeCode, employeeId, baseDate);
 		assertThat(result).isFalse();
 	}
-	
+	@Test
+	public void testChangeWorkOnHolidays_7() {
+		StampType stampType = StampHelper.getStampTypeDefault();
+		String employeeId = "emp";
+		GeneralDate baseDate = GeneralDate.today();
+		String historyId = "historyId";
+		new Expectations() {
+			{
+				require.getBySidAndStandardDate(employeeId, baseDate);
+				result = Optional.of(new WorkingConditionItem(historyId, ManageAtr.NOTUSE, employeeId));;
+			}
+		};
+		
+		
+		boolean result = stampType.changeWorkOnHolidays(require, null, null, employeeId, baseDate);
+		assertThat(result).isFalse();
+	}
 
 }

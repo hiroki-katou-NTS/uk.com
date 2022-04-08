@@ -9,7 +9,7 @@ module nts.uk.at.view.kmr005.a.viewmodel {
         
         // employee
         lstPersonComponentOption: any;
-        selectedEmployeeCode: KnockoutObservableArray<string> = ko.observableArray([]);
+        selectedEmployeeCode: KnockoutObservableArray<string> = ko.observableArray([__viewContext.user.employeeCode]);
         employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
         alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
         
@@ -21,10 +21,23 @@ module nts.uk.at.view.kmr005.a.viewmodel {
         
         // enum
         selectedOrdered: any = ko.observable(0);
+
+		param: any = null;
+		displayBackBtn: KnockoutObservable<boolean> = ko.observable(false);
         
         constructor() {
             let self = this;
-            
+			if(nts.uk.request.location.current.isFromMenu) {
+				sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');	
+				self.displayBackBtn(false);
+			} else {
+				if(__viewContext.transferred.value) {
+					self.param = __viewContext.transferred.value;
+					if(self.param.employeeID) {
+						self.displayBackBtn(true);	
+					}
+				}	
+			}
             self.dateValue({
                 startDate: moment().utc().format("YYYY/MM/DD"),
                 endDate: moment().utc().format("YYYY/MM/DD")
@@ -98,10 +111,61 @@ module nts.uk.at.view.kmr005.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();   
             nts.uk.ui.block.invisible();
-            service.startup().done((data) => {
-                self.dateValue().startDate = moment(data.substring(20,30)).format("YYYY/MM/DD");
-                self.dateValue().endDate = moment(data.substring(36,46)).format("YYYY/MM/DD");
-                self.dateValue.valueHasMutated();
+			let param: any = {
+				employeeID: null,
+				date: null
+			};
+			if(self.param) {
+				if(self.param.employeeID) {
+					param.employeeID = self.param.employeeID;
+				}
+				if(self.param.yearMonth) {
+					param.date = moment(self.param.yearMonth).format("YYYY/MM/DD");
+				}
+			}
+            service.startup(param).done((data) => {
+				let a: any = [];
+				if(self.param && self.param.employeeID) {
+					a = [{
+						affiliationName: data.affiliationName,
+						code: data.code,
+						id: data.id,
+						isAlreadySetting: false,
+						name: data.name
+					}];
+					if(self.param.yearMonth) {
+						self.dateValue().startDate = moment(self.param.yearMonth).startOf('month').format("YYYY/MM/DD");
+                		self.dateValue().endDate = moment(self.param.yearMonth).endOf('month').format("YYYY/MM/DD");
+                		self.dateValue.valueHasMutated();	
+					}
+				} else {
+					self.dateValue().startDate = data.startDate;
+                	self.dateValue().endDate = data.endDate;
+                	self.dateValue.valueHasMutated();	
+				}
+				$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
+					self.employeeList(a);
+	                self.lstPersonComponentOption = {
+		                isShowAlreadySet: false,
+		                isMultiSelect: true,
+		                listType: ListType.EMPLOYEE,
+		                employeeInputList: self.employeeList,
+		                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+		                selectedCode: self.selectedEmployeeCode,
+		                isDialog: false,
+		                isShowNoSelectRow: false,
+		                alreadySettingList: self.alreadySettingPersonal,
+		                isShowWorkPlaceName: true,
+		                isShowSelectAllButton: false,
+		                maxWidth: 480,
+		                maxRows: 15
+		            };
+	                // Load employee list component
+	                $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption).done(() => {
+	                    $(".caret-right.caret-background.bg-green").removeClass();    
+	                });
+	                
+	            });
                 nts.uk.ui.block.clear();
                 dfd.resolve(); 
             }).fail((res) => {
@@ -110,14 +174,7 @@ module nts.uk.at.view.kmr005.a.viewmodel {
                 });        
                 dfd.reject();
             });
-            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
-                self.applyKCP005ContentSearch([]);
-                // Load employee list component
-                $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption).done(() => {
-                    $(".caret-right.caret-background.bg-green").removeClass();    
-                });
-                
-            });
+            
             return dfd.promise(); 
         }
         
@@ -174,14 +231,21 @@ module nts.uk.at.view.kmr005.a.viewmodel {
                 ordered: self.selectedOrdered() == 1 ? true : false 
             };
             nts.uk.ui.block.invisible();
-            service.exportFile(param).done((data) => {
-                nts.uk.ui.block.clear();        
+			service.checkDataExportFile(param).then(() => {
+				return service.exportFile(param);
+			}).done((data) => {
+                nts.uk.ui.block.clear();
             }).fail((res: any) => {
-                dialog.alertError({ messageId : res.messageId }).then(function(){
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){
                     nts.uk.ui.block.clear();
                 });   
             });  
         }
+
+		toKMR002() {
+			const self = this;
+			nts.uk.request.jump("/view/kmr/002/a/index.xhtml");
+		}
     }
 
     // Note: Defining these interfaces are optional

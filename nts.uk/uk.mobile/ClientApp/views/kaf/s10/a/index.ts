@@ -177,6 +177,12 @@ export class KafS10Component extends KafS00ShrComponent {
             API.changeDate,
             command
         ).then((res: any) => {
+            let errorMsgLst = res.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorMsgLst;
+            if (!_.isEmpty(errorMsgLst)) {
+                self.$modal.error({ messageId: errorMsgLst[0] }).then(() => {
+                    
+                });
+            }
             self.model.appHdWorkDispInfo = res.data;
             let step1 = self.$refs.step1 as KafS10Step1Component;
             step1.loadData(self.model.appHdWorkDispInfo);
@@ -391,7 +397,10 @@ export class KafS10Component extends KafS00ShrComponent {
                 self.toHolidayMidNightTime(item, applicationTime);
             }
         });
-        appHolidayWork.applicationTime.reasonDissociation = [step2.getReasonDivergence()];
+        let reasonDivergence = step2.getReasonDivergence();
+        if (!_.isEmpty(reasonDivergence)) {
+            appHolidayWork.applicationTime.reasonDissociation = [reasonDivergence];
+        }
         if (!self.modeNew) {
             appHolidayWork.application.opAppReason = self.application.opAppReason || self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason as any;
             appHolidayWork.application.opAppStandardReasonCD = self.application.opAppStandardReasonCD || self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD as any;
@@ -620,7 +629,6 @@ export class KafS10Component extends KafS00ShrComponent {
                     appTypeSetting: vm.model.appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0],
                     appHdWorkDispInfo: vm.model.appHdWorkDispInfo
                 }).then((result: any) => {
-                    vm.$http.post('at', API.reflectApp, result.data.reflectAppIdLst);
                     vm.appId = result.data.appIDLst[0];
                     vm.toStep(3);
                 });
@@ -1080,7 +1088,6 @@ const API = {
     calculate: 'at/request/application/holidaywork/mobile/calculate',
     checkBeforeRegister: 'at/request/application/holidaywork/mobile/checkBeforeRegister',
     register: 'at/request/application/holidaywork/mobile/register',
-    sendMailAfterRegisterSample: '',
-    reflectApp: 'at/request/application/reflect-app'
+    sendMailAfterRegisterSample: ''
 };
 

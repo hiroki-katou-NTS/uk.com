@@ -251,6 +251,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private final static String SEL_EMPLOYMENT_BY_CLOSURE_JDBC = "SELECT CODE, NAME FROM BSYMT_EMPLOYMENT WHERE CID = ?";
 
+	private final static String SEL_ALL_WORKPLACEGROUP_JDBC = "SELECT w.CD, w.NAME, w.WKPGRP_ID FROM BSYMT_WORKPLACE_GROUP w WHERE w.CID = ?";
+
 	private final static String SEL_ALL_WORKPLACE_JDBC;
 
 //	private final static String SELECT_ALL_DIVREASON = "SELECT c FROM KrcmtDvgcReason c"
@@ -278,7 +280,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private final static String FIND_PERIOD_ORDER_BY_STR_D_FOR_MULTI = "SELECT wi FROM KshmtWorkcondHist wi "
 			+ "WHERE wi.kshmtWorkingCondPK.sid = :employeeId " + "AND wi.strD <= :endDate "
 			+ "AND wi.endD >= :startDate " + "AND wi.kshmtWorkingCondItem.laborSys = "
-			+ WorkingSystem.FLEX_TIME_WORK.value;
+			+ WorkingSystem.FLEX_TIME_WORK.value
+			+ " ORDER BY wi.strD" ;
 
 	private final static String GET_LIMIT_FLEX_MON = "SELECT f FROM KshmtCalcMFlexCarMax f WHERE f.companyId = :companyId";
 
@@ -550,7 +553,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				.append("SELECT w.WKP_CD, w.WKP_NAME, w.WKP_ID FROM BSYMT_WKP_INFO w ");
 		builderString.append("WHERE w.CID = ?");
 		SEL_ALL_WORKPLACE_JDBC = builderString.toString();
-
+		
 		builderString = new StringBuilder();
 		builderString.append("SELECT w FROM BsymtWorkplaceInfor w ");
 		builderString.append("WHERE w.pk.companyId = :cid ");
@@ -1281,7 +1284,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		try (PreparedStatement statement = this.connection().prepareStatement(SEL_ALL_WORKPLACE_JDBC)) {
 			statement.setString(1, companyId);
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> {
-				return new CodeName(rs.getString("WKP_CD"), rs.getString("WKP_NAME"), rs.getString("WKP_ID"));
+				return new CodeName(rs.getString("WKP_CD").trim(), rs.getString("WKP_NAME").trim(), rs.getString("WKP_ID").trim());
 			});
 
 		} catch (SQLException e) {
@@ -2068,6 +2071,19 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	});
 	
 		return !results.isEmpty();
+	}
+
+	@Override
+	public List<CodeName> findWorkplaceGroup(String companyId) {
+		try (PreparedStatement statement = this.connection().prepareStatement(SEL_ALL_WORKPLACEGROUP_JDBC)) {
+			statement.setString(1, companyId);
+			return new NtsResultSet(statement.executeQuery()).getList(rs -> {
+				return new CodeName(rs.getString("CD"), rs.getString("NAME"), rs.getString("WKPGRP_ID"));
+			});
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

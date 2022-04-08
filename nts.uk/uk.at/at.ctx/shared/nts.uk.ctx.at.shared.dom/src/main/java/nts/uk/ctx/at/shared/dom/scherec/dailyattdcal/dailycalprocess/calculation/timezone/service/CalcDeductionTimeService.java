@@ -3,14 +3,13 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculatio
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.DeductionTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSheetRoundingAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -32,16 +31,15 @@ public class CalcDeductionTimeService {
 			CalculationRangeOfOneDay oneDay,
 			ConditionAtr conditionAtr,
 			DeductionAtr dedAtr,
-			TimeSheetRoundingAtr roundAtr,
-			Optional<TimeRoundingSetting> sumRoundSet,
+			Optional<WorkTimezoneGoOutSet> goOutSet,
 			NotUseAtr canOffset) {
 
 		// 所定内合計時間の計算
 		TimeWithCalculation withinDedTime = oneDay.getDeductionTime(
-				conditionAtr, dedAtr, StatutoryAtr.Statutory, roundAtr, sumRoundSet, canOffset);
+				conditionAtr, dedAtr, StatutoryAtr.Statutory, goOutSet, canOffset);
 		// 所定外合計時間の計算
 		TimeWithCalculation excessDedTime = oneDay.getDeductionTime(
-				conditionAtr, dedAtr, StatutoryAtr.Excess, roundAtr, sumRoundSet, canOffset);
+				conditionAtr, dedAtr, StatutoryAtr.Excess, goOutSet, canOffset);
 		// 控除区分を確認する
 		if (dedAtr.isAppropriate()){
 			// 勤務間休憩時間の計算

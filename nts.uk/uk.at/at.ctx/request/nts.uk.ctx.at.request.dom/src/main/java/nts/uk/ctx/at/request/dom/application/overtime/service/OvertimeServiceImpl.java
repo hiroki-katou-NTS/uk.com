@@ -16,11 +16,19 @@ import javax.inject.Inject;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.at.request.dom.adapter.CalculationParams;
 import nts.uk.ctx.at.request.dom.adapter.OneDayAttendanceTimeTempCalcAdapter;
+import nts.uk.ctx.at.request.dom.adapter.dailyprocess.cal.GetFlowWorkBreakTimesAdapter;
+import nts.uk.ctx.at.request.dom.adapter.dailyprocess.cal.PrevisionalForImpExport;
 import nts.uk.ctx.at.request.dom.application.overtime.*;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -33,9 +41,12 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.adapter.CalculationParams;
+import nts.uk.ctx.at.request.dom.adapter.OneDayAttendanceTimeTempCalcAdapter;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -64,6 +75,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.WorkInfoListOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.MsgErrorOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
@@ -78,10 +90,24 @@ import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarl
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
+import nts.uk.ctx.at.request.dom.application.overtime.CalculationResult;
+import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeHour;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeReason;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeWorkMultipleTimes;
+import nts.uk.ctx.at.request.dom.application.overtime.ReasonDivergence;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.CheckBeforeOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ICommonAlgorithmOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoBaseDateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoNoBaseDate;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoWithDateAppOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoWithDateApplication;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImageRepository;
@@ -97,6 +123,8 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionParam;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
@@ -106,11 +134,17 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -187,7 +221,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private PredetemineTimeSettingRepository predetemineTimeSetRepo;
 
 	@Inject
-	private ICorrectionAttendanceRule correctionAttendanceRule;
+	private FlowWorkSettingRepository flowWorkSettingRepo;
+
+	@Inject
+	private GetFlowWorkBreakTimesAdapter getFlowWorkBreakTimesAdapter;
 	
 	@Override
 	public int checkOvertimeAtr(String url) {
@@ -223,6 +260,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 			Boolean agent,
 			List<OvertimeHour> overtimeHours,
 			List<OvertimeReason> overtimeReasons,
+			Optional<AchievementDetail> opAchievementDetail,
 			boolean managementMultipleWorkCycles) {
 		DisplayInfoOverTime output = new DisplayInfoOverTime();
 		output.setCalculatedFlag(CalculatedFlag.UNCALCULATED);
@@ -248,6 +286,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 						overtimeReasons,
 						workHourList,
 						new WorkInformation(workContent.getWorkTypeCode().orElse(null), workContent.getWorkTimeCode().orElse(null)),
+						opAchievementDetail,
 						managementMultipleWorkCycles
 				);
 				workContent.setTimeZones(result.getLeft().stream().map(i -> new TimeZone(i.getTimeZone().getStartTime(), i.getTimeZone().getEndTime())).collect(Collectors.toList()));
@@ -371,7 +410,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				infoNoBaseDate.getOverTimeAppSet());
 		if (!CollectionUtil.isEmpty(infoBaseDateOutput.getWorktypes())) {
 			// 申請日に関する情報を取得する
-			InfoWithDateApplication infoWithDateApplication = commonAlgorithmOverTime.getInfoAppDate(
+			InfoWithDateAppOutput infoWithDateApplication = commonAlgorithmOverTime.getInfoAppDate(
 					companyId,
 					dateOp,
 					startTimeSPR,
@@ -380,7 +419,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 					appDispInfoStartupOutput,
 					infoNoBaseDate.getOverTimeAppSet());
 			
-			output.setInfoWithDateApplicationOp(Optional.of(infoWithDateApplication));
+			output.setInfoWithDateApplicationOp(Optional.of(infoWithDateApplication.getInfoWithDateApplication()));
+			if(infoWithDateApplication.getOpErrorMsg().isPresent()) {
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getErrorMsgLst().add(infoWithDateApplication.getOpErrorMsg().get());
+			}
 		}
 		// 取得した情報をOUTPUT「勤務変更申請の表示情報」にセットしてを返す
 		output.setAppDispInfoStartup(appDispInfoStartupOutput);
@@ -1002,6 +1044,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 		}
 		if (!(CollectionUtil.isEmpty(output.getInfoBaseDateOutput().getWorktypes())
 			|| !output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent())) {
+			Optional<AchievementDetail> opAchievementDetail = output.getAppDispInfoStartup()
+					.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst()
+					.flatMap(i -> i.get(0).getOpAchievementDetail());
 			// 計算を実行する
 			DisplayInfoOverTime temp = this.calculate(
 					companyId,
@@ -1025,6 +1070,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 					agent,
 					output.getLatestMultipleOvertimeApp().isPresent() && output.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().isPresent() ? output.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().get().getOvertimeHours() : new ArrayList<>(),
 					output.getLatestMultipleOvertimeApp().isPresent() && output.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().isPresent() ? output.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().get().getOvertimeReasons() : new ArrayList<>(),
+					opAchievementDetail,
 					appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles()
 			);
 			output.setWorkdayoffFrames(temp.getWorkdayoffFrames());
@@ -1134,6 +1180,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 			workContent.setBreakTimes(breakTimes);
 		}
 
+		Optional<AchievementDetail> opAchievementDetail = displayInfoOverTime.getAppDispInfoStartup()
+				.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst()
+				.flatMap(i -> i.get(0).getOpAchievementDetail());
 		// 計算を実行する
 		DisplayInfoOverTime displayInfoOverTimeTemp = this.calculate(
 				companyId,
@@ -1157,6 +1206,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				agent,
 				displayInfoOverTime.getLatestMultipleOvertimeApp().isPresent() && displayInfoOverTime.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().isPresent() ? displayInfoOverTime.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().get().getOvertimeHours() : new ArrayList<>(),
 				displayInfoOverTime.getLatestMultipleOvertimeApp().isPresent() && displayInfoOverTime.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().isPresent() ? displayInfoOverTime.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().get().getOvertimeReasons() : new ArrayList<>(),
+				opAchievementDetail,
 				displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles()
 		);
 		displayInfoOverTime.setCalculationResultOp(displayInfoOverTimeTemp.getCalculationResultOp());
@@ -1230,6 +1280,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 		workContent.setTimeZones(timeZones);
 		workContent.setBreakTimes(breakTimes);
 
+		Optional<AchievementDetail> opAchievementDetail = appDispInfoStartupOutput
+				.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst()
+				.flatMap(i -> i.get(0).getOpAchievementDetail());
 		// 計算を実行する
 		DisplayInfoOverTime displayInfoOverTimeTemp = this.calculate(
 				companyId,
@@ -1251,6 +1304,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				agent,
 				new ArrayList<>(),
 				new ArrayList<>(),
+				opAchievementDetail,
 				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles()
 		);
 		displayInfoOverTimeTemp.setAppDispInfoStartup(appDispInfoStartupOutput);
@@ -1502,6 +1556,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 			workContent.setTimeZones(timeZones);
 			workContent.setBreakTimes(breakTimes);
 
+			Optional<AchievementDetail> opAchievementDetail = displayInfoOverTime.getAppDispInfoStartup()
+					.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst()
+					.flatMap(i -> i.get(0).getOpAchievementDetail());
+
 			// 計算処理を実行する
 			DisplayInfoOverTime temp = this.calculate(
 					companyId,
@@ -1525,6 +1583,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 					agent,
 					appOverTime.getMultipleTimesOp().map(OvertimeWorkMultipleTimes::getOvertimeHours).orElse(new ArrayList<>()),
 					appOverTime.getMultipleTimesOp().map(OvertimeWorkMultipleTimes::getOvertimeReasons).orElse(new ArrayList<>()),
+					opAchievementDetail,
 					displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles()
 			);
 			displayInfoOverTime.setCalculationResultOp(temp.getCalculationResultOp());
@@ -1833,59 +1892,71 @@ public class OvertimeServiceImpl implements OvertimeService {
 																							 List<OvertimeReason> overtimeReasons,
 																							 List<TimeZoneWithWorkNo> workingHours,
 																							 WorkInformation workInformation,
+																							 Optional<AchievementDetail> opAchievementDetail,
                                                                                              boolean managementMultipleWorkCycles) {
 		// 複数回残業内容を作成する
 		OvertimeWorkMultipleTimes content = OvertimeWorkMultipleTimes.create(overtimeHours, overtimeReasons);
 
-		// 残業時間を計算のために勤務時間を判断する
-		workingHours = content.getWorkingHoursToCalculateOvertime(workingHours);
+		// 出退勤時刻を取得する
+		List<TimeZoneWithWorkNo> workTimes = content.getArriveAndLeaveTime(workingHours);
 
-		// 休憩時間帯を取得する
-		List<DeductionTime> breakTimeZones = commonOvertimeHoliday.getBreakTimes(
+		// 休憩時間帯を計算する
+		CalculateBreakTimeZoneService.Require require = new CalculateBreakTimeZoneService.Require() {
+			@Override
+			public List<BreakTimeSheet> getFlowWorkBreakTimes(PrevisionalForImpExport params) {
+				return getFlowWorkBreakTimesAdapter.getFlowWorkBreakTimes(params);
+			}
+			@Override
+			public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
+				return predetemineTimeSetRepo.findByWorkTimeCode(companyId, workTimeCode);
+			}
+			@Override
+			public IntegrationOfDaily calculate(CalculationParams params) {
+				return attendanceCalcAdapter.calculate(params);
+			}
+			@Override
+			public Optional<FlowWorkSetting> findFlowWorkSetting(String companyId, String workTimeCode) {
+				return flowWorkSettingRepo.find(companyId, workTimeCode);
+			}
+			@Override
+			public List<DeductionTime> getBreakTimes(String companyID, String workTypeCode, String workTimeCode, Optional<TimeWithDayAttr> opStartTime, Optional<TimeWithDayAttr> opEndTime) {
+				return commonOvertimeHoliday.getBreakTimes(companyID, workTypeCode, workTimeCode, opStartTime, opEndTime);
+			}
+			@Override
+			public Optional<WorkTimeSetting> findByCode(String companyId, String workTimeCode) {
+				return worktimeSetRepo.findByCode(companyId, workTimeCode);
+			}
+		};
+		List<BreakTimeSheet> breakTimes = CalculateBreakTimeZoneService.get(
+				require,
 				companyId,
-				workInformation.getWorkTypeCode() == null ? null : workInformation.getWorkTypeCode().v(),
-				workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().v(),
-				workingHours.isEmpty() ? Optional.empty() : Optional.ofNullable(workingHours.get(0).getTimeZone().getStartTime()),
-				workingHours.isEmpty() ? Optional.empty() : Optional.ofNullable(workingHours.get(0).getTimeZone().getEndTime())
-		);
-		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
-		for (int i = 0; i < breakTimeZones.size(); i++) {
-			breakTimeSheets.add(new BreakTimeSheet(
-					new BreakFrameNo(i + 1),
-					breakTimeZones.get(i).getStart(),
-					breakTimeZones.get(i).getEnd()
-			));
-		}
-
-		List<BreakTimeSheet> breakTimes = content.getBreakTimeToCalculateOvertime(
-				new OvertimeWorkMultipleTimes.Require() {
-					@Override
-					public Optional<WorkTimeSetting> getWorkTimeSetting(String companyId, String code) {
-						return worktimeSetRepo.findByCode(companyId, code);
-					}
-					@Override
-					public IntegrationOfDaily tempCalculateOneDayAttendanceTime(CalculationParams params) {
-						return attendanceCalcAdapter.calculate(params);
-					}
-					@Override
-					public Optional<PredetemineTimeSetting> getPredetemineTimeSetting(String companyId, String workTimeCode) {
-						return predetemineTimeSetRepo.findByWorkTimeCode(companyId, workTimeCode);
-					}
-					@Override
-					public IntegrationOfDaily process(IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt) {
-						return correctionAttendanceRule.process(domainDaily, changeAtt);
-					}
-				},
-				companyId,
-				employeeId,
-				appDate,
-				workInformation,
-				workingHours,
-				breakTimeSheets,
-                managementMultipleWorkCycles
+				new WorkInfoParams(
+						employeeId,
+						appDate,
+						workInformation.getWorkTypeCode(),
+						workInformation.getWorkTimeCode(),
+						workTimes,
+						new ArrayList<>(),
+						opAchievementDetail.map(i -> i.getStampRecordOutput().getOutingTime().stream().map(j -> new OutingTimeSheet(
+								new OutingFrameNo(j.getFrameNo().v()),
+								Optional.of(new WorkStamp(
+										new WorkTimeInformation(
+												new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.empty()),
+												j.getOpStartTime().orElse(null)),
+										Optional.empty())),
+								j.getOpGoOutReasonAtr().get(),
+								Optional.of(new WorkStamp(
+										new WorkTimeInformation(
+												new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.empty()),
+												j.getOpEndTime().orElse(null)),
+										Optional.empty()))
+						)).collect(Collectors.toList())).orElse(Collections.emptyList()),
+						opAchievementDetail.map(AchievementDetail::getShortWorkTimeLst).orElse(Collections.emptyList())
+				),
+				content
 		);
 
-		return Pair.of(workingHours, breakTimes);
+		return Pair.of(workTimes, breakTimes);
 	}
 	
 }

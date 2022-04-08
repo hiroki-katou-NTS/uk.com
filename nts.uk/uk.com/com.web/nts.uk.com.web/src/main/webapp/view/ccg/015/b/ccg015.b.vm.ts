@@ -290,7 +290,7 @@ module nts.uk.com.view.ccg015.b {
                       const lst = vm.listTopPage();
                       if (lst.length > 0) {
                         if (removeIndex === 0) {
-                          vm.toppageSelectedCode(lst[removeIndex + 1].code);
+                          vm.toppageSelectedCode(lst[removeIndex + 1]?.code);
                         } else {
                           vm.toppageSelectedCode(lst[removeIndex - 1].code);
                         }

@@ -115,32 +115,48 @@ module nts.uk.at.view.kdl053.a {
                 //勤怠項目に対応する名称を生成する
                 this.$blockui("invisible");
                 let listIds: Array<any> = _.map(errorRegistrationList, item => { return item.attendanceItemId });
-                self.$ajax(Paths.GET_ATENDANCENAME_BY_IDS, listIds).done((data: Array<any>) => {
-                    if (data && data.length > 0) {
-                        let index = 0, idx = 0;
-                        _.each(errorRegistrationList, item => {
-                            idx++;
-                            _.each(data, itemName => {
-                                if (item.attendanceItemId == itemName.attendanceItemId) {
-                                    errorRegistrationList[index].errName = itemName.attendanceItemName;
-                                    index++;
-                                }
+                let lstIdsValid = _.filter(listIds, function(id) { return id != ''; });
+                
+                _.each(errorRegistrationList, item => {
+                    if(item.attendanceItemId == '')
+                        item.errName = "";
+                })
+                self.registrationErrorListCsv(errorRegistrationList);
+                self.registrationErrorList(errorRegistrationList);
+
+                if (lstIdsValid.length > 0) {
+                    self.$ajax(Paths.GET_ATENDANCENAME_BY_IDS, lstIdsValid).done((data: Array<any>) => {
+                        if (data && data.length > 0) {
+                            let index = 0, idx = 0;
+                            _.each(errorRegistrationList, item => {
+                                idx++;
+                                _.each(data, itemName => {
+                                    if (item.attendanceItemId == itemName.attendanceItemId) {
+                                        errorRegistrationList[index].errName = itemName.attendanceItemName;
+                                        index++;
+                                    }
+                                })
                             })
-                        })
-                        self.registrationErrorListCsv(errorRegistrationList);
-                        self.registrationErrorList(errorRegistrationList);
-                    } else {
-                        _.each(errorRegistrationList, item => {
-                            item.errName = "";
-                        })
-                        self.registrationErrorListCsv(errorRegistrationList);
-                        self.registrationErrorList(errorRegistrationList);
-                    }
-                    self.initGrid();
-                    self.$blockui("hide");
-                }).always(() => {
+                            self.registrationErrorListCsv(errorRegistrationList);
+                            self.registrationErrorList(errorRegistrationList);
+                        } else {
+                            _.each(errorRegistrationList, item => {
+                                item.errName = "";
+                            })
+                            self.registrationErrorListCsv(errorRegistrationList);
+                            self.registrationErrorList(errorRegistrationList);
+                        }
+                        self.initGrid();
+                        self.$blockui("hide");
+                    }).always(() => {
                         self.$blockui("hide");
                     });
+                } else {
+                
+                    self.initGrid();
+                    self.$blockui("hide");
+                }
+
             } else {
                 self.initGrid();
             }

@@ -43,6 +43,9 @@ public class KfnctAtdIdRptDai extends UkJpaEntity
 	@Column(name = "ATD_WORK_ATTENDANCE")
 	private boolean atdWorkAttendance;
 
+	@Column(name = "WORK_SUPPORT")
+	private boolean workSupport;
+
 	@Override
 	protected Object getKey() {
 		return this.kfnctAtdIdRptDaiPK;
@@ -81,6 +84,9 @@ public class KfnctAtdIdRptDai extends UkJpaEntity
 				case ANNUAL_WORK_LEDGER:
 					this.setAtdWorkAttendance(true);
 					break;
+				case WORK_SUPPORT:
+					this.setWorkSupport(true);
+					break;
 				default:
 					break;
 			}
@@ -103,7 +109,9 @@ public class KfnctAtdIdRptDai extends UkJpaEntity
 				FormCanUsedForTime.valueOf(BooleanUtils.toInteger(this.workDaily)),
 				FormCanUsedForTime.valueOf(BooleanUtils.toInteger(this.workAttendance)),
 				FormCanUsedForTime.valueOf(BooleanUtils.toInteger(this.atdWorkAttendance)),
-				FormCanUsedForTime.valueOf(BooleanUtils.toInteger(this.atdWorkDaily)));
+				FormCanUsedForTime.valueOf(BooleanUtils.toInteger(this.atdWorkDaily)),
+				FormCanUsedForTime.valueOf(BooleanUtils.toInteger(this.workSupport))
+		);
 	}
 
 }

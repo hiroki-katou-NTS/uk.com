@@ -9,16 +9,7 @@ import java.util.Optional;
  *
  */
 public interface LengthServiceRepository {
-	/**
-	 * 
-	 * @param companyId
-	 * @param conditionNo
-	 * @param yearHolidayCode
-	 * @param grantYearHolidayNo
-	 * @return
-	 */
-	Optional<LengthServiceTbl> find(String companyId, String yearHolidayCode, int grantNum);
-	
+
 	/**
 	 * Gets the year holiday grant by code.
 	 *
@@ -26,10 +17,10 @@ public interface LengthServiceRepository {
 	 * @param conditionNo the condition No
 	 * @return the holiday grant by codes
 	 */
-	List<LengthServiceTbl> findByCode(String companyId, String yearHolidayCode);
-	
-	Map<String, List<LengthServiceTbl>> findByCode(String companyId, List<String> yearHolidayCode);
-	
+	Optional<LengthServiceTbl> findByCode(String companyId, String yearHolidayCode);
+
+	List<LengthServiceTbl> findByCode(String companyId, List<String> yearHolidayCode);
+
 	/**
 	 * Adds the holiday grant.
 	 *

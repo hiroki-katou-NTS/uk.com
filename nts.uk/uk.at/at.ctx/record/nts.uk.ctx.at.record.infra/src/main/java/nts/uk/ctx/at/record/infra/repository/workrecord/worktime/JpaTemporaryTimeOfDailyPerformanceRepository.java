@@ -11,14 +11,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDayTsTemporary;
@@ -91,7 +89,6 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 		KrcdtDayTsTemporary krcdtDaiTemporaryTime = getDailyTemporary(domain.getEmployeeId(), domain.getYmd());
 		
 		List<KrcdtDayTsAtdStmp> timeWorks = krcdtDaiTemporaryTime.timeLeavingWorks;
- 		krcdtDaiTemporaryTime.workTimes = domain.getAttendance().getWorkTimes().v();
  		domain.getAttendance().getTimeLeavingWorks().stream().forEach(c -> {
  			KrcdtDayTsAtdStmp krcdtTimeLeavingWork = timeWorks.stream()
  					.filter(x -> x.krcdtTimeLeavingWorkPK.workNo == c.getWorkNo().v()

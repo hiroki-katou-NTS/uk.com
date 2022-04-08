@@ -10,11 +10,11 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPTimeItemSettingRepository;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPUnitUseSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.shorttimework.CalcOfShortTimeWorkRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOTRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSetRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSetRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
@@ -74,6 +74,7 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 	//労働時間と日数の設定の利用単位の設定
 	private UsageUnitSettingRepository usageUnitSettingRepository;
 	
+	/** フレックス勤務の日別計算設定 */
 	@Inject
 	private FlexSetRepository flexSetRepository;
 	
@@ -105,34 +106,28 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 
 		String companyId = AppContexts.user().companyId();
 		
-//		List<ErrorAlarmWorkRecord> errorAlerms = Collections.emptyList();
-//		if (!calcOption.isMasterTime()) {
-//			errorAlerms = errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(companyId, true);
-//		}
-		
 		val optionalItems = optionalItemRepository.findAll(companyId);
 		val usageSetting = usageUnitSettingRepository.findByCompany(companyId);
-		return new ManagePerCompanySet(
-									  holidayAddtionRepository.findByCId(companyId),
-									  specificWorkRuleRepository.findCalcMethodByCid(companyId),
-									  compensLeaveComSetRepository.find(companyId),
-									  divergenceTimeRepository.getAllDivTime(companyId),
-//									  errorAlerms,
-									  bPTimeItemSettingRepository.getListAllSetting(companyId),
-									  optionalItems,
-									  formulaRepository.find(companyId),
-									  formulaOrderRepository.findAll(companyId),
-									  empConditionRepository.findAll(companyId, optionalItems.stream().map(oi -> oi.getOptionalItemNo().v()).collect(Collectors.toList())),
-									  zeroTimeRepository.findByCId(companyId),
-									  personCostCalculationRepository.getHistAnPerCost(companyId),
-									  specificWorkRuleRepository.findUpperLimitWkHourByCid(companyId),
-									  usageSetting,
-									// 深夜時間帯(2019.3.31時点ではNotマスタ参照で動作している)
-									new MidNightTimeSheet(companyId, new TimeWithDayAttr(1320),new TimeWithDayAttr(1740)),
-									flexSetRepository.findByCId(companyId).get(),
-									deformLaborOTRepository.findByCId(companyId).get(),
-									this.declareSetRepository.find(companyId),
-									this.calcShortTimeWorkRepository.find(companyId),
-									this.overtimeFrameRepository.getOvertimeWorkFrameByFrameByCom(companyId, NotUseAtr.USE.value));
+		return new ManagePerCompanySet(companyId,
+									   holidayAddtionRepository.findByCId(companyId),
+									   specificWorkRuleRepository.findCalcMethodByCid(companyId),
+									   compensLeaveComSetRepository.find(companyId),
+									   divergenceTimeRepository.getAllDivTime(companyId),
+									   bPTimeItemSettingRepository.getListAllSetting(companyId),
+									   optionalItems,
+									   formulaRepository.find(companyId),
+									   formulaOrderRepository.findAll(companyId),
+									   empConditionRepository.findAll(companyId, optionalItems.stream().map(oi -> oi.getOptionalItemNo().v()).collect(Collectors.toList())),
+									   zeroTimeRepository.findByCId(companyId),
+									   personCostCalculationRepository.getHistAnPerCost(companyId),
+									   specificWorkRuleRepository.findUpperLimitWkHourByCid(companyId),
+									   usageSetting,
+									   new MidNightTimeSheet(companyId, new TimeWithDayAttr(1320),new TimeWithDayAttr(1740)),
+									   flexSetRepository.findByCId(companyId).get(),
+									   deformLaborOTRepository.findByCId(companyId).get(),
+									   this.declareSetRepository.find(companyId),
+									   this.calcShortTimeWorkRepository.find(companyId),
+									   this.overtimeFrameRepository.getOvertimeWorkFrameByFrameByCom(companyId, NotUseAtr.USE.value),
+									   specificWorkRuleRepository.findTimeOffVacationOrderByCid(companyId).orElseGet(() -> new CompanyHolidayPriorityOrder(companyId)));
 	}
 }

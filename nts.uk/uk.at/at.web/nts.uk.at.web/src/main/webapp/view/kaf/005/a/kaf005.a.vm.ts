@@ -575,6 +575,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					}
 				}).then((successData: any) => {
 					if (successData) {
+						let errorMsgLst = successData.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
+						if(!_.isEmpty(errorMsgLst)) {
+							vm.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
+		 							
+							});
+						}
 						vm.dataSource = successData;
 						vm.createVisibleModel(vm.dataSource);
                         vm.bindOverTimeWorks(vm.dataSource);
@@ -813,6 +819,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				})
 				return $.Deferred().resolve(false);	
 			}
+			if (failData.messageId == "Msg_3267") {
+				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
+					.then(() => {
+						$('#kaf000-a-component4-singleDate').focus();
+					});
+				return $.Deferred().resolve(false);
+			}
 			if (failData.messageId == "Msg_3248") {
 			    if (_.isEmpty(vm.multipleOvertimeContents()))
 			    	vm.$errors("#A15_9", "Msg_3248");
@@ -1048,6 +1061,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			
 				.done((res: DisplayInfoOverTime) => {
 					if (res) {
+						let errorMsgLst = res.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
+						if(!_.isEmpty(errorMsgLst)) {
+							self.$dialog.error({ messageId: errorMsgLst[0] }).then(() => {
+		 								
+							});
+						}
 						self.dataSource = res;
 						self.createVisibleModel(self.dataSource);
                         self.bindOverTimeWorks(self.dataSource);
@@ -1643,7 +1662,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						// đăng kí 
 						return vm.$ajax('at', !vm.isAgentNew() ? API.register : API.registerMultiple, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								nts.uk.request.ajax("at", API.reflectApp, successData.reflectAppIdLst);
 								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, vm.mode()==MODE.MULTiPLE_AGENT, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 							});
 						});
@@ -3450,7 +3468,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			command.workContent = workContent;
             command.appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
             command.multipleOvertimeContents = self.multipleOvertimeContents()
-                .filter(i => !!i.start() && !!i.end())
+                .filter(i => _.isNumber(i.start()) && _.isNumber(i.end()))
                 .map((i, idx) => ({
                     frameNo: idx + 1,
                     startTime: i.start(),
@@ -3556,8 +3574,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		registerMultiple: 'at/request/application/overtime/registerMultiple',
 		calculate: 'at/request/application/overtime/calculate',
 		breakTimes: 'at/request/application/overtime/breakTimes',
-        getLatestMultiApp: 'at/request/application/overtime/latestMultiApp',
-		reflectApp: "at/request/application/reflect-app"
+        getLatestMultiApp: 'at/request/application/overtime/latestMultiApp'
 	};
 	
 	const BACKGROUND_COLOR = {

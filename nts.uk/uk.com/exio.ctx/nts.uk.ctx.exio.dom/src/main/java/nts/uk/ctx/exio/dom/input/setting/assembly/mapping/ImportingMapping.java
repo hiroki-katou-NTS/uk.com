@@ -5,7 +5,6 @@ import static java.util.stream.Collectors.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.Value;
 import lombok.val;
@@ -17,6 +16,7 @@ import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrorsRequire;
 import nts.uk.ctx.exio.dom.input.errors.ItemError;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
+import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.fetch.SubstringFetch;
 
 /**
  * 受入マッピング
@@ -36,14 +36,16 @@ public class ImportingMapping {
 
 		List<ImportingItemMapping> newMappings = new ArrayList<>();
 
-		for(int itemNo : itemList) {
+		for (int i = 0; i < itemList.size(); i++) {
+			int itemNo = itemList.get(i);
 
 			val found = mappings.stream().filter(m -> m.getItemNo() == itemNo).findFirst();
 
 			if(found.isPresent()) { //値を変えないやつら
 				newMappings.add(found.get());
 			} else { //新しく追加されたやつら
-				newMappings.add(ImportingItemMapping.noSetting(itemNo));
+				int csvColumnNo = i + 1;
+				newMappings.add(ImportingItemMapping.noSetting(itemNo, csvColumnNo));
 			}
 		}
 		
@@ -75,10 +77,12 @@ public class ImportingMapping {
 
 	public static ImportingMapping defaultSet(List<Integer> items){
 
-		val list = items.stream()
-			.map(item -> ImportingItemMapping.noSetting(item))
-			.collect(Collectors.toList());
-
+		val list = new ArrayList<ImportingItemMapping>();
+		for (int i = 0; i < items.size(); i++) {
+			int csvColumnNo = i + 1;
+			val itemMapping = ImportingItemMapping.noSetting(items.get(i), csvColumnNo);
+			list.add(itemMapping);
+		}
 
 		return new ImportingMapping(list);
 	}
@@ -151,16 +155,19 @@ public class ImportingMapping {
 	/**
 	 * 指定した項目をCSVマッピングに変更する
 	 */
-	public void setCsvMapping(int itemNo, boolean withReset) {
+	public void setCsvMapping(int itemNo, Optional<SubstringFetch> substringFetch, boolean withReset) {
+		
+		ImportingItemMapping item = getByItemNo(itemNo).get();
+		
 		if(withReset) {
 			// 一旦ダミーの値を入れてCSVマッピングに切り替えた状態で順番リセット
-			getByItemNo(itemNo).get().setCsvColumnNo(-1);
+			item.setCsvColumnNo(-1, substringFetch);
 			resetCsvColumnNoByOrder();
 		}
 		else {
-			getByItemNo(itemNo).get().setFixedValue(null);
-			if(!getByItemNo(itemNo).get().getCsvColumnNo().isPresent()){
-				getByItemNo(itemNo).get().setCsvColumnNo(1); // CSV項目NOが未指定の場合いったん先頭列を入れておく
+			item.setFixedValue(null);
+			if(!item.getCsvColumnNo().isPresent()){
+				item.setCsvColumnNo(1, substringFetch); // CSV項目NOが未指定の場合いったん先頭列を入れておく
 			}
 		}
 	}
@@ -182,7 +189,7 @@ public class ImportingMapping {
 
 		for (val mapping : mappings) {
 			if (mapping.isCsvMapping()) {
-				mapping.setCsvColumnNo(columnNo);
+				mapping.setCsvColumnNo(columnNo, mapping.getSubstringFetch());
 				columnNo++;
 			}
 		}

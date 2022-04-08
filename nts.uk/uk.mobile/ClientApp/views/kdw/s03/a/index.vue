@@ -40,8 +40,8 @@
         <fix-table v-if="displayFormat == '0'" table-class="table table-striped m-0 table-sm table-custom" class="mx-n3 mt-n2" style="font-size: 11px" :key="resetTable">
             <thead class="uk-bg-headline">
                 <tr>
-                    <th c-width="56" style="height: 50px; text-align:center"></th>
-                    <th v-for="(item, i) of displayHeaderLst" v-bind:style="{ 'background-color': item.color}"><span class="crop-text">{{item.headerText}}</span></th>
+                    <th c-width="56" style="height: 50px; text-align:center"></th>                   
+                    <th v-for="(item, i) of displayHeaderLst" v-bind:style="{ 'background-color': item.color}"><tag class="crop-text" v-html="item.headerText" ></tag></th>
                     <th c-width="48"></th>
                 </tr>
             </thead>
@@ -73,13 +73,13 @@
             <thead class="uk-bg-headline">
                 <tr>
                     <th c-width="58" style="height: 50px; text-align:center"></th>
-                    <th v-for="(item, i) of displayHeaderLst" v-bind:style="{ 'background-color': item.color}"><span class="crop-text">{{item.headerText}}</span></th>
+                    <th v-for="(item, i) of displayHeaderLst" v-bind:style="{ 'background-color': item.color}"><tag class="crop-text" v-html="item.headerText"></tag></th>
                     <th c-width="48"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(row, i) of displayDataLstEx">
-                    <td v-bind:style="{ height: rowHeight + 'px' }"><span class="crop-text">{{row.employeeName}}</span></td>
+                    <td v-bind:style="{ height: rowHeight + 'px', 'background-color': row.color}"><span class="crop-text">{{row.employeeName}}</span></td>
                     <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class"><span :class="cell.class.includes('text-truncate') ? '' : 'crop-text'">{{cell.displayvalue}}</span></td>
                     <td>
                         <div style="text-align: right" v-click:500="() => openEdit(row.id)">

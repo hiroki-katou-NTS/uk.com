@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.WorkplaceInforImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.WorkplaceInformationImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceDto;
+import nts.uk.ctx.bs.employee.pub.workplace.WkpByEmpExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
 /**
@@ -101,6 +102,18 @@ public class SyWorkplaceAdapterImp implements SyWorkplaceAdapter {
 		return workplacePub.getAllActiveWorkplaceInfor(companyId, baseDate).stream()
 				.map(x -> new AffWorkplaceDto(x.getWorkplaceId(), x.getWorkplaceCode(), x.getWorkplaceName()))
 				.collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<SWkpHistRcImported> findWpkBySIDandPeriod(String sID, DatePeriod datePeriod) {
+		WkpByEmpExport wkp = workplacePub.getLstHistByEmpAndPeriod(sID, datePeriod.start(), datePeriod.end());
+		return wkp.getLstWkpInfo().stream().map(x -> new SWkpHistRcImported(
+				x.getDatePeriod(), 
+				wkp.getEmployeeID(), 
+				x.getWpkID(), 
+				x.getWpkCD(), 
+				x.getWpkName(), 
+				"")).collect(Collectors.toList());
 	}
 
 }

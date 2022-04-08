@@ -102,13 +102,13 @@ public class EmpInfoTerminal implements DomainAggregate {
 
 	// [２] 予約
 	public AtomTask createReservRecord(Require require,
-			ReservationReceptionData reservReceptData) {
-		return createReserv(require, reservReceptData);
+			ReservationReceptionData reservReceptData, String companyID) {
+		return createReserv(require, reservReceptData, companyID);
 	}
 
 	// [pvt-3] 弁当予約を作成
 	private AtomTask createReserv(Require require,
-			ReservationReceptionData reserv) {
+			ReservationReceptionData reserv, String companyID) {
 		if(reserv.getMenu().trim().equals("X")) {
 			//予約を削除する
 			return AtomTask.of(() ->{
@@ -119,7 +119,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 		bentoDetails.put(reserv.getBentoFrame(), new BentoReservationCount(Integer.parseInt(reserv.getQuantity())));
 		return BentoReserveService.reserve(require, new ReservationRegisterInfo(reserv.getIdNumber()),
 				new ReservationDate(reserv.getDateTime().toDate(), ReservationClosingTimeFrame.FRAME1),
-				reserv.getDateTime(), bentoDetails, Optional.empty());
+				reserv.getDateTime(), bentoDetails, companyID, Optional.empty());
 	}
 
 	public static interface Require extends BentoReserveService.Require{

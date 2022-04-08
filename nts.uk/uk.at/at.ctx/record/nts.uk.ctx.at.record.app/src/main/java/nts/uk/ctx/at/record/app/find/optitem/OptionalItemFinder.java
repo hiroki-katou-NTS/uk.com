@@ -202,9 +202,7 @@ public class OptionalItemFinder {
 			List<MonthlyAttendanceItem> items = this.monthlyRepo.findAll(AppContexts.user().companyId());
 
 			// get attd item name list
-			List<AttItemName> attdItemNames = this.attdItemNameAdapter.getNameOfAttendanceItem(
-					items.stream().map(MonthlyAttendanceItem::getAttendanceItemId).collect(Collectors.toList()),
-					TypeOfItemImport.Monthly);
+			List<AttItemName> attdItemNames = this.attdItemNameAdapter.getNameOfAttdItemByType(TypeOfItemImport.Monthly);
 
 			Map<Integer, String> nameMap = attdItemNames.stream()
 					.collect(Collectors.toMap(AttItemName::getAttendanceItemId, AttItemName::getAttendanceItemName));

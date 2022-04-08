@@ -68,6 +68,7 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
@@ -764,7 +765,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 		
 		// 使用不可の欠勤枠を取得する Nhận Absence frame không khả dụng
 		List<AbsenceFrame> absenceFrames = this.absenceFrameRepository
-				.findByCompanyIdAndDeprecateClassification(companyId, DeprecateClassification.NotDeprecated.value);
+				.findByCompanyIdAndDeprecateClassification(companyId, ManageDistinct.NO.value);
 
 		// 使用不可のList<欠勤枠＞をチェックする Check List  <欠勤枠＞ không khả dụng
 		if (!absenceFrames.isEmpty()) {

@@ -1,8 +1,13 @@
 package nts.uk.ctx.exio.app.command.exo.cdconvert;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.Value;
 
-@Value
+@NoArgsConstructor
+@Setter
+@Getter
 public class CdConvertDetailCommand
 {
     
@@ -27,5 +32,15 @@ public class CdConvertDetailCommand
     private String lineNumber;
     
     private Long version;
+
+	public CdConvertDetailCommand(String convertCode, String outputItem, String systemCode, String lineNumber,
+			Long version) {
+		super();
+		this.convertCode = convertCode;
+		this.outputItem = outputItem;
+		this.systemCode = systemCode;
+		this.lineNumber = lineNumber;
+		this.version = version;
+	}
 
 }

@@ -515,6 +515,12 @@ export class KafS05Component extends KafS00ShrComponent {
             command
         )
             .then((res: any) => {
+                let errorMsgLst = res.data.appDispInfoStartup.appDispInfoWithDateOutput.errorMsgLst;
+                if (!_.isEmpty(errorMsgLst)) {
+                    self.$modal.error({ messageId: errorMsgLst[0] }).then(() => {
+
+                    });
+                }
                 self.model.displayInfoOverTime = res.data;
                 let step1 = self.$refs.step1 as KafS05Step1Component;
                 step1.loadData(self.model.displayInfoOverTime);
@@ -674,7 +680,7 @@ export class KafS05Component extends KafS00ShrComponent {
             }
             if (self.overTimeClf == 3) {
                 appOverTimeInsert.multipleOvertimeContents = step1.multiOverTimes
-                    .filter((item) => item.valueHours && (!!item.valueHours.start || !!item.valueHours.end))
+                    .filter((item) => item.valueHours && (_.isNumber(item.valueHours.start) || _.isNumber(item.valueHours.end)))
                     .map((item, index) => ({
                         frameNo: index + 1,
                         startTime: item.valueHours.start,
@@ -941,7 +947,6 @@ export class KafS05Component extends KafS00ShrComponent {
                         isMailServer: vm.model.displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.mailServerSet,
                         appDispInfoStartupOutput: vm.model.displayInfoOverTime.appDispInfoStartup
                     }).then((result: any) => {
-                        vm.$http.post('at', API.reflectApp, result.data.reflectAppIdLst);
                         vm.appId = result.data.appIDLst[0];
                         vm.toStep(3);
                     });
@@ -1297,7 +1302,6 @@ const API = {
     calculate: 'at/request/application/overtime/mobile/calculate',
     checkBeforeRegister: 'at/request/application/overtime/mobile/checkBeforeInsert',
     register: 'at/request/application/overtime/mobile/insert',
-    reflectApp: 'at/request/application/reflect-app',
     getLatestMultiApp: 'at/request/application/overtime/latestMultiApp',
     sendMailAfterRegisterSample: ''
 };

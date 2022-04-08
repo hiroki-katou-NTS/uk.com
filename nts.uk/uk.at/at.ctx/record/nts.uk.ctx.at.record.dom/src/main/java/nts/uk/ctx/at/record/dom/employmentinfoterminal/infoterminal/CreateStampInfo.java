@@ -53,7 +53,7 @@ public class CreateStampInfo implements DomainValue {
 		// 実績への反映内容
 		RefectActualResult refActualResults  = new RefectActualResult(
 				new WorkInformationStamp(workPlaceId.map(x -> x.v()), Optional.of(empInfoTerCode), this.getWorkLocationCd(),
-						Optional.ofNullable(recept.getSupportCode().isEmpty() ? null : new SupportCardNumber(Integer.parseInt(recept.getSupportCode())))),
+						Optional.ofNullable(recept.getSupportCode().isEmpty() ? null : new SupportCardNumber(recept.getSupportCode()))),
 				(recept.getLeavingCategory().equals(LeaveCategory.GO_OUT.value)
 						|| recept.getLeavingCategory().equals(LeaveCategory.RETURN.value)
 						|| recept.getShift().isEmpty()) ? null : new WorkTimeCode(recept.getShift()),

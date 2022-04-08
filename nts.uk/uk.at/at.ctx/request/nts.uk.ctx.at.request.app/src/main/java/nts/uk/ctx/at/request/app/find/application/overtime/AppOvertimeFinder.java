@@ -181,7 +181,9 @@ public class AppOvertimeFinder {
 		}
 
 		OvertimeWorkMultipleTimes multiOvertime = MultipleOvertimeContentDto.toDomain(param.multipleOvertimeContents);
-
+		Optional<AchievementDetail> opAchievementDetail = param.appDispInfoStartupDto.toDomain()
+				.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst()
+				.flatMap(i -> i.get(0).getOpAchievementDetail());
 		DisplayInfoOverTime output = overtimeService.calculate(
 				companyId,
 				param.employeeId,
@@ -196,6 +198,7 @@ public class AppOvertimeFinder {
 				param.agent,
                 multiOvertime.getOvertimeHours(),
                 multiOvertime.getOvertimeReasons(),
+				opAchievementDetail,
 				param.appDispInfoStartupDto.getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles()
         );
 		

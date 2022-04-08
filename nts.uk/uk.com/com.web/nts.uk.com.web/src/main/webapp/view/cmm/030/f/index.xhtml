@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+  <ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+      <script>
+        var dialogSize = {
+          width: 1000,
+          height: 580
+        };
+      </script>
+      <com:scriptfile set="IGNITE" />
+      <com:stylefile path="cmm030.f.style.css" />
+      <com:scriptfile path="cmm030.f.vm.js" />
+      <com:EnumScript>
+        nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType
+        nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr
+        nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType
+      </com:EnumScript>
+    </ui:define>
+    <ui:define name="content">
+      <div id="contents-area">
+        <div class="flex valign-center setting-zone">
+          <div class="flex valign-center">
+            <div id="F1_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMM030_80')}</div>
+            <label id="F1_2" data-bind="text: employeeCode"></label>
+            <label id="F1_3" data-bind="text: employeeName"></label>
+          </div>
+          <div class="flex valign-center setting-delete">
+            <label id="F2_2">#{i18n.getText('CMM030_82')}</label>
+            <button id="F2_1" class="danger small" data-bind="enable: isFirstLineSelected, click: processDeleteHist" tabindex="-1">#{i18n.getText('CMM030_81')}</button>
+          </div>
+        </div>
+        <div class="flex mt-20">
+          <table id="F3" data-bind="ntsGridList: {
+            height: 385,
+            options: periodList,
+            optionsValue: 'id',
+            columns: periodColumns,
+            value: selectedPeriodId,
+          }" tabindex="1"></table>
+          <table id="F4" data-bind="ntsGridList: {
+            height: 385,
+            options: approverList,
+            optionsValue: 'id',
+            columns: approverColumns,
+            value: selectedApproverId,
+          }"></table>
+        </div>
+      </div>
+      <div id="functions-area-bottom">
+        <button id="F6_1" class="large" data-bind="click: closeDialog" tabindex="2">#{i18n.getText('CMM030_87')}</button>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+</html>

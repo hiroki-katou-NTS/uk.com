@@ -68,7 +68,16 @@ public class KrcmtMonAttendanceItem extends ContractUkJpaEntity implements Seria
 	@Basic(optional = true)
 	@Column(name = "DISPLAY_NAME")
 	public String displayName;
-	
+
+	@Basic(optional = true)
+	@Column(name = "USE_BY_MON")
+	public boolean useByMon;
+
+	@Basic(optional = true)
+	@Column(name = "USE_BY_ANP")
+	public boolean useByAnp;
+
+
 	public KrcmtMonAttendanceItem() {
 		super();
 	}
@@ -93,6 +102,8 @@ public class KrcmtMonAttendanceItem extends ContractUkJpaEntity implements Seria
 		this.primitiveValue = domain.getPrimitiveValue().map(x -> x.value).orElse(null);
 		this.displayName = domain.getDisplayName().isPresent() ? domain.getDisplayName().get().v() : null;
 		this.twoMonthlyDisplay = domain.getTwoMonthlyDisplay().value;
+		this.useByAnp = domain.isUseAnyPeriod();
+		this.useByMon = domain.isUseMonthResult();
 	}
 
 	/*

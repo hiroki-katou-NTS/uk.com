@@ -8,6 +8,7 @@ import java.util.stream.IntStream;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
@@ -165,7 +166,7 @@ public class ReflectApplicationHelper {
 
 		// 日別勤怠の臨時出退勤
 		Optional<TemporaryTimeOfDailyAttd> tempTime = Optional
-				.of(new TemporaryTimeOfDailyAttd(new WorkTimes(1), timeLeavingWorks));
+				.of(new TemporaryTimeOfDailyAttd(timeLeavingWorks));
 
 		// 日別勤怠の外出時間帯
 		OutingTimeSheet outSheet = new OutingTimeSheet(new OutingFrameNo(1),
@@ -393,6 +394,7 @@ public class ReflectApplicationHelper {
 				new BreakTimeOfDailyAttd(breakTimeSheets), 
 				new ArrayList<>(), 
 				TaskSchedule.createWithEmptyList(),
+				SupportSchedule.createWithEmptyList(),
 				Optional.empty(), 
 				Optional.empty(), 
 				Optional.empty(), 

@@ -502,4 +502,213 @@ public class TaskScheduleTest {
 		} 
 	}
 	
+	public static class TaskScheduleTest_isTaskScheduleGranted {
+
+		@Test
+		public void test_false() {
+			
+			TaskSchedule taskSchedule = TaskSchedule.createWithEmptyList();
+			
+			boolean result = taskSchedule.isTaskScheduleGranted();
+			
+			assertThat(result).isFalse();
+		}
+		
+		@Test
+		public void test_true() {
+			
+			TaskSchedule taskSchedule = TaskSchedule.create(
+					Arrays.asList(TaskScheduleDetailTestHelper.create("001", 8, 0, 9, 0)) );
+			
+			boolean result = taskSchedule.isTaskScheduleGranted();
+			
+			assertThat(result).isTrue();
+		}
+		
+	}
+	
+	public static class TaskScheduleTest_isTaskScheduleGrantedIn {
+		
+		TaskSchedule target;
+		
+		@Before
+		public void initTaskSchedule() {
+			
+			target = TaskSchedule.create(
+					Arrays.asList(
+						TaskScheduleDetailTestHelper.create("001", 8, 0, 9, 0),
+						TaskScheduleDetailTestHelper.create("002", 10, 0, 11, 0))
+					);
+		}
+		
+		@Test
+		public void test_false_detailIsEmpty() {
+			
+			TaskSchedule taskSchedule = TaskSchedule.createWithEmptyList();
+			
+			TimeSpanForCalc timeSpan = new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(10, 0), 
+					TimeWithDayAttr.hourMinute(12, 0));
+			
+			boolean result = taskSchedule.isTaskScheduleGrantedIn(timeSpan);
+			
+			assertThat(result).isFalse();
+		}
+		
+		@Test
+		public void test_false_notGrantIn() {
+			
+			TimeSpanForCalc timeSpan = new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(9, 0), 
+					TimeWithDayAttr.hourMinute(10, 0));
+			
+			boolean result = target.isTaskScheduleGrantedIn(timeSpan);
+			
+			assertThat(result).isFalse();
+		}
+		
+		@Test
+		public void test_true_notGrantIn_partly() {
+			
+			TimeSpanForCalc timeSpan = new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(8, 30), 
+					TimeWithDayAttr.hourMinute(9, 30));
+			
+			boolean result = target.isTaskScheduleGrantedIn(timeSpan);
+			
+			assertThat(result).isTrue();
+		}
+		
+		@Test
+		public void test_true_notGrantIn_full() {
+			
+			TimeSpanForCalc timeSpan = new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(8, 0), 
+					TimeWithDayAttr.hourMinute(11, 0) );
+			
+			boolean result = target.isTaskScheduleGrantedIn(timeSpan);
+			
+			assertThat(result).isTrue();
+		}
+		
+	}
+	
+	public static class TaskScheduleTest_removeTaskScheduleDetailIn {
+		
+		TaskSchedule target;
+		
+		@Before
+		public void initTaskSchedule() {
+			
+			target = TaskSchedule.create(
+					Arrays.asList(
+						TaskScheduleDetailTestHelper.create("001", 8, 0, 9, 0),
+						TaskScheduleDetailTestHelper.create("002", 10, 0, 11, 0))
+					);
+		}
+		
+		@Test
+		public void test_detailIsEmpty() {
+			
+			TaskSchedule taskSchedule = TaskSchedule.createWithEmptyList();
+			
+			TimeSpanForCalc timeSpan = new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(8, 0), 
+					TimeWithDayAttr.hourMinute(10, 0) );
+			
+			TaskSchedule result = taskSchedule.removeTaskScheduleDetailIn(timeSpan);
+			
+			assertThat(result.getDetails()).isEmpty();
+		}
+		
+		@Test
+		public void test_removeAll_case1() {
+			
+			TimeSpanForCalc timeSpan = new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(8, 0),
+					TimeWithDayAttr.hourMinute(11, 0) );
+			
+			TaskSchedule result = target.removeTaskScheduleDetailIn(timeSpan);
+			
+			assertThat(result.getDetails()).isEmpty();
+		}
+		
+		@Test
+		public void test_removeAll_case2() {
+			
+			TimeSpanForCalc timeSpan = new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(7, 0),
+					TimeWithDayAttr.hourMinute(12, 0) );
+			
+			TaskSchedule result = target.removeTaskScheduleDetailIn(timeSpan);
+			
+			assertThat(result.getDetails()).isEmpty();
+		}
+		
+		@Test
+		public void test_removePartly_case1() {
+			
+			TimeSpanForCalc timeSpan = new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(8, 0), 
+					TimeWithDayAttr.hourMinute(9, 0) );
+			
+			TaskSchedule result = target.removeTaskScheduleDetailIn(timeSpan);
+			
+			assertThat(result.getDetails())
+				.extracting(
+						e -> e.getTaskCode().v(),
+						e -> e.getTimeSpan().getStart().rawHour(),
+						e -> e.getTimeSpan().getStart().minute(),
+						e -> e.getTimeSpan().getEnd().rawHour(),
+						e -> e.getTimeSpan().getEnd().minute()
+						)
+				.containsExactly(
+						tuple("002", 10, 0, 11, 0) );
+		}
+		
+		@Test
+		public void test_removePartly_case2() {
+			
+			TimeSpanForCalc timeSpan = new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(8, 30), 
+					TimeWithDayAttr.hourMinute(9, 30) );
+			
+			TaskSchedule result = target.removeTaskScheduleDetailIn(timeSpan);
+			
+			assertThat(result.getDetails())
+				.extracting(
+						e -> e.getTaskCode().v(),
+						e -> e.getTimeSpan().getStart().rawHour(),
+						e -> e.getTimeSpan().getStart().minute(),
+						e -> e.getTimeSpan().getEnd().rawHour(),
+						e -> e.getTimeSpan().getEnd().minute()
+						)
+				.containsExactly(
+						tuple("002", 10, 0, 11, 0) );
+		}
+		
+		@Test
+		public void test_removeNothingy() {
+			
+			TimeSpanForCalc timeSpan = new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(12, 0), 
+					TimeWithDayAttr.hourMinute(13, 0) );
+			
+			TaskSchedule result = target.removeTaskScheduleDetailIn(timeSpan);
+			
+			assertThat(result.getDetails())
+				.extracting(
+						e -> e.getTaskCode().v(),
+						e -> e.getTimeSpan().getStart().rawHour(),
+						e -> e.getTimeSpan().getStart().minute(),
+						e -> e.getTimeSpan().getEnd().rawHour(),
+						e -> e.getTimeSpan().getEnd().minute()
+						)
+				.containsExactly(
+						tuple("001", 8, 0, 9, 0),
+						tuple("002", 10, 0, 11, 0) );
+		}
+		
+	}
+	
 }

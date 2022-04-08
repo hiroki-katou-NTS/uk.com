@@ -20,5 +20,11 @@ public class GetWkpIDParam {
     public String wkpCode;
     
     public String baseDate;
+    
+    public String employeeId;
+    
+    DataSessionDto dataSessionDto;
+    
+    DPItemParent dataParent;
 
 }

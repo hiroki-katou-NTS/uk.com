@@ -83,7 +83,7 @@ public class ExcessOutsideByPeriodDto implements ItemConst, AttendanceItemDataGa
     @Override
     public int size(String path) {
         if (TIME.equals(path)){
-            return 50;
+            return 10;
         }
         return AttendanceItemDataGate.super.size(path);
     }

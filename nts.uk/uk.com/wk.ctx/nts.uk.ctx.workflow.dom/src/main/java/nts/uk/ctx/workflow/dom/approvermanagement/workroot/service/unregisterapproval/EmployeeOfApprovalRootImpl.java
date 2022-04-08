@@ -2,239 +2,216 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterap
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.*;
 import nts.uk.ctx.workflow.dom.service.CollectApprovalRootService;
+import nts.uk.ctx.workflow.dom.service.output.LevelOutput;
+
 @Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 	@Inject
 	private CollectApprovalRootService collectApprSv;
 	@Inject
 	private ApprovalPhaseRepository approvalPhase;
+
 	@Override
-	public boolean lstEmpApprovalRoot(String companyId, List<CompanyApprovalRoot> lstCompanyRootInfor,
-			List<WorkplaceApprovalRoot> lstWorkpalceRootInfor, List<PersonApprovalRoot> lstPersonRootInfor,
-			EmployeeImport empInfor,  String typeV, GeneralDate baseDate, int empR, int sysAtr) {
-		//check ドメインモデル「個人別就業承認ルート」(domain 「個人別就業承認ルート」)
-		List<PersonApprovalRoot> personRootAll = this.checkExistPs(lstPersonRootInfor, empInfor.getSId(), typeV, empR);
-		//co truong hop co root nhung khong co phase
-		List<ApprovalPhase> approvalPhases = new ArrayList<>();
-		if(!CollectionUtil.isEmpty(personRootAll)) {
-			personRootAll.stream().forEach(x -> {
-				approvalPhase.getAllApprovalPhasebyCode(x.getApprovalId()).stream()
-				.forEach(y -> {
-					approvalPhases.add(y);
-				});
-			});
-		}
-		//データが０件(data = 0)
-		if(CollectionUtil.isEmpty(personRootAll)
-				|| CollectionUtil.isEmpty(approvalPhases)) {
-			//check ドメインモデル「個人別就業承認ルート」を取得する(láy du lieu domain「個人別就業承認ルート」 ) ※・就業ルート区分(共通)			
-			List<PersonApprovalRoot> psRootCommonAtr = lstPersonRootInfor.stream()
-					.filter(x -> x.getEmployeeId().equals(empInfor.getSId()))
-					.filter(x -> x.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.COMMON)
-					.collect(Collectors.toList());
-			if(!CollectionUtil.isEmpty(psRootCommonAtr)) {
-				psRootCommonAtr.stream().forEach(x -> {
-					approvalPhase.getAllApprovalPhasebyCode(x.getApprovalId()).stream()
-					.forEach(y -> {
-						approvalPhases.add(y);
-					});
-				});
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public UnregisteredApprovalCheckResult lstEmpApprovalRoot(String companyId,
+									  List<CompanyApprovalRoot> lstCompanyRootInfor,
+									  List<WorkplaceApprovalRoot> lstWorkpalceRootInfor,
+									  List<PersonApprovalRoot> lstPersonRootInfor,
+									  EmployeeImport empInfor,
+									  GeneralDate baseDate,
+									  int sysAtr,
+									  EmploymentRootAtr rootAtr,
+									  String appTarget) {
+		{
+			// Input．ドメインモデル「個人別承認ルート」を取得する
+			// 【Loop中の「社員、承認ルート区分、対象申請」を条件に個人別承認ルートを取得する】
+			List<PersonApprovalRoot> lstPersonRoot = lstPersonRootInfor.stream().filter(i -> {
+				return i.getEmployeeId().equals(empInfor.getSId())
+						&& i.getApprRoot().getEmploymentRootAtr() == rootAtr
+						&& checkPersonAppRoot(i.getApprRoot(), rootAtr, appTarget);
+			}).collect(Collectors.toList());
+			if (!lstPersonRoot.isEmpty()) {
+				List<ErrorContent> errorList = validateApproverOfApprovalRoot(
+						companyId,
+						empInfor.getSId(),
+						baseDate,
+						lstPersonRoot.stream().map(PersonApprovalRoot::getApprovalId).collect(Collectors.toList()),
+						sysAtr,
+						Optional.empty()
+				);
+				if (errorList.isEmpty()) return null;
+				return new UnregisteredApprovalCheckResult(1, false, Optional.empty(), errorList);
 			}
-			//データが０件(data = 0)
-			if(CollectionUtil.isEmpty(psRootCommonAtr)
-					|| CollectionUtil.isEmpty(approvalPhases)) {
-				
-				//対象者の所属職場・部門を含める上位職場・部門を取得する
-				List<String> lstWpDepIds = collectApprSv.getUpperIDIncludeSelf(companyId, empInfor.getSId(), baseDate,
-						EnumAdaptor.valueOf(sysAtr, SystemAtr.class));
-				
-				if(!CollectionUtil.isEmpty(lstWpDepIds)) {
-					//取得した所属職場ID＋その上位職場IDを先頭から最後までループする
-					for(String WpId: lstWpDepIds) {
-						//ドメインモデル「職場別就業承認ルート」を取得する(lấy domain「職場別就業承認ルート」)  ※ 就業ルート区分(申請か、確認か、任意項目か)
-						List<WorkplaceApprovalRoot> wpRootAllAtr = this.checkExistWp(lstWorkpalceRootInfor, WpId, typeV, empR);
-						if(!CollectionUtil.isEmpty(wpRootAllAtr)) {
-							wpRootAllAtr.stream().forEach(x -> {
-								approvalPhase.getAllApprovalPhasebyCode(x.getApprovalId()).stream()
-								.forEach(y -> {
-									approvalPhases.add(y);
-								});
-							});
-						}
-						//データが０件(data = 0)
-						if(CollectionUtil.isEmpty(wpRootAllAtr)
-								|| CollectionUtil.isEmpty(approvalPhases)) {
-							//ドメインモデル「職場別就業承認ルート」を取得する(lấy domain 「職場別就業承認ルート」)  ※・就業ルート区分(共通)
-							List<WorkplaceApprovalRoot> wpRootAppAtr = lstWorkpalceRootInfor
-									.stream()
-									.filter(x -> x.getWorkplaceId().contains(WpId))
-									.filter(x -> x.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.COMMON)
-									.collect(Collectors.toList());
-							//データが１件以上取得した場合(data >= 1)
-							if(!CollectionUtil.isEmpty(wpRootAppAtr)) {
-								//終了状態：承認ルートあり＋承認ルートのデータ(trang thai ket thuc: co approval route + du lieu approval route)
-								return true;
-							}							
-						}else {
-							//終了状態：承認ルートあり＋承認ルートのデータ(trang thai ket thuc: co approval route + du lieu approval route)
-							return true;
-						}
-					}
-				}else {
-					//Trong EAP chua co xu ly cho truong hop nay
-					return true;
+
+			// Input．ドメインモデル「個人別承認ルート」を取得する
+			// 【承認ルート区分＝「共通」に変えて「対象申請」は条件無しで個人別承認ルートを取得する】
+			lstPersonRoot = lstPersonRootInfor.stream().filter(i -> {
+				return i.getEmployeeId().equals(empInfor.getSId())
+						&& i.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.COMMON
+						&& i.getApprRoot().getSysAtr().value == sysAtr;
+			}).collect(Collectors.toList());
+			if (!lstPersonRoot.isEmpty()) {
+				List<ErrorContent> errorList = validateApproverOfApprovalRoot(
+						companyId,
+						empInfor.getSId(),
+						baseDate,
+						lstPersonRoot.stream().map(PersonApprovalRoot::getApprovalId).collect(Collectors.toList()),
+						sysAtr,
+						Optional.empty()
+				);
+				if (errorList.isEmpty()) return null;
+				return new UnregisteredApprovalCheckResult(1, true, Optional.empty(), errorList);
+			}
+		}
+
+		{
+			// 対象者の所属職場・部門を含める上位職場・部門を取得する
+			List<String> wkpIds = collectApprSv.getUpperIDIncludeSelf(companyId, empInfor.getSId(), baseDate, EnumAdaptor.valueOf(sysAtr, SystemAtr.class));
+			for (int i = 0; i < wkpIds.size(); i++) {
+				String wkpId = wkpIds.get(i);
+				// Input．ドメインモデル「職場別承認ルート」を取得する
+				// 【Loop中の「承認ルート区分、対象申請」を条件に職場別承認ルートを取得する】
+				List<WorkplaceApprovalRoot> lstWorkpalceRoot = lstWorkpalceRootInfor.stream().filter(w -> {
+					return w.getWorkplaceId().equals(wkpId)
+							&& w.getApprRoot().getEmploymentRootAtr() == rootAtr
+							&& checkPersonAppRoot(w.getApprRoot(), rootAtr, appTarget);
+				}).collect(Collectors.toList());
+				if (!lstWorkpalceRoot.isEmpty()) {
+					List<ErrorContent> errorList = validateApproverOfApprovalRoot(
+							companyId,
+							empInfor.getSId(),
+							baseDate,
+							lstWorkpalceRoot.stream().map(WorkplaceApprovalRoot::getApprovalId).collect(Collectors.toList()),
+							sysAtr,
+							Optional.empty()
+					);
+					if (errorList.isEmpty()) return null;
+					return new UnregisteredApprovalCheckResult(2, false, Optional.of(wkpId), errorList);
 				}
-			}else {
-				//終了状態：承認ルートあり＋承認ルートのデータ(trang thai ket thuc: co approval route + du lieu approval route)
-				return true;
+
+				// Input．ドメインモデル「職場別承認ルート」を取得する
+				// 【承認ルート区分＝「共通」に変えて「対象申請」は条件無しで職場別承認ルートを取得する】
+				lstWorkpalceRoot = lstWorkpalceRootInfor.stream().filter(w -> {
+					return w.getWorkplaceId().equals(wkpId)
+							&& w.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.COMMON
+							&& w.getApprRoot().getSysAtr().value == sysAtr;
+				}).collect(Collectors.toList());
+				if (!lstWorkpalceRoot.isEmpty()) {
+					List<ErrorContent> errorList = validateApproverOfApprovalRoot(
+							companyId,
+							empInfor.getSId(),
+							baseDate,
+							lstWorkpalceRoot.stream().map(WorkplaceApprovalRoot::getApprovalId).collect(Collectors.toList()),
+							sysAtr,
+							Optional.empty()
+					);
+					if (errorList.isEmpty()) return null;
+					return new UnregisteredApprovalCheckResult(2, true, Optional.of(wkpId), errorList);
+				}
 			}
-		}else {
-			//co du lieu nhung ko co phase
-			//終了状態：承認ルートあり＋承認ルートのデータ(trang thai ket thuc: co approval route + du lieu approval route)
-			return true;
 		}
-		//取得した所属職場ID＋その上位職場IDを先頭から最後までループする
-		//データが０件(data = 0)
-		//ドメインモデル「会社別就業承認ルート」を取得する(lấy dư liệu domain 「会社別就業承認ルート」) ※ 就業ルート区分(申請か、確認か、任意項目か)
-		List<CompanyApprovalRoot> companyRootAll = this.checkExistCom(lstCompanyRootInfor, typeV, empR);
-		if(!CollectionUtil.isEmpty(companyRootAll)) {
-			companyRootAll.stream().forEach(x -> {
-				approvalPhase.getAllApprovalPhasebyCode(x.getApprovalId()).stream()
-				.forEach(y -> {
-					approvalPhases.add(y);
-				});
-			});
-		}
-		//データが０件(data = 0)
-		if(CollectionUtil.isEmpty(companyRootAll)
-				||CollectionUtil.isEmpty(approvalPhases)) {
-			//ドメインモデル「会社別就業承認ルート」を取得する(lấy dữ liệu domain「会社別就業承認ルート」)  ※・就業ルート区分(共通)
-			List<CompanyApprovalRoot> companyRootCommonAtr = lstCompanyRootInfor.stream()
-					.filter(x -> x.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.COMMON)
-					.collect(Collectors.toList());
-			if(!CollectionUtil.isEmpty(companyRootCommonAtr)) {
-				companyRootCommonAtr.stream().forEach(x -> {
-					approvalPhase.getAllApprovalPhasebyCode(x.getApprovalId()).stream()
-					.forEach(y -> {
-						approvalPhases.add(y);
-					});
-				});
+
+		{
+			// Input．ドメインモデル「会社別承認ルート」を取得する
+			// 【Loop中の「承認ルート区分、対象申請」を条件に会社別承認ルートを取得する】
+			List<CompanyApprovalRoot> lstCompanyRoot = lstCompanyRootInfor.stream().filter(i -> {
+				return i.getCompanyId().equals(companyId)
+						&& i.getApprRoot().getEmploymentRootAtr() == rootAtr
+						&& checkPersonAppRoot(i.getApprRoot(), rootAtr, appTarget);
+			}).collect(Collectors.toList());
+			if (!lstCompanyRoot.isEmpty()) {
+				List<ErrorContent> errorList = validateApproverOfApprovalRoot(
+						companyId,
+						empInfor.getSId(),
+						baseDate,
+						lstCompanyRoot.stream().map(CompanyApprovalRoot::getApprovalId).collect(Collectors.toList()),
+						sysAtr,
+						Optional.empty()
+				);
+				if (errorList.isEmpty()) return null;
+				return new UnregisteredApprovalCheckResult(3, false, Optional.empty(), errorList);
 			}
-			if(CollectionUtil.isEmpty(companyRootCommonAtr)
-					||CollectionUtil.isEmpty(approvalPhases)) {
-				//終了状態：承認ルートなし(trang thai ket thuc : khong co approval route)
+
+			// Input．ドメインモデル「会社別承認ルート」を取得する
+			// 【承認ルート区分＝「共通」に変えて「相性申請」は条件無しで会社別承認ルートを取得する】
+			lstCompanyRoot = lstCompanyRootInfor.stream().filter(i -> {
+				return i.getCompanyId().equals(companyId)
+						&& i.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.COMMON
+						&& i.getApprRoot().getSysAtr().value == sysAtr;
+			}).collect(Collectors.toList());
+			if (!lstCompanyRoot.isEmpty()) {
+				List<ErrorContent> errorList = validateApproverOfApprovalRoot(
+						companyId,
+						empInfor.getSId(),
+						baseDate,
+						lstCompanyRoot.stream().map(CompanyApprovalRoot::getApprovalId).collect(Collectors.toList()),
+						sysAtr,
+						Optional.empty()
+				);
+				if (errorList.isEmpty()) return null;
+				return new UnregisteredApprovalCheckResult(3, true, Optional.empty(), errorList);
+			}
+		}
+
+		return new UnregisteredApprovalCheckResult();
+	}
+
+	private boolean checkPersonAppRoot(ApprovalRoot approvalRoot, EmploymentRootAtr rootAtr, String appTarget) {
+		switch (rootAtr) {
+			case APPLICATION:
+				return approvalRoot.getApplicationType() != null && approvalRoot.getApplicationType().isPresent()
+						&& approvalRoot.getApplicationType().get().value.toString().equals(appTarget);
+			case CONFIRMATION:
+				return approvalRoot.getConfirmationRootType() != null && approvalRoot.getApplicationType().isPresent()
+						&& approvalRoot.getConfirmationRootType().get().value.toString().equals(appTarget);
+			case NOTICE:
+				return approvalRoot.getNoticeId() != null
+						&& approvalRoot.getNoticeId().toString().equals(appTarget);
+			case BUS_EVENT:
+				return approvalRoot.getBusEventId() != null
+						&& approvalRoot.getBusEventId().equals(appTarget);
+			default:
 				return false;
-			}else {
-				//終了状態：承認ルートあり＋承認ルートのデータ(trang thai ket thuc: co approval route + du lieu approval route)
-				return true;
-			}
-		}else {
-			//終了状態：承認ルートあり＋承認ルートのデータ(trang thai ket thuc: co approval route + du lieu approval route)
-			return true;
 		}
 	}
 
-	private List<PersonApprovalRoot> checkExistPs(List<PersonApprovalRoot> lstPs, String sid, String typeV, int empR) {
-		List<PersonApprovalRoot> personRootAll = lstPs.stream()
-				.filter(x -> x.getEmployeeId().equals(sid))
-				.filter(x -> x.getApprRoot().getEmploymentRootAtr().value == empR)
-				.collect(Collectors.toList());
-		List<PersonApprovalRoot> lstR = new ArrayList<>();
-		switch(empR) {
-			case 0 :
-				lstR = personRootAll;
-				break;
-			case 1:
-				lstR = personRootAll.stream().filter(c -> c.getApprRoot().getApplicationType().value.equals(Integer.valueOf(typeV)))
-					.collect(Collectors.toList());
-				break;
-			case 2: 
-				lstR = personRootAll.stream().filter(c -> c.getApprRoot().getConfirmationRootType().value.equals(Integer.valueOf(typeV)))
-					.collect(Collectors.toList());
-				break;
-			case 4: 
-				lstR = personRootAll.stream().filter(c -> c.getApprRoot().getNoticeId().equals(Integer.valueOf(typeV)))
-					.collect(Collectors.toList());
-				break;
-			case 5: 
-				lstR = personRootAll.stream().filter(c -> c.getApprRoot().getBusEventId().equals(typeV))
-					.collect(Collectors.toList());
-				break;
-		}
-		return lstR;
-	}
-	private List<CompanyApprovalRoot> checkExistCom(List<CompanyApprovalRoot> lstCom, String typeV, int empR) {
-		List<CompanyApprovalRoot> comRootAll = lstCom.stream()
-				.filter(x -> x.getApprRoot().getEmploymentRootAtr().value == empR)
-				.collect(Collectors.toList());
-		List<CompanyApprovalRoot> lstR = new ArrayList<>();
-		switch(empR) {
-			case 0 :
-				lstR = comRootAll;
-				break;
-			case 1:
-				lstR = comRootAll.stream().filter(c -> c.getApprRoot().getApplicationType().value.equals(Integer.valueOf(typeV)))
-					.collect(Collectors.toList());
-				break;
-			case 2: 
-				lstR = comRootAll.stream().filter(c -> c.getApprRoot().getConfirmationRootType().value.equals(Integer.valueOf(typeV)))
-					.collect(Collectors.toList());
-				break;
-			case 4: 
-				lstR = comRootAll.stream().filter(c -> c.getApprRoot().getNoticeId().equals(Integer.valueOf(typeV)))
-					.collect(Collectors.toList());
-				break;
-			case 5: 
-				lstR = comRootAll.stream().filter(c -> c.getApprRoot().getBusEventId().equals(typeV))
-					.collect(Collectors.toList());
-				break;
-		}
-		return lstR;
-	}
-	private List<WorkplaceApprovalRoot> checkExistWp(List<WorkplaceApprovalRoot> lstWp, String wkpId, String typeV, int empR) {
-		List<WorkplaceApprovalRoot> wpRootAll = lstWp.stream()
-				.filter(x -> x.getWorkplaceId().equals(wkpId))
-				.filter(x -> x.getApprRoot().getEmploymentRootAtr().value == empR)
-				.collect(Collectors.toList());
-		List<WorkplaceApprovalRoot> lstR = new ArrayList<>();
-		switch(empR) {
-			case 0 :
-				lstR = wpRootAll;
-				break;
-			case 1:
-				lstR = wpRootAll.stream().filter(c -> c.getApprRoot().getApplicationType().value.equals(Integer.valueOf(typeV)))
-					.collect(Collectors.toList());
-				break;
-			case 2: 
-				lstR = wpRootAll.stream().filter(c -> c.getApprRoot().getConfirmationRootType().value.equals(Integer.valueOf(typeV)))
-					.collect(Collectors.toList());
-				break;
-			case 4: 
-				lstR = wpRootAll.stream().filter(c -> c.getApprRoot().getNoticeId().equals(Integer.valueOf(typeV)))
-					.collect(Collectors.toList());
-				break;
-			case 5: 
-				lstR = wpRootAll.stream().filter(c -> c.getApprRoot().getBusEventId().equals(typeV))
-					.collect(Collectors.toList());
-				break;
-		}
-		return lstR;
+	@Override
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public List<ErrorContent> validateApproverOfApprovalRoot(String companyId,
+												  String employeeId,
+												  GeneralDate baseDate,
+												  List<String> approvalIds,
+												  int sysAtr,
+												  Optional<Boolean> lowerApproval) {
+		List<ApprovalPhase> phases = approvalPhase.getAllApprovalPhaseByListId(approvalIds);
+
+		// 共通アルゴリズム「承認ルートを整理する」を実行する
+		LevelOutput output = collectApprSv.organizeApprovalRoute(
+				companyId,
+				employeeId,
+				baseDate,
+				phases,
+				EnumAdaptor.valueOf(sysAtr, SystemAtr.class),
+				lowerApproval
+		);
+
+		// 共通アルゴリズム「承認ルートの異常チェック」を実行する
+		List<ErrorContent> result = collectApprSv.checkApprovalRootSequentially(output);
+
+		return result;
 	}
 }

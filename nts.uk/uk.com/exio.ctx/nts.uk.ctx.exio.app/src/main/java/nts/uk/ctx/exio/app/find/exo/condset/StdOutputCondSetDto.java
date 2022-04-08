@@ -56,11 +56,15 @@ public class StdOutputCondSetDto {
 	 */
 	private int stringFormat;
 
+	private int encodeType;
+
+	private String fileName;
+
 	public static StdOutputCondSetDto fromDomain(StdOutputCondSet domain) {
 		return new StdOutputCondSetDto(domain.getCompanyId(), domain.getConditionSetCode().v(), domain.getCategoryId().v(),
 				domain.getDelimiter().value, domain.getItemOutputName().value, domain.getAutoExecution().value,
 				domain.getConditionSetName().v(), domain.getConditionOutputName().value,
-				domain.getStringFormat().value);
+				domain.getStringFormat().value,domain.getEncodeType().value,domain.getFileName().map(i->i.v()).orElse(null));
 	}
 
 }

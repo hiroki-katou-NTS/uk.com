@@ -5,10 +5,10 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 期間別のフレックス時間
@@ -25,7 +25,7 @@ public class FlexTimeByPeriod implements Cloneable {
 	private AttendanceTimeMonth flexShortageTime;
 	/** 事前フレックス時間 */
 	private AttendanceTimeMonth beforeFlexTime;
-	
+
 	/**
 	 * コンストラクタ
 	 */
@@ -105,6 +105,18 @@ public class FlexTimeByPeriod implements Cloneable {
 			}
 			this.beforeFlexTime = this.beforeFlexTime.addMinutes(beforeFlexMinutes);
 		}
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(FlexTimeByPeriod target){
+		
+		this.flexTime = this.flexTime.addMinutes(target.flexTime.v());
+		this.flexExcessTime = this.flexExcessTime.addMinutes(target.flexExcessTime.v());
+		this.flexShortageTime = this.flexShortageTime.addMinutes(target.flexShortageTime.v());
+		this.beforeFlexTime = this.beforeFlexTime.addMinutes(target.beforeFlexTime.v());
 	}
 	
 	/**

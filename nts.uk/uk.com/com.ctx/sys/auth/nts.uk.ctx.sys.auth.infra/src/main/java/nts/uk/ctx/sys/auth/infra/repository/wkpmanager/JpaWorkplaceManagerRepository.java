@@ -291,4 +291,9 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 		this.getEntityManager().flush();
 	}
 
+	@Override
+	public Optional<WorkplaceManager> findWkpMngByEmpWkpDate(String employeeID, String workplaceID, GeneralDate date) {
+		return this.findListWkpManagerByEmpIdAndBaseDate(employeeID, date).stream().filter(x -> x.getWorkplaceId().equals(workplaceID)).findAny();
+	}
+
 }

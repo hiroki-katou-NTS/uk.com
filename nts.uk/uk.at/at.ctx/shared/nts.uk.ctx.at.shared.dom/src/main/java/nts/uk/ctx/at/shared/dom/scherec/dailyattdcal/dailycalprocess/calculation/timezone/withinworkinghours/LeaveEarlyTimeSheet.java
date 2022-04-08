@@ -34,7 +34,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author ken_takasu
  */
 @Getter
-public class LeaveEarlyTimeSheet {
+public class LeaveEarlyTimeSheet implements Cloneable {
 	
 	//計上用遅刻早退時間帯
 	//早退していない場合はempty
@@ -430,5 +430,18 @@ public class LeaveEarlyTimeSheet {
 				record,
 				deducation,
 				this.workNo));
+	}
+	
+	public LeaveEarlyTimeSheet clone() {
+		LeaveEarlyTimeSheet clone = new LeaveEarlyTimeSheet(this.forRecordTimeSheet, this.forDeducationTimeSheet, this.workNo);
+		try {
+			clone.forRecordTimeSheet = this.forRecordTimeSheet.map(r -> r.clone());
+			clone.forDeducationTimeSheet = this.forDeducationTimeSheet.map(d -> d.clone());
+			clone.workNo = this.workNo;
+		}
+		catch (Exception e) {
+			throw new RuntimeException("LeaveEarlyTimeSheet clone error.");
+		}
+		return clone;
 	}
 }

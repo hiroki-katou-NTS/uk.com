@@ -2,101 +2,136 @@ package nts.uk.ctx.bs.employee.dom.workplace.group;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
+import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.EmployeeAffiliation;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupGettingService.Require;
 
 @RunWith(JMockit.class)
 public class WorkplaceGroupGettingServiceTest {
 
-	@Injectable
-	private Require require;
-	/**
-	 *  require.職場グループ所属情報を取得する( $職場IDリスト ) is empty
-	 */
-	@Test
-	public void testGet() {
-		GeneralDate date = GeneralDate.today();
-		List<String> employeeIDs = Arrays.asList("emp1","emp2","emp3");
-		String wkp = "wkp1";
-		new Expectations() {
-			{
-				require.getAffWkpHistItemByEmpDate(anyString, date);
-				result = wkp;
+	@Injectable private Require require;
 
-				require.getWGInfo(Arrays.asList(wkp));
-			}
-		};
 
-		List<EmployeeAffiliation> datas = WorkplaceGroupGettingService.get(require, date, employeeIDs);
-		assertThat(datas)
-		.extracting(d->d.getEmployeeID(),d->d.getEmployeeCode(),d->d.getBusinessName(),d->d.getWorkplaceID(),d->d.getWorkplaceGroupID())
-		.containsExactly(
-				tuple(employeeIDs.get(0),Optional.empty(),Optional.empty(),wkp,Optional.empty()),
-				tuple(employeeIDs.get(1),Optional.empty(),Optional.empty(),wkp,Optional.empty()),
-				tuple(employeeIDs.get(2),Optional.empty(),Optional.empty(),wkp,Optional.empty())
-				);
-	}
 
 	/**
-	 *  require.職場グループ所属情報を取得する( $職場IDリスト ) is not empty
+	 * Target	: get
 	 */
 	@Test
-	public void testGet_1() {
-		GeneralDate date = GeneralDate.today();
-		List<String> employeeIDs = Arrays.asList("emp1","emp2","emp3","emp4");
-		String wkp1 = "wkp1";
-		String wkp2 = "wkp2";
-		String wkp3 = "wkp3";
-		String wkp4 = "wkp4";
-		String wkpGroup1 = "wKPGRPID1";
-		String wkpGroup2 = "wKPGRPID2";
-		List<AffWorkplaceGroup> listAffWorkplaceGroup = Arrays.asList(
-				new AffWorkplaceGroup(wkpGroup1, wkp1) ,
-				new AffWorkplaceGroup(wkpGroup2, wkp2),
-				new AffWorkplaceGroup(wkpGroup1, wkp3)
+	public void test_get() {
+
+		/* 【マスタ状態】 */
+		/* ========================================
+		 *  職場グループ	| 職場		| 社員
+		 * ========================================
+		 *  wkp-grp-id-1	| wkp-id-1	| emp-id-5
+		 * 					|----------------------
+		 * 					| wkp-id-4	| emp-id-6
+		 * ----------------------------------------
+		 *  wkp-grp-id-2	| wkp-id-3	| emp-id-2
+		 * ----------------------------------------
+		 * 	--				| wkp-id-2	| emp-id-1
+		 * 					|			|----------
+		 * 					|			| emp-id-4
+		 * 					|----------------------
+		 * 					| wkp-id-5	| emp-id-7
+		 * 					|----------------------
+		 * 					| --		| emp-id-3
+		 * ========================================
+		 */
+		// 社員 - 職場
+		@SuppressWarnings("serial")
+		val data_emp_wkp = new HashMap<String, Optional<String>>() {{
+
+			put( "emp-id-1", Optional.of( "wkp-id-2" ) );
+			put( "emp-id-2", Optional.of( "wkp-id-3" ) );
+			put( "emp-id-3", Optional.empty() );
+			put( "emp-id-4", Optional.of( "wkp-id-2" ) );
+			put( "emp-id-5", Optional.of( "wkp-id-1" ) );
+			put( "emp-id-6", Optional.of( "wkp-id-4" ) );
+			put( "emp-id-7", Optional.of( "wkp-id-5" ) );
+
+		}};
+		data_emp_wkp.entrySet().forEach( entry -> {
+
+			new Expectations() {{
+				// require.社員が所属している職場を取得する
+				require.getAffWkpHistItemByEmpDate( entry.getKey(), (GeneralDate)any );
+				result = entry.getValue();
+			}};
+
+		} );
+
+		// 職場 - 職場グループ
+		@SuppressWarnings("serial")
+		val data_wkp_wkpGrp = new HashMap<String, Optional<String>>() {{
+
+			put( "wkp-id-1", Optional.of( "wkp-grp-id-1" ) );
+			put( "wkp-id-2", Optional.empty() );
+			put( "wkp-id-3", Optional.of( "wkp-grp-id-2" ) );
+			put( "wkp-id-4", Optional.of( "wkp-grp-id-1" ) );
+			put( "wkp-id-5", Optional.empty() );
+
+		}};
+		new Expectations() {{
+			// require.職場グループ所属情報を取得する
+			require.getWGInfo( data_emp_wkp.values().stream().flatMap(OptionalUtil::stream).distinct().collect(Collectors.toList()) );
+			result = data_wkp_wkpGrp.entrySet().stream()
+					.filter( entry -> entry.getValue().isPresent() )
+					.map( entry -> new AffWorkplaceGroup( entry.getValue().get(), entry.getKey() ) )
+					.collect(Collectors.toList());
+		}};
+
+
+		/* 実行 */
+		val result = WorkplaceGroupGettingService.get(
+						require, GeneralDate.today()
+					,	data_emp_wkp.keySet().stream().collect(Collectors.toList())
 				);
 
-		new Expectations() {
-			{
-				require.getAffWkpHistItemByEmpDate("emp1", date);
-				result = wkp1;
+		/* 期待値 */
+		/* ========================================
+		 * 社員		| 職場		| 職場グループ
+		 * ========================================
+		 * emp-id-1	| wkp-id-2	| --
+		 * emp-id-2	| wkp-id-3	| wkp-grp-id-2
+		 * emp-id-4	| wkp-id-2	| --
+		 * emp-id-5	| wkp-id-1	| wkp-grp-id-1
+		 * emp-id-6	| wkp-id-4	| wkp-grp-id-1
+		 * emp-id-7	| wkp-id-5	| --
+		 * ======================================== */
+		// 表示情報 -> 常にempty
+		assertThat( result ).extracting( EmployeeAffiliation::getEmployeeCode ).containsOnly( Optional.empty() );
+		assertThat( result ).extracting( EmployeeAffiliation::getBusinessName ).containsOnly( Optional.empty() );
 
-				require.getAffWkpHistItemByEmpDate("emp2", date);
-				result = wkp2;
+		// 所属職場のない社員を含まない
+		assertThat( result ).extracting( EmployeeAffiliation::getEmployeeID ).doesNotContain( "emp-id-3" );
 
-				require.getAffWkpHistItemByEmpDate("emp3", date);
-				result = wkp3;
+		assertThat( result )
+			.extracting(
+					EmployeeAffiliation::getEmployeeID			// 社員ID
+				,	EmployeeAffiliation::getWorkplaceID			// 職場ID
+				,	EmployeeAffiliation::getWorkplaceGroupID	// 職場グループID
+			).containsExactlyInAnyOrder(
+					tuple( "emp-id-1", "wkp-id-2", Optional.empty() )
+				,	tuple( "emp-id-2", "wkp-id-3", Optional.of( "wkp-grp-id-2" ) )
+				,	tuple( "emp-id-4", "wkp-id-2", Optional.empty() )
+				,	tuple( "emp-id-5", "wkp-id-1", Optional.of( "wkp-grp-id-1" ) )
+				,	tuple( "emp-id-6", "wkp-id-4", Optional.of( "wkp-grp-id-1" ) )
+				,	tuple( "emp-id-7", "wkp-id-5", Optional.empty() )
+			);
 
-				require.getAffWkpHistItemByEmpDate("emp4", date);
-				result = wkp4;
-
-				require.getWGInfo(withAny(new ArrayList<>()));
-				result = listAffWorkplaceGroup;
-			}
-		};
-
-
-		List<EmployeeAffiliation> datas = WorkplaceGroupGettingService.get(require, date, employeeIDs);
-		assertThat(datas)
-		.extracting(d->d.getEmployeeID(),d->d.getEmployeeCode(),d->d.getBusinessName(),d->d.getWorkplaceID(),d->d.getWorkplaceGroupID())
-		.containsExactly(
-				tuple(employeeIDs.get(0),Optional.empty(),Optional.empty(),wkp1,Optional.of(wkpGroup1)),
-				tuple(employeeIDs.get(1),Optional.empty(),Optional.empty(),wkp2,Optional.of(wkpGroup2)),
-				tuple(employeeIDs.get(2),Optional.empty(),Optional.empty(),wkp3,Optional.of(wkpGroup1)),
-				tuple(employeeIDs.get(3),Optional.empty(),Optional.empty(),wkp4,Optional.empty())
-				);
 	}
 
 }

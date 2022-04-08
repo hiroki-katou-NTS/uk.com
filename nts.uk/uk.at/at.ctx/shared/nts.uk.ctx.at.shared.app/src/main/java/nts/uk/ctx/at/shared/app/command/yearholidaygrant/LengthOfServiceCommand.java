@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.yearholidaygrant;
 
 import lombok.Value;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfService;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -36,9 +37,8 @@ public class LengthOfServiceCommand {
 	 * Convert to domain object
 	 * @return
 	 */
-	public LengthServiceTbl toDomain() {
-		String companyId = AppContexts.user().companyId();
-		
-		return  LengthServiceTbl.createFromJavaType(companyId, yearHolidayCode, grantNum, allowStatus, standGrantDay,year, month);
+	public LengthOfService toDomain() {
+
+		return  LengthOfService.createFromJavaType(grantNum, allowStatus, standGrantDay,year, month);
 	}
 }

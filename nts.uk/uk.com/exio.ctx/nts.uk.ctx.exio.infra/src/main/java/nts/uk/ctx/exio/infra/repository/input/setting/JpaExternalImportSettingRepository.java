@@ -16,14 +16,12 @@ import nts.uk.ctx.exio.dom.input.setting.DomainImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
-import nts.uk.ctx.exio.dom.input.setting.FromCsvBaseSettingToDomainRequire;
 import nts.uk.ctx.exio.dom.input.setting.ImportSettingBaseType;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtDomainImportSetting;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtDomainImportSettingPK;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtImportSetting;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtImportSettingPK;
 import nts.uk.ctx.exio.infra.entity.input.setting.assembly.XimmtItemMapping;
-import nts.uk.ctx.exio.infra.entity.input.setting.assembly.XimmtItemMappingPK;
 
 @Stateless
 public class JpaExternalImportSettingRepository extends JpaRepository implements ExternalImportSettingRepository {
@@ -63,16 +61,16 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 	}
 
 	@Override
-	public List<ExternalImportSetting> getCsvBase(FromCsvBaseSettingToDomainRequire require, String companyId) {
-		return getByBaseType(Optional.of(require), companyId, ImportSettingBaseType.CSV_BASE);
+	public List<ExternalImportSetting> getCsvBase(String companyId) {
+		return getByBaseType(companyId, ImportSettingBaseType.CSV_BASE);
 	}
 
 	@Override
 	public List<ExternalImportSetting> getDomainBase(String companyId) {
-		return getByBaseType(Optional.empty(), companyId, ImportSettingBaseType.DOMAIN_BASE);
+		return getByBaseType(companyId, ImportSettingBaseType.DOMAIN_BASE);
 	}
 
-	private List<ExternalImportSetting> getByBaseType(Optional<FromCsvBaseSettingToDomainRequire> require, String companyId, ImportSettingBaseType baseType) {
+	private List<ExternalImportSetting> getByBaseType(String companyId, ImportSettingBaseType baseType) {
 		String sql 	= " select f "
 				+ " from XimmtImportSetting f "
 				+ " where f.pk.companyId = :companyID "
@@ -81,7 +79,7 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 		List<ExternalImportSetting> domains = this.queryProxy().query(sql, XimmtImportSetting.class)
 				.setParameter("companyID", companyId)
 				.setParameter("baseType", baseType.value)
-				.getList(rec -> rec.toDomain(require));
+				.getList(rec -> rec.toDomain());
 		
 		domains.forEach(d -> {
 			List<DomainImportSetting> domainImportSettings = domainImportSettings(
@@ -101,7 +99,7 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 
 		List<ExternalImportSetting> domains = this.queryProxy().query(sql, XimmtImportSetting.class)
 				.setParameter("companyID", companyId)
-				.getList(rec -> rec.toDomain(Optional.empty()));
+				.getList(rec -> rec.toDomain());
 		
 		domains.forEach(d -> {
 			List<DomainImportSetting> domainImportSettings = domainImportSettings(
@@ -114,7 +112,7 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 	}
 
 	@Override
-	public Optional<ExternalImportSetting> get(Optional<FromCsvBaseSettingToDomainRequire> require, String companyId, ExternalImportCode settingCode) {
+	public Optional<ExternalImportSetting> get(String companyId, ExternalImportCode settingCode) {
 		
 		String sql 	= " select f "
 					+ " from XimmtImportSetting f "
@@ -124,7 +122,7 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 		Optional<ExternalImportSetting> domain = this.queryProxy().query(sql, XimmtImportSetting.class)
 				.setParameter("companyID", companyId)
 				.setParameter("settingCD", settingCode.toString())
-				.getSingle(rec -> rec.toDomain(require));
+				.getSingle(rec -> rec.toDomain());
 		
 		if(domain.isPresent()) {
 			List<DomainImportSetting> domainImportSettings = domainImportSettings(companyId, settingCode, domain.get().getCsvFileInfo());
@@ -158,17 +156,15 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 	}
 
 	private XimmtDomainImportSetting toEntitiy(String cid, String settingCode, DomainImportSetting domain) {
+		
+		val domainSettingPk = new XimmtDomainImportSettingPK(cid, settingCode, domain.getDomainId().value);
+		
 		List<XimmtItemMapping> mappings = domain.getAssembly().getMapping().getMappings().stream()
-		.map(m -> new XimmtItemMapping(
-				new XimmtItemMappingPK(cid, settingCode, domain.getDomainId().value, m.getItemNo()),
-				m.isFixedValue(),
-				m.getCsvColumnNo().orElse(null),
-				m.getFixedValue().map(fv -> fv.getValue()).orElse(null)
-		))
-		.collect(Collectors.toList());
+				.map(m -> XimmtItemMapping.toEntity(domainSettingPk, m))
+				.collect(Collectors.toList());
 		
 		return new XimmtDomainImportSetting(
-				new XimmtDomainImportSettingPK(cid, settingCode, domain.getDomainId().value),
+				domainSettingPk,
 				domain.getImportingMode().value,
 				mappings
 			);
@@ -176,7 +172,7 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 
 	@Override
 	public boolean exist(String companyId, ExternalImportCode settingCode) {
-		return this.get(Optional.empty() , companyId, settingCode).isPresent();
+		return this.get(companyId, settingCode).isPresent();
 	}
 
 	@Override

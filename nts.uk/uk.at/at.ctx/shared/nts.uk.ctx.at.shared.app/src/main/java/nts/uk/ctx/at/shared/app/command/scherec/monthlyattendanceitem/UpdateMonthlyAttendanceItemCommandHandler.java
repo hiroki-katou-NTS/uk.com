@@ -93,6 +93,16 @@ public class UpdateMonthlyAttendanceItemCommandHandler extends CommandHandler<Up
 			public int getAttendanceItemId() {
 				return monthlyAttendanceItem.getAttendanceItemId();
 			}
+
+			@Override
+			public boolean getUseAnyPeriod() {
+				return monthlyAttendanceItem.isUseAnyPeriod();
+			}
+
+			@Override
+			public boolean getUseMonthResult() {
+				return monthlyAttendanceItem.isUseMonthResult();
+			}
 		}));
 	}
 

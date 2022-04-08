@@ -48,11 +48,8 @@ public class DeleteHistoryCmm053Impl implements DeleteHistoryCmm053Service {
 				String historyId  = deleteItem.getApprRoot().getHistoryItems().get(0).getHistoryId();
 				Optional<ApprovalPhase> approvalPhase = this.repoAppPhase.getApprovalFirstPhase(approvalId);
 				if (approvalPhase.isPresent()) {
-					int phaseOrder = approvalPhase.get().getPhaseOrder();
 					// 「個人別就業承認ルート」に紐付く「分岐」「承認ルート」を削除する
-					//Delete table Approver
-					this.repoApprover.deleteAllApproverByAppPhId(approvalId, phaseOrder);
-					//Delete table Approver
+					//Delete table Approver and Approval Phase
 					this.repoAppPhase.deleteAllAppPhaseByApprovalId(approvalId);
 					//Delete table Branch
 					// this.repoBranch.deleteBranch(companyId, deleteItem.getApprRoot().getBranchId());

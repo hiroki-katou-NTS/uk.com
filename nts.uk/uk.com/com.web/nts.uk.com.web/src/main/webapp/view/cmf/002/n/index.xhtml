@@ -46,7 +46,7 @@
 																 value: atWorkOutput,
 																 constraint: 'DataTypeFixedValue',
 																 option : {width : '260px'},
-															     enable: $vm.enableAtWorkOutput(), 
+															     enable: $vm.enableAtWorkOutput,
 															     name: '#[CMF002_211]',
 															     required: false,
 															     optionsText: 'name'}, 
@@ -64,7 +64,7 @@
 								<input id="N2_2_2" tabindex="2" style="width: 80px;"
 									data-bind="ntsTextEditor: { 
 																 value: absenceOutput,
-															     enable: $vm.enableAbsenceOutput(),
+															     enable: $vm.enableAbsenceOutput,
 															     constraint: 'DataTypeFixedValue',
 																 option : {width : '260px'}, 
 															     name: '#[CMF002_212]',
@@ -84,7 +84,7 @@
 								<input id="N2_3_2" tabindex="3" style="width: 80px;"
 									data-bind="ntsTextEditor: {
 																 value: retirementOutput, 
-															     enable: $vm.retirementOutput(),
+															     enable: $vm.retirementOutput,
 															     constraint: 'DataTypeFixedValue',
 																 option : {width : '260px'}, 
 															     name: '#[CMF002_213]',
@@ -103,7 +103,7 @@
 								<input id="N2_4_2" tabindex="4" style="width: 80px;"
 									data-bind="ntsTextEditor: { 
 																 value: closedOutput,
-															     enable: $vm.enableCloseOutput(),
+															     enable: $vm.enableCloseOutput,
 															     constraint: 'DataTypeFixedValue',
 																 option : {width : '260px'}, 
 															     name: '#[CMF002_214]',

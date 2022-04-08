@@ -48,6 +48,8 @@
 				
 				.color-schedule-performance {color:#008000 !important;}
 				
+				.bg-schedule-support-2 {background-color: #fedfe6;}
+				
 			</style>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
@@ -83,7 +85,7 @@
 					<button  id="A1_6"  class="release marginleft15px" tabindex="6" data-bind="click: openDialogK">#{i18n.getText('KSU001_6')}</button>
 
 					<button  id="A1_7" tabindex="7">#{i18n.getText('KSU001_7')}</button>
-					<button  id="A1_8" tabindex="10" class="hope     marginleft15px" >#{i18n.getText('KSU001_8')}</button>
+					<button  id="A1_8" tabindex="10" class="hope     marginleft15px" data-bind="click: openKDL016">#{i18n.getText('KSU001_8')}</button>
 					<button  id="A1_9" tabindex="11" class="vacation marginleft15px" data-bind="click: btnOpenKDL055">#{i18n.getText('KSU001_9')}</button>
 
 					<div id="A1_10" class="marginleft15px"
@@ -235,29 +237,29 @@
 					<div class="ml-2">
 						<div>
 							<div class="popup-div">
-								<div id="" class="square bg-schedule-uncorrectable"></div>
+								<div id="" class="square bg-schedule-uncorrectable-v6-5"></div>
 								<span id="A5_2_2">#{i18n.getText('KSU001_309')}</span>
 							</div>
 							<div class="popup-div">
-								<div id="" class="square bg-daily-alter-self"></div>
+								<div id="" class="square bg-daily-alter-self-v6-5"></div>
 								<span id="A5_2_3">#{i18n.getText('KSU001_310')}</span>
 							</div>
 							<div class="popup-div">
-								<div id="" class="square bg-daily-alter-other"></div>
+								<div id="" class="square bg-daily-alter-other-v6-5"></div>
 								<span id="A5_2_4">#{i18n.getText('KSU001_311')}</span>
 							</div>
 						</div>
 						<div class="div-popup">
 							<div class="popup-div">
-								<div id="" class="square bg-daily-reflect-application"></div>
+								<div id="" class="square bg-daily-reflect-application-v6-5"></div>
 								<span id="A5_2_5">#{i18n.getText('KSU001_312')}</span>
 							</div>
 							<div class="popup-div">
-								<div id="" class="square bg-schedule-fixed"></div>
+								<div id="" class="square bg-schedule-fixed-v6-5"></div>
 								<span id="A5_2_6">#{i18n.getText('KSU001_313')}</span>
 							</div>
 							<div class="popup-div">
-								<div id="" class="square bg-schedule-support"></div>
+								<div id="" class="square bg-schedule-support-v6-5"></div>
 								<span id="A5_2_7">#{i18n.getText('KSU001_314')}</span>
 							</div>
 						</div>
@@ -268,21 +270,21 @@
 					<div class="ml-2">
 						<div>
 							<div class="popup-div">
-								<div id="" class="square background-attendance"></div>
+								<div id="" class="square background-attendance-v6-5"></div>
 								<span id="A5_3_2">#{i18n.getText('KSU001_315')}</span>
 							</div>
 							<div class="popup-div">
-								<div id="" class="square background-holiday"></div>
+								<div id="" class="square background-holiday-v6-5"></div>
 								<span id="A5_3_3">#{i18n.getText('KSU001_316')}</span>
 							</div>
 							<div class="popup-div">
-								<div id="" class="square background-half-day-work"></div>
+								<div id="" class="square background-half-day-work-v6-5"></div>
 								<span id="A5_3_4">#{i18n.getText('KSU001_317')}</span>
 							</div>
 						</div>
 						<div class="div-popup">
 							<div class="popup-div">
-								<div id="" class="square background-schedule-performance"></div>
+								<div id="" class="square background-schedule-performance-v6-5"></div>
 								<span id="A5_3_5">#{i18n.getText('KSU001_318')}</span>
 							</div>
 						</div>
@@ -293,22 +295,41 @@
 					<div class="ml-2">
 						<div>
 							<div class="popup-div">
-								<div id="" class="square bg-schedule-saturday"></div>
+								<div id="" class="square bg-schedule-saturday-v6-5"></div>
 								<span id="A5_4_2">#{i18n.getText('KSU001_319')}</span>
 							</div>
 							<div class="popup-div">
-								<div id="" class="square bg-schedule-sunday"></div>
+								<div id="" class="square bg-schedule-sunday-v6-5"></div>
 								<span id="A5_4_3">#{i18n.getText('KSU001_320')}</span>
 							</div>
 							<div class="popup-div">
-								<div id="" class="square bg-schedule-specific-date"></div>
+								<div id="" class="square bg-schedule-specific-date-v6-5"></div>
 								<span id="A5_4_4">#{i18n.getText('KSU001_321')}</span>
 							</div>
 						</div>
 						<div class="div-popup">
 							<div class="popup-div">
-								<div id="" class="square bg-schedule-that-day"></div>
+								<div id="" class="square bg-schedule-that-day-v6-5"></div>
 								<span id="A5_4_5">#{i18n.getText('KSU001_322')}</span>
+							</div>
+						</div>
+					</div>
+					
+					<span id="A5_5">#{i18n.getText('KSU001_4160')}</span>
+					<hr />
+					<div class="ml-2">
+						<div>
+							<div class="popup-div">
+								<i style="vertical-align: top" data-bind="ntsIcon: { no: 30 ,width: 20, height: 20 }"></i>
+								<span id="A5_5_2">#{i18n.getText('KSU001_4161')}</span>
+							</div>
+							<div class="popup-div">
+								<i style="vertical-align: top" data-bind="ntsIcon: { no: 31 ,width: 20, height: 20 }"></i>
+								<span id="A5_5_3">#{i18n.getText('KSU001_4162')}</span>
+							</div>
+							<div class="popup-div">
+								<i style="vertical-align: top" data-bind="ntsIcon: { no: 32 ,width: 20, height: 20  }"></i>
+								<span id="A5_5_4">#{i18n.getText('KSU001_4163')}</span>
 							</div>
 						</div>
 					</div>
@@ -345,18 +366,22 @@
 												data-bind="click: nextMonth, timeClick: -1">＞</button>
 										</div>
 									</div>
+									<div class="contents">
+										<div class="func-label">表示<br/>内容</div>
+										<div>
+											<button style="margin-left: 10px" id="A4" tabindex="29" data-bind="enable: true ">#{i18n.getText('KSU001_67')}</button>	
+											<button id="A5" tabindex="33">凡例</button>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 						<div id="content-main">
 							<div class="main-controls">
 								<div id="contain-view-left">
-									<button id="A6_1" tabindex="34" class="editMode" style="height: 38px;"
-										data-bind="click: editMode ">#{i18n.getText('KSU001_140')}</button>
-									<br />
-									<button id="A6_2" tabindex="35" class="confirmMode"
-										style="height: 38px; margin-top: 6px;"
-										data-bind="click: confirmMode ">#{i18n.getText('KSU001_141')}</button>
+										<button id="A6_1" tabindex="34" class="editMode" data-bind="click: editMode ">#{i18n.getText('KSU001_140')}</button>
+										<br />
+										<button id="A6_2" tabindex="35" class="confirmMode" style="margin-top: 6px;" data-bind="click: confirmMode ">#{i18n.getText('KSU001_141')}</button>
 								</div>
 								<div id="contain-view-right" class="inline">
 									<div id="group-bt">
@@ -390,29 +415,23 @@
 									</div>
 								</div>
 							</div>
-							<div class="right-end">
-								<button id="A5" tabindex="33">凡例</button>
-								<button id="A4" tabindex="29" data-bind="enable: true ">#{i18n.getText('KSU001_67')}</button>
-								<button class="settingHeightGrid"> <i data-bind="ntsIcon: { no: 3 }"></i> </button>
-							</div>
 							<div style="width: fit-content;">
 								<div id = "btnControlLeftRight">
-									<button id = "A13" class="toLeft inline" data-bind="click : toLeft"> <i class="iconToLeft" data-bind="ntsIcon : { no: 152, width: 15, height: 20 }"></i></button>
-									<button id = "A14" class="toRight inline" data-bind="visible: showA11, click: toRight"><i class="iconToRight " data-bind="ntsIcon: { no: 153, width: 15, height: 20 }"></i></button>
+									<button id ="btn-expand-left" class="inline" data-bind="click : expandLeft"> <i class="icon-expand-left" data-bind="ntsIcon : { no: 152, width: 15, height: 20 }"></i></button>
+									<button id='btn-expand-right' class="inline" data-bind="visible: showA11, click: expandRight"> <i class="icon-expand-right" data-bind="ntsIcon: { no: 153, width: 15, height: 20 }"></i> </button>
 								</div>
 								<div id = "sub-content-main">
-									<div style="float: left;width: 28px; height: 349px;">
-										<div data-bind="if: showA12">
-											<button class="toDown inline" data-bind="click : toDown"><i class="iconToDown" data-bind="ntsIcon : { no: 150,width: 15, height: 20 }"></i></button>
-										</div>
-									</div>
-									<div id="extable-outside" style="float: left">
-										<div id="extable"></div>
-									</div>
+									<div id="extable" style="float: left; margin-left: 28px"></div>
 								</div>
 							</div>
 						</div>
 					</div>
+				</div>
+				<div id="cacheHeightGrid">
+					<button style="display: none" id='heightGrid' class="settingHeightGrid"> <i data-bind="ntsIcon: { no: 3 }"></i> </button>
+				</div>
+				<div id="cacheExpandBottom">
+					<button style="display:'none'" id="btn-expand-bottom" data-bind="click : expandBottom"><i class="icon-expand-bottom" data-bind="ntsIcon : { no: 150,width: 15, height: 20 }"></i></button>
 				</div>
 				<div id="cacheDiv">
 					<div id="vertDiv" style="display: none; text-align: left;">

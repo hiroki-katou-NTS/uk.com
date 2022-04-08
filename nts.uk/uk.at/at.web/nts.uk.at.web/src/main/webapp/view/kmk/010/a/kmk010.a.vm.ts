@@ -7,6 +7,7 @@ module nts.uk.at.view.kmk010.a {
     import PremiumExtra60HRateDto = service.model.PremiumExtra60HRateDto;
     import SuperHD60HConMedDto = service.model.SuperHD60HConMedDto;
     import OvertimeNameLangDto = service.model.OvertimeNameLangDto;
+    import getText = nts.uk.resource.getText;
 
     export module viewmodel {
 
@@ -458,8 +459,7 @@ module nts.uk.at.view.kmk010.a {
                 this.attendanceItemName = ko.observable('');
                 this.requiredText = ko.observable(true);
             }
-
-           public updateData(dto: OutsideOTBRDItemDto, isUpdate: boolean) {
+            public updateData(dto: OutsideOTBRDItemDto, isUpdate: boolean, listAllIdTemp: any, dataTemp: any) {
                 var self = this;
                 this.useClassification(dto.useClassification);
                 this.breakdownItemNo(dto.breakdownItemNo);
@@ -467,18 +467,32 @@ module nts.uk.at.view.kmk010.a {
                 this.languageName(dto.name);
                 this.productNumber(dto.productNumber);
                 self.attendanceItemIds(dto.attendanceItemIds);
+                let listIdNotUse: Array<number> = [];
                 if (isUpdate && self.attendanceItemIds() && self.attendanceItemIds().length > 0) {
-                    nts.uk.at.view.kmk010.a.service.findAllMonthlyAttendanceItem().done(function(data) {
-                        var selectedName: string[] = [];
-                        for (var item of data) {
-                            for (var id of self.attendanceItemIds()) {
-                                if (id == item.attendanceItemId) {
+                    //set source                              
+                    let listAllId: any = listAllIdTemp;
+                    listIdNotUse = _.difference(self.attendanceItemIds(), listAllId);
+                    var selectedName: string[] = [];
+                    for (var item of dataTemp) {
+                        for (var id of self.attendanceItemIds()) {
+                            if (id == item.attendanceItemId) {
+                                let count = 0;
+                                for (let i = 0; i < listIdNotUse.length; i++) {
+                                    if (listIdNotUse[i] === id) {
+                                        count++;
+                                        break;
+                                    }
+                                }
+                                if (count === 0) {
                                     selectedName.push(item.attendanceItemName);
+                                } else {
+                                    selectedName.push(getText('KMK010_90'));
                                 }
                             }
                         }
                         self.attendanceItemName(selectedName.join(' + '));
-                    });
+                    }
+
                 }
             }
 
@@ -561,7 +575,11 @@ module nts.uk.at.view.kmk010.a {
             overtimes: KnockoutObservableArray<OvertimeModel>;
             breakdownItems: KnockoutObservableArray<OutsideOTBRDItemModel>;
             roundingUnit:  KnockoutObservable<number>;
-            roundingProcess:  KnockoutObservable<number>; 
+            roundingProcess:  KnockoutObservable<number>;
+            // Start: Add data temp
+            listAllIdTemp: any;
+            dataTemp: any;
+            // End: Add data temp
 
             constructor() {
                 this.note = ko.observable('');
@@ -573,26 +591,57 @@ module nts.uk.at.view.kmk010.a {
             }
 
             updateData(dto: OutsideOTSettingDto) {
-                this.note(dto.note);
-                this.calculationMethod(dto.calculationMethod);
-                this.overtimes();
+                const self = this;
+                self.note(dto.note);
+                self.calculationMethod(dto.calculationMethod);
+                self.overtimes();
                 var dataOvertimeModel: OvertimeModel[] = [];
                 for (var overtime of dto.overtimes) {
                     var model: OvertimeModel = new OvertimeModel();
                     model.updateData(overtime);
                     dataOvertimeModel.push(model);
                 }
-                this.overtimes(dataOvertimeModel);
-                var dataBreakdownItemModel : OutsideOTBRDItemModel[] = [];
-                for (var overtimeBRD of dto.breakdownItems) {
-                    var modelBRD: OutsideOTBRDItemModel = new OutsideOTBRDItemModel();
-                    modelBRD.updateData(overtimeBRD, true);
-                    dataBreakdownItemModel.push(modelBRD);
-                }
-                this.breakdownItems(dataBreakdownItemModel);                
-                this.roundingUnit(dto.roundingUnit);                
-                this.roundingProcess(dto.roundingProcess);
+                self.overtimes(dataOvertimeModel);
+                var dataBreakdownItemModel: OutsideOTBRDItemModel[] = [];
+                self.fetchAttendanceData().then(() => {
+                    for (var overtimeBRD of dto.breakdownItems) {
+                        var modelBRD: OutsideOTBRDItemModel = new OutsideOTBRDItemModel();
+                        modelBRD.updateData(overtimeBRD, true, self.listAllIdTemp, self.dataTemp);
+                        dataBreakdownItemModel.push(modelBRD);
+                    }
+                    self.breakdownItems(dataBreakdownItemModel);
+                    self.roundingUnit(dto.roundingUnit);
+                    self.roundingProcess(dto.roundingProcess);
+                });
+            }
 
+            fetchAttendanceData() : JQueryPromise<any> {
+                const self = this;
+                const dfd = $.Deferred();
+                service.findAllMonthlyAttendanceItem().done(function (data) {
+                    self.dataTemp = data;
+                    service.findAllAttendanceItemOvertime().done(function (dataCanSelecte: any) {
+                        dataCanSelecte = _.filter(dataCanSelecte, function (o: any) { return o.attendanceItemType == 2; }); // 時間外超過
+                        dataCanSelecte = dataCanSelecte.map(o => o.attendanceItemId);
+                        service.getMonthlyAttendanceDivergenceName(dataCanSelecte).done(function (lstItem: Array<any>) {
+                            // set source
+                            self.listAllIdTemp = lstItem.map(x => x.attendanceItemId);
+                            dfd.resolve();
+                        }).fail(function (res) {
+                            nts.uk.ui.dialog.alert(res.message);
+                            dfd.reject();
+                        });
+                    }).fail(function (error) {
+                        nts.uk.ui.dialog.alertError(error);
+                        dfd.reject();
+                    });
+                }).fail(function (error) {
+                    nts.uk.ui.dialog.alertError(error);
+                    dfd.reject();
+                }).always(function () {
+                    nts.uk.ui.block.clear();
+                });
+                return dfd.promise();
             }
 
             toDto(): OutsideOTSettingDto {

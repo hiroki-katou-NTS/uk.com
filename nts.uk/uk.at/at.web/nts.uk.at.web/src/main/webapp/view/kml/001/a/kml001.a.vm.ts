@@ -14,6 +14,7 @@ module nts.uk.at.view.kml001.a {
       newStartDate: KnockoutObservable<string>;
       viewAttendanceItems: KnockoutObservableArray<KnockoutObservable<string>>;
       textKML001_40 = nts.uk.resource.getText("KML001_40");
+	  textKML001_92 = nts.uk.resource.getText("KML001_92");
       isLastItem: KnockoutObservable<Boolean> = ko.observable(false);
       standardDate: KnockoutObservable<string> = ko.observable(null);
       langId: KnockoutObservable<string> = ko.observable('ja');
@@ -614,9 +615,14 @@ module nts.uk.at.view.kml001.a {
             data.premiumSets.forEach((item, index) => {
               let attendanceNames: Array<vmbase.AttendanceItem> = [];
               if (item.useAtr === 1) {
-                _.forEach(item.attendanceNames, (item) => {
-                  attendanceNames.push(new vmbase.AttendanceItem(item.attendanceItemId, item.attendanceItemName));
-                });
+                _.forEach(item.attendanceItems, (it) => {
+					let temp = _.find(item.attendanceNames, function(o) { return o.attendanceItemId == it; });
+					if(_.isNil(temp)){
+						attendanceNames.push(new vmbase.AttendanceItem(it, self.textKML001_92));
+					}else{
+						attendanceNames.push(new vmbase.AttendanceItem(temp.attendanceItemId, temp.attendanceItemName));
+					}
+				});
 
                 premiumSetting = {};
                 premiumSetting.companyID = data.companyID;

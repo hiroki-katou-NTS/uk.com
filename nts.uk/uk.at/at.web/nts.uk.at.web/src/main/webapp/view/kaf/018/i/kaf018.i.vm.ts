@@ -76,31 +76,41 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 							mail.mailType,
 							mail.mailSubject,
 							mail.mailContent,
-							1, //mail.urlApprovalEmbed,
-							1, //mail.urlDayEmbed,
-							1, //mail.urlMonthEmbed,
+							mail.urlApprovalEmbed,
+							mail.urlDayEmbed,
+							mail.urlMonthEmbed,
 							mail.editMode);
 						switch (mail.mailType) {
 							case 0:
+        						temp.urlDayEmbed(false);
+        						temp.urlMonthEmbed(false);
 								vm.appApprovalUnapproved(temp);
 								break;
 							case 1:
+								temp.urlApprovalEmbed(false);
+        						temp.urlMonthEmbed(false);
 								vm.dailyUnconfirmByPrincipal(temp);
 								break;
 							case 2:
+								temp.urlApprovalEmbed(false);
+        						temp.urlMonthEmbed(false);
 								vm.dailyUnconfirmByConfirmer(temp);
 								break;
 							case 5:
+								temp.urlApprovalEmbed(false);
+        						temp.urlDayEmbed(false);
 								vm.monthlyUnconfirmByPrincipal(temp);
 								break;
 							case 3:
+								temp.urlApprovalEmbed(false);
+        						temp.urlDayEmbed(false);
 								vm.monthlyUnconfirmByConfirmer(temp);
 								break;
 							case 4:
+								temp.urlApprovalEmbed(false);
 								vm.workConfirmation(temp);
 								break;
-							case 5:
-								vm.monthlyUnconfirmByPrincipal(temp);
+							default:
 								break;
 						}
 					});
