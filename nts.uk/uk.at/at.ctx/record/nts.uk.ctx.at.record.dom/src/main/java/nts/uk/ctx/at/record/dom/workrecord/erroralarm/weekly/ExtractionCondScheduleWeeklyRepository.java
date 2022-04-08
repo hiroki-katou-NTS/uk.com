@@ -6,13 +6,13 @@ public interface ExtractionCondScheduleWeeklyRepository {
     List<ExtractionCondWeekly> getAll();
     
     /**
-     * Get Schedule fix condition weekly
+     * Get fix condition weekly
      * @param contractCode contract code
      * @param companyId company id
      * @param eralCheckIds error alarm check Id
      * @return schedule fix condition weekly
      */
-    List<ExtractionCondWeekly> getScheAnyCond(String contractCode, String companyId, String eralCheckIds);
+    List<ExtractionCondWeekly> getAnyCond(String contractCode, String companyId, String eralCheckIds);
     
     /**
      * Add new 
@@ -43,7 +43,6 @@ public interface ExtractionCondScheduleWeeklyRepository {
 	 * Remove all by error alarm check id
 	 * @param contractCode
 	 * @param companyId
-	 * @param erAlCheckIds
 	 */
 	void delete(String contractCode, String companyId, String checkId);
 }

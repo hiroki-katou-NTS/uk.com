@@ -90,7 +90,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		// ドメインモデル「週別実績の抽出条件」を取得する
 		// 条件: ID　＝　Input．週次のアラームチェック条件．チェック条件．任意抽出条件
 		// Output: List＜週別実績の任意抽出条件＞
-		List<ExtractionCondWeekly> weeklyConds = extractionCondScheduleWeeklyRepository.getScheAnyCond(
+		List<ExtractionCondWeekly> weeklyConds = extractionCondScheduleWeeklyRepository.getAnyCond(
 				contractCode, cid, listOptionalItem).stream().filter(x -> x.isUse()).collect(Collectors.toList());
 		
 		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
@@ -223,190 +223,192 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			YearMonth ym,
 			List<AttendanceTimeOfWeekly> attWeeklyBySid,
 			List<WorkPlaceHistImportAl> wplByListSidAndPeriods) {
-		
-		boolean check = false;
-		ContinuousOutput continuousOutput = new ContinuousOutput();
-		
-		int currentIndex = attWeeklyBySid.indexOf(attWeekly);
-		
-		// 週次のコンバーターを交換 ErAlAttendanceItemCondition
-		// QA#115685
-		WeeklyRecordToAttendanceItemConverter weeklyConvert = attendanceItemConvertFactory.createWeeklyConverter();
-		weeklyConvert.withAttendanceTime(attWeekly);
-		List<ItemValue> itemValues =  weeklyConvert.convert(attendanceItemMap.keySet());
-		
-		@SuppressWarnings("rawtypes")
-		WeeklyAttendanceItemCondition cond = convertToErAlAttendanceItem(cid, weeklyCond);
-		
-		// Input．週別実績の任意抽出条件．チェック項目の種類をチェック
-		WeeklyCheckItemType checkItemType = weeklyCond.getCheckItemType();
-		switch (checkItemType) {
-		case TIME:
-		case TIMES:
-		case DAY_NUMBER:
-			// 勤怠項目をチェックする
-			check = checkAttendanceItem(cond, item -> {
-				if (item.isEmpty()) {
-					return new ArrayList<>();
-				}
-				
-				return itemValues.stream().filter(x -> item.contains(x.getItemId())).map(iv -> getValue(iv))
-						.collect(Collectors.toList());
-			});
-			break;
-		case CONTINUOUS_TIME:
-		case CONTINUOUS_TIMES:
-		case CONTINUOUS_DAY:
-			// 連続の項目の実績をチェック
-			continuousOutput = checkPerformanceOfConsecutiveItem(
-					attWeekly, weeklyCond, cond, itemValues, count, currentIndex, attWeeklyBySid.size(), attWeeklyBySid);
-			count = continuousOutput.count;
-			check = continuousOutput.check;
-			break;			
-		default:
-			break;
-		}
-		
-		Double weeklyActualAttendanceTimeValue = calAttendanceItem(cond, item -> {
-			if (item.isEmpty()) {
-				return new ArrayList<>();
-			}
-			return itemValues.stream().filter(x -> item.contains(x.getItemId())).map(iv -> getValue(iv))
-					.collect(Collectors.toList());
-		});
-		
-		// 
-		ExtractionAlarmPeriodDate extractionAlarmPeriodDate = null;
-		Optional<String> comment = Optional.empty();
-		String alarmContent = Strings.EMPTY;
-		
-		// チェック項目の種類は連続じゃないの場合　－＞#KAL010_1314 
-		// {0}　＝　Input．週別実績の勤怠時間から計算した値 QA#115666
-		String weeklyActualAttendanceTime = weeklyActualAttendanceTimeValue.toString();
-		if (checkItemType == WeeklyCheckItemType.TIME || checkItemType == WeeklyCheckItemType.CONTINUOUS_TIME) {
-			weeklyActualAttendanceTime = formatTime(weeklyActualAttendanceTimeValue.intValue());
-		} else if (checkItemType == WeeklyCheckItemType.TIMES || checkItemType == WeeklyCheckItemType.CONTINUOUS_TIMES) {
-			weeklyActualAttendanceTime = String.valueOf(weeklyActualAttendanceTimeValue.intValue());
-		}
 
-		String checkTargetValue = TextResource.localize("KAL010_1314", weeklyActualAttendanceTime);
-		
-		// 取得した該当区分　＝＝　True (QA#117728)
-		if (check) {
-			// 「抽出結果詳細」を作成
-						
-			// ・職場ID　＝　Input．List＜職場ID＞をループ中の年月日から探す
-			// Input．List＜職場履歴＞に
-			//   　職場履歴．期間．開始日＜＝アラーム項目日付＜＝職場履歴．期間．終了日　 ＃118576
-			String wpkId = "";
-			Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = wplByListSidAndPeriods.stream()
-					.filter(x -> x.getEmployeeId().equals(sid)).findFirst();
-			if(optWorkPlaceHistImportAl.isPresent()) {
-				Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get().getLstWkpIdAndPeriod().stream()
-						.filter(x -> x.getDatePeriod().start().beforeOrEquals(attWeekly.getPeriod().start())
-								&& x.getDatePeriod().end().afterOrEquals(attWeekly.getPeriod().start())).findFirst();
-				if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
-					wpkId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
-				}
-			}
-			
-			// アラーム項目日付　＝Input．週別実績の勤怠時間．期間．開始日
-			GeneralDate startDate = attWeekly.getPeriod().start();
-			if (weeklyCond.isContinuos()) {
-				int index = 0; //(currentIndex + 1) == sizeWeeklyActualAttendanceTime && !continuousOutput.continuousCountOpt.isPresent()  ? currentIndex : currentIndex - 1;
-				if (!continuousOutput.continuousCountOpt.isPresent()) {
-					index = currentIndex - count + 1;
-				} else {
-					index = currentIndex - continuousOutput.continuousCountOpt.get().getConsecutiveYears();
-				}
-				startDate = attWeeklyBySid.get(index).getPeriod().start();
-			}
-			
-			extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(
-					Optional.of(startDate), Optional.empty());
-			// コメント　＝　Input．週別実績の任意抽出条件．表示メッセージ
-			if (weeklyCond.getErrorAlarmMessage() != null && weeklyCond.getErrorAlarmMessage().isPresent()) {
-				comment = Optional.ofNullable(weeklyCond.getErrorAlarmMessage().get().v());
-			}
-			// アラーム内容
-			String param0 = getCompareOperatorText(cid, weeklyCond.getCheckConditions(), weeklyCond.getCheckItemType(), weeklyCond.getCheckedTarget());
-			
-			// 	チェック項目の種類は連続じゃないの場合　－＞#KAL010_1308
-			String param1 = TextResource.localize("KAL010_1308");
-			// チェック項目の種類は連続じゃないの場合　－＞Input．週別実績の勤怠時間から計算した値 
-			String param2 = weeklyActualAttendanceTime;
-			if (weeklyCond.isContinuos()) {
-				String continuousPeriodValue = String.valueOf(weeklyCond.getContinuousPeriod().get().v());
-				param0 += TextResource.localize("KAL010_1312", continuousPeriodValue);
-				// チェック項目の種類は連続の場合　－＞#KAL010_1309
-				param1 = TextResource.localize("KAL010_1309");
-				
-				// #117728
-				if (continuousOutput.continuousCountOpt.isPresent()) {
-					// 取得した連続カウント　+　#KAL010_1311
-					param2 = continuousOutput.continuousCountOpt.get().getConsecutiveYears() + TextResource.localize("KAL010_1311");
-					
-					// チェック項目の種類は連続の場合　－＞#KAL010_1313 {0}　＝　取得した連続カウント
-					checkTargetValue = TextResource.localize("KAL010_1313", String.valueOf(continuousOutput.continuousCountOpt.get().getConsecutiveYears()));
-				} else {
-					// 取得したカウン
-					param2 = String.valueOf(count) + TextResource.localize("KAL010_1311");
-					
-					// チェック項目の種類は連続の場合　－＞#KAL010_1313 {0}　＝　取得したカウン
-					checkTargetValue = TextResource.localize("KAL010_1313", String.valueOf(count));
-				}
-			}
-			
-			alarmContent = TextResource.localize("KAL010_1310", param0, param1, param2);
-			
-			// 取得したアカウント、作成した「抽出結果詳細」を返す
-			ExtractResultDetail detail = new ExtractResultDetail(
-					extractionAlarmPeriodDate,
-					weeklyCond.getName().v(),
-					alarmContent,
-					GeneralDateTime.now(),
-					Optional.ofNullable(wpkId),
-					comment,
-					Optional.ofNullable(checkTargetValue));
-			
-			// カウント　＝　０
-			//count = 0;
-			
-			return new ExtractResultDetailAndCount(detail, count);
-		}
+// アラームリストのリファクタにより削除（最終的にクラスごと削除予定）
+//		boolean check = false;
+//		ContinuousOutput continuousOutput = new ContinuousOutput();
+//
+//		int currentIndex = attWeeklyBySid.indexOf(attWeekly);
+//
+//		// 週次のコンバーターを交換 ErAlAttendanceItemCondition
+//		// QA#115685
+//		WeeklyRecordToAttendanceItemConverter weeklyConvert = attendanceItemConvertFactory.createWeeklyConverter();
+//		weeklyConvert.withAttendanceTime(attWeekly);
+//		List<ItemValue> itemValues =  weeklyConvert.convert(attendanceItemMap.keySet());
+//
+//		@SuppressWarnings("rawtypes")
+//		WeeklyAttendanceItemCondition cond = convertToErAlAttendanceItem(cid, weeklyCond);
+//
+//		// Input．週別実績の任意抽出条件．チェック項目の種類をチェック
+//		WeeklyCheckItemType checkItemType = weeklyCond.getCheckItemType();
+//		switch (checkItemType) {
+//		case TIME:
+//		case TIMES:
+//		case DAY_NUMBER:
+//			// 勤怠項目をチェックする
+//			check = checkAttendanceItem(cond, item -> {
+//				if (item.isEmpty()) {
+//					return new ArrayList<>();
+//				}
+//
+//				return itemValues.stream().filter(x -> item.contains(x.getItemId())).map(iv -> getValue(iv))
+//						.collect(Collectors.toList());
+//			});
+//			break;
+//		case CONTINUOUS_TIME:
+//		case CONTINUOUS_TIMES:
+//		case CONTINUOUS_DAY:
+//			// 連続の項目の実績をチェック
+//			continuousOutput = checkPerformanceOfConsecutiveItem(
+//					attWeekly, weeklyCond, cond, itemValues, count, currentIndex, attWeeklyBySid.size(), attWeeklyBySid);
+//			count = continuousOutput.count;
+//			check = continuousOutput.check;
+//			break;
+//		default:
+//			break;
+//		}
+//
+//		Double weeklyActualAttendanceTimeValue = calAttendanceItem(cond, item -> {
+//			if (item.isEmpty()) {
+//				return new ArrayList<>();
+//			}
+//			return itemValues.stream().filter(x -> item.contains(x.getItemId())).map(iv -> getValue(iv))
+//					.collect(Collectors.toList());
+//		});
+//
+//		//
+//		ExtractionAlarmPeriodDate extractionAlarmPeriodDate = null;
+//		Optional<String> comment = Optional.empty();
+//		String alarmContent = Strings.EMPTY;
+//
+//		// チェック項目の種類は連続じゃないの場合　－＞#KAL010_1314
+//		// {0}　＝　Input．週別実績の勤怠時間から計算した値 QA#115666
+//		String weeklyActualAttendanceTime = weeklyActualAttendanceTimeValue.toString();
+//		if (checkItemType == WeeklyCheckItemType.TIME || checkItemType == WeeklyCheckItemType.CONTINUOUS_TIME) {
+//			weeklyActualAttendanceTime = formatTime(weeklyActualAttendanceTimeValue.intValue());
+//		} else if (checkItemType == WeeklyCheckItemType.TIMES || checkItemType == WeeklyCheckItemType.CONTINUOUS_TIMES) {
+//			weeklyActualAttendanceTime = String.valueOf(weeklyActualAttendanceTimeValue.intValue());
+//		}
+//
+//		String checkTargetValue = TextResource.localize("KAL010_1314", weeklyActualAttendanceTime);
+//
+//		// 取得した該当区分　＝＝　True (QA#117728)
+//		if (check) {
+//			// 「抽出結果詳細」を作成
+//
+//			// ・職場ID　＝　Input．List＜職場ID＞をループ中の年月日から探す
+//			// Input．List＜職場履歴＞に
+//			//   　職場履歴．期間．開始日＜＝アラーム項目日付＜＝職場履歴．期間．終了日　 ＃118576
+//			String wpkId = "";
+//			Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = wplByListSidAndPeriods.stream()
+//					.filter(x -> x.getEmployeeId().equals(sid)).findFirst();
+//			if(optWorkPlaceHistImportAl.isPresent()) {
+//				Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get().getLstWkpIdAndPeriod().stream()
+//						.filter(x -> x.getDatePeriod().start().beforeOrEquals(attWeekly.getPeriod().start())
+//								&& x.getDatePeriod().end().afterOrEquals(attWeekly.getPeriod().start())).findFirst();
+//				if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
+//					wpkId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
+//				}
+//			}
+//
+//			// アラーム項目日付　＝Input．週別実績の勤怠時間．期間．開始日
+//			GeneralDate startDate = attWeekly.getPeriod().start();
+//			if (weeklyCond.isContinuos()) {
+//				int index = 0; //(currentIndex + 1) == sizeWeeklyActualAttendanceTime && !continuousOutput.continuousCountOpt.isPresent()  ? currentIndex : currentIndex - 1;
+//				if (!continuousOutput.continuousCountOpt.isPresent()) {
+//					index = currentIndex - count + 1;
+//				} else {
+//					index = currentIndex - continuousOutput.continuousCountOpt.get().getConsecutiveYears();
+//				}
+//				startDate = attWeeklyBySid.get(index).getPeriod().start();
+//			}
+//
+//			extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(
+//					Optional.of(startDate), Optional.empty());
+//			// コメント　＝　Input．週別実績の任意抽出条件．表示メッセージ
+//			if (weeklyCond.getErrorAlarmMessage() != null && weeklyCond.getErrorAlarmMessage().isPresent()) {
+//				comment = Optional.ofNullable(weeklyCond.getErrorAlarmMessage().get().v());
+//			}
+//			// アラーム内容
+//			String param0 = getCompareOperatorText(cid, weeklyCond.getCheckConditions(), weeklyCond.getCheckItemType(), weeklyCond.getCheckedTarget());
+//
+//			// 	チェック項目の種類は連続じゃないの場合　－＞#KAL010_1308
+//			String param1 = TextResource.localize("KAL010_1308");
+//			// チェック項目の種類は連続じゃないの場合　－＞Input．週別実績の勤怠時間から計算した値
+//			String param2 = weeklyActualAttendanceTime;
+//			if (weeklyCond.isContinuos()) {
+//				String continuousPeriodValue = String.valueOf(weeklyCond.getContinuousPeriod().get().v());
+//				param0 += TextResource.localize("KAL010_1312", continuousPeriodValue);
+//				// チェック項目の種類は連続の場合　－＞#KAL010_1309
+//				param1 = TextResource.localize("KAL010_1309");
+//
+//				// #117728
+//				if (continuousOutput.continuousCountOpt.isPresent()) {
+//					// 取得した連続カウント　+　#KAL010_1311
+//					param2 = continuousOutput.continuousCountOpt.get().getConsecutiveYears() + TextResource.localize("KAL010_1311");
+//
+//					// チェック項目の種類は連続の場合　－＞#KAL010_1313 {0}　＝　取得した連続カウント
+//					checkTargetValue = TextResource.localize("KAL010_1313", String.valueOf(continuousOutput.continuousCountOpt.get().getConsecutiveYears()));
+//				} else {
+//					// 取得したカウン
+//					param2 = String.valueOf(count) + TextResource.localize("KAL010_1311");
+//
+//					// チェック項目の種類は連続の場合　－＞#KAL010_1313 {0}　＝　取得したカウン
+//					checkTargetValue = TextResource.localize("KAL010_1313", String.valueOf(count));
+//				}
+//			}
+//
+//			alarmContent = TextResource.localize("KAL010_1310", param0, param1, param2);
+//
+//			// 取得したアカウント、作成した「抽出結果詳細」を返す
+//			ExtractResultDetail detail = new ExtractResultDetail(
+//					extractionAlarmPeriodDate,
+//					weeklyCond.getName().v(),
+//					alarmContent,
+//					GeneralDateTime.now(),
+//					Optional.ofNullable(wpkId),
+//					comment,
+//					Optional.ofNullable(checkTargetValue));
+//
+//			// カウント　＝　０
+//			//count = 0;
+//
+//			return new ExtractResultDetailAndCount(detail, count);
+//		}
 		
 		return new ExtractResultDetailAndCount(null, count);
 	}
-	
-	/**
-	 * Convert ExtractionCondScheduleWeekly to ErAlAttendanceItemCondition
-	 * @param cid company id
-	 * @param weeklyCond ExtractionCondScheduleWeekly
-	 * @return ErAlAttendanceItemCondition
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private WeeklyAttendanceItemCondition convertToErAlAttendanceItem(String cid, ExtractionCondWeekly weeklyCond) {
-		WeeklyAttendanceItemCondition cond = new WeeklyAttendanceItemCondition<>();
-		
-		if(weeklyCond.getCheckedTarget().isPresent()) {
-			CountableTarget countableTarget = (CountableTarget)weeklyCond.getCheckedTarget().get();
-			cond.setCountableTarget(
-					countableTarget.getAddSubAttendanceItems().getAdditionAttendanceItems(), 
-					countableTarget.getAddSubAttendanceItems().getSubstractionAttendanceItems());			
-		}
-		
-		if (weeklyCond.getCheckConditions() != null) {
-			if (weeklyCond.getCheckConditions() instanceof CompareRange) {
-				CompareRange compareRange = (CompareRange)weeklyCond.getCheckConditions();
-				cond.setCompareRange(compareRange);
-			} else {
-				CompareSingleValue<Double> compareRangeSingle = (CompareSingleValue)weeklyCond.getCheckConditions();
-				cond.setCompareSingleValue(compareRangeSingle);
-			}
-		}
-		
-		return cond;
-	}
+
+// アラームリストのリファクタにより削除（最終的にクラスごと削除予定）
+//	/**
+//	 * Convert ExtractionCondScheduleWeekly to ErAlAttendanceItemCondition
+//	 * @param cid company id
+//	 * @param weeklyCond ExtractionCondScheduleWeekly
+//	 * @return ErAlAttendanceItemCondition
+//	 */
+//	@SuppressWarnings({ "rawtypes", "unchecked" })
+//	private WeeklyAttendanceItemCondition convertToErAlAttendanceItem(String cid, ExtractionCondWeekly weeklyCond) {
+//		WeeklyAttendanceItemCondition cond = new WeeklyAttendanceItemCondition<>();
+//
+//		if(weeklyCond.getCheckedTarget().isPresent()) {
+//			CountableTarget countableTarget = (CountableTarget)weeklyCond.getCheckedTarget().get();
+//			cond.setCountableTarget(
+//					countableTarget.getAddSubAttendanceItems().getAdditionAttendanceItems(),
+//					countableTarget.getAddSubAttendanceItems().getSubstractionAttendanceItems());
+//		}
+//
+//		if (weeklyCond.getCheckConditions() != null) {
+//			if (weeklyCond.getCheckConditions() instanceof CompareRange) {
+//				CompareRange compareRange = (CompareRange)weeklyCond.getCheckConditions();
+//				cond.setCompareRange(compareRange);
+//			} else {
+//				CompareSingleValue<Double> compareRangeSingle = (CompareSingleValue)weeklyCond.getCheckConditions();
+//				cond.setCompareSingleValue(compareRangeSingle);
+//			}
+//		}
+//
+//		return cond;
+//	}
 	
 	private ContinuousOutput checkPerformanceOfConsecutiveItem(AttendanceTimeOfWeekly attWeekly,
                                                                ExtractionCondWeekly weeklyCond, WeeklyAttendanceItemCondition<?> erAlAtdItemCon, List<ItemValue> convert, int count,

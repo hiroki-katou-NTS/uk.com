@@ -526,7 +526,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				break;
 			case WEEKLY:
 				if (!command.getScheAnyCondDay().getScheAnyCondDays().isEmpty()) {
-					saveScheduleAnyCondWeekly(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
+					saveAnyCondWeekly(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
 				} else {
 					extraCondScheWeeklyRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getErAlCheckLinkId());
 				}
@@ -741,7 +741,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				break;
 			case WEEKLY:
 				String eralCheckIdOptionalWeeklyItem = IdentifierUtil.randomUniqueId();
-				saveScheduleAnyCondWeekly(companyId, eralCheckIdOptionalWeeklyItem, command.getScheAnyCondDay().getScheAnyCondDays());
+				saveAnyCondWeekly(companyId, eralCheckIdOptionalWeeklyItem, command.getScheAnyCondDay().getScheAnyCondDays());
 				extractionCondition = new WeeklyAlarmCheckCond(eralCheckIdOptionalWeeklyItem);
 				break;
 			default:
@@ -1074,15 +1074,15 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 	
 	
 	/**
-	 * Schedule weekly with tab2
+	 * weekly with tab2
 	 * @param companyId
 	 * @param eralCheckId
 	 * @param scheAnyCondDays
 	 * @return list of error alarm check id
 	 */
-	private void saveScheduleAnyCondWeekly(String companyId, String eralCheckId, List<WorkRecordExtraConAdapterDto> scheAnyCondDays) {
+	private void saveAnyCondWeekly(String companyId, String eralCheckId, List<WorkRecordExtraConAdapterDto> scheAnyCondDays) {
 		String contractCode = AppContexts.user().contractCode();
-		List<ExtractionCondWeekly> listOptionalItem = extraCondScheWeeklyRepository.getScheAnyCond(contractCode, companyId, eralCheckId);
+		List<ExtractionCondWeekly> listOptionalItem = extraCondScheWeeklyRepository.getAnyCond(contractCode, companyId, eralCheckId);
 		
 		int alarmNo = 0;
 		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
@@ -1095,33 +1095,14 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			
 			ErrorAlarmConAdapterDto errorAlarmCondition = item.getErrorAlarmCondition();
 			ScheMonCondDto monthlyCondition = errorAlarmCondition.getMonthlyCondition();
-			
+
+			// TODO:atdItemConditionの移送
 			ExtractionCondWeekly domain = ExtractionCondWeekly.create(
 					eralCheckId, item.getSortOrderBy(), item.isUseAtr(), item.getNameWKRecord(),
 					item.getErrorAlarmCondition().getDisplayMessage(),
 					checkItemType,
 					errorAlarmCondition.getContinuousPeriod());
-			
-			List<Integer> additionAttendanceItems = monthlyCondition.getCountableAddAtdItems();
-			List<Integer> substractionAttendanceItems = monthlyCondition.getCountableSubAtdItems();
-			CountableTarget checkedTarget = new CountableTarget(new AddSubAttendanceItems(additionAttendanceItems, substractionAttendanceItems));
-			domain.setCheckedTarget(Optional.of(checkedTarget));
-			
-			if (monthlyCondition.getComparisonOperator() > 5) {
-				if (monthlyCondition.getCompareStartValue() != null && monthlyCondition.getCompareEndValue() != null) {
-					CompareRange checkedCondition = new CompareRange<>(monthlyCondition.getComparisonOperator());
-	                ((CompareRange) checkedCondition).setStartValue(monthlyCondition.getCompareStartValue());
-	                ((CompareRange) checkedCondition).setEndValue(monthlyCondition.getCompareEndValue());
-	                domain.setCheckConditions(checkedCondition);
-                }
-			} else {
-				if (monthlyCondition.getCompareStartValue() != null) {
-					CompareSingleValue checkedCondition = new CompareSingleValue<>(monthlyCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
-					((CompareSingleValue)checkedCondition).setValue(monthlyCondition.getCompareStartValue());
-					domain.setCheckConditions(checkedCondition);
-				}
-			}
-			
+
 			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId().equals(eralCheckId) && x.getSortOrder() == item.getSortOrderBy())) {
 				extraCondScheWeeklyRepository.add(contractCode, companyId, domain);
 			} else {
