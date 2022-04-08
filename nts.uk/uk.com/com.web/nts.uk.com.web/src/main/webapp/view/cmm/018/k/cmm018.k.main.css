@@ -16,11 +16,11 @@
 /*}*/
 
 #swap-list-gridArea2, #swap-list-grid2_displayContainer, #swap-list-grid2_scrollContainer {
-	height: 123px !important;
+	height: 150px !important;
 }
 
 #swap-list-grid2_container {
-	height: 147px !important;
+	height: 180px !important;
 }
 
 #swap-list-search-area-input {
@@ -72,7 +72,7 @@ html{
 }
 
 .titleSelected {
-	width: 60px;
+	width: 100px;
 }
 
 #typeSetting {
@@ -107,7 +107,7 @@ html{
 
 .k2-14 {
 	position: absolute !important;
-	margin-left: 50px;
+	margin-left: 86px;
 	top: 120px;
 }
 
@@ -121,4 +121,8 @@ html{
 
 #single-tree-grid-tree-grid_displayContainer, #single-tree-grid-tree-grid_scrollContainer {
 	height: 290px !important;
+}
+
+#single-tree-grid-tree-grid_headers {
+	height: 30px;
 }
