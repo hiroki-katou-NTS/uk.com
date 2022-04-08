@@ -33,10 +33,10 @@ import java.util.stream.Collectors;
 public enum FixedLogicDailyByEmployee {
 
     勤務種類未登録(1, c -> alarmToIntegrationOfDaily(
-            c, (iod) -> c.require.existsWorkType(iod.getWorkInformation().getRecordInfo().getWorkTypeCode()))),
+            c, (iod) -> c.require.existsWorkType(iod.getWorkInformation().getRecordInfo().getWorkTypeCode().v()))),
 
     就業時間帯未登録(2, c -> alarmToIntegrationOfDaily(
-            c, (iod) -> c.require.existsWorkTime(iod.getWorkInformation().getRecordInfo().getWorkTimeCode()))),
+            c, (iod) -> c.require.existsWorkTime(iod.getWorkInformation().getRecordInfo().getWorkTimeCode().v()))),
     
     手入力(3, c -> {        
         return IteratorUtil.iterableFlatten(c.period.datesBetween(), date -> {
@@ -165,9 +165,9 @@ public enum FixedLogicDailyByEmployee {
         
         Optional<Identification> getIdentification(String employeeId, GeneralDate date);
 
-        boolean existsWorkType(WorkTypeCode workTypeCode);
+        boolean existsWorkType(String workTypeCode);
 
-        boolean existsWorkTime(WorkTimeCode workTimeCode);
+        boolean existsWorkTime(String workTimeCode);
         
         String getItemName(Integer attendanceItemId);
     }
