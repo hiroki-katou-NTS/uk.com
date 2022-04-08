@@ -35,6 +35,7 @@ import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameS
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.AlarmListExtractResult;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeErAlData;
@@ -49,6 +50,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -64,11 +67,17 @@ import nts.uk.shr.com.time.closure.ClosureMonth;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ExecuteAlarmListByEmployeeRequire {
 
+    @Inject
+    private BasicScheduleRepository scheduleRepo;
+
+    @Inject
+    private WorkingConditionRepository workingConditionRepo;
+
 	@Inject
 	private WorkTypeRepository workTypeRepo;
-	
-	@Inject
-	private WorkingConditionRepository workingConditionRepo;
+
+    @Inject
+    private WorkTimeSettingRepository workTimeSettingRepo;
 
     @Inject
     private WorkScheduleAdapter workScheduleAdapter;
@@ -146,6 +155,11 @@ public class ExecuteAlarmListByEmployeeRequire {
             return Optional.empty();
         }
 
+        @Override
+        public boolean isExists(String employeeId, GeneralDate date) {
+            return scheduleRepo.isExists(employeeId, date);
+        }
+
 		@Override
 		public List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, DatePeriod period) {
 			return workingConditionRepo.getWorkingConditionItemWithPeriod(this.companyId, Arrays.asList(employeeId), period);
@@ -154,6 +168,11 @@ public class ExecuteAlarmListByEmployeeRequire {
         @Override
         public Optional<WorkType> getWorkType(String workTypeCode) {
             return workTypeRepo.findByPK(this.companyId, workTypeCode);
+        }
+
+        @Override
+        public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
+            return workTimeSettingRepo.findByCode(this.companyId, workTimeCode);
         }
 
         @Override

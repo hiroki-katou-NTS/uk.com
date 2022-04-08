@@ -2,9 +2,8 @@ package nts.uk.ctx.at.shared.dom.workingcondition.service;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 
 import java.util.List;
 import java.util.Map;
@@ -44,6 +43,6 @@ public class GetNotExistWorkTime {
 	public interface Require{
 		List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, DatePeriod period);
 
-		Optional<WorkingTimeSetting> getWorkTime(String workTimeCode);
+		Optional<WorkTimeSetting> getWorkTime(String workTimeCode);
 	}
 }
