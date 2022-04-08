@@ -5,21 +5,19 @@
  */
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers.agreement;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
 
-
 /**
- * アラームするメッセージ
+ * 超過状態をチェックする条件
+ * @author raiki_asada
  */
 @AllArgsConstructor
-public class MessageForAlarm {
-    private Map<ExcessState, String> messages;
-
-    public String getMessage(ExcessState excessState) {
-        return Optional.ofNullable(this.messages.get(excessState))
-                .orElseThrow(() -> new RuntimeException("メッセージないぞ"));
+public class ExcessStateChecker {
+    private Set<ExcessState> taretState;
+    
+    public Boolean check(ExcessState state) {
+        return this.taretState.contains(state);
     }
 }
