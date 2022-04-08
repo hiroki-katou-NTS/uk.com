@@ -182,7 +182,7 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public boolean existsWorkTime(String workTimeCode) {
-            return false;
+            return workTimeSettingRepo.findByCode(this.companyId, workTimeCode).isPresent();
         }
 
         @Override
