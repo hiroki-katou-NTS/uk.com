@@ -997,6 +997,9 @@ public class DailyPerformanceCorrectionProcessor {
 						cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 					}else if(attendanceAtr == DailyAttendanceAtr.Application.value){
 						cellDatas.add(new DPCellDataDto(anyChar, appNameLst, attendanceAtrAsString, DPText.TYPE_LABEL));
+						if(lock) {
+							screenDto.setCellSate(data.getId(), DPText.LOCK_APPLICATION, DPText.STATE_DISABLE);
+						}
 					} else {
 						cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 					}
