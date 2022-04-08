@@ -6,9 +6,16 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.daily.FixedLogicDailyByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * 固定のチェック条件(社員別・スケジュール日次)
@@ -17,6 +24,9 @@ import java.util.function.Function;
 public enum FixedLogicScheduleDailyByEmployee {
 
 	スケジュール未作成(1, c -> checkNotCreated(c)),
+
+	勤務種類未登録(2, c -> alarmToBasicSchedule(
+			c, bs -> c.require.existsWorkType(new WorkTypeCode(bs.getWorkTypeCode())))),
 	;
 
 	public final int value;
@@ -49,6 +59,38 @@ public enum FixedLogicScheduleDailyByEmployee {
 				.iterator();
 	}
 
+	/**
+	 * BasicSchedule(スケジュール日次）からアラームを発生させるメソッド
+	 * @param <T>
+	 * @param context
+	 * @param checker
+	 * @return
+	 */
+	private static <T> Iterable<AlarmRecordByEmployee> alarmToBasicSchedule(
+			Context context,
+			Function<BasicSchedule, Boolean> checker) {
+		return alarm(context, (date) -> {
+			return context.require.getSchedule(context.employeeId, date)
+					.map(bs -> checker.apply(bs)).orElse(false);
+		});
+	}
+
+	/**
+	 * 日付からアラームを発生させるメソッド
+	 * @param <T>
+	 * @param context
+	 * @param checker
+	 * @return
+	 */
+	private static <T> Iterable<AlarmRecordByEmployee> alarm(
+			Context context,
+			Predicate<GeneralDate> checker) {
+		return () -> context.period.stream()
+				.filter(checker)
+				.map(date -> context.alarm(date))
+				.iterator();
+	}
+
 
 	@Value
 	private class Context {
@@ -70,6 +112,10 @@ public enum FixedLogicScheduleDailyByEmployee {
 
 	public interface RequireCheck {
 		boolean isExists(String employeeId, GeneralDate date);
+
+		Optional<BasicSchedule> getSchedule(String employeeId, GeneralDate date);
+
+		boolean existsWorkType(WorkTypeCode workTypeCode);
 
 	}
 }

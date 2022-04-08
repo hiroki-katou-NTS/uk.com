@@ -171,6 +171,11 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
+        public boolean existsWorkType(WorkTypeCode workTypeCode) {
+            return workTypeRepo.findByPK(this.companyId, workTypeCode.v()).isPresent();
+        }
+
+        @Override
         public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
             return workTimeSettingRepo.findByCode(this.companyId, workTimeCode);
         }
@@ -188,11 +193,6 @@ public class ExecuteAlarmListByEmployeeRequire {
         @Override
         public Optional<Identification> getIdentification(String employeeId, GeneralDate date) {
             return Optional.empty();
-        }
-
-        @Override
-        public boolean existsWorkType(WorkTypeCode workTypeCode) {
-            return false;
         }
 
         @Override
