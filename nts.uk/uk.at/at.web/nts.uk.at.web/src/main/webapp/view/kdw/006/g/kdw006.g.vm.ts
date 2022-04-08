@@ -140,7 +140,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.getAllWorkTypes().done(function(res) {
-                let availabelList = _.filter(res, (item: any) => {
+                let availabelList = _.filter(res.lstWorkType, (item: any) => {
                     return item.abolishAtr == 0;
                 });
                 _.forEach(availabelList, (item: any) => {

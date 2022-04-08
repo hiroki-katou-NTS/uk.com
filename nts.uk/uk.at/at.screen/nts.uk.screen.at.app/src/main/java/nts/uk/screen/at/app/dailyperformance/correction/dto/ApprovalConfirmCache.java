@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.OptimisticLockException;
 
@@ -39,9 +40,13 @@ public class ApprovalConfirmCache implements Serializable{
 			throw new OptimisticLockException(I18NText.getText("Msg_1528"));
 		}
 
-		List<ApprovalStatusActualResultKDW003Dto> lstApprovalNew = cacheNew.getLstApproval();
-
-		if (!lstApprovalNew.equals(lstApproval)) {
+		List<ApprovalStatusActualResultKDW003Dto> lstApprovalNew = cacheNew.getLstApproval()
+				.stream().sorted((x,y) -> x.getConfirmStatusActualResult().getDate().compareTo(y.getConfirmStatusActualResult().getDate())).collect(Collectors.toList());
+		
+		List<ApprovalStatusActualResultKDW003Dto> lstApprovalSort = lstApproval
+				.stream().sorted((x,y) -> x.getConfirmStatusActualResult().getDate().compareTo(y.getConfirmStatusActualResult().getDate())).collect(Collectors.toList());
+		
+		if (!lstApprovalNew.equals(lstApprovalSort)) {
 			throw new OptimisticLockException(I18NText.getText("Msg_1528"));
 		}
 		

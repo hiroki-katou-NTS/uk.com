@@ -111,6 +111,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 
         isCache : boolean = false;
         isStarted: boolean = false;
+
+        characteristics: Characteristics = {};
         
         clickCounter: CLickCount = new CLickCount();
         workTypeNotFound: any = [];
@@ -328,6 +330,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
+            self.getFormatCode();
             self.initScreen(param).done((processDate, selectedClosure) => {
                 //date process
 				if(!_.isNil(processDate))
@@ -360,6 +363,26 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 nts.uk.ui.block.clear();
                 dfd.reject();
             });
+            return dfd.promise();
+        }
+
+        getFormatCode() : JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            service.getMonthlyFormatList().done((lstData: any) => {
+                if (!_.isEmpty(lstData)) {
+                    let sortedData: any = _.orderBy(lstData, ['dailyPerformanceFormatCode'], ['asc']);
+                   
+                    if(sortedData.length > 0 ){
+                        // self.formatParam.selectedItem = self.lstFormatCodes()[0].dailyPerformanceFormatCode;
+                        self.formatCodes([sortedData[0].dailyPerformanceFormatCode);
+                    }
+                    dfd.resolve();
+                } 
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alert(error.message);
+                dfd.reject();
+            });       
             return dfd.promise();
         }
         
@@ -405,6 +428,11 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             if(cacheData != undefined && self.isCache == true && cacheData.yearMonth !=0 && checkLoadKdw){
                 self.monthlyParam(cacheData);
             }
+            if(cacheData != undefined && !_.isEmpty(cacheData.formatCodes)){
+                self.formatCodes(cacheData.formatCodes);
+            }
+
+            self.monthlyParam().formatCodes = self.formatCodes();
             localStorage.removeItem('isKmw');
             __viewContext.transferred.value = false;
             nts.uk.characteristics.save("cacheKMW003",self.monthlyParam());
@@ -433,6 +461,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.employIdLogin = __viewContext.user.employeeId;
                 self.dataAll(data);
                 self.monthlyParam(data.param);
+                self.monthlyParam().formatCodes = self.formatCodes();
+                data.lstControlDisplayItem.formatCode = self.formatCodes();
+
                 self.dataBackup = _.cloneDeep(data);
                 
                 self.itemValueAll(data.itemValues);
@@ -507,14 +538,38 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 }else {
                     if (error.messageId == "KMW003_SELECT_FORMATCODE") {
                         //Open KDM003C to select format code
-                        self.displayItem().done((x) => {
-                            dfd.resolve();
-                        }).fail(function(error) {
-                            nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                        let formatParam = { initMode: 1, selectedItem: "" };
+                        nts.uk.ui.windows.setShared("KDW003C_Param", formatParam);
+                        nts.uk.ui.windows.sub.modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
+                            let res = nts.uk.ui.windows.getShared('KDW003C_Err');
+                            if(!_.isEmpty(res) && res.jumpToppage){
                                 nts.uk.request.jumpToTopPage();
-                            });
-                            dfd.reject();
-                        });
+                            }
+                            let formatCd = nts.uk.ui.windows.getShared('KDW003C_Output');
+                            if (formatCd) {
+                                // self.formatCodes(formatCd);
+                                self.formatCodes([]);
+                                self.formatCodes().push(formatCd);
+                                self.initScreenFormat().done((processDate) => {
+                                    if(!_.isNil(processDate)){
+                                        self.yearMonth(processDate);
+                                    }
+                                    dfd.resolve();
+                                }).fail(function(error) {
+                                    nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                                        nts.uk.request.jumpToTopPage();
+                                    });
+                                    dfd.reject();
+                                });
+                                self.characteristics.formatCodes = [formatCd];
+                                self.characteristics.employeeId = __viewContext.user.employeeId;
+                                self.characteristics.companyId = __viewContext.user.companyId;                   
+                                nts.uk.characteristics.save('cacheKMW003', self.characteristics);
+                            } else {
+                                dfd.reject();
+                            }                       
+                            dfd.resolve();
+                        }
                     } else if (!_.isEmpty(error.errors)) {
                         nts.uk.ui.dialog.bundledErrors({ errors: error.errors }).then(function() {
                             if(error.errors[0].messageId !="Msg_1403"){
@@ -854,7 +909,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let self = this,
                 command = {
                     lstHeader: {},
-                    formatCode: self.dataAll().param.formatCodes
+                    formatCode: self.formatCodes()
                 },
                 jsonColumnWith = localStorage.getItem(window.location.href + '/dpGrid');
             let valueTemp = 0;
@@ -1791,7 +1846,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         displayItem(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            let formatParam = { initMode: 1, selectedItem: "" };
+            let formatParam = { initMode: 1, selectedItem: self.formatCodes()[0]};
             nts.uk.ui.windows.setShared("KDW003C_Param", formatParam);
             nts.uk.ui.windows.sub.modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
                 let res = nts.uk.ui.windows.getShared('KDW003C_Err');
@@ -1800,8 +1855,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 }
                 let formatCd = nts.uk.ui.windows.getShared('KDW003C_Output');
                 if (formatCd) {
-                    self.formatCodes.removeAll();
-                    self.formatCodes.push(formatCd);
+                    // self.formatCodes(formatCd);
+                    self.formatCodes([]);
+                    self.formatCodes().push(formatCd);
                     self.initScreenFormat().done((processDate) => {
 						if(!_.isNil(processDate)){
 							self.yearMonth(processDate);
@@ -1813,6 +1869,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         });
                         dfd.reject();
                     });
+                    self.characteristics.formatCodes = [formatCd];
+                    self.characteristics.employeeId = __viewContext.user.employeeId;
+                    self.characteristics.companyId = __viewContext.user.companyId;                   
+                    nts.uk.characteristics.save('cacheKMW003', self.characteristics);
                 } else {
                     dfd.reject();
                 }

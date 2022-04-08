@@ -96,7 +96,7 @@ public class ExternalImportSettingDto {
 			}
 		}
 		return layouts.stream()
-				.map(l -> new ImportingItemMapping(l.itemNo, true, Optional.empty(), Optional.empty()))
+				.map(l -> new ImportingItemMapping(l.itemNo, true, Optional.empty(), Optional.empty(), Optional.empty()))
 				.collect(Collectors.toList());
 	}
 	
@@ -115,6 +115,12 @@ public class ExternalImportSettingDto {
 		/** 受入元 */
 		private String source;
 		
+		/** CSV読み取り開始位置 */
+		private Integer csvFetchStart;
+
+		/** CSV読み取り終了位置 */
+		private Integer csvFetchEnd;
+		
 		/** 固定値 */
 		private String fixedValue;
 		
@@ -130,6 +136,8 @@ public class ExternalImportSettingDto {
 					require.getImportableItems(domainId, domain.getItemNo()).getItemName(),
 					require.getImportableItems(domainId, domain.getItemNo()).getItemType().name(),
 					checkImportSource(domain),
+					domain.getSubstringFetch().flatMap(sf -> sf.getStart()).map(p -> p.toIntegerExpression()).orElse(null),
+					domain.getSubstringFetch().flatMap(sf -> sf.getEnd()).map(p -> p.toIntegerExpression()).orElse(null),
 					domain.getFixedValue().map(f -> f.asString()).orElse(""),
 					domain.isConfigured());
 		}

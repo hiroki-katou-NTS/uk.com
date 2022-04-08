@@ -239,8 +239,12 @@ public class InitScreenMob {
 		// 対象社員の特定
 		List<String> changeEmployeeIds = new ArrayList<>();
 		InitialDisplayEmployeeDto allIds = null;
+		
+		DateRange rangeMode = rangeInit;
+		if (displayFormat == 1)
+			rangeMode = new DateRange(rangeInit.getStartDate(), rangeInit.getStartDate());
 
-		allIds = processor.changeListEmployeeId(new ArrayList<>(), rangeInit, screenMode, false,
+		allIds = processor.changeListEmployeeId(new ArrayList<>(), rangeMode, screenMode, false,
 				screenDto.getClosureId(), screenDto);
 		
 		//
@@ -250,14 +254,14 @@ public class InitScreenMob {
 		// ログイン社員の日別実績の権限を取得する
 		screenDto.setAuthorityDto(processor.getAuthority(screenDto));
 
-		screenDto.setLstEmployee(findAllEmployee.findAllEmployee(allIds.getLstEmpId(), dateRange.getEndDate()));
+		screenDto.setLstEmployee(findAllEmployee.findAllEmployee(allIds.getParam().getEmployeeIds(), dateRange.getEndDate()));
 
 		List<DailyPerformanceEmployeeDto> lstEmployeeData = new ArrayList<>();
 		if (displayFormat == 0) {
 			changeEmployeeIds.add(employeeID);
 			lstEmployeeData = findAllEmployee.findAllEmployee(changeEmployeeIds, dateRange.getEndDate());	
 		} else {
-			changeEmployeeIds = allIds.getLstEmpId();
+			changeEmployeeIds = allIds.getParam().getEmployeeIds();
 			lstEmployeeData = screenDto.getLstEmployee();
 			
 		}
@@ -494,7 +498,7 @@ public class InitScreenMob {
 				Optional<TaskItem> opTaskItem = getTaskItemByEmpDate(taskInitialSelHistLst, data.getEmployeeId(), data.getDate());
 				Optional<DailyRecordDto> opDailyRecordDto = screenDto.getDomainOld().stream().filter(x -> x.getEmployeeId().equals(data.getEmployeeId()) && x.getDate().equals(data.getDate())).findAny();
 				processCellData(NAME_EMPTY, NAME_NOT_FOUND, screenDto, dPControlDisplayItem, mapGetName, codeNameTaskMap,
-						codeNameReasonMap, itemValueMap, data, lockDaykWpl, dailyRecEditSetsMap, null, opTaskItem, opDailyRecordDto);
+						codeNameReasonMap, itemValueMap, data, lockDaykWpl, dailyRecEditSetsMap, null, opTaskItem, opDailyRecordDto, displayFormat);
 				lstData.add(data);
 				Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()
 						.filter(w -> w.getEmployeeId().equals(data.getEmployeeId())
@@ -506,13 +510,6 @@ public class InitScreenMob {
 			}
 			if(lockDay || lockHist || dataSign == null || (!dataSign.isStatus() ? (!dataSign.notDisableForConfirm() ? true : false) : !dataSign.notDisableForConfirm())){
 				screenDto.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
-			}
-			
-			if (displayFormat == 1 || displayFormat == 2) {
-				if (screenDto.getStateParam().getLstEmpsSupport().contains(data.getEmployeeId())) {
-					cellEditColor(screenDto,data.getId(), "employeeName", 9);
-					cellEditColor(screenDto,data.getId(), "employeeCode", 9);
-				}
 			}
 		}
 		screenDto.setLstData(lstData);
@@ -642,7 +639,7 @@ public class InitScreenMob {
 	public void processCellData(String NAME_EMPTY, String NAME_NOT_FOUND, DailyPerformanceCorrectionDto screenDto,
 			DPControlDisplayItem dPControlDisplayItem, Map<Integer, Map<String, CodeName>> mapGetName, Map<String, CodeName> codeNameTaskMap,
 			Map<String, CodeName> mapReasonName, Map<String, ItemValue> itemValueMap, DPDataDto data, boolean lock,
-			Map<String, Integer> dailyRecEditSetsMap, ObjectShare share, Optional<TaskItem> opTaskItem, Optional<DailyRecordDto> opDomainOldItem) {
+			Map<String, Integer> dailyRecEditSetsMap, ObjectShare share, Optional<TaskItem> opTaskItem, Optional<DailyRecordDto> opDomainOldItem, Integer displayFormat) {
 		Set<DPCellDataDto> cellDatas = data.getCellDatas();
 		String typeGroup = "";
 		Integer cellEdit;
@@ -878,7 +875,13 @@ public class InitScreenMob {
 					} else {
 						cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 					}
-				}			
+				}
+				if (displayFormat == 1 || displayFormat == 2) {
+					String anyChar = mergeString(DPText.ADD_CHARACTER, itemIdAsString);
+					if (screenDto.getStateParam().getLstEmpsSupport().contains(data.getEmployeeId())) {
+						cellEditColor(screenDto,data.getId(), "employeeName", 9);
+					}
+				}
 			} 
 		}
 		data.setTypeGroup(typeGroup);

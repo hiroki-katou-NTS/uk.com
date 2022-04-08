@@ -2,12 +2,13 @@ package nts.uk.file.com.app;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
@@ -19,8 +20,12 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.masterapprove
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmpUnregisterInput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterapproval.EmployeeUnregisterApprovalRoot;
+import nts.uk.query.model.employee.EmployeeInformation;
+import nts.uk.query.model.employee.EmployeeInformationQuery;
+import nts.uk.query.model.employee.EmployeeInformationRepository;
+import nts.uk.query.model.workplace.WorkplaceAdapter;
+import nts.uk.query.model.workplace.WorkplaceInfoImport;
 import nts.uk.shr.com.company.CompanyAdapter;
-import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -30,20 +35,25 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class EmployeeUnregisterOutputExportService extends ExportService<EmpUnregisterInput> {
-
 	@Inject
 	private EmployeeUnregisterApprovalRoot empUnregister;
 
 	@Inject
 	private CompanyAdapter company;
 
+    @Inject
+    private WorkplaceAdapter workplaceAdapter;
+
 	@Inject
 	private EmployeeUnregisterOutputGenerator employgenerator;
 
+    @Inject
+    private EmployeeInformationRepository employeeInformationRepo;
+
 	@Override
 	protected void handle(ExportServiceContext<EmpUnregisterInput> context) {
-
 		String companyId = AppContexts.user().companyId();
 
 		// get query parameters
@@ -57,26 +67,53 @@ public class EmployeeUnregisterOutputExportService extends ExportService<EmpUnre
 			lstEvent = this.lstEvent(lstName);
 		}
 		// create data source
-		List<EmployeeUnregisterOutput> items = empUnregister.lstEmployeeUnregister(companyId, baseDate,
-				sysAtr, lstNotice, lstEvent, lstName);
+		List<EmployeeUnregisterOutput> items = empUnregister.lstEmployeeUnregister(
+				companyId,
+				baseDate,
+				sysAtr,
+				lstNotice,
+				lstEvent,
+				lstName
+		).stream().filter(i -> i != null && i.getEmployeeId() != null).collect(Collectors.toList());
+
 		if (CollectionUtil.isEmpty(items)) {
 			throw new BusinessException("Msg_1765");
 		}
-		HeaderEmployeeUnregisterOutput header = this.setHeader(items.get(0));
-		val dataSource = new EmployeeUnregisterOutputDataSoure(header, items);
+
+		// 取得した承認ルート未登録をエクセル出力する
+
+        // 社員の情報を取得する
+		List<String> employeeIds = items.stream().map(EmployeeUnregisterOutput::getEmployeeId).distinct().collect(Collectors.toList());
+        EmployeeInformationQuery employeeInformationQuery = EmployeeInformationQuery.builder()
+                .employeeIds(employeeIds)
+                .referenceDate(baseDate)
+                .toGetWorkplace(true)
+                .toGetDepartment(false)
+                .toGetPosition(false)
+                .toGetEmployment(false)
+                .toGetClassification(false)
+                .toGetEmploymentCls(false)
+                .build();
+        List<EmployeeInformation> employeeInfors = employeeInformationRepo.find(employeeInformationQuery);
+
+        // Temporaryから職場ID一意で抽出する（Distinct)
+        List<String> workplaceIds = items.stream().filter(i -> i.getWorkplaceId().isPresent())
+                .map(i -> i.getWorkplaceId().get()).distinct().collect(Collectors.toList());
+		// [No.560]職場IDから職場の情報をすべて取得する
+        List<WorkplaceInfoImport> workplaceInfos = workplaceAdapter.getWorkplaceInfoByWkpIds(companyId, workplaceIds, baseDate);
+
+        EmployeeUnregisterOutputDataSoure dataSource = new EmployeeUnregisterOutputDataSoure(
+        		baseDate,
+				company.getCurrentCompany().get().getCompanyName(),
+				items,
+				employeeInfors,
+				workplaceInfos
+		);
 
 		// generate file
 		this.employgenerator.generate(context.getGeneratorContext(), dataSource);
 	}
 
-	private HeaderEmployeeUnregisterOutput setHeader(EmployeeUnregisterOutput employee) {
-		HeaderEmployeeUnregisterOutput header = new HeaderEmployeeUnregisterOutput();
-		Optional<CompanyInfor> companyInfo = company.getCurrentCompany();
-		if (companyInfo.isPresent()) {
-			header.setNameCompany(companyInfo.get().getCompanyName());
-		}
-		return header;
-	}
 	private List<Integer> lstNotice(List<AppTypeName> lstName){
 		List<Integer> lstResult = new ArrayList<>();
 		for(AppTypeName app : lstName) {
@@ -86,6 +123,7 @@ public class EmployeeUnregisterOutputExportService extends ExportService<EmpUnre
 		}
 		return lstResult;
 	}
+
 	private List<String> lstEvent(List<AppTypeName> lstName){
 		List<String> lstResult = new ArrayList<>();
 		for(AppTypeName app : lstName) {

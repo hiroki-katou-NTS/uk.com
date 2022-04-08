@@ -169,9 +169,9 @@ div.form-label.broken {
  	width: auto !important
 }
 
-#contents-area .left-panel {
+/* #contents-area .left-panel {
 	overflow: hidden !important;
-}
+} */
 
 #componentM td {
 	height: auto !important;
