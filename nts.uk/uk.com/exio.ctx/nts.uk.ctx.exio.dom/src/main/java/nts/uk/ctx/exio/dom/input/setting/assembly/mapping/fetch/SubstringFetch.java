@@ -26,19 +26,28 @@ public class SubstringFetch {
         int startIndex = start.map(cp -> cp.getIndexFromStartOf(source)).orElse(0);
         int endIndex = end.map(cp -> cp.getIndexFromStartOf(source)).orElse(source.length() - 1);
 
+        if (isOutOfRange(startIndex, source) && isOutOfRange(endIndex, source)) {
+            return "";
+        }
+
         int length = endIndex - startIndex + 1;
         if (length <= 0) {
             return "";
         }
+        int minIndex = 0;
+        startIndex = Math.max(startIndex, minIndex);
+        endIndex = Math.max(endIndex, minIndex);
 
-        if (startIndex < 0) {
-            startIndex = 0;
-        }
-        if (endIndex > source.length() - 1) {
-            endIndex = source.length() - 1;
-        }
+        int maxIndex = source.length() - 1;
+        startIndex = Math.min(startIndex, maxIndex);
+        endIndex = Math.min(endIndex, maxIndex);
+
 
         // String#substringは、endIndexの位置の文字を含めないので +1 が必要
         return source.substring(startIndex, endIndex + 1);
+    }
+
+    private static boolean isOutOfRange(int index, String source) {
+        return index < 0 || source.length() - 1 < index;
     }
 }
