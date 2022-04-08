@@ -308,12 +308,16 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 			String employeeIdApprover   = psAppRoot.isCommon() ? dailyApproverId : departmentApproverId;
 			listApprover.add(Approver.createSimpleFromJavaType(approverOrder,
 					null, employeeIdApprover, ConfirmPerson.NOT_CONFIRM.value, null));
-			this.repoApprover.addAllApprover(approvalId, phaseOrder, listApprover);
 
 			// 承認フェーズ
-			this.repoAppPhase.addApprovalPhase(ApprovalPhase.createSimpleFromJavaType(approvalId, 
+			this.repoAppPhase.addApprovalPhase(ApprovalPhase.createSimpleFromJavaType(
+					approvalId,
 					phaseOrder, 
-					ApprovalForm.SINGLE_APPROVED.value, browsingPhase, ApprovalAtr.PERSON.value, listApprover));
+					ApprovalForm.SINGLE_APPROVED.value,
+					browsingPhase,
+					ApprovalAtr.PERSON.value,
+					listApprover
+			));
 
 		}
 		// ドメインモデル「個人別就業承認ルート」をINSERTする
@@ -332,13 +336,16 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 		listApprover.add(Approver.createSimpleFromJavaType(approverOrder1, null, appr1, confirmPerson, null));
 		//承認者2 A2_7
 		listApprover.add(Approver.createSimpleFromJavaType(approverOrder2, null, appr2, confirmPerson, null));
-		
-		this.repoApprover.addAllApprover(approvalId, phaseOrder, listApprover);
 
 		// 承認フェーズ
-		this.repoAppPhase.addApprovalPhase(ApprovalPhase.createSimpleFromJavaType(approvalId, 
+		this.repoAppPhase.addApprovalPhase(ApprovalPhase.createSimpleFromJavaType(
+				approvalId,
 				phaseOrder, 
-				ApprovalForm.SINGLE_APPROVED.value, browsingPhase, ApprovalAtr.PERSON.value, listApprover));
+				ApprovalForm.SINGLE_APPROVED.value,
+				browsingPhase,
+				ApprovalAtr.PERSON.value,
+				listApprover
+		));
 
 		// ドメインモデル「個人別就業承認ルート」をINSERTする
 		this.repoPerson.addAllPsApprovalRoot(Arrays.asList(psAppRoot));
@@ -360,12 +367,16 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 			Approver approver = Approver.createSimpleFromJavaType(
 					approverOrder, null, employeeIdApprover, confirmPerson, null);
 			List<Approver> lstApprover = Arrays.asList(approver);
-			this.repoApprover.addAllApprover(approvalId, phaseOrder, lstApprover);
 
 			// 承認フェーズ
-			this.repoAppPhase.addApprovalPhase(ApprovalPhase.createSimpleFromJavaType(approvalId, 
+			this.repoAppPhase.addApprovalPhase(ApprovalPhase.createSimpleFromJavaType(
+					approvalId,
 					phaseOrder, 
-					ApprovalForm.SINGLE_APPROVED.value, 0, ApprovalAtr.PERSON.value, lstApprover));
+					ApprovalForm.SINGLE_APPROVED.value,
+					0,
+					ApprovalAtr.PERSON.value,
+					lstApprover
+			));
 		}
 	}
 }

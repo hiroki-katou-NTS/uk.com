@@ -2125,7 +2125,7 @@ public class ProgramsManager {
     public static final Program CMM018K = new Program(WebAppId.COM, ProgramIdConsts.CMM018K, "CMM018_11",
             "/view/cmm/018/k/index.xhtml");
 
-    public static final Program CMM018L = new Program(WebAppId.COM, ProgramIdConsts.CMM018L, "CMM018_12",
+    public static final Program CMM018L = new Program(WebAppId.COM, ProgramIdConsts.CMM018L, "CMM018_124",
             "/view/cmm/018/l/index.xhtml");
 
     public static final Program CMM018M = new Program(WebAppId.COM, ProgramIdConsts.CMM018M, "CMM018_13",
