@@ -1,4 +1,4 @@
-package nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.errorcount;
+package nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.multi.errorcount;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
