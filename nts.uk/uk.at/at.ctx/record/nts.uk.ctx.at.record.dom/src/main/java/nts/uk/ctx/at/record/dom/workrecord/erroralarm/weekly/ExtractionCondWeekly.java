@@ -92,10 +92,9 @@ public class ExtractionCondWeekly extends AggregateRoot {
     			|| this.checkItemType == WeeklyCheckItemType.CONTINUOUS_DAY;
     }
 
-    public WorkCheckResult checkTarget(Require require, AttendanceTimeOfWeeklyKey key) {
+    public WorkCheckResult checkTarget(Require require, AttendanceTimeOfWeekly targetData) {
         return this.getAtdItemCondition().check(itemNolist -> {
             WeeklyRecordToAttendanceItemConverter weeklyConvert = require.createWeeklyConverter();
-            AttendanceTimeOfWeekly targetData = require.getAttendanceTimeOfWeekly(key);
             weeklyConvert.withAttendanceTime(targetData);
 
             return weeklyConvert.convert(itemNolist).stream()
@@ -106,6 +105,5 @@ public class ExtractionCondWeekly extends AggregateRoot {
 
     public interface Require{
         WeeklyRecordToAttendanceItemConverter createWeeklyConverter();
-        AttendanceTimeOfWeekly getAttendanceTimeOfWeekly(AttendanceTimeOfWeeklyKey key);
     }
 }

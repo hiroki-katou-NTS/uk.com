@@ -14,6 +14,9 @@ public class CheckingPeriod {
     /** 日次 */
     CheckingPeriodDaily daily;
 
+    /** 週次 */
+    CheckingPeriodWeekly weekly;
+
     /** 月次 */
     CheckingPeriodMonthly monthly;
 }

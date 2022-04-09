@@ -34,6 +34,7 @@ import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
@@ -49,6 +50,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.An
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.converter.WeeklyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -284,5 +288,22 @@ public class ExecuteAlarmListByEmployeeRequire {
             return yearHolidayRepo.findByCode(this.companyId, yearHolidayCode);
         }
 
+        @Override
+        public List<ExtractionCondWeekly> getUsedExtractionCondWeekly() {
+            // TODO:
+            return null;
+        }
+
+        @Override
+        public Iterable<AttendanceTimeOfWeekly> getAttendanceTimeOfWeekly(String employeeId, List<AttendanceTimeOfWeeklyKey> keys) {
+            // TODO:
+            return null;
+        }
+
+        @Override
+        public WeeklyRecordToAttendanceItemConverter createWeeklyConverter() {
+            // TODO:
+            return null;
+        }
     }
 }
