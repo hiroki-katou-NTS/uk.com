@@ -14,7 +14,7 @@ import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agreement.TargetOfAlarmCheck;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agreement.TargetOfAlarm;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodMonthlyAgreement;
@@ -48,7 +48,6 @@ public class MonthlyAgreementCheckerByEmployeeTest {
                 period.getMonthlyAgreement();
                 returns(periodMonthlyAgreement);
             }
-
             {
                 periodMonthlyAgreement.calculatePeriod();
                 returns(Arrays.asList(YearMonth.of(2022, 1), YearMonth.of(2022, 2), YearMonth.of(2022, 3), YearMonth.of(2022, 4), YearMonth.of(2022, 5)));
@@ -76,7 +75,7 @@ public class MonthlyAgreementCheckerByEmployeeTest {
         };
 
         MonthlyAgreementCheckerByEmployee checker = MonthlyAgreementCheckerByEmployee
-                .getBuilder(TargetOfAlarmCheck.AGREEMENT_36_TIME)
+                .getBuilder(TargetOfAlarm.AGREEMENT_36_TIME)
                 .put(ExcessState.ALARM_OVER, "アラーム")
                 .put(ExcessState.ERROR_OVER, "エラー")
                 .put(ExcessState.UPPER_LIMIT_OVER, "法定上限越え").build();
@@ -119,7 +118,7 @@ public class MonthlyAgreementCheckerByEmployeeTest {
         };
         
         MonthlyAgreementCheckerByEmployee checker = MonthlyAgreementCheckerByEmployee
-                .getBuilder(TargetOfAlarmCheck.AGREEMENT_36_TIME)
+                .getBuilder(TargetOfAlarm.AGREEMENT_36_TIME)
                 .put(ExcessState.ALARM_OVER, "アラーム")
                 .put(ExcessState.ERROR_OVER, "エラー")
                 .put(ExcessState.UPPER_LIMIT_OVER, "法定上限越え").build();
@@ -164,7 +163,7 @@ public class MonthlyAgreementCheckerByEmployeeTest {
         };
         
         MonthlyAgreementCheckerByEmployee checker = MonthlyAgreementCheckerByEmployee
-                .getBuilder(TargetOfAlarmCheck.AGREEMENT_36_TIME)
+                .getBuilder(TargetOfAlarm.AGREEMENT_36_TIME)
                 .put(ExcessState.ALARM_OVER, "アラーム")
                 .put(ExcessState.ERROR_OVER, "エラー")
                 .put(ExcessState.UPPER_LIMIT_OVER, "法定上限越え").build();
@@ -172,11 +171,14 @@ public class MonthlyAgreementCheckerByEmployeeTest {
         CheckingContextByEmployee context = new CheckingContextByEmployee("employee_id", period);
         
         //Exercise
-        AlarmRecordByEmployee expected = checker.check(require, context).iterator().next();
+        Iterator<AlarmRecordByEmployee> iterator = checker.check(require, context).iterator();
+        AlarmRecordByEmployee expected = iterator.next();
         
         //Verify 2022/3 がエラーのメッセージで出る
         Assert.assertEquals("2022/3", expected.getDateInfo().getFormatted());
         Assert.assertEquals("エラー", expected.getMessage());
+        // 一件しかとれないはず
+        Assert.assertTrue(!iterator.hasNext());
     }
     
     @Test
@@ -210,7 +212,7 @@ public class MonthlyAgreementCheckerByEmployeeTest {
         };
         
         MonthlyAgreementCheckerByEmployee checker = MonthlyAgreementCheckerByEmployee
-                .getBuilder(TargetOfAlarmCheck.AGREEMENT_36_TIME)
+                .getBuilder(TargetOfAlarm.AGREEMENT_36_TIME)
                 .put(ExcessState.ALARM_OVER, "アラーム")
                 // 500 -> 5時間引いた数でエラーを出すように調整
                 .put(ExcessState.ERROR_OVER, new AgreementOneMonthTime(300), "エラー")
@@ -219,11 +221,14 @@ public class MonthlyAgreementCheckerByEmployeeTest {
         CheckingContextByEmployee context = new CheckingContextByEmployee("employee_id", period);
         
         //Exercise
-        AlarmRecordByEmployee expected = checker.check(require, context).iterator().next();
+        Iterator<AlarmRecordByEmployee> iterator = checker.check(require, context).iterator();
+        AlarmRecordByEmployee expected = iterator.next();
         
         //Verify 2022/3 がエラーのメッセージで出る
         Assert.assertEquals("2022/3", expected.getDateInfo().getFormatted());
         Assert.assertEquals("エラー", expected.getMessage());
+        // 一件しかとれないはず
+        Assert.assertTrue(!iterator.hasNext());
     }
     
     

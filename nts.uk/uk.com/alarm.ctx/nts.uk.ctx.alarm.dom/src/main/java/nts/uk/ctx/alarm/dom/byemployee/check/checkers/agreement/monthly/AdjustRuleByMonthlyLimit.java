@@ -7,6 +7,8 @@ package nts.uk.ctx.alarm.dom.byemployee.check.checkers.agreement.monthly;
 
 import java.util.Optional;
 import lombok.AllArgsConstructor;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agreement.Threshold;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthTime;
@@ -21,7 +23,11 @@ public class AdjustRuleByMonthlyLimit {
     private final Optional<AgreementOneMonthTime> adjustTimeByError;
     private final Optional<AgreementOneMonthTime> adjustTimeByAlarm;
 
-    public OneMonthTime adjust(OneMonthTime threshold) {
+    public Threshold<AttendanceTimeMonth> adjust(OneMonthTime threshold) {
+        return (targetTime) -> this.adjustOriginal(threshold).check(targetTime);
+    }
+    
+    private OneMonthTime adjustOriginal(OneMonthTime threshold) {
         AgreementOneMonthTime adustedByLimit = this.adjustTimeByLimit.map(adjust -> {
             return threshold.getUpperLimit().minusMinutes(adjust.v());
         }).orElse(threshold.getUpperLimit());

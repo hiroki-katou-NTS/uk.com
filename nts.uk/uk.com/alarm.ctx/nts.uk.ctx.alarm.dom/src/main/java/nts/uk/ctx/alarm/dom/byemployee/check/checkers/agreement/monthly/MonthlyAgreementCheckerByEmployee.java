@@ -6,36 +6,38 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers.agreement.monthly;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agreement.ExcessStateChecker;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agreement.MessageForAlarm;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agreement.TargetOfAlarmCheck;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agreement.TargetOfAlarm;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agreement.Threshold;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthTime;
 
 /**
  * アラームリストのチェック条件（社員別・36協定月次）
  */
 @AllArgsConstructor
 public class MonthlyAgreementCheckerByEmployee implements DomainAggregate, AlarmListCheckerByEmployee{
-    private final TargetOfAlarmCheck target;
+    private final TargetOfAlarm target;
     private final AdjustRuleByMonthlyLimit adjustRules;
-    private final MessageForAlarm messages;
+    private final ExcessStateChecker<AttendanceTimeMonth> checker;
 
-    public static Builder getBuilder(TargetOfAlarmCheck target) {
+    public static Builder getBuilder(TargetOfAlarm target) {
         return new Builder(target);
     }
     
@@ -46,14 +48,13 @@ public class MonthlyAgreementCheckerByEmployee implements DomainAggregate, Alarm
         
         return () -> periods.stream()
                 .filter(ym -> require.getAgeementTime(employeeId, ym).isPresent())
-                .flatMap(ym -> {
+                .map(ym -> {
                     AgreementTimeOfManagePeriod agreementTime = require.getAgeementTime(employeeId, ym).get();
                     AgreementTimeOfMonthly targetTime = this.getTargetTime(agreementTime);
-                    OneMonthTime adjustedThreshold = this.adjustRules.adjust(targetTime.getThreshold());
-                    ExcessState adjustedState = adjustedThreshold.check(targetTime.getAgreementTime());
-                    return this.detect(employeeId, ym, targetTime, adjustedState)
-                            .map(record -> Stream.of(record)).orElse(Stream.empty());
-                }).iterator();
+                    Threshold<AttendanceTimeMonth> adjustedThreshold = this.adjustRules.adjust(targetTime.getThreshold());
+                    return this.checker.check(adjustedThreshold, targetTime.getAgreementTime())
+                            .getRecord(employeeId, new DateInfo(ym), this.target);
+                }).filter(Optional::isPresent).map(Optional::get).iterator();
     }
     
     private AgreementTimeOfMonthly getTargetTime(AgreementTimeOfManagePeriod agreementTime) {
@@ -67,32 +68,17 @@ public class MonthlyAgreementCheckerByEmployee implements DomainAggregate, Alarm
         }
     }
     
-    private Optional<AlarmRecordByEmployee> detect(String employeeId, YearMonth yearMonth, AgreementTimeOfMonthly agreementTime, ExcessState state) {
-        if(state.equals(ExcessState.NORMAL)) {
-            return Optional.empty();
-        }
-        
-        return Optional.of(new AlarmRecordByEmployee(
-             employeeId,
-             new DateInfo(yearMonth),
-             AlarmListCategoryByEmployee.AGREE36_MONTHLY,
-             "項目名",
-             "アラーム条件",
-             this.messages.getMessage(state)
-        ));
-    }
-    
     public interface RequireCheck {
         Optional<AgreementTimeOfManagePeriod> getAgeementTime(String employeeId, YearMonth yearMonth);
     }
     
     public static class Builder {
-        private final TargetOfAlarmCheck target;
+        private final TargetOfAlarm target;
         private final Map<ExcessState, AgreementOneMonthTime> adjustTimes = new HashMap<>();
         private final Map<ExcessState, String> messages = new HashMap<>();
+        private final Set<ExcessState> targets = new HashSet<>();
         
-        
-        private Builder(TargetOfAlarmCheck target) {
+        private Builder(TargetOfAlarm target) {
             this.target = target;
         }
         
@@ -103,6 +89,7 @@ public class MonthlyAgreementCheckerByEmployee implements DomainAggregate, Alarm
         
         public Builder put(ExcessState state, String message) {
             this.messages.put(state, message);
+            this.targets.add(state);
             return this;
         }
         
@@ -110,7 +97,7 @@ public class MonthlyAgreementCheckerByEmployee implements DomainAggregate, Alarm
             return new MonthlyAgreementCheckerByEmployee(
                    this.target,
                    this.buildAdjustRule(),
-                   new MessageForAlarm(this.messages)
+                   new MonthlyAlarmChecker(this.targets, new MessageForAlarm(this.messages))
             );
         }
         
