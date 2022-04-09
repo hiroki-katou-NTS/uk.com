@@ -1,42 +1,39 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.errorcount;
 
-import lombok.Getter;
 import lombok.Value;
 import lombok.val;
 import nts.arc.time.calendar.period.GeneralPeriod;
-import nts.gul.collection.IteratorUtil;
 import nts.gul.util.value.DiscreteValue;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * エラーアラームの発生カウント
- * @param <K> チェック対象を指定するキー値の型
+ * エラーアラーム発生カウント
+ * @param <C> チェック対象を指定するキー値の型
  * @param <D> 発生タイミングを表す型
  */
 @Value
-public class ErrorAlarmCounter<K, D extends Comparable<D> & DiscreteValue<D>> {
+public class ErrorAlarmCounter<C, D extends Comparable<D> & DiscreteValue<D>> {
 
-    K targetItemKey;
+    /** エラーアラームコード */
+    C errorAlarmCode;
 
-    /** アラームとする閾値 */
+    /** アラーム条件 */
     ErrorAlarmCounterCondition condition;
 
     /** 連続発生でチェックするか */
     boolean isConsecutive;
 
+    /** メッセージ */
     String message;
 
     /**
-     * チェックする
+     * 発生数をチェックする
      * @param employeeId 社員ID
      * @param checkingTargetPeriod チェック対象期間
      * @param category カテゴリ
@@ -50,46 +47,103 @@ public class ErrorAlarmCounter<K, D extends Comparable<D> & DiscreteValue<D>> {
             String employeeId,
             P checkingTargetPeriod,
             AlarmListCategoryByEmployee category,
-            Function<K, Optional<String>> getErrorAlarmName,
+            Function<C, Optional<String>> getErrorAlarmName,
             BiFunction<D, D, DateInfo> periodToDateInfo,
-            Function<K, Iterable<D>> errorAlarmChecker) {
+            Function<C, Iterable<D>> errorAlarmChecker) {
 
-        val errorTimings = errorAlarmChecker.apply(targetItemKey);
-        String errorItemName = getErrorAlarmName.apply(targetItemKey).orElseGet(() -> targetItemKey + " 未登録");
+        BiFunction<DateInfo, String, AlarmRecordByEmployee> createRecord = (dateInfo, alarmCondition) -> new AlarmRecordByEmployee(
+                employeeId,
+                dateInfo,
+                category,
+                getErrorAlarmName.apply(errorAlarmCode).orElseGet(() -> errorAlarmCode + " 未登録"),
+                alarmCondition,
+                message);
 
-        if (!isConsecutive) {
-            int count = count(errorTimings);
+        val errorTimings = errorAlarmChecker.apply(errorAlarmCode);
 
-            if (condition.matches(count)) {
-                // 該当数チェックの場合、日付情報はチェック対象期間の全域とする
-                val dateInfo = periodToDateInfo.apply(checkingTargetPeriod.start(), checkingTargetPeriod.end());
-
-                val counterAlarm = new AlarmRecordByEmployee(
-                        employeeId,
-                        dateInfo,
-                        category,
-                        errorItemName,
-                        String.format("%d回（%s)", count, condition.getConditionText()),
-                        message);
-
-                return Arrays.asList(counterAlarm);
-            }
-
-            return Collections.emptyList();
-        }
-
-        int consecutiveCount = 0;
-        D current = null;
-        for (val errorTiming : errorTimings) {
-            if (current == null) {
-                current = errorTiming;
-                consecutiveCount = 1;
-                continue;
-            }
-
+        if (isConsecutive) {
+            return checkConsecutive(periodToDateInfo, createRecord, errorTimings);
+        } else {
+            return checkErrorCount(checkingTargetPeriod, periodToDateInfo, createRecord, errorTimings);
         }
     }
 
+    /**
+     * 連続発生をチェックする
+     * @param periodToDateInfo
+     * @param createRecord
+     * @param errorTimings
+     * @return
+     */
+    private Iterable<AlarmRecordByEmployee> checkConsecutive(
+            BiFunction<D, D, DateInfo> periodToDateInfo,
+            BiFunction<DateInfo, String, AlarmRecordByEmployee> createRecord,
+            Iterable<D> errorTimings) {
+
+        val results = new ArrayList<AlarmRecordByEmployee>();
+
+        // 連続カウント
+        int count = 0;
+
+        // 連続発生の先頭タイミング
+        D start = null;
+
+        // １つ前のタイミング
+        D prev = null;
+
+        for (val current : errorTimings) {
+
+            // ループ初回
+            if (prev == null) {
+                start = prev = current;
+                count = 1;
+                continue;
+            }
+
+            // 連続中
+            if (prev.nextValue(true).equals(current)) {
+                count++;
+                continue;
+            }
+
+            // 連続が途絶えたのでリセット
+            val dateInfo = periodToDateInfo.apply(start, current);
+            String alarmCondition = String.format("連続%d回（%s)", count, condition.getConditionText());
+            results.add(createRecord.apply(dateInfo, alarmCondition));
+
+            count = 1;
+            start = current;
+        }
+
+        return results;
+    }
+
+    /**
+     * 該当数をチェックする（連続発生ではない）
+     * @param checkingTargetPeriod
+     * @param periodToDateInfo
+     * @param createRecord
+     * @param errorTimings
+     * @param <P>
+     * @return
+     */
+    private <P extends GeneralPeriod<P, D>> List<AlarmRecordByEmployee> checkErrorCount(
+            P checkingTargetPeriod,
+            BiFunction<D, D, DateInfo> periodToDateInfo,
+            BiFunction<DateInfo, String, AlarmRecordByEmployee> createRecord,
+            Iterable<D> errorTimings) {
+
+        int count = count(errorTimings);
+
+        if (condition.matches(count)) {
+            // 該当数チェックの場合、日付情報はチェック対象期間の全域とする
+            val dateInfo = periodToDateInfo.apply(checkingTargetPeriod.start(), checkingTargetPeriod.end());
+            String alarmCondition = String.format("%d回（%s)", count, condition.getConditionText());
+            return Arrays.asList(createRecord.apply(dateInfo, alarmCondition));
+        }
+
+        return Collections.emptyList();
+    }
 
     private static int count(Iterable<?> iterable) {
         int count = 0;

@@ -33,6 +33,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusF
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
@@ -230,8 +231,13 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
-        public String getDailyAttendanceItemName(int attendanceItemId) {
-            return attendanceItemNameService.getNameOfAttendanceItem(Arrays.asList(attendanceItemId), TypeOfItem.Daily)
+        public Optional<ErrorAlarmWorkRecord> getErrorAlarmWorkRecord(ErrorAlarmWorkRecordCode code) {
+            return Optional.empty();
+        }
+
+        @Override
+        public String getAttendanceItemName(TypeOfItem typeOfItem, int itemId) {
+            return attendanceItemNameService.getNameOfAttendanceItem(Arrays.asList(itemId), typeOfItem)
                     .get(0).getAttendanceItemName();
         }
 
@@ -244,5 +250,6 @@ public class ExecuteAlarmListByEmployeeRequire {
         public Optional<GrantHdTblSet> getTable(String tableCode) {
             return Optional.empty();
         }
+
     }
 }

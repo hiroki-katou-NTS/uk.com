@@ -49,8 +49,7 @@ public class CheckErrorAlarmDaily {
                 AlarmListCategoryByEmployee.RECORD_DAILY,
                 errorAlarmName,
                 dailyError.getAttendanceItemList(),
-                dailyError.getErrorAlarmMessage().map(m -> m.v()).orElse("")
-        );
+                dailyError.getErrorAlarmMessage().map(m -> m.v()).orElse(""));
     }
 
     public interface RequireCheck extends AlarmRecordByEmployee.RequireFromErrorAlarm {
