@@ -16,6 +16,6 @@ import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 public interface DetailOfChecker {
     Optional<AlarmRecordByEmployee> check(Require require, String employeeId, Year year);
     
-    interface Require extends LimitTimeChecker.RequireCheck, ExcuteTimesChecker.RequireCheck{
+    interface Require extends ExcessStateCheckerForYearly.RequireCheck, ExcessTimesCheckerForYearly.RequireCheck{
     }
 }

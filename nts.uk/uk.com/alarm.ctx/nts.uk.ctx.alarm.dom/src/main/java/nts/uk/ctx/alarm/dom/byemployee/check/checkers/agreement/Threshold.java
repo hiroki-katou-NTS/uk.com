@@ -5,12 +5,12 @@
  */
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers.agreement;
 
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
+
 /**
- * アラームチェック項目
+ *
+ * @author raiki_asada
  */
-public enum TargetOfAlarmCheck {
-    //３６協定時間（法定休日出勤は含まない）
-    AGREEMENT_36_TIME,
-    //３６協定時間（法定休日出勤を含む）
-    LEGAL_MAX_TIME;
+public interface Threshold<V> {
+    ExcessState check(V targetValue);
 }

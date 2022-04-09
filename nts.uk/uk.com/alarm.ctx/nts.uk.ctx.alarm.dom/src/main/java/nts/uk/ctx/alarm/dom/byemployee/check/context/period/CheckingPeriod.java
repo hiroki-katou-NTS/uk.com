@@ -19,4 +19,7 @@ public class CheckingPeriod {
     
     /** ３６協定月次 */
     CheckingPeriodMonthlyAgreement monthlyAgreement;
+    
+    /** ３６協定年次 */
+    CheckingPeriodYearlyAgreement yearlyAgreement;
 }
