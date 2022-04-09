@@ -499,7 +499,7 @@ public class AlarmCheckConditionByCategoryFinder {
 			List<WorkRecordExtraConAdapterDto> scheAnyCondDays = new ArrayList<>();
 			String listOptionalItem = condition.getListOptionalItem();
 			if (listOptionalItem != null && StringUtils.isNotEmpty(listOptionalItem)) {
-				scheAnyCondDays = extraCondScheWeeklyRepository.getScheAnyCond(contractCode, companyId, listOptionalItem)
+				scheAnyCondDays = extraCondScheWeeklyRepository.getAnyCond(contractCode, companyId, listOptionalItem)
 						.stream().map(item -> schedAnyCondWeeklyToDto(item)).collect(Collectors.toList());
 			}
 			scheAnyConditionDay = new ScheAnyCondDayDto(listOptionalItem, scheAnyCondDays);
@@ -780,24 +780,7 @@ public class AlarmCheckConditionByCategoryFinder {
 	private WorkRecordExtraConAdapterDto schedAnyCondWeeklyToDto(ExtractionCondWeekly domain) {
 		ScheMonCondDto monthlyCondition = new ScheMonCondDto();
 		
-		if (domain.getCheckedTarget() != null && domain.getCheckedTarget().isPresent()) {
-			CountableTarget targets = (CountableTarget)domain.getCheckedTarget().get();
-			monthlyCondition.setCountableAddAtdItems(targets.getAddSubAttendanceItems().getAdditionAttendanceItems());
-			monthlyCondition.setCountableSubAtdItems(targets.getAddSubAttendanceItems().getSubstractionAttendanceItems());
-		}
-		
-		if (domain.getCheckConditions() != null) {
-			if (domain.getCheckConditions() instanceof CompareRange) {
-				CompareRange checkedCondition = (CompareRange)domain.getCheckConditions();
-				monthlyCondition.setComparisonOperator(checkedCondition.getCompareOperator().value);
-				monthlyCondition.setCompareStartValue((Double)checkedCondition.getStartValue());
-				monthlyCondition.setCompareEndValue((Double)checkedCondition.getEndValue());
-			} else {
-				CompareSingleValue checkedCondition = (CompareSingleValue)domain.getCheckConditions();
-				monthlyCondition.setComparisonOperator(checkedCondition.getCompareOpertor().value);
-				monthlyCondition.setCompareStartValue((Double)checkedCondition.getValue());
-			}
-		}
+		//TODO:atdItemCondition移送
 		
 		ErrorAlarmConAdapterDto errorAlarmCondition = ErrorAlarmConAdapterDto.builder()
 				.displayMessage(domain.getErrorAlarmMessage() != null && domain.getErrorAlarmMessage().isPresent() ? domain.getErrorAlarmMessage().get().v() : "")

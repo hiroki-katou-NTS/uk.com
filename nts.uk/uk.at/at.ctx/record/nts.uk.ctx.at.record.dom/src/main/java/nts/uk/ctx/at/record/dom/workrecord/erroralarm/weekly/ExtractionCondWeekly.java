@@ -5,13 +5,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CheckedCondition;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CheckedTarget;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.*;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordName;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.algorithm.WeeklyAttendanceItemCondition;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.converter.WeeklyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -24,10 +37,6 @@ public class ExtractionCondWeekly extends AggregateRoot {
 
     // ID
     private String errorAlarmId;
-
-    // チェック条件
-    @Setter
-    private CheckedCondition checkConditions;
 
     // チェック項目の種類
     private WeeklyCheckItemType checkItemType;
@@ -47,13 +56,10 @@ public class ExtractionCondWeekly extends AggregateRoot {
     // 連続期間
     @Setter
     private Optional<ContinuousPeriod> continuousPeriod;
-    
-    /**
-     * チェック対象
-     */
-    @Setter
-    private Optional<CheckedTarget> checkedTarget;
-    
+
+    // 勤怠項目の条件
+    private AttendanceItemCondition atdItemCondition;
+
     /**
      * Create new domain
      * @param errorAlarmId error alarm check id
@@ -84,5 +90,22 @@ public class ExtractionCondWeekly extends AggregateRoot {
     	return this.checkItemType == WeeklyCheckItemType.CONTINUOUS_TIME
     			|| this.checkItemType == WeeklyCheckItemType.CONTINUOUS_TIMES
     			|| this.checkItemType == WeeklyCheckItemType.CONTINUOUS_DAY;
+    }
+
+    public WorkCheckResult checkTarget(Require require, AttendanceTimeOfWeeklyKey key) {
+        return this.getAtdItemCondition().check(itemNolist -> {
+            WeeklyRecordToAttendanceItemConverter weeklyConvert = require.createWeeklyConverter();
+            AttendanceTimeOfWeekly targetData = require.getAttendanceTimeOfWeekly(key);
+            weeklyConvert.withAttendanceTime(targetData);
+
+            return weeklyConvert.convert(itemNolist).stream()
+                    .map(itemValue -> itemValue.doubleOrDefault())
+                    .collect(Collectors.toList());
+        });
+    }
+
+    public interface Require{
+        WeeklyRecordToAttendanceItemConverter createWeeklyConverter();
+        AttendanceTimeOfWeekly getAttendanceTimeOfWeekly(AttendanceTimeOfWeeklyKey key);
     }
 }
