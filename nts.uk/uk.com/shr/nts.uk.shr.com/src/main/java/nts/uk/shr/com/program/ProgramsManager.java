@@ -4039,6 +4039,12 @@ public class ProgramsManager {
             "/view/knr/001/a/index.xhtml");
     
     /**
+     * KNR001B
+     */
+    public static final Program KNR001B = new Program(WebAppId.AT, ProgramIdConsts.KNR001B, "KNR001_59",
+            "/view/knr/001/b/index.xhtml");
+    
+    /**
      * KNR002
      */
     public static final Program KNR002A = new Program(WebAppId.AT, ProgramIdConsts.KNR002A, "KNR002_1",
