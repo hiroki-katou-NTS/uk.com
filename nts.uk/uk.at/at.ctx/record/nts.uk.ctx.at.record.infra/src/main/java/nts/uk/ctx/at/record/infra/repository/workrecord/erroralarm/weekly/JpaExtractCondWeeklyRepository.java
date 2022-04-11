@@ -6,7 +6,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.*;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeekly;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeeklyRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeeklyRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.*;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.weekly.KrcdtWeekCondAlarm;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.weekly.KrcdtWeekCondAlarmPk;
@@ -18,11 +18,10 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import lombok.val;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
-public class JpaExtractCondScheduleWeeklyRepository extends JpaRepository implements ExtractionCondScheduleWeeklyRepository {
+public class JpaExtractCondWeeklyRepository extends JpaRepository implements ExtractionCondWeeklyRepository {
 	private static final String SELECT_BASIC = "SELECT a FROM KrcdtWeekCondAlarm a";
 	private static final String BY_CONTRACT_COMPANY = " WHERE a.pk.cid = :companyId AND a.contractCd = :contractCode";
 	private static final String BY_ERAL_CHECK_ID = " AND a.pk.checkId = :eralCheckIds";

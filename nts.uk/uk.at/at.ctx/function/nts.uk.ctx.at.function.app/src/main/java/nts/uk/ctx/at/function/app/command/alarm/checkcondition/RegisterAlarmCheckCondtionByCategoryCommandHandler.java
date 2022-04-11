@@ -65,10 +65,8 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraRes
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCondEvent;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.doevent.MulMonCheckCondDomainEventDto;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AddSubAttendanceItems;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CountableTarget;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.ErrorAlarmMessageMSTCHK;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedCheckItem;
@@ -104,7 +102,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfDay
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfTime;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfVacations;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeekly;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeeklyRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeeklyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.WeeklyCheckItemType;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
@@ -169,7 +167,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 	private ExtractionCondScheduleYearRepository extraCondScheYearRepository;
 	
 	@Inject
-	private ExtractionCondScheduleWeeklyRepository extraCondScheWeeklyRepository;
+	private ExtractionCondWeeklyRepository extraCondWeeklyRepository;
 	
 	@Override
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
@@ -528,7 +526,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				if (!command.getScheAnyCondDay().getScheAnyCondDays().isEmpty()) {
 					saveAnyCondWeekly(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
 				} else {
-					extraCondScheWeeklyRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getErAlCheckLinkId());
+					extraCondWeeklyRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getErAlCheckLinkId());
 				}
 				break;
 			default:
@@ -1082,7 +1080,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 	 */
 	private void saveAnyCondWeekly(String companyId, String eralCheckId, List<WorkRecordExtraConAdapterDto> scheAnyCondDays) {
 		String contractCode = AppContexts.user().contractCode();
-		List<ExtractionCondWeekly> listOptionalItem = extraCondScheWeeklyRepository.getAnyCond(contractCode, companyId, eralCheckId);
+		List<ExtractionCondWeekly> listOptionalItem = extraCondWeeklyRepository.getAnyCond(contractCode, companyId, eralCheckId);
 		
 		int alarmNo = 0;
 		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
@@ -1104,16 +1102,16 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 					errorAlarmCondition.getContinuousPeriod());
 
 			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId().equals(eralCheckId) && x.getSortOrder() == item.getSortOrderBy())) {
-				extraCondScheWeeklyRepository.add(contractCode, companyId, domain);
+				extraCondWeeklyRepository.add(contractCode, companyId, domain);
 			} else {
-				extraCondScheWeeklyRepository.update(contractCode, companyId, domain);
+				extraCondWeeklyRepository.update(contractCode, companyId, domain);
 			}
 		}
 		
 		// sync again item when user remove in list
 		for(ExtractionCondWeekly item: listOptionalItem) {
 			if (!scheAnyCondDays.stream().anyMatch(x -> item.getErrorAlarmId().equals(eralCheckId) && item.getSortOrder() == x.getSortOrderBy())) {
-				extraCondScheWeeklyRepository.delete(contractCode, companyId, eralCheckId, item.getSortOrder());
+				extraCondWeeklyRepository.delete(contractCode, companyId, eralCheckId, item.getSortOrder());
 			}
 		}
 	}

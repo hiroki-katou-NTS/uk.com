@@ -68,7 +68,6 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCon
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.doevent.MulMonCheckCondDomainEventDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CountableTarget;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractItemRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ExtractionCondScheduleYear;
@@ -90,7 +89,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.PublicHol
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.ScheduleMonRemainCheckCond;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TimeCheckCond;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeekly;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeeklyRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeeklyRepository;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -176,7 +175,7 @@ public class AlarmCheckConditionByCategoryFinder {
 	private ExtractionCondScheduleYearRepository extraCondScheYearRepository;
 	
 	@Inject
-	private ExtractionCondScheduleWeeklyRepository extraCondScheWeeklyRepository;
+	private ExtractionCondWeeklyRepository extraCondWeeklyRepository;
 	
 	public List<AlarmCheckConditionByCategoryDto> getAllData(int category) {
 		String companyId = AppContexts.user().companyId();
@@ -499,7 +498,7 @@ public class AlarmCheckConditionByCategoryFinder {
 			List<WorkRecordExtraConAdapterDto> scheAnyCondDays = new ArrayList<>();
 			String listOptionalItem = condition.getListOptionalItem();
 			if (listOptionalItem != null && StringUtils.isNotEmpty(listOptionalItem)) {
-				scheAnyCondDays = extraCondScheWeeklyRepository.getAnyCond(contractCode, companyId, listOptionalItem)
+				scheAnyCondDays = extraCondWeeklyRepository.getAnyCond(contractCode, companyId, listOptionalItem)
 						.stream().map(item -> schedAnyCondWeeklyToDto(item)).collect(Collectors.toList());
 			}
 			scheAnyConditionDay = new ScheAnyCondDayDto(listOptionalItem, scheAnyCondDays);
