@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ReqComStatusMonitoring;
@@ -19,4 +20,7 @@ public interface ReqComStatusMonitoringRepository {
 	
 	// [4] 取得する
 	List<ReqComStatusMonitoring> get(ContractCode contractCode, List<EmpInfoTerminalCode> listTerminalCode, boolean connecting);
+	
+	// [5] キーで取得する
+	Optional<ReqComStatusMonitoring> getWithKey(ContractCode contractCode, EmpInfoTerminalCode terCode);
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -83,7 +85,7 @@ public class ApplicationReceptionData {
 					ReflectedState.NOTREFLECTED, startDate.isPresent() ? startDate.get() : GeneralDate.today()));
 		}
 
-		Integer reasonConvert = Integer.parseInt(reason) - (Integer.parseInt(reason) / 10) * 10;
+		Optional<Integer> reasonConvert = StringUtils.isEmpty(reason) ? Optional.empty() : Optional.of(Integer.parseInt(reason) - (Integer.parseInt(reason) / 10) * 10);
 
 		Application app = new Application(0, IdentifierUtil.randomUniqueId(),
 				EnumAdaptor.valueOf(typeBeforeAfter, PrePostAtr.class), employeeId, typeCategory,
@@ -95,7 +97,7 @@ public class ApplicationReceptionData {
 		app.setOpAppStartDate(startDate.map(x -> new ApplicationDate(x)));
 		app.setOpAppEndDate(endDate.map(x -> new ApplicationDate(x)));
 		app.setOpAppReason(Optional.empty());
-		app.setOpAppStandardReasonCD(Optional.of(new AppStandardReasonCode(reasonConvert)));
+		app.setOpAppStandardReasonCD(reasonConvert.map(x -> new AppStandardReasonCode(x)));
 		
 		return app;
 	}

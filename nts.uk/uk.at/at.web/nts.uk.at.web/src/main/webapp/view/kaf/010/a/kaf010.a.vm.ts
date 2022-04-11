@@ -386,13 +386,17 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				}
 			}
 			let reasonDissociation = {} as ReasonDivergence;
-			if(vm.selectedDivergenceReasonCode()){
-				reasonDissociation.reasonCode = vm.selectedDivergenceReasonCode();
+			if(vm.selectReflectDivergenceCheck() || vm.inputReflectDivergenceCheck()) {
+				if(vm.selectedDivergenceReasonCode()){
+					reasonDissociation.reasonCode = vm.selectedDivergenceReasonCode();
+				}
+				if(vm.divergenceReasonText()){
+					reasonDissociation.reason = vm.divergenceReasonText();
+				}
+				if(vm.selectedDivergenceReasonCode() || vm.divergenceReasonText()) {
+					reasonDissociation.diviationTime = 3;
+				}
 			}
-			if(vm.divergenceReasonText()){
-				reasonDissociation.reason = vm.divergenceReasonText();
-			}
-			reasonDissociation.diviationTime = 3;
 
 			appHolidayWork.workInformation = {} as WorkInformationCommand;
 			appHolidayWork.workInformation.workType = vm.workInfo().workType().code;
@@ -400,7 +404,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 			appHolidayWork.applicationTime = {} as ApplicationTime;
 			appHolidayWork.applicationTime.applicationTime = listApplicationTime;
-			appHolidayWork.applicationTime.reasonDissociation = [reasonDissociation];
+			if(!_.isEmpty(reasonDissociation)) {
+				appHolidayWork.applicationTime.reasonDissociation = [reasonDissociation];	
+			}
 			appHolidayWork.applicationTime.overTimeShiftNight = {} as OverTimeShiftNight;
 			appHolidayWork.applicationTime.overTimeShiftNight.midNightHolidayTimes = listMidNightHolidayTimes;
 			appHolidayWork.applicationTime.overTimeShiftNight.overTimeMidNight = overTimeMidNight;

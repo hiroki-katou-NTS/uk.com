@@ -1,5 +1,12 @@
 package nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Value;
 
 /**
@@ -89,6 +96,21 @@ public class SendTimeRecordSettingImport {
 	 * 再起動を行う送信要求フラグ
 	 */
 	private final boolean request17;
+	
+	// リクエストの終了を取得する
+	public Optional<Integer> getRequestFinishWithTrue() throws IllegalArgumentException, IllegalAccessException {
+		List<Integer> lstRequest = new ArrayList<>();
+		for (Field field : this.getClass().getDeclaredFields()) {
+			field.setAccessible(true);
+			if (field.getBoolean(this)) {
+				String index = field.getName().substring(7, field.getName().length());
+				if (StringUtils.isNumeric(index)) {
+					lstRequest.add(Integer.parseInt(index));
+				}
+			}
+		}
+		return lstRequest.stream().sorted((x, y) -> y - x).filter(x -> x != 17).findFirst();
+	}
 
 	public SendTimeRecordSettingImport(SettingImportBuilder builder) {
 		this.request1 = builder.request1;

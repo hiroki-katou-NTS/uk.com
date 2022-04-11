@@ -1,18 +1,35 @@
 package nts.uk.ctx.at.request.infra.repository.application.optional;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplicationRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemApplicationTypeCode;
 import nts.uk.ctx.at.request.infra.entity.application.KrqdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.optional.KrqdtAppAnyv;
 import nts.uk.ctx.at.request.infra.entity.application.optional.KrqdtAppAnyvPk;
+import nts.uk.ctx.at.request.infra.repository.application.FindAppCommonForNR;
 import nts.uk.ctx.at.shared.dom.scherec.anyitem.AnyItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime;
@@ -20,17 +37,13 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalite
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
 import nts.uk.shr.com.context.AppContexts;
 
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.util.*;
-import java.util.stream.Collectors;
-
 @Stateless
 @Transactional
-public class JpaOptionalItemApplicationRepository extends JpaRepository implements OptionalItemApplicationRepository {
+public class JpaOptionalItemApplicationRepository extends JpaRepository
+		implements OptionalItemApplicationRepository, FindAppCommonForNR<OptionalItemApplication> {
 
-    private static final String FIND_BY_APP_ID = "SELECT *  "
-            + "FROM KRQDT_APP_ANYV as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID"
+	private static final String FIND_BY_APP_ID = "SELECT *  "
+	        + "FROM KRQDT_APP_ANYV as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID"
             + " WHERE a.APP_ID = @appID AND a.CID = @companyId ORDER BY a.ANYV_NO ASC";
 
     private static final String FIND_OPTIONAL_ITEM_ENTITY = "SELECT a FROM KrqdtAppAnyv a where a.KrqdtAppAnyvPk.companyID = :cId" +
@@ -39,6 +52,9 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
     private static final String FIND_APPLICATION = "SELECT a FROM KrqdtApplication a where a.pk.companyID = :cId" +
             " and a.pk.appID = :appId";
 
+	@Inject 
+	private ApplicationRepository applicationRepo;
+	
     @Override
     public void save(OptionalItemApplication optItemApp) {
         List<KrqdtAppAnyv> entities = toEntity(optItemApp);
@@ -127,4 +143,38 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
         return entities;
     }
 
+    private final String FIND_BY_APPID_IN = "SELECT *  "
+	        + "FROM KRQDT_APP_ANYV as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID"
+            + " WHERE a.APP_ID IN @appId AND a.CID = @companyId ";
+	@Override
+	public List<OptionalItemApplication> findWithSidDate(String companyId, String sid, GeneralDate date) {
+		List<Application> lstApp = applicationRepo.findAppWithSidDate(companyId, sid, date, ApplicationType.OPTIONAL_ITEM_APPLICATION.value);
+		return mapToDom(companyId, lstApp);
+	}
+
+	@Override
+	public List<OptionalItemApplication> findWithSidDateApptype(String companyId, String sid, GeneralDate date,
+			GeneralDateTime inputDate, PrePostAtr prePostAtr) {
+		List<Application> lstApp = applicationRepo.findAppWithSidDateApptype(companyId, sid, date, inputDate, prePostAtr, ApplicationType.OPTIONAL_ITEM_APPLICATION.value);
+		return mapToDom(companyId, lstApp);
+	}
+
+	@Override
+	public List<OptionalItemApplication> findWithSidDatePeriod(String companyId, String sid, DatePeriod period) {
+		List<Application> lstApp = applicationRepo.findAppWithSidDatePeriod(companyId, sid, period, ApplicationType.OPTIONAL_ITEM_APPLICATION.value);
+		return mapToDom(companyId, lstApp);
+	}
+	
+	private List<OptionalItemApplication> mapToDom(String companyId, List<Application> lstApp) {
+		if (lstApp.isEmpty())
+			return new ArrayList<>();
+		return new NtsStatement(FIND_BY_APPID_IN, this.jdbcProxy())
+                .paramString("appId", lstApp.stream().map(x -> x.getAppID()).collect(Collectors.toList()))
+                .paramString("companyId", companyId)
+                .getList(c -> {
+                	val dom = toDomain(c);
+                	dom.setApplication(this.findAppId(lstApp, c.getString("APP_ID")).orElse(null));
+                	return dom;
+                });
+	}
 }

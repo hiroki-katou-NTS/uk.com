@@ -77,4 +77,10 @@ public class TimeDigestApplication {
                 this.timeAnnualLeave, 
                 this.specialVacationFrameNO);
     }
+    
+	// 合計時間
+	public AttendanceTime sumTime() {
+		return new AttendanceTime(overtime60H.v() + nursingTime.valueAsMinutes() + childTime.v() + timeOff.v()
+				+ timeSpecialVacation.v() + timeAnnualLeave.v());
+	}
 }

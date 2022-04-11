@@ -39,7 +39,7 @@ public class TimeRecordSettingInfoDtoTest {
 
 	@Test
 	public void payloadAnalysisNull() {
-		String payLoad = "NRL-m,200,9@基本設定,ボリューム,sp_vol,num,1,5,0:9,0@基本設定,時計表示,ampm,single,,0,0(12時間表示)/1(24時間表示),0";
+		String payLoad = "NRL-m,200,9\n基本設定,ボリューム,sp_vol,num,1,5,0:9,0\n基本設定,時計表示,ampm,single,,0,0(12時間表示)/1(24時間表示),0";
 
 		TimeRecordSettingInfoDto actualResult = TimeRecordSettingInfoDto.payloadAnalysis("00-14-22-01-23-45", payLoad);
 		assertThat(actualResult).isEqualTo(null);
@@ -47,7 +47,7 @@ public class TimeRecordSettingInfoDtoTest {
 
 	@Test
 	public void payloadAnalysis() {
-		String payLoad = "NRL-m,200,9@基本設定,ボリューム,sp_vol,num,1,5,0:9,0@基本設定,時計表示,ampm,single,,0,0(12時間表示)/1(24時間表示),0@@@@@sp_vol,111@ampm,12";
+		String payLoad = "NRL-m,200,9\n基本設定,ボリューム,sp_vol,num,1,5,0:9,0\n基本設定,時計表示,ampm,single,,0,0(12時間表示)/1(24時間表示),0@@@@@sp_vol=111\nampm=12";
 
 		TimeRecordSettingInfoDto actualResult = TimeRecordSettingInfoDto.payloadAnalysis("00-14-22-01-23-45", payLoad);
 
@@ -134,7 +134,7 @@ public class TimeRecordSettingInfoDtoTest {
 
 		String actualResult = TimeRecordSettingInfoDto.createPayLoad(settingDto);
 
-		String expected = "sp_vol=1234,1@sp_vol2=1268";
+		String expected = "sp_vol=1234,1\nsp_vol2=1268\n";
 		assertThat(actualResult).isEqualTo(expected);
 	}
 

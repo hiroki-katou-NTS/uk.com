@@ -18,4 +18,5 @@ public interface BusinessTripRepository {
     void remove(BusinessTrip domain);
 
     Optional<BusinessTrip> findByAppId(String companyId, String appId, Application app);
+
 }

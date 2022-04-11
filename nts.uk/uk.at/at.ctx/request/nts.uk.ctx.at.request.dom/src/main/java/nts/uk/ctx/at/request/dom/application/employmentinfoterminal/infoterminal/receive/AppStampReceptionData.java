@@ -70,11 +70,11 @@ public class AppStampReceptionData extends ApplicationReceptionData implements D
 		case RETURN:
 			return EngraveAtr.RETURN;
 
-//		case WORK_TEMPORARY:
-//			return AppStampCombinationAtr.EXTRAORDINARY_ATTENDANCE;
-//
-//		case RETIRED_TEMPORARY:
-//			return AppStampCombinationAtr.EXTRAORDINARY_OFFICE_WORK;
+		case WORK_TEMPORARY:
+			return EngraveAtr.ATTENDANCE;
+
+		case RETIRED_TEMPORARY:
+			return EngraveAtr.OFFICE_WORK;
 
 		default:
 			return null;

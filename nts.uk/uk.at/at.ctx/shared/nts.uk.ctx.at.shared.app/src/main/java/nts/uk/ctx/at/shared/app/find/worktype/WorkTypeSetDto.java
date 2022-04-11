@@ -24,7 +24,7 @@ public class WorkTypeSetDto {
 
 	private int sumAbsenseNo;
 
-	private int sumSpHodidayNo;
+	private Integer sumSpHodidayNo;
 
 	private int timeLeaveWork;
 

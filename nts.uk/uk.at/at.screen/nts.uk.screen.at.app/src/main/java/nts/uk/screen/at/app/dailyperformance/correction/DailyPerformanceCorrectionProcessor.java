@@ -1040,7 +1040,7 @@ public class DailyPerformanceCorrectionProcessor {
 				screenDto.setCellSate(rowId, columnKey, DPText.HAND_CORRECTION_MYSELF);
 			}else if(cellEdit == 1){
 				screenDto.setCellSate(rowId, columnKey, DPText.HAND_CORRECTION_OTHER);
-			}else if(cellEdit == 2 || cellEdit == 4){
+			}else if(cellEdit == 2){
 				screenDto.setCellSate(rowId, columnKey, DPText.REFLECT_APPLICATION);
 			}else if(cellEdit == 9) {
 				screenDto.setCellSate(rowId, columnKey, DPText.COLOR_SUPPORT);

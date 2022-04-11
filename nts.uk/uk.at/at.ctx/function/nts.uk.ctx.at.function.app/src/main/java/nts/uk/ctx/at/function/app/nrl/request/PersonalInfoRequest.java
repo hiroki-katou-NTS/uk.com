@@ -64,7 +64,7 @@ public class PersonalInfoRequest extends NRLRequest<Frame> {
 		StringBuilder builder = new StringBuilder(); 
 		builder.append(StringUtils.rightPad(data.getIdNumber(), 20));
 		//half payload16
-		builder.append(Codryptofy.paddingWithByte(data.getPerName(), 20));
+		builder.append(Codryptofy.paddingWithByte(Codryptofy.subStringByByte(data.getPerName(), 20), 20));
 		builder.append(StringUtils.rightPad(data.getDepartmentCode(), 10));
 		builder.append(StringUtils.rightPad(data.getCompanyCode(), 2));
 		builder.append(StringUtils.rightPad(data.getReservation(), 4));

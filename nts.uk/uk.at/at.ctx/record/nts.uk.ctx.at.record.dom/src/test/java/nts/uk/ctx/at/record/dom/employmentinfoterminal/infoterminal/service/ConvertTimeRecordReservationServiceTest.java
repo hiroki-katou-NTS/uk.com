@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -14,9 +13,7 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
-import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSerialNo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal.EmpInfoTerminalBuilder;
@@ -26,12 +23,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MonitorIntervalTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.ReservationReceptionData;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
-import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.shr.com.net.Ipv4Address;
 
@@ -141,11 +133,10 @@ public class ConvertTimeRecordReservationServiceTest {
 				require.getEmpInfoTerminal((EmpInfoTerminalCode) any, (ContractCode) any);
 				result = empInfoTer;
 
-				menu.reserve((ReservationRegisterInfo) any, (ReservationDate) any, (GeneralDateTime) any,
-						(Optional<WorkLocationCode>)any,
-						((Map<Integer, BentoReservationCount>) any),
-						(ReservationRecTimeZone) any);
-				result = new BusinessException("System error");
+//				menu.reserve((ReservationRegisterInfo) any, (ReservationDate) any, (GeneralDateTime) any,
+//						(Optional<WorkLocationCode>)any,
+//						((Map<Integer, BentoReservationCount>) any));
+//				result = new BusinessException("System error");
 
 			}
 		};
