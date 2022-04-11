@@ -9,6 +9,7 @@ import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmploye
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.CheckDuplicateTimeSpan;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 
 import java.util.Optional;
@@ -34,6 +35,9 @@ public enum FixedLogicScheduleDailyByEmployee {
 
 	複数回勤務(5, c -> alarmToBasicSchedule(
 			c, ws -> checkMultipleWork(ws))),
+
+	スケジュール未確定(7, c -> alarmToBasicSchedule(
+			c, ws -> ws.getConfirmedATR().equals(ConfirmedATR.UNSETTLED))),
 	;
 
 	public final int value;
