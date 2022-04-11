@@ -24,19 +24,19 @@ public enum FixedLogicScheduleDailyByEmployee {
 
 	スケジュール未作成(1, c -> checkNotCreated(c)),
 
-	勤務種類未登録(2, c -> alarmToBasicSchedule(
+	勤務種類未登録(2, c -> alarmToWorkSchedule(
 			c, ws -> c.require.existsWorkType(ws.getWorkInfo().getRecordInfo().getWorkTypeCode().toString()))),
 
-	就業時間帯未登録(3, c -> alarmToBasicSchedule(
+	就業時間帯未登録(3, c -> alarmToWorkSchedule(
 			c, ws -> c.require.existsWorkTime(ws.getWorkInfo().getRecordInfo().getWorkTimeCode().toString()))),
 
-	時間帯の重複(4, c -> alarmToBasicSchedule(
+	時間帯の重複(4, c -> alarmToWorkSchedule(
 			c, ws -> CheckDuplicateTimeSpan.checkDuplicatePreviousAndNext(c.require, ws))),
 
-	複数回勤務(5, c -> alarmToBasicSchedule(
+	複数回勤務(5, c -> alarmToWorkSchedule(
 			c, ws -> checkMultipleWork(ws))),
 
-	スケジュール未確定(7, c -> alarmToBasicSchedule(
+	スケジュール未確定(7, c -> alarmToWorkSchedule(
 			c, ws -> ws.getConfirmedATR().equals(ConfirmedATR.UNSETTLED))),
 	;
 
@@ -85,13 +85,13 @@ public enum FixedLogicScheduleDailyByEmployee {
 	}
 
 	/**
-	 * BasicSchedule(スケジュール日次）からアラームを発生させるメソッド
+	 * WorkSchedule(スケジュール日次）からアラームを発生させるメソッド
 	 * @param <T>
 	 * @param context
 	 * @param checker
 	 * @return
 	 */
-	private static <T> Iterable<AlarmRecordByEmployee> alarmToBasicSchedule(
+	private static <T> Iterable<AlarmRecordByEmployee> alarmToWorkSchedule(
 			Context context,
 			Function<WorkSchedule, Boolean> checker) {
 		return alarm(context, (date) -> {
