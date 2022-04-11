@@ -1,11 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -218,6 +213,17 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 				.sorted(Comparator.comparing(TimeLeavingWork::getWorkNo))
 				.map(TimeLeavingWork::getTimespan)
 				.collect(Collectors.toList());
+	}
+
+	/**
+	 * 出退勤の最大時間帯を返す
+	 * @return
+	 */
+	public TimeSpanForCalc getMaxSpan(){
+				Map<Integer, TimeLeavingWork> tlwMap = this.timeLeavingWorks.stream()
+				.collect(Collectors.toMap(lw -> lw.getWorkNo().v(), lw -> lw));
+		// 1回目の開始時刻　～　最終回目の終了時刻
+		return new TimeSpanForCalc(tlwMap.get(1).getTimespan().getStart(),tlwMap.get(tlwMap.size()).getTimespan().getEnd());
 	}
 	
 	/**

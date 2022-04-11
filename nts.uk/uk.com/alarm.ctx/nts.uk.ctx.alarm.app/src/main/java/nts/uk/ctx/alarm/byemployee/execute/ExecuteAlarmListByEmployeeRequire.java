@@ -42,6 +42,8 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.AlarmListExtractResult;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeErAlData;
@@ -82,7 +84,7 @@ import nts.uk.shr.com.time.closure.ClosureMonth;
 public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
-    private BasicScheduleRepository scheduleRepo;
+    private WorkScheduleAdapter workScheduleAdapter;
 
     @Inject
     private WorkingConditionRepository workingConditionRepo;
@@ -94,7 +96,7 @@ public class ExecuteAlarmListByEmployeeRequire {
     private WorkTimeSettingRepository workTimeSettingRepo;
 
     @Inject
-    private WorkScheduleAdapter workScheduleAdapter;
+    private WorkScheduleRepository workScheduleRepo;
 
     @Inject
     private DailyRecordAdapter dailyRecordAdapter;
@@ -182,13 +184,13 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
-        public Optional<BasicSchedule> getBasicSchedule(String employeeId, GeneralDate date) {
-            return scheduleRepo.find(employeeId, date);
+        public Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date) {
+            return workScheduleRepo.get(employeeId, date);
         }
 
         @Override
-        public boolean isExists(String employeeId, GeneralDate date) {
-            return scheduleRepo.isExists(employeeId, date);
+        public boolean existsWorkSchedule(String employeeId, GeneralDate date) {
+            return workScheduleRepo.checkExists(employeeId, date);
         }
 
         @Override

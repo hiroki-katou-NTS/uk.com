@@ -8,8 +8,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.CheckDuplicateTimeSpan;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.CheckDuplicateTimeSpan;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -24,16 +24,16 @@ public enum FixedLogicScheduleDailyByEmployee {
 	スケジュール未作成(1, c -> checkNotCreated(c)),
 
 	勤務種類未登録(2, c -> alarmToBasicSchedule(
-			c, bs -> c.require.existsWorkType(bs.getWorkTypeCode()))),
+			c, ws -> c.require.existsWorkType(ws.getWorkInfo().getRecordInfo().getWorkTypeCode().toString()))),
 
 	就業時間帯未登録(3, c -> alarmToBasicSchedule(
-			c, bs -> c.require.existsWorkTime(bs.getWorkTimeCode()))),
+			c, ws -> c.require.existsWorkTime(ws.getWorkInfo().getRecordInfo().getWorkTimeCode().toString()))),
 
 	時間帯の重複(4, c -> alarmToBasicSchedule(
-			c, bs -> CheckDuplicateTimeSpan.checkDuplicatePreviousAndNext(c.require, bs))),
+			c, ws -> CheckDuplicateTimeSpan.checkDuplicatePreviousAndNext(c.require, ws))),
 
 	複数回勤務(5, c -> alarmToBasicSchedule(
-			c, bs -> checkMultipleWork(bs))),
+			c, ws -> checkMultipleWork(ws))),
 	;
 
 	public final int value;
@@ -66,7 +66,7 @@ public enum FixedLogicScheduleDailyByEmployee {
 	 */
 	private static Iterable<AlarmRecordByEmployee> checkNotCreated(Context context){
 		return () -> context.period.datesBetween().stream()
-				.filter(date -> !context.require.isExists(context.employeeId, date))
+				.filter(date -> !context.require.existsWorkSchedule(context.employeeId, date))
 				.map(date -> context.alarm(date))
 				.iterator();
 	}
@@ -76,8 +76,8 @@ public enum FixedLogicScheduleDailyByEmployee {
 	 * @param schedule
 	 * @return
 	 */
-	private static boolean checkMultipleWork(BasicSchedule schedule){
-		return schedule.getWorkScheduleTimeZones().size() > 1;
+	private static boolean checkMultipleWork(WorkSchedule schedule){
+		return schedule.getOptTimeLeaving().get().getTimeLeavingWorks().size() > 1;
 	}
 
 	/**
@@ -89,9 +89,9 @@ public enum FixedLogicScheduleDailyByEmployee {
 	 */
 	private static <T> Iterable<AlarmRecordByEmployee> alarmToBasicSchedule(
 			Context context,
-			Function<BasicSchedule, Boolean> checker) {
+			Function<WorkSchedule, Boolean> checker) {
 		return alarm(context, (date) -> {
-			return context.require.getBasicSchedule(context.employeeId, date)
+			return context.require.getWorkSchedule(context.employeeId, date)
 					.map(bs -> checker.apply(bs)).orElse(false);
 		});
 	}
@@ -131,9 +131,9 @@ public enum FixedLogicScheduleDailyByEmployee {
 	}
 
 	public interface RequireCheck extends CheckDuplicateTimeSpan.Require{
-		boolean isExists(String employeeId, GeneralDate date);
+		boolean existsWorkSchedule(String employeeId, GeneralDate date);
 
-		Optional<BasicSchedule> getBasicSchedule(String employeeId, GeneralDate date);
+		Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date);
 
 		boolean existsWorkType(String workTypeCode);
 
