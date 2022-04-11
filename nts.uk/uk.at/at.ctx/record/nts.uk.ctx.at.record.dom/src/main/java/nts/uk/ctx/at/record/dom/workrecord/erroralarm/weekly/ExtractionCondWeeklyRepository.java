@@ -32,12 +32,10 @@ public interface ExtractionCondWeeklyRepository {
 	
 	/**
 	 * Remove
-	 * @param contractCode
 	 * @param companyId
-	 * @param erAlCheckIds
-	 * @param alarmNo
+	 * @param code
 	 */
-	void delete(String contractCode, String companyId, String erAlCheckIds, int alarmNo);
+	void delete(String companyId, String code);
 	
 	/**
 	 * Remove all by error alarm check id

@@ -23,9 +23,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class JpaExtractCondWeeklyRepository extends JpaRepository implements ExtractionCondWeeklyRepository {
 	private static final String SELECT_BASIC = "SELECT a FROM KrcdtWeekCondAlarm a";
-	private static final String BY_CONTRACT_COMPANY = " WHERE a.pk.cid = :companyId AND a.contractCd = :contractCode";
-	private static final String BY_ERAL_CHECK_ID = " AND a.pk.checkId = :eralCheckIds";
-	private static final String ORDER_BY_NO = " ORDER BY a.pk.condNo";
+	private static final String BY_CONTRACT_COMPANY = " WHERE a.pk.cid = :cid AND a.contractCd = :contractCode";
+	private static final String BY_CODE= " AND a.pk.code = :code";
+	private static final String ORDER_BY_CODE = " ORDER BY a.pk.code";
 	private static final String SELECT_COMPARE_RANGE = "SELECT a FROM KrcstErAlCompareRange a WHERE a.krcstEralCompareRangePK.conditionGroupId = :checkId";
 	private static final String SELECT_COMPARE_RANGE_SINGLE = "SELECT a FROM KrcstErAlCompareSingle a WHERE a.krcstEralCompareSinglePK.conditionGroupId = :checkId";
 	private static final String SELECT_COMPARE_RANGE_SINGLE_FIXED = "SELECT a FROM KrcstErAlSingleFixed a WHERE a.krcstEralSingleFixedPK.conditionGroupId = :checkId";
@@ -42,20 +42,37 @@ public class JpaExtractCondWeeklyRepository extends JpaRepository implements Ext
         return null;
     }
 
+//	@Override
+//	public List<ExtractionCondWeekly> getAnyCond(String contractCode, String companyId, String eralCheckIds) {
+//		List<KrcdtWeekCondAlarm> entities = this.queryProxy().query(SELECT_BASIC + BY_CONTRACT_COMPANY + BY_ERAL_CHECK_ID + ORDER_BY_NO, KrcdtWeekCondAlarm.class)
+//				.setParameter("contractCode", contractCode)
+//				.setParameter("companyId", companyId)
+//				.setParameter("eralCheckIds", eralCheckIds)
+//				.getList();
+//        List<ExtractionCondWeekly> domain = new ArrayList<>();
+//    	for(KrcdtWeekCondAlarm item: entities) {
+//    		ExtractionCondWeekly toDomain = item.toDomain("");
+//    		domain.add(toDomain);
+//        }
+//
+//    	return domain;
+//	}
+
 	@Override
-	public List<ExtractionCondWeekly> getAnyCond(String contractCode, String companyId, String eralCheckIds) {
-		List<KrcdtWeekCondAlarm> entities = this.queryProxy().query(SELECT_BASIC + BY_CONTRACT_COMPANY + BY_ERAL_CHECK_ID + ORDER_BY_NO, KrcdtWeekCondAlarm.class)
+	public List<ExtractionCondWeekly> getAnyCond(String contractCode, String cid, String code) {
+		List<KrcdtWeekCondAlarm> entities = this.queryProxy().query(
+				SELECT_BASIC + BY_CONTRACT_COMPANY + BY_CODE + ORDER_BY_CODE, KrcdtWeekCondAlarm.class)
 				.setParameter("contractCode", contractCode)
-				.setParameter("companyId", companyId)
-				.setParameter("eralCheckIds", eralCheckIds)
+				.setParameter("pk.cid", cid)
+				.setParameter("pk.code", code)
 				.getList();
-        List<ExtractionCondWeekly> domain = new ArrayList<>();
-    	for(KrcdtWeekCondAlarm item: entities) {
-    		ExtractionCondWeekly toDomain = item.toDomain("");
-    		domain.add(toDomain);
-        }
-    	
-    	return domain;
+		List<ExtractionCondWeekly> domain = new ArrayList<>();
+		for(KrcdtWeekCondAlarm item: entities) {
+			ExtractionCondWeekly toDomain = item.toDomain("");
+			domain.add(toDomain);
+		}
+
+		return domain;
 	}
 
 	@Override
@@ -66,7 +83,7 @@ public class JpaExtractCondWeeklyRepository extends JpaRepository implements Ext
 
 	@Override
 	public void update(String contractCode, String companyId, ExtractionCondWeekly domain) {
-		KrcdtWeekCondAlarmPk pk = new KrcdtWeekCondAlarmPk(companyId, domain.getErrorAlarmId(), domain.getSortOrder());
+		KrcdtWeekCondAlarmPk pk = new KrcdtWeekCondAlarmPk(companyId, domain.getCode().v());
 		Optional<KrcdtWeekCondAlarm> entityOpt = this.queryProxy().find(pk, KrcdtWeekCondAlarm.class);
 
 		if(!entityOpt.isPresent()) return;
@@ -74,19 +91,14 @@ public class JpaExtractCondWeeklyRepository extends JpaRepository implements Ext
 		KrcdtWeekCondAlarm domainAfterConvert = fromDomain(contractCode, companyId, domain);
 
 		// そのままdomainAfterConvertでupdateではダメなのか…？
-		tergetEntity.condName = domainAfterConvert.condName;
-		tergetEntity.condMsg = domainAfterConvert.condMsg;
-		tergetEntity.useAtr = domainAfterConvert.useAtr;
-		tergetEntity.checkType = domainAfterConvert.checkType;
-		tergetEntity.conMonth = domainAfterConvert.conMonth;
 		tergetEntity.krcstErAlConGroup1 = domainAfterConvert.krcstErAlConGroup1;
 		tergetEntity.krcstErAlConGroup2 = domainAfterConvert.krcstErAlConGroup2;
 		this.commandProxy().update(tergetEntity);
 	}
 
 	@Override
-	public void delete(String contractCode, String companyId, String erAlCheckIds, int alarmNo) {
-		KrcdtWeekCondAlarmPk pk = new KrcdtWeekCondAlarmPk(companyId, erAlCheckIds, alarmNo);
+	public void delete(String companyId, String code) {
+		KrcdtWeekCondAlarmPk pk = new KrcdtWeekCondAlarmPk(companyId, code);
 		Optional<KrcdtWeekCondAlarm> entityOpt = this.queryProxy().find(pk, KrcdtWeekCondAlarm.class);
 		if (!entityOpt.isPresent()) {
 			return;
@@ -95,11 +107,11 @@ public class JpaExtractCondWeeklyRepository extends JpaRepository implements Ext
 	}
 
 	@Override
-	public void delete(String contractCode, String companyId, String checkId) {
-		List<KrcdtWeekCondAlarm> entities = this.queryProxy().query(SELECT_BASIC + BY_CONTRACT_COMPANY + BY_ERAL_CHECK_ID, KrcdtWeekCondAlarm.class)
+	public void delete(String contractCode, String cid, String code) {
+		List<KrcdtWeekCondAlarm> entities = this.queryProxy().query(SELECT_BASIC + BY_CONTRACT_COMPANY + BY_CODE, KrcdtWeekCondAlarm.class)
 				.setParameter("contractCode", contractCode)
-				.setParameter("companyId", companyId)
-				.setParameter("eralCheckIds", checkId)
+				.setParameter("cid", cid)
+				.setParameter("code", code)
 				.getList();
 		if (!entities.isEmpty()) {
 			this.commandProxy().removeAll(entities);
@@ -107,7 +119,7 @@ public class JpaExtractCondWeeklyRepository extends JpaRepository implements Ext
 	}
 	
 	private KrcdtWeekCondAlarm fromDomain(String contractCode, String companyId, ExtractionCondWeekly domain) {
-		KrcdtWeekCondAlarmPk pk = new KrcdtWeekCondAlarmPk(companyId, domain.getErrorAlarmId(), domain.getSortOrder());
+		KrcdtWeekCondAlarmPk pk = new KrcdtWeekCondAlarmPk(companyId, domain.getCode().v());
 
 		String atdItemConditionGroup1 = domain.getAtdItemCondition().getGroup1().getAtdItemConGroupId();
 		String atdItemConditionGroup2 = domain.getAtdItemCondition().getGroup2().getAtdItemConGroupId();
@@ -130,10 +142,6 @@ public class JpaExtractCondWeeklyRepository extends JpaRepository implements Ext
 		KrcdtWeekCondAlarm entity = new KrcdtWeekCondAlarm(
 				pk,
 				domain.getName().v(),
-				domain.isUse(), 
-				domain.getCheckItemType().value,
-				domain.getContinuousPeriod() != null && domain.getContinuousPeriod().isPresent() ? domain.getContinuousPeriod().get().v() : null,
-				domain.getErrorAlarmMessage() != null && domain.getErrorAlarmMessage().isPresent() ? domain.getErrorAlarmMessage().get().v() : "",
 				domain.getAtdItemCondition().isUseGroup2() ? 1 : 0,
 				domain.getAtdItemCondition().getGroup1().getAtdItemConGroupId(),
 				domain.getAtdItemCondition().getGroup2().getAtdItemConGroupId(),

@@ -712,7 +712,6 @@ public class AlarmCheckConditionByCategoryFinder {
 				.build();
 		
 		return WorkRecordExtraConAdapterDto.builder()
-				.errorAlarmCheckID(domain.getErrorAlarmId())
 				.sortOrderBy(domain.getSortOrder())
 				.useAtr(domain.isUse())
 				.nameWKRecord(domain.getName().v())
@@ -782,18 +781,12 @@ public class AlarmCheckConditionByCategoryFinder {
 		//TODO:atdItemCondition移送
 		
 		ErrorAlarmConAdapterDto errorAlarmCondition = ErrorAlarmConAdapterDto.builder()
-				.displayMessage(domain.getErrorAlarmMessage() != null && domain.getErrorAlarmMessage().isPresent() ? domain.getErrorAlarmMessage().get().v() : "")
-				.continuousPeriod(domain.getContinuousPeriod() != null && domain.getContinuousPeriod().isPresent() ? domain.getContinuousPeriod().get().v() : 0)
 				.monthlyCondition(monthlyCondition)
 				.build();
 		
 		return WorkRecordExtraConAdapterDto.builder()
-				.errorAlarmCheckID(domain.getErrorAlarmId())
-				.sortOrderBy(domain.getSortOrder())
-				.useAtr(domain.isUse())
 				.nameWKRecord(domain.getName().v())
 				.errorAlarmCondition(errorAlarmCondition)
-				.checkItem(domain.getCheckItemType().value)
 				.build();
 	}
 }

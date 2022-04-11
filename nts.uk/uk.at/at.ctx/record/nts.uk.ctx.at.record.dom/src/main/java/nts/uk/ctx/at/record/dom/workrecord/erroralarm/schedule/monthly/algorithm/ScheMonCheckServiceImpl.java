@@ -1264,7 +1264,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	 * @param monthlyWorkTimeSetComOpt Optional＜会社別月単位労働時間＞
 	 * @param monthlyWorkTimeSetEmpOpt Optional＜雇用別月単位労働時間＞
 	 * @param monthlyWorkTimeSetWkpOpt Optional＜職場別月単位労働時間＞
-	 * @param monthlyWorkTimeSetShas Optional＜社員別月単位労働時間＞
+	 * @param monthlyWorkTimeSetShasOpt Optional＜社員別月単位労働時間＞
+	 * @param monthlyWorkTimeSetAtr
 	 * @param ym 年月　＃117183
 	 * 
 	 * @return

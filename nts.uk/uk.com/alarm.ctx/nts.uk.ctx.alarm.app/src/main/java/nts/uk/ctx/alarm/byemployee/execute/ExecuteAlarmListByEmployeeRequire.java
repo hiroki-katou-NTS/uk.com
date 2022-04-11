@@ -109,6 +109,9 @@ public class ExecuteAlarmListByEmployeeRequire {
     @Inject
     private YearHolidayRepository yearHolidayRepo;
 
+    @Inject
+    private ExtractionCondWeeklyRepository extractionCondWeeklyRepository;
+
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
                 AppContexts.user().companyId(),

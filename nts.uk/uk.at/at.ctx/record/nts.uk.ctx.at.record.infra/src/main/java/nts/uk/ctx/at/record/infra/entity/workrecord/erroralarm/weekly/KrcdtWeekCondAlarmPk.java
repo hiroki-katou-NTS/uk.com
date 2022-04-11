@@ -21,11 +21,7 @@ public class KrcdtWeekCondAlarmPk implements Serializable {
     public String cid;
 
     /* ID */
-    @Column(name = "ERAL_CHECK_ID")
-    public String checkId;
-
-    /* No */
-    @Column(name = "COND_NO")
-    public int condNo;
+    @Column(name = "ERROR_ALARM_CD")
+    public String code;
 
 }

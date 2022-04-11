@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeekl
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.WeeklyCheckItemType;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.*;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -37,24 +38,8 @@ public class KrcdtWeekCondAlarm extends ContractUkJpaEntity {
     public KrcdtWeekCondAlarmPk pk;
 
     /** アラームリスト抽出条件の名称 */
-    @Column(name = "COND_NAME")
-    public String condName;
-
-    /** 使用区分 */
-    @Column(name = "USE_ATR")
-    public boolean useAtr;
-
-    /** 複数月チェック種類 */
-    @Column(name = "TYPE_CHECK_ITEM")
-    public int checkType;
-
-    /** 連続期間 */
-    @Column(name = "CONTINUOUS_MONTHS")
-    public Integer conMonth;
-
-    /** メッセージ */
-    @Column(name = "COND_MESSAGE")
-    public String condMsg;
+    @Column(name = "ERROR_ALARM_NAME")
+    public String name;
 
     /** グループ2を利用する */
     @Column(name = "GROUP2_USE_ATR")
@@ -95,12 +80,8 @@ public class KrcdtWeekCondAlarm extends ContractUkJpaEntity {
                 atdItemCondition.setGroup1(group2.toDomain(this.pk.cid, errorAlarmCode)));
 
         return new ExtractionCondWeekly(
-        		pk.checkId,
-        		EnumAdaptor.valueOf(checkType, WeeklyCheckItemType.class),
-        		pk.condNo, useAtr,
-        		new ErrorAlarmWorkRecordName(condName), 
-        		Optional.ofNullable(condMsg == null ? null : new ErrorAlarmMessage(condMsg)),
-        		Optional.ofNullable(conMonth == null ? null : new ContinuousPeriod(conMonth)),
+        		new ErrorAlarmWorkRecordCode(pk.code),
+                new ErrorAlarmWorkRecordName(name),
                 atdItemCondition);
     }
 }

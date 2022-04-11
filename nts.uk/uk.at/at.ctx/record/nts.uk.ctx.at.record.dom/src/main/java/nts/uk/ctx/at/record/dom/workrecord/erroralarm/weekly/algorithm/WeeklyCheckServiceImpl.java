@@ -85,8 +85,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		// ドメインモデル「週別実績の抽出条件」を取得する
 		// 条件: ID　＝　Input．週次のアラームチェック条件．チェック条件．任意抽出条件
 		// Output: List＜週別実績の任意抽出条件＞
-		List<ExtractionCondWeekly> weeklyConds = extractionCondWeeklyRepository.getAnyCond(
-				contractCode, cid, listOptionalItem).stream().filter(x -> x.isUse()).collect(Collectors.toList());
+		List<ExtractionCondWeekly> weeklyConds = extractionCondWeeklyRepository.getAnyCond(contractCode, cid, listOptionalItem);
 		
 		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
 			synchronized (this) {
@@ -101,16 +100,16 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
                 
 				// 取得したList＜週別実績の任意抽出条件＞をループする
 				for (ExtractionCondWeekly weeklyCond: weeklyConds) {
+					String code = weeklyCond.getCode().v();
 					// アカウント　＝　0
 					int count = 0;
-					
-					String alarmCode = String.valueOf(weeklyCond.getSortOrder());
+
 					val lstExtractCond = alarmExtractConditions.stream()
-							.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(alarmCode)))
+							.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionCode().equals(code))
 							.findAny();
 					if (!lstExtractCond.isPresent()) {
 						alarmExtractConditions.add(new AlarmExtractionCondition(
-								String.valueOf(alarmCode),
+								"",
 								new AlarmCheckConditionCode(alarmCheckConditionCode),
 								AlarmCategory.WEEKLY,
 								AlarmListCheckType.FreeCheck
@@ -152,7 +151,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 
 							List<ExtractResultDetail> listDetail = new ArrayList<>(Arrays.asList(extractDetail.detail));
 							AlarmExtractInfoResult newResult = new AlarmExtractInfoResult(
-									alarmCode,
+									"",
 									new AlarmCheckConditionCode(alarmCheckConditionCode),
 									AlarmCategory.WEEKLY,
 									AlarmListCheckType.FreeCheck,
@@ -168,11 +167,11 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 							}
 
                             List<AlarmExtractionCondition> lstExtractCondition = alarmExtractConditions.stream()
-                                    .filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(alarmCode)))
+                                    .filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionCode().equals(code))
                                     .collect(Collectors.toList());
                             if (lstExtractCondition.isEmpty()) {
                                 alarmExtractConditions.add(new AlarmExtractionCondition(
-                                        String.valueOf(alarmCode),
+										"",
                                         new AlarmCheckConditionCode(alarmCheckConditionCode),
                                         AlarmCategory.WEEKLY,
                                         AlarmListCheckType.FreeCheck
@@ -405,40 +404,40 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 //		return cond;
 //	}
 	
-	private ContinuousOutput checkPerformanceOfConsecutiveItem(AttendanceTimeOfWeekly attWeekly,
-                                                               ExtractionCondWeekly weeklyCond, WeeklyAttendanceItemCondition<?> erAlAtdItemCon, List<ItemValue> convert, int count,
-                                                               int currentIndex, int sizeLoop, List<AttendanceTimeOfWeekly> attWeeklyBySid) {
-		ContinuousOutput ouput = new ContinuousOutput();
-		// 勤怠項目をチェックする
-		// Output: 該当区分
-		boolean errorAtr = checkAttendanceItem(erAlAtdItemCon, item -> {
-			if (item.isEmpty()) {
-				return new ArrayList<>();
-			}
-			return convert.stream().filter(x -> item.contains(x.getItemId())).map(iv -> getValue(iv))
-					.collect(Collectors.toList());
-		});
-		
-		//
-		int continuousPeriod = 0;
-		if (weeklyCond.getContinuousPeriod().isPresent()) {
-			continuousPeriod = weeklyCond.getContinuousPeriod().get().v();
-		}
-		
-		// 連続期間のカウントを計算
-		CalCountForConsecutivePeriodOutput calCountForConsecutivePeriodOutput = calCountForConsecutivePeriodChecking.getContinuousCount(
-				count, 
-				continuousPeriod, 
-				errorAtr);
-		// QA#117728
-		currentIndex = currentIndex + 1;
-		ouput.check = calCountForConsecutivePeriodOutput.getOptContinuousCount().isPresent() 
-				|| (errorAtr && currentIndex == sizeLoop && calCountForConsecutivePeriodOutput.getCount() >= continuousPeriod);
-		ouput.continuousCountOpt = calCountForConsecutivePeriodOutput.getOptContinuousCount();
-		ouput.count = calCountForConsecutivePeriodOutput.getCount();
-		
-		return ouput;
-	}
+//	private ContinuousOutput checkPerformanceOfConsecutiveItem(AttendanceTimeOfWeekly attWeekly,
+//                                                               ExtractionCondWeekly weeklyCond, WeeklyAttendanceItemCondition<?> erAlAtdItemCon, List<ItemValue> convert, int count,
+//                                                               int currentIndex, int sizeLoop, List<AttendanceTimeOfWeekly> attWeeklyBySid) {
+//		ContinuousOutput ouput = new ContinuousOutput();
+//		// 勤怠項目をチェックする
+//		// Output: 該当区分
+//		boolean errorAtr = checkAttendanceItem(erAlAtdItemCon, item -> {
+//			if (item.isEmpty()) {
+//				return new ArrayList<>();
+//			}
+//			return convert.stream().filter(x -> item.contains(x.getItemId())).map(iv -> getValue(iv))
+//					.collect(Collectors.toList());
+//		});
+//
+//		//
+//		int continuousPeriod = 0;
+//		if (weeklyCond.getContinuousPeriod().isPresent()) {
+//			continuousPeriod = weeklyCond.getContinuousPeriod().get().v();
+//		}
+//
+//		// 連続期間のカウントを計算
+//		CalCountForConsecutivePeriodOutput calCountForConsecutivePeriodOutput = calCountForConsecutivePeriodChecking.getContinuousCount(
+//				count,
+//				continuousPeriod,
+//				errorAtr);
+//		// QA#117728
+//		currentIndex = currentIndex + 1;
+//		ouput.check = calCountForConsecutivePeriodOutput.getOptContinuousCount().isPresent()
+//				|| (errorAtr && currentIndex == sizeLoop && calCountForConsecutivePeriodOutput.getCount() >= continuousPeriod);
+//		ouput.continuousCountOpt = calCountForConsecutivePeriodOutput.getOptContinuousCount();
+//		ouput.count = calCountForConsecutivePeriodOutput.getCount();
+//
+//		return ouput;
+//	}
 
 	private Boolean checkAttendanceItem(WeeklyAttendanceItemCondition<?> erAlAtdItemCon, Function<List<Integer>, List<Double>> getValueFromItemIds) {
 		return erAlAtdItemCon.checkTarget(getValueFromItemIds);

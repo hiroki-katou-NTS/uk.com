@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.function.app.command.alarm.checkcondition;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -27,10 +24,7 @@ import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapterDto;
-import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErrorAlarmConAdapterDto;
-import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ScheMonCondDto;
-import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.WorkTimeConAdapterDto;
-import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.WorkTypeConAdapterDto;
+import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.*;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunImport;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.annual.ScheduleAnnualAlarmCheckCond;
@@ -65,14 +59,15 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraRes
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCondEvent;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.doevent.MulMonCheckCondDomainEventDto;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.*;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.*;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.ErrorAlarmMessageMSTCHK;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedCheckItem;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractConditionRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ExtractionCondScheduleYear;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ExtractionCondScheduleYearRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.YearCheckItemType;
@@ -105,6 +100,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeekl
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeeklyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.WeeklyCheckItemType;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -480,7 +476,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 					
 				List<MasterCheckFixedExtractCondition> lstCondition = new ArrayList<>();
 				for(MasterCheckFixedExtractConditionDto fixedMasterCheckExtConDto : command.getMasterCheckAlarmCheckCondition().getListFixedMasterCheckCondition()) {
-					if(fixedMasterCheckExtConDto.getErrorAlarmCheckId() == null 
+					if(fixedMasterCheckExtConDto.getErrorAlarmCheckId() == null
 							|| fixedMasterCheckExtConDto.getErrorAlarmCheckId().equals("")) {
 						fixedMasterCheckExtConDto.setErrorAlarmCheckId(masterCheckAlarmCheckCondition.getAlarmCheckId());
 					}
@@ -496,22 +492,22 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				break;
 			case SCHEDULE_DAILY:
 				if (!command.getScheFixCondDay().getSheFixItemDays().isEmpty()) {
-					saveScheduleFixCondDay(companyId, command.getScheFixCondDay().getErAlCheckLinkId(), command.getScheFixCondDay().getSheFixItemDays(), false);
+					saveScheduleFixCondDay(companyId, command.getScheFixCondDay().getAlermCondCode(), command.getScheFixCondDay().getSheFixItemDays(), false);
 				}
 				if (!command.getScheAnyCondDay().getScheAnyCondDays().isEmpty()) {
-					saveScheduleAnyCondDay(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
+					saveScheduleAnyCondDay(companyId, command.getScheAnyCondDay().getAlermCondCode(), command.getScheAnyCondDay().getScheAnyCondDays());
 				} else {
-					extraCondScheDayRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getErAlCheckLinkId());
+					extraCondScheDayRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getAlermCondCode());
 				}
 				break;
 			case SCHEDULE_MONTHLY:
 				if (!command.getScheFixCondDay().getSheFixItemDays().isEmpty()) {
-					saveScheduleFixCondMonth(companyId, command.getScheFixCondDay().getErAlCheckLinkId(), command.getScheFixCondDay().getSheFixItemDays(), false);
+					saveScheduleFixCondMonth(companyId, command.getScheFixCondDay().getAlermCondCode(), command.getScheFixCondDay().getSheFixItemDays(), false);
 				}
 				if (!command.getScheAnyCondDay().getScheAnyCondDays().isEmpty()) {
-					saveScheduleAnyCondMon(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
+					saveScheduleAnyCondMon(companyId, command.getScheAnyCondDay().getAlermCondCode(), command.getScheAnyCondDay().getScheAnyCondDays());
 				} else {
-					extraCondScheMonRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getErAlCheckLinkId());
+					extraCondScheMonRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getAlermCondCode());
 				}
 				break;
 			case SCHEDULE_YEAR:
@@ -519,14 +515,14 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 					saveScheduleAnyCondYear(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
 				}
 				else {
-					extraCondScheYearRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getErAlCheckLinkId());
+					extraCondScheYearRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getAlermCondCode());
 				}
 				break;
 			case WEEKLY:
 				if (!command.getScheAnyCondDay().getScheAnyCondDays().isEmpty()) {
-					saveAnyCondWeekly(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
+					saveAnyCondWeekly(companyId, command.getScheAnyCondDay().getAlermCondCode(), command.getScheAnyCondDay().getScheAnyCondDays());
 				} else {
-					extraCondWeeklyRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getErAlCheckLinkId());
+					extraCondWeeklyRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getAlermCondCode());
 				}
 				break;
 			default:
@@ -717,30 +713,25 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				fixedMasterCheckConditionRepo.persist(lstMasterCheck);
 				break;
 			case SCHEDULE_DAILY:
-				String eralCheckIdFixedItem = IdentifierUtil.randomUniqueId();
-				String eralCheckIdOptionalItem = IdentifierUtil.randomUniqueId();
-				
-				saveScheduleFixCondDay(companyId, eralCheckIdFixedItem, command.getScheFixCondDay().getSheFixItemDays(), true);
-				saveScheduleAnyCondDay(companyId, eralCheckIdOptionalItem, command.getScheAnyCondDay().getScheAnyCondDays());
-				extractionCondition = new ScheduleDailyAlarmCheckCond(eralCheckIdOptionalItem, eralCheckIdFixedItem);
+				saveScheduleFixCondDay(companyId, command.getScheFixCondDay().getAlermCondCode(), command.getScheFixCondDay().getSheFixItemDays(), true);
+				saveScheduleAnyCondDay(companyId, command.getScheAnyCondDay().getAlermCondCode(), command.getScheAnyCondDay().getScheAnyCondDays());
+				extractionCondition = new ScheduleDailyAlarmCheckCond(command.getScheAnyCondDay().getAlermCondCode(), command.getScheFixCondDay().getAlermCondCode());
 				break;
 			case SCHEDULE_MONTHLY:
 				String eralCheckIdFixedMonItem = IdentifierUtil.randomUniqueId();
 				String eralCheckIdOptionalMonItem = IdentifierUtil.randomUniqueId();
-				
+
 				saveScheduleFixCondMonth(companyId, eralCheckIdFixedMonItem, command.getScheFixCondDay().getSheFixItemDays(), true);
 				saveScheduleAnyCondMon(companyId, eralCheckIdOptionalMonItem, command.getScheAnyCondDay().getScheAnyCondDays());
 				extractionCondition = new ScheduleMonthlyAlarmCheckCond(eralCheckIdOptionalMonItem, eralCheckIdFixedMonItem);
 				break;
 			case SCHEDULE_YEAR:
-				String eralCheckIdOptionalYearItem = IdentifierUtil.randomUniqueId();
-				saveScheduleAnyCondYear(companyId, eralCheckIdOptionalYearItem, command.getScheAnyCondDay().getScheAnyCondDays());
-				extractionCondition = new ScheduleAnnualAlarmCheckCond(eralCheckIdOptionalYearItem);
+				saveScheduleAnyCondYear(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
+				extractionCondition = new ScheduleAnnualAlarmCheckCond(command.getScheAnyCondDay().getErAlCheckLinkId());
 				break;
 			case WEEKLY:
-				String eralCheckIdOptionalWeeklyItem = IdentifierUtil.randomUniqueId();
-				saveAnyCondWeekly(companyId, eralCheckIdOptionalWeeklyItem, command.getScheAnyCondDay().getScheAnyCondDays());
-				extractionCondition = new WeeklyAlarmCheckCond(eralCheckIdOptionalWeeklyItem);
+				saveAnyCondWeekly(companyId, command.getScheAnyCondDay().getAlermCondCode(), command.getScheAnyCondDay().getScheAnyCondDays());
+				extractionCondition = new WeeklyAlarmCheckCond(command.getScheAnyCondDay().getAlermCondCode());
 				break;
 			default:
 				break;
@@ -926,13 +917,13 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 	/**
 	 * Schedule daily with tab2
 	 * @param companyId
-	 * @param eralCheckId
+	 * @param errorAlarmId
 	 * @param scheAnyCondDays
 	 * @return list of error alarm check id
 	 */
-	private void saveScheduleAnyCondMon(String companyId, String eralCheckId, List<WorkRecordExtraConAdapterDto> scheAnyCondDays) {
+	private void saveScheduleAnyCondMon(String companyId, String errorAlarmId, List<WorkRecordExtraConAdapterDto> scheAnyCondDays) {
 		String contractCode = AppContexts.user().contractCode();
-		List<ExtractionCondScheduleMonth> listOptionalItem = extraCondScheMonRepository.getScheAnyCond(contractCode, companyId, eralCheckId);
+		List<ExtractionCondScheduleMonth> listOptionalItem = extraCondScheMonRepository.getScheAnyCond(contractCode, companyId, errorAlarmId);
 		
 		int alarmNo = 0;
 		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
@@ -943,7 +934,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			ScheMonCondDto monthlyCondition = errorAlarmCondition.getMonthlyCondition();
 			
 			ExtractionCondScheduleMonth domain = ExtractionCondScheduleMonth.create(
-					eralCheckId, item.getSortOrderBy(), item.isUseAtr(), item.getNameWKRecord(),
+					item.getErrorAlarmCheckID(), item.getSortOrderBy(), item.isUseAtr(), item.getNameWKRecord(),
 					item.getErrorAlarmCondition().getDisplayMessage(),
 					checkItemType);
 			
@@ -989,7 +980,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				}
 			}
 			
-			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId().equals(eralCheckId) && x.getSortOrder() == item.getSortOrderBy())) {
+			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId().equals(errorAlarmId) && x.getSortOrder() == item.getSortOrderBy())) {
 				extraCondScheMonRepository.add(contractCode, companyId, domain);
 			} else {
 				extraCondScheMonRepository.update(contractCode, companyId, domain);
@@ -998,8 +989,8 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 		
 		// sync again item when user remove in list
 		for(ExtractionCondScheduleMonth item: listOptionalItem) {
-			if (!scheAnyCondDays.stream().anyMatch(x -> item.getErrorAlarmId().equals(eralCheckId) && item.getSortOrder() == x.getSortOrderBy())) {
-				extraCondScheMonRepository.delete(contractCode, companyId, eralCheckId, item.getSortOrder());
+			if (!scheAnyCondDays.stream().anyMatch(x -> item.getErrorAlarmId().equals(errorAlarmId) && item.getSortOrder() == x.getSortOrderBy())) {
+				extraCondScheMonRepository.delete(contractCode, companyId, errorAlarmId, item.getSortOrder());
 			}
 		}
 	}
@@ -1073,47 +1064,68 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 	
 	/**
 	 * weekly with tab2
-	 * @param companyId
-	 * @param eralCheckId
-	 * @param scheAnyCondDays
+	 * @param cid
+	 * @param code
+	 * @param dtoList
 	 * @return list of error alarm check id
 	 */
-	private void saveAnyCondWeekly(String companyId, String eralCheckId, List<WorkRecordExtraConAdapterDto> scheAnyCondDays) {
+	private void saveAnyCondWeekly(String cid, String code, List<WorkRecordExtraConAdapterDto> dtoList) {
 		String contractCode = AppContexts.user().contractCode();
-		List<ExtractionCondWeekly> listOptionalItem = extraCondWeeklyRepository.getAnyCond(contractCode, companyId, eralCheckId);
-		
-		int alarmNo = 0;
-		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
-			alarmNo++;
-			item.setSortOrderBy(alarmNo);
-			WeeklyCheckItemType checkItemType = WeeklyCheckItemType.TIME;
-			if (item.getCheckItem() > 0) {
-				checkItemType = EnumAdaptor.valueOf(item.getCheckItem(), WeeklyCheckItemType.class);
-			}
+		List<ExtractionCondWeekly> listOptionalItem = extraCondWeeklyRepository.getAnyCond(contractCode, cid, code);
+
+		for(WorkRecordExtraConAdapterDto item: dtoList) {
 			
 			ErrorAlarmConAdapterDto errorAlarmCondition = item.getErrorAlarmCondition();
-			ScheMonCondDto monthlyCondition = errorAlarmCondition.getMonthlyCondition();
+			AttendanceItemConAdapterDto atdItemCond = errorAlarmCondition.getAtdItemCondition();
 
-			// TODO:atdItemConditionの移送
-			ExtractionCondWeekly domain = ExtractionCondWeekly.create(
-					eralCheckId, item.getSortOrderBy(), item.isUseAtr(), item.getNameWKRecord(),
-					item.getErrorAlarmCondition().getDisplayMessage(),
-					checkItemType,
-					errorAlarmCondition.getContinuousPeriod());
+			val attItemCond = AttendanceItemCondition.init(
+					EnumAdaptor.valueOf(atdItemCond.getOperatorBetweenGroups(), LogicalOperator.class),
+					atdItemCond.isGroup2UseAtr()
+			);
+			attItemCond.setGroup1(convert(cid, code, atdItemCond.getGroup1()));
+			attItemCond.setGroup2(convert(cid, code, atdItemCond.getGroup2()));
 
-			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId().equals(eralCheckId) && x.getSortOrder() == item.getSortOrderBy())) {
-				extraCondWeeklyRepository.add(contractCode, companyId, domain);
+			ExtractionCondWeekly domain = ExtractionCondWeekly.create(code, "", attItemCond);
+
+			if (!listOptionalItem.stream().anyMatch(x -> x.getCode().equals(code))) {
+				extraCondWeeklyRepository.add(contractCode, cid, domain);
 			} else {
-				extraCondWeeklyRepository.update(contractCode, companyId, domain);
+				extraCondWeeklyRepository.update(contractCode, cid, domain);
 			}
 		}
 		
 		// sync again item when user remove in list
 		for(ExtractionCondWeekly item: listOptionalItem) {
-			if (!scheAnyCondDays.stream().anyMatch(x -> item.getErrorAlarmId().equals(eralCheckId) && item.getSortOrder() == x.getSortOrderBy())) {
-				extraCondWeeklyRepository.delete(contractCode, companyId, eralCheckId, item.getSortOrder());
+			if (!dtoList.stream().anyMatch(x -> item.getCode().v().equals(code))) {
+				extraCondWeeklyRepository.delete(contractCode, cid, code);
 			}
 		}
+	}
+
+	private ErAlConditionsAttendanceItem convert(String cid, String code, ErAlConAttendanceItemAdapterDto group) {
+		ErAlConditionsAttendanceItem result = ErAlConditionsAttendanceItem.init(group.getConditionOperator());
+		for(val item :group.getLstErAlAtdItemCon()) {
+
+			ErAlAttendanceItemCondition<CheckedTimesValue> cond = new ErAlAttendanceItemCondition<>(cid, code, item.getTargetNO(), item.getConditionAtr(),
+					item.isUseAtr(), item.getConditionType());
+
+			cond.setCountableTarget(item.getCountableAddAtdItems(), item.getCountableSubAtdItems());
+			cond.setUncountableTarget(item.getUncountableAtdItem());
+
+			// TODO: ジェネリクスごとの対応
+			cond.setCompareSingleValue(
+					item.getCompareOperator(),
+					item.getConditionType(),
+					(CheckedTimesValue) new CheckedTimesValue(item.getCompareStartValue().intValue()));
+			cond.setCompareRange(
+					item.getCompareOperator(),
+					(CheckedTimesValue) new CheckedTimesValue(item.getCompareStartValue().intValue()),
+					(CheckedTimesValue) new CheckedTimesValue(item.getCompareEndValue().intValue()));
+			cond.setInputCheck(item.getInputCheckCondition());
+
+			result.addAtdItemConditions(cond);
+		}
+		return result;
 	}
 
 }
