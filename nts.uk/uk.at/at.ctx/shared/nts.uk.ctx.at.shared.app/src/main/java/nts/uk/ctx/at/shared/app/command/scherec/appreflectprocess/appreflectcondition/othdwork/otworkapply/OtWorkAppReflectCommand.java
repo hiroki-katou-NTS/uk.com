@@ -10,7 +10,6 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.ov
 @AllArgsConstructor
 public class OtWorkAppReflectCommand {
     private int reflectActualWorkAtr;
-    private int reflectWorkInfoAtr;
     private int reflectActualOvertimeHourAtr;
     private int reflectBeforeBreak;
     private int workReflect;
@@ -22,7 +21,6 @@ public class OtWorkAppReflectCommand {
     public OtWorkAppReflect toDomain() {
         return OtWorkAppReflect.create(
                 reflectActualWorkAtr,
-                reflectWorkInfoAtr,
                 reflectActualOvertimeHourAtr,
                 reflectBeforeBreak,
                 workReflect,

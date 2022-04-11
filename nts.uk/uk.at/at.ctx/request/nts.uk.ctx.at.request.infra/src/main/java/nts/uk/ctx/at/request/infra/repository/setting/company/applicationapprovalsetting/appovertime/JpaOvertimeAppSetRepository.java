@@ -50,7 +50,6 @@ public class JpaOvertimeAppSetRepository extends JpaRepository implements Overti
             entity.setWorkTimeIniAtr(overtimeAppSet.getApplicationDetailSetting().getAtworkTimeBeginDisp().value);
             entity.setEndWorkTimeIniAtr(BooleanUtils.toInteger(overtimeAppSet.getApplicationDetailSetting().isDispSystemTimeWhenNoWorkTime()));
             entity.setAtdWorkReflectAtr(overtimeWorkAppReflect.getReflectActualWorkAtr().value);
-            entity.setPreWorkReflectAtr(overtimeWorkAppReflect.getBefore().getReflectWorkInfoAtr().value);
             entity.setPreInputTimeReflectAtr(overtimeWorkAppReflect.getBefore().getReflectActualOvertimeHourAtr().value);
             entity.setPreBreakTimeReflectAtr(overtimeWorkAppReflect.getBefore().getBreakLeaveApplication().getBreakReflectAtr().value);
             entity.setPostWorkTimeReflectAtr(overtimeWorkAppReflect.getAfter().getWorkReflect().value);

@@ -161,13 +161,13 @@
 				                                                    constraint:'TimeWithDayAttr',
 				                                                    value: _.find(workingHours(), {'workNo': 1}).timeZone.startTime,
 				                                                    name: '#{i18n.getText('KAF011_32')}',
-				                                                    enable: workChangeUse() &amp;&amp; ($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().workInfoAttendanceReflect.reflectAttendance == 1 ) &amp;&amp; outputMode() == 1 }" />
+				                                                    enable: workChangeUse() &amp;&amp; outputMode() == 1 }" />
 				                             #{i18n.getText('KAF011_37')}
 				                             <input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 				                                                    constraint:'TimeWithDayAttr',
 				                                                    value: _.find(workingHours(), {'workNo': 1}).timeZone.endTime,
 				                                                    name: '#{i18n.getText('KAF011_33')}',
-				                                                    enable: workChangeUse() &amp;&amp; ($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().workInfoAttendanceReflect.reflectAttendance == 1) &amp;&amp; outputMode() == 1 }" />
+				                                                    enable: workChangeUse() &amp;&amp; outputMode() == 1 }" />
 										</div>
 									</div>
 								</com:ko-if>
@@ -179,13 +179,13 @@
 				                                                    constraint:'TimeWithDayAttr',
 				                                                    value: _.find(workingHours(), {'workNo': 2}).timeZone.startTime,
 				                                                    name: '#{i18n.getText('KAF011_35')}',
-				                                                    enable: workChangeUse() &amp;&amp; ($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().workInfoAttendanceReflect.reflectAttendance == 1) &amp;&amp; outputMode() == 1 }" />
+				                                                    enable: workChangeUse() &amp;&amp; outputMode() == 1 }" />
 				                             #{i18n.getText('KAF011_37')}
 				                             <input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 				                                                    constraint:'TimeWithDayAttr',
 				                                                    value: _.find(workingHours(), {'workNo': 2}).timeZone.endTime,
 				                                                    name: '#{i18n.getText('KAF011_36')}',
-				                                                    enable: workChangeUse() &amp;&amp; ($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().workInfoAttendanceReflect.reflectAttendance == 1) &amp;&amp; outputMode() == 1 }" />
+				                                                    enable: workChangeUse() &amp;&amp; outputMode() == 1 }" />
 										</div>
 									</div>
 								</com:ko-if>

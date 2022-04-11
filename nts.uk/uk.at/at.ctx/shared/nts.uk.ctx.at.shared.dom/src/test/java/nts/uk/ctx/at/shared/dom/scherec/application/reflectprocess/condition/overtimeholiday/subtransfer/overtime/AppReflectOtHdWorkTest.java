@@ -94,7 +94,7 @@ public class AppReflectOtHdWorkTest {
 		return new AppReflectOtHdWork(cid,
 				new HdWorkAppReflect(new BeforeHdWorkAppReflect(NotUseAtr.NOT_USE),
 						AfterHdWorkAppReflect.create(0, 0, 0, 0)), // 休日出勤申請の反映 = しない
-				OtWorkAppReflect.create(0, 0, 0, 0, 0, 0, 0, 0), // 残業・休日出勤.残業申請 = しない
+				OtWorkAppReflect.create(0, 0, 0, 0, 0, 0, 0), // 残業・休日出勤.残業申請 = しない
 				reflectLateNight);
 	}
 }

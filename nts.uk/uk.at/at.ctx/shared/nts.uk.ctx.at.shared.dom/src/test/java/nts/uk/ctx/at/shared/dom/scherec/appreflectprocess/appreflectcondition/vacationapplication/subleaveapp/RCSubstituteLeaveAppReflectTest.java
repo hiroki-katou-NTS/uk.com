@@ -53,7 +53,6 @@ public class RCSubstituteLeaveAppReflectTest {
 
 		/// 勤務情報、出退勤を反映する
 		VacationAppReflectOption workInfoAttendanceReflect = new VacationAppReflectOption(NotUseAtr.USE, // 1日休暇の場合は出退勤を削除
-				NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.REFLECT);// 就業時間帯を反映する
 
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
