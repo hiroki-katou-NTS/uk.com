@@ -32,6 +32,8 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
@@ -130,6 +132,9 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private ErrorAlarmConditionRepository errorAlarmConditionRepo;
+
+    @Inject
+    private StampCardRepository stampCardRepo;
 
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
@@ -348,6 +353,11 @@ public class ExecuteAlarmListByEmployeeRequire {
         public WeeklyRecordToAttendanceItemConverter createWeeklyConverter() {
             // TODO:
             return null;
+        }
+
+        @Override
+        public List<StampCard> getStampCard(String employeeId) {
+            return stampCardRepo.getListStampCard(employeeId);
         }
     }
 }

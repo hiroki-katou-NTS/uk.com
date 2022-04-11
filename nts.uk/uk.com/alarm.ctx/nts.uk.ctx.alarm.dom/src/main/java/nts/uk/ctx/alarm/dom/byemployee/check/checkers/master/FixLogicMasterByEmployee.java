@@ -1,6 +1,7 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers.master;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.service.CheckNotExistAnnualLeaveTable;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.GetNotExistWorkTime;
@@ -20,6 +22,8 @@ import nts.uk.ctx.at.shared.dom.workingcondition.service.GetNotExistWorkType;
  */
 @RequiredArgsConstructor
 public enum FixLogicMasterByEmployee {
+
+	社員のカードNO確認(1, c -> checkCardNumberByEmployee(c)),
 
 	年休付与テーブル確認(2, c -> checkAnnualLeaveBasicInfo(c)),
 
@@ -46,6 +50,14 @@ public enum FixLogicMasterByEmployee {
 
 		val contex = new Context(require, employeeId, message);
 		return logic.apply(contex);
+	}
+
+	private static Iterable<AlarmRecordByEmployee> checkCardNumberByEmployee(Context context) {
+		val result = new ArrayList<AlarmRecordByEmployee>();
+		if(context.require.getStampCard(context.employeeId).isEmpty()){
+			result.add(context.alarm());
+		}
+		return result;
 	}
 
 	private static Iterable<AlarmRecordByEmployee> checkAnnualLeaveBasicInfo(Context context){
@@ -150,5 +162,6 @@ public enum FixLogicMasterByEmployee {
 			CheckNotExistAnnualLeaveTable.Require,
 			GetNotExistWorkType.Require,
 			GetNotExistWorkTime.Require {
+		List<StampCard> getStampCard(String employeeId);
 	}
 }
