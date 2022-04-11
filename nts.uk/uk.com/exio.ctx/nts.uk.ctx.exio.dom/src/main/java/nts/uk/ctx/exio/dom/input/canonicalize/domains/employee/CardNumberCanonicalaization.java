@@ -55,7 +55,8 @@ public class CardNumberCanonicalaization implements DomainCanonicalization{
 		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interms -> {
 
 			// 全DELETEの場合、この社員に紐づくカードNoを全て削除
-			if (context.getMode() == ImportingMode.DELETE_DOMAIN_BEFOREHAND) {
+			if (context.getMode() == ImportingMode.DELETE_DOMAIN_BEFOREHAND
+				|| context.getMode() == ImportingMode.DELETE_RECORD_BEFOREHAND) {
 				String employeeId = interms.get(0).getItemByNo(Items.SID).get().getString();
 				require.save(context, toDelete(context, employeeId));
 			}
