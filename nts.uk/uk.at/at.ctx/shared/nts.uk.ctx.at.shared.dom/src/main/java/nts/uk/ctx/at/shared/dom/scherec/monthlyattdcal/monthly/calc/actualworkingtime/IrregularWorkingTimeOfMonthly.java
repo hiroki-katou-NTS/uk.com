@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculation;
 
 /**
  * 月別実績の変形労働時間
@@ -30,7 +29,7 @@ public class IrregularWorkingTimeOfMonthly implements Serializable{
 	private AttendanceTimeMonth irregularWorkingShortageTime;
 	/** 変形法定内残業時間 */
 	@Setter
-	private TimeMonthWithCalculation irregularLegalOverTime;
+	private AttendanceTimeMonth irregularLegalOverTime;
 	/** 変形法定外休暇加算時間 */
 	@Setter
 	private AttendanceTimeMonth illegalVacationAddTime;
@@ -46,7 +45,7 @@ public class IrregularWorkingTimeOfMonthly implements Serializable{
 		this.multiMonthIrregularMiddleTime = new AttendanceTimeMonthWithMinus(0);
 		this.irregularPeriodCarryforwardTime = new AttendanceTimeMonthWithMinus(0);
 		this.irregularWorkingShortageTime = new AttendanceTimeMonth(0);
-		this.irregularLegalOverTime = TimeMonthWithCalculation.ofSameTime(0);
+		this.irregularLegalOverTime = new AttendanceTimeMonth(0);
 		this.illegalVacationAddTime = new AttendanceTimeMonth(0);
 		this.legalVacationAddTime = new AttendanceTimeMonth(0);
 	}
@@ -65,7 +64,7 @@ public class IrregularWorkingTimeOfMonthly implements Serializable{
 			AttendanceTimeMonthWithMinus multiMonthIrregularMiddleTime,
 			AttendanceTimeMonthWithMinus irregularPeriodCarryforwardTime,
 			AttendanceTimeMonth irregularWorkingShortageTime,
-			TimeMonthWithCalculation irregularLegalOverTime,
+			AttendanceTimeMonth irregularLegalOverTime,
 			AttendanceTimeMonth illegalVacationAddTime,
 			AttendanceTimeMonth legalVacationAddTime) {
 
@@ -102,8 +101,7 @@ public class IrregularWorkingTimeOfMonthly implements Serializable{
 		this.irregularWorkingShortageTime = this.irregularWorkingShortageTime.addMinutes(
 				target.irregularWorkingShortageTime.v());
 		this.irregularLegalOverTime = this.irregularLegalOverTime.addMinutes(
-				target.irregularLegalOverTime.getTime().v(),
-				target.irregularLegalOverTime.getCalcTime().v());
+				target.irregularLegalOverTime.v());
 		this.illegalVacationAddTime = this.irregularWorkingShortageTime.addMinutes(
 				target.irregularWorkingShortageTime.v());
 		this.legalVacationAddTime = this.irregularWorkingShortageTime.addMinutes(

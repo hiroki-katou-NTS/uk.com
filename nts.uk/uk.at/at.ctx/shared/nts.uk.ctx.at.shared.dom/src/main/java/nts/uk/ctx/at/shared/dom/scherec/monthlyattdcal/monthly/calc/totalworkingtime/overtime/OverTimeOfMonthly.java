@@ -53,6 +53,8 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 	private TimeMonthWithCalculation totalTransferOverTime;
 	/** 集計残業時間 */
 	private Map<OverTimeFrameNo, AggregateOverTime> aggregateOverTimeMap;
+	/** 集計残業時間 */
+	private Map<GeneralDate, AttendanceTime> irregularLegalOvertimes;
 	
 	/**
 	 * コンストラクタ
@@ -63,6 +65,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 		this.beforeOverTime = new AttendanceTimeMonth(0);
 		this.totalTransferOverTime = TimeMonthWithCalculation.ofSameTime(0);
 		this.aggregateOverTimeMap = new HashMap<>();
+		this.irregularLegalOvertimes = new HashMap<>();
 	}
 	
 	/**
@@ -104,6 +107,9 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 			for (val aggrOverTime : this.aggregateOverTimeMap.entrySet()){
 				cloned.aggregateOverTimeMap.putIfAbsent(aggrOverTime.getKey(), aggrOverTime.getValue().clone());
 			}
+			for (val aggrOverTime : this.irregularLegalOvertimes.entrySet()){
+				cloned.irregularLegalOvertimes.putIfAbsent(aggrOverTime.getKey(), aggrOverTime.getValue());
+			}
 		}
 		catch (Exception e){
 			throw new RuntimeException("OverTimeOfMonthly clone error.");
@@ -120,6 +126,16 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 		
 		this.aggregateOverTimeMap.putIfAbsent(overTimeFrameNo, new AggregateOverTime(overTimeFrameNo));
 		return this.aggregateOverTimeMap.get(overTimeFrameNo);
+	}
+	
+	/** 変形法定内残業を集計する */
+	public AttendanceTimeMonth getIrregularLegalOverTime(DatePeriod period) {
+		
+		val irregularLegalOt = this.irregularLegalOvertimes.entrySet().stream()
+				.filter(i -> period.contains(i.getKey()))
+				.mapToInt(i -> i.getValue().valueAsMinutes()).sum();
+		
+		return new AttendanceTimeMonth(irregularLegalOt);
 	}
 	
 	/**
@@ -163,6 +179,12 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 				workEntry.getValue().addCalcLegalOverTimeToCalcOverTime();
 			}
 		}
+		
+		/** 変形法定内残業に入れる */
+		val irregularLegalOt = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+				.getExcessOfStatutoryTimeOfDaily().getOverTimeWork()
+				.map(ot -> ot.getIrregularWithinPrescribedOverTimeWork()).orElse(new AttendanceTime(0));
+		this.irregularLegalOvertimes.putIfAbsent(ymd, irregularLegalOt);
 	}
 	
 	/**
@@ -655,6 +677,13 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 		for (val targetAggrOverTime : target.aggregateOverTimeMap.values()){
 			val frameNo = targetAggrOverTime.getOverTimeFrameNo();
 			this.aggregateOverTimeMap.putIfAbsent(frameNo, targetAggrOverTime);
+		}
+		for (val irregularLegalOverTime : target.irregularLegalOvertimes.entrySet()) {
+			AttendanceTime total = irregularLegalOverTime.getValue();
+			if (this.irregularLegalOvertimes.containsKey(irregularLegalOverTime.getKey())){
+				total = total.addMinutes(this.irregularLegalOvertimes.get(irregularLegalOverTime.getKey()).v());
+			}
+			this.irregularLegalOvertimes.putIfAbsent(irregularLegalOverTime.getKey(), total);
 		}
 	}
 	public static interface RequireM1 extends RequireM2, 

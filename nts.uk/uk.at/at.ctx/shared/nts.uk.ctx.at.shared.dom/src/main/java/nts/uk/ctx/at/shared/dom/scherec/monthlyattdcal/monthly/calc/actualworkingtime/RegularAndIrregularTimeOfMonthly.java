@@ -602,7 +602,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 				.map(t -> t.getIrregularWithinPrescribedOverTimeWork().v()).orElse(0)).sum();
 		
 		/** 集計した変形法定内残業を月別実績に入れる */
-		this.irregularWorkingTime.setIrregularLegalOverTime(TimeMonthWithCalculation.ofSameTime(ot));
+		this.irregularWorkingTime.setIrregularLegalOverTime(new AttendanceTimeMonth(ot));
 	}
 	
 	/** 変形法内・法外休暇加算時間を集計する */
