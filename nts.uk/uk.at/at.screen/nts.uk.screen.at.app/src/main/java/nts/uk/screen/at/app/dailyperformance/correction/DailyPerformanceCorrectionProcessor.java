@@ -1907,6 +1907,7 @@ public class DailyPerformanceCorrectionProcessor {
 			if (!role.isPresent() || role.get().getEmployeeReferenceRange() == null || role.get()
 					.getEmployeeReferenceRange() == nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange.ONLY_MYSELF) {
 				result.setLstEmpId(Arrays.asList(employeeIdLogin));
+				result.getParam().setEmployeeIds(Arrays.asList(employeeIdLogin));
 				return result;
 			}
 			
@@ -1927,6 +1928,7 @@ public class DailyPerformanceCorrectionProcessor {
 //				lstEmployeeId = narrowEmployeeAdapter.findByEmpId(listEmp, 3);
 			if (lstInfoEmp.isEmpty()) {
 				result.setLstEmpId(Arrays.asList(employeeIdLogin));
+				result.getParam().getEmployeeIds().addAll(Arrays.asList(employeeIdLogin));
 				return result;
 			}
 			

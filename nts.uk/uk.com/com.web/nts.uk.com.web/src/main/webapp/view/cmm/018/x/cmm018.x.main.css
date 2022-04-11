@@ -104,3 +104,6 @@ button:focus.caret-right:after {
 .panel-bottom .panel {
   padding: 5px 10px !important;
 }
+button.caret-right:not([disabled]) {
+  color: #545454 !important;
+}

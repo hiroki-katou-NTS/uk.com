@@ -10,7 +10,6 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.ov
 @AllArgsConstructor
 public class OtWorkAppReflectDto {
     private int reflectActualWorkAtr;
-    private int reflectWorkInfoAtr;
     private int reflectActualOvertimeHourAtr;
     private int reflectBeforeBreak;
     private int workReflect;
@@ -22,7 +21,6 @@ public class OtWorkAppReflectDto {
     public static OtWorkAppReflectDto fromDomain(OtWorkAppReflect domain) {
         return new OtWorkAppReflectDto(
                 domain.getReflectActualWorkAtr().value,
-                domain.getBefore().getReflectWorkInfoAtr().value,
                 domain.getBefore().getReflectActualOvertimeHourAtr().value,
                 domain.getBefore().getBreakLeaveApplication().getBreakReflectAtr().value,
                 domain.getAfter().getWorkReflect().value,
