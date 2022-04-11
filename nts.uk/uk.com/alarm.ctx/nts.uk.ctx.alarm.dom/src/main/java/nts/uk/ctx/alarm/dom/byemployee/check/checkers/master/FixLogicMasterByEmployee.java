@@ -2,6 +2,7 @@ package nts.uk.ctx.alarm.dom.byemployee.check.checkers.master;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import lombok.RequiredArgsConstructor;
@@ -27,15 +28,20 @@ public enum FixLogicMasterByEmployee {
 
 	年休付与テーブル確認(2, c -> checkAnnualLeaveBasicInfo(c)),
 
-	平日時勤務種類確認(3, c -> checkWeekdayWorkType(c)),
+	平日時勤務種類確認(3, c -> checkWorkInfo(
+			c, (con) -> GetNotExistWorkType.getByWeekDay(con.require, con.employeeId))),
 
-	平日時就業時間帯確認(4, c -> checkWeekdayWorkTime(c)),
+	平日時就業時間帯確認(4, c -> checkWorkInfo(
+			c, (con) -> GetNotExistWorkTime.getByWeekDay(con.require, con.employeeId))),
 
-	休出時勤務種類確認(5, c -> checkHolidayWorkWorkType(c)),
+	休出時勤務種類確認(5, c -> checkWorkInfo(
+			c, (con) -> GetNotExistWorkType.getByHolidayWork(con.require, con.employeeId))),
 
-	休出時就業時間帯確認(6, c -> checkHolidayWorkWorkTime(c)),
+	休出時就業時間帯確認(6, c -> checkWorkInfo(
+			c, (con) -> GetNotExistWorkTime.getByHolidayWork(con.require, con.employeeId))),
 
-	休日時勤務種類確認(7, c -> checkHolidayWorkType(c)),
+	休日時勤務種類確認(7, c -> checkWorkInfo(
+			c, (con) -> GetNotExistWorkType.getByHoliday(con.require, con.employeeId))),
 
 	;
 
@@ -68,44 +74,10 @@ public enum FixLogicMasterByEmployee {
 		return result;
 	}
 
-	private static Iterable<AlarmRecordByEmployee> checkWeekdayWorkType(Context context){
-		val checkResults = GetNotExistWorkType.getByWeekDay(context.require, context.employeeId);
-		return () -> checkResults
-				.entrySet()
-				.stream()
-				.map(pWithw -> context.alarm(pWithw.getKey()))
-				.iterator();
-	}
-
-	private static Iterable<AlarmRecordByEmployee> checkWeekdayWorkTime(Context context){
-		val checkResults = GetNotExistWorkTime.getByWeekDay(context.require, context.employeeId);
-		return () -> checkResults
-				.entrySet()
-				.stream()
-				.map(pWithw -> context.alarm(pWithw.getKey()))
-				.iterator();
-	}
-
-	private static Iterable<AlarmRecordByEmployee> checkHolidayWorkWorkType(Context context){
-		val checkResults = GetNotExistWorkType.getByHolidayWork(context.require, context.employeeId);
-		return () -> checkResults
-				.entrySet()
-				.stream()
-				.map(pWithw -> context.alarm(pWithw.getKey()))
-				.iterator();
-	}
-
-	private static Iterable<AlarmRecordByEmployee> checkHolidayWorkWorkTime(Context context){
-		val checkResults = GetNotExistWorkTime.getByHolidayWork(context.require, context.employeeId);
-		return () -> checkResults
-				.entrySet()
-				.stream()
-				.map(pWithw -> context.alarm(pWithw.getKey()))
-				.iterator();
-	}
-
-	private static Iterable<AlarmRecordByEmployee> checkHolidayWorkType(Context context){
-		val checkResults = GetNotExistWorkType.getByHoliday(context.require, context.employeeId);
+	private static Iterable<AlarmRecordByEmployee> checkWorkInfo(
+			Context context,
+			Function<Context, Map<DatePeriod, String>> checker) {
+		val checkResults = checker.apply(context);
 		return () -> checkResults
 				.entrySet()
 				.stream()
