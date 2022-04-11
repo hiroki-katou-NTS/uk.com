@@ -59,6 +59,11 @@ public enum FixedLogicScheduleDailyByEmployee {
 		return logic.apply(context);
 	}
 
+	/**
+	 * スケジュール未作成かチェックする
+	 * @param context
+	 * @return
+	 */
 	private static Iterable<AlarmRecordByEmployee> checkNotCreated(Context context){
 		return () -> context.period.datesBetween().stream()
 				.filter(date -> !context.require.isExists(context.employeeId, date))
