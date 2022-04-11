@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * アラームリストのチェック条件(スケ月次)
+ * アラームリストのチェック条件(見込み月次)
  */
-public class ScheduleMonthlyCheckerByEmployee implements DomainAggregate, AlarmListCheckerByEmployee {
+public class ProspectMonthlyCheckerByEmployee implements DomainAggregate, AlarmListCheckerByEmployee {
 
     private TargetEmployeesFilter employeesFilter;
 

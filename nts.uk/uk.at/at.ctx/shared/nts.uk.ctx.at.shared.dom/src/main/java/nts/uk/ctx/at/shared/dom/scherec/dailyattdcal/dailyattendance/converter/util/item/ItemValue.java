@@ -137,7 +137,15 @@ public class ItemValue implements Cloneable {
 	private boolean isHaveValue() {
 		return value != null && !this.value.isEmpty();
 	}
-	
+
+	public Double valueAsDouble() {
+		if (value() == null) {
+			return null;
+		}
+		return type().isDouble() ? (Double) value()
+				: Double.valueOf((Integer) value());
+	}
+
 	public Object valueAsObjet() {
 		return value;
 	}
