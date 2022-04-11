@@ -132,5 +132,8 @@ public class AppWorkHolidayReceptionDataImport extends ApplicationReceptionDataI
 			return this;
 		}
 
+		public AppWorkHolidayReceptionDataImport build() {
+			return new AppWorkHolidayReceptionDataImport(this);
+		}
 	}
 }

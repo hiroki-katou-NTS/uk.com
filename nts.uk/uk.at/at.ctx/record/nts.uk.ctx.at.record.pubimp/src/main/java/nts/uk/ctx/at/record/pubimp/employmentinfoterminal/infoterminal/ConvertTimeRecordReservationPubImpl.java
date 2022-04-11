@@ -7,10 +7,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import lombok.Setter;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.auth.dom.adapter.login.IGetInfoForLogin;
 import nts.uk.ctx.at.record.dom.adapter.employeemanage.EmployeeManageRCAdapter;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpDataImport;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.GetMngInfoFromEmpIDListAdapter;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
@@ -34,6 +36,10 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.ConvertTimeRecordReservationPub;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.ReservReceptDataExport;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyInfo;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 @Stateless
 public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordReservationPub {
@@ -60,15 +66,28 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 	private TopPgAlTrRepository executionLog;
 	
 	@Inject
+	private GetMngInfoFromEmpIDListAdapter getMngInfoFromEmpIDListAdapter;
+	
+	@Inject
+	private CompanyAdapter companyAdapter;
+	
+	@Inject
+	private IGetInfoForLogin iGetInfoForLogin;
+	
+	@Inject
+	private LoginUserContextManager loginUserContextManager;
+	
+	@Inject
 	private ReservationSettingRepository reservationSettingRepository;
 
 	@Override
 	public Optional<AtomTask> convertData(String empInfoTerCode, String contractCode,
 			ReservReceptDataExport reservReceptData, String companyID) {
 
-		RequireImpl requireImpl = new RequireImpl("", empInfoTerminalRepository, timeRecordReqSettingRepository,
-				employeeManageRCAdapter, bentoMenuRepository, bentoReservationRepository,
-				stampCardRepository, executionLog, reservationSettingRepository);
+		RequireImpl requireImpl = new RequireImpl(empInfoTerminalRepository, timeRecordReqSettingRepository,
+				employeeManageRCAdapter, bentoMenuRepository, bentoReservationRepository, stampCardRepository,
+				executionLog, getMngInfoFromEmpIDListAdapter, companyAdapter, iGetInfoForLogin,
+				loginUserContextManager, reservationSettingRepository);
 		return ConvertTimeRecordReservationService.convertData(requireImpl, new EmpInfoTerminalCode(empInfoTerCode),
 				new ContractCode(contractCode),
 				new ReservationReceptionData(reservReceptData.getIdNumber(), reservReceptData.getMenu(),
@@ -78,9 +97,6 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 
 	@AllArgsConstructor
 	public static class RequireImpl implements ConvertTimeRecordReservationService.Require {
-
-		@Setter
-		private String companyId;
 
 		private final EmpInfoTerminalRepository empInfoTerminalRepository;
 
@@ -95,6 +111,14 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 		private final StampCardRepository stampCardRepository;
 
 		private final TopPgAlTrRepository executionLog;
+		
+		private final GetMngInfoFromEmpIDListAdapter getMngInfoFromEmpIDListAdapter;
+		
+		private final CompanyAdapter companyAdapter;
+		
+		private final IGetInfoForLogin iGetInfoForLogin;
+		
+		private final LoginUserContextManager loginUserContextManager;
 		
 		private final ReservationSettingRepository reservationSettingRepository;
 
@@ -116,10 +140,6 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 
 			Optional<TimeRecordReqSetting> timeOpt = timeRecordReqSettingRepository
 					.getTimeRecordReqSetting(empInfoTerCode, contractCode);
-
-			if (timeOpt.isPresent()) {
-				companyId = timeOpt.get().getCompanyId().v();
-			}
 			return timeOpt;
 		}
 
@@ -140,15 +160,47 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 		}
 
 		@Override
-		public BentoMenuHistory getBentoMenu(ReservationDate reservationDate, Optional<WorkLocationCode> workLocationCode) {
-			return bentoMenuRepository.getBentoMenu(companyId, reservationDate.getDate(), workLocationCode);
+		public void removeBentoReserve(String reservationCardNo, GeneralDate date) {
+			bentoReservationRepository.removeWithCardNumberDate(reservationCardNo, date);
+		}
 
+		@Override
+		public List<EmpDataImport> getEmpData(List<String> empIDList) {
+			return getMngInfoFromEmpIDListAdapter.getEmpData(empIDList);
+		}
+
+		@Override
+		public CompanyInfo getCompanyInfoById(String companyId) {
+			return companyAdapter.getCompanyInfoById(companyId);
+		}
+
+		@Override
+		public Optional<String> getUserIdFromLoginId(String perId) {
+			return iGetInfoForLogin.getUserIdFromLoginId(perId);
+		}
+
+		@Override
+		public void loggedInAsEmployee(String userId, String personId, String contractCode, String companyId,
+				String companyCode, String employeeId, String employeeCode) {
+			loginUserContextManager.loggedInAsEmployee(userId, personId, contractCode, companyId, companyCode, employeeId, employeeCode);
+		}
+		
+		@Override
+		public void loggedOut() {
+			loginUserContextManager.loggedOut();
 		}
 
 		@Override
 		public ReservationRecTimeZone getReservationSetByOpDistAndFrameNo(String companyID, int frameNo,
 				int operationDistinction) {
 			return reservationSettingRepository.getReservationSetByOpDistAndFrameNo(companyID, frameNo, operationDistinction);
+		}
+
+		@Override
+		public BentoMenuHistory getBentoMenu(ReservationDate reservationDate,
+				Optional<WorkLocationCode> workLocationCode) {
+			return bentoMenuRepository.getBentoMenu(AppContexts.user().companyId(), reservationDate.getDate(),
+					workLocationCode);
 		}
 	}
 

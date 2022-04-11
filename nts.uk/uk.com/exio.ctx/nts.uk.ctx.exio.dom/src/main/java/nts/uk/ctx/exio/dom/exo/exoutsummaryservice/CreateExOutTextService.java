@@ -508,7 +508,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			if (!matcher.matches()){
 				fileName = stdOutputCondSet.getFileName().get().v();
 				val fileArr = fileName.split("\\.");
-				stereoFile = (fileArr.length > 1 ? (fileArr[1].equals("xlsx") || fileArr[1].equals("xls") ? "excel" : fileArr[1])  : fileArr[0]) + "File";
+				stereoFile = (fileArr.length > 1 ? (fileArr[fileArr.length-1].equals("xlsx") || fileArr[fileArr.length-1].equals("xls") ? "excel" : fileArr[fileArr.length-1])  : fileArr[0]) + "File";
 			}
 
 		} else {

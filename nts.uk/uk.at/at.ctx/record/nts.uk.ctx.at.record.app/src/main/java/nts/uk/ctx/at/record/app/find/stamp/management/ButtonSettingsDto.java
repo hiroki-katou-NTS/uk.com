@@ -53,31 +53,57 @@ public class ButtonSettingsDto {
 		int correctTimeStampValue = StampRecordDto.getCorrectTimeStampValue(stampType.getChangeHalfDay(),
 				stampType.getGoOutArt(), stampType.getSetPreClockArt(), stampType.getChangeClockArt(),
 				stampType.getChangeCalArt());
+//		switch (EnumAdaptor.valueOf(correctTimeStampValue, ContentsStampType.class)) {
+//		// 1 2 3 4 10 12 14 16 17 18
+//		case WORK:
+//		case WORK_STRAIGHT:
+//		case WORK_EARLY:
+//		case WORK_BREAK:
+//		case GETTING_STARTED:
+//		case TEMPORARY_WORK:
+//		case START_SUPPORT:
+//		case WORK_SUPPORT:
+//		case START_SUPPORT_EARLY_APPEARANCE:
+//		case START_SUPPORT_BREAK:
+//
+//			return ButtonType.GOING_TO_WORK.value;
+//		// 19 20
+//		case RESERVATION:
+//		case CANCEL_RESERVATION:
+//			return ButtonType.RESERVATION_SYSTEM.value;
+//		// 5 6 7 11 13 15
+//		case DEPARTURE:
+//		case DEPARTURE_BOUNCE:
+//		case DEPARTURE_OVERTIME:
+//		case DEPAR:
+//		case TEMPORARY_LEAVING:
+//		case END_SUPPORT:
+//			return ButtonType.WORKING_OUT.value;
+//		// 8
+//		case OUT:
+//			return ButtonType.GO_OUT.value;
+//		// 9
+//		case RETURN:
+//			return ButtonType.RETURN.value;
+//		default:
+//			return -1;
+//		}
+		// Ver76 KDP010
 		switch (EnumAdaptor.valueOf(correctTimeStampValue, ContentsStampType.class)) {
-		// 1 2 3 4 10 12 14 16 17 18
+		// 1 2 3 4
 		case WORK:
 		case WORK_STRAIGHT:
 		case WORK_EARLY:
 		case WORK_BREAK:
-		case GETTING_STARTED:
-		case TEMPORARY_WORK:
-		case START_SUPPORT:
-		case WORK_SUPPORT:
-		case START_SUPPORT_EARLY_APPEARANCE:
-		case START_SUPPORT_BREAK:
-
 			return ButtonType.GOING_TO_WORK.value;
 		// 19 20
 		case RESERVATION:
 		case CANCEL_RESERVATION:
 			return ButtonType.RESERVATION_SYSTEM.value;
-		// 5 6 7 11 13 15
+		// 5 6 7
 		case DEPARTURE:
 		case DEPARTURE_BOUNCE:
 		case DEPARTURE_OVERTIME:
-		case DEPAR:
-		case TEMPORARY_LEAVING:
-		case END_SUPPORT:
 			return ButtonType.WORKING_OUT.value;
 		// 8
 		case OUT:

@@ -50,7 +50,7 @@ public class SelectionItemsDto {
 													.map(e -> new SelectionItemsDto(e.getMajorNo().v(),
 															e.getMajorClassification().v(), e.getSmallNo().v(), e.getSmallClassification().v(),
 															e.getVariableName().v(), e.getType().value, e.getNumberOfDigits().v() == null ? 0 : e.getNumberOfDigits().v(),
-															e.getSettingValue().v(), e.getInputRange().v(), e.getCurrentValue().v(),
+															e.getSettingValue().v(), e.getInputRange().v(),getCurrentAndUpdateValueFormat(e.getCurrentValue().v()),
 															getUpdateValueByName(e.getVariableName().v(), timeRecordSetUpdateList),
 															timeRecordSetFormatList.getEmpInfoTerName().v(),
 															timeRecordSetFormatList.getRomVersion().v(),
@@ -67,6 +67,11 @@ public class SelectionItemsDto {
 		if (filteredList.isEmpty()) {
 			return "";
 		}
-		return filteredList.stream().findFirst().get().getUpdateValue().v();
+		return getCurrentAndUpdateValueFormat(filteredList.stream().findFirst().get().getUpdateValue().v());
+	}
+	
+	public static String getCurrentAndUpdateValueFormat(String currentValue) {
+		String str = currentValue.replaceAll("^0+(?!$)", "");
+		return str;
 	}
 }

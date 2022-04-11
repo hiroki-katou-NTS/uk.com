@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
+import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
@@ -93,6 +94,10 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 			}
 		}
 		//振休振出申請（詳細）登録前のチェック(PreUpdateErrorCheck.errorCheck())
+		List<WorkType> workTypeList = new ArrayList<>();
+		if(command.getDisplayInforWhenStarting().getApplicationForHoliday()!=null) {
+			workTypeList = command.getDisplayInforWhenStarting().getApplicationForHoliday().getWorkTypeList().stream().map(x -> x.toDomain()).collect(Collectors.toList());
+		}
 		this.preUpdateErrorCheck.errorCheck(
 		        companyId, 
 		        abs, 
@@ -101,7 +106,7 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 		        command.existAbs() ? command.abs.payoutSubofHDManagements.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
 		        command.existAbs() ? command.abs.leaveComDayOffMana.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
 		        command.isCheckFlag(), 
-		        command.getDisplayInforWhenStarting().getApplicationForHoliday().getWorkTypeList().stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+		        workTypeList);
 		
 		//アルゴリズム「振休振出申請の更新登録」を実行する
 		return this.updateApplicationProcess(

@@ -65,7 +65,7 @@ public class JpaTimeRecordSetFormatListRepository extends JpaRepository implemen
 
 		return dom.getLstTRSetFormat().stream().map(x -> {
 			return new KrcmtTrRemoteSetting(
-					new KrcmtTrRemoteSettingPK(code.v(), dom.getEmpInfoTerCode().v(), dom.getEmpInfoTerName().v()),
+					new KrcmtTrRemoteSettingPK(code.v(), dom.getEmpInfoTerCode().v(), x.getVariableName().v()),
 					dom.getEmpInfoTerName().v(), dom.getRomVersion().v(), dom.getModelEmpInfoTer().value,
 					x.getMajorNo().v(), x.getMajorClassification().v(), x.getSmallNo().v(), x.getSmallClassification().v(), x.getType().value,
 					x.getNumberOfDigits().v(), x.getSettingValue().v(), x.getInputRange().v(), x.isRebootFlg() ? 1 : 0,

@@ -441,6 +441,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.monthlyParam().actualTime.startDate = moment.utc(self.monthlyParam().actualTime.startDate, "YYYY/MM/DD").toISOString();
                 self.monthlyParam().actualTime.endDate = moment.utc(self.monthlyParam().actualTime.endDate, "YYYY/MM/DD").toISOString();
             }
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.block.grayout();
             service.startScreen(self.monthlyParam()).done((data) => {
 				self.employmentConfirm = data.useSetingOutput.employmentConfirm;
                 if(self.employmentConfirm){

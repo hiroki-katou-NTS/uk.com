@@ -355,7 +355,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
             }
 
             vm.$blockui("show");
-            return vm.$validate('.nts-input', '#kaf000-b-component3-prePost', '#kaf000-b-component5-comboReason')
+            return vm.$validate('.nts-input', '#kaf000-b-component3-prePost', '#kaf000-b-component7-comboReason')
                 .then(isValid => {
                     if (isValid && !nts.uk.ui.errors.hasError()) {
                         const params = {

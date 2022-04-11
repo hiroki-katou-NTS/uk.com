@@ -625,18 +625,38 @@ module nts.uk.ui.kdp001.a {
                                 const { backGroundColor, buttonNameSet } = buttonDisSet;
                                 const { textColor, buttonName } = buttonNameSet;
                                 const { departure, goOut, goingToWork, turnBack } = suppress;
-                                const backgroundColor = (() => {
-                                    switch (buttonPositionNo) {
-                                        case 1:
-                                            return goingToWork ? DEFAULT_GRAY : backGroundColor;
-                                        case 2:
-                                            return departure ? DEFAULT_GRAY : backGroundColor;
-                                        case 3:
-                                            return goOut ? DEFAULT_GRAY : backGroundColor;
-                                        case 4:
-                                            return turnBack ? DEFAULT_GRAY : backGroundColor;
+                                let backgroundColor = null;
+
+                                // Fix bug #123919
+                                if (!goingToWork && !departure && !goOut && !turnBack) {
+                                    backgroundColor = backGroundColor;
+                                } else {
+                                    if (!goingToWork) {
+                                        backgroundColor = (() => {
+                                            switch (buttonPositionNo) {
+                                                case 1:
+                                                    return backGroundColor;
+                                                case 2:
+                                                case 3:
+                                                case 4:
+                                                    return DEFAULT_GRAY;
+                                            }
+                                        })();
+                                    } else {
+                                        backgroundColor = (() => {
+                                            switch (buttonPositionNo) {
+                                                case 1:
+                                                    return goingToWork ? DEFAULT_GRAY : backGroundColor;
+                                                case 2:
+                                                    return departure ? DEFAULT_GRAY : backGroundColor;
+                                                case 3:
+                                                    return goOut ? DEFAULT_GRAY : backGroundColor;
+                                                case 4:
+                                                    return turnBack ? DEFAULT_GRAY : backGroundColor;
+                                            }
+                                        })();
                                     }
-                                })();
+                                }
 
                                 return {
                                     ...btn,

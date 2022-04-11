@@ -1,5 +1,13 @@
 package nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.vacationapplicationsetting;
 
+import java.util.Arrays;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,13 +21,6 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.va
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.util.Arrays;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -81,12 +82,6 @@ public class KrqmtAppHd extends ContractUkJpaEntity {
     private String timeDigestName;
 
     /**
-     * 休暇申請の反映．休暇系申請の反映.出退勤を反映する
-     */
-    @Column(name = "WORK_TIME_REFLECT_ATR")
-    private int workTimeReflectAtr;
-
-    /**
      * 休暇申請の反映．休暇系申請の反映.1日休暇の場合は出退勤を削除
      */
     @Column(name = "WORK_TIME_DELETE_ATR")
@@ -131,7 +126,6 @@ public class KrqmtAppHd extends ContractUkJpaEntity {
                 this.companyid,
                 new VacationAppReflectOption(
                         EnumAdaptor.valueOf(workTimeDeleteAtr, NotUseAtr.class),
-                        EnumAdaptor.valueOf(workTimeReflectAtr, NotUseAtr.class),
                         EnumAdaptor.valueOf(workTimeConditionReflectAtr, ReflectWorkHourCondition.class)
                 ),
                 new TimeLeaveAppReflectCondition(
@@ -176,7 +170,6 @@ public class KrqmtAppHd extends ContractUkJpaEntity {
                     break;
             }
         });
-        entity.workTimeReflectAtr = reflect.getWorkAttendanceReflect().getReflectAttendance().value;
         entity.workTimeDeleteAtr = reflect.getWorkAttendanceReflect().getOneDayLeaveDeleteAttendance().value;
         entity.workTimeConditionReflectAtr = reflect.getWorkAttendanceReflect().getReflectWorkHour().value;
         entity.sixtyOvertimeReflectAtr = reflect.getTimeLeaveReflect().getSuperHoliday60H().value;
@@ -225,7 +218,6 @@ public class KrqmtAppHd extends ContractUkJpaEntity {
     }
 
     public void updateReflect(VacationApplicationReflect reflect) {
-        this.workTimeReflectAtr = reflect.getWorkAttendanceReflect().getReflectAttendance().value;
         this.workTimeDeleteAtr = reflect.getWorkAttendanceReflect().getOneDayLeaveDeleteAttendance().value;
         this.workTimeConditionReflectAtr = reflect.getWorkAttendanceReflect().getReflectWorkHour().value;
         this.sixtyOvertimeReflectAtr = reflect.getTimeLeaveReflect().getSuperHoliday60H().value;

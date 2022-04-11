@@ -1040,7 +1040,7 @@ public class DailyPerformanceCorrectionProcessor {
 				screenDto.setCellSate(rowId, columnKey, DPText.HAND_CORRECTION_MYSELF);
 			}else if(cellEdit == 1){
 				screenDto.setCellSate(rowId, columnKey, DPText.HAND_CORRECTION_OTHER);
-			}else if(cellEdit == 2 || cellEdit == 4){
+			}else if(cellEdit == 2){
 				screenDto.setCellSate(rowId, columnKey, DPText.REFLECT_APPLICATION);
 			}else if(cellEdit == 9) {
 				screenDto.setCellSate(rowId, columnKey, DPText.COLOR_SUPPORT);
@@ -1907,6 +1907,7 @@ public class DailyPerformanceCorrectionProcessor {
 			if (!role.isPresent() || role.get().getEmployeeReferenceRange() == null || role.get()
 					.getEmployeeReferenceRange() == nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange.ONLY_MYSELF) {
 				result.setLstEmpId(Arrays.asList(employeeIdLogin));
+				result.getParam().setEmployeeIds(Arrays.asList(employeeIdLogin));
 				return result;
 			}
 			
@@ -1927,6 +1928,7 @@ public class DailyPerformanceCorrectionProcessor {
 //				lstEmployeeId = narrowEmployeeAdapter.findByEmpId(listEmp, 3);
 			if (lstInfoEmp.isEmpty()) {
 				result.setLstEmpId(Arrays.asList(employeeIdLogin));
+				result.getParam().getEmployeeIds().addAll(Arrays.asList(employeeIdLogin));
 				return result;
 			}
 			

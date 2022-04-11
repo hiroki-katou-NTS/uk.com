@@ -7,6 +7,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 
 public interface AtItemNameAdapter {
 	List<AttItemName> getNameOfAttendanceItem(List<Integer> attendanceItemIds, TypeOfItemImport type);
+	
+	List<AttItemName> getNameOfAttendanceItem(String cid, List<Integer> attendanceItemIds, TypeOfItemImport type);
 
 	List<AttItemName> getNameOfDailyAttendanceItem(List<DailyAttendanceItem> attendanceItems);
 

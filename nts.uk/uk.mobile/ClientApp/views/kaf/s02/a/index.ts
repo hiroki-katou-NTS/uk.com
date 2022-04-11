@@ -256,7 +256,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
     public bindData(data: any) {
         const self = this;
         self.workLocationNames = data.workLocationNames;
-        self.workplaceNames = data.workplaceNames;
+        self.workplaceNames = data.workplaceNames || [];
         self.appStampReflectOptional = data.appStampReflectOptional;
         self.appStampSetting = data.appStampSetting;
         self.useCheering = data.useCheering;

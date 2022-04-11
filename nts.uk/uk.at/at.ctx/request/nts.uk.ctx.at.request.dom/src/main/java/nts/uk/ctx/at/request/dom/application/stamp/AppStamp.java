@@ -41,6 +41,16 @@ public class AppStamp extends Application {
 	public AppStamp(Application application) {
 		super(application);
 	}
+
+	public AppStamp(Application application, List<TimeStampApp> listTimeStampApp,
+			List<DestinationTimeApp> listDestinationTimeApp, List<TimeStampAppOther> listTimeStampAppOther,
+			List<DestinationTimeZoneApp> listDestinationTimeZoneApp) {
+		super(application);
+		this.listTimeStampApp = listTimeStampApp;
+		this.listDestinationTimeApp = listDestinationTimeApp;
+		this.listTimeStampAppOther = listTimeStampAppOther;
+		this.listDestinationTimeZoneApp = listDestinationTimeZoneApp;
+	  }	
 	
 	/**
 	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.申請.打刻申請.アルゴリズム.応援が1回め勤務か2回目勤務のどちらの時間帯なのか判断してセットする

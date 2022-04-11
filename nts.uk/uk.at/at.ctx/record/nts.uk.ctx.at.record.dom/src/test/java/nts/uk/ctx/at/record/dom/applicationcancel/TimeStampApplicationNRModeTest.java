@@ -76,7 +76,7 @@ public class TimeStampApplicationNRModeTest {
 		val actualResult = TimeStampApplicationNRMode.process(require, "", GeneralDate.ymd(2020, 01, 02), appNr,
 				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD, false));
 
-		assertThat(actualResult).isEqualTo(Arrays.asList(91, 86));
+		assertThat(actualResult).isEqualTo(Arrays.asList(88, 86));
 
 	}
 

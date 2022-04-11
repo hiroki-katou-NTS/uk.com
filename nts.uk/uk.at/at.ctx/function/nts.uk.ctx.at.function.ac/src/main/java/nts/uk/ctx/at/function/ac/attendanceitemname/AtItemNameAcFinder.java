@@ -38,6 +38,12 @@ public class AtItemNameAcFinder implements AtItemNameAdapter {
 		return attendanceItemNameService.getNameOfAttendanceItem(attendanceItemIds,
 				EnumAdaptor.valueOf(type.value, TypeOfItem.class));
 	}
+	
+	@Override
+	public List<AttItemName> getNameOfAttendanceItem(String cid, List<Integer> attendanceItemIds, TypeOfItemImport type) {
+		return attendanceItemNameService.getNameOfAttendanceItem(cid, attendanceItemIds,
+				EnumAdaptor.valueOf(type.value, TypeOfItem.class));
+	}
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override

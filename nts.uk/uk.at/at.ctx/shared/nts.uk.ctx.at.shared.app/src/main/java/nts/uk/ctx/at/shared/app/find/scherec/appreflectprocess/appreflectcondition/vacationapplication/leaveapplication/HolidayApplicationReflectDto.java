@@ -20,7 +20,6 @@ public class HolidayApplicationReflectDto {
         return new HolidayApplicationReflectDto(
                 new VacationAppReflectOptionDto(
                         domain.getWorkAttendanceReflect().getOneDayLeaveDeleteAttendance().value,
-                        domain.getWorkAttendanceReflect().getReflectAttendance().value,
                         domain.getWorkAttendanceReflect().getReflectWorkHour().value
                 ),
                 new TimeLeaveAppReflectConditionDto(

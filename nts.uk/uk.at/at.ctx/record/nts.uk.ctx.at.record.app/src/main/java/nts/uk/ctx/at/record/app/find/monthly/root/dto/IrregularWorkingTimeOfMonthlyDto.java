@@ -11,7 +11,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.actualworkingtime.IrregularWorkingTimeOfMonthly;
 
 @Data
@@ -30,7 +29,7 @@ public class IrregularWorkingTimeOfMonthlyDto implements ItemConst, AttendanceIt
 	private int irregularWorkingShortageTime;
 
 	/** 変形法定内残業時間 */
-	private TimeMonthWithCalculationDto irregularLegalOverTime;
+	private int irregularLegalOverTime;
 
 	/** 変形法定内休暇加算時間 */
 	private int legalVacationAddTime;
@@ -43,7 +42,7 @@ public class IrregularWorkingTimeOfMonthlyDto implements ItemConst, AttendanceIt
 						new AttendanceTimeMonthWithMinus(multiMonthIrregularMiddleTime),
 						new AttendanceTimeMonthWithMinus(irregularPeriodCarryforwardTime),
 						new AttendanceTimeMonth(irregularWorkingShortageTime), 
-						irregularLegalOverTime == null ? new TimeMonthWithCalculation() : irregularLegalOverTime.toDomain(),
+						new AttendanceTimeMonth(irregularLegalOverTime),
 						new AttendanceTimeMonth(illegalVacationAddTime),
 						new AttendanceTimeMonth(legalVacationAddTime));
 	}
@@ -51,13 +50,10 @@ public class IrregularWorkingTimeOfMonthlyDto implements ItemConst, AttendanceIt
 	public static IrregularWorkingTimeOfMonthlyDto from(IrregularWorkingTimeOfMonthly domain) {
 		IrregularWorkingTimeOfMonthlyDto dto = new IrregularWorkingTimeOfMonthlyDto();
 		if(domain != null) {
-			dto.setIrregularLegalOverTime(TimeMonthWithCalculationDto.from(domain.getIrregularLegalOverTime()));
-			dto.setIrregularPeriodCarryforwardTime(domain.getIrregularPeriodCarryforwardTime() == null 
-					? 0 : domain.getIrregularPeriodCarryforwardTime().valueAsMinutes());
-			dto.setIrregularWorkingShortageTime(domain.getIrregularWorkingShortageTime() == null 
-					? 0 : domain.getIrregularWorkingShortageTime().valueAsMinutes());
-			dto.setMultiMonthIrregularMiddleTime(domain.getMultiMonthIrregularMiddleTime() == null 
-					? 0 : domain.getMultiMonthIrregularMiddleTime().valueAsMinutes());
+			dto.setIrregularLegalOverTime(domain.getIrregularLegalOverTime().valueAsMinutes());
+			dto.setIrregularPeriodCarryforwardTime(domain.getIrregularPeriodCarryforwardTime().valueAsMinutes());
+			dto.setIrregularWorkingShortageTime(domain.getIrregularWorkingShortageTime().valueAsMinutes());
+			dto.setMultiMonthIrregularMiddleTime(domain.getMultiMonthIrregularMiddleTime().valueAsMinutes());
 			dto.setLegalVacationAddTime(domain.getLegalVacationAddTime().valueAsMinutes());
 			dto.setIllegalVacationAddTime(domain.getIllegalVacationAddTime().valueAsMinutes());
 		}
@@ -77,25 +73,11 @@ public class IrregularWorkingTimeOfMonthlyDto implements ItemConst, AttendanceIt
 			return Optional.of(ItemValue.builder().value(legalVacationAddTime).valueType(ValueType.TIME));
 		case ILLEGAL:
 			return Optional.of(ItemValue.builder().value(illegalVacationAddTime).valueType(ValueType.TIME));
+		case LEGAL + OVERTIME:
+			return Optional.of(ItemValue.builder().value(irregularLegalOverTime).valueType(ValueType.TIME));
 		default:
 			return Optional.empty();
 		}
-	}
-
-	@Override
-	public AttendanceItemDataGate newInstanceOf(String path) {
-		if ((LEGAL + OVERTIME).equals(path)) {
-			return new TimeMonthWithCalculationDto();
-		}
-		return AttendanceItemDataGate.super.newInstanceOf(path);
-	}
-
-	@Override
-	public Optional<AttendanceItemDataGate> get(String path) {
-		if ((LEGAL + OVERTIME).equals(path)) {
-			return Optional.ofNullable(irregularLegalOverTime);
-		}
-		return AttendanceItemDataGate.super.get(path);
 	}
 
 	@Override
@@ -106,6 +88,7 @@ public class IrregularWorkingTimeOfMonthlyDto implements ItemConst, AttendanceIt
 		case SHORTAGE:
 		case LEGAL:
 		case ILLEGAL:
+		case LEGAL + OVERTIME:
 			return PropType.VALUE;
 		default:
 			return PropType.OBJECT;
@@ -130,16 +113,10 @@ public class IrregularWorkingTimeOfMonthlyDto implements ItemConst, AttendanceIt
 		case ILLEGAL:
 			illegalVacationAddTime = value.valueOrDefault(0);
 			break;
+		case LEGAL + OVERTIME:
+			irregularLegalOverTime = value.valueOrDefault(0);
+			break;
 		default:
 		}
 	}
-
-	@Override
-	public void set(String path, AttendanceItemDataGate value) {
-		if ((LEGAL + OVERTIME).equals(path)) {
-			irregularLegalOverTime = (TimeMonthWithCalculationDto) value;
-		}
-	}
-
-
 }

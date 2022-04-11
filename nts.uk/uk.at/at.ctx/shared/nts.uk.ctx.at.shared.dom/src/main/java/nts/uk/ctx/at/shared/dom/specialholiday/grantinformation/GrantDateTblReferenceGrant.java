@@ -71,6 +71,10 @@ public class GrantDateTblReferenceGrant {
 		// 「期間．終了日」＞=「付与日」の間 ループ
 		while (parameter.getPeriod().end().afterOrEquals(grantDate)) {
 
+			if(grantNO.get() > 100){
+				break;
+			}
+			
 			//付与日を取得する
 			Optional<GeneralDate> grantDateOp = elapseYearOpt.get().getGrantDate(grantBaseDate, grantNO.get());
 			

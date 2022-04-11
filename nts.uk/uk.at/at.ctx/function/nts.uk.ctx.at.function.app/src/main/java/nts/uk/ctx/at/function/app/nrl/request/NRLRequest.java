@@ -52,6 +52,10 @@ public abstract class NRLRequest<T extends MeanCarryable> implements BCCCalculab
 		}
 		
 		ResourceContext<T> context = new ResourceContext<>(frame, terminal, command, itemArranger);
+		if(command.onlyCreate()) {
+			context.responseAccept();
+			return context.getResponse();
+		}
 		sketch(empInfoTerCode, context);
 		return context.getResponse();
 	} 

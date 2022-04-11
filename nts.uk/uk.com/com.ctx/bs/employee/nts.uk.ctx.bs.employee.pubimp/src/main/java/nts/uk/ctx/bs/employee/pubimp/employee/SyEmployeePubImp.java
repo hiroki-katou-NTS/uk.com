@@ -1141,6 +1141,11 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				.externalCode(mngInfo.getExternalCode() == null ? null : mngInfo.getExternalCode().v()).build());
 	}
 	
+	@Override
+	public Optional<String> getCompanyId(String employeeId) {
+		return empDataMngRepo.getCompanyId(employeeId);
+	}
+	
 	public static interface Require{
 //		this.empDataMngRepo.findByEmpId(sId);
 		Optional<EmployeeDataMngInfo> findByEmpId(String sId);
