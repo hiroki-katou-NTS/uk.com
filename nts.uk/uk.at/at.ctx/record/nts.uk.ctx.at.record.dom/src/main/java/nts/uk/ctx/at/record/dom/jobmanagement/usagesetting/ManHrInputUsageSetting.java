@@ -37,9 +37,9 @@ public class ManHrInputUsageSetting extends AggregateRoot {
 		/** $作業運用設定 = require.作業運用設定を取得する(@会社ID)	 */
 		val taskOpSet = require.taskOperationSetting(this.cid);
 		
-		/** return $.作業運用方法==実績で利用 and @使用区分 = しない */
-		return taskOpSet.map(c -> c.getTaskOperationMethod() == TaskOperationMethod.USED_IN_ACHIEVENTS 
-									&& this.usrAtr == NotUseAtr.NOT_USE)
+		/** return <>($.作業運用方法==実績で利用 and @使用区分 = する) */
+		return taskOpSet.map(c -> !(c.getTaskOperationMethod() == TaskOperationMethod.USED_IN_ACHIEVENTS 
+									&& this.usrAtr == NotUseAtr.USE))
 				.orElse(false);
 	}
 	
