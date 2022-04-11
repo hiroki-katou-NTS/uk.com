@@ -33,7 +33,10 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusF
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
@@ -47,6 +50,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
@@ -108,6 +112,12 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private IntegrationOfDailyGetter integrationOfDailyGetter;
+
+    @Inject
+    private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepo;
+
+    @Inject
+    private ErrorAlarmConditionRepository errorAlarmConditionRepo;
 
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
@@ -203,6 +213,11 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
+        public AttendanceItemConvertFactory getAttendanceItemConvertFactory() {
+            return null;
+        }
+
+        @Override
         public List<ApprovalRootStateStatus> getApprovalRootStateByPeriod(String employeeId, DatePeriod period) {
             return null;
         }
@@ -270,7 +285,13 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public Optional<ErrorAlarmWorkRecord> getErrorAlarmWorkRecord(ErrorAlarmWorkRecordCode code) {
-            return Optional.empty();
+            // 会社ID渡してないからビビるけど、Repositoryの中でAppContextsから取得してる・・・
+            return errorAlarmWorkRecordRepo.findByCode(code.v());
+        }
+
+        @Override
+        public Optional<ErrorAlarmCondition> getErrorAlarmConditionById(String id) {
+            return errorAlarmConditionRepo.findConditionByErrorAlamCheckId(id);
         }
 
         @Override
