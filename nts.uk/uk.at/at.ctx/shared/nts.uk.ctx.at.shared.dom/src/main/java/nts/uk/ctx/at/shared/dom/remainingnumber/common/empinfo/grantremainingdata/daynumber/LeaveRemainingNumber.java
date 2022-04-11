@@ -324,7 +324,14 @@ public class LeaveRemainingNumber {
 			return false;
 		}
 		
-		Optional<LaborContractTime> contractTime = getContractTime(require, companyId, employeeId, baseDate);
+		AnnualPaidLeaveSetting annualPaidLeave = require.annualPaidLeaveSetting(companyId);
+
+		Optional<LaborContractTime> contractTime = Optional.empty();
+
+		if(annualPaidLeave != null){
+			contractTime = annualPaidLeave.getTimeSetting().getTimeAnnualLeaveTimeDay()
+					.getContractTime(require, employeeId, baseDate);
+		}
 		
 		return isThereRemainingDay() && contractTime.isPresent();
 	}
@@ -493,7 +500,15 @@ public class LeaveRemainingNumber {
 	 */
 	private LeaveRemainingNumber calcStack(LeaveRemainingNumber.RequireM3 require, String companyId,
 			String employeeId, GeneralDate baseDate){
-		Optional<LaborContractTime> contractTime = getContractTime(require, companyId, employeeId, baseDate);
+
+		AnnualPaidLeaveSetting annualPaidLeave = require.annualPaidLeaveSetting(companyId);
+
+		Optional<LaborContractTime> contractTime = Optional.empty();
+
+		if(annualPaidLeave != null){
+			contractTime = annualPaidLeave.getTimeSetting().getTimeAnnualLeaveTimeDay()
+					.getContractTime(require, employeeId, baseDate);
+		}
 		
 		if(!contractTime.isPresent()){
 			return this.clone();
