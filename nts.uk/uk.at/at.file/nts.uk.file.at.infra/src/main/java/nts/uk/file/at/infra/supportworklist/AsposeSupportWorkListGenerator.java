@@ -29,10 +29,7 @@ import javax.ejb.TransactionAttributeType;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -248,7 +245,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
 
                     // C7_2 ~ C7_9
                     int startColumnOfC7 = 3;
-                    this.printTotal(cells, outputItems, dataOfDay.getTotalDetailOfDay(), startRow, startColumnOfC7, true, isCsv, false);
+                    this.printTotal(cells, outputItems, dataOfDay.getTotalDetailOfDay(), startRow, startColumnOfC7, true, isCsv, false, false, Collections.emptyList());
 
                     startRow += 1; // next row
                 }
@@ -265,7 +262,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                     this.setTotalStyle(cells.get(startRow, 2), false, false, false, true, true);
 
                     // C8_2 ~ C8_9
-                    this.printTotal(cells, outputItems, workDataByWkp.getTotalAffiliation(), startRow, 3, false, isCsv, true);
+                    this.printTotal(cells, outputItems, workDataByWkp.getTotalAffiliation(), startRow, 3, false, isCsv, true, true, supportWorkDataList);
                     startRow += 1;  // next row
                 }
 
@@ -277,7 +274,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                 cells.merge(startRow, 0, 1, 2, true);
                 this.setTotalStyle(cells.get(startRow, 2), false, false, false, true, false);
                 // C8_2_2 ~ C8_2_9
-                this.printTotal(cells, outputItems, workDataByWkp.getTotalSupport(), startRow, 3, false, isCsv, false);
+                this.printTotal(cells, outputItems, workDataByWkp.getTotalSupport(), startRow, 3, false, isCsv, false, true, supportWorkDataList);
                 startRow += 1;
             }
 
@@ -296,7 +293,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                             this.setTotalStyleCustom(cells.get(startRow, 2), true, false, true, false, false, false);
                         }
                         // C9_2 ~
-                        this.printTotalCustom(cells, outputItems, Optional.of(sp.getTotalValueDetail()), startRow, 3, isCsv, false, false, false);
+                        this.printTotalCustom(cells, outputItems, Optional.of(sp.getTotalValueDetail()), startRow, 3, isCsv, false, false, false, false, Collections.emptyList());
                     }
                     startRow += 1;  // next row
                 }
@@ -310,7 +307,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                 this.setTotalStyle(cells.get(startRow, 1), false, false, true, true, false);
                 this.setTotalStyle(cells.get(startRow, 2), false, false, true, true, false);
                 // C10_2 ~ C10_9
-                this.printTotal(cells, outputItems, workDataByWkp.getTotalWorkplace(), startRow, 3, true, isCsv, false);
+                this.printTotal(cells, outputItems, workDataByWkp.getTotalWorkplace(), startRow, 3, true, isCsv, false, false, Collections.emptyList());
                 startRow += 1;
             }
 
@@ -342,7 +339,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                 this.setTotalStyleCustom(cells.get(startRow, 2), false, false, true, false, false, true);
 
                 // C11_2 ~ C11_9
-                this.printTotalCustom(cells, outputItems, dataSource.getSupportWorkOutputData().getTotalAffiliation(), startRow, 3, isCsv, false, false, true);
+                this.printTotalCustom(cells, outputItems, dataSource.getSupportWorkOutputData().getTotalAffiliation(), startRow, 3, isCsv, false, false, true, true, supportWorkDataList);
                 startRow += 1;
             }
 
@@ -355,7 +352,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
             this.setTotalStyleCustom(cells.get(startRow, 2), false, false, true, false, true, false);
 
             // C11_2_2 ~ C11_2_2
-            this.printTotalCustom(cells, outputItems, dataSource.getSupportWorkOutputData().getTotalSupport(), startRow, 3, isCsv, false, true, false);
+            this.printTotalCustom(cells, outputItems, dataSource.getSupportWorkOutputData().getTotalSupport(), startRow, 3, isCsv, false, true, false, true, supportWorkDataList);
 
             startRow += 1;
         }
@@ -368,27 +365,33 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
             this.setTotalStyle(cells.get(startRow, 1), false, false, true, false, false);
             this.setTotalStyle(cells.get(startRow, 2), false, false, true, false, false);
             // C12_2_2 ~
-            this.printTotal(cells, outputItems, dataSource.getSupportWorkOutputData().getGrandTotal(), startRow, 3, true, isCsv, false);
+            this.printTotal(cells, outputItems, dataSource.getSupportWorkOutputData().getGrandTotal(), startRow, 3, true, isCsv, false, false, Collections.emptyList());
             for (int c = 0; c < maxColumnInHeader; c++) {
                 this.setBorder(cells.get(startRow, c), true, false);
             }
         }
     }
 
-    private void pageBreakSetting(Worksheet worksheet, SupportWorkListDataSource dataSource) {
-        Cells cells = worksheet.getCells();
-        HorizontalPageBreakCollection hPageBreaks = worksheet.getHorizontalPageBreaks();
-    }
-
-    private void printTotal(Cells cells, List<OutputItem> outputItems, Optional<TotalValueDetail> totalOpt, int startRow, int startColumn, boolean isFillBgColor, boolean isCsv, boolean topBorderDouble) {
+    private void printTotal(Cells cells, List<OutputItem> outputItems, Optional<TotalValueDetail> totalOpt, int startRow,
+                            int startColumn, boolean isFillBgColor, boolean isCsv, boolean topBorderDouble,
+                            boolean notBlankDisplay,  List<WorkplaceSupportWorkData> supportWorkDataList) {
         for (OutputItem item : outputItems) {
             if (totalOpt.isPresent()) {
                 val total = totalOpt.get().getItemValues().stream()
                         .filter(x -> x.getItemId() == item.getAttendanceItemId()).findFirst();
                 if (total.isPresent()) {
                     cells.get(startRow, startColumn).setValue(this.formatValue(total.get().getValue(), item.getAttendanceItemId() == 1309 ? ValueType.AMOUNT_NUM : total.get().getValueType(), isCsv));
+                } else {
+                    if (notBlankDisplay) {
+                        cells.get(startRow, startColumn).setValue(this.getDefaultTotalValueIfEmpty(supportWorkDataList, item.getAttendanceItemId()));
+                    }
+                }
+            } else {
+                if (notBlankDisplay) {
+                    cells.get(startRow, startColumn).setValue(this.getDefaultTotalValueIfEmpty(supportWorkDataList, item.getAttendanceItemId()));
                 }
             }
+
             if (item.getAttendanceItemId() <= 928)
                 this.setTotalStyle(cells.get(startRow, startColumn), false, false, isFillBgColor, true, topBorderDouble);
             else {
@@ -407,15 +410,26 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
         this.setTotalStyle(cells.get(startRow, startColumn), false, true, isFillBgColor, false, topBorderDouble);
     }
 
-    private void printTotalCustom(Cells cells, List<OutputItem> outputItems, Optional<TotalValueDetail> totalOpt, int startRow, int startColumn, boolean isCsv, boolean topBorder, boolean botBorder, boolean topBorderDouble) {
+    private void printTotalCustom(Cells cells, List<OutputItem> outputItems, Optional<TotalValueDetail> totalOpt, int startRow,
+                                  int startColumn, boolean isCsv, boolean topBorder, boolean botBorder, boolean topBorderDouble,
+                                  boolean notBlankDisplay,  List<WorkplaceSupportWorkData> supportWorkDataList) {
         for (OutputItem item : outputItems) {
             if (totalOpt.isPresent()) {
                 val total = totalOpt.get().getItemValues().stream()
                         .filter(x -> x.getItemId() == item.getAttendanceItemId()).findFirst();
                 if (total.isPresent()) {
                     cells.get(startRow, startColumn).setValue(this.formatValue(total.get().getValue(), item.getAttendanceItemId() == 1309 ? ValueType.AMOUNT_NUM : total.get().getValueType(), isCsv));
+                } else {
+                    if (notBlankDisplay) {
+                        cells.get(startRow, startColumn).setValue(this.getDefaultTotalValueIfEmpty(supportWorkDataList, item.getAttendanceItemId()));
+                    }
+                }
+            } else {
+                if (notBlankDisplay) {
+                    cells.get(startRow, startColumn).setValue(this.getDefaultTotalValueIfEmpty(supportWorkDataList, item.getAttendanceItemId()));
                 }
             }
+
             if (item.getAttendanceItemId() <= 928) {
                 this.setTotalStyleCustom(cells.get(startRow, startColumn), false, false, true, topBorder, botBorder, topBorderDouble);
             } else {
@@ -431,6 +445,20 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
             this.setDisplayFormat(cells.get(startRow, startColumn));
         }
         this.setTotalStyleCustom(cells.get(startRow, startColumn), false, true, false, topBorder, botBorder, topBorderDouble);
+    }
+
+    private String getDefaultTotalValueIfEmpty(List<WorkplaceSupportWorkData> supportWorkDataList, int attendanceItemId) {
+        List<ItemValue> itemValues = new ArrayList<>();
+        if (!supportWorkDataList.isEmpty()) {
+            if (!supportWorkDataList.get(0).getSupportWorkDetails().isEmpty()) {
+                if (!supportWorkDataList.get(0).getSupportWorkDetails().get(0).getSupportWorkDetailsList().isEmpty()) {
+                    itemValues = supportWorkDataList.get(0).getSupportWorkDetails().get(0).getSupportWorkDetailsList().get(0).getItemList();
+                }
+            }
+        }
+
+        val itemValueOpt = itemValues.stream().filter(i -> i.getItemId() == attendanceItemId).findFirst();
+        return this.defaultValueIfEmpty(itemValueOpt.isPresent() ? itemValueOpt.get().getValueType() : ValueType.UNKNOWN);
     }
 
     private String getWorkName(int attendanceId, String code, SupportWorkListDataSource dataSource) {
@@ -525,6 +553,18 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
         }
 
         return targetValue;
+    }
+
+    private String defaultValueIfEmpty(ValueType type) {
+        switch (type.value) {
+            case 1:
+            case 15:
+                return "0:00";
+            case 16:
+                return "0";
+            default:
+                return "";
+        }
     }
 
     private void setBasicStyle(Cell cell, boolean rightBorder, boolean topBotBorder, boolean topBorderDouble) {
