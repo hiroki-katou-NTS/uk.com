@@ -44,6 +44,7 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeE
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -104,6 +105,9 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private YearHolidayRepository yearHolidayRepo;
+
+    @Inject
+    private IntegrationOfDailyGetter integrationOfDailyGetter;
 
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
@@ -194,7 +198,8 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public Optional<IntegrationOfDaily> getIntegrationOfDaily(String employeeId, GeneralDate date) {
-            return Optional.empty();
+            return integrationOfDailyGetter.getIntegrationOfDaily(employeeId, DatePeriod.oneDay(date))
+                    .stream().findFirst();
         }
 
         @Override
