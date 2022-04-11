@@ -101,6 +101,9 @@ public enum ImportingDomainId {
 	/** 所属分類履歴 */
 	CLASSIFICATION_HISTORY(105, AffClassHistoryCanonicalization::new),
 
+	/** 業務連絡先 */
+	EMPLOYEE_CONTACT(106, EmployeeContactCanonicalization::new),
+
 	/** 休職休業履歴 */
 	TEMP_ABSENCE_HISTORY(107, TempAbsenceHistoryCanonicalization::new),
 
@@ -148,9 +151,6 @@ public enum ImportingDomainId {
 
 	/** 打刻データE版 */
 	STAMP_ENTERPRISE(131, EnterpriseStampCanonicalization::new),
-
-	/** 社員連絡先 */
-	EMPLOYEE_CONTACT(132, EmployeeContactCanonicalization::new),
 
 	/** 職場別作業の絞込 */
 	TASK_ASSIGN_WORKPLACE(143, TaskAssignWkpCanonicalization::new),
