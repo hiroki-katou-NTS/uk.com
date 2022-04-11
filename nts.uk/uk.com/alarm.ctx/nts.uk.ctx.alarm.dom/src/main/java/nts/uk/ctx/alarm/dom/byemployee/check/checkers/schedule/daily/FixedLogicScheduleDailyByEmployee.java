@@ -31,6 +31,9 @@ public enum FixedLogicScheduleDailyByEmployee {
 
 	時間帯の重複(4, c -> alarmToBasicSchedule(
 			c, bs -> CheckDuplicateTimeSpan.checkDuplicatePreviousAndNext(c.require, bs))),
+
+	複数回勤務(5, c -> alarmToBasicSchedule(
+			c, bs -> checkMultipleWork(bs))),
 	;
 
 	public final int value;
@@ -61,6 +64,15 @@ public enum FixedLogicScheduleDailyByEmployee {
 				.filter(date -> !context.require.isExists(context.employeeId, date))
 				.map(date -> context.alarm(date))
 				.iterator();
+	}
+
+	/**
+	 * 複数回勤務か
+	 * @param schedule
+	 * @return
+	 */
+	private static boolean checkMultipleWork(BasicSchedule schedule){
+		return schedule.getWorkScheduleTimeZones().size() > 1;
 	}
 
 	/**
