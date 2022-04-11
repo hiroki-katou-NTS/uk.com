@@ -46,6 +46,7 @@ CATEGORY_NAME,TARGET_TBL_NAME,RECORD_NO,SOURCE_ID,EXPLANATION,WHERE_CONDITION,RE
 "打刻データ","KRCDT_STAMP",1,"da03c02b-3bf1-4067-94fe-b905f52a6431","","",true
 "振休管理データ","KRCDT_HD_SUB_MNG",1,"8ce1c670-6766-4ae0-8401-d73fe1d2f041","",,false
 "振出管理データ","KRCDT_PAYOUT_MNG",1,"40db3534-47bb-4cc9-a7e8-3bbb2c68ab83","","",true
+"業務連絡先","BSYMT_CONTACT",1,"11670f01-453c-4fbb-8b99-920071cbcc5b","","",true
 "特別休暇付与残数データ","KRCDT_HD_SP_REMAIN",1,"997d14ef-4489-4f8c-9350-182d84778c2f","",,false
 "短時間勤務","KSHMT_SHORTTIME_HIST",1,"d5c3b896-6fa1-44d5-9045-cba334fecd54","",,false
 "短時間勤務","KSHMT_SHORTTIME_HIST_ITEM",1,"d5c3b896-6fa1-44d5-9045-cba334fecd54","",,false
@@ -54,7 +55,6 @@ CATEGORY_NAME,TARGET_TBL_NAME,RECORD_NO,SOURCE_ID,EXPLANATION,WHERE_CONDITION,RE
 "社員の年休付与設定","KRCMT_HDPAID_BASIC",1,"e1a0369f-c882-4edc-b566-0622214dd035","",,true
 "社員の特別休暇付与設定","KRCMT_HDSP_BASIC",1,"0e12f3f7-5d56-4180-ab3b-88d1805f99b5","",,true
 "社員別作業の絞込","KSRMT_TASK_ASSIGN_SYA",1,"854e7916-50bf-4165-a19d-3f860b010384","","",true
-"社員連絡先","BSYMT_CONTACT",1,"a632b7e9-be77-4d51-900a-cca150e851e1","","",true
 "祝日マスタ","KSCMT_PUBLIC_HOLIDAY",1,"f3da446b-cb9e-41a4-9066-a27ea133106a","","",true
 "積立休暇付与残数データ","KRCDT_HDSTK_REM",1,"8944b23c-0c77-474b-a03a-1d1686a552fe","",,true
 "職場マスタ","BSYMT_WKP_CONFIG_2",1,"8e2c3182-e4bd-4d4b-9b35-afb8eec509de","","",true
