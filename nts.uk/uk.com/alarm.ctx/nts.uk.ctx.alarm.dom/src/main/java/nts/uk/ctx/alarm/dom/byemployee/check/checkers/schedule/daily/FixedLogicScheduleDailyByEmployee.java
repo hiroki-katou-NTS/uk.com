@@ -157,7 +157,7 @@ public enum FixedLogicScheduleDailyByEmployee {
 					AlarmListCategoryByEmployee.SCHEDULE_DAILY,
 					"",
 					"",
-					null,
+					"",
 					message);
 		}
 	}

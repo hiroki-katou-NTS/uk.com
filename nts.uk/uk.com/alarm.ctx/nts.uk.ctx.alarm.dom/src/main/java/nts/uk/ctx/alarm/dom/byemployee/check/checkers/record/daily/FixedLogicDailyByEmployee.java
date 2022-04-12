@@ -155,7 +155,7 @@ public enum FixedLogicDailyByEmployee {
                     AlarmListCategoryByEmployee.RECORD_DAILY,
                     require.getItemName(attendanceItemId),
                     getAlarmCondition(),
-                    null,
+                    "",
                     message);
         }
     }

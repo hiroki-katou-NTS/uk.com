@@ -133,7 +133,7 @@ public enum FixLogicMasterByEmployee {
 					AlarmListCategoryByEmployee.MASTER,
 					getName(),
 					getAlarmCondition(),
-					null,
+					"",
 					message);
 		}
 
@@ -144,7 +144,7 @@ public enum FixLogicMasterByEmployee {
 					AlarmListCategoryByEmployee.MASTER,
 					getName(),
 					getAlarmCondition(),
-					null,
+					"",
 					message);
 		}
 
@@ -155,7 +155,7 @@ public enum FixLogicMasterByEmployee {
 					AlarmListCategoryByEmployee.MASTER,
 					getName(),
 					getAlarmCondition(),
-					null,
+					"",
 					message);
 		}
 	}
