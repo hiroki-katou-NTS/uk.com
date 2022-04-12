@@ -11,8 +11,11 @@ import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodDaily;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
+import nts.uk.ctx.alarm.dom.conditionvalue.AlarmListConditionValue;
+import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueContext;
 import nts.uk.ctx.alarm.dom.fixedlogic.FixedLogicSetting;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,7 +32,12 @@ public class ScheduleDailyCheckerByEmployee implements DomainAggregate, AlarmLis
 	/** コード */
 	private final AlarmListCheckerCode code;
 
-	/** 固定のチェック条件 */
+	/** 条件値のチェック条件*/
+	private List<AlarmListConditionValue<
+			ConditionValueScheduleDailyByEmployee,
+			ConditionValueScheduleDailyByEmployee.Context>> conditionValues;
+
+	/** 固定ロジックのチェック条件 */
 	private List<FixedLogicSetting<FixedLogicScheduleDailyByEmployee>> fixedLogics;
 
 	/**
@@ -44,15 +52,35 @@ public class ScheduleDailyCheckerByEmployee implements DomainAggregate, AlarmLis
 		String employeeId = context.getTargetEmployeeId();
 		val period = context.getCheckingPeriod().getDaily().calculatePeriod(require, employeeId);
 
-		List<Iterable<AlarmRecordByEmployee>> alarmRecords = Arrays.asList(
-				checkFixedLogics(require, employeeId, period)
-		);
+		val alarmRecords = new ArrayList<Iterable<AlarmRecordByEmployee>>();
+
+		// 条件値のチェック
+		alarmRecords.add(checkConditionValues(require, employeeId, period));
+
+		// 固定ロジックのチェック
+		alarmRecords.add(checkFixedLogics(require, employeeId, period));
 
 		return IteratorUtil.flatten(alarmRecords);
 	}
 
 	/**
-	 * 固定チェック条件
+	 * 条件値のチェック
+	 * @param require
+	 * @param employeeId
+	 * @param period
+	 * @return
+	 */
+	private Iterable<AlarmRecordByEmployee> checkConditionValues(Require require, String employeeId, DatePeriod period) {
+
+		return IteratorUtil.iterableFlatten(period.iterate(), date -> {
+			return IteratorUtil.iterableFilter(conditionValues, cv -> {
+				return cv.checkIfEnabled(new ConditionValueScheduleDailyByEmployee.Context(require, employeeId, date));
+			});
+		});
+	}
+
+	/**
+	 * 固定ロジックのチェック
 	 * @param require
 	 * @param employeeId
 	 * @param period
@@ -66,7 +94,8 @@ public class ScheduleDailyCheckerByEmployee implements DomainAggregate, AlarmLis
 
 	public interface RequireCheck extends
 			CheckingPeriodDaily.Require,
-			FixedLogicScheduleDailyByEmployee.RequireCheck {
+			FixedLogicScheduleDailyByEmployee.RequireCheck,
+			ConditionValueScheduleDailyByEmployee.Require{
 
 	}
 }
