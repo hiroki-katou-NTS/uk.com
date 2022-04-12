@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import lombok.Value;
 import lombok.val;
+import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
@@ -25,23 +26,26 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
 @Value
 public class CheckAnyPeriodErrorAlarm {
 	
-	private List<ErrorAlarmWorkRecordCode> rawErrorAlarms;
+	/** 勤怠項目の値をそのままチェックするエラーアラーム*/
+	private List<ErrorAlarmWorkRecordCode> rawValueErrorAlarms;
+	
+	/** 平均値をチェックするエラーアラーム */
 	private List<ErrorAlarmWorkRecordCode> averageErrorAlarms;
 	
 	public List<AlarmRecordByEmployee> check(Require require, CheckingContextByEmployee context, AttendanceTimeOfAnyPeriod record){
 		val converter = require.getAnyPeriodRecordToAttendanceItemConverter(context.getTargetEmployeeId(), record);
 		
 		val averageResult = checkByAverage(require, context, converter, record);
-		val rawResult = checkByRaw(require, context, converter);
+		val rawResult = checkByRawValue(require, context, converter);
 		
 		return Stream.concat(rawResult.stream(), averageResult.stream())
 					.map(error -> createError(require, context, error))
 					.collect(Collectors.toList());
 	}
 	
-	private List<ErrorAlarmAnyPeriod> checkByRaw(Require require, CheckingContextByEmployee context, 
+	private List<ErrorAlarmAnyPeriod> checkByRawValue(Require require, CheckingContextByEmployee context, 
 			AnyPeriodRecordToAttendanceItemConverter converter){
-		return check(require, converter, rawErrorAlarms, 1.0);
+		return check(require, converter, rawValueErrorAlarms, 1.0);
 	}
 	
 	private List<ErrorAlarmAnyPeriod> checkByAverage(Require require, CheckingContextByEmployee context, 
