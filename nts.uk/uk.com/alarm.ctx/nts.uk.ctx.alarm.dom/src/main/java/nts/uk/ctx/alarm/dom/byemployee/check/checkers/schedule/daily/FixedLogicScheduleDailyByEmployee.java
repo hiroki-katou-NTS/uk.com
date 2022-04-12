@@ -5,6 +5,7 @@ import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
@@ -56,7 +57,7 @@ public enum FixedLogicScheduleDailyByEmployee {
 			RequireCheck require,
 			String employeeId,
 			DatePeriod checkingPeriod,
-			String message) {
+			AlarmListAlarmMessage message) {
 
 		val context = new Context(require, employeeId, checkingPeriod, message);
 
@@ -121,13 +122,14 @@ public enum FixedLogicScheduleDailyByEmployee {
 		RequireCheck require;
 		String employeeId;
 		DatePeriod period;
-		String message;
+		AlarmListAlarmMessage message;
 
 		public AlarmRecordByEmployee alarm(GeneralDate date) {
 			return new AlarmRecordByEmployee(
 					employeeId,
 					new DateInfo(date),
 					AlarmListCategoryByEmployee.SCHEDULE_DAILY,
+					"",
 					"",
 					"",
 					message);

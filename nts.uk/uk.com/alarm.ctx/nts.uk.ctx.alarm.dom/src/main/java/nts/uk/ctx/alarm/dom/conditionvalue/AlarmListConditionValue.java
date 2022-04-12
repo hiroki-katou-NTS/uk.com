@@ -1,6 +1,7 @@
 package nts.uk.ctx.alarm.dom.conditionvalue;
 
 import lombok.Value;
+import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 
 import java.util.Optional;
@@ -22,7 +23,7 @@ public class AlarmListConditionValue<L extends ConditionValueLogic<C>, C extends
     ConditionValueExpression expression;
 
     /** アラームメッセージ */
-    String alarmMessage;
+    AlarmListAlarmMessage alarmMessage;
 
     /**
      * 条件に該当するか

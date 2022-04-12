@@ -101,7 +101,7 @@ public class AlarmRecordByEmployee {
                 category.value,
                 category.categoryName(),
                 alarmItemName,
-                message,
+                message.v(),
                 comment,
                 alarmCondition,
                 endDate);
