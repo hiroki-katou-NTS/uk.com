@@ -3,6 +3,7 @@ package nts.uk.ctx.alarm.dom.byemployee.check.checkers.master;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 import lombok.RequiredArgsConstructor;
@@ -14,8 +15,13 @@ import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.service.CheckNotExistAnnualLeaveTable;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignemployee.TaskAssignEmployee;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.GetNotExistWorkTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.GetNotExistWorkType;
 
@@ -43,6 +49,16 @@ public enum FixLogicMasterByEmployee {
 
 	休日時勤務種類確認(7, c -> checkWorkInfo(
 			c, (con) -> GetNotExistWorkType.getByHoliday(con.require, con.employeeId))),
+
+	作業１確認(9, c -> checkTaskAssign(c, new TaskFrameNo(1))),
+
+	作業２確認(10, c -> checkTaskAssign(c, new TaskFrameNo(2))),
+
+	作業３確認(11, c -> checkTaskAssign(c, new TaskFrameNo(3))),
+
+	作業４確認(12, c -> checkTaskAssign(c, new TaskFrameNo(4))),
+
+	作業５確認(13, c -> checkTaskAssign(c, new TaskFrameNo(5))),
 
 	;
 
@@ -86,6 +102,16 @@ public enum FixLogicMasterByEmployee {
 				.iterator();
 	}
 
+	private static Iterable<AlarmRecordByEmployee> checkTaskAssign(Context context, TaskFrameNo frameNo){
+		val result = new ArrayList<AlarmRecordByEmployee>();
+		val optTaskAssign = context.require.getTaskAssign(context.employeeId, frameNo);
+		if(optTaskAssign.isPresent() && !context.require.existsTask(frameNo, optTaskAssign.get().getTaskCode())){
+			result.add(context.alarm());
+		}
+		return result;
+
+	}
+
 	private String getName() {
 		return "チェック項目名";
 	}
@@ -107,7 +133,7 @@ public enum FixLogicMasterByEmployee {
 					AlarmListCategoryByEmployee.MASTER,
 					getName(),
 					getAlarmCondition(),
-					null,
+					"",
 					message);
 		}
 
@@ -118,7 +144,7 @@ public enum FixLogicMasterByEmployee {
 					AlarmListCategoryByEmployee.MASTER,
 					getName(),
 					getAlarmCondition(),
-					null,
+					"",
 					message);
 		}
 
@@ -129,7 +155,7 @@ public enum FixLogicMasterByEmployee {
 					AlarmListCategoryByEmployee.MASTER,
 					getName(),
 					getAlarmCondition(),
-					null,
+					"",
 					message);
 		}
 	}
@@ -139,5 +165,11 @@ public enum FixLogicMasterByEmployee {
 			GetNotExistWorkType.Require,
 			GetNotExistWorkTime.Require {
 		List<StampCard> getStampCard(String employeeId);
+
+		Optional<TaskAssignEmployee> getTaskAssign(String employeeId, TaskFrameNo frameNo);
+
+		boolean existsTask(TaskFrameNo taskFrameNo, TaskCode code);
+
+		List<WorkLocation> getWorkLocation(String workLocationCode);
 	}
 }

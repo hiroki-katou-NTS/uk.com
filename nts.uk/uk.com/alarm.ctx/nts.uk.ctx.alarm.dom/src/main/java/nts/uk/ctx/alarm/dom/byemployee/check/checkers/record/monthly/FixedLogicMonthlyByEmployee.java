@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.gul.collection.IteratorUtil;
+import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodMonthly;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
@@ -76,7 +77,7 @@ public enum FixedLogicMonthlyByEmployee {
         RequireCheck require;
         String employeeId;
         List<ClosureMonth> period;
-        String message;
+        AlarmListAlarmMessage message;
         
         public AlarmRecordByEmployee alarm(ClosureMonth closureMonth) {
             return new AlarmRecordByEmployee(
@@ -86,6 +87,7 @@ public enum FixedLogicMonthlyByEmployee {
                     AlarmListCategoryByEmployee.MASTER,
                     getName(),
                     getAlarmCondition(),
+                    "",
                     message);
         }
 
@@ -96,6 +98,7 @@ public enum FixedLogicMonthlyByEmployee {
                     AlarmListCategoryByEmployee.RECORD_DAILY,
                     require.getMonthlyItemName(attendanceItemId),
                     getAlarmCondition(),
+                    "",
                     message);
         }
     }
