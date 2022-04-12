@@ -299,6 +299,18 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
 
+        //--- 就業時間帯 ---//
+
+        @Override
+        public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
+            return workTimeSettingRepo.findByCode(this.companyId, workTimeCode);
+        }
+
+        @Override
+        public boolean existsWorkTime(String workTimeCode) {
+            return workTimeSettingRepo.findByCode(this.companyId, workTimeCode).isPresent();
+        }
+
         @Override
         public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
             return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -334,19 +346,7 @@ public class ExecuteAlarmListByEmployeeRequire {
             return getWorkType(workTypeCode.v());
         }
 
-
-        //--- 就業時間帯 ---//
-
-        @Override
-        public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-            return workTimeSettingRepo.findByCode(this.companyId, workTimeCode);
-        }
-
-        @Override
-        public boolean existsWorkTime(String workTimeCode) {
-            return workTimeSettingRepo.findByCode(this.companyId, workTimeCode).isPresent();
-        }
-
+        
         //--- 勤怠項目 ---//
 
         @Override
