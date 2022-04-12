@@ -78,14 +78,15 @@ public class CheckAnyPeriodErrorAlarm {
 	
 	private AlarmRecordByEmployee createError(Require require, CheckingContextByEmployee context, ErrorAlarmAnyPeriod error) {
 		
-		String errorMessage = error.getMessage().isPresent()
-				? error.getMessage().get().toString()
-				: "";
+		AlarmListAlarmMessage errorMessage = error.getMessage().isPresent()
+				? new AlarmListAlarmMessage(error.getMessage().get().toString())
+				: new AlarmListAlarmMessage("");
 		
 		return new AlarmRecordByEmployee(
 				context.getTargetEmployeeId(), 
 				new DateInfo(require.getAnyAggrPeriod(context.getCheckingPeriod().getAnyPeriod()).getPeriod()), 
 				AlarmListCategoryByEmployee.RECORD_ANY_PERIOD, 
+				"任意期間のエラーアラーム", 
 				"任意期間のエラーアラーム", 
 				"任意期間のエラーアラーム", 
 				errorMessage);
