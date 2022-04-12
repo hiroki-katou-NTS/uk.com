@@ -10,14 +10,12 @@ import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.AlarmListCheckerCode;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.daily.CheckErrorAlarmDaily;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.multi.errorcount.ErrorAlarmCounter;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -62,14 +60,12 @@ public class MultiDayCheckerByEmployee implements DomainAggregate, AlarmListChec
             return new DateInfo(new DatePeriod(start, end));
         };
 
-        Function<ErrorAlarmWorkRecordCode, Iterable<GeneralDate>> errorAlarmChecker = code -> {
-            return IteratorUtil.iterable(
-                    new CheckErrorAlarmDaily(Arrays.asList(code)).check(require, employeeId, period),
-                    ea -> ea.getDateInfo().toGeneralDate());
-        };
-
         Function<ErrorAlarmWorkRecordCode, Optional<String>> getErrorAlarmName = code -> {
             return require.getErrorAlarmWorkRecord(code).map(e -> e.getName().v());
+        };
+
+        Function<ErrorAlarmWorkRecordCode, Iterable<GeneralDate>> errorAlarmChecker = code -> {
+            return ExecuteCheckErrorAlarmDaily.execute(require, employeeId, period, code);
         };
 
         return IteratorUtil.iterableFlatten(
@@ -79,7 +75,11 @@ public class MultiDayCheckerByEmployee implements DomainAggregate, AlarmListChec
                         period,
                         AlarmListCategoryByEmployee.RECORD_DAILY,
                         getErrorAlarmName,
-                        periodToDateInfo, errorAlarmChecker));
+                        periodToDateInfo,
+                        errorAlarmChecker));
     }
 
+    public interface RequireCheck extends ExecuteCheckErrorAlarmDaily.Require {
+
+    }
 }
