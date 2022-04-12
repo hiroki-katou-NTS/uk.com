@@ -25,8 +25,18 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaExtractCondWeeklyRepository extends JpaRepository implements ExtractionCondWeeklyRepository {
 	private static final String SELECT_BASIC = "SELECT a FROM KrcmtEralCategoryCond a";
 	private static final String BY_COMPANY_CATEGORY = " WHERE a.pk.cid = :cid AND a.pk.category = :category";
-	private static final String BY_CODE= " AND a.pk.code = :code";
+	private static final String BY_CODES = " AND a.pk.code in :code";
 	private static final String ORDER_BY_CODE = " ORDER BY a.pk.code";
+
+	@Override
+	public List<ExtractionCondWeekly> getByCodes(String cid, int category, List<String> codes) {
+		String query = SELECT_BASIC + BY_COMPANY_CATEGORY + BY_CODES + ORDER_BY_CODE;
+		return this.queryProxy().query(query, KrcmtEralCategoryCond.class)
+				.setParameter("cid", cid)
+				.setParameter("category", category)
+				.setParameter("code", codes)
+				.getList(entity -> entity.toDomainWeekly());
+	}
 
 	@Override
 	public ExtractionCondWeekly getAnyCond(String cid, int category, String code) {

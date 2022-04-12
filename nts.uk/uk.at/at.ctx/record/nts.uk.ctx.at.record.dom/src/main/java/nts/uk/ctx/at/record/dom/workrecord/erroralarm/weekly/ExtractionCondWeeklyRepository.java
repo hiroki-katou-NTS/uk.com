@@ -4,7 +4,9 @@ import java.util.List;
 
 public interface ExtractionCondWeeklyRepository {
 
-    /**
+	List<ExtractionCondWeekly> getByCodes(String cid, int category, List<String> codes);
+
+	/**
      * Get fix condition weekly
      * @param cid
      * @param category
