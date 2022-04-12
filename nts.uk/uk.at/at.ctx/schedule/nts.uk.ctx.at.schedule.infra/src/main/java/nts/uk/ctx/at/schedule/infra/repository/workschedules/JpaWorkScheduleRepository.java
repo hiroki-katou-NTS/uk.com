@@ -960,7 +960,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Integer nursingLicenseClass = rs.getInt("NURSE_LICENSE_ATR");
 				Boolean nursingManager = rs.getBoolean("IS_NURSE_ADMINISTRATOR");
 				String bonusPaySettingCode = rs.getString("BONUS_PAY_CD");
-				
 				return new KscdtSchBasicInfo(new KscdtSchBasicInfoPK(sid, ymd)
 							, cid, confirmedATR, empCd, jobId, wkpId, clsCd, busTypeCd
 							, wktpCd, wktmCd, goStraightAtr, backStraightAtr, treatAsSubstituteAtr, treatAsSubstituteDays

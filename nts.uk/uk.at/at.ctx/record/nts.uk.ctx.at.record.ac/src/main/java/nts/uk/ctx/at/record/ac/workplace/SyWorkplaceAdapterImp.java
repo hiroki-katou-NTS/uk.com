@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.WorkplaceInforImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.WorkplaceInformationImport;
+import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceDto;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpByEmpExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
@@ -35,8 +36,8 @@ public class SyWorkplaceAdapterImp implements SyWorkplaceAdapter {
 	private WorkplacePub workplacePub;
 
 	@Override
-	public Map<String, Pair<String, String>> getWorkplaceMapCodeBaseDateName(String companyId,
-			List<String> wpkCodes, List<GeneralDate> baseDates) {
+	public Map<String, Pair<String, String>> getWorkplaceMapCodeBaseDateName(String companyId, List<String> wpkCodes,
+			List<GeneralDate> baseDates) {
 		return this.workplacePub.getWorkplaceMapCodeBaseDateName(companyId, wpkCodes, baseDates);
 	}
 
@@ -47,7 +48,7 @@ public class SyWorkplaceAdapterImp implements SyWorkplaceAdapter {
 						x.getWorkplaceCode(), x.getWorkplaceName(), x.getWkpDisplayName()));
 	}
 
-	//社員（List）と基準日から所属職場履歴項目を取得する
+	// 社員（List）と基準日から所属職場履歴項目を取得する
 	@Override
 	public List<SWkpHistRcImported> findBySid(List<String> employeeIds, GeneralDate baseDate) {
 		return workplacePub.findBySId(employeeIds, baseDate).stream()
@@ -64,6 +65,7 @@ public class SyWorkplaceAdapterImp implements SyWorkplaceAdapter {
 						x.getWorkplaceName(), x.getWorkplaceDisplayName(), x.getWorkplaceGenericName(), x.getWorkplaceExternalCode()))
 				.collect(Collectors.toList());
 	}
+	
 	@Override
 	public List<EmployeeInfoImported> getLstEmpByWorkplaceIdsAndPeriod(List<String> workplaceIds, DatePeriod period) {
 		return workplacePub.getLstEmpByWorkplaceIdsAndPeriod(workplaceIds, period).stream()
@@ -93,6 +95,13 @@ public class SyWorkplaceAdapterImp implements SyWorkplaceAdapter {
 	public String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
 		// TODO Auto-generated method stub
 		return this.workplacePub.getAffWkpHistItemByEmpDate(employeeID, date).getWorkplaceId();
+	}	
+			
+	@Override
+	public List<AffWorkplaceDto> getAllActiveWorkplaceInfor(String companyId, GeneralDate baseDate) {
+		return workplacePub.getAllActiveWorkplaceInfor(companyId, baseDate).stream()
+				.map(x -> new AffWorkplaceDto(x.getWorkplaceId(), x.getWorkplaceCode(), x.getWorkplaceName()))
+				.collect(Collectors.toList());
 	}
 	
 	@Override

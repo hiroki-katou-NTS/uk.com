@@ -23,6 +23,8 @@ module nts.uk.com.cmf001.c {
                     settingCode: null,
                     domainId: null,
                     itemNo: null,
+                    csvFetchStart: null,
+                    csvFetchEnd: null,
                     type: null,
                     revisingValue: {
                         usePadding: null,
@@ -67,7 +69,7 @@ module nts.uk.com.cmf001.c {
 
         settingCode: string;
     
-    	domainId: int;
+    	domainId: number;
 
         items: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -91,7 +93,14 @@ module nts.uk.com.cmf001.c {
 
         isItemSelected = ko.computed(() => !util.isNullOrEmpty(this.selectedItemNo()));
 
-        currentItem: any = ko.observable();
+        currentItem: KnockoutObservable<{
+            def: any,
+            selectedMappingType: any,
+            csvMapping: any,
+            csvFetchStart: any,
+            csvFetchEnd: any,
+            fixedMapping: any,
+        }> = ko.observable();
         
         backUrl: string;
 
@@ -108,6 +117,8 @@ module nts.uk.com.cmf001.c {
                 def: datasource.importableItem.init(),
                 selectedMappingType: ko.observable(null),
                 csvMapping: datasource.itemMapping.init(),
+                csvFetchStart: ko.observable(null),
+                csvFetchEnd: ko.observable(null),
                 fixedMapping: ko.observable(),
             });
 
@@ -144,6 +155,8 @@ module nts.uk.com.cmf001.c {
             current.def.name(selectedItem.name);
             current.def.type(selectedItem.type);
             current.selectedMappingType(selectedItem.source);
+            current.csvFetchStart(selectedItem.csvFetchStart);
+            current.csvFetchEnd(selectedItem.csvFetchEnd);
 
             let fixedValue = selectedItem.fixedValue;
             if (selectedItem.type === 'TIME_POINT' || selectedItem.type === 'TIME_DURATION') {
@@ -300,6 +313,8 @@ module nts.uk.com.cmf001.c {
                     domainId: this.domainId,
                     itemNo: this.selectedItemNo(),
                     mappingSource: item.selectedMappingType(),
+                    csvFetchStart: item.csvFetchStart(),
+                    csvFetchEnd: item.csvFetchEnd(),
                     fixedValue: fixedValue,
                     revisingValue: revisingValue,
                 };

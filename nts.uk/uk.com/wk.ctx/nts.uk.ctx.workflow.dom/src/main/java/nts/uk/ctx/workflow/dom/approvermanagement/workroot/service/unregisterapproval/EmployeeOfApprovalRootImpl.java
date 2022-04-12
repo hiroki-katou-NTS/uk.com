@@ -173,10 +173,10 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 	private boolean checkPersonAppRoot(ApprovalRoot approvalRoot, EmploymentRootAtr rootAtr, String appTarget) {
 		switch (rootAtr) {
 			case APPLICATION:
-				return approvalRoot.getApplicationType() != null
+				return approvalRoot.getApplicationType() != null && approvalRoot.getApplicationType().isPresent()
 						&& approvalRoot.getApplicationType().get().value.toString().equals(appTarget);
 			case CONFIRMATION:
-				return approvalRoot.getConfirmationRootType() != null
+				return approvalRoot.getConfirmationRootType() != null && approvalRoot.getApplicationType().isPresent()
 						&& approvalRoot.getConfirmationRootType().get().value.toString().equals(appTarget);
 			case NOTICE:
 				return approvalRoot.getNoticeId() != null

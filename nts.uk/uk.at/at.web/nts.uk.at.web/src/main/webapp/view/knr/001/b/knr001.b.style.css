@@ -1,0 +1,46 @@
+.knr001-b-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.d-flex {
+  display: flex;
+  align-items: center;
+}
+
+.mb-1 {
+  margin-bottom: 1rem;
+}
+
+.ml-1 {
+  margin-left: 1rem;
+}
+
+.w-9 {
+  width: 9rem;
+}
+
+.w-8 {
+  width: 8rem;
+}
+
+.w-6 {
+  width: 6rem;
+}
+
+.w-4 {
+  width: 4rem;
+}
+
+.KNR001_67-KNR001_68 {
+  display: grid;
+}
+
+.mb-5px {
+  margin-bottom: 5px;
+}
+
+.ml-2 {
+  margin-left: 2rem;
+}

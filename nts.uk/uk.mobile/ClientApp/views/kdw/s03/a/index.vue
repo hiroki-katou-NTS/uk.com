@@ -79,7 +79,7 @@
             </thead>
             <tbody>
                 <tr v-for="(row, i) of displayDataLstEx">
-                    <td v-bind:style="{ height: rowHeight + 'px' }"><span class="crop-text">{{row.employeeName}}</span></td>
+                    <td v-bind:style="{ height: rowHeight + 'px', 'background-color': row.color}"><span class="crop-text">{{row.employeeName}}</span></td>
                     <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class"><span :class="cell.class.includes('text-truncate') ? '' : 'crop-text'">{{cell.displayvalue}}</span></td>
                     <td>
                         <div style="text-align: right" v-click:500="() => openEdit(row.id)">

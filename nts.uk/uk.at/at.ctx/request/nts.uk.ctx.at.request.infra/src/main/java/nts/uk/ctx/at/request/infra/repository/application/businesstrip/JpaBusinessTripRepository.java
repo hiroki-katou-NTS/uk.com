@@ -10,7 +10,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
@@ -18,9 +20,11 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
@@ -32,13 +36,14 @@ import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.infra.entity.application.businesstrip.KrqdtAppTrip;
 import nts.uk.ctx.at.request.infra.entity.application.businesstrip.KrqdtAppTripPK;
+import nts.uk.ctx.at.request.infra.repository.application.FindAppCommonForNR;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
-public class JpaBusinessTripRepository extends JpaRepository implements BusinessTripRepository {
+public class JpaBusinessTripRepository extends JpaRepository implements BusinessTripRepository, FindAppCommonForNR<BusinessTrip> {
 
     public static final String FIND_BY_ID = "SELECT *  "
             + "FROM KRQDT_APP_TRIP as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID"
@@ -48,6 +53,9 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
             + "FROM KRQDT_APP_TRIP as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID"
             + " WHERE a.APP_ID = @appID AND a.CID = @companyId ORDER BY a.APP_DATE ASC";
 
+    @Inject
+    private ApplicationRepository appRepo;
+    
     @Override
     public Optional<BusinessTrip> findById(String companyId, String appId, GeneralDate date) {
         return new NtsStatement(FIND_BY_ID, this.jdbcProxy())
@@ -207,4 +215,57 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
 			return c;
 		});
 	}
+	
+	 private static final String FIND_BY_IDS = "SELECT *  "
+	            + "FROM KRQDT_APP_TRIP as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID"
+	            + " WHERE a.APP_ID IN @appID AND a.CID = @companyId AND a.APP_DATE = @date";
+	 
+	@Override
+	public List<BusinessTrip> findWithSidDate(String companyId, String sid, GeneralDate date) {
+		List<Application> lstApp = appRepo.findAppWithSidDate(companyId, sid, date, ApplicationType.BUSINESS_TRIP_APPLICATION.value);
+		if (lstApp.isEmpty())
+			return new ArrayList<>();
+		return new NtsStatement(FIND_BY_IDS, this.jdbcProxy())
+				.paramString("appID", lstApp.stream().map(x -> x.getAppID()).collect(Collectors.toList()))
+				.paramString("companyId", companyId).paramDate("date", date).getList(res -> {
+					val dom = toDomain(res);
+					dom.setApplication(this.findAppId(lstApp, dom.getAppID()).orElse(null));
+					return dom;
+				});
+	}
+
+	@Override
+	public List<BusinessTrip> findWithSidDateApptype(String companyId, String sid, GeneralDate date,
+			GeneralDateTime inputDate, PrePostAtr prePostAtr) {
+		List<Application> lstApp = appRepo.findAppWithSidDateApptype(companyId, sid, date, inputDate, prePostAtr, ApplicationType.BUSINESS_TRIP_APPLICATION.value);
+		if (lstApp.isEmpty())
+			return new ArrayList<>();
+		return new NtsStatement(FIND_BY_IDS, this.jdbcProxy())
+				.paramString("appID", lstApp.stream().map(x -> x.getAppID()).collect(Collectors.toList()))
+				.paramString("companyId", companyId).paramDate("date", date).getList(res -> {
+					val dom = toDomain(res);
+					dom.setApplication(this.findAppId(lstApp, dom.getAppID()).orElse(null));
+					return dom;
+				});
+	}
+
+	 private static final String FIND_BY_IDS_PERIOD = "SELECT *  "
+	            + "FROM KRQDT_APP_TRIP as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID"
+	            + " WHERE a.APP_ID IN @appID AND a.CID = @companyId AND ( a.APP_DATE BETWEEN @startDate AND @endDate)";
+
+	@Override
+	public List<BusinessTrip> findWithSidDatePeriod(String companyId, String sid, DatePeriod period) {
+		List<Application> lstApp = appRepo.findAppWithSidDatePeriod(companyId, sid, period, ApplicationType.BUSINESS_TRIP_APPLICATION.value);
+		if (lstApp.isEmpty())
+			return new ArrayList<>();
+		return new NtsStatement(FIND_BY_IDS_PERIOD, this.jdbcProxy())
+				.paramString("appID", lstApp.stream().map(x -> x.getAppID()).collect(Collectors.toList()))
+				.paramString("companyId", companyId).paramDate("startDate", period.start())
+				.paramDate("endDate", period.end()).getList(res -> {
+					val dom = toDomain(res);
+					dom.setApplication(this.findAppId(lstApp, dom.getAppID()).orElse(null));
+					return dom;
+				});
+	}
+	
 }

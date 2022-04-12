@@ -25420,6 +25420,7 @@
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingDomainId_WORKTIME_BY_WORKSPACE","職場別就業時間帯",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingDomainId_WORK_LOCATION","勤務場所",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingDomainId_WORK_LOCATION_IP","勤務場所IPマスタ",1
+,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingDomainId_EMPLOYEE_CONTACT","業務連絡先",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingMode_DELETE_DOMAIN_BEFOREHAND","受入対象グループのデータをすべて削除して受け入れる",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingMode_DELETE_RECORD_BEFOREHAND","受入対象レコードを削除して受け入れる",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingMode_INSERT_ONLY","既存データが存在しないデータのみ受け入れる",1

@@ -8,7 +8,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  *         変数名
  */
-@StringMaxLength(20)
+@StringMaxLength(30)
 public class VariableName extends StringPrimitiveValue<VariableName> {
 
 	private static final long serialVersionUID = 1L;

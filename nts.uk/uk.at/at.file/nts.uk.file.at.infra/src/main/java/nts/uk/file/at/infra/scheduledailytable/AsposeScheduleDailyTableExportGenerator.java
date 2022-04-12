@@ -459,6 +459,18 @@ public class AsposeScheduleDailyTableExportGenerator extends AsposeCellsReportGe
 
         // G1_1
         cells.get(startTotalRow, START_DATE_COL + targetDates.size()).setValue(comment);
+        for (int row = startTotalRow; row < startTotalRow + 15; row++) {
+            Style style = cells.get(row, START_DATE_COL + targetDates.size() + 20 - 1).getStyle();
+            style.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.THIN);
+            style.setPattern(BackgroundType.SOLID);
+            cells.get(row, START_DATE_COL + targetDates.size() + 20 - 1).setStyle(style);
+        }
+        for (int col = START_DATE_COL + targetDates.size(); col < START_DATE_COL + targetDates.size() + 20; col++) {
+            Style style = cells.get(startTotalRow + 15 - 1, col).getStyle();
+            style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.THIN);
+            style.setPattern(BackgroundType.SOLID);
+            cells.get(startTotalRow + 15 - 1, col).setStyle(style);
+        }
         cells.merge(startTotalRow, START_DATE_COL + targetDates.size(), 15, 20);
         Style commentStyle = cells.get(indexes.get(indexes.size() - 1), START_DATE_COL + targetDates.size()).getStyle();
         commentStyle.getFont().setName(FONT_NAME);

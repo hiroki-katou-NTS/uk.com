@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrweb.master.AllMasterAttItem.MasterAttItemDetail;
+
 /**
  * The Interface DivergenceReasonSelectRepository.
  */
@@ -55,4 +57,6 @@ public interface DivergenceReasonSelectRepository {
 	void update(int divTimeNo,DivergenceReasonSelect divergenceReasonSelect);
 	
 	Map<Pair<String, String>, String> getNameByCodeNo(String companyId, List<String> lstReasonCode);
+	
+	List<MasterAttItemDetail> getAllWithCompany(String companyId);
 }

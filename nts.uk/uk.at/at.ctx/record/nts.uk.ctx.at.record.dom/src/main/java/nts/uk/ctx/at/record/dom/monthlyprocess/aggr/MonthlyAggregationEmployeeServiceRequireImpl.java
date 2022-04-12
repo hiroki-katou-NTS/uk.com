@@ -81,6 +81,7 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularL
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeEmp;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeSha;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -634,6 +635,11 @@ public class MonthlyAggregationEmployeeServiceRequireImpl implements AggregateMo
 	@Override
 	public OptionLicense getOptionLicense() {
 		return AppContexts.optionLicense();
+	}
+
+	@Override
+	public AnnualPaidLeaveSetting annualPaidLeaveSetting(String cid) {
+		return require.annualPaidLeaveSetting(cid);
 	}
 
 }

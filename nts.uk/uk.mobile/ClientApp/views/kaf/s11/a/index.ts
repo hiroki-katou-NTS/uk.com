@@ -773,7 +773,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
     get enableLeaveTimeRange() {
         const vm = this;
 
-        return vm.displayInforWhenStarting.workInfoAttendanceReflect.reflectAttendance == 1;
+        return true;
     }
 
     // ※11

@@ -286,8 +286,8 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public void deleteStampCardByTenant(String tenantCode) {
-			stampCardRepo.deleteByTenantCode(tenantCode);
+		public void deleteStampCardByEmployeeId(String employeeId) {
+			stampCardRepo.deleteBySid(employeeId);
 		}
 
 		@Override

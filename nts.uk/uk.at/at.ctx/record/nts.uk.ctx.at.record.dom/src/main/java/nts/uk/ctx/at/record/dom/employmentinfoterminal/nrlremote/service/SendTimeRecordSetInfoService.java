@@ -21,19 +21,13 @@ public class SendTimeRecordSetInfoService {
 	};
 
 	// 送信する
-	public static Optional<TimeRecordSettingInfoDto> send(Require require, MacAddress macAdd,
-			ContractCode contractCode) {
-
-		// $就業情報端末 = require.就業情報端末Repository.get(MACアドレス, 契約コード)
-		Optional<EmpInfoTerminal> empTerOpt = require.getEmpInfoTerWithMac(macAdd, contractCode);
-		if (!empTerOpt.isPresent())
-			return Optional.empty();
+	public static Optional<TimeRecordSettingInfoDto> send(Require require, ContractCode contractCode, EmpInfoTerminalCode empInfoTerCode) {
 
 		// $タイムレコード設定 = require.タイムレコード設定更新リストRepository.find($就業情報端末.コード)
-		Optional<TimeRecordSetUpdateList> setUpdateOpt = require.findSettingUpdate(empTerOpt.get().getEmpInfoTerCode(),
+		Optional<TimeRecordSetUpdateList> setUpdateOpt = require.findSettingUpdate(empInfoTerCode,
 				contractCode);
 		// $設定フォーマット = require.タイムレコード設定フォーマットリストを取得する($就業情報端末.コード);
-		Optional<TimeRecordSetFormatList> setFormatOpt = require.findSetFormat(empTerOpt.get().getEmpInfoTerCode(),
+		Optional<TimeRecordSetFormatList> setFormatOpt = require.findSetFormat(empInfoTerCode,
 				contractCode);
 		if (!setUpdateOpt.isPresent() || !setFormatOpt.isPresent())
 			return Optional.empty();

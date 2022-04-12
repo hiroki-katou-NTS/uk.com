@@ -14,8 +14,7 @@ public class NRHelper {
 	public static final List<Integer> APPREASON_TYPE = Arrays.asList(0, 1, 2, 6, 7, 8, 9);
 	
 	protected static final List<String> BENTO_NO = IntStream
-			.concat(IntStream.rangeClosed('A', 'Z'),
-					IntStream.concat(IntStream.rangeClosed('a', 'z'), IntStream.rangeClosed('0', '9')))
+			.concat(IntStream.rangeClosed('A', 'T'), IntStream.rangeClosed('a', 't'))
 			.mapToObj(x -> String.valueOf(((char) x))).collect(Collectors.toList());
 
 	public static String toStringNR(Integer startTime, Integer endTime) {

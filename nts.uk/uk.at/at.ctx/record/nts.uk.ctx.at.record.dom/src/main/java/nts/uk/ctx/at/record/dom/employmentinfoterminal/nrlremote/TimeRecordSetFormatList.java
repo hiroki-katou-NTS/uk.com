@@ -53,7 +53,7 @@ public class TimeRecordSetFormatList extends NRLMachineInfo implements DomainAgg
 				lstTRSetFormat.add(new TimeRecordSetFormatBuilder(new MajorNameClassification(set.getMajorClassification()),
 						new MajorNameClassification(set.getSmallClassification()), new VariableName(set.getVariableName()),
 						NrlRemoteInputType.valueInputTypeOf(set.getType()),
-						new NumberOfDigits(Integer.parseInt(set.getNumberOfDigits())))
+						new NumberOfDigits(set.getNumberOfDigits().isEmpty() ? 0 : Integer.parseInt(set.getNumberOfDigits())))
 								.settingValue(new SettingValue(set.getSettingValue()))
 								.inputRange(new NrlRemoteInputRange(set.getInputRange()))
 								.rebootFlg(set.getRebootFlg().equals("1")).value(currentValueOpt

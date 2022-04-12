@@ -15,7 +15,7 @@ public class WorkTypeSetBase {
 	private int countHodiday;
 	private Integer closeAtr;
 	private int sumAbsenseNo ;
-	private int sumSpHodidayNo;
+	private Integer sumSpHodidayNo;
 	private int timeLeaveWork;
 	private int attendanceTime;
 	private int genSubHodiday;

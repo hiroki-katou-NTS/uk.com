@@ -18,6 +18,7 @@ import javax.ejb.TransactionAttributeType;
 import org.apache.logging.log4j.util.Strings;
 
 import lombok.SneakyThrows;
+import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -952,5 +953,53 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				.setParameter("employeeID", employeeID)
 				.setParameter("appDate", appDate).setParameter("appType", appType)
 				.setParameter("prePostAtr", prePostAtr).getList(c -> c.toDomain());
+	}
+
+	private static final String FIND_BY_SID_DATE = "SELECT a FROM KrqdtApplication a "
+			+ " WHERE a.employeeID = :employeeID" + " AND ( a.appDate = :appDate or (a.opAppStartDate <= :appDate and a.opAppEndDate >= :appDate)) AND a.appType = :appType";
+	@Override
+	public List<Application> findAppWithSidDate(String companyId, String sid, GeneralDate date, int appType) {
+		return this.queryProxy().query(FIND_BY_SID_DATE, KrqdtApplication.class).setParameter("employeeID", sid)
+				.setParameter("appDate", date).setParameter("appType", appType).getList(c -> {
+					val dom = c.toDomain();
+					dom.getReflectionStatus().getListReflectionStatusOfDay()
+							.removeIf(x -> !x.getTargetDate().equals(date));
+					return dom;
+				});
+	}
+
+	private static final String FIND_BY_SID_DATE_INDATE_TYPE = "SELECT a FROM KrqdtApplication a "
+			+ " WHERE a.employeeID = :employeeID"
+			+ " AND ( a.appDate = :appDate or ( a.opAppStartDate <= :appDate and a.opAppEndDate >= :appDate ))"
+			+ " AND a.inputDate = :inputDate AND a.prePostAtr = :prePostAtr AND a.appType = :appType";
+	@Override
+	public List<Application> findAppWithSidDateApptype(String companyId, String sid, GeneralDate date,
+			GeneralDateTime inputDate, PrePostAtr prePostAtr, int appType) {
+		return this.queryProxy().query(FIND_BY_SID_DATE_INDATE_TYPE, KrqdtApplication.class).setParameter("employeeID", sid)
+				.setParameter("appDate", date)
+				.setParameter("inputDate", inputDate)
+				.setParameter("prePostAtr", prePostAtr.value)
+				.setParameter("appType", appType)
+				.getList(c ->{
+					val dom = c.toDomain();
+					dom.getReflectionStatus().getListReflectionStatusOfDay()
+							.removeIf(x -> !x.getTargetDate().equals(date));
+					return dom;
+				});
+	}
+
+	private static final String SELECT_APP_BY_SID_DATE = "SELECT a FROM KrqdtApplication a"
+			+ " WHERE a.employeeID = :employeeID" + " AND ((a.appDate >= :startDate AND a.appDate <= :endDate ) "
+			+ " or (a.opAppStartDate <= :endDate AND a.opAppEndDate >= :startDate)) AND a.appType = :appType";
+	@Override
+	public List<Application> findAppWithSidDatePeriod(String companyId, String sid, DatePeriod period, int appType) {
+		return this.queryProxy().query(SELECT_APP_BY_SID_DATE, KrqdtApplication.class).setParameter("employeeID", sid)
+				.setParameter("startDate", period.start()).setParameter("endDate", period.end())
+				.setParameter("appType", appType).getList(c -> {
+					val dom = c.toDomain();
+					dom.getReflectionStatus().getListReflectionStatusOfDay()
+							.removeIf(x -> !period.contains(x.getTargetDate()));
+					return dom;
+				});
 	}
 }

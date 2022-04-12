@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.Aggregate
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 
+@Data
 @NoArgsConstructor
 public class OptionalItemValueDto implements ItemConst, AttendanceItemDataGate {
 
@@ -54,9 +56,9 @@ public class OptionalItemValueDto implements ItemConst, AttendanceItemDataGate {
 	@Setter
 	private int no;
 
-	private OptionalItemAtr itemAttr;
+	private int itemAttr;
 
-	public OptionalItemValueDto(String value, int itemNo, OptionalItemAtr itemAttr) {
+	public OptionalItemValueDto(String value, int itemNo, int itemAttr) {
 		super();
 		this.value = value;
 		this.no = itemNo;
@@ -134,11 +136,13 @@ public class OptionalItemValueDto implements ItemConst, AttendanceItemDataGate {
 	}
 
 	public boolean isNeedCorrect() {
-		return this.autoInit || this.itemAttr == null;
+		return this.autoInit;
 	}
 
 	public void correctItem(OptionalItemAtr attr) {
-		this.itemAttr = attr;
+		if(attr != null) {
+			this.itemAttr = attr.value;
+		}
 		this.autoInit = false;
 	}
 
@@ -227,15 +231,15 @@ public class OptionalItemValueDto implements ItemConst, AttendanceItemDataGate {
 	}
 
 	public boolean isAmoutItem() {
-		return itemAttr == OptionalItemAtr.AMOUNT;
+		return itemAttr == OptionalItemAtr.AMOUNT.value;
 	}
 
 	public boolean isTimesItem() {
-		return itemAttr == OptionalItemAtr.NUMBER;
+		return itemAttr == OptionalItemAtr.NUMBER.value;
 	}
 
 	public boolean isTimeItem() {
-		return itemAttr == OptionalItemAtr.TIME;
+		return itemAttr == OptionalItemAtr.TIME.value;
 	}
 	
 	public ValueType getValueType(){
@@ -268,8 +272,8 @@ public class OptionalItemValueDto implements ItemConst, AttendanceItemDataGate {
 		BigDecimal count = countOrDef.get();
 		Integer time = timeOrDef.getAsInt();
 		if(attr != null){
-			this.itemAttr = attr;
-			switch (itemAttr) {
+			this.itemAttr = attr.value;
+			switch (attr) {
 			case AMOUNT:
 				this.value = amount.toString();
 				break;
@@ -286,18 +290,18 @@ public class OptionalItemValueDto implements ItemConst, AttendanceItemDataGate {
 			double countD = count.doubleValue();
 			if (countD > amount) {
 				if (countD > time) {
-					this.itemAttr = OptionalItemAtr.NUMBER;
+					this.itemAttr = OptionalItemAtr.NUMBER.value;
 					this.value = count.toPlainString();
 				} else {
-					this.itemAttr = OptionalItemAtr.TIME;
+					this.itemAttr = OptionalItemAtr.TIME.value;
 					this.value = time.toString();
 				}
 			} else {
 				if (amount > time) {
-					this.itemAttr = OptionalItemAtr.AMOUNT;
+					this.itemAttr = OptionalItemAtr.AMOUNT.value;
 					this.value = amount.toString();
 				} else {
-					this.itemAttr = OptionalItemAtr.TIME;
+					this.itemAttr = OptionalItemAtr.TIME.value;
 					this.value = time.toString();
 				}
 			}

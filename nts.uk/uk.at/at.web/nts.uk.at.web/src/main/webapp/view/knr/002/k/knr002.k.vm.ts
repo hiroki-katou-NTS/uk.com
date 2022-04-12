@@ -43,7 +43,7 @@ module knr002.k {
                                 let bentoTemp = new BentoMenuItem(item.bentoMenuFrameNumber, item.bentoMenuName);
                                 bentoMenuTemp.push(bentoTemp);
                             } 
-                            self.bentoMenu(bentoMenuTemp);
+                            self.bentoMenu(_.sortBy(bentoMenuTemp,[function(u:BentoMenuItem){return u.frameNumber}]));
                             let selectedListTemp = [];
                             for(let item of data.bentoMenu){
                                 selectedListTemp.push(item);

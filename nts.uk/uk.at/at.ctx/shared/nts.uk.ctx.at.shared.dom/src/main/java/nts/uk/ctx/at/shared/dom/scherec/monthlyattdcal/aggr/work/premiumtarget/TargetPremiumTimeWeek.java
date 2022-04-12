@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
@@ -10,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworking
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
- * 通常勤務の週割増対象時間
+ * 週割増対象時間
  * @author shuichi_ishida
  */
 @Getter
@@ -46,11 +47,11 @@ public class TargetPremiumTimeWeek {
 		
 
 		/** ○変形労働勤務の週割増時間の対象となる時間を求める */
-		domain.premiumTimeWeek = TargetPremiumTimeGetter.askPremiumTime(require, companyId, employeeId, weekPeriod, addSet, 
-					aggregateTotalWorkingTime, isAddVacationTime, monthlyCalcDailys, aggregateAtr, workingSystem)
-				.getTargetPremiumTime();
+		val targetPre = TargetPremiumTimeGetter.askPremiumTime(require, companyId, employeeId, weekPeriod, addSet, 
+					aggregateTotalWorkingTime, isAddVacationTime, monthlyCalcDailys, aggregateAtr, workingSystem);
 
 		// 「当月の週割増対象時間」を求める
+		domain.premiumTimeWeek = targetPre.getTargetPremiumTime();
 		domain.premiumTimeOfCurrentMonth = new AttendanceTimeMonth(domain.premiumTimeWeek.v());
 
 		// 「前月の最終週の週割増対象時間」を加算する

@@ -136,6 +136,9 @@ public class WeeklyCalculation implements Cloneable {
 		switch (workingSystem){
 		case REGULAR_WORK:
 		case VARIABLE_WORKING_TIME_WORK:
+
+			/** 変形法定内残業を集計する */
+			this.regAndIrgTime.getIrregularLegalOverTime(aggregateTotalWorkingTime.getOverTime(), period);
 			
 			// 週割増時間を集計する
 			this.regAndIrgTime.aggregatePremiumTime(require, companyId, employeeId, weekPeriod,
