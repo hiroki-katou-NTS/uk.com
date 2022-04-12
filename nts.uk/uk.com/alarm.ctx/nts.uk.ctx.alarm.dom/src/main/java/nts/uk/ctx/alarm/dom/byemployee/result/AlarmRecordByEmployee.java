@@ -2,6 +2,7 @@ package nts.uk.ctx.alarm.dom.byemployee.result;
 
 import lombok.Value;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeErAlData;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
@@ -36,7 +37,7 @@ public class AlarmRecordByEmployee {
     String targetValue;
 
     /** メッセージ */
-    String message;
+    AlarmListAlarmMessage message;
 
     /**
      * エラーアラームの情報から作る
@@ -56,7 +57,7 @@ public class AlarmRecordByEmployee {
             AlarmListCategoryByEmployee category,
             String errorAlarmName,
             List<Integer> attendanceItemIds,
-            String message) {
+            AlarmListAlarmMessage message) {
 
         String itemNames = getItemNames(require, category, attendanceItemIds);
         String targetValue = "";
