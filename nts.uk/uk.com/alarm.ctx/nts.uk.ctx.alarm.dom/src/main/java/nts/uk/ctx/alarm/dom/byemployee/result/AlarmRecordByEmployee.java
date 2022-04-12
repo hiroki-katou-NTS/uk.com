@@ -2,6 +2,7 @@ package nts.uk.ctx.alarm.dom.byemployee.result;
 
 import lombok.Value;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeErAlData;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
@@ -26,14 +27,17 @@ public class AlarmRecordByEmployee {
     /** カテゴリ */
     AlarmListCategoryByEmployee category;
 
-    /** チェック項目名 */
-    String checkItemName;
+    /** アラーム項目名 */
+    String alarmItemName;
 
     /** アラーム条件 */
     String alarmCondition;
 
+    /** チェック対象値 */
+    String targetValue;
+
     /** メッセージ */
-    String message;
+    AlarmListAlarmMessage message;
 
     /**
      * エラーアラームの情報から作る
@@ -53,10 +57,11 @@ public class AlarmRecordByEmployee {
             AlarmListCategoryByEmployee category,
             String errorAlarmName,
             List<Integer> attendanceItemIds,
-            String message) {
+            AlarmListAlarmMessage message) {
 
         String itemNames = getItemNames(require, category, attendanceItemIds);
-        return new AlarmRecordByEmployee(employeeId, dateInfo, category, errorAlarmName, itemNames, message);
+        String targetValue = "";
+        return new AlarmRecordByEmployee(employeeId, dateInfo, category, errorAlarmName, itemNames, targetValue, message);
     }
 
     private static String getItemNames(RequireFromErrorAlarm require, AlarmListCategoryByEmployee category, List<Integer> attendanceItemIds) {
@@ -95,8 +100,8 @@ public class AlarmRecordByEmployee {
                 dateInfo.getFormatted(),
                 category.value,
                 category.categoryName(),
-                checkItemName,
-                message,
+                alarmItemName,
+                message.v(),
                 comment,
                 alarmCondition,
                 endDate);

@@ -5,13 +5,20 @@ import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.CheckDuplicateTimeSpan;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetTargetIdentifiInforService;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupGettingService;
+import nts.uk.shr.com.context.AppContexts;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -36,6 +43,9 @@ public enum FixedLogicScheduleDailyByEmployee {
 	複数回勤務(5, c -> alarmToWorkSchedule(
 			c, ws -> checkMultipleWork(ws))),
 
+	特定日勤務(6, c -> alarmToWorkSchedule(
+			c, ws -> checkSpecificDay(c, ws))),
+
 	スケジュール未確定(7, c -> alarmToWorkSchedule(
 			c, ws -> ws.getConfirmedATR().equals(ConfirmedATR.UNSETTLED))),
 	;
@@ -56,7 +66,7 @@ public enum FixedLogicScheduleDailyByEmployee {
 			RequireCheck require,
 			String employeeId,
 			DatePeriod checkingPeriod,
-			String message) {
+			AlarmListAlarmMessage message) {
 
 		val context = new Context(require, employeeId, checkingPeriod, message);
 
@@ -82,6 +92,23 @@ public enum FixedLogicScheduleDailyByEmployee {
 	 */
 	private static boolean checkMultipleWork(WorkSchedule schedule){
 		return schedule.getOptTimeLeaving().get().getTimeLeavingWorks().size() > 1;
+	}
+
+	/**
+	 * 特定日勤務か
+	 * @param context
+	 * @param schedule
+	 * @return
+	 */
+	private static boolean checkSpecificDay(Context context, WorkSchedule schedule){
+		// 出勤系かチェック
+		if(schedule.getWorkInfo().getRecordInfo().isAttendanceRate(context.require, AppContexts.user().companyId())){
+			// 所属を取得
+			val orgIdenInfo = GetTargetIdentifiInforService.get(context.require, schedule.getYmd(), schedule.getEmployeeID());
+			// 特定日かチェック
+			return DateInformation.create(context.require, schedule.getYmd(), orgIdenInfo).isSpecificDay();
+		}
+		return false;
 	}
 
 	/**
@@ -121,7 +148,7 @@ public enum FixedLogicScheduleDailyByEmployee {
 		RequireCheck require;
 		String employeeId;
 		DatePeriod period;
-		String message;
+		AlarmListAlarmMessage message;
 
 		public AlarmRecordByEmployee alarm(GeneralDate date) {
 			return new AlarmRecordByEmployee(
@@ -130,11 +157,16 @@ public enum FixedLogicScheduleDailyByEmployee {
 					AlarmListCategoryByEmployee.SCHEDULE_DAILY,
 					"",
 					"",
+					"",
 					message);
 		}
 	}
 
-	public interface RequireCheck extends CheckDuplicateTimeSpan.Require{
+	public interface RequireCheck extends
+			CheckDuplicateTimeSpan.Require,
+			GetTargetIdentifiInforService.Require,
+			DateInformation.Require,
+			WorkInformation.Require{
 		boolean existsWorkSchedule(String employeeId, GeneralDate date);
 
 		Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date);

@@ -2,6 +2,7 @@ package nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.weekly;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.IteratorUtil;
+import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodWeekly;
@@ -63,7 +64,7 @@ public class CheckErrorAlarmWeekly {
                 AlarmListCategoryByEmployee.RECORD_WEEKLY,
                 cond.getName().v(),
                 Collections.emptyList(),
-                cond.getMessage()
+                new AlarmListAlarmMessage(cond.getMessage())
             );
     }
 
