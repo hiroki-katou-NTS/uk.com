@@ -38,10 +38,12 @@ public class CheckDuplicateTimeSpan {
 	private static boolean checkDuplicatePreviousDay(Require require, WorkSchedule baseSche){
 		val optPreviousSche = require.getWorkSchedule(baseSche.getEmployeeID(), baseSche.getYmd().addDays(-1));
 		if(optPreviousSche.isPresent()) {
-			val baseSpan = baseSche.getOptTimeLeaving().get().getMaxSpan();
-			// 前日の時間帯なので24時間分過去にずらす
-			val previousSpan = optPreviousSche.get().getOptTimeLeaving().get().getMaxSpan().shiftBack(1440);
-			return baseSpan.getDuplicatedWith(previousSpan).isPresent();
+			val optBaseSpan = baseSche.getOptTimeLeaving().get().getMaxSpan();
+			val optPreviousSpan = optPreviousSche.get().getOptTimeLeaving().get().getMaxSpan();
+			if(optBaseSpan.isPresent() && optPreviousSpan.isPresent()){
+				// 前日の時間帯なので24時間分過去にずらす
+				return optBaseSpan.get().getDuplicatedWith(optPreviousSpan.get().shiftBack(1440)).isPresent();
+			}
 		}
 		return false;
 	}
@@ -55,10 +57,12 @@ public class CheckDuplicateTimeSpan {
 	private static boolean checkDuplicateNextDay(Require require, WorkSchedule baseSche){
 		val optNextSche = require.getWorkSchedule(baseSche.getEmployeeID(), baseSche.getYmd().addDays(1));
 		if(optNextSche.isPresent()) {
-			val baseSpan = baseSche.getOptTimeLeaving().get().getMaxSpan();
-			// 翌日の時間帯なので24時間分未来にずらす
-			val nextSpan = optNextSche.get().getOptTimeLeaving().get().getMaxSpan().shiftAhead(1440);
-			return baseSpan.getDuplicatedWith(nextSpan).isPresent();
+			val optBaseSpan = baseSche.getOptTimeLeaving().get().getMaxSpan();
+			val optNextSpan = optNextSche.get().getOptTimeLeaving().get().getMaxSpan();
+			if(optBaseSpan.isPresent() && optNextSpan.isPresent()){
+				// 翌日の時間帯なので24時間分未来にずらす
+				return optBaseSpan.get().getDuplicatedWith(optNextSpan.get().shiftAhead(1440)).isPresent();
+			}
 		}
 		return false;
 	}

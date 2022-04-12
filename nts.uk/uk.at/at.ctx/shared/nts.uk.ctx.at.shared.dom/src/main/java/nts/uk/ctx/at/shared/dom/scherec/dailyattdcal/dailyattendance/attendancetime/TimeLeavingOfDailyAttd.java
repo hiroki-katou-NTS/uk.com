@@ -219,11 +219,14 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	 * 出退勤の最大時間帯を返す
 	 * @return
 	 */
-	public TimeSpanForCalc getMaxSpan(){
-				Map<Integer, TimeLeavingWork> tlwMap = this.timeLeavingWorks.stream()
+	public Optional<TimeSpanForCalc> getMaxSpan(){
+		Map<Integer, TimeLeavingWork> tlwMap = this.timeLeavingWorks.stream()
 				.collect(Collectors.toMap(lw -> lw.getWorkNo().v(), lw -> lw));
+		if(tlwMap.isEmpty()){
+			return Optional.empty();
+		}
 		// 1回目の開始時刻　～　最終回目の終了時刻
-		return new TimeSpanForCalc(tlwMap.get(1).getTimespan().getStart(),tlwMap.get(tlwMap.size()).getTimespan().getEnd());
+		return Optional.of(new TimeSpanForCalc(tlwMap.get(1).getTimespan().getStart(),tlwMap.get(tlwMap.size()).getTimespan().getEnd()));
 	}
 	
 	/**
