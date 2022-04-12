@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.AlarmListCheckerCode;
 import nts.uk.ctx.alarm.dom.AlarmListPatternCode;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
@@ -29,6 +30,7 @@ import nts.uk.ctx.at.aggregation.dom.adapter.workschedule.WorkScheduleAdapter;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
 import nts.uk.ctx.at.record.app.find.anyperiod.AnyPeriodRecordToAttendanceItemConverterImpl;
+import nts.uk.ctx.at.record.app.find.dailyperform.ConvertFactory;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
@@ -38,11 +40,8 @@ import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameS
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.*;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.anyperiod.ErrorAlarmAnyPeriod;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeeklyRepository;
@@ -78,6 +77,7 @@ import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.Attenda
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthlyGetter;
@@ -168,6 +168,12 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private ExtractionCondWeeklyRepository extractionCondWeeklyRepository;
+
+    @Inject
+    private AttendanceTimeOfWeeklyRepository attendanceTimeOfWeeklyRepo;
+
+    @Inject
+    private ConvertFactory convertFactory;
 
     @Inject
     private IntegrationOfDailyGetter integrationOfDailyGetter;
@@ -441,22 +447,28 @@ public class ExecuteAlarmListByEmployeeRequire {
 					.withAttendanceTime(record)
 					.completed();
 		}
+
         @Override
-        public List<ExtractionCondWeekly> getUsedExtractionCondWeekly() {
-            // TODO:
-            return null;
+        public List<ExtractionCondWeekly> getUsedExtractionCondWeekly(List<String> codes) {
+            return extractionCondWeeklyRepository.getByCodes(companyId, ErAlCategory.WEEKLY.value, codes);
         }
 
         @Override
-        public Iterable<AttendanceTimeOfWeekly> getAttendanceTimeOfWeekly(String employeeId, List<AttendanceTimeOfWeeklyKey> keys) {
-            // TODO:
-            return null;
+        public Iterable<AttendanceTimeOfWeekly> getAttendanceTimeOfWeekly(List<AttendanceTimeOfWeeklyKey> keys) {
+            return IteratorUtil.iterable(keys, key -> {
+                Optional<AttendanceTimeOfWeekly> ret = attendanceTimeOfWeeklyRepo.find(
+                    key.getEmployeeId(),
+                    key.getYearMonth(),
+                    key.getClosureId(),
+                    key.getClosureDate(),
+                    key.getWeekNo());
+                return ret.get();
+            });
         }
 
         @Override
         public WeeklyRecordToAttendanceItemConverter createWeeklyConverter() {
-            // TODO:
-            return null;
+            return convertFactory.createWeeklyConverter();
         }
 
         @Override

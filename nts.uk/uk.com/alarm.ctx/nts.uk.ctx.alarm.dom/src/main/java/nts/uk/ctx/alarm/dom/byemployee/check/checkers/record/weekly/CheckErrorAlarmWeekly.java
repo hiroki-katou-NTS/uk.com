@@ -10,6 +10,7 @@ import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeekly;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
 
@@ -23,6 +24,9 @@ import java.util.stream.Collectors;
  */
 public class CheckErrorAlarmWeekly {
 
+    /** チェック対象コード一覧 */
+    List<ErrorAlarmWorkRecordCode> targetCodes;
+
     /**
      * チェックする
      * @param require
@@ -35,13 +39,16 @@ public class CheckErrorAlarmWeekly {
         List<AttendanceTimeOfWeeklyKey> keys = checkingPeriod.calculatePeriod(require, employeeId);
 
         return IteratorUtil.iterableFlatten(
-                require.getAttendanceTimeOfWeekly(employeeId, keys),
+                require.getAttendanceTimeOfWeekly(keys),
                 data -> check(require, employeeId, data)
             );
     }
 
-    private static List<AlarmRecordByEmployee> check(RequireCheck require, String employeeId, AttendanceTimeOfWeekly data){
-        List<ExtractionCondWeekly> conditions = require.getUsedExtractionCondWeekly();
+    private List<AlarmRecordByEmployee> check(RequireCheck require, String employeeId, AttendanceTimeOfWeekly data){
+        List<String> codes = targetCodes.stream()
+                .map(c -> c.v())
+                .collect(Collectors.toList());
+        List<ExtractionCondWeekly> conditions = require.getUsedExtractionCondWeekly(codes);
 
         return conditions.stream()
             .map(cond -> {
@@ -55,8 +62,8 @@ public class CheckErrorAlarmWeekly {
             .map(opRec -> opRec.get())
             .collect(Collectors.toList());
     }
-    private static AlarmRecordByEmployee toAlarmRecord(RequireCheck require, String employeeId, DatePeriod period, ExtractionCondWeekly cond){
 
+    private static AlarmRecordByEmployee toAlarmRecord(RequireCheck require, String employeeId, DatePeriod period, ExtractionCondWeekly cond){
         return AlarmRecordByEmployee.fromErrorAlarm(
                 require,
                 employeeId,
@@ -72,7 +79,7 @@ public class CheckErrorAlarmWeekly {
             CheckingPeriodWeekly.Require,
             ExtractionCondWeekly.Require,
             AlarmRecordByEmployee.RequireFromErrorAlarm {
-        List<ExtractionCondWeekly> getUsedExtractionCondWeekly();
-        Iterable<AttendanceTimeOfWeekly> getAttendanceTimeOfWeekly(String employeeId, List<AttendanceTimeOfWeeklyKey> keys);
+        List<ExtractionCondWeekly> getUsedExtractionCondWeekly(List<String> codes);
+        Iterable<AttendanceTimeOfWeekly> getAttendanceTimeOfWeekly(List<AttendanceTimeOfWeeklyKey> keys);
     }
 }
