@@ -8,6 +8,7 @@ import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
@@ -37,7 +38,7 @@ public enum FixedLogicAppApprovalByEmployee {
     public Iterable<AlarmRecordByEmployee> check(
     		FixedLogicAppApprovalByEmployee.RequireCheck require,
             String employeeId,
-            String message) {
+			AlarmListAlarmMessage message) {
     	
 //        val context = new Context(require, employeeId, checkingPeriod.calculatePeriod(require, employeeId), message);
     	val context = new Context(require, employeeId, DatePeriod.oneDay(GeneralDate.today()), message);
@@ -63,7 +64,7 @@ public enum FixedLogicAppApprovalByEmployee {
         RequireCheck require;
         String employeeId;
         DatePeriod period;
-        String message;
+		AlarmListAlarmMessage message;
         
         public AlarmRecordByEmployee alarm(GeneralDate date, ReflectedState state) {
         	return new AlarmRecordByEmployee(
@@ -71,7 +72,8 @@ public enum FixedLogicAppApprovalByEmployee {
         			new DateInfo(date),
         			AlarmListCategoryByEmployee.APPLICATION_APPROVAL, 
         			state.name, 
-        			getAlarmCondition(), 
+        			getAlarmCondition(),
+					null,
         			message);
         }
         
