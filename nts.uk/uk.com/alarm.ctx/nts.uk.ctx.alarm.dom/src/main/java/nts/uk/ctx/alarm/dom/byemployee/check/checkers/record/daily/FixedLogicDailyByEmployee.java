@@ -14,8 +14,6 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.DailyConfirmAtr;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 
@@ -41,7 +39,7 @@ public enum FixedLogicDailyByEmployee {
     
     手入力(3, c -> {        
         return IteratorUtil.iterableFlatten(c.period.datesBetween(), date -> {
-           List<EditStateOfDailyAttd> handCorrects = c.require.getIntegrationOfDaily(c.employeeId, date).map(iod -> iod.getEditState()).orElse(new ArrayList<>())
+           List<EditStateOfDailyAttd> handCorrects = c.require.getIntegrationOfDailyRecord(c.employeeId, date).map(iod -> iod.getEditState()).orElse(new ArrayList<>())
                    .stream().filter(editState -> editState.isHandCorrect()).collect(Collectors.toList());
            return IteratorUtil.iterable(handCorrects, handCorrected -> c.alarm(date, handCorrected.getAttendanceItemId()));
         });
@@ -108,7 +106,7 @@ public enum FixedLogicDailyByEmployee {
             Context context,
             Function<IntegrationOfDaily, Boolean> checker) {
         return alarm(context, (date) -> {
-            return context.require.getIntegrationOfDaily(context.employeeId, date)
+            return context.require.getIntegrationOfDailyRecord(context.employeeId, date)
                     .map(iod -> checker.apply(iod)).orElse(false);
         });
     }
@@ -153,7 +151,7 @@ public enum FixedLogicDailyByEmployee {
                     employeeId,
                     new DateInfo(date),
                     AlarmListCategoryByEmployee.RECORD_DAILY,
-                    require.getItemName(attendanceItemId),
+                    require.getDailyAttendanceItemName(attendanceItemId),
                     getAlarmCondition(),
                     "",
                     message);
@@ -162,7 +160,7 @@ public enum FixedLogicDailyByEmployee {
 
     public interface RequireCheck {
 
-        Optional<IntegrationOfDaily> getIntegrationOfDaily(String employeeId, GeneralDate date);
+        Optional<IntegrationOfDaily> getIntegrationOfDailyRecord(String employeeId, GeneralDate date);
 
         List<ApprovalRootStateStatus> getApprovalRootStateByPeriod(String employeeId, DatePeriod period);
         
@@ -172,6 +170,6 @@ public enum FixedLogicDailyByEmployee {
 
         boolean existsWorkTime(String workTimeCode);
         
-        String getItemName(Integer attendanceItemId);
+        String getDailyAttendanceItemName(Integer attendanceItemId);
     }
 }

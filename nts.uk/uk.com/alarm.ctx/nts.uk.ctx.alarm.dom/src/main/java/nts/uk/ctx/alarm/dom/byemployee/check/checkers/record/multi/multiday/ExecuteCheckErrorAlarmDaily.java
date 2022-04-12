@@ -60,7 +60,7 @@ public class ExecuteCheckErrorAlarmDaily {
             GeneralDate date,
             ErrorAlarmCondition condition) {
 
-        val record = require.getIntegrationOfDaily(employeeId, date).orElse(null);
+        val record = require.getIntegrationOfDailyRecord(employeeId, date).orElse(null);
         if (record == null) {
             return false;
         }
@@ -97,7 +97,7 @@ public class ExecuteCheckErrorAlarmDaily {
 
         Optional<ErrorAlarmCondition> getErrorAlarmConditionById(String id);
 
-        Optional<IntegrationOfDaily> getIntegrationOfDaily(String employeeId, GeneralDate date);
+        Optional<IntegrationOfDaily> getIntegrationOfDailyRecord(String employeeId, GeneralDate date);
 
         AttendanceItemConvertFactory getAttendanceItemConvertFactory();
     }
