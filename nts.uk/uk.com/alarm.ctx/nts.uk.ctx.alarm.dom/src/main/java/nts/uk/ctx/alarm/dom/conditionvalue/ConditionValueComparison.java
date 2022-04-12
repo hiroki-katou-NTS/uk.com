@@ -2,27 +2,40 @@ package nts.uk.ctx.alarm.dom.conditionvalue;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * アラームリストの条件値の比較方法
+ */
 @RequiredArgsConstructor
 public enum ConditionValueComparison {
 
+    /** 等しい */
     EQUAL(1, false),
 
+    /** 異なる */
     NOT_EQUAL(2, false),
 
+    /** より小さい */
     LESS_THAN(3, false),
 
+    /** 以下 */
     LESS_THAN_OR_EQUAL(4, false),
 
+    /** より大きい */
     GREATER_THAN(5, false),
 
+    /** 以上 */
     GREATER_THAN_OR_EQUAL(6, false),
 
+    /** 範囲内（境界値を含まない） */
     WITHIN_RANGE(7, true),
 
+    /** 範囲内（境界値を含む） */
     WITHIN_RANGE_OR_EQUAL(8, true),
 
+    /** 範囲外（境界値を含まない） */
     OUT_OF_RANGE(9, true),
 
+    /** 範囲外（境界値を含む） */
     OUT_OF_RANGE_OR_EQUAL(10, true),
 
     ;

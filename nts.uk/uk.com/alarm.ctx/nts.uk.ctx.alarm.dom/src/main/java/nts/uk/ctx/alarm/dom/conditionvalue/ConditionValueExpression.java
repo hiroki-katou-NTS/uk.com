@@ -2,33 +2,30 @@ package nts.uk.ctx.alarm.dom.conditionvalue;
 
 import lombok.Value;
 
+import java.util.Optional;
+
 /**
- * アラームリストの条件値の式
+ * アラームリスト条件値の式
  */
 @Value
 public class ConditionValueExpression {
 
-    /** 条件値１ */
-    Double condition1;
-
-    /** 条件値２（範囲チェック用）*/
-    Double condition2;
-
     /** 比較条件 */
     ConditionValueComparison comparison;
 
+    /** 条件値１ */
+    double condition1;
+
+    /** 条件値２（範囲チェック用）*/
+    Optional<Double> condition2;
+
     /**
-     * 対象値が条件に該当するか
+     * 条件に該当するか
      * @param targetValue 対象値
-     * @return 該当すればtrue
+     * @return 対象値が該当すればtrue
      */
-    public boolean matches(Double targetValue) {
-
-        if (targetValue == null) {
-            return false;
-        }
-
-        return comparison.matches(targetValue, condition1, condition2);
+    public boolean matches(double targetValue) {
+        return comparison.matches(targetValue, condition1, condition2.orElse(null));
     }
 
     /**

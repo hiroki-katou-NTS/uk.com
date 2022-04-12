@@ -1,13 +1,12 @@
 package nts.uk.ctx.alarm.dom.conditionvalue;
 
 import lombok.Value;
-import lombok.val;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 
 import java.util.Optional;
 
 /**
- * アラームリストの条件値
+ * アラームリスト条件値
  * @param <L> チェック対象値を返すロジック
  */
 @Value
@@ -23,11 +22,11 @@ public class AlarmListConditionValue<L extends ConditionValueLogic<C>, C extends
     ConditionValueExpression expression;
 
     /** アラームメッセージ */
-    String message;
+    String alarmMessage;
 
     /**
      * 条件に該当するか
-     * @param context チェック対象値を返すロジックを実行するためのコンテキスト情報
+     * @param context コンテキスト情報
      * @return チェック対象値が条件に該当すればtrue
      */
     public Optional<AlarmRecordByEmployee> checkIfEnabled(C context) {
@@ -37,21 +36,27 @@ public class AlarmListConditionValue<L extends ConditionValueLogic<C>, C extends
         }
 
         Double actualValue = logic.getValue(context);
+        if (actualValue == null) {
+            return Optional.empty();
+        }
 
         if (!expression.matches(actualValue)) {
             return Optional.empty();
         }
 
-        val alarm = new AlarmRecordByEmployee(
+        return Optional.of(createAlarmRecord(context, actualValue));
+    }
+
+    private AlarmRecordByEmployee createAlarmRecord(C context, Double actualValue) {
+
+        return new AlarmRecordByEmployee(
                 context.getEmployeeId(),
                 context.getDateInfo(),
                 context.getCategory(),
                 logic.getName(),
                 expression.toText(),
                 String.format("実績: %.2f", actualValue),
-                message);
-
-        return Optional.of(alarm);
+                alarmMessage);
     }
 }
 
