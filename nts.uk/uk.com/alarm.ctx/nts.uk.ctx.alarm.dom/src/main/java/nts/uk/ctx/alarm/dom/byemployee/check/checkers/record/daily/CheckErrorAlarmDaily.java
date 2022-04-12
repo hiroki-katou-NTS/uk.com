@@ -3,6 +3,7 @@ package nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.daily;
 import lombok.Value;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.IteratorUtil;
+import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
@@ -49,7 +50,7 @@ public class CheckErrorAlarmDaily {
                 AlarmListCategoryByEmployee.RECORD_DAILY,
                 errorAlarmName,
                 dailyError.getAttendanceItemList(),
-                dailyError.getErrorAlarmMessage().map(m -> m.v()).orElse(""));
+                dailyError.getErrorAlarmMessage().map(AlarmListAlarmMessage::of).orElse(AlarmListAlarmMessage.empty()));
     }
 
     public interface RequireCheck extends AlarmRecordByEmployee.RequireFromErrorAlarm {
