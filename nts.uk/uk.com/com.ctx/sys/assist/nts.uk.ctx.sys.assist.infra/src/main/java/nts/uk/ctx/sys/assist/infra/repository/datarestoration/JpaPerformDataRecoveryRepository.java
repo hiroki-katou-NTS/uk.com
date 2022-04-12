@@ -128,15 +128,15 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	public Integer countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
+	public Long countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent, String dataRecoveryProcessId,String employeeCode) {
 		
 		if (tableName != null) {
-			Integer x = 0;
+			Long x = Long.valueOf('0');
 			StringBuilder COUNT_BY_TABLE_SQL = new StringBuilder("SELECT count(*) from ");
 			COUNT_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1 ");
 			COUNT_BY_TABLE_SQL.append(makeWhereClause(filedWhere, namePhysicalCid, cidCurrent));
-			x = (Integer) (this.getEntityManager().createNativeQuery(COUNT_BY_TABLE_SQL.toString()).getSingleResult());
+			x = (Long) (this.getEntityManager().createNativeQuery(COUNT_BY_TABLE_SQL.toString()).getSingleResult());
 			if (x > 1) {
 				String target = employeeCode;
 				String errorContent = null;
@@ -147,18 +147,18 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 			}
 			return x;
 		}
-		return 0;
+		return Long.valueOf('0');
 	}
 	
 	@Override
-	public Integer countDataTransactionExitTableByVKeyUp(Map<String, String> filedWhere, String tableName,
+	public Long countDataTransactionExitTableByVKeyUp(Map<String, String> filedWhere, String tableName,
 			String namePhysicalCid, String cidCurrent, String dataRecoveryProcessId, String employeeCode) {
 		if (tableName != null) {
-			Integer x = 0;
+			Long x = Long.valueOf('0');
 			StringBuilder COUNT_BY_TABLE_SQL = new StringBuilder("SELECT count(*) from ");
 			COUNT_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1 ");
 			COUNT_BY_TABLE_SQL.append(makeWhereClause(filedWhere, namePhysicalCid, cidCurrent));
-			x = (Integer) (this.getEntityManager().createNativeQuery(COUNT_BY_TABLE_SQL.toString()).getSingleResult());
+			x = (Long) (this.getEntityManager().createNativeQuery(COUNT_BY_TABLE_SQL.toString()).getSingleResult());
 			if (x > 1) {
 				String target = employeeCode;
 				String errorContent = null;
@@ -169,7 +169,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 			}
 			return x;
 		}
-		return 0;
+		return Long.valueOf('0');
 	}
 
 	private StringBuilder makeWhereClause(Map<String, String> filedWhere, String namePhysicalCid, String cidCurrent) {
@@ -252,6 +252,12 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		try {
 			EntityManager em = this.getEntityManager();
 			insertDb = insertToTable.toString().replaceAll(", \\) VALUES \\(" , ") VALUES (").replaceAll("\\]", "\\)").replaceAll("\\[", "\\(");
+			
+			String dbType = connection().getMetaData().getDatabaseProductName();
+			if(dbType.equals("PostgreSQL")) {
+				insertDb = insertDb.replace("collate Japanese_XJIS_100_CI_AS_SC", "").replace("N'", "'");
+			}
+			
 			Query query = em.createNativeQuery(insertDb);
 			query.executeUpdate();
 		} catch (Exception e) {
@@ -272,6 +278,12 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		try {
 			EntityManager em = this.getEntityManager();
 			insertDb = insertToTable.toString().replaceAll(", \\) VALUES \\(" , ") VALUES (").replaceAll("\\]", "\\)").replaceAll("\\[", "\\(");
+			
+			String dbType = connection().getMetaData().getDatabaseProductName();
+			if(dbType.equals("PostgreSQL")) {
+				insertDb = insertDb.replace("collate Japanese_XJIS_100_CI_AS_SC", "").replace("N'", "'");
+			}
+			
 			Query query = em.createNativeQuery(insertDb);
 			query.executeUpdate();
 			

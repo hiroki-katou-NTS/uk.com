@@ -207,7 +207,7 @@ public class ProcessRecoverTable {
 						StringBuilder DELETE_INSERT_TO_TABLE = new StringBuilder("");
 						StringBuilder INSERT_TO_TABLE = new StringBuilder("");
 
-						List<Integer> listCount = new ArrayList<>();
+						List<Long> listCount = new ArrayList<>();
 						String namePhysicalCid = null, TABLE_NAME = null;
 						List<Map<String, String>> listFiledWhere = new ArrayList<>();
 						String cidCurrent = AppContexts.user().companyId();
@@ -241,7 +241,7 @@ public class ProcessRecoverTable {
 							NtsCsvRecord row = records.get(k);
 
 							int indexCidOfCsv = 0;
-							int count = 0;
+							Long count = Long.valueOf('0');
 
 							// データベース復旧処理
 							if ((tableUse && employeeId != null && !row.getColumn(INDEX_SID).equals(employeeId))) {
@@ -383,7 +383,7 @@ public class ProcessRecoverTable {
 						StringBuilder DELETE_INSERT_TO_TABLE = new StringBuilder("");
 						StringBuilder INSERT_TO_TABLE = new StringBuilder("");
 
-						List<Integer> listCount = new ArrayList<>();
+						List<Long> listCount = new ArrayList<>();
 						String namePhysicalCid = null, TABLE_NAME = null;
 						List<Map<String, String>> listFiledWhere = new ArrayList<>();
 						String cidCurrent = AppContexts.user().companyId();
@@ -418,7 +418,7 @@ public class ProcessRecoverTable {
 
 							if (row.getRowNumber() != 0) {
 								int indexCidOfCsv = 0;
-								int count = 0;
+								Long count = Long.valueOf('0');
 
 								// データベース復旧処理
 								if ((tableUse && employeeId != null && !row.getColumn(INDEX_SID).equals(employeeId))) {
@@ -566,7 +566,7 @@ public class ProcessRecoverTable {
 		return listCondition.isEmpty() ? condition : listCondition.get(0);
 	}
 	
-	public void crudRow(List<Integer> listCount, List<Map<String, String>> lsiFiledWhere, String TABLE_NAME,
+	public void crudRow(List<Long> listCount, List<Map<String, String>> lsiFiledWhere, String TABLE_NAME,
 			String namePhysicalCid, String cidCurrent, StringBuilder deleteInsertToTable, StringBuilder insertToTable,
 			String employeeCode, String dataRecoveryProcessId, TableList tableList) {
 		
@@ -593,7 +593,7 @@ public class ProcessRecoverTable {
 			}
 	}
 
-	public void crudRowTransaction(List<Integer> listCount, List<Map<String, String>> lsiFiledWhere, String TABLE_NAME,
+	public void crudRowTransaction(List<Long> listCount, List<Map<String, String>> lsiFiledWhere, String TABLE_NAME,
 			String namePhysicalCid, String cidCurrent, StringBuilder deleteInsertToTable, StringBuilder insertToTable,
 			String employeeCode, String dataRecoveryProcessId, TableList tableList) {
 		
