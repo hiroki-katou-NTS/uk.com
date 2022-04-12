@@ -80,9 +80,9 @@ public enum ConditionValueComparison {
             case WITHIN_RANGE_OR_EQUAL:
                 return compare1 >= 0 && compare2 <= 0;
             case OUT_OF_RANGE:
-                return compare1 < 0 && compare2 > 0;
+                return compare1 < 0 || compare2 > 0;
             case OUT_OF_RANGE_OR_EQUAL:
-                return compare1 <= 0 && compare2 >= 0;
+                return compare1 <= 0 || compare2 >= 0;
             default:
                 throw new RuntimeException("unknown: " + this);
         }
