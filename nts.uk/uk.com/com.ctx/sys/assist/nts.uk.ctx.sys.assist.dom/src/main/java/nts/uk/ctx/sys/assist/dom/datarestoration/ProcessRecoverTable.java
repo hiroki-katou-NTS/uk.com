@@ -13,13 +13,11 @@ import java.util.function.Consumer;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.shr.infra.file.storage.stream.FileStoragePath;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import lombok.val;
-import nts.arc.system.ServerSystemProperties;
 import nts.arc.time.GeneralDate;
 import nts.gul.csv.CSVBufferReader;
 import nts.gul.csv.CSVParsedResult;
@@ -32,6 +30,7 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.common.CsvFileUtil;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.infra.file.storage.stream.FileStoragePath;
 
 @Stateless
 public class ProcessRecoverTable {
@@ -323,7 +322,7 @@ public class ProcessRecoverTable {
 								// add columns name
 								INSERT_BY_TABLE.append(targetDataHeader.get(j) + ", ");
 								boolean anyNonEmpty = columnNotNull.stream()
-										.anyMatch(x -> x.equals(header_column_name));
+										.anyMatch(x -> x.toUpperCase().equals(header_column_name.toUpperCase()));
 								String value = j == indexCidOfCsv ? cidCurrent : row.getColumn(j).toString();
 								// add values
 								if (StringUtils.isEmpty(value)) {
@@ -342,9 +341,9 @@ public class ProcessRecoverTable {
 
 							// query.executeUpdate();
 							if (count == 1) {
-								DELETE_INSERT_TO_TABLE.append(INSERT_BY_TABLE.toString() + " ");
+								DELETE_INSERT_TO_TABLE.append(INSERT_BY_TABLE.toString() + "; ");
 							} else if (count == 0) {
-								INSERT_TO_TABLE.append(INSERT_BY_TABLE.toString() + " ");
+								INSERT_TO_TABLE.append(INSERT_BY_TABLE.toString() + "; ");
 							}
 
 							listCount.add(count);
