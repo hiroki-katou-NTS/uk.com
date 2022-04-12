@@ -1,15 +1,16 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.weekly;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlCategory;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.*;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.*;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeeklyRepository;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtEralCategoryCond;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtEralCategoryCondPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.*;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.weekly.KrcdtWeekCondAlarm;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.weekly.KrcdtWeekCondAlarmPk;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,73 +23,33 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class JpaExtractCondWeeklyRepository extends JpaRepository implements ExtractionCondWeeklyRepository {
-	private static final String SELECT_BASIC = "SELECT a FROM KrcdtWeekCondAlarm a";
-	private static final String BY_CONTRACT_COMPANY = " WHERE a.pk.cid = :cid AND a.contractCd = :contractCode";
+	private static final String SELECT_BASIC = "SELECT a FROM KrcmtEralCategoryCond a";
+	private static final String BY_COMPANY_CATEGORY = " WHERE a.pk.cid = :cid AND a.pk.category = :category";
 	private static final String BY_CODE= " AND a.pk.code = :code";
 	private static final String ORDER_BY_CODE = " ORDER BY a.pk.code";
-	private static final String SELECT_COMPARE_RANGE = "SELECT a FROM KrcstErAlCompareRange a WHERE a.krcstEralCompareRangePK.conditionGroupId = :checkId";
-	private static final String SELECT_COMPARE_RANGE_SINGLE = "SELECT a FROM KrcstErAlCompareSingle a WHERE a.krcstEralCompareSinglePK.conditionGroupId = :checkId";
-	private static final String SELECT_COMPARE_RANGE_SINGLE_FIXED = "SELECT a FROM KrcstErAlSingleFixed a WHERE a.krcstEralSingleFixedPK.conditionGroupId = :checkId";
-	private static final String SELECT_CNDEXP_RANGE = "SELECT a FROM KrcmtEralstCndexprange a WHERE a.krcstErAlAtdTargetPK.conditionGroupId = :checkId";
-	private static final String CNDEXP_RANGE_BY_NO = " AND a.krcstErAlAtdTargetPK.atdItemConNo = :itemNo";
-	private static final String CNDEXP_RANGE_BY_TARGET_ATR = " AND a.targetAtr = :targetAtr";
-	private static final String BY_COMPARE_RANGE_NO = " AND a.krcstEralCompareRangePK.atdItemConNo = :atdItemConNo ";
-	private static final String BY_COMPARE_RANGE_SINGLE_NO = " AND a.krcstEralCompareSinglePK.atdItemConNo = :atdItemConNo ";
-	private static final String BY_COMPARE_RANGE_SINGLE_FIXED_NO = " AND a.krcstEralSingleFixedPK.atdItemConNo = :atdItemConNo ";
-	
-    @Override
-    public List<ExtractionCondWeekly> getAll() {
-        List<KrcdtWeekCondAlarm> entities = new ArrayList<>();
-        return null;
-    }
-
-//	@Override
-//	public List<ExtractionCondWeekly> getAnyCond(String contractCode, String companyId, String eralCheckIds) {
-//		List<KrcdtWeekCondAlarm> entities = this.queryProxy().query(SELECT_BASIC + BY_CONTRACT_COMPANY + BY_ERAL_CHECK_ID + ORDER_BY_NO, KrcdtWeekCondAlarm.class)
-//				.setParameter("contractCode", contractCode)
-//				.setParameter("companyId", companyId)
-//				.setParameter("eralCheckIds", eralCheckIds)
-//				.getList();
-//        List<ExtractionCondWeekly> domain = new ArrayList<>();
-//    	for(KrcdtWeekCondAlarm item: entities) {
-//    		ExtractionCondWeekly toDomain = item.toDomain("");
-//    		domain.add(toDomain);
-//        }
-//
-//    	return domain;
-//	}
 
 	@Override
-	public List<ExtractionCondWeekly> getAnyCond(String contractCode, String cid, String code) {
-		List<KrcdtWeekCondAlarm> entities = this.queryProxy().query(
-				SELECT_BASIC + BY_CONTRACT_COMPANY + BY_CODE + ORDER_BY_CODE, KrcdtWeekCondAlarm.class)
-				.setParameter("contractCode", contractCode)
-				.setParameter("pk.cid", cid)
-				.setParameter("pk.code", code)
-				.getList();
-		List<ExtractionCondWeekly> domain = new ArrayList<>();
-		for(KrcdtWeekCondAlarm item: entities) {
-			ExtractionCondWeekly toDomain = item.toDomain("");
-			domain.add(toDomain);
-		}
-
-		return domain;
+	public ExtractionCondWeekly getAnyCond(String cid, int category, String code) {
+		KrcmtEralCategoryCondPK pk = new KrcmtEralCategoryCondPK(cid, ErAlCategory.WEEKLY.value, code);
+		KrcmtEralCategoryCond entity = this.queryProxy().find(pk, KrcmtEralCategoryCond.class).get();
+		return entity.toDomainWeekly();
 	}
 
 	@Override
 	public void add(String contractCode, String companyId, ExtractionCondWeekly domain) {
-		KrcdtWeekCondAlarm entity = fromDomain(contractCode, companyId, domain);
+		KrcmtEralCategoryCondPK pk = new KrcmtEralCategoryCondPK(companyId, ErAlCategory.WEEKLY.value, domain.getCode().v());
+		KrcmtEralCategoryCond entity = fromDomain(contractCode, companyId, domain, pk);
 		this.commandProxy().insert(entity);
 	}
 
 	@Override
 	public void update(String contractCode, String companyId, ExtractionCondWeekly domain) {
-		KrcdtWeekCondAlarmPk pk = new KrcdtWeekCondAlarmPk(companyId, domain.getCode().v());
-		Optional<KrcdtWeekCondAlarm> entityOpt = this.queryProxy().find(pk, KrcdtWeekCondAlarm.class);
+		KrcmtEralCategoryCondPK pk = new KrcmtEralCategoryCondPK(companyId, ErAlCategory.WEEKLY.value, domain.getCode().v());
+		Optional<KrcmtEralCategoryCond> entityOpt = this.queryProxy().find(pk, KrcmtEralCategoryCond.class);
 
 		if(!entityOpt.isPresent()) return;
-		KrcdtWeekCondAlarm tergetEntity = entityOpt.get();
-		KrcdtWeekCondAlarm domainAfterConvert = fromDomain(contractCode, companyId, domain);
+		KrcmtEralCategoryCond tergetEntity = entityOpt.get();
+		KrcmtEralCategoryCond domainAfterConvert = fromDomain(contractCode, companyId, domain, pk);
 
 		// そのままdomainAfterConvertでupdateではダメなのか…？
 		tergetEntity.krcstErAlConGroup1 = domainAfterConvert.krcstErAlConGroup1;
@@ -97,29 +58,16 @@ public class JpaExtractCondWeeklyRepository extends JpaRepository implements Ext
 	}
 
 	@Override
-	public void delete(String companyId, String code) {
-		KrcdtWeekCondAlarmPk pk = new KrcdtWeekCondAlarmPk(companyId, code);
-		Optional<KrcdtWeekCondAlarm> entityOpt = this.queryProxy().find(pk, KrcdtWeekCondAlarm.class);
+	public void delete(String cid, int category, String code) {
+		KrcmtEralCategoryCondPK pk = new KrcmtEralCategoryCondPK(cid, ErAlCategory.WEEKLY.value, code);
+		Optional<KrcmtEralCategoryCond> entityOpt = this.queryProxy().find(pk, KrcmtEralCategoryCond.class);
 		if (!entityOpt.isPresent()) {
 			return;
 		}
 		this.commandProxy().remove(entityOpt.get());
 	}
 
-	@Override
-	public void delete(String contractCode, String cid, String code) {
-		List<KrcdtWeekCondAlarm> entities = this.queryProxy().query(SELECT_BASIC + BY_CONTRACT_COMPANY + BY_CODE, KrcdtWeekCondAlarm.class)
-				.setParameter("contractCode", contractCode)
-				.setParameter("cid", cid)
-				.setParameter("code", code)
-				.getList();
-		if (!entities.isEmpty()) {
-			this.commandProxy().removeAll(entities);
-		}
-	}
-	
-	private KrcdtWeekCondAlarm fromDomain(String contractCode, String companyId, ExtractionCondWeekly domain) {
-		KrcdtWeekCondAlarmPk pk = new KrcdtWeekCondAlarmPk(companyId, domain.getCode().v());
+	private KrcmtEralCategoryCond fromDomain(String contractCode, String companyId, ExtractionCondWeekly domain, KrcmtEralCategoryCondPK pk) {
 
 		String atdItemConditionGroup1 = domain.getAtdItemCondition().getGroup1().getAtdItemConGroupId();
 		String atdItemConditionGroup2 = domain.getAtdItemCondition().getGroup2().getAtdItemConGroupId();
@@ -139,7 +87,7 @@ public class JpaExtractCondWeeklyRepository extends JpaRepository implements Ext
 		KrcmtEralstCndexpiptchk krcstErAlConGroup2 = new KrcmtEralstCndexpiptchk(atdItemConditionGroup2, conditionOperator2,
 				lstAtdItemCon2);
 
-		KrcdtWeekCondAlarm entity = new KrcdtWeekCondAlarm(
+		KrcmtEralCategoryCond entity = new KrcmtEralCategoryCond(
 				pk,
 				domain.getName().v(),
 				domain.getAtdItemCondition().isUseGroup2() ? 1 : 0,
@@ -149,7 +97,7 @@ public class JpaExtractCondWeeklyRepository extends JpaRepository implements Ext
 				krcstErAlConGroup1,
 				krcstErAlConGroup2);
 		entity.setContractCd(contractCode);
-		
+
 		return entity;
 	}
 
@@ -241,95 +189,5 @@ public class JpaExtractCondWeeklyRepository extends JpaRepository implements Ext
 		return new KrcmtEralstCndgrp(krcmtErAlAtdItemConPK, erAlAtdItemCon.getConditionAtr().value,
 				erAlAtdItemCon.isUse() ? 1 : 0, erAlAtdItemCon.getType().value, lstAtdItemTarget, erAlCompareSingle,
 				erAlCompareRange, erAlInputCheck, erAlSingleFixed, erAlSingleAtd);
-	}
-
-	/**
-	 * 
-	 * @param listItem list item add or sub
-	 * @param targetAtr add=0, sub=1
-	 */
-	private void saveEralstCndexprange(String errorAlarmId, int itemNo, List<Integer> listItem, int targetAtr) {
-		List<KrcmtEralstCndexprange> ranges = getCndexpRange(errorAlarmId, itemNo, targetAtr);
-		
-		List<KrcmtEralstCndexprange> targetListAdd = new ArrayList<>();
-		for(Integer id: listItem) {
-			KrcstErAlAtdTargetPK key = new KrcstErAlAtdTargetPK(errorAlarmId, itemNo, id.intValue());
-			Optional<KrcmtEralstCndexprange> rangeOpt = this.queryProxy().find(key, KrcmtEralstCndexprange.class);
-			if (!rangeOpt.isPresent()) {
-				targetListAdd.add(new KrcmtEralstCndexprange(key, targetAtr));
-			}
-		}
-		
-		List<KrcmtEralstCndexprange> targetListRemove = new ArrayList<>();
-		for(KrcmtEralstCndexprange item: ranges) {
-			if (!listItem.contains(item.krcstErAlAtdTargetPK.attendanceItemId)) {
-				targetListRemove.add(item);
-			}
-		}
-		
-		if (!targetListAdd.isEmpty()) {
-			this.commandProxy().insertAll(targetListAdd);
-		}
-		
-		if (!targetListRemove.isEmpty()) {
-			this.commandProxy().removeAll(targetListRemove);
-		}
-	}
-	
-	private List<KrcmtEralstCndexprange> getCndexpRange(String errorAlarmId, int itemNo, int targetAtr) {
-		return this.queryProxy().query(SELECT_CNDEXP_RANGE + CNDEXP_RANGE_BY_NO + CNDEXP_RANGE_BY_TARGET_ATR, KrcmtEralstCndexprange.class)
-				.setParameter("checkId", errorAlarmId)
-				.setParameter("itemNo", itemNo)
-				.setParameter("targetAtr", targetAtr)
-				.getList();
-	}
-	
-	/**
-	 * Remove check condition when change check type item or remove item
-	 * @param contractCode
-	 * @param companyId
-	 * @param erAlCheckIds
-	 * @param alarmNo
-	 */
-	private void removeCondition(String contractCode, String companyId, String erAlCheckIds, int alarmNo) {
-		List<KrcstErAlCompareRange> ranges = this.queryProxy().query(SELECT_COMPARE_RANGE + BY_COMPARE_RANGE_NO, KrcstErAlCompareRange.class)
-				.setParameter("checkId", erAlCheckIds)
-				.setParameter("atdItemConNo", alarmNo)
-				.getList();
-		if (!ranges.isEmpty()) {
-			this.commandProxy().removeAll(ranges);
-		}
-		
-		List<KrcstErAlCompareSingle> singleRanges = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE + BY_COMPARE_RANGE_SINGLE_NO, KrcstErAlCompareSingle.class)
-				.setParameter("checkId", erAlCheckIds)
-				.setParameter("atdItemConNo", alarmNo)
-				.getList();
-		if (!singleRanges.isEmpty()) {
-			this.commandProxy().removeAll(singleRanges);
-		}
-		
-		List<KrcstErAlSingleFixed> singleRangeFixeds = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE_FIXED + BY_COMPARE_RANGE_SINGLE_FIXED_NO, KrcstErAlSingleFixed.class)
-				.setParameter("checkId", erAlCheckIds)
-				.setParameter("atdItemConNo", alarmNo)
-				.getList();
-		if (!singleRangeFixeds.isEmpty()) {
-			this.commandProxy().removeAll(singleRangeFixeds);
-		}
-		
-		List<KrcmtEralstCndexprange> eralstCndexpranges = this.queryProxy().query(SELECT_CNDEXP_RANGE + CNDEXP_RANGE_BY_NO, KrcmtEralstCndexprange.class)
-				.setParameter("checkId", erAlCheckIds)
-				.setParameter("itemNo", alarmNo)
-				.getList();
-		if (!eralstCndexpranges.isEmpty()) {
-			this.commandProxy().removeAll(eralstCndexpranges);
-		}
-	}
-	
-	private void saveOrUpdate(Object entity, boolean isUpdate) {
-		if (isUpdate) {
-			this.commandProxy().update(entity);
-		} else {
-			this.commandProxy().insert(entity);
-		}
 	}
 }

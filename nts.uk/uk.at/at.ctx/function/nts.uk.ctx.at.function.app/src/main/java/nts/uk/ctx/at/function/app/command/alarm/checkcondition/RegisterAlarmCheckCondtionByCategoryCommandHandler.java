@@ -59,6 +59,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraRes
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCondEvent;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.doevent.MulMonCheckCondDomainEventDto;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlCategory;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.*;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.*;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.ErrorAlarmMessageMSTCHK;
@@ -522,7 +523,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				if (!command.getScheAnyCondDay().getScheAnyCondDays().isEmpty()) {
 					saveAnyCondWeekly(companyId, command.getScheAnyCondDay().getAlermCondCode(), command.getScheAnyCondDay().getScheAnyCondDays());
 				} else {
-					extraCondWeeklyRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getAlermCondCode());
+					extraCondWeeklyRepository.delete(companyId, ErAlCategory.WEEKLY.value, command.getScheAnyCondDay().getAlermCondCode());
 				}
 				break;
 			default:
@@ -1071,7 +1072,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 	 */
 	private void saveAnyCondWeekly(String cid, String code, List<WorkRecordExtraConAdapterDto> dtoList) {
 		String contractCode = AppContexts.user().contractCode();
-		List<ExtractionCondWeekly> listOptionalItem = extraCondWeeklyRepository.getAnyCond(contractCode, cid, code);
+		ExtractionCondWeekly OptionalItem = extraCondWeeklyRepository.getAnyCond(cid, ErAlCategory.WEEKLY.value, code);
 
 		for(WorkRecordExtraConAdapterDto item: dtoList) {
 			
@@ -1087,7 +1088,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 
 			ExtractionCondWeekly domain = ExtractionCondWeekly.create(code, "", attItemCond);
 
-			if (!listOptionalItem.stream().anyMatch(x -> x.getCode().equals(code))) {
+			if (!OptionalItem.getCode().equals(code)) {
 				extraCondWeeklyRepository.add(contractCode, cid, domain);
 			} else {
 				extraCondWeeklyRepository.update(contractCode, cid, domain);
@@ -1095,9 +1096,9 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 		}
 		
 		// sync again item when user remove in list
-		for(ExtractionCondWeekly item: listOptionalItem) {
+		for(ExtractionCondWeekly item: Arrays.asList(OptionalItem)) {
 			if (!dtoList.stream().anyMatch(x -> item.getCode().v().equals(code))) {
-				extraCondWeeklyRepository.delete(contractCode, cid, code);
+				extraCondWeeklyRepository.delete(cid, ErAlCategory.WEEKLY.value, code);
 			}
 		}
 	}

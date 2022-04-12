@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
@@ -81,12 +82,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		// 週別実績の値を取得
 		// QA#116337
 		List<AttendanceTimeOfWeekly> attendanceTimeOfWeeklys = getWeeklyPerformanceService.getValues(lstSid, period);
-		
-		// ドメインモデル「週別実績の抽出条件」を取得する
-		// 条件: ID　＝　Input．週次のアラームチェック条件．チェック条件．任意抽出条件
-		// Output: List＜週別実績の任意抽出条件＞
-		List<ExtractionCondWeekly> weeklyConds = extractionCondWeeklyRepository.getAnyCond(contractCode, cid, listOptionalItem);
-		
+
 		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
 			synchronized (this) {
 				if (shouldStop.get()) {
@@ -99,8 +95,10 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
                 List<AlarmExtractInfoResult> lstExtractInfoResult = new ArrayList<>();
                 
 				// 取得したList＜週別実績の任意抽出条件＞をループする
-				for (ExtractionCondWeekly weeklyCond: weeklyConds) {
-					String code = weeklyCond.getCode().v();
+//				for (ExtractionCondWeekly weeklyCond: weeklyConds) {
+				for (String code : Arrays.asList(listOptionalItem)) {
+					ExtractionCondWeekly weeklyCond = extractionCondWeeklyRepository.getAnyCond(cid, ErAlCategory.WEEKLY.value, code);
+
 					// アカウント　＝　0
 					int count = 0;
 

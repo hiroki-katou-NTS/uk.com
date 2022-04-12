@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlCategory;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeCondOtDto;
@@ -498,8 +499,8 @@ public class AlarmCheckConditionByCategoryFinder {
 			List<WorkRecordExtraConAdapterDto> scheAnyCondDays = new ArrayList<>();
 			String listOptionalItem = condition.getListOptionalItem();
 			if (listOptionalItem != null && StringUtils.isNotEmpty(listOptionalItem)) {
-				scheAnyCondDays = extraCondWeeklyRepository.getAnyCond(contractCode, companyId, listOptionalItem)
-						.stream().map(item -> schedAnyCondWeeklyToDto(item)).collect(Collectors.toList());
+				ExtractionCondWeekly anyCond = extraCondWeeklyRepository.getAnyCond(companyId, ErAlCategory.WEEKLY.value, listOptionalItem);
+				scheAnyCondDays.add(schedAnyCondWeeklyToDto(anyCond));
 			}
 			scheAnyConditionDay = new ScheAnyCondDayDto(listOptionalItem, scheAnyCondDays);
 		}
