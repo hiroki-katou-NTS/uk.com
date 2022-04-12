@@ -1,8 +1,6 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.aggregate;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -31,7 +29,7 @@ public class AggregateIntegrationOfDaily {
     }
 
     public Double aggregate(AggregationRequire require,Function<IntegrationOfDaily, Double> calcOneEmployeeOfDay) {
-        Map<GeneralDate, IntegrationOfDaily> integrationOfDaily = require.getIntegrationOfDaily(this.aggregationPeriod,this.employeeId)
+        Map<GeneralDate, IntegrationOfDaily> integrationOfDaily = require.getIntegrationOfDailyProspect(this.employeeId, this.aggregationPeriod)
                 .stream()
                 .collect(Collectors.toMap(IntegrationOfDaily::getYmd, v -> v));
         return aggregationPeriod.stream()
@@ -42,7 +40,7 @@ public class AggregateIntegrationOfDaily {
     public Double calcRatioValue(AggregationRequire require,
                                  Function<IntegrationOfDaily, Double> calcOneEmployeeOfDayForNumerator,
                                  Function<IntegrationOfDaily, Double> calcOneEmployeeOfDayForDenominator){
-        Map<GeneralDate, IntegrationOfDaily> integrationOfDaily = require.getIntegrationOfDaily(this.aggregationPeriod,this.employeeId)
+        Map<GeneralDate, IntegrationOfDaily> integrationOfDaily = require.getIntegrationOfDailyProspect(this.employeeId, this.aggregationPeriod)
                 .stream()
                 .collect(Collectors.toMap(IntegrationOfDaily::getYmd, v -> v));
         Double numerator = aggregationPeriod.stream()
@@ -58,6 +56,6 @@ public class AggregateIntegrationOfDaily {
     }
 
     public interface AggregationRequire {
-        List<IntegrationOfDaily> getIntegrationOfDaily(DatePeriod period, String employeeId);
+        List<IntegrationOfDaily> getIntegrationOfDailyProspect(String employeeId, DatePeriod period);
     }
 }

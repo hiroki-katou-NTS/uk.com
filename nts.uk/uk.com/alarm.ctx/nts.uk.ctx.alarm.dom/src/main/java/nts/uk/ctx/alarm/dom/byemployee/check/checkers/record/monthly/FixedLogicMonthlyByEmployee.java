@@ -96,7 +96,7 @@ public enum FixedLogicMonthlyByEmployee {
                     employeeId,
                     new DateInfo(closureMonth),
                     AlarmListCategoryByEmployee.RECORD_DAILY,
-                    require.getMonthlyItemName(attendanceItemId),
+                    require.getMonthlyAttendanceItemName(attendanceItemId),
                     getAlarmCondition(),
                     "",
                     message);
@@ -110,6 +110,6 @@ public enum FixedLogicMonthlyByEmployee {
 
         IntegrationOfMonthly getIntegrationOfMonthly(String employeeId, ClosureMonth closureMonth);
 
-        String getMonthlyItemName(Integer attendanceItemId);
+        String getMonthlyAttendanceItemName(Integer attendanceItemId);
     }
 }

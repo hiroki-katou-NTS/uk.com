@@ -9,7 +9,6 @@ import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.val;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
@@ -20,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.se
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignemployee.TaskAssignEmployee;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.GetNotExistWorkTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.GetNotExistWorkType;
@@ -116,10 +114,6 @@ public enum FixLogicMasterByEmployee {
 		return "チェック項目名";
 	}
 
-	private String getAlarmCondition() {
-		return "アラーム条件";
-	}
-
 	@Value
 	private class Context {
 		RequireCheck require;
@@ -132,18 +126,7 @@ public enum FixLogicMasterByEmployee {
 					new DateInfo(period),
 					AlarmListCategoryByEmployee.MASTER,
 					getName(),
-					getAlarmCondition(),
 					"",
-					message);
-		}
-
-		public AlarmRecordByEmployee alarm(GeneralDate date) {
-			return new AlarmRecordByEmployee(
-					employeeId,
-					new DateInfo(date),
-					AlarmListCategoryByEmployee.MASTER,
-					getName(),
-					getAlarmCondition(),
 					"",
 					message);
 		}
@@ -154,7 +137,7 @@ public enum FixLogicMasterByEmployee {
 					DateInfo.none(),
 					AlarmListCategoryByEmployee.MASTER,
 					getName(),
-					getAlarmCondition(),
+					"",
 					"",
 					message);
 		}

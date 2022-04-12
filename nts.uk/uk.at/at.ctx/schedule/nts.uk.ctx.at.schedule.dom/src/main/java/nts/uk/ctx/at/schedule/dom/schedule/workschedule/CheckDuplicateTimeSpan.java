@@ -2,28 +2,23 @@ package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class CheckDuplicateTimeSpan {
 
-	public static boolean checkDuplicatePreviousAndNext(Require require, WorkSchedule baseSche) {
-		val optBaseSpan = baseSche.getOptTimeLeaving();
-		if(optBaseSpan.isPresent()) {
-			// 前日のスケジュールとのチェック
-			if (checkDuplicatePreviousDay(require, baseSche)) {
-				return true;
-			}
-			// 翌日のスケジュールとのチェック
-			if (checkDuplicateNextDay(require, baseSche)) {
-				return true;
+	public static boolean checkDuplicatePreviousAndNext(Require require, String employeeId, GeneralDate date) {
+		val optBaseSche = require.getWorkSchedule(employeeId, date);
+		if(optBaseSche.isPresent()) {
+			val optBaseSpan = optBaseSche.get().getOptTimeLeaving();
+			if (optBaseSpan.isPresent()) {
+				// 前日のスケジュールとのチェック
+				if (checkDuplicatePreviousDay(require, optBaseSche.get())) {
+					return true;
+				}
+				// 翌日のスケジュールとのチェック
+				if (checkDuplicateNextDay(require, optBaseSche.get())) {
+					return true;
+				}
 			}
 		}
 		return false;
