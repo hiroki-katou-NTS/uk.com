@@ -540,11 +540,7 @@ public class ErAlWorkRecordCheckService {
 	
 
 	private Double getValue(ItemValue value) {
-		if (value.value() == null) {
-			return null;
-		}
-		return value.type().isDouble() ? (Double) value.value()
-												: Double.valueOf((Integer) value.value());
+		return value.valueAsDouble();
 	}
 
 	private <T> Map<String, T> toEmptyResultMap() {

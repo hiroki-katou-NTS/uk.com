@@ -1,14 +1,16 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers;
 
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.multi.multiday.MultiDayCheckerByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.weekly.CheckErrorAlarmWeekly;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.schedule.daily.ScheduleDailyCheckerByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.appapproval.AppApprovalCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.master.MasterCheckerByEmployee;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.monthly.ScheduleMonthlyCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.anyperiod.AnyPeriodCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.daily.DailyCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.monthly.MonthlyCheckerByEmployee;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.schedule.daily.ScheduleDailyCheckerByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.monthly.ProspectMonthlyCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
-import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 
 /**
  * アラームリストのチェック条件
@@ -20,9 +22,11 @@ public interface AlarmListCheckerByEmployee {
     interface Require extends
             // 全CheckerのRequireCheckを追加する
             ScheduleDailyCheckerByEmployee.RequireCheck,
-            ScheduleMonthlyCheckerByEmployee.RequireCheck,
+            ProspectMonthlyCheckerByEmployee.RequireCheck,
             DailyCheckerByEmployee.RequireCheck,
+            CheckErrorAlarmWeekly.RequireCheck,
             MonthlyCheckerByEmployee.RequireCheck,
+            MultiDayCheckerByEmployee.RequireCheck,
             AnyPeriodCheckerByEmployee.RequireCheck,
             MasterCheckerByEmployee.RequireCheck,
             AppApprovalCheckerByEmployee.RequireCheck
