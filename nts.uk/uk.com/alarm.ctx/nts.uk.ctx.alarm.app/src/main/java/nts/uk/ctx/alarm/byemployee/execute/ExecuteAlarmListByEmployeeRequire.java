@@ -32,6 +32,8 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
@@ -42,6 +44,8 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.AlarmListExtractResult;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeErAlData;
@@ -55,11 +59,14 @@ import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.Attenda
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthlyGetter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.converter.WeeklyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -79,7 +86,7 @@ import nts.uk.shr.com.time.closure.ClosureMonth;
 public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
-    private BasicScheduleRepository scheduleRepo;
+    private WorkScheduleAdapter workScheduleAdapter;
 
     @Inject
     private WorkingConditionRepository workingConditionRepo;
@@ -91,10 +98,13 @@ public class ExecuteAlarmListByEmployeeRequire {
     private WorkTimeSettingRepository workTimeSettingRepo;
 
     @Inject
-    private WorkScheduleAdapter workScheduleAdapter;
+    private WorkScheduleRepository workScheduleRepo;
 
     @Inject
     private DailyRecordAdapter dailyRecordAdapter;
+
+    @Inject
+    private IntegrationOfMonthlyGetter integrationOfMonthlyGetter;
 	
 	@Inject
 	private ApplicationRepository applicatoinRepo;
@@ -122,6 +132,9 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private ErrorAlarmConditionRepository errorAlarmConditionRepo;
+
+    @Inject
+    private StampCardRepository stampCardRepo;
 
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
@@ -176,13 +189,13 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
-        public Optional<BasicSchedule> getBasicSchedule(String employeeId, GeneralDate date) {
-            return scheduleRepo.find(employeeId, date);
+        public Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date) {
+            return workScheduleRepo.get(employeeId, date);
         }
 
         @Override
-        public boolean isExists(String employeeId, GeneralDate date) {
-            return scheduleRepo.isExists(employeeId, date);
+        public boolean existsWorkSchedule(String employeeId, GeneralDate date) {
+            return workScheduleRepo.checkExists(employeeId, date);
         }
 
         @Override
@@ -252,8 +265,18 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
+        public IntegrationOfMonthly getIntegrationOfMonthly(String employeeId, ClosureMonth closureMonth) {
+            return integrationOfMonthlyGetter.get(employeeId, closureMonth.yearMonth(), ClosureId.valueOf(closureMonth.closureId()), closureMonth.closureDate());
+        }
+
+        @Override
         public String getItemName(Integer attendanceItemId) {
             return null;
+        }
+
+        @Override
+        public String getMonthlyItemName(Integer attendanceItemId) {
+            return attendanceItemNameService.getNameOfAttendanceItem(Arrays.asList(attendanceItemId), TypeOfItem.Monthly).get(0).getAttendanceItemName();
         }
 
         @Override
@@ -325,6 +348,11 @@ public class ExecuteAlarmListByEmployeeRequire {
         public WeeklyRecordToAttendanceItemConverter createWeeklyConverter() {
             // TODO:
             return null;
+        }
+
+        @Override
+        public List<StampCard> getStampCard(String employeeId) {
+            return stampCardRepo.getListStampCard(employeeId);
         }
     }
 }
