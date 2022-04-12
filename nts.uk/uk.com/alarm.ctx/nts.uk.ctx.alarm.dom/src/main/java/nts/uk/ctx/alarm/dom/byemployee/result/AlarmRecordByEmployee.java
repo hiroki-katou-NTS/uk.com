@@ -26,11 +26,14 @@ public class AlarmRecordByEmployee {
     /** カテゴリ */
     AlarmListCategoryByEmployee category;
 
-    /** チェック項目名 */
-    String checkItemName;
+    /** アラーム項目名 */
+    String alarmItemName;
 
     /** アラーム条件 */
     String alarmCondition;
+
+    /** チェック対象値 */
+    String targetValue;
 
     /** メッセージ */
     String message;
@@ -56,7 +59,8 @@ public class AlarmRecordByEmployee {
             String message) {
 
         String itemNames = getItemNames(require, category, attendanceItemIds);
-        return new AlarmRecordByEmployee(employeeId, dateInfo, category, errorAlarmName, itemNames, message);
+        String targetValue = "";
+        return new AlarmRecordByEmployee(employeeId, dateInfo, category, errorAlarmName, itemNames, targetValue, message);
     }
 
     private static String getItemNames(RequireFromErrorAlarm require, AlarmListCategoryByEmployee category, List<Integer> attendanceItemIds) {
@@ -95,7 +99,7 @@ public class AlarmRecordByEmployee {
                 dateInfo.getFormatted(),
                 category.value,
                 category.categoryName(),
-                checkItemName,
+                alarmItemName,
                 message,
                 comment,
                 alarmCondition,

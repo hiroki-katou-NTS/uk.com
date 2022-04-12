@@ -232,11 +232,6 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
-        public int getBaseUnitPrice(GeneralDate date, String employeeId) {
-            return 0;
-        }
-
-        @Override
         public List<IntegrationOfDaily> getIntegrationOfDaily(DatePeriod period, String employeeId) {
             return DailyAttendanceGettingService.get(
                     new DailyAttendanceGettingService.Require() {
