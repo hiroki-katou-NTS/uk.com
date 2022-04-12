@@ -4,6 +4,7 @@ import lombok.Value;
 import lombok.val;
 import nts.arc.time.calendar.period.GeneralPeriod;
 import nts.gul.util.value.DiscreteValue;
+import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
@@ -57,7 +58,8 @@ public class ErrorAlarmCounter<C, D extends Comparable<D> & DiscreteValue<D>> {
                 category,
                 getErrorAlarmName.apply(errorAlarmCode).orElseGet(() -> errorAlarmCode + " 未登録"),
                 alarmCondition,
-                message);
+                "",
+                new AlarmListAlarmMessage(message));
 
         val errorTimings = errorAlarmChecker.apply(errorAlarmCode);
 
