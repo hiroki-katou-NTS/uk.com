@@ -28,12 +28,16 @@ import nts.uk.ctx.at.aggregation.dom.adapter.dailyrecord.DailyRecordAdapter;
 import nts.uk.ctx.at.aggregation.dom.adapter.workschedule.WorkScheduleAdapter;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
+import nts.uk.ctx.at.record.app.find.anyperiod.AnyPeriodRecordToAttendanceItemConverterImpl;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriodRepository;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.anyperiod.ErrorAlarmAnyPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
@@ -46,9 +50,14 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.shared.dom.scherec.anyperiod.attendancetime.converter.AnyPeriodRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriodRepository;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.anyaggrperiod.AnyAggrFrameCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -104,6 +113,15 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private YearHolidayRepository yearHolidayRepo;
+    
+    @Inject
+    private AttendanceTimeOfAnyPeriodRepository attendanceTimeOfAnyPeriodRepo;
+    
+    @Inject
+    private AnyAggrPeriodRepository anyAggrPeriodRepo;
+    
+    @Inject
+    private OptionalItemRepository optionalItemRepo;
 
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
@@ -283,6 +301,30 @@ public class ExecuteAlarmListByEmployeeRequire {
         public Optional<GrantHdTblSet> getTable(String yearHolidayCode) {
             return yearHolidayRepo.findByCode(this.companyId, yearHolidayCode);
         }
+        
+		@Override
+		public AttendanceTimeOfAnyPeriod getAttendanceTimeOfAnyPeriod(String employeeId, String anyPeriodFrameCode) {
+			return attendanceTimeOfAnyPeriodRepo.find(employeeId, anyPeriodFrameCode).get();
+		}
+		
+		@Override
+		public AnyAggrPeriod getAnyAggrPeriod(AnyAggrFrameCode code) {
+			return anyAggrPeriodRepo.findOneByCompanyIdAndFrameCode(companyId, code.v()).get();
+		}
+		
+		@Override
+		public List<ErrorAlarmAnyPeriod> getErrorAlarmAnyPeriod(List<ErrorAlarmWorkRecordCode> code) {
+			return null;
+		}
 
+		@Override
+		public AnyPeriodRecordToAttendanceItemConverter getAnyPeriodRecordToAttendanceItemConverter(
+				String employeeId, AttendanceTimeOfAnyPeriod record) {
+			return AnyPeriodRecordToAttendanceItemConverterImpl
+					.builder(optionalItemRepo)
+					.withBase(employeeId)
+					.withAttendanceTime(record)
+					.completed();
+		}
     }
 }
