@@ -1,25 +1,25 @@
 package nts.uk.ctx.alarm.byemployee.execute;
 
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.AlarmListCheckerCode;
-import nts.uk.ctx.alarm.dom.AlarmListPatternCode;
+import nts.uk.ctx.alarm.dom.byemployee.pattern.AlarmListPatternCode;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
-import nts.uk.ctx.alarm.dom.byemployee.execute.ExecutePersistAlarmListByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.execute.ExecuteAlarmListByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.pattern.AlarmListPatternByEmployee;
-import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.at.aggregation.dom.adapter.dailyrecord.DailyRecordAdapter;
 import nts.uk.ctx.at.aggregation.dom.adapter.workschedule.WorkScheduleAdapter;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.AlarmListExtractResult;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeErAlData;
+import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatus;
+import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
 import nts.uk.ctx.at.record.app.find.anyperiod.AnyPeriodRecordToAttendanceItemConverterImpl;
@@ -71,7 +71,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMont
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.converter.WeeklyRecordToAttendanceItemConverter;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignemployee.TaskAssignEmployee;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
@@ -105,7 +104,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -221,16 +219,18 @@ public class ExecuteAlarmListByEmployeeRequire {
     @Inject
     private FlowWorkSettingRepository flowWorkSettingRepo;
 
+    @Inject
+    private AlarmListExtraProcessStatusRepository alarmListExtraProcessStatusRepo;
+
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
                 AppContexts.user().companyId(),
                 AppContexts.user().employeeId()));
     }
 
-    public interface Require extends ExecutePersistAlarmListByEmployee.Require {
+    public interface Require extends ExecuteAlarmListByEmployee.Require {
 
-        // テスト用
-        List<AlarmRecordByEmployee> getAlarms();
+        void save(AlarmListExtractResult result);
     }
 
     @RequiredArgsConstructor
@@ -239,9 +239,7 @@ public class ExecuteAlarmListByEmployeeRequire {
     	private final String companyId;
 
         private final String loginEmployeeId;
-    	
-        @Getter
-        private List<AlarmRecordByEmployee> alarms = new ArrayList<>();
+
 
         //--- ログイン情報 ---//
 
@@ -257,6 +255,12 @@ public class ExecuteAlarmListByEmployeeRequire {
 
 
         //--- アラームリストの設定 ---//
+
+        @Override
+        public AlarmListExtraProcessStatus getAlarmListExtraProcessStatus(String processStatusId) {
+            return alarmListExtraProcessStatusRepo.getAlListExtaProcessByID(processStatusId)
+                    .orElseThrow(() -> new RuntimeException("not found: " + processStatusId));
+        }
 
         @Override
         public Optional<AlarmListPatternByEmployee> getAlarmListPatternByEmployee(AlarmListPatternCode patternCode) {

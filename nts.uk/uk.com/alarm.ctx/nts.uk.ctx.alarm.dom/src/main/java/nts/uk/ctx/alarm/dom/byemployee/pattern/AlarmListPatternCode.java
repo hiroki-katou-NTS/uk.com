@@ -1,4 +1,4 @@
-package nts.uk.ctx.alarm.dom;
+package nts.uk.ctx.alarm.dom.byemployee.pattern;
 
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 /**
- * アラームリストパターンコード
+ * アラームリストのパターンコード
  */
 @StringMaxLength(2)
 @StringCharType(CharType.ALPHA_NUMERIC)

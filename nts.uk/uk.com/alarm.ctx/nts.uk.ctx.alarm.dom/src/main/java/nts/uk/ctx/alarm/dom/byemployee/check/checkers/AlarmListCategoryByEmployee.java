@@ -1,6 +1,7 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers;
 
 import lombok.RequiredArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 
 /**
  * アラームリストのカテゴリ
@@ -61,6 +62,9 @@ public enum AlarmListCategoryByEmployee {
 
     public final int value;
 
+    public static AlarmListCategoryByEmployee valueOf(int value) {
+        return EnumAdaptor.valueOf(value, AlarmListCategoryByEmployee.class);
+    }
     public String categoryName() {
         return "";
     }
