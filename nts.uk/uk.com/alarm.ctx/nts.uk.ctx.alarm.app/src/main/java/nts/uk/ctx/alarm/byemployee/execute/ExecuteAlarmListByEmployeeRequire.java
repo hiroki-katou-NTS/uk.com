@@ -239,6 +239,8 @@ public class ExecuteAlarmListByEmployeeRequire {
         @Getter
         private List<AlarmRecordByEmployee> alarms = new ArrayList<>();
 
+        //--- ログイン情報 ---//
+
         @Override
         public String getCompanyId() {
             return companyId;
@@ -249,10 +251,21 @@ public class ExecuteAlarmListByEmployeeRequire {
             return loginEmployeeId;
         }
 
+
+        //--- アラームリストの設定 ---//
+
         @Override
         public Optional<AlarmListPatternByEmployee> getAlarmListPatternByEmployee(AlarmListPatternCode patternCode) {
             return Optional.empty();
         }
+
+        @Override
+        public Optional<AlarmListCheckerByEmployee> getAlarmListChecker(AlarmListCategoryByEmployee category, AlarmListCheckerCode checkerCode) {
+            return Optional.empty();
+        }
+
+
+        //--- アラームリストの抽出結果 ---//
 
         @Override
         public void save(AlarmListExtractResult result) {
@@ -264,25 +277,16 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         }
 
-        @Override
-        public Optional<AlarmListCheckerByEmployee> getAlarmListChecker(AlarmListCategoryByEmployee category, AlarmListCheckerCode checkerCode) {
-            return Optional.empty();
-        }
+
+        //--- 個人情報系 ---//
 
         @Override
-        public Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date) {
-            return workScheduleRepo.get(employeeId, date);
+        public List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, DatePeriod period) {
+            return workingConditionRepo.getWorkingConditionItemWithPeriod(this.companyId, Arrays.asList(employeeId), period);
         }
 
-        @Override
-        public boolean existsWorkSchedule(String employeeId, GeneralDate date) {
-            return workScheduleRepo.checkExists(employeeId, date);
-        }
 
-        @Override
-		public List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, DatePeriod period) {
-			return workingConditionRepo.getWorkingConditionItemWithPeriod(this.companyId, Arrays.asList(employeeId), period);
-		}
+        //--- 勤務種類 ---//
 
         @Override
         public Optional<WorkType> getWorkType(String workTypeCode) {
@@ -294,6 +298,45 @@ public class ExecuteAlarmListByEmployeeRequire {
             return workTypeRepo.findByPK(this.companyId, workTypeCode).isPresent();
         }
 
+
+        @Override
+        public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
+            return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
+        }
+
+        @Override
+        public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+            return predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode.toString());
+        }
+
+        @Override
+        public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+            return workTimeSettingRepo.findByCode(companyId, workTimeCode.toString());
+        }
+
+        @Override
+        public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+            return fixedWorkSettingRepo.findByKey(companyId, workTimeCode.toString());
+        }
+
+        @Override
+        public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+            return flexWorkSettingRepo.find(companyId, workTimeCode.toString());
+        }
+
+        @Override
+        public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+            return flowWorkSettingRepo.find(companyId, workTimeCode.toString());
+        }
+
+        @Override
+        public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+            return getWorkType(workTypeCode.v());
+        }
+
+
+        //--- 就業時間帯 ---//
+
         @Override
         public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
             return workTimeSettingRepo.findByCode(this.companyId, workTimeCode);
@@ -304,11 +347,7 @@ public class ExecuteAlarmListByEmployeeRequire {
             return workTimeSettingRepo.findByCode(this.companyId, workTimeCode).isPresent();
         }
 
-        @Override
-        public Optional<IntegrationOfDaily> getIntegrationOfDaily(String employeeId, GeneralDate date) {
-            return integrationOfDailyGetter.getIntegrationOfDaily(employeeId, DatePeriod.oneDay(date))
-                    .stream().findFirst();
-        }
+        //--- 勤怠項目 ---//
 
         @Override
         public AttendanceItemConvertFactory getAttendanceItemConvertFactory() {
@@ -317,15 +356,28 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
-        public List<ApprovalRootStateStatus> getApprovalRootStateByPeriod(String employeeId, DatePeriod period) {
-            // TODO
-            return null;
+        public String getItemName(Integer attendanceItemId) {
+            return attendanceItemNameService.getNameOfAttendanceItem(Arrays.asList(attendanceItemId), TypeOfItem.Daily).get(0).getAttendanceItemName();
         }
 
         @Override
-        public Optional<Identification> getIdentification(String employeeId, GeneralDate date) {
-            // TODO
-            return Optional.empty();
+        public String getMonthlyItemName(Integer attendanceItemId) {
+            return attendanceItemNameService.getNameOfAttendanceItem(Arrays.asList(attendanceItemId), TypeOfItem.Monthly).get(0).getAttendanceItemName();
+        }
+
+        @Override
+        public String getAttendanceItemName(TypeOfItem typeOfItem, int itemId) {
+            return attendanceItemNameService.getNameOfAttendanceItem(Arrays.asList(itemId), typeOfItem)
+                    .get(0).getAttendanceItemName();
+        }
+
+
+        //--- 日別勤怠 ---//
+
+        @Override
+        public Optional<IntegrationOfDaily> getIntegrationOfDaily(String employeeId, GeneralDate date) {
+            return integrationOfDailyGetter.getIntegrationOfDaily(employeeId, DatePeriod.oneDay(date))
+                    .stream().findFirst();
         }
 
         @Override
@@ -348,25 +400,38 @@ public class ExecuteAlarmListByEmployeeRequire {
             ).get(ScheRecGettingAtr.SCHEDULE_WITH_RECORD);
         }
 
+
+        //--- 月別勤怠 ---//
+
         @Override
         public IntegrationOfMonthly getIntegrationOfMonthly(String employeeId, ClosureMonth closureMonth) {
             return integrationOfMonthlyGetter.get(employeeId, closureMonth.yearMonth(), ClosureId.valueOf(closureMonth.closureId()), closureMonth.closureDate());
         }
 
+
+        //--- 勤務予定 ---//
+
         @Override
-        public String getItemName(Integer attendanceItemId) {
-            return attendanceItemNameService.getNameOfAttendanceItem(Arrays.asList(attendanceItemId), TypeOfItem.Daily).get(0).getAttendanceItemName();
+        public Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date) {
+            return workScheduleRepo.get(employeeId, date);
         }
 
         @Override
-        public String getMonthlyItemName(Integer attendanceItemId) {
-            return attendanceItemNameService.getNameOfAttendanceItem(Arrays.asList(attendanceItemId), TypeOfItem.Monthly).get(0).getAttendanceItemName();
+        public boolean existsWorkSchedule(String employeeId, GeneralDate date) {
+            return workScheduleRepo.checkExists(employeeId, date);
         }
 
+
+        //--- 日別実績 ---//
+
         @Override
-		public List<Application> getApplicationBy(String employeeId, GeneralDate targetDate, ReflectedState states) {
-			return applicatoinRepo.getByListRefStatus(this.companyId, employeeId, targetDate, targetDate, Arrays.asList(states.value));
-		}
+        public Optional<Identification> getIdentification(String employeeId, GeneralDate date) {
+            // TODO
+            return Optional.empty();
+        }
+
+
+        //--- 月別実績 ---//
 
         @Override
         public Optional<ConfirmationMonth> getConfirmationMonth(String employeeId, ClosureMonth closureMonth) {
@@ -381,6 +446,44 @@ public class ExecuteAlarmListByEmployeeRequire {
                     Arrays.asList(employeeId),
                     RecordRootType.CONFIRM_WORK_BY_MONTH.value);
         }
+
+
+        //--- 週別実績 ---//
+
+        @Override
+        public List<ExtractionCondWeekly> getUsedExtractionCondWeekly() {
+            // TODO:
+            return null;
+        }
+
+        @Override
+        public Iterable<AttendanceTimeOfWeekly> getAttendanceTimeOfWeekly(String employeeId, List<AttendanceTimeOfWeeklyKey> keys) {
+            // TODO:
+            return null;
+        }
+
+        @Override
+        public WeeklyRecordToAttendanceItemConverter createWeeklyConverter() {
+            // TODO:
+            return null;
+        }
+
+
+        //--- 申請承認 ---//
+
+        @Override
+        public List<ApprovalRootStateStatus> getApprovalRootStateByPeriod(String employeeId, DatePeriod period) {
+            // TODO
+            return null;
+        }
+
+        @Override
+		public List<Application> getApplicationBy(String employeeId, GeneralDate targetDate, ReflectedState states) {
+			return applicatoinRepo.getByListRefStatus(this.companyId, employeeId, targetDate, targetDate, Arrays.asList(states.value));
+		}
+
+
+        //--- エラーアラーム ---//
 
         @Override
         public Iterable<EmployeeDailyPerError> getEmployeeDailyPerErrors(String employeeId, DatePeriod period, List<ErrorAlarmWorkRecordCode> targetCodes) {
@@ -401,11 +504,8 @@ public class ExecuteAlarmListByEmployeeRequire {
             return errorAlarmConditionRepo.findConditionByErrorAlamCheckId(id);
         }
 
-        @Override
-        public String getAttendanceItemName(TypeOfItem typeOfItem, int itemId) {
-            return attendanceItemNameService.getNameOfAttendanceItem(Arrays.asList(itemId), typeOfItem)
-                    .get(0).getAttendanceItemName();
-        }
+
+        //--- 年休 ---//
 
         @Override
         public Optional<AnnualLeaveEmpBasicInfo> getBasicInfo(String employeeId) {
@@ -416,7 +516,10 @@ public class ExecuteAlarmListByEmployeeRequire {
         public Optional<GrantHdTblSet> getTable(String yearHolidayCode) {
             return yearHolidayRepo.findByCode(this.companyId, yearHolidayCode);
         }
-        
+
+
+        //--- 任意期間集計 ---//
+
 		@Override
 		public AttendanceTimeOfAnyPeriod getAttendanceTimeOfAnyPeriod(String employeeId, String anyPeriodFrameCode) {
 			return attendanceTimeOfAnyPeriodRepo.find(employeeId, anyPeriodFrameCode).get();
@@ -441,28 +544,9 @@ public class ExecuteAlarmListByEmployeeRequire {
 					.withAttendanceTime(record)
 					.completed();
 		}
-        @Override
-        public List<ExtractionCondWeekly> getUsedExtractionCondWeekly() {
-            // TODO:
-            return null;
-        }
 
-        @Override
-        public Iterable<AttendanceTimeOfWeekly> getAttendanceTimeOfWeekly(String employeeId, List<AttendanceTimeOfWeeklyKey> keys) {
-            // TODO:
-            return null;
-        }
 
-        @Override
-        public WeeklyRecordToAttendanceItemConverter createWeeklyConverter() {
-            // TODO:
-            return null;
-        }
-
-        @Override
-        public List<StampCard> getStampCard(String employeeId) {
-            return stampCardRepo.getListStampCard(employeeId);
-        }
+        //--- 作業 ---//
 
         @Override
         public Optional<TaskAssignEmployee> getTaskAssign(String employeeId, TaskFrameNo frameNo) {
@@ -472,6 +556,17 @@ public class ExecuteAlarmListByEmployeeRequire {
         @Override
         public boolean existsTask(TaskFrameNo taskFrameNo, TaskCode code) {
             return false;
+        }
+
+
+
+        //================= 未分類の壁 =================//
+
+
+
+        @Override
+        public List<StampCard> getStampCard(String employeeId) {
+            return stampCardRepo.getListStampCard(employeeId);
         }
 
         @Override
@@ -512,41 +607,6 @@ public class ExecuteAlarmListByEmployeeRequire {
         @Override
         public List<EmpOrganizationImport> getEmpOrganization(GeneralDate generalDate, List<String> lstEmpId) {
             return empAffiliationInforAdapter.getEmpOrganization(generalDate, lstEmpId);
-        }
-
-        @Override
-        public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
-            return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
-        }
-
-        @Override
-        public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
-            return predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode.toString());
-        }
-
-        @Override
-        public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
-            return workTimeSettingRepo.findByCode(companyId, workTimeCode.toString());
-        }
-
-        @Override
-        public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
-            return fixedWorkSettingRepo.findByKey(companyId, workTimeCode.toString());
-        }
-
-        @Override
-        public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
-            return flexWorkSettingRepo.find(companyId, workTimeCode.toString());
-        }
-
-        @Override
-        public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
-            return flowWorkSettingRepo.find(companyId, workTimeCode.toString());
-        }
-
-        @Override
-        public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
-            return workTypeRepo.findByPK(companyId, workTypeCode.toString());
         }
     }
 }
