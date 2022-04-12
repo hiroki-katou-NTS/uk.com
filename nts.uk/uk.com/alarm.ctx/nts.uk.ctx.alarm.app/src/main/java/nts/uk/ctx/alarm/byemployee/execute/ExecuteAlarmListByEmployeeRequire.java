@@ -257,12 +257,6 @@ public class ExecuteAlarmListByEmployeeRequire {
         //--- アラームリストの設定 ---//
 
         @Override
-        public AlarmListExtraProcessStatus getAlarmListExtraProcessStatus(String processStatusId) {
-            return alarmListExtraProcessStatusRepo.getAlListExtaProcessByID(processStatusId)
-                    .orElseThrow(() -> new RuntimeException("not found: " + processStatusId));
-        }
-
-        @Override
         public Optional<AlarmListPatternByEmployee> getAlarmListPatternByEmployee(AlarmListPatternCode patternCode) {
             return Optional.empty();
         }
