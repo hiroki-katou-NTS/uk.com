@@ -38,7 +38,7 @@ public enum FixedLogicScheduleDailyByEmployee {
 			c, ws -> c.require.existsWorkTime(ws.getWorkInfo().getRecordInfo().getWorkTimeCode().toString()))),
 
 	時間帯の重複(4, c -> alarmToWorkSchedule(
-			c, ws -> CheckDuplicateTimeSpan.checkDuplicatePreviousAndNext(c.require, ws))),
+			c, ws -> CheckDuplicateTimeSpan.checkDuplicatePreviousAndNext(c.require, ws.getEmployeeID(), ws.getYmd()))),
 
 	複数回勤務(5, c -> alarmToWorkSchedule(
 			c, ws -> checkMultipleWork(ws))),
@@ -143,6 +143,10 @@ public enum FixedLogicScheduleDailyByEmployee {
 				.iterator();
 	}
 
+	private String getName() {
+		return "チェック項目名";
+	}
+
 	@Value
 	private class Context {
 		RequireCheck require;
@@ -155,7 +159,7 @@ public enum FixedLogicScheduleDailyByEmployee {
 					employeeId,
 					new DateInfo(date),
 					AlarmListCategoryByEmployee.SCHEDULE_DAILY,
-					"",
+					getName(),
 					"",
 					"",
 					message);
