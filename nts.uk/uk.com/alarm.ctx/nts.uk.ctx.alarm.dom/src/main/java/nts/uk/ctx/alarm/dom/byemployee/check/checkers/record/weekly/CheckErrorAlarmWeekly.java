@@ -63,7 +63,7 @@ public class CheckErrorAlarmWeekly {
                 AlarmListCategoryByEmployee.RECORD_WEEKLY,
                 cond.getName().v(),
                 Collections.emptyList(),
-                cond.getErrorAlarmMessage().map(msg -> msg.v()).orElse("")
+                cond.getMessage()
             );
     }
 

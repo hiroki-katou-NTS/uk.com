@@ -29,6 +29,10 @@ public class KrcmtEralCategoryCond extends ContractUkJpaEntity {
     @Column(name = "ERAL_ALARM_NAME")
     public String name;
 
+    /** メッセージ */
+    @Column(name ="COND_MESSAGE")
+    public String message;
+
     /** グループ2を利用する */
     @Column(name = "GROUP2_USE_ATR")
     public int group2UseAtr;
@@ -61,7 +65,8 @@ public class KrcmtEralCategoryCond extends ContractUkJpaEntity {
     }
 
     public ExtractionCondWeekly toDomainWeekly(){
-        AttendanceItemCondition atdItemCondition = AttendanceItemCondition.init(this.operatorBetweenGroups, this.group2UseAtr == 1);
+        AttendanceItemCondition atdItemCondition = AttendanceItemCondition.init(
+                this.operatorBetweenGroups, this.group2UseAtr == 1);
         Optional.ofNullable(this.krcstErAlConGroup1).ifPresent(group1 ->
                 atdItemCondition.setGroup1(group1.toDomain(this.pk.cid, pk.code)));
         Optional.ofNullable(this.krcstErAlConGroup2).ifPresent(group2 ->
@@ -70,6 +75,7 @@ public class KrcmtEralCategoryCond extends ContractUkJpaEntity {
         return new ExtractionCondWeekly(
                 new ErrorAlarmWorkRecordCode(pk.code),
                 new ErrorAlarmWorkRecordName(name),
+                message,
                 atdItemCondition);
     }
 }

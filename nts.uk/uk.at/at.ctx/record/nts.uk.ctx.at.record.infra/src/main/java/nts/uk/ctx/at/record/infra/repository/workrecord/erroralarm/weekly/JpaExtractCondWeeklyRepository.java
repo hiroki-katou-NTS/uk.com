@@ -90,6 +90,7 @@ public class JpaExtractCondWeeklyRepository extends JpaRepository implements Ext
 		KrcmtEralCategoryCond entity = new KrcmtEralCategoryCond(
 				pk,
 				domain.getName().v(),
+				domain.getMessage(),
 				domain.getAtdItemCondition().isUseGroup2() ? 1 : 0,
 				domain.getAtdItemCondition().getGroup1().getAtdItemConGroupId(),
 				domain.getAtdItemCondition().getGroup2().getAtdItemConGroupId(),

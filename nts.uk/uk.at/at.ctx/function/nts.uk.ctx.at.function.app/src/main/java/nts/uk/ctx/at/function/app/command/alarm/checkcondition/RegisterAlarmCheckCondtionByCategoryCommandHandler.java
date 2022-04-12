@@ -1086,7 +1086,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			attItemCond.setGroup1(convert(cid, code, atdItemCond.getGroup1()));
 			attItemCond.setGroup2(convert(cid, code, atdItemCond.getGroup2()));
 
-			ExtractionCondWeekly domain = ExtractionCondWeekly.create(code, "", attItemCond);
+			ExtractionCondWeekly domain = ExtractionCondWeekly.create(code, "", "", attItemCond);
 
 			if (!OptionalItem.getCode().equals(code)) {
 				extraCondWeeklyRepository.add(contractCode, cid, domain);

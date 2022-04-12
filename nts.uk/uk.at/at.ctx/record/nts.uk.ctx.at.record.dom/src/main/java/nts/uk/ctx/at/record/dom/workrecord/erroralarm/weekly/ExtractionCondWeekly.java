@@ -31,7 +31,7 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * 週別実績の抽出条件
+ * エラーアラームのカテゴリ別抽出条件
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -44,6 +44,9 @@ public class ExtractionCondWeekly extends AggregateRoot {
     /** 名称 **/
     private ErrorAlarmWorkRecordName name;
 
+    /** メッセージ */
+    private String message;
+
     /** 勤怠項目の条件 **/
     private AttendanceItemCondition atdItemCondition;
 
@@ -53,10 +56,11 @@ public class ExtractionCondWeekly extends AggregateRoot {
      * @param name name
      * @return domain
      */
-    public static ExtractionCondWeekly create(String code, String name, AttendanceItemCondition atdItemCond) {
+    public static ExtractionCondWeekly create(String code, String name, String message, AttendanceItemCondition atdItemCond) {
     	ExtractionCondWeekly domain = new ExtractionCondWeekly(
                 new ErrorAlarmWorkRecordCode(code),
                 new ErrorAlarmWorkRecordName(name),
+                message,
                 atdItemCond);
     	return domain;
     } 
