@@ -1,6 +1,7 @@
 package nts.uk.ctx.alarm.dom.fixedlogic;
 
 import lombok.Value;
+import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 
 import java.util.Collections;
@@ -20,9 +21,9 @@ public class FixedLogicSetting<L> {
     boolean enabled;
 
     /** メッセージ */
-    String message;
+    AlarmListAlarmMessage message;
 
-    public Iterable<AlarmRecordByEmployee> checkIfEnabled(BiFunction<L, String, Iterable<AlarmRecordByEmployee>> checker) {
+    public Iterable<AlarmRecordByEmployee> checkIfEnabled(BiFunction<L, AlarmListAlarmMessage, Iterable<AlarmRecordByEmployee>> checker) {
         if (enabled) {
             return checker.apply(logic, message);
         }

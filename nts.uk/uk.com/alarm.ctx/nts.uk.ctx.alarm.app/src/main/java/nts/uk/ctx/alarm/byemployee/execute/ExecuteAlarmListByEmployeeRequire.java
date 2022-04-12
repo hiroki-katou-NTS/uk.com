@@ -50,6 +50,13 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEventRepository;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEvent;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEventRepository;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.*;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.AlarmListExtractResult;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeErAlData;
@@ -63,6 +70,8 @@ import nts.uk.ctx.at.shared.dom.scherec.anyperiod.attendancetime.converter.AnyPe
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriodRepository;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.anyaggrperiod.AnyAggrFrameCode;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
@@ -76,7 +85,17 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.converter.WeeklyRe
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -153,6 +172,42 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private StampCardRepository stampCardRepo;
+
+    @Inject
+    private WorkplaceSpecificDateRepository workplaceSpecificDateRepo;
+
+    @Inject
+    private CompanySpecificDateRepository companySpecificDateRepo;
+
+    @Inject
+    private WorkplaceEventRepository workplaceEventRepo;
+
+    @Inject
+    private CompanyEventRepository companyEventRepo;
+
+    @Inject
+    private PublicHolidayRepository publicHolidayRepo;
+
+    @Inject
+    private SpecificDateItemRepository specificDateItemRepo;
+
+    @Inject
+    private EmpAffiliationInforAdapter empAffiliationInforAdapter;
+
+    @Inject
+    private BasicScheduleService basicScheduleService;
+
+    @Inject
+    private PredetemineTimeSettingRepository predetemineTimeSettingRepo;
+
+    @Inject
+    private FixedWorkSettingRepository fixedWorkSettingRepo;
+
+    @Inject
+    private FlexWorkSettingRepository flexWorkSettingRepo;
+
+    @Inject
+    private FlowWorkSettingRepository flowWorkSettingRepo;
 
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
@@ -249,21 +304,25 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public AttendanceItemConvertFactory getAttendanceItemConvertFactory() {
+            // TODO
             return null;
         }
 
         @Override
         public List<ApprovalRootStateStatus> getApprovalRootStateByPeriod(String employeeId, DatePeriod period) {
+            // TODO
             return null;
         }
 
         @Override
         public Optional<Identification> getIdentification(String employeeId, GeneralDate date) {
+            // TODO
             return Optional.empty();
         }
 
         @Override
         public int getBaseUnitPrice(GeneralDate date, String employeeId) {
+            // TODO
             return 0;
         }
 
@@ -294,7 +353,7 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public String getItemName(Integer attendanceItemId) {
-            return null;
+            return attendanceItemNameService.getNameOfAttendanceItem(Arrays.asList(attendanceItemId), TypeOfItem.Daily).get(0).getAttendanceItemName();
         }
 
         @Override
@@ -309,6 +368,7 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public Optional<ConfirmationMonth> getConfirmationMonth(String employeeId, ClosureMonth closureMonth) {
+            // TODO
             return Optional.empty();
         }
 
@@ -400,6 +460,76 @@ public class ExecuteAlarmListByEmployeeRequire {
         @Override
         public List<StampCard> getStampCard(String employeeId) {
             return stampCardRepo.getListStampCard(employeeId);
+        }
+
+        @Override
+        public Optional<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, GeneralDate generalDate) {
+            return workplaceSpecificDateRepo.get(workplaceId, generalDate);
+        }
+
+        @Override
+        public Optional<CompanySpecificDateItem> getComSpecByDate(GeneralDate generalDate) {
+            return companySpecificDateRepo.get(this.companyId, generalDate);
+        }
+
+        @Override
+        public Optional<WorkplaceEvent> findByPK(String workplaceId, GeneralDate generalDate) {
+            return workplaceEventRepo.findByPK(workplaceId, generalDate);
+        }
+
+        @Override
+        public Optional<CompanyEvent> findCompanyEventByPK(GeneralDate generalDate) {
+            return companyEventRepo.findByPK(this.companyId, generalDate);
+        }
+
+        @Override
+        public Optional<PublicHoliday> getHolidaysByDate(GeneralDate generalDate) {
+            return publicHolidayRepo.getHolidaysByDate(this.companyId, generalDate);
+        }
+
+        @Override
+        public List<SpecificDateItem> getSpecifiDateByListCode(List<SpecificDateItemNo> list) {
+            return specificDateItemRepo.getSpecifiDateByListCode(this.companyId, list);
+        }
+
+        @Override
+        public List<EmpOrganizationImport> getEmpOrganization(GeneralDate generalDate, List<String> lstEmpId) {
+            return empAffiliationInforAdapter.getEmpOrganization(generalDate, lstEmpId);
+        }
+
+        @Override
+        public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
+            return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
+        }
+
+        @Override
+        public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+            return predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode.toString());
+        }
+
+        @Override
+        public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+            return workTimeSettingRepo.findByCode(companyId, workTimeCode.toString());
+        }
+
+        @Override
+        public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+            return fixedWorkSettingRepo.findByKey(companyId, workTimeCode.toString());
+        }
+
+        @Override
+        public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+            return flexWorkSettingRepo.find(companyId, workTimeCode.toString());
+        }
+
+        @Override
+        public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+            return flowWorkSettingRepo.find(companyId, workTimeCode.toString());
+        }
+
+        @Override
+        public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+            return workTypeRepo.findByPK(companyId, workTypeCode.toString());
         }
     }
 }
