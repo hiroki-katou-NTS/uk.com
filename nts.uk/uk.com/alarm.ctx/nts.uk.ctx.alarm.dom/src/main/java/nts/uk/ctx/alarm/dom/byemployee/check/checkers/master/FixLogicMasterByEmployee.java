@@ -10,6 +10,7 @@ import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
@@ -52,7 +53,7 @@ public enum FixLogicMasterByEmployee {
 	public Iterable<AlarmRecordByEmployee> check(
 			RequireCheck require,
 			String employeeId,
-			String message) {
+			AlarmListAlarmMessage message) {
 
 		val contex = new Context(require, employeeId, message);
 		return logic.apply(contex);
@@ -97,7 +98,7 @@ public enum FixLogicMasterByEmployee {
 	private class Context {
 		RequireCheck require;
 		String employeeId;
-		String message;
+		AlarmListAlarmMessage message;
 
 		public AlarmRecordByEmployee alarm(DatePeriod period) {
 			return new AlarmRecordByEmployee(
@@ -106,6 +107,7 @@ public enum FixLogicMasterByEmployee {
 					AlarmListCategoryByEmployee.MASTER,
 					getName(),
 					getAlarmCondition(),
+					null,
 					message);
 		}
 
@@ -116,6 +118,7 @@ public enum FixLogicMasterByEmployee {
 					AlarmListCategoryByEmployee.MASTER,
 					getName(),
 					getAlarmCondition(),
+					null,
 					message);
 		}
 
@@ -126,6 +129,7 @@ public enum FixLogicMasterByEmployee {
 					AlarmListCategoryByEmployee.MASTER,
 					getName(),
 					getAlarmCondition(),
+					null,
 					message);
 		}
 	}
