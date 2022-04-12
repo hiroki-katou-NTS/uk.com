@@ -112,7 +112,7 @@ public enum FixedLogicScheduleDailyByEmployee {
 	}
 
 	/**
-	 * WorkSchedule(スケジュール日次）からアラームを発生させるメソッド
+	 * 勤務予定(WorkSchedule）からアラームを発生させるメソッド
 	 * @param <T>
 	 * @param context
 	 * @param checker
