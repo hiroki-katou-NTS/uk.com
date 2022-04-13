@@ -67,7 +67,6 @@ public enum FixedLogicDailyByEmployee {
             					  .map(bonusPayCode -> !c.require.existsBonusPay(bonusPayCode))
             					  .orElse(true))),
     
-    //WorkingConditionItemRepository#getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
     契約時間超過(7, c -> alarmToIntegrationOfDaily(
                 c, (iod) -> {
                 	val totalTime = iod.getAttendanceTimeOfDailyPerformance()
