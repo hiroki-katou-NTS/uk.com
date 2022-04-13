@@ -11,10 +11,12 @@ import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmploye
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.DailyConfirmAtr;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 
@@ -64,6 +66,30 @@ public enum FixedLogicDailyByEmployee {
             					  .getBonusPaySettingCode()
             					  .map(bonusPayCode -> !c.require.existsBonusPay(bonusPayCode))
             					  .orElse(true))),
+    
+    //WorkingConditionItemRepository#getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
+    契約時間超過(7, c -> alarmToIntegrationOfDaily(
+                c, (iod) -> {
+                	val totalTime = iod.getAttendanceTimeOfDailyPerformance()
+                		.map(dailyPerformance -> dailyPerformance.getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime())
+                		.orElse(new AttendanceTime(0));
+                	return c.require.getWorkingConditionItem(iod.getEmployeeId(), iod.getYmd())
+											  .map(cItem -> cItem.getContractTime())
+											  .map(contractTime -> totalTime.greaterThan(contractTime.v()))
+											  .orElse(false);
+                })),
+    
+    契約時間未満(7, c -> alarmToIntegrationOfDaily(
+            c, (iod) -> {
+            	val totalTime = iod.getAttendanceTimeOfDailyPerformance()
+            		.map(dailyPerformance -> dailyPerformance.getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime())
+            		.orElse(new AttendanceTime(0));
+            	return c.require.getWorkingConditionItem(iod.getEmployeeId(), iod.getYmd())
+										  .map(cItem -> cItem.getContractTime())
+										  .map(contractTime -> contractTime.greaterThan(totalTime.v()))
+										  .orElse(false);
+            })),
+
     ;
 
     public final int value;
@@ -179,5 +205,7 @@ public enum FixedLogicDailyByEmployee {
         String getDailyAttendanceItemName(Integer attendanceItemId);
         
         boolean existsBonusPay(BonusPaySettingCode bonusPaySettingCode);
+        
+        Optional<WorkingConditionItem> getWorkingConditionItem(String employeeId, GeneralDate date);
     }
 }

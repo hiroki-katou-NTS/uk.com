@@ -102,6 +102,8 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignemployee.TaskAssignEmployee;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -254,6 +256,9 @@ public class ExecuteAlarmListByEmployeeRequire {
     @Inject
     private ApprovalRootStateStatusService approvalRootStateStatusService;
     
+    @Inject
+    private WorkingConditionItemRepository workingConditionItemRepo;
+    
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
                 AppContexts.user().companyId(),
@@ -326,6 +331,11 @@ public class ExecuteAlarmListByEmployeeRequire {
             return workingConditionRepo.getWorkingConditionItemWithPeriod(this.companyId, Arrays.asList(employeeId), period);
         }
 
+        //--- 労働条件 ---//
+		@Override
+		public Optional<WorkingConditionItem> getWorkingConditionItem(String employeeId, GeneralDate date) {
+			return workingConditionItemRepo.getBySidAndStandardDate(employeeId, date);
+		}
 
         //--- 勤務種類 ---//
 
