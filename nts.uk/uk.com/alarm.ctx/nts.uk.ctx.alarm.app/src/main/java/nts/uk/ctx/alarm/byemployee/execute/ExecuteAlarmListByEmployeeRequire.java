@@ -85,6 +85,8 @@ import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.Attenda
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriodRepository;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.anyaggrperiod.AnyAggrFrameCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
@@ -240,6 +242,9 @@ public class ExecuteAlarmListByEmployeeRequire {
     
     @Inject
     private ExtraResultMonthlyRepository extraResultMonthlyRepo;
+    
+    @Inject
+    private BPSettingRepository bPSettingRepo;
     
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
@@ -608,8 +613,12 @@ public class ExecuteAlarmListByEmployeeRequire {
         public boolean existsTask(TaskFrameNo taskFrameNo, TaskCode code) {
             return false;
         }
-
-
+        
+        //--- 加給 ---//
+		@Override
+		public boolean existsBonusPay(BonusPaySettingCode code) {
+			return bPSettingRepo.isExisted(companyId, code);
+		}
 
         //================= 未分類の壁 =================//
 

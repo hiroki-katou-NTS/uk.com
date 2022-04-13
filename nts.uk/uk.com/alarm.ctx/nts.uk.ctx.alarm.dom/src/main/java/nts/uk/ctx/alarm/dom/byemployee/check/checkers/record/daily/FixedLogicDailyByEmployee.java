@@ -11,6 +11,7 @@ import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmploye
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
@@ -56,8 +57,13 @@ public enum FixedLogicDailyByEmployee {
                 .iterator();
     }),
     
-    本人未確認(5, c-> alarm(c, date -> c.require.getIdentification(c.employeeId, date).isPresent()))
+    本人未確認(5, c-> alarm(c, date -> c.require.getIdentification(c.employeeId, date).isPresent())),
 
+    加給コード未登録(6, c -> alarmToIntegrationOfDaily(
+            c, (iod) -> iod.getAffiliationInfor()
+            					  .getBonusPaySettingCode()
+            					  .map(bonusPayCode -> c.require.existsBonusPay(bonusPayCode))
+            					  .orElse(true))),
     ;
 
     public final int value;
@@ -171,5 +177,7 @@ public enum FixedLogicDailyByEmployee {
         boolean existsWorkTime(String workTimeCode);
         
         String getDailyAttendanceItemName(Integer attendanceItemId);
+        
+        boolean existsBonusPay(BonusPaySettingCode bonusPaySettingCode);
     }
 }
