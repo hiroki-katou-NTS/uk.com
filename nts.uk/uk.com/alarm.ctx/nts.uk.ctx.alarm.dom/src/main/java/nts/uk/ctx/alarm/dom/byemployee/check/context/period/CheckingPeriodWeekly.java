@@ -9,17 +9,10 @@ import java.util.List;
  * 週別データのチェック対象期間
  */
 public class CheckingPeriodWeekly {
+    private DatePeriod period;
 
-    public List<AttendanceTimeOfWeeklyKey> calculatePeriod(CheckingPeriodWeekly.Require require, String employeeId) {
-        throw new RuntimeException("not implemented");
-    }
-
-    public DatePeriod calclateDatePeriod(){
-        throw new RuntimeException("not implemented");
-    }
-
-    public DatePeriod calclateDatePeriod(AttendanceTimeOfWeeklyKey weeklyKey){
-        throw new RuntimeException("not implemented");
+    public DatePeriod getDatePeriod(){
+        return this.period;
     }
 
     public interface Require {

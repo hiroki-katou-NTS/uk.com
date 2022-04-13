@@ -28,6 +28,8 @@ import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.AlarmListExtractResult;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeErAlData;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeInfo;
+import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatus;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
@@ -42,6 +44,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlCategory;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
@@ -247,6 +250,8 @@ public class ExecuteAlarmListByEmployeeRequire {
     public interface Require extends ExecuteAlarmListByEmployee.Require {
 
         void save(AlarmListExtractResult result);
+
+        void save(ExtractEmployeeInfo employeeInfo);
     }
 
     @RequiredArgsConstructor
@@ -287,6 +292,11 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public void save(AlarmListExtractResult result) {
+
+        }
+
+        @Override
+        public void save(ExtractEmployeeInfo employeeInfo) {
 
         }
 
@@ -497,16 +507,8 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
-        public Iterable<AttendanceTimeOfWeekly> getAttendanceTimeOfWeekly(List<AttendanceTimeOfWeeklyKey> keys) {
-            return IteratorUtil.iterable(keys, key -> {
-                Optional<AttendanceTimeOfWeekly> ret = attendanceTimeOfWeeklyRepo.find(
-                        key.getEmployeeId(),
-                        key.getYearMonth(),
-                        key.getClosureId(),
-                        key.getClosureDate(),
-                        key.getWeekNo());
-                return ret.get();
-            });
+        public Iterable<AttendanceTimeOfWeekly> getAttendanceTimeOfWeekly(String employeeId, DatePeriod period) {
+            return attendanceTimeOfWeeklyRepo.findMatchAnyOneDay(employeeId, period);
         }
 
         @Override
