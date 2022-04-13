@@ -8,6 +8,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.daily.fixlogic.CheckNotReflectionStamp;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
@@ -95,6 +96,7 @@ public enum FixedLogicDailyByEmployee {
             												  .anyMatch(sheet -> sheet.getSpecificDateAttr().isUse())
             	)
             	.orElse(false))),
+    未反映打刻(10, c -> CheckNotReflectionStamp.check(c.getRequire(), c.getEmployeeId(), c.getPeriod())),
     入退門二重打刻(12, c -> alarmToIntegrationOfDaily(
             c, (iod) -> iod.getAttendanceLeavingGate()
             					  .map(stamps -> stamps.getAttendanceLeavingGates().size() > 1)
