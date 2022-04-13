@@ -1,6 +1,16 @@
 package nts.uk.ctx.alarm.byemployee.execute;
 
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
@@ -10,11 +20,11 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.AlarmListCheckerCode;
-import nts.uk.ctx.alarm.dom.byemployee.pattern.AlarmListPatternCode;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.execute.ExecuteAlarmListByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.pattern.AlarmListPatternByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.pattern.AlarmListPatternCode;
 import nts.uk.ctx.at.aggregation.dom.adapter.dailyrecord.DailyRecordAdapter;
 import nts.uk.ctx.at.aggregation.dom.adapter.workschedule.WorkScheduleAdapter;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
@@ -28,6 +38,7 @@ import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
 import nts.uk.ctx.at.record.app.find.anyperiod.AnyPeriodRecordToAttendanceItemConverterImpl;
 import nts.uk.ctx.at.record.app.find.dailyperform.ConvertFactory;
+import nts.uk.ctx.at.record.app.find.monthly.MonthlyRecordToAttendanceItemConverterImpl;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.daily.export.AggregateSpecifiedDailys;
@@ -37,9 +48,15 @@ import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrP
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.*;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlCategory;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.anyperiod.ErrorAlarmAnyPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.ExtraResultMonthly;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.ExtraResultMonthlyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeeklyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
@@ -55,7 +72,13 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEventRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
-import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.*;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.CompanySpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.CompanySpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemNo;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDateRepository;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
@@ -73,11 +96,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthlyGetter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.converter.WeeklyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignemployee.TaskAssignEmployee;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
@@ -117,7 +143,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -230,7 +255,10 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private AlarmListExtraProcessStatusRepository alarmListExtraProcessStatusRepo;
-
+    
+    @Inject
+    private ExtraResultMonthlyRepository extraResultMonthlyRepo;
+    
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
                 AppContexts.user().companyId(),
@@ -407,7 +435,7 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public Optional<IntegrationOfDaily> getIntegrationOfDailyRecord(String employeeId, GeneralDate date) {
-            return integrationOfDailyGetter.getIntegrationOfDaily(employeeId, DatePeriod.oneDay(date))
+            return this.getIntegrationOfDailyRecords(employeeId, DatePeriod.oneDay(date))
                     .stream().findFirst();
         }
 
@@ -473,12 +501,38 @@ public class ExecuteAlarmListByEmployeeRequire {
         public IntegrationOfMonthly getIntegrationOfMonthly(String employeeId, ClosureMonth closureMonth) {
             return integrationOfMonthlyGetter.get(employeeId, closureMonth.yearMonth(), ClosureId.valueOf(closureMonth.closureId()), closureMonth.closureDate());
         }
+        
+		@Override
+		public List<IntegrationOfMonthly> getIntegrationOfMonthly(String employeeId, List<ClosureMonth> closureMonthes) {
+			return closureMonthes.stream()
+					.map(closureMonth -> this.getIntegrationOfMonthly(employeeId, closureMonth))
+					.collect(Collectors.toList());
+		}
 
         @Override
         public Optional<ConfirmationMonth> getConfirmationMonth(String employeeId, ClosureMonth closureMonth) {
             // TODO
             return Optional.empty();
         }
+        
+		@Override
+		public ExtraResultMonthly getExtraResultMonthly(ErrorAlarmWorkRecordCode codes) {
+			return null;
+		}
+        
+		@Override
+		public List<ExtraResultMonthly> getExtraResultMonthly(List<ErrorAlarmWorkRecordCode> codes) {
+			return codes.stream()
+								 .map(code -> this.getExtraResultMonthly(code))
+								 .collect(Collectors.toList());
+		}
+
+		@Override
+		public List<MonthlyRecordToAttendanceItemConverter> getMonthlyRecordToAttendanceItemConverter(List<IntegrationOfMonthly> monthlyRecords) {
+			return monthlyRecords.stream()
+						.map(record -> MonthlyRecordToAttendanceItemConverterImpl.builder(optionalItemRepo).setData(record))
+						.collect(Collectors.toList());
+		}
 
         @Override
         public List<ApproveRootStatusForEmpImport> getApprovalStateMonth(String employeeId, ClosureMonth closureMonth) {
@@ -561,8 +615,13 @@ public class ExecuteAlarmListByEmployeeRequire {
 		public AttendanceTimeOfAnyPeriod getAttendanceTimeOfAnyPeriod(String employeeId, String anyPeriodFrameCode) {
 			return attendanceTimeOfAnyPeriodRepo.find(employeeId, anyPeriodFrameCode).get();
 		}
-		
-		@Override
+
+        @Override
+        public List<IntegrationOfDaily> getIntegrationOfDailyRecords(String employeeId, DatePeriod period) {
+            return integrationOfDailyGetter.getIntegrationOfDaily(employeeId, period);
+        }
+
+        @Override
 		public AnyAggrPeriod getAnyAggrPeriod(AnyAggrFrameCode code) {
 			return anyAggrPeriodRepo.findOneByCompanyIdAndFrameCode(companyId, code.v()).get();
 		}
