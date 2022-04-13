@@ -166,9 +166,10 @@ public class ImportingMapping {
 		}
 		else {
 			item.setFixedValue(null);
-			if(!item.getCsvColumnNo().isPresent()){
-				item.setCsvColumnNo(1, substringFetch); // CSV項目NOが未指定の場合いったん先頭列を入れておく
-			}
+
+			// CSV項目NOが未指定の場合いったん先頭列を入れておく
+			int csvColumnNo = item.getCsvColumnNo().orElse(1);
+			item.setCsvColumnNo(csvColumnNo, substringFetch);
 		}
 	}
 
