@@ -23,7 +23,7 @@ public class CheckNotReflectionStamp {
 	
 	public static Iterable<AlarmRecordByEmployee> check(Require require, String employeeId, DatePeriod period){
 		return IteratorUtil.iterableFlatten(period.datesBetween(), date -> {
-				val optIod = require.getIntegrationOfDaily(employeeId, (GeneralDate)date)
+				val optIod = require.getIntegrationOfDailyRecord(employeeId, (GeneralDate)date)
 						.map(attendanceLeave -> attendanceLeave.getAttendanceLeave());
 
 				List<AlarmRecordByEmployee> errors = new ArrayList<>();
@@ -57,6 +57,6 @@ public class CheckNotReflectionStamp {
 	
 	
 	public interface Require{
-		Optional<IntegrationOfDaily> getIntegrationOfDaily(String employeeId, GeneralDate date);
+		Optional<IntegrationOfDaily> getIntegrationOfDailyRecord(String employeeId, GeneralDate date);
 	}
 }

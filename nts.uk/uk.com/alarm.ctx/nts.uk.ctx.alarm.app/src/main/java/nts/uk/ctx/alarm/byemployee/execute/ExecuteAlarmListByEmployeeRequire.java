@@ -43,6 +43,7 @@ import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrP
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlCategory;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
@@ -88,6 +89,7 @@ import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriodReposi
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.anyaggrperiod.AnyAggrFrameCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
@@ -259,8 +261,12 @@ public class ExecuteAlarmListByEmployeeRequire {
     @Inject
     private WorkingConditionItemRepository workingConditionItemRepo;
     
+    @Inject
+    private WorkLocationRepository workLocationRepo;
+    
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
+        		AppContexts.user().contractCode(),
                 AppContexts.user().companyId(),
                 AppContexts.user().employeeId()));
     }
@@ -275,6 +281,8 @@ public class ExecuteAlarmListByEmployeeRequire {
     @RequiredArgsConstructor
     public class RequireImpl implements Require {
 
+    	private final String contractCode;
+    	
     	private final String companyId;
 
         private final String loginEmployeeId;
@@ -684,5 +692,10 @@ public class ExecuteAlarmListByEmployeeRequire {
         public List<EmpOrganizationImport> getEmpOrganization(GeneralDate generalDate, List<String> lstEmpId) {
             return empAffiliationInforAdapter.getEmpOrganization(generalDate, lstEmpId);
         }
+
+		@Override
+		public boolean existWorkLocation(WorkLocationCD code) {
+			return workLocationRepo.findByCode(contractCode, code.v()).isPresent();
+		}
     }
 }
