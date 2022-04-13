@@ -6,7 +6,6 @@ import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.AlarmListCheckerCode;
-import nts.uk.ctx.alarm.dom.AlarmListPatternCode;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
@@ -15,6 +14,7 @@ import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriod;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * アラームリストのパターン
@@ -34,14 +34,23 @@ public class AlarmListPatternByEmployee implements DomainAggregate {
     /**
      * チェックする
      * @param require
+     * @param targetCategories 対象カテゴリ一覧
      * @param targetEmployeeId 対象社員ID
      * @return
      */
-    public Iterable<AlarmRecordByEmployee> check(RequireCheck require, String targetEmployeeId) {
+    public Iterable<AlarmRecordByEmployee> check(
+            RequireCheck require,
+            List<AlarmListCategoryByEmployee> targetCategories,
+            String targetEmployeeId) {
 
         val context = new CheckingContextByEmployee(targetEmployeeId, checkingPeriod);
 
-        return IteratorUtil.iterableFlatten(conditions, c -> {
+        // 指定された対象カテゴリのみ実行
+        val filteredConditions = conditions.stream()
+                .filter(c -> targetCategories.contains(c.getCategory()))
+                .collect(Collectors.toList());
+
+        return IteratorUtil.iterableFlatten(filteredConditions, c -> {
 
             val checker = require.getAlarmListChecker(c.getCategory(), c.getCheckerCode())
                     .orElseThrow(() -> new RuntimeException("not found: " + c));

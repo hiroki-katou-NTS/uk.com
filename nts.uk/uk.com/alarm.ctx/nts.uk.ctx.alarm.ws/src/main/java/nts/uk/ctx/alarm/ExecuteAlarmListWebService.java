@@ -10,7 +10,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("ctx/alarm")
+@Path("ctx/alarm/execute")
 @Produces(MediaType.APPLICATION_JSON)
 public class ExecuteAlarmListWebService {
 
@@ -19,7 +19,7 @@ public class ExecuteAlarmListWebService {
 
     @POST
     @Path("employee")
-    public AsyncTaskInfo executeByEmployee() {
-        return executeEmployeeHandler.handle(new ExecuteAlarmListByEmployeeCommand());
+    public AsyncTaskInfo executeByEmployee(ExecuteAlarmListByEmployeeCommand command) {
+        return executeEmployeeHandler.handle(command);
     }
 }
