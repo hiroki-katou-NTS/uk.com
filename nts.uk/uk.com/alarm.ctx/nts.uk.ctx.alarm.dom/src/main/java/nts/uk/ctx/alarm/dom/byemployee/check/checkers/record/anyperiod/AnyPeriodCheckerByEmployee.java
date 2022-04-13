@@ -3,11 +3,19 @@ package nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.anyperiod;
 import lombok.Value;
 import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.AlarmListCheckerCode;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.schedule.daily.ConditionValueScheduleDailyByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
+import nts.uk.ctx.alarm.dom.conditionvalue.AlarmListConditionValue;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.anyaggrperiod.AnyAggrFrameCode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * アラームリストのチェック条件(社員別・任意期間) 
@@ -21,7 +29,12 @@ public class AnyPeriodCheckerByEmployee implements DomainAggregate, AlarmListChe
 	
 	private String name;
 
-	private CheckAnyPeriodErrorAlarm errorAlarmChecker; 
+	private CheckAnyPeriodErrorAlarm errorAlarmChecker;
+
+	/** 条件値のチェック条件*/
+	private List<AlarmListConditionValue<
+			ConditionValueAnyPeriodByEmployee,
+			ConditionValueAnyPeriodByEmployee.Context>> conditionValues;
 
 	@Override
 	public Iterable<AlarmRecordByEmployee> check(
@@ -31,10 +44,34 @@ public class AnyPeriodCheckerByEmployee implements DomainAggregate, AlarmListChe
 				context.getTargetEmployeeId(),
 				context.getCheckingPeriod().getAnyPeriod().v()
 			);
-		return this.errorAlarmChecker.check(require, context, anyPeriodRecord);
+
+		val alarmRecords = new ArrayList<Iterable<AlarmRecordByEmployee>>();
+
+		// 条件値のチェック
+		alarmRecords.add(checkConditionValues(require, anyPeriodRecord.getEmployeeId(), anyPeriodRecord.getAnyAggrFrameCode()));
+
+
+		alarmRecords.add(this.errorAlarmChecker.check(require, context, anyPeriodRecord));
+
+		return IteratorUtil.flatten(alarmRecords);
+	}
+
+	/**
+	 * 条件値のチェック
+	 * @param require
+	 * @param employeeId
+	 * @param anyAggrFrameCode
+	 * @return
+	 */
+	private Iterable<AlarmRecordByEmployee> checkConditionValues(Require require, String employeeId, AnyAggrFrameCode anyAggrFrameCode) {
+		return IteratorUtil.iterableFilter(conditionValues, cv -> {
+			return cv.checkIfEnabled(new ConditionValueAnyPeriodByEmployee.Context(require, employeeId, anyAggrFrameCode));
+		});
 	}
 	
-	public interface RequireCheck extends CheckAnyPeriodErrorAlarm.Require{
+	public interface RequireCheck extends
+			CheckAnyPeriodErrorAlarm.Require,
+			ConditionValueAnyPeriodByEmployee.Require{
 		AttendanceTimeOfAnyPeriod getAttendanceTimeOfAnyPeriod(String employeeId, String anyPeriodFrameCode);
 		
 	}
