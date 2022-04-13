@@ -79,7 +79,7 @@ public enum FixedLogicDailyByEmployee {
 											  .orElse(false);
                 })),
     
-    契約時間未満(7, c -> alarmToIntegrationOfDaily(
+    契約時間未満(8, c -> alarmToIntegrationOfDaily(
             c, (iod) -> {
             	val totalTime = iod.getAttendanceTimeOfDailyPerformance()
             		.map(dailyPerformance -> dailyPerformance.getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime())
