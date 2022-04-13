@@ -152,6 +152,14 @@ public class ApproveAppProcedure {
 	 * @param companyID
 	 */
 	public void procedureAfterApprove(List<Application> appCompleteApproveLst, String companyID) {
+		// đối ứng tạm, đợi 3s chớ xử lý update trạng thái đơn xin hoàn thành, **** sau
+		// sẽ xóa
+		try {
+			log.info("\n wait 3s");
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		// 承認完了フラグがtrueになっている申請をグループする
 		Map<String, List<Application>> empAppMap = appCompleteApproveLst.stream().collect(Collectors.groupingBy(x -> x.getEmployeeID()));
 		for(Entry<String, List<Application>> empApp : empAppMap.entrySet()) {
