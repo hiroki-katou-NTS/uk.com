@@ -18,6 +18,7 @@ import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.AlarmListExtractResult;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeErAlData;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeInfo;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatus;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
@@ -231,6 +232,8 @@ public class ExecuteAlarmListByEmployeeRequire {
     public interface Require extends ExecuteAlarmListByEmployee.Require {
 
         void save(AlarmListExtractResult result);
+
+        void save(ExtractEmployeeInfo employeeInfo);
     }
 
     @RequiredArgsConstructor
@@ -271,6 +274,11 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public void save(AlarmListExtractResult result) {
+
+        }
+
+        @Override
+        public void save(ExtractEmployeeInfo employeeInfo) {
 
         }
 
