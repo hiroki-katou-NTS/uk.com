@@ -89,7 +89,13 @@ public enum FixedLogicDailyByEmployee {
 										  .map(contractTime -> contractTime.greaterThan(totalTime.v()))
 										  .orElse(false);
             })),
-
+    特定日出勤(9 , c -> alarmToIntegrationOfDaily(
+            c, (iod) -> iod.getSpecDateAttr()
+            	.map(specDate -> specDate.getSpecificDateAttrSheets()
+            												  .stream()
+            												  .anyMatch(sheet -> sheet.getSpecificDateAttr().isUse())
+            	)
+            	.orElse(false))),
     ;
 
     public final int value;
