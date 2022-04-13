@@ -251,9 +251,9 @@ public class ProcesscrudDataByTable {
 
 							// query.executeUpdate();
 							if (count == 1) {
-								DELETE_INSERT_TO_TABLE.append(INSERT_BY_TABLE.toString() + " ");
+								DELETE_INSERT_TO_TABLE.append(INSERT_BY_TABLE.toString() + "; ");
 							} else if (count == 0) {
-								INSERT_TO_TABLE.append(INSERT_BY_TABLE.toString() + " ");
+								INSERT_TO_TABLE.append(INSERT_BY_TABLE.toString() + "; ");
 							}
 
 							listCount.add(count);
@@ -426,9 +426,9 @@ public class ProcesscrudDataByTable {
 
 								// query.executeUpdate();
 								if (count == 1) {
-									DELETE_INSERT_TO_TABLE.append(INSERT_BY_TABLE.toString() + " ");
+									DELETE_INSERT_TO_TABLE.append(INSERT_BY_TABLE.toString() + "; ");
 								} else if (count == 0) {
-									INSERT_TO_TABLE.append(INSERT_BY_TABLE.toString() + " ");
+									INSERT_TO_TABLE.append(INSERT_BY_TABLE.toString() + "; ");
 								}
 
 								listCount.add(count);
