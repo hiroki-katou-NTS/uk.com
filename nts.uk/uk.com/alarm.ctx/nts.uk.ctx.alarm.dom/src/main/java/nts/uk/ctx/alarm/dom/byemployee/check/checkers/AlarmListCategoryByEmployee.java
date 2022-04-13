@@ -42,6 +42,9 @@ public enum AlarmListCategoryByEmployee {
     /** 任意期間 */
     RECORD_ANY_PERIOD(11),
 
+    /** 休暇 */
+    VACATION(19),
+
     /** 休日 */
     DAY_OFF(20),
 
