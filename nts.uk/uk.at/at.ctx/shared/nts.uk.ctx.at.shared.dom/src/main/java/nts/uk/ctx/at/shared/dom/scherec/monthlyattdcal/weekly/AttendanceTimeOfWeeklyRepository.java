@@ -72,7 +72,15 @@ public interface AttendanceTimeOfWeeklyRepository {
 	 * @return 月別実績の勤怠時間　（開始日順）
 	 */
 	List<AttendanceTimeOfWeekly> findBySidsAndDatePeriod(List<String> employeeIds, DatePeriod datePeriod);
-	
+
+	/**
+	 * 検索　一日でも一致（社員IDと期間）
+	 * @param employeeId
+	 * @param datePeriod
+	 * @return
+	 */
+	List<AttendanceTimeOfWeekly> findMatchAnyOneDay(String employeeId, DatePeriod datePeriod);
+
 	/**
 	 * 検索　（基準日）
 	 * @param employeeId 社員ID

@@ -208,7 +208,22 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 		});
 		return results;
 	}
-	
+
+	/** 検索　一日でも一致　（社員IDと期間） */
+	@Override
+	public List<AttendanceTimeOfWeekly> findMatchAnyOneDay(String employeeId, DatePeriod datePeriod) {
+		String query = "SELECT a FROM KrcdtWekAttendanceTime a "
+			+ "WHERE a.PK.employeeId = :employeeId "
+			+ "AND a.startYmd <= :endDate "
+			+ "AND a.endYmd >= :startDate ";
+
+		return this.queryProxy().query(query, KrcdtWekAttendanceTime.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("startDate", datePeriod.start())
+				.setParameter("endDate", datePeriod.end())
+				.getList(c -> c.toDomain());
+	}
+
 	/** 検索　（基準日） */
 	@Override
 	public List<AttendanceTimeOfWeekly> findByDate(String employeeId, GeneralDate criteriaDate) {

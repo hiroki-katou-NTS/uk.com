@@ -463,16 +463,8 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
-        public Iterable<AttendanceTimeOfWeekly> getAttendanceTimeOfWeekly(List<AttendanceTimeOfWeeklyKey> keys) {
-            return IteratorUtil.iterable(keys, key -> {
-                Optional<AttendanceTimeOfWeekly> ret = attendanceTimeOfWeeklyRepo.find(
-                        key.getEmployeeId(),
-                        key.getYearMonth(),
-                        key.getClosureId(),
-                        key.getClosureDate(),
-                        key.getWeekNo());
-                return ret.get();
-            });
+        public Iterable<AttendanceTimeOfWeekly> getAttendanceTimeOfWeekly(String employeeId, DatePeriod period) {
+            return attendanceTimeOfWeeklyRepo.findMatchAnyOneDay(employeeId, period);
         }
 
         @Override
