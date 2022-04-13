@@ -21,8 +21,12 @@ import java.util.function.Function;
 public enum ConditionValueAnyPeriodByEmployee implements ConditionValueLogic<ConditionValueAnyPeriodByEmployee.Context> {
 
 	出勤率(1, "出勤率", c -> {
-		val attendanceDays = c.require.getAttendanceTimeOfAnyPeriod(c.employeeId, c.anyPeriodFrameCode.toString()).getVerticalTotal().getWorkDays().getAttendanceDays().getDays().v();
-		return (attendanceDays / c.require.getAnyAggrPeriod(c.anyPeriodFrameCode).getPeriod().stream().count()) * 100;
+		val workDays = c.require.getAttendanceTimeOfAnyPeriod(c.employeeId, c.anyPeriodFrameCode.toString()).getVerticalTotal().getWorkDays();
+		// 総出勤日数（出勤日数＋休出日数＋振出日数）
+		val totalAttendanceDays = workDays.getAttendanceDays().getDays().v()
+								+ workDays.getHolidayWorkDays().getDays().v()
+								+ workDays.getRecruitmentDays().getDays().v();
+		return (totalAttendanceDays / c.require.getAnyAggrPeriod(c.anyPeriodFrameCode).getPeriod().stream().count()) * 100;
 	}),
 
 	;
