@@ -399,7 +399,7 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public Optional<IntegrationOfDaily> getIntegrationOfDailyRecord(String employeeId, GeneralDate date) {
-            return integrationOfDailyGetter.getIntegrationOfDaily(employeeId, DatePeriod.oneDay(date))
+            return this.getIntegrationOfDailyRecords(employeeId, DatePeriod.oneDay(date))
                     .stream().findFirst();
         }
 
@@ -535,8 +535,13 @@ public class ExecuteAlarmListByEmployeeRequire {
 		public AttendanceTimeOfAnyPeriod getAttendanceTimeOfAnyPeriod(String employeeId, String anyPeriodFrameCode) {
 			return attendanceTimeOfAnyPeriodRepo.find(employeeId, anyPeriodFrameCode).get();
 		}
-		
-		@Override
+
+        @Override
+        public List<IntegrationOfDaily> getIntegrationOfDailyRecords(String employeeId, DatePeriod period) {
+            return integrationOfDailyGetter.getIntegrationOfDaily(employeeId, period);
+        }
+
+        @Override
 		public AnyAggrPeriod getAnyAggrPeriod(AnyAggrFrameCode code) {
 			return anyAggrPeriodRepo.findOneByCompanyIdAndFrameCode(companyId, code.v()).get();
 		}
