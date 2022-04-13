@@ -56,6 +56,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeekl
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeeklyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
@@ -123,6 +124,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
+import nts.uk.ctx.workflow.dom.service.ApprovalRootStateStatusService;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.closure.ClosureMonth;
@@ -245,6 +247,12 @@ public class ExecuteAlarmListByEmployeeRequire {
     
     @Inject
     private BPSettingRepository bPSettingRepo;
+    
+    @Inject
+    private IdentificationRepository identificationRepo;
+    
+    @Inject
+    private ApprovalRootStateStatusService approvalRootStateStatusService;
     
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
@@ -428,8 +436,7 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public Optional<Identification> getIdentification(String employeeId, GeneralDate date) {
-            // TODO
-            return Optional.empty();
+            return identificationRepo.findByCode(employeeId, date);
         }
 
 
@@ -525,8 +532,7 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public List<ApprovalRootStateStatus> getApprovalRootStateByPeriod(String employeeId, DatePeriod period) {
-            // TODO
-            return null;
+            return approvalRootStateStatusService.getStatusByEmpAndDate(employeeId, period.start(), period.end(), 1);
         }
 
         @Override
