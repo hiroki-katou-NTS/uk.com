@@ -2,7 +2,10 @@ package nts.uk.ctx.alarm.byemployee.execute;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.IteratorUtil;
@@ -27,6 +30,8 @@ import nts.uk.ctx.at.record.app.find.anyperiod.AnyPeriodRecordToAttendanceItemCo
 import nts.uk.ctx.at.record.app.find.dailyperform.ConvertFactory;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
+import nts.uk.ctx.at.record.dom.daily.export.AggregateSpecifiedDailys;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriodRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
@@ -65,6 +70,7 @@ import nts.uk.ctx.at.shared.dom.scherec.byperiod.anyaggrperiod.AnyAggrFrameCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
@@ -96,6 +102,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.CalcNextAnnLeaGrantInfo;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 import nts.uk.shr.com.context.AppContexts;
@@ -105,6 +112,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -410,7 +418,7 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
 
-        //--- 日別見込み ---//
+        //--- 見込み月次 ---//
 
         @Override
         public List<IntegrationOfDaily> getIntegrationOfDailyProspect(String employeeId, DatePeriod period) {
@@ -430,6 +438,32 @@ public class ExecuteAlarmListByEmployeeRequire {
                     period,
                     ScheRecGettingAtr.SCHEDULE_WITH_RECORD
             ).get(ScheRecGettingAtr.SCHEDULE_WITH_RECORD);
+        }
+
+        //--- 見込み年次 ---//
+        @Override
+        public List<IntegrationOfMonthly> getIntegrationOfMonthlyProspect(String employeeId, List<ClosureMonth> closureMonths) {
+            List<IntegrationOfMonthly> result = new ArrayList<>();
+            for(ClosureMonth closureMonth : closureMonths) {
+                // TODO: 過去月か？
+                if (closureMonth.defaultPeriod().end().before(GeneralDate.today())){
+                    val im = integrationOfMonthlyGetter.get(employeeId, closureMonth.yearMonth(), ClosureId.valueOf(closureMonth.closureId()), closureMonth.closureDate());
+                    result.add(im);
+                    continue;
+                }
+
+//                val require = requireService.createRequire();
+//                val cacheCarrier = new CacheCarrier();
+//
+//                List<IntegrationOfDaily> dailies = this.getIntegrationOfDailyProspect(employeeId, closureMonth.defaultPeriod());
+//                val im = AggregateSpecifiedDailys.algorithm(
+//                        require, cacheCarrier, companyId, employeeId,
+//                        closureMonth.getYearMonth(), EnumAdaptor.valueOf(closureMonth.getClosureId(), ClosureId.class),
+//                        closureMonth.getClosureDate(), closureMonth.defaultPeriod(), null, dailies, null
+//                );
+//                im.ifPresent(data -> result.add(data));
+            }
+            return result;
         }
 
 
