@@ -2,7 +2,7 @@ package nts.uk.ctx.alarm.dom.byemployee.check.checkers;
 
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.multi.multiday.MultiDayCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.weekly.CheckErrorAlarmWeekly;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.schedule.daily.ScheduleDailyCheckerByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.schedule.daily.single.ScheduleDailyCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.appapproval.AppApprovalCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.master.MasterCheckerByEmployee;

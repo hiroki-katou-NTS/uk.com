@@ -1,4 +1,4 @@
-package nts.uk.ctx.alarm.dom.byemployee.check.checkers.schedule.daily;
+package nts.uk.ctx.alarm.dom.byemployee.check.checkers.schedule.daily.single;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,11 +12,9 @@ import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodDaily;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.conditionvalue.AlarmListConditionValue;
-import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueContext;
 import nts.uk.ctx.alarm.dom.fixedlogic.FixedLogicSetting;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
