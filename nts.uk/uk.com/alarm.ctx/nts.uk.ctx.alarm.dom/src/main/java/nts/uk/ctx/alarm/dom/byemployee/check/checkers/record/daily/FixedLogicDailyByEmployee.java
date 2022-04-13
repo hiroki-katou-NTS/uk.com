@@ -96,6 +96,11 @@ public enum FixedLogicDailyByEmployee {
             												  .anyMatch(sheet -> sheet.getSpecificDateAttr().isUse())
             	)
             	.orElse(false))),
+    入退門二重打刻(12, c -> alarmToIntegrationOfDaily(
+            c, (iod) -> iod.getAttendanceLeavingGate()
+            					  .map(stamps -> stamps.getAttendanceLeavingGates().size() > 1)
+            					  .orElse(false)
+    		)),
     ;
 
     public final int value;
