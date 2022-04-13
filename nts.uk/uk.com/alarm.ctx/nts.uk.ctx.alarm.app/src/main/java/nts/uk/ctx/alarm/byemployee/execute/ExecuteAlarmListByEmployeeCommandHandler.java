@@ -8,6 +8,7 @@ import nts.arc.task.tran.TransactionService;
 import nts.uk.ctx.alarm.dom.byemployee.execute.AlarmListRuntimeSetting;
 import nts.uk.ctx.alarm.dom.byemployee.execute.ExecuteAlarmListByEmployee;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.AlarmListExtractResult;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeInfo;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -35,6 +36,8 @@ public class ExecuteAlarmListByEmployeeCommandHandler extends AsyncCommandHandle
         val asyncTaskData = new AsyncTaskData(context.asAsync().getDataSetter());
 
         for (val employeeId : command.getTargetEmployeeIds()) {
+
+            saveEmployeeInfo(require, employeeId);
 
             val runtimeSetting = new AlarmListRuntimeSetting(
                     command.getAlarmListPatternCode(),
@@ -66,6 +69,12 @@ public class ExecuteAlarmListByEmployeeCommandHandler extends AsyncCommandHandle
                 require.getLoginEmployeeId());
 
         transaction.execute(() -> require.save(result));
+    }
+
+    private void saveEmployeeInfo(ExecuteAlarmListByEmployeeRequire.Require require, String employeeId) {
+
+        throw new RuntimeException("not implemented");
+        //val employeeInfo = new ExtractEmployeeInfo();
     }
 
     /**
