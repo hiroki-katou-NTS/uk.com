@@ -9,9 +9,11 @@ import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueContext;
 import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueLogic;
 import java.util.function.Function;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.AbsenceDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.AttendanceDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.HolidayWorkDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.HolidaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.SpecialVacationDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.WorkDaysProspectorBase;
 
 
@@ -97,6 +99,15 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
         return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
     }),
     
+    特休日数合計(3, "日数：特休日数合計", c-> {
+        SpecialVacationDaysProspector prospector = new SpecialVacationDaysProspector(c.require, c.companyId, c.aggregate);
+        return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+    }),
+    
+    欠勤日数合計(3, "日数：欠勤日数合計", c-> {
+        AbsenceDaysProspector prospector = new AbsenceDaysProspector(c.require, c.companyId, c.aggregate);
+        return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+    })
     
     ;
 
@@ -113,7 +124,7 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
         return getValue.apply(context);
     }
 
-    public interface Require extends AggregateIntegrationOfDaily.AggregationRequire, WorkDaysProspectorBase.RequireOfCreate, AttendanceDaysProspector.Require, HolidayWorkDaysProspector.Require, HolidaysProspector.Require {
+    public interface Require extends AggregateIntegrationOfDaily.AggregationRequire, WorkDaysProspectorBase.RequireOfCreate, AttendanceDaysProspector.Require, HolidayWorkDaysProspector.Require, HolidaysProspector.Require, SpecialVacationDaysProspector.Require, AbsenceDaysProspector.Require {
         //List<WorkingConditionItemWithPeriod> workingCondition(String employeeId, DatePeriod datePeriod);
     }
 
