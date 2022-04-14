@@ -60,6 +60,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeekl
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeeklyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
+import nts.uk.ctx.at.record.dom.workrecord.remainingnumbermanagement.AttendRateAtNextHoliday;
+import nts.uk.ctx.at.record.dom.workrecord.remainingnumbermanagement.RCAnnualHolidayManagement;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
@@ -82,6 +84,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
@@ -147,8 +150,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.*;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.CalcNextAnnLeaGrantInfo;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
@@ -319,6 +321,15 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private ClosureRepository closureRepo;
+
+    @Inject
+    private RCAnnualHolidayManagement annualHolidayManagement;
+
+    @Inject
+    private GrantYearHolidayRepository grantYearHolidayRepo;
+
+    @Inject
+    private LengthServiceRepository lengthServiceRepo;;
     
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
@@ -683,18 +694,43 @@ public class ExecuteAlarmListByEmployeeRequire {
         //--- 年休 ---//
 
         @Override
+        public Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId) {
+            return getBasicInfo(employeeId);
+        }
+
+        @Override
         public Optional<AnnualLeaveEmpBasicInfo> getBasicInfo(String employeeId) {
             return annLeaEmpBasicInfoRepo.get(employeeId);
         }
 
         @Override
         public Optional<GrantHdTblSet> getTable(String yearHolidayCode) {
-            return yearHolidayRepo.findByCode(this.companyId, yearHolidayCode);
+            return grantHdTblSet(this.companyId, yearHolidayCode);
+        }
+
+        @Override
+        public Optional<GrantHdTblSet> grantHdTblSet(String companyId, String yearHolidayCode) {
+            return yearHolidayRepo.findByCode(companyId, yearHolidayCode);
+        }
+
+        @Override
+        public Optional<LengthServiceTbl> lengthServiceTbl(String companyId, String yearHolidayCode) {
+            return lengthServiceRepo.findByCode(companyId, yearHolidayCode);
+        }
+
+        @Override
+        public Optional<GrantHdTbl> grantHdTbl(String companyId, int conditionNo, String yearHolidayCode, int grantNum) {
+            return grantYearHolidayRepo.find(companyId, conditionNo, yearHolidayCode, grantNum);
         }
 
         @Override
         public AnnualPaidLeaveSetting annualPaidLeaveSetting(String companyId) {
             return annualPaidLeaveSettingRepo.findByCompanyId(companyId);
+        }
+
+        @Override
+        public Optional<AttendRateAtNextHoliday> getDaysPerYear(String employeeId) {
+            return annualHolidayManagement.getDaysPerYear(new CompanyId(this.companyId), new EmployeeId(employeeId));
         }
 
 

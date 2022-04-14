@@ -6,6 +6,7 @@ import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
@@ -14,6 +15,10 @@ import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.GetRemainingNumbe
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.care.GetRemainingNumberCareService;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggrResultOfChildCareNurse;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.GetRemainingNumberChildCareService;
+import nts.uk.ctx.at.record.dom.workrecord.remainingnumbermanagement.AttendRateAtNextHoliday;
+import nts.uk.ctx.at.record.dom.workrecord.remainingnumbermanagement.RCAnnualHolidayManagement;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberData;
@@ -32,7 +37,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public enum FixedLogicVacationByEmployee {
 
-	子の看護休暇上限(1,c -> {
+	子の看護休暇上限(1, c -> {
 		val result = new ArrayList<AlarmRecordByEmployee>();
 		val errorList = GetRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
 				AppContexts.user().companyId(),
@@ -48,7 +53,7 @@ public enum FixedLogicVacationByEmployee {
 				.iterator();
 	}),
 
-	介護休暇上限(2,c -> {
+	介護休暇上限(2, c -> {
 		val result = new ArrayList<AlarmRecordByEmployee>();
 		val errorList = GetRemainingNumberCareService.getCareRemNumWithinPeriod(
 						AppContexts.user().companyId(),
@@ -88,8 +93,6 @@ public enum FixedLogicVacationByEmployee {
 		return logic.apply(context);
 	}
 
-
-
 	@Value
 	private class Context {
 		RequireCheck require;
@@ -121,5 +124,6 @@ public enum FixedLogicVacationByEmployee {
 	}
 
 	public interface RequireCheck extends GetRemainingNumberChildCareNurseService.Require {
+
 	}
 }
