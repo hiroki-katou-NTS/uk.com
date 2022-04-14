@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import lombok.val;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfMonthly;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
@@ -49,6 +50,17 @@ public enum ConditionValueProspectYearlyByEmployee implements ConditionValueLogi
 
         return withinWorkTimeAmount + totalAmount;
     })),
+    
+    総労働時間(1, "予定時間＋総労働時間", c -> c.getClosedAggregator().aggregate(c.require, data -> {
+        // 総労働時間
+        return data.getAttendanceTime()
+                .get()
+                .getVerticalTotal()
+                .getWorkAmount()
+                .getWorkTimeAmount()
+                .v().doubleValue();
+    })),
+    
     出勤日数(2, "日数：出勤日数", c -> {
         return aggregate(c,
                 (iom) -> getWorkDays(iom, (workDays) -> workDays.getAttendanceDays().getDays().v()),
@@ -76,6 +88,7 @@ public enum ConditionValueProspectYearlyByEmployee implements ConditionValueLogi
                     return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
                 });
     }),
+    ;
 
     ;
     public final int value;
