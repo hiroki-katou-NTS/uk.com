@@ -35,8 +35,8 @@ public class AttendanceDaysProspector extends WorkDaysProspectorBase {
                     // 会社ID, 勤務種類, 労働制, 勤務種類のカウント表、出勤してるか
                     result.aggregate(require, cid, workType, item.getLaborSystem(), table, isAttendanceDay);
                     return result.getDays().v();
-                }).orElse((double)0);
-            }).orElse((double)0);
+                }).orElse(0.0);
+            }).orElse(0.0);
         });
     }
     
