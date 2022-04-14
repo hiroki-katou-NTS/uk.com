@@ -1,15 +1,18 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers.vacation;
 
 import lombok.Value;
+import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.AlarmListCheckerCode;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodVacation;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.fixedlogic.FixedLogicSetting;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,7 +38,16 @@ public class VacationCheckerByEmployee implements DomainAggregate, AlarmListChec
 	 */
 	@Override
 	public Iterable<AlarmRecordByEmployee> check(Require require, CheckingContextByEmployee context) {
-		return null;
+
+		String employeeId = context.getTargetEmployeeId();
+		val period = context.getCheckingPeriod().getVacation().calculatePeriod(require, employeeId);
+
+		val alarmRecords = new ArrayList<Iterable<AlarmRecordByEmployee>>();
+
+		// 固定ロジックのチェック
+		alarmRecords.add(checkFixedLogics(require, employeeId, period));
+
+		return IteratorUtil.flatten(alarmRecords);
 	}
 
 	/**
@@ -48,10 +60,15 @@ public class VacationCheckerByEmployee implements DomainAggregate, AlarmListChec
 	private Iterable<AlarmRecordByEmployee> checkFixedLogics(Require require, String employeeId, DatePeriod period) {
 		return IteratorUtil.iterableFlatten(
 				fixedLogics,
-				f -> f.checkIfEnabled((logic, message) -> logic.check(require, employeeId, message)));
+				f -> f.checkIfEnabled((logic, message) -> logic.check(
+						require,
+						employeeId,
+						period,
+						message)));
 	}
 
-	public interface RequireCheck extends FixedLogicVacationByEmployee.RequireCheck {
-
+	public interface RequireCheck extends
+			FixedLogicVacationByEmployee.RequireCheck,
+			CheckingPeriodVacation.Require {
 	}
 }
