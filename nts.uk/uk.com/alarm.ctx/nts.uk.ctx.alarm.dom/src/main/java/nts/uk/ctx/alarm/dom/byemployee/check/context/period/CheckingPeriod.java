@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.scherec.byperiod.anyaggrperiod.AnyAggrFrameCode;
 @Value
 public class CheckingPeriod {
 
-    /** スケジュール月次 */
+    /** 見込み月次 */
     CheckingPeriodMonthly scheduleMonthly;
 
     /** 日次 */
