@@ -1,6 +1,5 @@
 package nts.uk.ctx.alarm.byemployee.execute;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -179,6 +178,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.WorkDaysNumberOnLeaveCount;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -190,8 +193,8 @@ public class ExecuteAlarmListByEmployeeRequire {
     @Inject
     private WorkingConditionRepository workingConditionRepo;
 
-	@Inject
-	private WorkTypeRepository workTypeRepo;
+    @Inject
+    private WorkTypeRepository workTypeRepo;
 
     @Inject
     private WorkTimeSettingRepository workTimeSettingRepo;
@@ -204,9 +207,9 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private IntegrationOfMonthlyGetter integrationOfMonthlyGetter;
-	
-	@Inject
-	private ApplicationRepository applicatoinRepo;
+
+    @Inject
+    private ApplicationRepository applicatoinRepo;
 
     @Inject
     private ApprovalStatusAdapter approvalStatusAdapter;
@@ -222,13 +225,13 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private YearHolidayRepository yearHolidayRepo;
-    
+
     @Inject
     private AttendanceTimeOfAnyPeriodRepository attendanceTimeOfAnyPeriodRepo;
-    
+
     @Inject
     private AnyAggrPeriodRepository anyAggrPeriodRepo;
-    
+
     @Inject
     private OptionalItemRepository optionalItemRepo;
 
@@ -291,7 +294,7 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private AlarmListExtraProcessStatusRepository alarmListExtraProcessStatusRepo;
-    
+
     @Inject
     private ExtraResultMonthlyRepository extraResultMonthlyRepo;
 
@@ -372,15 +375,11 @@ public class ExecuteAlarmListByEmployeeRequire {
     @RequiredArgsConstructor
     public class RequireImpl implements Require {
 
-    	private final String contractCode;
-    	
     	private final String companyId;
-
+    	private final String contractCode;
         private final String loginEmployeeId;
 
-
         //--- ログイン情報 ---//
-
         @Override
         public String getCompanyId() {
             return companyId;
@@ -391,9 +390,7 @@ public class ExecuteAlarmListByEmployeeRequire {
             return loginEmployeeId;
         }
 
-
         //--- アラームリストの設定 ---//
-
         @Override
         public Optional<AlarmListPatternByEmployee> getAlarmListPatternByEmployee(AlarmListPatternCode patternCode) {
             return Optional.empty();
@@ -404,9 +401,7 @@ public class ExecuteAlarmListByEmployeeRequire {
             return Optional.empty();
         }
 
-
         //--- アラームリストの抽出結果 ---//
-
         @Override
         public void save(AlarmListExtractResult result) {
 
@@ -422,9 +417,7 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         }
 
-
         //--- 個人情報系 ---//
-
         @Override
         public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate generalDate) {
             return workingConditionRepo.getWorkingConditionItemByEmpIDAndDate(this.companyId, generalDate, employeeId);
@@ -440,9 +433,18 @@ public class ExecuteAlarmListByEmployeeRequire {
 		public Optional<WorkingConditionItem> getWorkingConditionItem(String employeeId, GeneralDate date) {
 			return workingConditionItemRepo.getBySidAndStandardDate(employeeId, date);
 		}
+        @Override
+        public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
 
+        @Override
+        public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        
+        
         //--- 勤務種類 ---//
-
         @Override
         public Optional<WorkType> getWorkType(String workTypeCode) {
             return workTypeRepo.findByPK(this.companyId, workTypeCode);
@@ -458,9 +460,7 @@ public class ExecuteAlarmListByEmployeeRequire {
             return getWorkType(workTypeCode.v());
         }
 
-
         //--- 就業時間帯 ---//
-
         @Override
         public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
             return workTimeSettingRepo.findByCode(this.companyId, workTimeCode);
@@ -501,9 +501,7 @@ public class ExecuteAlarmListByEmployeeRequire {
             return flowWorkSettingRepo.find(companyId, workTimeCode.toString());
         }
 
-
         //--- 締め ---//
-
         @Override
         public List<Closure> closure(String companyId) {
             return closureRepo.findAll(companyId);
@@ -519,9 +517,7 @@ public class ExecuteAlarmListByEmployeeRequire {
             return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
         }
 
-
         //--- 勤怠項目 ---//
-
         @Override
         public AttendanceItemConvertFactory getAttendanceItemConvertFactory() {
             // TODO
@@ -544,9 +540,7 @@ public class ExecuteAlarmListByEmployeeRequire {
                     .get(0).getAttendanceItemName();
         }
 
-
         //--- 勤務予定 ---//
-
         @Override
         public Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date) {
             return workScheduleRepo.get(employeeId, date);
@@ -557,9 +551,7 @@ public class ExecuteAlarmListByEmployeeRequire {
             return getWorkSchedule(employeeId, date).isPresent();
         }
 
-
         //--- 日別実績 ---//
-
         @Override
         public Optional<IntegrationOfDaily> getIntegrationOfDailyRecord(String employeeId, GeneralDate date) {
             return this.getIntegrationOfDailyRecords(employeeId, DatePeriod.oneDay(date))
@@ -571,23 +563,21 @@ public class ExecuteAlarmListByEmployeeRequire {
             return identificationRepo.findByCode(employeeId, date);
         }
 
-
         //--- 見込み月次 ---//
-
         @Override
         public List<IntegrationOfDaily> getIntegrationOfDailyProspect(String employeeId, DatePeriod period) {
             return DailyAttendanceGettingService.get(
                     new DailyAttendanceGettingService.Require() {
-                        @Override
-                        public List<IntegrationOfDaily> getSchduleList(List<EmployeeId> list, DatePeriod datePeriod) {
-                            return workScheduleAdapter.getList(Arrays.asList(employeeId), period);
-                        }
+                @Override
+                public List<IntegrationOfDaily> getSchduleList(List<EmployeeId> list, DatePeriod datePeriod) {
+                    return workScheduleAdapter.getList(Arrays.asList(employeeId), period);
+                }
 
-                        @Override
-                        public List<IntegrationOfDaily> getRecordList(List<EmployeeId> list, DatePeriod datePeriod) {
-                            return dailyRecordAdapter.getDailyRecordByScheduleManagement(Arrays.asList(employeeId), period);
-                        }
-                    },
+                @Override
+                public List<IntegrationOfDaily> getRecordList(List<EmployeeId> list, DatePeriod datePeriod) {
+                    return dailyRecordAdapter.getDailyRecordByScheduleManagement(Arrays.asList(employeeId), period);
+                }
+            },
                     Arrays.asList(new EmployeeId(employeeId)),
                     period,
                     ScheRecGettingAtr.SCHEDULE_WITH_RECORD
@@ -598,9 +588,9 @@ public class ExecuteAlarmListByEmployeeRequire {
         @Override
         public List<IntegrationOfMonthly> getIntegrationOfMonthlyProspect(String employeeId, List<ClosureMonth> closureMonths) {
             List<IntegrationOfMonthly> result = new ArrayList<>();
-            for(ClosureMonth closureMonth : closureMonths) {
+            for (ClosureMonth closureMonth : closureMonths) {
                 // TODO: 過去月か？
-                if (closureMonth.defaultPeriod().end().before(GeneralDate.today())){
+                if (closureMonth.defaultPeriod().end().before(GeneralDate.today())) {
                     val im = integrationOfMonthlyGetter.get(employeeId, closureMonth.yearMonth(), ClosureId.valueOf(closureMonth.closureId()), closureMonth.closureDate());
                     result.add(im);
                     continue;
@@ -620,45 +610,43 @@ public class ExecuteAlarmListByEmployeeRequire {
             return result;
         }
 
-
         //--- 月別実績 ---//
-
         @Override
         public IntegrationOfMonthly getIntegrationOfMonthly(String employeeId, ClosureMonth closureMonth) {
             return integrationOfMonthlyGetter.get(employeeId, closureMonth.yearMonth(), ClosureId.valueOf(closureMonth.closureId()), closureMonth.closureDate());
         }
-        
-		@Override
-		public List<IntegrationOfMonthly> getIntegrationOfMonthly(String employeeId, List<ClosureMonth> closureMonthes) {
-			return closureMonthes.stream()
-					.map(closureMonth -> this.getIntegrationOfMonthly(employeeId, closureMonth))
-					.collect(Collectors.toList());
-		}
+
+        @Override
+        public List<IntegrationOfMonthly> getIntegrationOfMonthly(String employeeId, List<ClosureMonth> closureMonthes) {
+            return closureMonthes.stream()
+                    .map(closureMonth -> this.getIntegrationOfMonthly(employeeId, closureMonth))
+                    .collect(Collectors.toList());
+        }
 
         @Override
         public Optional<ConfirmationMonth> getConfirmationMonth(String employeeId, ClosureMonth closureMonth) {
             // TODO
             return Optional.empty();
         }
-        
-		@Override
-		public ExtraResultMonthly getExtraResultMonthly(ErrorAlarmWorkRecordCode codes) {
-			return null;
-		}
-        
-		@Override
-		public List<ExtraResultMonthly> getExtraResultMonthly(List<ErrorAlarmWorkRecordCode> codes) {
-			return codes.stream()
-								 .map(code -> this.getExtraResultMonthly(code))
-								 .collect(Collectors.toList());
-		}
 
-		@Override
-		public List<MonthlyRecordToAttendanceItemConverter> getMonthlyRecordToAttendanceItemConverter(List<IntegrationOfMonthly> monthlyRecords) {
-			return monthlyRecords.stream()
-						.map(record -> MonthlyRecordToAttendanceItemConverterImpl.builder(optionalItemRepo).setData(record))
-						.collect(Collectors.toList());
-		}
+        @Override
+        public ExtraResultMonthly getExtraResultMonthly(ErrorAlarmWorkRecordCode codes) {
+            return null;
+        }
+
+        @Override
+        public List<ExtraResultMonthly> getExtraResultMonthly(List<ErrorAlarmWorkRecordCode> codes) {
+            return codes.stream()
+                    .map(code -> this.getExtraResultMonthly(code))
+                    .collect(Collectors.toList());
+        }
+
+        @Override
+        public List<MonthlyRecordToAttendanceItemConverter> getMonthlyRecordToAttendanceItemConverter(List<IntegrationOfMonthly> monthlyRecords) {
+            return monthlyRecords.stream()
+                    .map(record -> MonthlyRecordToAttendanceItemConverterImpl.builder(optionalItemRepo).setData(record))
+                    .collect(Collectors.toList());
+        }
 
         @Override
         public List<ApproveRootStatusForEmpImport> getApprovalStateMonth(String employeeId, ClosureMonth closureMonth) {
@@ -668,9 +656,7 @@ public class ExecuteAlarmListByEmployeeRequire {
                     RecordRootType.CONFIRM_WORK_BY_MONTH.value);
         }
 
-
         //--- 週別実績 ---//
-
         @Override
         public List<ExtractionCondWeekly> getUsedExtractionCondWeekly(List<String> codes) {
             return extractionCondWeeklyRepository.getByCodes(companyId, ErAlCategory.WEEKLY.value, codes);
@@ -687,20 +673,17 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         //--- 申請承認 ---//
-
         @Override
         public List<ApprovalRootStateStatus> getApprovalRootStateByPeriod(String employeeId, DatePeriod period) {
             return approvalRootStateStatusService.getStatusByEmpAndDate(employeeId, period.start(), period.end(), 1);
         }
 
         @Override
-		public List<Application> getApplicationBy(String employeeId, GeneralDate targetDate, ReflectedState states) {
-			return applicatoinRepo.getByListRefStatus(this.companyId, employeeId, targetDate, targetDate, Arrays.asList(states.value));
-		}
-
+        public List<Application> getApplicationBy(String employeeId, GeneralDate targetDate, ReflectedState states) {
+            return applicatoinRepo.getByListRefStatus(this.companyId, employeeId, targetDate, targetDate, Arrays.asList(states.value));
+        }
 
         //--- エラーアラーム ---//
-
         @Override
         public Iterable<EmployeeDailyPerError> getEmployeeDailyPerErrors(String employeeId, DatePeriod period, List<ErrorAlarmWorkRecordCode> targetCodes) {
             return employeeDailyPerErrorRepo.findsByCodeLst(
@@ -720,9 +703,7 @@ public class ExecuteAlarmListByEmployeeRequire {
             return errorAlarmConditionRepo.findConditionByErrorAlamCheckId(id);
         }
 
-
         //--- 年休 ---//
-
         @Override
         public Optional<AnnualLeaveEmpBasicInfo> getBasicInfo(String employeeId) {
             return annLeaEmpBasicInfoRepo.get(employeeId);
@@ -738,9 +719,7 @@ public class ExecuteAlarmListByEmployeeRequire {
             return annualPaidLeaveSettingRepo.findByCompanyId(companyId);
         }
 
-
         //--- 子の看護介護休暇 ---//
-
         @Override
         public EmployeeImport findByEmpId(String employeeId) {
             return empEmployeeAdapter.findByEmpId(employeeId);
@@ -769,10 +748,12 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public Optional<NursingCareLeaveRemainingInfo> employeeInfo(String employeeId, NursingCategory nursingCategory) {
-            if(nursingCategory.equals(NursingCategory.Nursing))
-                return careLeaveEmployeeInfo(employeeId).map(mapper->(NursingCareLeaveRemainingInfo)mapper);
-            if(nursingCategory.equals(NursingCategory.ChildNursing))
-                return childCareLeaveEmployeeInfo(employeeId).map(mapper->(NursingCareLeaveRemainingInfo)mapper);
+            if (nursingCategory.equals(NursingCategory.Nursing)) {
+                return careLeaveEmployeeInfo(employeeId).map(mapper -> (NursingCareLeaveRemainingInfo) mapper);
+            }
+            if (nursingCategory.equals(NursingCategory.ChildNursing)) {
+                return childCareLeaveEmployeeInfo(employeeId).map(mapper -> (NursingCareLeaveRemainingInfo) mapper);
+            }
             return Optional.empty();
         }
 
@@ -822,13 +803,11 @@ public class ExecuteAlarmListByEmployeeRequire {
             return empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, employeeId);
         }
 
-
         //--- 任意期間集計 ---//
-
-		@Override
-		public AttendanceTimeOfAnyPeriod getAttendanceTimeOfAnyPeriod(String employeeId, String anyPeriodFrameCode) {
-			return attendanceTimeOfAnyPeriodRepo.find(employeeId, anyPeriodFrameCode).get();
-		}
+        @Override
+        public AttendanceTimeOfAnyPeriod getAttendanceTimeOfAnyPeriod(String employeeId, String anyPeriodFrameCode) {
+            return attendanceTimeOfAnyPeriodRepo.find(employeeId, anyPeriodFrameCode).get();
+        }
 
         @Override
         public List<IntegrationOfDaily> getIntegrationOfDailyRecords(String employeeId, DatePeriod period) {
@@ -836,27 +815,26 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
-		public AnyAggrPeriod getAnyAggrPeriod(AnyAggrFrameCode code) {
-			return anyAggrPeriodRepo.findOneByCompanyIdAndFrameCode(companyId, code.v()).get();
-		}
-		
-		@Override
-		public List<ErrorAlarmAnyPeriod> getErrorAlarmAnyPeriod(List<ErrorAlarmWorkRecordCode> code) {
-			return null;
-		}
+        public AnyAggrPeriod getAnyAggrPeriod(AnyAggrFrameCode code) {
+            return anyAggrPeriodRepo.findOneByCompanyIdAndFrameCode(companyId, code.v()).get();
+        }
 
-		@Override
-		public AnyPeriodRecordToAttendanceItemConverter getAnyPeriodRecordToAttendanceItemConverter(
-				String employeeId, AttendanceTimeOfAnyPeriod record) {
-			return AnyPeriodRecordToAttendanceItemConverterImpl
-					.builder(optionalItemRepo)
-					.withBase(employeeId)
-					.withAttendanceTime(record)
-					.completed();
-		}
+        @Override
+        public List<ErrorAlarmAnyPeriod> getErrorAlarmAnyPeriod(List<ErrorAlarmWorkRecordCode> code) {
+            return null;
+        }
+
+        @Override
+        public AnyPeriodRecordToAttendanceItemConverter getAnyPeriodRecordToAttendanceItemConverter(
+                String employeeId, AttendanceTimeOfAnyPeriod record) {
+            return AnyPeriodRecordToAttendanceItemConverterImpl
+                    .builder(optionalItemRepo)
+                    .withBase(employeeId)
+                    .withAttendanceTime(record)
+                    .completed();
+        }
 
         //--- 作業 ---//
-
         @Override
         public Optional<TaskAssignEmployee> getTaskAssign(String employeeId, TaskFrameNo frameNo) {
             return Optional.empty();
@@ -886,9 +864,6 @@ public class ExecuteAlarmListByEmployeeRequire {
 
 
         //================= 未分類の壁 =================//
-
-
-
         @Override
         public List<StampCard> getStampCard(String employeeId) {
             return stampCardRepo.getListStampCard(employeeId);
@@ -938,5 +913,19 @@ public class ExecuteAlarmListByEmployeeRequire {
 		public boolean existWorkLocation(WorkLocationCD code) {
 			return workLocationRepo.findByCode(contractCode, code.v()).isPresent();
 		}
+        @Override
+        public Optional<AggregateMethodOfMonthly> getAggregateMethodOfMonthly(String cid) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public Optional<RetentionYearlySetting> retentionYearlySetting(String companyId) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public WorkDaysNumberOnLeaveCount workDaysNumberOnLeaveCount(String cid) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
     }
 }

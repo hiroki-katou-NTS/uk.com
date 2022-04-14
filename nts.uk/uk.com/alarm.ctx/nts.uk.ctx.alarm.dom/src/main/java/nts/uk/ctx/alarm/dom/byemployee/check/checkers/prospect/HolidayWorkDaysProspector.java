@@ -8,20 +8,20 @@ package nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect;
 import java.util.Optional;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.WorkTypeDaysCountTable;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.AttendanceDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.HolidayWorkDaysOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
- * 出勤日数プロスペクター
+ * 休出日数の見込みを計算する
  * @author raiki_asada
  */
-public class AttendanceDaysProspector extends WorkDaysProspectorBase {
+public class HolidayWorkDaysProspector extends WorkDaysProspectorBase {
 
-    public AttendanceDaysProspector(RequireOfCreate require, String companyId, AggregateIntegrationOfDaily aggregateIntegrationOfDaily) {
+    public HolidayWorkDaysProspector(RequireOfCreate require, String companyId, AggregateIntegrationOfDaily aggregateIntegrationOfDaily) {
         super(require, companyId, aggregateIntegrationOfDaily);
     }
-
+    
     public double prospect(Require require, String cid, String employeeId) {
         return super.aggregateIntegrationOfDaily.aggregate(require, iod -> {
             return require.getWorkType(iod.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).map(workType -> {
@@ -31,16 +31,16 @@ public class AttendanceDaysProspector extends WorkDaysProspectorBase {
 
                     boolean isAttendanceDay = CheckAttendanceForIntegrationOfDaily.check(iod);
                     
-                    AttendanceDaysOfMonthly result = new AttendanceDaysOfMonthly();
+                    HolidayWorkDaysOfMonthly result = new HolidayWorkDaysOfMonthly();
                     // 会社ID, 勤務種類, 労働制, 勤務種類のカウント表、出勤してるか
-                    result.aggregate(require, cid, workType, item.getLaborSystem(), table, isAttendanceDay);
+                    result.aggregate(item.getLaborSystem(), table, isAttendanceDay);
                     return result.getDays().v();
                 }).orElse(0.0);
             }).orElse(0.0);
         });
     }
     
-    public interface Require extends WorkingConditionService.RequireM1, AggregateIntegrationOfDaily.AggregationRequire, AttendanceDaysOfMonthly.Require{
+    public interface Require extends WorkingConditionService.RequireM1, AggregateIntegrationOfDaily.AggregationRequire {
         Optional<WorkType> getWorkType(String workTypeCode);
     }
 }
