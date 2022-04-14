@@ -16,8 +16,11 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfDaily;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.AttendanceDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.HolidayWorkDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.HolidaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.WorkDaysProspectorBase;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
 import nts.uk.shr.com.time.closure.ClosureMonth;
 
 /**
@@ -48,20 +51,33 @@ public enum ConditionValueProspectYearlyByEmployee implements ConditionValueLogi
     })),
     出勤日数(2, "日数：出勤日数", c -> {
         return aggregate(c,
-                (iom) -> {
-                    return iom.getAttendanceTime()
-                            .map(attendanceTime -> attendanceTime.getVerticalTotal().getWorkDays().getAttendanceDays().getDays().v())
-                            .orElse(0.0);
-                },
+                (iom) -> getWorkDays(iom, (workDays) -> workDays.getAttendanceDays().getDays().v()),
                 (aggregator) -> {
-                    AttendanceDaysProspector prospector = new AttendanceDaysProspector(c.require, "仮", aggregator);
-                    return prospector.prospect(c.require, "仮", c.getEmployeeId());
+                    AttendanceDaysProspector prospector = new AttendanceDaysProspector(c.require, c.companyId, aggregator);
+                    return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
                 });
 
     }),
+    休日日数(2, "日数：休日日数", c -> {
+        return aggregate(c,
+                (iom) ->  getWorkDays(iom, (workDays) -> workDays.getHolidayDays().getDays().v()),
+                (aggregator) -> {
+                    HolidaysProspector prospector = new HolidaysProspector(c.require, c.companyId, aggregator);
+                    return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+                });
+    }),
     
-    ;
+    
+    休出日数(3, "日数：休出日数", c -> {
+        return aggregate(c,
+                (iom) ->  getWorkDays(iom, (workDays) -> workDays.getHolidayWorkDays().getDays().v()),
+                (aggregator) -> {
+                    HolidayWorkDaysProspector prospector = new HolidayWorkDaysProspector(c.require, c.companyId, aggregator);
+                    return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+                });
+    }),
 
+    ;
     public final int value;
 
     /**
@@ -84,6 +100,12 @@ public enum ConditionValueProspectYearlyByEmployee implements ConditionValueLogi
         return closedRecord + prospect;
     }
 
+    private static double getWorkDays(IntegrationOfMonthly iom, Function<WorkDaysOfMonthly, Double> function) {
+        return iom.getAttendanceTime()
+                .map(attendanceTime -> function.apply(attendanceTime.getVerticalTotal().getWorkDays()))
+                .orElse(0.0);
+    }
+
     @Override
     public Double getValue(Context context) {
         return getValue.apply(context);
@@ -93,18 +115,20 @@ public enum ConditionValueProspectYearlyByEmployee implements ConditionValueLogi
             AggregateIntegrationOfMonthly.AggregationRequire,
             AggregateIntegrationOfDaily.AggregationRequire,
             WorkDaysProspectorBase.RequireOfCreate,
-            AttendanceDaysProspector.Require {
+            AttendanceDaysProspector.Require,
+            HolidaysProspector.Require,
+            HolidayWorkDaysProspector.Require {
     }
 
     @Value
     public static class Context implements ConditionValueContext {
 
         Require require;
-        
+
         String companyId;
-        
+
         String employeeId;
-        
+
         List<ClosureMonth> period;
 
         @Override
@@ -120,16 +144,16 @@ public enum ConditionValueProspectYearlyByEmployee implements ConditionValueLogi
         @Override
         public DateInfo getDateInfo() {
             YearMonth start = this.period.get(0).getYearMonth();
-            YearMonth end = this.period.get(this.period.size()-1).getYearMonth();
+            YearMonth end = this.period.get(this.period.size() - 1).getYearMonth();
             return new DateInfo(new YearMonthPeriod(start, end));
         }
-        
+
         public AggregateIntegrationOfMonthly getClosedAggregator() {
             // TODO: 当月より前のものだけにする
             List<ClosureMonth> closedMonths = null;
             return new AggregateIntegrationOfMonthly(this.employeeId, closedMonths);
         }
-        
+
         public List<AggregateIntegrationOfDaily> getProspectAggregator() {
             // TODO: 当月以降のものだけにする
             List<ClosureMonth> prospectMonths = null;
