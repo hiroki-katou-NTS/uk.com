@@ -23,4 +23,7 @@ public class CheckingPeriod {
     
     /** 任意期間 */
     AnyAggrFrameCode anyPeriod;
+
+    /** 休暇 */
+    CheckingPeriodVacation vacation;
 }

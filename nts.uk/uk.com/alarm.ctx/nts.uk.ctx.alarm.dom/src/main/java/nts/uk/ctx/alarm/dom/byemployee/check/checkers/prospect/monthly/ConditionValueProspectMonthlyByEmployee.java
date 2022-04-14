@@ -3,37 +3,29 @@ package nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.monthly;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
-import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfDaily;
-import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfMonthly;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodMonthly;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueContext;
 import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueLogic;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeServiceRequireImpl;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonAndWeekStatutoryTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryWorkingHours;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.*;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.closure.ClosureMonth;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.AttendanceDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.HolidayWorkDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.HolidaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.WorkDaysProspectorBase;
+
 
 /**
  * 条件値チェック(社員別・見込み月次)
@@ -123,6 +115,22 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
         return totalTime / MonStatutoryTime;
     }),
 
+    出勤日数(3, "日数：出勤日数", c ->  {
+        AttendanceDaysProspector prospector = new AttendanceDaysProspector(c.require, c.companyId, c.aggregate);
+        return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+    }),
+    
+    休日日数(3, "日数：休日日数", c-> {
+        HolidaysProspector prospector = new HolidaysProspector(c.require, c.companyId, c.aggregate);
+        return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+    }),
+    
+    休出日数(3, "日数：休出日数", c-> {
+        HolidayWorkDaysProspector prospector = new HolidayWorkDaysProspector(c.require, c.companyId, c.aggregate);
+        return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+    }),
+    
+    
     ;
 
     public final int value;
@@ -139,7 +147,11 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
     }
 
     public interface Require extends
-            AggregateIntegrationOfDaily.AggregationRequire{
+            AggregateIntegrationOfDaily.AggregationRequire,
+            WorkDaysProspectorBase.RequireOfCreate,
+            AttendanceDaysProspector.Require,
+            HolidayWorkDaysProspector.Require, HolidaysProspector.Require {
+
         List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, GeneralDate baseDate);
         Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyID, String employeeId, GeneralDate baseDate);
         RecordDomRequireService requireService();
@@ -148,6 +160,7 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
     @Value
     public static class Context implements ConditionValueContext {
         Require require;
+        String companyId;
         AggregateIntegrationOfDaily aggregate;
         ClosureMonth closureMonth;
 
