@@ -18,15 +18,16 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.Mon
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.closure.ClosureMonth;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.AbsenceDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.AttendanceDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.HolidayWorkDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.HolidaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.SpecialVacationDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.WorkDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.WorkDaysProspectorBase;
 
 
@@ -196,7 +197,20 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
         return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
     }),
     
+    特休日数合計(3, "日数：特休日数合計", c-> {
+        SpecialVacationDaysProspector prospector = new SpecialVacationDaysProspector(c.require, c.companyId, c.aggregate);
+        return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+    }),
     
+    欠勤日数合計(3, "日数：欠勤日数合計", c-> {
+        AbsenceDaysProspector prospector = new AbsenceDaysProspector(c.require, c.companyId, c.aggregate);
+        return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+    }),
+    
+    勤務日数(3, "日数：予定勤務日数＋勤務日数", c-> {
+        WorkDaysProspector prospector = new WorkDaysProspector(c.require, c.companyId, c.aggregate);
+        return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+    }),
     ;
 
     public final int value;
@@ -212,11 +226,16 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
         return getValue.apply(context);
     }
 
+
     public interface Require extends
             AggregateIntegrationOfDaily.AggregationRequire,
             WorkDaysProspectorBase.RequireOfCreate,
             AttendanceDaysProspector.Require,
-            HolidayWorkDaysProspector.Require, HolidaysProspector.Require {
+            HolidayWorkDaysProspector.Require, 
+            HolidaysProspector.Require,
+            SpecialVacationDaysProspector.Require, 
+            AbsenceDaysProspector.Require,
+            WorkDaysProspector.Require {
 
         List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, GeneralDate baseDate);
         Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyID, String employeeId, GeneralDate baseDate);

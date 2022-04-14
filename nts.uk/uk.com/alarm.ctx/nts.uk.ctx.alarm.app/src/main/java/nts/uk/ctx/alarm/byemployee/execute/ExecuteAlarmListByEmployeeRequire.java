@@ -1,17 +1,7 @@
 package nts.uk.ctx.alarm.byemployee.execute;
 
-
 import java.util.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -87,7 +77,6 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
-import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
@@ -117,9 +106,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkCode;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyRepository;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthlyGetter;
@@ -127,7 +113,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWe
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.converter.WeeklyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryWorkingHours;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskframe.TaskFrameUsageSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignemployee.TaskAssignEmployee;
@@ -135,7 +120,6 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageSetting;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
@@ -146,7 +130,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettin
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.*;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
@@ -167,7 +150,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.CalcNextAnnLeaGrantInfo;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.service.ApprovalRootStateStatusService;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
@@ -183,6 +165,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.WorkDaysNumberOnLeaveCount;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
@@ -344,31 +327,31 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private ClosureRepository closureRepo;
-    
+
     @Inject
     private BPSettingRepository bPSettingRepo;
-    
+
     @Inject
     private IdentificationRepository identificationRepo;
-    
+
     @Inject
     private ApprovalRootStateStatusService approvalRootStateStatusService;
-    
+
     @Inject
     private WorkingConditionItemRepository workingConditionItemRepo;
-    
+
     @Inject
     private WorkLocationRepository workLocationRepo;
-    
+
     @Inject
     private TaskingRepository taskingRepo;
-    
+
     @Inject
     private TaskFrameUsageSettingRepository taskFrameUsageSettingRepo;
-    
+
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
-        		AppContexts.user().contractCode(),
+                AppContexts.user().contractCode(),
                 AppContexts.user().companyId(),
                 AppContexts.user().employeeId()));
     }
@@ -383,8 +366,8 @@ public class ExecuteAlarmListByEmployeeRequire {
     @RequiredArgsConstructor
     public class RequireImpl implements Require {
 
-    	private final String companyId;
-    	private final String contractCode;
+        private final String companyId;
+        private final String contractCode;
         private final String loginEmployeeId;
 
         //--- ログイン情報 ---//
@@ -442,10 +425,11 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         //--- 労働条件 ---//
-		@Override
-		public Optional<WorkingConditionItem> getWorkingConditionItem(String employeeId, GeneralDate date) {
-			return workingConditionItemRepo.getBySidAndStandardDate(employeeId, date);
-		}
+        @Override
+        public Optional<WorkingConditionItem> getWorkingConditionItem(String employeeId, GeneralDate date) {
+            return workingConditionItemRepo.getBySidAndStandardDate(employeeId, date);
+        }
+
         @Override
         public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -455,8 +439,7 @@ public class ExecuteAlarmListByEmployeeRequire {
         public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
-        
-        
+
         //--- 勤務種類 ---//
         @Override
         public List<WorkingConditionItemWithPeriod> getWorkingConditions(String s, DatePeriod datePeriod) {
@@ -465,7 +448,7 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public Optional<WorkType> getWorkType(String workTypeCode) {
-            return workTypeRepo.findByPK(this.companyId, workTypeCode);
+            return this.workType(companyId, new WorkTypeCode(workTypeCode));
         }
 
         @Override
@@ -476,6 +459,11 @@ public class ExecuteAlarmListByEmployeeRequire {
         @Override
         public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
             return getWorkType(workTypeCode.v());
+        }
+
+        @Override
+        public Optional<WorkType> workType(String cid, String workTypeCode) {
+            return workTypeRepo.findByPK(cid, workTypeCode);
         }
 
         //--- 就業時間帯 ---//
@@ -607,9 +595,9 @@ public class ExecuteAlarmListByEmployeeRequire {
         public List<IntegrationOfMonthly> getIntegrationOfMonthlyProspect(String employeeId, List<ClosureMonth> closureMonths) {
             List<IntegrationOfMonthly> result = new ArrayList<>();
             closureMonths.sort(Comparator.comparing(cm -> cm.defaultPeriod().start()));
-            for(ClosureMonth closureMonth : closureMonths) {
+            for (ClosureMonth closureMonth : closureMonths) {
                 // TODO: 過去月か？
-                if (closureMonth.defaultPeriod().end().before(GeneralDate.today())){
+                if (closureMonth.defaultPeriod().end().before(GeneralDate.today())) {
                     val im = integrationOfMonthlyGetter.get(
                             employeeId, closureMonth.yearMonth(), ClosureId.valueOf(closureMonth.closureId()), closureMonth.closureDate());
                     result.add(im);
@@ -631,7 +619,7 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
-        public RecordDomRequireService requireService(){
+        public RecordDomRequireService requireService() {
             return requireService;
         }
 
@@ -869,24 +857,22 @@ public class ExecuteAlarmListByEmployeeRequire {
         public boolean existsTask(TaskFrameNo taskFrameNo, TaskCode code) {
             return false;
         }
-        
-		@Override
-		public Optional<Task> getTask(TaskFrameNo taskFrameNo, WorkCode code) {
-			return taskingRepo.getOptionalTask(companyId, taskFrameNo, new TaskCode(code.v()));
-		}
 
-		@Override
-		public TaskFrameUsageSetting getTaskFrameUsageSetting() {
-			return taskFrameUsageSettingRepo.getWorkFrameUsageSetting(companyId);
-		}
-        
+        @Override
+        public Optional<Task> getTask(TaskFrameNo taskFrameNo, WorkCode code) {
+            return taskingRepo.getOptionalTask(companyId, taskFrameNo, new TaskCode(code.v()));
+        }
+
+        @Override
+        public TaskFrameUsageSetting getTaskFrameUsageSetting() {
+            return taskFrameUsageSettingRepo.getWorkFrameUsageSetting(companyId);
+        }
+
         //--- 加給 ---//
-		@Override
-		public boolean existsBonusPay(BonusPaySettingCode code) {
-			return bPSettingRepo.isExisted(companyId, code);
-		}
-
-
+        @Override
+        public boolean existsBonusPay(BonusPaySettingCode code) {
+            return bPSettingRepo.isExisted(companyId, code);
+        }
 
         //================= 未分類の壁 =================//
         @Override
@@ -934,10 +920,11 @@ public class ExecuteAlarmListByEmployeeRequire {
             return empAffiliationInforAdapter.getEmpOrganization(generalDate, lstEmpId);
         }
 
-		@Override
-		public boolean existWorkLocation(WorkLocationCD code) {
-			return workLocationRepo.findByCode(contractCode, code.v()).isPresent();
-		}
+        @Override
+        public boolean existWorkLocation(WorkLocationCD code) {
+            return workLocationRepo.findByCode(contractCode, code.v()).isPresent();
+        }
+
         @Override
         public Optional<AggregateMethodOfMonthly> getAggregateMethodOfMonthly(String cid) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -950,6 +937,11 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public WorkDaysNumberOnLeaveCount workDaysNumberOnLeaveCount(String cid) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public Optional<HolidayAddtionSet> holidayAddtionSet(String cid) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
