@@ -71,9 +71,16 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
                     // TODO: 保留
                     return null;
                 });
-        return numerator / denominator;
+        return numerator / denominator * 100;
     }),
     基準時間比_通常勤務(3, "対比：基準時間比（通常勤務）", c -> {
+        // 労働制を取得（月中で労働制変わってた場合は考慮していない（終了日基準））
+        val baseDate = CheckingPeriodMonthly.getBaseDate(c.getClosureMonth());
+        val workingSystem = c.require.getWorkingConditions(c.getEmployeeId(), baseDate).stream()
+                .map(wc -> wc.getWorkingConditionItem().getLaborSystem())
+                .collect(Collectors.toList()).get(0);
+        if (!workingSystem.isRegularWork()) return null;    // チェック対象外
+
         // 総労働時間
         Double totalTime = c.aggregate.aggregate(c.require,
             data -> data.getAttendanceTimeOfDailyPerformance()
@@ -81,42 +88,98 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
                     .getActualWorkingTimeOfDaily()
                     .getTotalWorkingTime()
                     .getTotalTime()
-                    .v().doubleValue()
-            );
+                    .v().doubleValue());
 
         // 法定労働時間
         Double MonStatutoryTime;
-        val baseDate = CheckingPeriodMonthly.getBaseDate(c.getClosureMonth());
-        // 労働制を取得
-        // 月中で労働制変わってた場合は考慮していない（終了日基準）
         val cacheCarrier = new CacheCarrier();
-        val companyID = AppContexts.user().companyId();
-        val workingSystem = c.require.getWorkingConditions(c.getEmployeeId(), baseDate).stream()
-                .map(wc -> wc.getWorkingConditionItem().getLaborSystem())
-                .collect(Collectors.toList()).get(0);
         // 雇用を取得
-        // アルゴリズム「社員所属雇用履歴を取得」を実行する
-        Optional<BsEmploymentHistoryImport> empHist = c.require.employmentHistory(cacheCarrier, companyID, c.getEmployeeId(), baseDate);
+        Optional<BsEmploymentHistoryImport> empHist = c.require.employmentHistory(cacheCarrier, c.companyId, c.getEmployeeId(), baseDate);
         val employmentCd = empHist.get().getEmploymentCode();
-        if (workingSystem.isFlexTimeWork()){
-            MonthlyStatutoryWorkingHours.RequireM1 requireImpl = c.require.requireService().createRequire();
-            val monthlyFlexStatutoryLaborTime = MonthlyStatutoryWorkingHours.flexMonAndWeekStatutoryTime(
-                    requireImpl, cacheCarrier,
-                    companyID, employmentCd, c.getEmployeeId(), baseDate, c.closureMonth.getYearMonth()
-                );
-            MonStatutoryTime = monthlyFlexStatutoryLaborTime.getStatutorySetting().v().doubleValue();
-        }
-        else {
-            MonthlyStatutoryWorkingHours.RequireM4 requireImpl = c.require.requireService().createRequire();
-            val monthlyFlexStatutoryLaborTime = MonthlyStatutoryWorkingHours.monAndWeekStatutoryTime(
-                    requireImpl, cacheCarrier,
-                    companyID, employmentCd, c.getEmployeeId(), baseDate, c.closureMonth.getYearMonth(), workingSystem
-            );
-            MonStatutoryTime = monthlyFlexStatutoryLaborTime.get().getMonthlyEstimateTime().v().doubleValue();
-        }
+
+        MonthlyStatutoryWorkingHours.RequireM4 requireImpl = c.require.requireService().createRequire();
+        val monthlyFlexStatutoryLaborTime = MonthlyStatutoryWorkingHours.monAndWeekStatutoryTime(
+                requireImpl, cacheCarrier,
+                c.companyId, employmentCd, c.getEmployeeId(), baseDate, c.closureMonth.getYearMonth(), workingSystem
+        );
+        MonStatutoryTime = monthlyFlexStatutoryLaborTime.get().getMonthlyEstimateTime().v().doubleValue();
 
         return totalTime / MonStatutoryTime;
     }),
+    基準時間比_変形労働(3, "対比：基準時間比（変形労働）", c -> {
+        // 労働制を取得（月中で労働制変わってた場合は考慮していない（終了日基準））
+        val baseDate = CheckingPeriodMonthly.getBaseDate(c.getClosureMonth());
+        val workingSystem = c.require.getWorkingConditions(c.getEmployeeId(), baseDate).stream()
+                .map(wc -> wc.getWorkingConditionItem().getLaborSystem())
+                .collect(Collectors.toList()).get(0);
+        if (!workingSystem.isVariableWorkingTimeWork()) return null;    // チェック対象外
+
+        // 総労働時間
+        Double totalTime = c.aggregate.aggregate(c.require,
+                data -> data.getAttendanceTimeOfDailyPerformance()
+                        .get()
+                        .getActualWorkingTimeOfDaily()
+                        .getTotalWorkingTime()
+                        .getTotalTime()
+                        .v().doubleValue());
+
+        // 法定労働時間
+        Double MonStatutoryTime;
+        val cacheCarrier = new CacheCarrier();
+        // 雇用を取得
+        Optional<BsEmploymentHistoryImport> empHist = c.require.employmentHistory(cacheCarrier, c.companyId, c.getEmployeeId(), baseDate);
+        val employmentCd = empHist.get().getEmploymentCode();
+
+        MonthlyStatutoryWorkingHours.RequireM4 requireImpl = c.require.requireService().createRequire();
+        val monthlyFlexStatutoryLaborTime = MonthlyStatutoryWorkingHours.monAndWeekStatutoryTime(
+                requireImpl, cacheCarrier,
+                c.companyId, employmentCd, c.getEmployeeId(), baseDate, c.closureMonth.getYearMonth(), workingSystem
+        );
+        MonStatutoryTime = monthlyFlexStatutoryLaborTime.get().getMonthlyEstimateTime().v().doubleValue();
+
+        return totalTime / MonStatutoryTime * 100;
+    }),
+    基準時間比_フレックス(3, "対比：基準時間比（フレックス）", c -> {
+        // 労働制を取得（月中で労働制変わってた場合は考慮していない（終了日基準））
+        val baseDate = CheckingPeriodMonthly.getBaseDate(c.getClosureMonth());
+        val workingSystem = c.require.getWorkingConditions(c.getEmployeeId(), baseDate).stream()
+                .map(wc -> wc.getWorkingConditionItem().getLaborSystem())
+                .collect(Collectors.toList()).get(0);
+        if (!workingSystem.isFlexTimeWork()) return null;    // チェック対象外
+
+        // 総労働時間
+        Double totalTime = c.aggregate.aggregate(c.require,
+                data -> data.getAttendanceTimeOfDailyPerformance()
+                        .get()
+                        .getActualWorkingTimeOfDaily()
+                        .getTotalWorkingTime()
+                        .getTotalTime()
+                        .v().doubleValue());
+
+        // 法定労働時間
+        Double MonStatutoryTime;
+        val cacheCarrier = new CacheCarrier();
+        // 雇用を取得
+        Optional<BsEmploymentHistoryImport> empHist = c.require.employmentHistory(cacheCarrier, c.companyId, c.getEmployeeId(), baseDate);
+        val employmentCd = empHist.get().getEmploymentCode();
+        MonthlyStatutoryWorkingHours.RequireM1 requireImpl = c.require.requireService().createRequire();
+        val monthlyFlexStatutoryLaborTime = MonthlyStatutoryWorkingHours.flexMonAndWeekStatutoryTime(
+                requireImpl, cacheCarrier,
+                c.companyId, employmentCd, c.getEmployeeId(), baseDate, c.closureMonth.getYearMonth()
+        );
+        MonStatutoryTime = monthlyFlexStatutoryLaborTime.getStatutorySetting().v().doubleValue();
+
+        return totalTime / MonStatutoryTime * 100;
+    }),
+    総労働時間(1, "予定時間＋総労働時間", c -> c.aggregate.aggregate(c.require, data -> {
+        // 総労働時間
+        return data.getAttendanceTimeOfDailyPerformance()
+                .get()
+                .getActualWorkingTimeOfDaily()
+                .getTotalWorkingTime()
+                .getTotalTime()
+                .v().doubleValue();
+    })),
 
     出勤日数(3, "日数：出勤日数", c ->  {
         AttendanceDaysProspector prospector = new AttendanceDaysProspector(c.require, c.companyId, c.aggregate);
