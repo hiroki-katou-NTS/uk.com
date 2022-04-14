@@ -15,6 +15,7 @@ import nts.uk.ctx.alarm.dom.conditionvalue.AlarmListConditionValue;
 
 import java.util.Arrays;
 import java.util.List;
+import sun.awt.AppContext;
 
 /**
  * アラームリストのチェック条件(見込み月次)
@@ -40,7 +41,7 @@ public class ProspectMonthlyCheckerByEmployee implements DomainAggregate, AlarmL
 
             AggregateIntegrationOfDaily aggregate = new AggregateIntegrationOfDaily(employeeId, closureMonth);
 
-            val conditionValueContext = new ConditionValueProspectMonthlyByEmployee.Context(require, aggregate);
+            val conditionValueContext = new ConditionValueProspectMonthlyByEmployee.Context(require, "companyId_仮",aggregate);
 
             List<Iterable<AlarmRecordByEmployee>> alarms = Arrays.asList(
                     IteratorUtil.iterableFilter(conditionValues, cv -> cv.checkIfEnabled(conditionValueContext))
