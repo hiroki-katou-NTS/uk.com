@@ -48,6 +48,7 @@ import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrP
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlCategory;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
@@ -61,6 +62,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeekl
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeeklyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
@@ -85,6 +87,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
@@ -105,11 +108,15 @@ import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.Attenda
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriodRepository;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.anyaggrperiod.AnyAggrFrameCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkCode;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
@@ -121,9 +128,15 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWe
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.converter.WeeklyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryWorkingHours;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskframe.TaskFrameUsageSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignemployee.TaskAssignEmployee;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageSetting;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.FamilyInfo;
@@ -156,6 +169,7 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.CalcNextAnnLeaGrantInfo;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
+import nts.uk.ctx.workflow.dom.service.ApprovalRootStateStatusService;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.license.option.OptionLicense;
@@ -330,9 +344,31 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private ClosureRepository closureRepo;
-
+    
+    @Inject
+    private BPSettingRepository bPSettingRepo;
+    
+    @Inject
+    private IdentificationRepository identificationRepo;
+    
+    @Inject
+    private ApprovalRootStateStatusService approvalRootStateStatusService;
+    
+    @Inject
+    private WorkingConditionItemRepository workingConditionItemRepo;
+    
+    @Inject
+    private WorkLocationRepository workLocationRepo;
+    
+    @Inject
+    private TaskingRepository taskingRepo;
+    
+    @Inject
+    private TaskFrameUsageSettingRepository taskFrameUsageSettingRepo;
+    
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
+        		AppContexts.user().contractCode(),
                 AppContexts.user().companyId(),
                 AppContexts.user().employeeId()));
     }
@@ -347,8 +383,8 @@ public class ExecuteAlarmListByEmployeeRequire {
     @RequiredArgsConstructor
     public class RequireImpl implements Require {
 
-        private final String companyId;
-
+    	private final String companyId;
+    	private final String contractCode;
         private final String loginEmployeeId;
 
         //--- ログイン情報 ---//
@@ -405,6 +441,11 @@ public class ExecuteAlarmListByEmployeeRequire {
             return Optional.empty();
         }
 
+        //--- 労働条件 ---//
+		@Override
+		public Optional<WorkingConditionItem> getWorkingConditionItem(String employeeId, GeneralDate date) {
+			return workingConditionItemRepo.getBySidAndStandardDate(employeeId, date);
+		}
         @Override
         public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -537,8 +578,7 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public Optional<Identification> getIdentification(String employeeId, GeneralDate date) {
-            // TODO
-            return Optional.empty();
+            return identificationRepo.findByCode(employeeId, date);
         }
 
         //--- 見込み月次 ---//
@@ -660,8 +700,7 @@ public class ExecuteAlarmListByEmployeeRequire {
         //--- 申請承認 ---//
         @Override
         public List<ApprovalRootStateStatus> getApprovalRootStateByPeriod(String employeeId, DatePeriod period) {
-            // TODO
-            return null;
+            return approvalRootStateStatusService.getStatusByEmpAndDate(employeeId, period.start(), period.end(), 1);
         }
 
         @Override
@@ -830,6 +869,24 @@ public class ExecuteAlarmListByEmployeeRequire {
         public boolean existsTask(TaskFrameNo taskFrameNo, TaskCode code) {
             return false;
         }
+        
+		@Override
+		public Optional<Task> getTask(TaskFrameNo taskFrameNo, WorkCode code) {
+			return taskingRepo.getOptionalTask(companyId, taskFrameNo, new TaskCode(code.v()));
+		}
+
+		@Override
+		public TaskFrameUsageSetting getTaskFrameUsageSetting() {
+			return taskFrameUsageSettingRepo.getWorkFrameUsageSetting(companyId);
+		}
+        
+        //--- 加給 ---//
+		@Override
+		public boolean existsBonusPay(BonusPaySettingCode code) {
+			return bPSettingRepo.isExisted(companyId, code);
+		}
+
+
 
         //================= 未分類の壁 =================//
         @Override
@@ -877,6 +934,10 @@ public class ExecuteAlarmListByEmployeeRequire {
             return empAffiliationInforAdapter.getEmpOrganization(generalDate, lstEmpId);
         }
 
+		@Override
+		public boolean existWorkLocation(WorkLocationCD code) {
+			return workLocationRepo.findByCode(contractCode, code.v()).isPresent();
+		}
         @Override
         public Optional<AggregateMethodOfMonthly> getAggregateMethodOfMonthly(String cid) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

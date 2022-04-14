@@ -8,12 +8,18 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.daily.fixlogic.CheckExpiredWorkGroup;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.daily.fixlogic.CheckNotReflectionStamp;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.daily.fixlogic.CheckNotRegistWorkLocation;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.DailyConfirmAtr;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 
@@ -32,10 +38,10 @@ import java.util.stream.Collectors;
 public enum FixedLogicDailyByEmployee {
 
     勤務種類未登録(1, c -> alarmToIntegrationOfDaily(
-            c, (iod) -> c.require.existsWorkType(iod.getWorkInformation().getRecordInfo().getWorkTypeCode().v()))),
+            c, (iod) -> !c.require.existsWorkType(iod.getWorkInformation().getRecordInfo().getWorkTypeCode().v()))),
 
     就業時間帯未登録(2, c -> alarmToIntegrationOfDaily(
-            c, (iod) -> c.require.existsWorkTime(iod.getWorkInformation().getRecordInfo().getWorkTimeCode().v()))),
+            c, (iod) -> !c.require.existsWorkTime(iod.getWorkInformation().getRecordInfo().getWorkTimeCode().v()))),
     
     手入力(3, c -> {        
         return IteratorUtil.iterableFlatten(c.period.datesBetween(), date -> {
@@ -56,8 +62,57 @@ public enum FixedLogicDailyByEmployee {
                 .iterator();
     }),
     
-    本人未確認(5, c-> alarm(c, date -> c.require.getIdentification(c.employeeId, date).isPresent()))
+    本人未確認(5, c-> alarm(c, date -> c.require.getIdentification(c.employeeId, date).isPresent())),
 
+    加給コード未登録(6, c -> alarmToIntegrationOfDaily(
+            c, (iod) -> iod.getAffiliationInfor()
+            					  .getBonusPaySettingCode()
+            					  .map(bonusPayCode -> !c.require.existsBonusPay(bonusPayCode))
+            					  .orElse(true))),
+    
+    契約時間超過(7, c -> alarmToIntegrationOfDaily(
+                c, (iod) -> {
+                	val totalTime = iod.getAttendanceTimeOfDailyPerformance()
+                		.map(dailyPerformance -> dailyPerformance.getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime())
+                		.orElse(new AttendanceTime(0));
+                	return c.require.getWorkingConditionItem(iod.getEmployeeId(), iod.getYmd())
+											  .map(cItem -> cItem.getContractTime())
+											  .map(contractTime -> totalTime.greaterThan(contractTime.v()))
+											  .orElse(false);
+                })),
+    
+    契約時間未満(8, c -> alarmToIntegrationOfDaily(
+            c, (iod) -> {
+            	val totalTime = iod.getAttendanceTimeOfDailyPerformance()
+            		.map(dailyPerformance -> dailyPerformance.getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime())
+            		.orElse(new AttendanceTime(0));
+            	return c.require.getWorkingConditionItem(iod.getEmployeeId(), iod.getYmd())
+										  .map(cItem -> cItem.getContractTime())
+										  .map(contractTime -> contractTime.greaterThan(totalTime.v()))
+										  .orElse(false);
+            })),
+    特定日出勤(9 , c -> alarmToIntegrationOfDaily(
+            c, (iod) -> iod.getSpecDateAttr()
+            	.map(specDate -> specDate.getSpecificDateAttrSheets()
+            												  .stream()
+            												  .anyMatch(sheet -> sheet.getSpecificDateAttr().isUse())
+            	)
+            	.orElse(false))),
+    
+    未反映打刻(10, c -> CheckNotReflectionStamp.check(c.getRequire(), c.getEmployeeId(), c.getPeriod())),
+    
+    未登録場所の打刻(11, c -> CheckNotRegistWorkLocation.check(c.getRequire(), c.getEmployeeId(), c.getPeriod())),
+    
+    入退門二重打刻(12, c -> alarmToIntegrationOfDaily(
+            c, (iod) -> iod.getAttendanceLeavingGate()
+            					  .map(stamps -> stamps.getAttendanceLeavingGates().size() > 1)
+            					  .orElse(false)
+    		)),
+    作業コード期限切れ(13, c -> {
+    		return IteratorUtil.iterableFlatten(c.period.datesBetween(), date ->{
+    			return CheckExpiredWorkGroup.check(c.require, c.employeeId, date);
+    		});
+    }),
     ;
 
     public final int value;
@@ -158,7 +213,9 @@ public enum FixedLogicDailyByEmployee {
         }
     }
 
-    public interface RequireCheck {
+    public interface RequireCheck extends CheckNotReflectionStamp.Require,
+    																 CheckNotRegistWorkLocation.Require,
+    																 CheckExpiredWorkGroup.Require{
 
         Optional<IntegrationOfDaily> getIntegrationOfDailyRecord(String employeeId, GeneralDate date);
 
@@ -171,5 +228,9 @@ public enum FixedLogicDailyByEmployee {
         boolean existsWorkTime(String workTimeCode);
         
         String getDailyAttendanceItemName(Integer attendanceItemId);
+        
+        boolean existsBonusPay(BonusPaySettingCode bonusPaySettingCode);
+        
+        Optional<WorkingConditionItem> getWorkingConditionItem(String employeeId, GeneralDate date);
     }
 }
