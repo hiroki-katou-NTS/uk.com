@@ -10,7 +10,10 @@ import nts.uk.ctx.at.shared.dom.scherec.byperiod.anyaggrperiod.AnyAggrFrameCode;
 public class CheckingPeriod {
 
     /** 見込み月次 */
-    CheckingPeriodMonthly scheduleMonthly;
+    CheckingPeriodMonthly prospectMonthly;
+    
+    /** 見込み年次 */
+    CheckingPeriodMonthly prospectYearly;
 
     /** 日次 */
     CheckingPeriodDaily daily;
