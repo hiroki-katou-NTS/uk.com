@@ -1,5 +1,6 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers;
 
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.yearly.ProspectYearlyCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.multi.multiday.MultiDayCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.multi.multimonth.MultiMonthlyCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.weekly.CheckErrorAlarmWeekly;
@@ -25,6 +26,7 @@ public interface AlarmListCheckerByEmployee {
             // 全CheckerのRequireCheckを追加する
             ScheduleDailyCheckerByEmployee.RequireCheck,
             ProspectMonthlyCheckerByEmployee.RequireCheck,
+            ProspectYearlyCheckerByEmployee.RequireChack,
             DailyCheckerByEmployee.RequireCheck,
             CheckErrorAlarmWeekly.RequireCheck,
             MonthlyCheckerByEmployee.RequireCheck,
