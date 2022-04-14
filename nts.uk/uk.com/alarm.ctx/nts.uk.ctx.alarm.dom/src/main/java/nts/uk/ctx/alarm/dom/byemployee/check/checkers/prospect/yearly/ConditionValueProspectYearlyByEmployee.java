@@ -3,6 +3,7 @@ package nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.yearly;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import lombok.val;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfMonthly;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
@@ -36,6 +37,15 @@ public enum ConditionValueProspectYearlyByEmployee implements ConditionValueLogi
                 .v();
 
         return withinWorkTimeAmount + totalAmount;
+    })),
+    総労働時間(1, "予定時間＋総労働時間", c -> c.aggregate.aggregate(c.require, data -> {
+        // 総労働時間
+        return data.getAttendanceTime()
+                .get()
+                .getVerticalTotal()
+                .getWorkAmount()
+                .getWorkTimeAmount()
+                .v().doubleValue();
     })),
     ;
 
