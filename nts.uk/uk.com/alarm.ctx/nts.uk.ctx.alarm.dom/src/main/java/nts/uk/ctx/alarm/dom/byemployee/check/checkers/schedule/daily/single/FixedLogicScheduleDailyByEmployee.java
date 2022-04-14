@@ -1,4 +1,4 @@
-package nts.uk.ctx.alarm.dom.byemployee.check.checkers.schedule.daily;
+package nts.uk.ctx.alarm.dom.byemployee.check.checkers.schedule.daily.single;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;

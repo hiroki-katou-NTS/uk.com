@@ -36,10 +36,9 @@ public class CheckErrorAlarmWeekly {
     public Iterable<AlarmRecordByEmployee> check(RequireCheck require, CheckingContextByEmployee context) {
         String employeeId = context.getTargetEmployeeId();
         CheckingPeriodWeekly checkingPeriod = context.getCheckingPeriod().getWeekly();
-        List<AttendanceTimeOfWeeklyKey> keys = checkingPeriod.calculatePeriod(require, employeeId);
 
         return IteratorUtil.iterableFlatten(
-                require.getAttendanceTimeOfWeekly(keys),
+                require.getAttendanceTimeOfWeekly(employeeId, checkingPeriod.getDatePeriod()),
                 data -> check(require, employeeId, data)
             );
     }
@@ -80,6 +79,6 @@ public class CheckErrorAlarmWeekly {
             ExtractionCondWeekly.Require,
             AlarmRecordByEmployee.RequireFromErrorAlarm {
         List<ExtractionCondWeekly> getUsedExtractionCondWeekly(List<String> codes);
-        Iterable<AttendanceTimeOfWeekly> getAttendanceTimeOfWeekly(List<AttendanceTimeOfWeeklyKey> keys);
+        Iterable<AttendanceTimeOfWeekly> getAttendanceTimeOfWeekly(String employeeId, DatePeriod period);
     }
 }

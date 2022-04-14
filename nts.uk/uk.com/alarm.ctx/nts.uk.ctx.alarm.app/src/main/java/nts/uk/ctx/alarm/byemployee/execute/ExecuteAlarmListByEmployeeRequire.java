@@ -1,39 +1,61 @@
 package nts.uk.ctx.alarm.byemployee.execute;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.AlarmListCheckerCode;
-import nts.uk.ctx.alarm.dom.byemployee.pattern.AlarmListPatternCode;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.execute.ExecuteAlarmListByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.pattern.AlarmListPatternByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.pattern.AlarmListPatternCode;
 import nts.uk.ctx.at.aggregation.dom.adapter.dailyrecord.DailyRecordAdapter;
 import nts.uk.ctx.at.aggregation.dom.adapter.workschedule.WorkScheduleAdapter;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.AlarmListExtractResult;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeErAlData;
-import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatus;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeInfo;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
 import nts.uk.ctx.at.record.app.find.anyperiod.AnyPeriodRecordToAttendanceItemConverterImpl;
 import nts.uk.ctx.at.record.app.find.dailyperform.ConvertFactory;
+import nts.uk.ctx.at.record.app.find.monthly.MonthlyRecordToAttendanceItemConverterImpl;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
+import nts.uk.ctx.at.record.dom.daily.export.AggregateSpecifiedDailys;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriodRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.*;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlCategory;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.anyperiod.ErrorAlarmAnyPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.ExtraResultMonthly;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.ExtraResultMonthlyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondWeeklyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
@@ -49,11 +71,31 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEventRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
-import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.*;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.CompanySpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.CompanySpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemNo;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDateRepository;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagementRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagementRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.CareManagementDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.*;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.anyperiod.attendancetime.converter.AnyPeriodRecordToAttendanceItemConverter;
@@ -61,22 +103,34 @@ import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.Attenda
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriodRepository;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.anyaggrperiod.AnyAggrFrameCode;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthlyGetter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.converter.WeeklyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignemployee.TaskAssignEmployee;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.FamilyInfo;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.closure.*;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -95,20 +149,22 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.CalcNextAnnLeaGrantInfo;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 import nts.uk.shr.com.time.closure.ClosureMonth;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -221,7 +277,49 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private AlarmListExtraProcessStatusRepository alarmListExtraProcessStatusRepo;
+    
+    @Inject
+    private ExtraResultMonthlyRepository extraResultMonthlyRepo;
 
+    @Inject
+    private EmpEmployeeAdapter empEmployeeAdapter;
+
+    @Inject
+    private TempChildCareManagementRepository tempChildCareManagementRepo;
+
+    @Inject
+    private TempCareManagementRepository tempCareManagementRepo;
+
+    @Inject
+    private NursingLeaveSettingRepository nursingLeaveSettingRepo;
+
+    @Inject
+    private ChildCareLeaveRemInfoRepository childCareLeaveRemInfoRepo;
+
+    @Inject
+    private CareLeaveRemainingInfoRepository careLeaveRemainingInfoRepo;
+
+    @Inject
+    private ChildCareUsedNumberRepository childCareUsedNumberRepo;
+
+    @Inject
+    private CareUsedNumberRepository careUsedNumberRepo;
+
+    @Inject
+    private ClosureStatusManagementRepository closureStatusManagementRepo;
+
+    @Inject
+    private AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepo;
+
+    @Inject
+    private ClosureEmploymentRepository closureEmploymentRepo;
+
+    @Inject
+    private ShareEmploymentAdapter shareEmploymentAdapter;
+
+    @Inject
+    private ClosureRepository closureRepo;
+    
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
                 AppContexts.user().companyId(),
@@ -231,6 +329,8 @@ public class ExecuteAlarmListByEmployeeRequire {
     public interface Require extends ExecuteAlarmListByEmployee.Require {
 
         void save(AlarmListExtractResult result);
+
+        void save(ExtractEmployeeInfo employeeInfo);
     }
 
     @RequiredArgsConstructor
@@ -275,12 +375,22 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
+        public void save(ExtractEmployeeInfo employeeInfo) {
+
+        }
+
+        @Override
         public void save(ExtractEmployeeErAlData alarm) {
 
         }
 
 
         //--- 個人情報系 ---//
+
+        @Override
+        public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate generalDate) {
+            return workingConditionRepo.getWorkingConditionItemByEmpIDAndDate(this.companyId, generalDate, employeeId);
+        }
 
         @Override
         public List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, DatePeriod period) {
@@ -349,6 +459,24 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
 
+        //--- 締め ---//
+
+        @Override
+        public List<Closure> closure(String companyId) {
+            return closureRepo.findAll(companyId);
+        }
+
+        @Override
+        public List<Closure> closureActive(String companyId, UseClassification useAtr) {
+            return closureRepo.findAllActive(companyId, useAtr);
+        }
+
+        @Override
+        public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
+            return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
+        }
+
+
         //--- 勤怠項目 ---//
 
         @Override
@@ -391,7 +519,7 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public Optional<IntegrationOfDaily> getIntegrationOfDailyRecord(String employeeId, GeneralDate date) {
-            return integrationOfDailyGetter.getIntegrationOfDaily(employeeId, DatePeriod.oneDay(date))
+            return this.getIntegrationOfDailyRecords(employeeId, DatePeriod.oneDay(date))
                     .stream().findFirst();
         }
 
@@ -402,7 +530,7 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
 
-        //--- 日別見込み ---//
+        //--- 見込み月次 ---//
 
         @Override
         public List<IntegrationOfDaily> getIntegrationOfDailyProspect(String employeeId, DatePeriod period) {
@@ -424,6 +552,32 @@ public class ExecuteAlarmListByEmployeeRequire {
             ).get(ScheRecGettingAtr.SCHEDULE_WITH_RECORD);
         }
 
+        //--- 見込み年次 ---//
+        @Override
+        public List<IntegrationOfMonthly> getIntegrationOfMonthlyProspect(String employeeId, List<ClosureMonth> closureMonths) {
+            List<IntegrationOfMonthly> result = new ArrayList<>();
+            for(ClosureMonth closureMonth : closureMonths) {
+                // TODO: 過去月か？
+                if (closureMonth.defaultPeriod().end().before(GeneralDate.today())){
+                    val im = integrationOfMonthlyGetter.get(employeeId, closureMonth.yearMonth(), ClosureId.valueOf(closureMonth.closureId()), closureMonth.closureDate());
+                    result.add(im);
+                    continue;
+                }
+
+//                val require = requireService.createRequire();
+//                val cacheCarrier = new CacheCarrier();
+//
+//                List<IntegrationOfDaily> dailies = this.getIntegrationOfDailyProspect(employeeId, closureMonth.defaultPeriod());
+//                val im = AggregateSpecifiedDailys.algorithm(
+//                        require, cacheCarrier, companyId, employeeId,
+//                        closureMonth.getYearMonth(), EnumAdaptor.valueOf(closureMonth.getClosureId(), ClosureId.class),
+//                        closureMonth.getClosureDate(), closureMonth.defaultPeriod(), null, dailies, null
+//                );
+//                im.ifPresent(data -> result.add(data));
+            }
+            return result;
+        }
+
 
         //--- 月別実績 ---//
 
@@ -431,12 +585,38 @@ public class ExecuteAlarmListByEmployeeRequire {
         public IntegrationOfMonthly getIntegrationOfMonthly(String employeeId, ClosureMonth closureMonth) {
             return integrationOfMonthlyGetter.get(employeeId, closureMonth.yearMonth(), ClosureId.valueOf(closureMonth.closureId()), closureMonth.closureDate());
         }
+        
+		@Override
+		public List<IntegrationOfMonthly> getIntegrationOfMonthly(String employeeId, List<ClosureMonth> closureMonthes) {
+			return closureMonthes.stream()
+					.map(closureMonth -> this.getIntegrationOfMonthly(employeeId, closureMonth))
+					.collect(Collectors.toList());
+		}
 
         @Override
         public Optional<ConfirmationMonth> getConfirmationMonth(String employeeId, ClosureMonth closureMonth) {
             // TODO
             return Optional.empty();
         }
+        
+		@Override
+		public ExtraResultMonthly getExtraResultMonthly(ErrorAlarmWorkRecordCode codes) {
+			return null;
+		}
+        
+		@Override
+		public List<ExtraResultMonthly> getExtraResultMonthly(List<ErrorAlarmWorkRecordCode> codes) {
+			return codes.stream()
+								 .map(code -> this.getExtraResultMonthly(code))
+								 .collect(Collectors.toList());
+		}
+
+		@Override
+		public List<MonthlyRecordToAttendanceItemConverter> getMonthlyRecordToAttendanceItemConverter(List<IntegrationOfMonthly> monthlyRecords) {
+			return monthlyRecords.stream()
+						.map(record -> MonthlyRecordToAttendanceItemConverterImpl.builder(optionalItemRepo).setData(record))
+						.collect(Collectors.toList());
+		}
 
         @Override
         public List<ApproveRootStatusForEmpImport> getApprovalStateMonth(String employeeId, ClosureMonth closureMonth) {
@@ -455,16 +635,8 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
-        public Iterable<AttendanceTimeOfWeekly> getAttendanceTimeOfWeekly(List<AttendanceTimeOfWeeklyKey> keys) {
-            return IteratorUtil.iterable(keys, key -> {
-                Optional<AttendanceTimeOfWeekly> ret = attendanceTimeOfWeeklyRepo.find(
-                        key.getEmployeeId(),
-                        key.getYearMonth(),
-                        key.getClosureId(),
-                        key.getClosureDate(),
-                        key.getWeekNo());
-                return ret.get();
-            });
+        public Iterable<AttendanceTimeOfWeekly> getAttendanceTimeOfWeekly(String employeeId, DatePeriod period) {
+            return attendanceTimeOfWeeklyRepo.findMatchAnyOneDay(employeeId, period);
         }
 
         @Override
@@ -520,6 +692,95 @@ public class ExecuteAlarmListByEmployeeRequire {
             return yearHolidayRepo.findByCode(this.companyId, yearHolidayCode);
         }
 
+        @Override
+        public AnnualPaidLeaveSetting annualPaidLeaveSetting(String companyId) {
+            return annualPaidLeaveSettingRepo.findByCompanyId(companyId);
+        }
+
+
+        //--- 子の看護介護休暇 ---//
+
+        @Override
+        public EmployeeImport findByEmpId(String employeeId) {
+            return empEmployeeAdapter.findByEmpId(employeeId);
+        }
+
+        @Override
+        public List<FamilyInfo> familyInfo(String employeeId) {
+            //TODO 2021/03/22 時点では家族情報は取得できない
+            return new ArrayList<>();
+        }
+
+        @Override
+        public List<TempChildCareManagement> tempChildCareManagement(String employeeId, DatePeriod period) {
+            return tempChildCareManagementRepo.findByPeriodOrderByYmd(employeeId, period);
+        }
+
+        @Override
+        public List<TempCareManagement> tempCareManagement(String employeeId, DatePeriod period) {
+            return tempCareManagementRepo.findByPeriodOrderByYmd(employeeId, period);
+        }
+
+        @Override
+        public NursingLeaveSetting nursingLeaveSetting(String companyId, NursingCategory nursingCategory) {
+            return nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyId, nursingCategory.value);
+        }
+
+        @Override
+        public Optional<NursingCareLeaveRemainingInfo> employeeInfo(String employeeId, NursingCategory nursingCategory) {
+            if(nursingCategory.equals(NursingCategory.Nursing))
+                return careLeaveEmployeeInfo(employeeId).map(mapper->(NursingCareLeaveRemainingInfo)mapper);
+            if(nursingCategory.equals(NursingCategory.ChildNursing))
+                return childCareLeaveEmployeeInfo(employeeId).map(mapper->(NursingCareLeaveRemainingInfo)mapper);
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<ChildCareLeaveRemainingInfo> childCareLeaveEmployeeInfo(String employeeId) {
+            return childCareLeaveRemInfoRepo.getChildCareByEmpId(employeeId);
+        }
+
+        @Override
+        public Optional<CareLeaveRemainingInfo> careLeaveEmployeeInfo(String employeeId) {
+            return careLeaveRemainingInfoRepo.getCareByEmpId(employeeId);
+        }
+
+        @Override
+        public Optional<ChildCareUsedNumberData> childCareUsedNumber(String employeeId) {
+            return childCareUsedNumberRepo.find(employeeId);
+        }
+
+        @Override
+        public Optional<CareUsedNumberData> careUsedNumber(String employeeId) {
+            return careUsedNumberRepo.find(employeeId);
+        }
+
+        @Override
+        public Optional<CareManagementDate> careData(String familyID) {
+            //TODO 2021/03/22 時点では家族情報は取得できない
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId) {
+            return closureStatusManagementRepo.getLatestByEmpId(employeeId);
+        }
+
+        @Override
+        public OptionLicense getOptionLicense() {
+            return AppContexts.optionLicense();
+        }
+
+        @Override
+        public List<SharedSidPeriodDateEmploymentImport> employmentHistory(CacheCarrier cacheCarrier, List<String> employeeIds, DatePeriod datePeriod) {
+            return shareEmploymentAdapter.getEmpHistBySidAndPeriodRequire(cacheCarrier, employeeIds, datePeriod);
+        }
+
+        @Override
+        public EmployeeImport employee(CacheCarrier cacheCarrier, String employeeId) {
+            return empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, employeeId);
+        }
+
 
         //--- 任意期間集計 ---//
 
@@ -527,8 +788,13 @@ public class ExecuteAlarmListByEmployeeRequire {
 		public AttendanceTimeOfAnyPeriod getAttendanceTimeOfAnyPeriod(String employeeId, String anyPeriodFrameCode) {
 			return attendanceTimeOfAnyPeriodRepo.find(employeeId, anyPeriodFrameCode).get();
 		}
-		
-		@Override
+
+        @Override
+        public List<IntegrationOfDaily> getIntegrationOfDailyRecords(String employeeId, DatePeriod period) {
+            return integrationOfDailyGetter.getIntegrationOfDaily(employeeId, period);
+        }
+
+        @Override
 		public AnyAggrPeriod getAnyAggrPeriod(AnyAggrFrameCode code) {
 			return anyAggrPeriodRepo.findOneByCompanyIdAndFrameCode(companyId, code.v()).get();
 		}
@@ -559,6 +825,8 @@ public class ExecuteAlarmListByEmployeeRequire {
         public boolean existsTask(TaskFrameNo taskFrameNo, TaskCode code) {
             return false;
         }
+
+
 
 
 
