@@ -113,6 +113,20 @@ public enum FixedLogicDailyByEmployee {
     			return CheckExpiredWorkGroup.check(c.require, c.employeeId, date);
     		});
     }),
+
+    応援所属職場以外(14, c -> {
+    		return IteratorUtil.iterableFlatten(c.period.datesBetween(), date ->{
+    			val wpId = c.require.getIntegrationOfDailyRecord(c.employeeId, date).map(iod -> iod.getAffiliationInfor().getWplID()).orElse("");
+    			val notingWorkPlaceTimeSheet = c.require.getIntegrationOfDailyRecord(c.employeeId, date)
+    						.map(iod -> iod.getOuenTimeSheet())
+    						.orElse(new ArrayList<>())
+    						.stream()
+    						.filter(timeSheet -> !timeSheet.getWorkContent().getWorkplace().getWorkplaceId().equals(wpId))
+    						.collect(Collectors.toList());
+    			return IteratorUtil.iterable(notingWorkPlaceTimeSheet , timeSheet -> c.alarm(date));
+    		});
+    }),
+    	
     ;
 
     public final int value;
