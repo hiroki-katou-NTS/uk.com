@@ -107,8 +107,11 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
     欠勤日数合計(3, "日数：欠勤日数合計", c-> {
         AbsenceDaysProspector prospector = new AbsenceDaysProspector(c.require, c.companyId, c.aggregate);
         return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
-    })
+    }),
     
+    勤務日数(3, "日数：予定勤務日数＋勤務日数", c-> {
+        return 0.0;
+    }),
     ;
 
     public final int value;
