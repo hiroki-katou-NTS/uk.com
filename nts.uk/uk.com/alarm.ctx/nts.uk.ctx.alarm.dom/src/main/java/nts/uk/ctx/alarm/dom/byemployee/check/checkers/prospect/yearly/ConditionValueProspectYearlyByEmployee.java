@@ -4,7 +4,6 @@ import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
-import lombok.val;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfMonthly;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
@@ -16,9 +15,12 @@ import java.util.stream.Collectors;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfDaily;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.AbsenceDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.AttendanceDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.HolidayWorkDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.HolidaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.SpecialVacationDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.WorkDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.WorkDaysProspectorBase;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
@@ -88,6 +90,34 @@ public enum ConditionValueProspectYearlyByEmployee implements ConditionValueLogi
                     return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
                 });
     }),
+    
+    特休日数合計(4, "日数：特休日数合計", c -> {
+        return aggregate(c,
+                (iom) ->  getWorkDays(iom, (workDays) -> workDays.getSpecialVacationDays().getTotalSpcVacationDays().v()),
+                (aggregator) -> {
+                    SpecialVacationDaysProspector prospector = new SpecialVacationDaysProspector(c.require, c.companyId, aggregator);
+                    return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+                });
+    }),
+    
+    欠勤日数合計(4, "日数：欠勤日数合計", c -> {
+        return aggregate(c,
+                (iom) ->  getWorkDays(iom, (workDays) -> workDays.getAbsenceDays().getTotalAbsenceDays().v()),
+                (aggregator) -> {
+                    AbsenceDaysProspector prospector = new AbsenceDaysProspector(c.require, c.companyId, aggregator);
+                    return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+                });
+    }),
+    
+    勤務日数(5, "日数：予定勤務日数＋勤務日数", c -> {
+        return aggregate(c,
+                (iom) ->  getWorkDays(iom, (workDays) -> workDays.getWorkDays().getDays().v()),
+                (aggregator) -> {
+                    WorkDaysProspector prospector = new WorkDaysProspector(c.require, c.companyId, aggregator);
+                    return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+                });
+    }),
+    
     ;
 
     ;
@@ -130,7 +160,10 @@ public enum ConditionValueProspectYearlyByEmployee implements ConditionValueLogi
             WorkDaysProspectorBase.RequireOfCreate,
             AttendanceDaysProspector.Require,
             HolidaysProspector.Require,
-            HolidayWorkDaysProspector.Require {
+            HolidayWorkDaysProspector.Require,
+            SpecialVacationDaysProspector.Require,
+            AbsenceDaysProspector.Require,
+            WorkDaysProspector.Require{
     }
 
     @Value
