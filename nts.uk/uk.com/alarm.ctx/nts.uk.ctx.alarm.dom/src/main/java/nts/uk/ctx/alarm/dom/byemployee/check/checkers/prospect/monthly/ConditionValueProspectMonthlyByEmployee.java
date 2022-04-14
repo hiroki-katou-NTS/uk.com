@@ -145,7 +145,8 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
     }),
     
     勤務日数(3, "日数：予定勤務日数＋勤務日数", c-> {
-        return 0.0;
+        WorkDaysProspector prospector = new WorkDaysProspector(c.require, c.companyId, c.aggregate);
+        return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
     }),
     ;
 
