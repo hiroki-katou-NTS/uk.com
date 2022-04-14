@@ -40,7 +40,7 @@ public class ProspectMonthlyCheckerByEmployee implements DomainAggregate, AlarmL
 
             AggregateIntegrationOfDaily aggregate = new AggregateIntegrationOfDaily(employeeId, closureMonth);
 
-            val conditionValueContext = new ConditionValueProspectMonthlyByEmployee.Context(require, aggregate);
+            val conditionValueContext = new ConditionValueProspectMonthlyByEmployee.Context(require, aggregate, closureMonth);
 
             List<Iterable<AlarmRecordByEmployee>> alarms = Arrays.asList(
                     IteratorUtil.iterableFilter(conditionValues, cv -> cv.checkIfEnabled(conditionValueContext))

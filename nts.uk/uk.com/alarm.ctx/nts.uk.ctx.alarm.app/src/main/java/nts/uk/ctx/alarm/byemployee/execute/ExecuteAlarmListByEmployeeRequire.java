@@ -1,9 +1,7 @@
 package nts.uk.ctx.alarm.byemployee.execute;
 
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -79,6 +77,7 @@ import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemNo;
 import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemRepository;
 import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDateRepository;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
@@ -104,11 +103,13 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWe
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.converter.WeeklyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryWorkingHours;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignemployee.TaskAssignEmployee;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
@@ -138,7 +139,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -258,7 +258,10 @@ public class ExecuteAlarmListByEmployeeRequire {
     
     @Inject
     private ExtraResultMonthlyRepository extraResultMonthlyRepo;
-    
+
+    @Inject
+    private RecordDomRequireService requireService;
+
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
                 AppContexts.user().companyId(),
@@ -327,12 +330,22 @@ public class ExecuteAlarmListByEmployeeRequire {
         //--- 個人情報系 ---//
 
         @Override
-        public List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, DatePeriod period) {
-            return workingConditionRepo.getWorkingConditionItemWithPeriod(this.companyId, Arrays.asList(employeeId), period);
+        public List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, GeneralDate baseDate) {
+            return workingConditionRepo.getWorkingConditionItemWithPeriod(this.companyId, Arrays.asList(employeeId), new DatePeriod(baseDate, baseDate));
+        }
+
+        @Override
+        public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyID, String employeeId, GeneralDate baseDate) {
+            return Optional.empty();
         }
 
 
         //--- 勤務種類 ---//
+
+        @Override
+        public List<WorkingConditionItemWithPeriod> getWorkingConditions(String s, DatePeriod datePeriod) {
+            return null;
+        }
 
         @Override
         public Optional<WorkType> getWorkType(String workTypeCode) {
@@ -472,28 +485,34 @@ public class ExecuteAlarmListByEmployeeRequire {
         @Override
         public List<IntegrationOfMonthly> getIntegrationOfMonthlyProspect(String employeeId, List<ClosureMonth> closureMonths) {
             List<IntegrationOfMonthly> result = new ArrayList<>();
+            closureMonths.sort(Comparator.comparing(cm -> cm.defaultPeriod().start()));
             for(ClosureMonth closureMonth : closureMonths) {
                 // TODO: 過去月か？
                 if (closureMonth.defaultPeriod().end().before(GeneralDate.today())){
-                    val im = integrationOfMonthlyGetter.get(employeeId, closureMonth.yearMonth(), ClosureId.valueOf(closureMonth.closureId()), closureMonth.closureDate());
+                    val im = integrationOfMonthlyGetter.get(
+                            employeeId, closureMonth.yearMonth(), ClosureId.valueOf(closureMonth.closureId()), closureMonth.closureDate());
                     result.add(im);
                     continue;
                 }
 
-//                val require = requireService.createRequire();
-//                val cacheCarrier = new CacheCarrier();
-//
-//                List<IntegrationOfDaily> dailies = this.getIntegrationOfDailyProspect(employeeId, closureMonth.defaultPeriod());
-//                val im = AggregateSpecifiedDailys.algorithm(
-//                        require, cacheCarrier, companyId, employeeId,
-//                        closureMonth.getYearMonth(), EnumAdaptor.valueOf(closureMonth.getClosureId(), ClosureId.class),
-//                        closureMonth.getClosureDate(), closureMonth.defaultPeriod(), null, dailies, null
-//                );
-//                im.ifPresent(data -> result.add(data));
+                val require = requireService.createRequire();
+                val cacheCarrier = new CacheCarrier();
+
+                List<IntegrationOfDaily> dailies = this.getIntegrationOfDailyProspect(employeeId, closureMonth.defaultPeriod());
+                val im = AggregateSpecifiedDailys.algorithm(
+                        require, cacheCarrier, companyId, employeeId,
+                        closureMonth.getYearMonth(), EnumAdaptor.valueOf(closureMonth.getClosureId(), ClosureId.class),
+                        closureMonth.getClosureDate(), closureMonth.defaultPeriod(), null, dailies, null
+                );
+                im.ifPresent(data -> result.add(data));
             }
             return result;
         }
 
+        @Override
+        public RecordDomRequireService requireService(){
+            return requireService;
+        }
 
         //--- 月別実績 ---//
 

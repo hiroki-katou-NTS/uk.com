@@ -32,23 +32,6 @@ public class AggregateIntegrationOfMonthly {
             ));
     }
 
-    public Double calcRatioValue(AggregationRequire require,
-                                 Function<IntegrationOfMonthly, Double> calcOneEmployeeOfDayForNumerator,
-                                 Function<IntegrationOfMonthly, Double> calcOneEmployeeOfDayForDenominator){
-        List<IntegrationOfMonthly> integrationOfMonthly =
-            require.getIntegrationOfMonthlyProspect(this.employeeId, this.closureMonths);
-        Double numerator = integrationOfMonthly.stream()
-                .collect(Collectors.summingDouble(data ->
-                        calcOneEmployeeOfDayForNumerator.apply(data)
-                ));
-        Double denominator = integrationOfMonthly.stream()
-                .collect(Collectors.summingDouble(data ->
-                        calcOneEmployeeOfDayForDenominator.apply(data)
-                ));
-
-        return numerator / denominator;
-    }
-
     public interface AggregationRequire {
         List<IntegrationOfMonthly> getIntegrationOfMonthlyProspect(String employeeId, List<ClosureMonth> closureMonths);
     }
