@@ -21,7 +21,7 @@ public class AttendanceDaysProspector extends WorkDaysProspectorBase {
     public AttendanceDaysProspector(RequireOfCreate require, String companyId, AggregateIntegrationOfDaily aggregateIntegrationOfDaily) {
         super(require, companyId, aggregateIntegrationOfDaily);
     }
-
+   
     public double prospect(Require require, String cid, String employeeId) {
         return super.aggregateIntegrationOfDaily.aggregate(require, iod -> {
             return require.getWorkType(iod.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).map(workType -> {
