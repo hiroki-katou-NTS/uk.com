@@ -8,6 +8,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.daily.fixlogic.CheckExpiredWorkGroup;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.daily.fixlogic.CheckNotReflectionStamp;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.daily.fixlogic.CheckNotRegistWorkLocation;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
@@ -107,6 +108,11 @@ public enum FixedLogicDailyByEmployee {
             					  .map(stamps -> stamps.getAttendanceLeavingGates().size() > 1)
             					  .orElse(false)
     		)),
+    作業コード期限切れ(13, c -> {
+    		return IteratorUtil.iterableFlatten(c.period.datesBetween(), date ->{
+    			return CheckExpiredWorkGroup.check(c.require, c.employeeId, date);
+    		});
+    }),
     ;
 
     public final int value;
@@ -208,7 +214,8 @@ public enum FixedLogicDailyByEmployee {
     }
 
     public interface RequireCheck extends CheckNotReflectionStamp.Require,
-    																 CheckNotRegistWorkLocation.Require{
+    																 CheckNotRegistWorkLocation.Require,
+    																 CheckExpiredWorkGroup.Require{
 
         Optional<IntegrationOfDaily> getIntegrationOfDailyRecord(String employeeId, GeneralDate date);
 
