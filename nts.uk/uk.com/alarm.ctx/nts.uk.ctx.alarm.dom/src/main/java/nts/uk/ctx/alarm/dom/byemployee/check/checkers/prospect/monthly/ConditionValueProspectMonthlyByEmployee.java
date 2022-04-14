@@ -10,6 +10,8 @@ import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueContext;
 import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueLogic;
 
 import java.util.function.Function;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.AttendanceDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.WorkDaysProspectorBase;
 
 /**
  * 条件値チェック(社員別・見込み月次)
@@ -29,6 +31,11 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
         return totalTime * tanka;
     })),
 
+    出勤日数(2, "出勤日数", c ->  {
+        AttendanceDaysProspector aggregateProspetService = new AttendanceDaysProspector(c.require, c.companyId, c.aggregate);
+        return aggregateProspetService.prospect(c.require, c.companyId, c.getEmployeeId());
+    }),
+    
     ;
 
     public final int value;
@@ -44,13 +51,14 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
         return getValue.apply(context);
     }
 
-    public interface Require extends AggregateIntegrationOfDaily.AggregationRequire {
+    public interface Require extends AggregateIntegrationOfDaily.AggregationRequire, WorkDaysProspectorBase.RequireOfCreate, AttendanceDaysProspector.Require {
 
     }
 
     @Value
     public static class Context implements ConditionValueContext {
         Require require;
+        String companyId;
         AggregateIntegrationOfDaily aggregate;
 
         @Override
