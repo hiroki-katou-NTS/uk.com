@@ -214,4 +214,11 @@ public class TimeActualStamp {
 		return new TimeActualStamp(null, new WorkStamp(
 				new WorkTimeInformation(new ReasonTimeChange(reason, Optional.empty()), null), Optional.empty()), 0);
 	}
+	
+	/**
+	 * 打刻が未反映である(打刻反映回数= 0)
+	 */
+	public boolean isNotReflect() {
+		return this.numberOfReflectionStamp == 0;
+	}
 }

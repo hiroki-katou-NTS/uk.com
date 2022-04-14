@@ -3,17 +3,31 @@ package nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.monthly;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfDaily;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodMonthly;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueContext;
 import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueLogic;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryWorkingHours;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.closure.ClosureMonth;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.AbsenceDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.AttendanceDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.HolidayWorkDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.HolidaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.SpecialVacationDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.WorkDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.WorkDaysProspectorBase;
 
 
@@ -44,45 +58,66 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
 
         return withinWorkTimeAmount + totalAmount;
     })),
-    所定公休日数比(2, "対比：所定公休日数比", c -> c.aggregate.calcRatioValue(c.require,
-    data -> {
-        // TODO: 保留
-        // 実際の公休日数
-        //return data.getPublicHolidayLeaveRemain().get().getPublicHolidayday().v();
-        return null;
-    },
-    date -> {
-        // 所定公休日数
-        // TODO: 保留
-        return null;
-    })),
-//    基準時間比_通常勤務(3, "対比：基準時間比（通常勤務）", c -> c.aggregate.calcRatioValueDenominatorFromOther(c.require,
-//    data -> {
-//        // 総労働時間
-//        return data.getAttendanceTimeOfDailyPerformance()
-//                .get()
-//                .getActualWorkingTimeOfDaily()
-//                .getTotalWorkingTime()
-//                .getTotalTime()
-//                .v().doubleValue();
-//    },
-//    (employeeId, period) -> {
-//        // MonthlyStatutoryWorkingHours で労働制ごとに取得
-//        val workingSystems = c.require.workingCondition(employeeId, period).stream()
-//                .map(wc -> wc.getWorkingConditionItem().getLaborSystem())
-//                .collect(Collectors.toList());
-//        val workingSystem = workingSystems.get(0);
-//        if (workingSystems.size() > 1){
-//            // 月中で労働制変わってた場合基準時間ってどうなんの？？？
-//        }
-//
-//        if (workingSystem.isFlexTimeWork()){
-//            return c.require.flexMonAndWeekStatutoryTime(workingSystem);
-//        }
-//        else {
-//            return c.require.monAndWeekStatutoryTime(workingSystem);
-//        }
-//    })),
+    所定公休日数比(2, "対比：所定公休日数比", c -> {
+        Double numerator = c.aggregate.aggregate(c.require,
+                data -> {
+                    // TODO: 保留
+                    // 実際の公休日数
+                    //return data.getPublicHolidayLeaveRemain().get().getPublicHolidayday().v();
+                    return null;
+                });
+        Double denominator = c.aggregate.aggregate(c.require,
+                date -> {
+                    // 所定公休日数
+                    // TODO: 保留
+                    return null;
+                });
+        return numerator / denominator;
+    }),
+    基準時間比_通常勤務(3, "対比：基準時間比（通常勤務）", c -> {
+        // 総労働時間
+        Double totalTime = c.aggregate.aggregate(c.require,
+            data -> data.getAttendanceTimeOfDailyPerformance()
+                    .get()
+                    .getActualWorkingTimeOfDaily()
+                    .getTotalWorkingTime()
+                    .getTotalTime()
+                    .v().doubleValue()
+            );
+
+        // 法定労働時間
+        Double MonStatutoryTime;
+        val baseDate = CheckingPeriodMonthly.getBaseDate(c.getClosureMonth());
+        // 労働制を取得
+        // 月中で労働制変わってた場合は考慮していない（終了日基準）
+        val cacheCarrier = new CacheCarrier();
+        val companyID = AppContexts.user().companyId();
+        val workingSystem = c.require.getWorkingConditions(c.getEmployeeId(), baseDate).stream()
+                .map(wc -> wc.getWorkingConditionItem().getLaborSystem())
+                .collect(Collectors.toList()).get(0);
+        // 雇用を取得
+        // アルゴリズム「社員所属雇用履歴を取得」を実行する
+        Optional<BsEmploymentHistoryImport> empHist = c.require.employmentHistory(cacheCarrier, companyID, c.getEmployeeId(), baseDate);
+        val employmentCd = empHist.get().getEmploymentCode();
+        if (workingSystem.isFlexTimeWork()){
+            MonthlyStatutoryWorkingHours.RequireM1 requireImpl = c.require.requireService().createRequire();
+            val monthlyFlexStatutoryLaborTime = MonthlyStatutoryWorkingHours.flexMonAndWeekStatutoryTime(
+                    requireImpl, cacheCarrier,
+                    companyID, employmentCd, c.getEmployeeId(), baseDate, c.closureMonth.getYearMonth()
+                );
+            MonStatutoryTime = monthlyFlexStatutoryLaborTime.getStatutorySetting().v().doubleValue();
+        }
+        else {
+            MonthlyStatutoryWorkingHours.RequireM4 requireImpl = c.require.requireService().createRequire();
+            val monthlyFlexStatutoryLaborTime = MonthlyStatutoryWorkingHours.monAndWeekStatutoryTime(
+                    requireImpl, cacheCarrier,
+                    companyID, employmentCd, c.getEmployeeId(), baseDate, c.closureMonth.getYearMonth(), workingSystem
+            );
+            MonStatutoryTime = monthlyFlexStatutoryLaborTime.get().getMonthlyEstimateTime().v().doubleValue();
+        }
+
+        return totalTime / MonStatutoryTime;
+    }),
 
     出勤日数(3, "日数：出勤日数", c ->  {
         AttendanceDaysProspector prospector = new AttendanceDaysProspector(c.require, c.companyId, c.aggregate);
@@ -127,8 +162,20 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
         return getValue.apply(context);
     }
 
-    public interface Require extends AggregateIntegrationOfDaily.AggregationRequire, WorkDaysProspectorBase.RequireOfCreate, AttendanceDaysProspector.Require, HolidayWorkDaysProspector.Require, HolidaysProspector.Require, SpecialVacationDaysProspector.Require, AbsenceDaysProspector.Require {
-        //List<WorkingConditionItemWithPeriod> workingCondition(String employeeId, DatePeriod datePeriod);
+
+    public interface Require extends
+            AggregateIntegrationOfDaily.AggregationRequire,
+            WorkDaysProspectorBase.RequireOfCreate,
+            AttendanceDaysProspector.Require,
+            HolidayWorkDaysProspector.Require, 
+            HolidaysProspector.Require,
+            SpecialVacationDaysProspector.Require, 
+            AbsenceDaysProspector.Require,
+            WorkDaysProspector.Require {
+
+        List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, GeneralDate baseDate);
+        Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyID, String employeeId, GeneralDate baseDate);
+        RecordDomRequireService requireService();
     }
 
     @Value
@@ -136,6 +183,7 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
         Require require;
         String companyId;
         AggregateIntegrationOfDaily aggregate;
+        ClosureMonth closureMonth;
 
         @Override
         public AlarmListCategoryByEmployee getCategory() {
