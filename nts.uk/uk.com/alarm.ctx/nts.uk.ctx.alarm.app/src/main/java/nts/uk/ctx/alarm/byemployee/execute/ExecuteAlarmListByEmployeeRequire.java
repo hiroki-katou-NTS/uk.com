@@ -20,9 +20,7 @@ import nts.uk.ctx.at.aggregation.dom.adapter.dailyrecord.DailyRecordAdapter;
 import nts.uk.ctx.at.aggregation.dom.adapter.workschedule.WorkScheduleAdapter;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountForCompany;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountForEmployment;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountUsageSetting;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.*;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.AlarmListExtractResult;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeErAlData;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeInfo;
@@ -363,6 +361,13 @@ public class ExecuteAlarmListByEmployeeRequire {
     private TaskingRepository taskingRepo;
 
     @Inject
+    private CriterionAmountUsageSettingRepository criterionAmountUsageSettingRepo;
+    @Inject
+    private CriterionAmountForCompanyRepository criterionAmountForCompanyRepo;
+    @Inject
+    private CriterionAmountForEmploymentRepository criterionAmountForEmploymentRepo;
+
+    @Inject
     private TaskFrameUsageSettingRepository taskFrameUsageSettingRepo;
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
@@ -607,22 +612,28 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public Optional<CriterionAmountUsageSetting> getUsageSetting() {
-            return Optional.empty();
+            return criterionAmountUsageSettingRepo.get(companyId);
         }
 
         @Override
         public Optional<CriterionAmountForCompany> getCriterionAmountForCompany() {
-            return Optional.empty();
+            return criterionAmountForCompanyRepo.get(companyId);
         }
 
         @Override
         public Optional<CriterionAmountForEmployment> getCriterionAmountForEmployment(EmploymentCode employmentCode) {
-            return Optional.empty();
+            return criterionAmountForEmploymentRepo.get(companyId, employmentCode);
         }
 
         @Override
         public Optional<EmploymentPeriodImported> getEmploymentHistory(EmployeeId employeeId, GeneralDate generalDate) {
-            return Optional.empty();
+            return employmentHistory(new CacheCarrier(), companyId, employeeId.v(), generalDate).map(history ->
+                    new EmploymentPeriodImported(
+                        history.getEmployeeId(),
+                        history.getPeriod(),
+                        history.getEmploymentCode(),
+                        Optional.empty())
+            );
         }
 
         //--- 見込み年次 ---//

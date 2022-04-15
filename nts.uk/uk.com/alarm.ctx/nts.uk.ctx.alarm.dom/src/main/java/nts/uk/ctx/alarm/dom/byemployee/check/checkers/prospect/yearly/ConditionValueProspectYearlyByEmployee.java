@@ -32,27 +32,6 @@ import nts.uk.shr.com.time.closure.ClosureMonth;
 @RequiredArgsConstructor
 public enum ConditionValueProspectYearlyByEmployee implements ConditionValueLogic<ConditionValueProspectYearlyByEmployee.Context> {
     支給額(1, "（予定時間＋総労働時間）×基準単価", c -> {
-//        return c.getClosedAggregator().aggregate(c.require, data -> {
-//
-//            // 就業時間金額＋割増時間金額を求める
-//            // 就業時間金額
-//            double withinWorkTimeAmount = data.getAttendanceTime()
-//                    .get()
-//                    .getVerticalTotal()
-//                    .getWorkAmount()
-//                    .getWorkTimeAmount()
-//                    .v();
-//            // 割増時間金額
-//            double totalAmount = data.getAttendanceTime()
-//                    .get()
-//                    .getVerticalTotal()
-//                    .getWorkTime()
-//                    .getPremiumTime()
-//                    .getPremiumAmountTotal()
-//                    .v();
-//
-//            return withinWorkTimeAmount + totalAmount;
-//        });
         return aggregate(c,
             data -> {
                 // 就業時間金額
