@@ -1,5 +1,6 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.monthly;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
@@ -8,20 +9,13 @@ import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.byemployee.check.TargetEmployeesFilter;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfDaily;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee.Require;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
-import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodDaily;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodMonthly;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.conditionvalue.AlarmListConditionValue;
-
-import java.util.Arrays;
-import java.util.List;
-
 import nts.uk.ctx.alarm.dom.fixedlogic.FixedLogicSetting;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.closure.ClosureMonth;
-import sun.awt.AppContext;
-
 /**
  * アラームリストのチェック条件(見込み月次)
  */

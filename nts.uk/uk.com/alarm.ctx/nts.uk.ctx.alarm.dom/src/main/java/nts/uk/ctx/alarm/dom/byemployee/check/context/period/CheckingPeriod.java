@@ -29,4 +29,10 @@ public class CheckingPeriod {
 
     /** 休暇 */
     CheckingPeriodVacation vacation;
+    
+    /** ３６協定月次 */
+    CheckingPeriodMonthlyAgreement monthlyAgreement;
+    
+    /** ３６協定年次 */
+    CheckingPeriodYearlyAgreement yearlyAgreement;
 }
