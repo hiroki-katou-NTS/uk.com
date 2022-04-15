@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.com.time.closure.ClosureMonth;
@@ -24,6 +25,10 @@ public class DateInfo {
 
     public DateInfo(YearMonth yearMonth) {
         formatted = format(yearMonth);
+    }
+    
+    public DateInfo(Year year) {
+        formatted = year.toString();
     }
 
     public DateInfo(DatePeriod period) {
