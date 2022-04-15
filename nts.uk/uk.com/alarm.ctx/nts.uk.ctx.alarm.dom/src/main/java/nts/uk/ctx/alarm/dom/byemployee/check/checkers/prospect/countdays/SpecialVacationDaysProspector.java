@@ -3,25 +3,26 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect;
+package nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays;
 
 import java.util.Optional;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfDaily;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.attendance.CheckAttendanceForIntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.WorkTypeDaysCountTable;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.AttendanceDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.SpcVacationDaysOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
- * 出勤日数プロスペクター
+ * 特休日数プロスペクター
  * @author raiki_asada
  */
-public class AttendanceDaysProspector extends WorkDaysProspectorBase {
-
-    public AttendanceDaysProspector(RequireOfCreate require, String companyId, AggregateIntegrationOfDaily aggregateIntegrationOfDaily) {
+public class SpecialVacationDaysProspector extends WorkTypeCountProspectorBase {
+    
+    public SpecialVacationDaysProspector(RequireOfCreate require, String companyId, AggregateIntegrationOfDaily aggregateIntegrationOfDaily) {
         super(require, companyId, aggregateIntegrationOfDaily);
     }
-
+    
     public double prospect(Require require, String cid, String employeeId) {
         return super.aggregateIntegrationOfDaily.aggregate(require, iod -> {
             return require.getWorkType(iod.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).map(workType -> {
@@ -31,16 +32,15 @@ public class AttendanceDaysProspector extends WorkDaysProspectorBase {
 
                     boolean isAttendanceDay = CheckAttendanceForIntegrationOfDaily.check(iod);
                     
-                    AttendanceDaysOfMonthly result = new AttendanceDaysOfMonthly();
-                    // 会社ID, 勤務種類, 労働制, 勤務種類のカウント表、出勤してるか
-                    result.aggregate(require, cid, workType, item.getLaborSystem(), table, isAttendanceDay);
-                    return result.getDays().v();
-                }).orElse(0.0);
-            }).orElse(0.0);
+                    SpcVacationDaysOfMonthly result = new SpcVacationDaysOfMonthly();
+                    result.aggregate(require, cid, employeeId, iod.getYmd(), item.getLaborSystem(), workType, iod.getWorkInformation().getRecordInfo(), iod.getAttendanceTimeOfDailyPerformance(), table, isAttendanceDay);
+                    return result.getTotalSpcVacationDays().v();
+                }).orElse((double)0);
+            }).orElse((double)0);
         });
     }
     
-    public interface Require extends WorkingConditionService.RequireM1, AggregateIntegrationOfDaily.AggregationRequire, AttendanceDaysOfMonthly.Require{
+    public interface Require extends WorkingConditionService.RequireM1, AggregateIntegrationOfDaily.AggregationRequire, SpcVacationDaysOfMonthly.Require {
         Optional<WorkType> getWorkType(String workTypeCode);
     }
 }

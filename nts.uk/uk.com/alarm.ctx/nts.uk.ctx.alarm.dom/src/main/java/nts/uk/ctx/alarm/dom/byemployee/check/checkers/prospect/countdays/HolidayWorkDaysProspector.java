@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect;
+package nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays;
 
 import java.util.Optional;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfDaily;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.attendance.CheckAttendanceForIntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.WorkTypeDaysCountTable;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.HolidayWorkDaysOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
@@ -16,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
  * 休出日数の見込みを計算する
  * @author raiki_asada
  */
-public class HolidayWorkDaysProspector extends WorkDaysProspectorBase {
+public class HolidayWorkDaysProspector extends WorkTypeCountProspectorBase {
 
     public HolidayWorkDaysProspector(RequireOfCreate require, String companyId, AggregateIntegrationOfDaily aggregateIntegrationOfDaily) {
         super(require, companyId, aggregateIntegrationOfDaily);

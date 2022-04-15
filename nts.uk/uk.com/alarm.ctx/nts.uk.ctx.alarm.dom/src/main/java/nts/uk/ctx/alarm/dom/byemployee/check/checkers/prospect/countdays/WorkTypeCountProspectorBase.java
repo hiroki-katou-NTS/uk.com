@@ -3,19 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect;
+package nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays;
 
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfDaily;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.table.CountTableGenerator;
 
 /**
- * 勤務日数プロスペクターのベース
+ * 勤務種類カウントプロスペクタベース
  * @author raiki_asada
  */
-public abstract class WorkDaysProspectorBase {
+public abstract class WorkTypeCountProspectorBase {
     protected final AggregateIntegrationOfDaily aggregateIntegrationOfDaily;
     protected final CountTableGenerator countTableGenerator;
 
-    protected WorkDaysProspectorBase(RequireOfCreate require, String companyId, AggregateIntegrationOfDaily aggregateIntegrationOfDaily) {
+    protected WorkTypeCountProspectorBase(RequireOfCreate require, String companyId, AggregateIntegrationOfDaily aggregateIntegrationOfDaily) {
         this.aggregateIntegrationOfDaily = aggregateIntegrationOfDaily;
         this.countTableGenerator = CountTableGenerator.initialize(require, companyId);
     }

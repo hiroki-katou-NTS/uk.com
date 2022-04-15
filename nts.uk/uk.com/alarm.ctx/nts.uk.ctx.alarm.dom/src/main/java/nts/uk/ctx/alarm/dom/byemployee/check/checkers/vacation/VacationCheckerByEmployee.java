@@ -30,6 +30,12 @@ public class VacationCheckerByEmployee implements DomainAggregate, AlarmListChec
 	/** 固定ロジックのチェック条件 */
 	private List<FixedLogicSetting<FixedLogicVacationByEmployee>> fixedLogics;
 
+	/** 年休付与のチェック条件*/
+	private List<CheckAnnualleave> annualleaveLogics;
+
+	/** 年休使用のチェック条件*/
+	private CheckUseAnnualleave useAnnualleaveLogic;
+
 	/**
 	 * チェックする
 	 * @param require
@@ -46,6 +52,12 @@ public class VacationCheckerByEmployee implements DomainAggregate, AlarmListChec
 
 		// 固定ロジックのチェック
 		alarmRecords.add(checkFixedLogics(require, employeeId, period));
+
+		// 年休付与のチェック
+		alarmRecords.add(checkAnnualleaveLogic(require, employeeId));
+
+		// 年休使用のチェック
+		alarmRecords.add(useAnnualleaveLogic.checkIfEnabled(require, employeeId));
 
 		return IteratorUtil.flatten(alarmRecords);
 	}
@@ -67,8 +79,21 @@ public class VacationCheckerByEmployee implements DomainAggregate, AlarmListChec
 						message)));
 	}
 
+	/**
+	 * 年休付与のチェック
+	 * @param require
+	 * @param employeeId
+	 * @return
+	 */
+	private Iterable<AlarmRecordByEmployee> checkAnnualleaveLogic(Require require, String employeeId) {
+		return IteratorUtil.iterableFlatten(annualleaveLogics, a -> a.checkIfEnabled(require, employeeId));
+
+	}
+
 	public interface RequireCheck extends
+			CheckingPeriodVacation.Require,
 			FixedLogicVacationByEmployee.RequireCheck,
-			CheckingPeriodVacation.Require {
+			CheckAnnualleave.RequireCheck,
+			CheckUseAnnualleave.RequireCheck{
 	}
 }
