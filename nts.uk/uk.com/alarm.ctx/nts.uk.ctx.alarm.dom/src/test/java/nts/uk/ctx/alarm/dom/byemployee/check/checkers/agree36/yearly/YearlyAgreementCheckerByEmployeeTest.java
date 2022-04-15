@@ -5,7 +5,6 @@
  */
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers.agree36.yearly;
 
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agree36.yearly.Agree36YearlyCheckerByEmployee;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Optional;
@@ -16,7 +15,6 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agree36.TargetOfAlarm;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodYearlyAgreement;
@@ -26,7 +24,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeBr
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.StartingMonthType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
