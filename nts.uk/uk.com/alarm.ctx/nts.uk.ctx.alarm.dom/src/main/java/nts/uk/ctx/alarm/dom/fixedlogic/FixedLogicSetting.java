@@ -5,6 +5,7 @@ import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 /**
@@ -29,5 +30,13 @@ public class FixedLogicSetting<L> {
         }
 
         return Collections.emptyList();
+    }
+
+    public Optional<AlarmRecordByEmployee> checkIfEnabledOpt(BiFunction<L, AlarmListAlarmMessage, Optional<AlarmRecordByEmployee>> checker) {
+        if (enabled) {
+            return checker.apply(logic, message);
+        }
+
+        return Optional.empty();
     }
 }

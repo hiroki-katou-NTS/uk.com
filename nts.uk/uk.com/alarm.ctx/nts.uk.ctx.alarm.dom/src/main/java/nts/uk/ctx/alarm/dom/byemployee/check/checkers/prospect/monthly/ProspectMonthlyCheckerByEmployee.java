@@ -9,6 +9,7 @@ import nts.uk.ctx.alarm.dom.byemployee.check.TargetEmployeesFilter;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfDaily;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodDaily;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodMonthly;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.conditionvalue.AlarmListConditionValue;
@@ -16,7 +17,9 @@ import nts.uk.ctx.alarm.dom.conditionvalue.AlarmListConditionValue;
 import java.util.Arrays;
 import java.util.List;
 
+import nts.uk.ctx.alarm.dom.fixedlogic.FixedLogicSetting;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.closure.ClosureMonth;
 import sun.awt.AppContext;
 
 /**
@@ -31,6 +34,8 @@ public class ProspectMonthlyCheckerByEmployee implements DomainAggregate, AlarmL
     private List<AlarmListConditionValue<
             ConditionValueProspectMonthlyByEmployee,
             ConditionValueProspectMonthlyByEmployee.Context>> conditionValues;
+
+    private List<FixedLogicSetting<FixedLogicProspectMonthlyByEmployee>> fixedLogics;
 
     @Override
     public Iterable<AlarmRecordByEmployee> check(Require require, CheckingContextByEmployee context) {
@@ -50,53 +55,32 @@ public class ProspectMonthlyCheckerByEmployee implements DomainAggregate, AlarmL
                     IteratorUtil.iterableFilter(conditionValues, cv -> cv.checkIfEnabled(conditionValueContext))
             );
 
+            val checkFixedLogicsContext = new FixedLogicProspectMonthlyByEmployee.Context(require, employeeId, closureMonth, aggregate);
+            List<Iterable<AlarmRecordByEmployee>> fixedlogicAlarms = checkFixedLogics(checkFixedLogicsContext);
+            alarms.addAll(fixedlogicAlarms);
+
             return IteratorUtil.flatten(alarms);
         });
+    }
 
 
-        // ↓サンプルコード
-//        // 時間：予定時間＋総労働時間
-//        Double check01Value = aggregateService.aggregate(require, data -> {
-//            return (double) data.getAttendanceTimeOfDailyPerformance()
-//                    .get()
-//                    .getActualWorkingTimeOfDaily()
-//                    .getTotalWorkingTime().getTotalTime().valueAsMinutes();
-//        });
-//
-//        // （予定時間＋総労働時間）×基準単価
-//        Double check02Value = aggregateService.aggregate(require, data -> {
-//            val totalTime = (double) data.getAttendanceTimeOfDailyPerformance()
-//                    .get()
-//                    .getActualWorkingTimeOfDaily()
-//                    .getTotalWorkingTime().getTotalTime().valueAsMinutes();
-//            val baseUnitPrice = require.getBaseUnitPrice(data.getYmd(), data.getEmployeeId());
-//            return totalTime * baseUnitPrice;
-//        });
-//
-//        // 対比：基準時間比（通常勤務）
-//        val workingConditionItem = require.getWorkingConditions(employeeId, period).stream()
-//                .filter(wc -> wc.getWorkingConditionItem().getLaborSystem() == WorkingSystem.REGULAR_WORK)
-//                .collect(Collectors.toList());
-//        for (WorkingConditionItemWithPeriod wc : workingConditionItem) {
-//            AggregateIntegrationOfDaily aggregateService2 = new AggregateIntegrationOfDaily(wc.getDatePeriod(), employeeId);
-//            Double check03Value = aggregateService2.calcRatioValue(require,
-//                    data -> {
-//                        // TODO:どこから値を持ってくるのかまだ未定
-//                        return (double) data.getAttendanceTimeOfDailyPerformance()
-//                                .get()
-//                                .getActualWorkingTimeOfDaily()
-//                                .getTotalWorkingTime().getTotalTime().valueAsMinutes();
-//                    },
-//                    data -> (double) wc.getWorkingConditionItem().getContractTime().valueAsMinutes());
-//        }
-//
-//        throw new RuntimeException("not implemented");
+    /**
+     * 固定チェック条件
+     * @return
+     */
+    private List<Iterable<AlarmRecordByEmployee>> checkFixedLogics(FixedLogicProspectMonthlyByEmployee.Context context) {
+        return Arrays.asList(
+                IteratorUtil.iterableFilter(fixedLogics, fls -> fls.checkIfEnabledOpt(
+                        (logic, message) -> logic.check(context, message)
+                ))
+        );
     }
 
     public interface RequireCheck extends
             CheckingPeriodMonthly.Require,
             AggregateIntegrationOfDaily.AggregationRequire,
-            ConditionValueProspectMonthlyByEmployee.Require {
+            ConditionValueProspectMonthlyByEmployee.Require,
+            FixedLogicProspectMonthlyByEmployee.RequireCheck {
 
     }
 }
