@@ -369,6 +369,8 @@ public class ExecuteAlarmListByEmployeeRequire {
     private CriterionAmountForCompanyRepository criterionAmountForCompanyRepo;
     @Inject
     private CriterionAmountForEmploymentRepository criterionAmountForEmploymentRepo;
+    @Inject
+    private HandlingOfCriterionAmountRepository handlingOfCriterionAmountRepo;
 
     @Inject
     private TaskFrameUsageSettingRepository taskFrameUsageSettingRepo;
@@ -614,6 +616,24 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
+        public RecordDomRequireService requireService() {
+            return requireService;
+        }
+
+        //--- 見込み年次 ---//
+        @Override
+        public List<IntegrationOfMonthly> getIntegrationOfMonthlyProspect(String employeeId, List<ClosureMonth> closureMonths) {
+            return closureMonths.stream()
+                .map(closureMonth -> integrationOfMonthlyGetter.get(
+                        employeeId,
+                        closureMonth.yearMonth(),
+                        ClosureId.valueOf(closureMonth.closureId()),
+                        closureMonth.closureDate()))
+                .collect(Collectors.toList());
+        }
+
+        //--- 見込み共通 ---//
+        @Override
         public Optional<CriterionAmountUsageSetting> getUsageSetting() {
             return criterionAmountUsageSettingRepo.get(companyId);
         }
@@ -632,28 +652,16 @@ public class ExecuteAlarmListByEmployeeRequire {
         public Optional<EmploymentPeriodImported> getEmploymentHistory(EmployeeId employeeId, GeneralDate generalDate) {
             return employmentHistory(new CacheCarrier(), companyId, employeeId.v(), generalDate).map(history ->
                     new EmploymentPeriodImported(
-                        history.getEmployeeId(),
-                        history.getPeriod(),
-                        history.getEmploymentCode(),
-                        Optional.empty())
+                            history.getEmployeeId(),
+                            history.getPeriod(),
+                            history.getEmploymentCode(),
+                            Optional.empty())
             );
         }
 
-        //--- 見込み年次 ---//
         @Override
-        public List<IntegrationOfMonthly> getIntegrationOfMonthlyProspect(String employeeId, List<ClosureMonth> closureMonths) {
-            return closureMonths.stream()
-                .map(closureMonth -> integrationOfMonthlyGetter.get(
-                        employeeId,
-                        closureMonth.yearMonth(),
-                        ClosureId.valueOf(closureMonth.closureId()),
-                        closureMonth.closureDate()))
-                .collect(Collectors.toList());
-        }
-
-        @Override
-        public RecordDomRequireService requireService() {
-            return requireService;
+        public Optional<HandlingOfCriterionAmount> getHandling() {
+            return handlingOfCriterionAmountRepo.get(companyId);
         }
 
         //--- 月別実績 ---//

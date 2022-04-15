@@ -8,13 +8,11 @@ import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfDaily;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfMonthly;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
-import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodMonthly;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.CriterionAmountChecker;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodYearly;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmount;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountForEmployeeGettingService;
-import nts.uk.ctx.at.shared.dom.common.EmployeeId;
+import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueContext;
 import nts.uk.shr.com.time.closure.ClosureMonth;
 
 import java.util.List;
@@ -27,8 +25,8 @@ import java.util.stream.Collectors;
  */
 @RequiredArgsConstructor
 public enum FixedLogicProspectYearlyByEmployee {
-    目安金額比(1, "（予定時間＋総労働時間）×基準単価と目安金額の比較", (c, message) -> {
-        Double paidAmount = c.getClosedAggregator().aggregate(c.getRequire(), data -> {
+    目安金額比(1, CriterionAmountChecker.CHECK_NAME, (c, message) -> {
+        Double amountValue = c.getClosedAggregator().aggregate(c.getRequire(), data -> {
             // 就業時間金額
             double withinWorkTimeAmount = data.getAttendanceTime()
                     .get()
@@ -48,15 +46,7 @@ public enum FixedLogicProspectYearlyByEmployee {
             return withinWorkTimeAmount + totalAmount;
         });
         val baseDate = c.period.getBaseDate();
-        CriterionAmount criterionAmount = CriterionAmountForEmployeeGettingService.get(
-                c.getRequire(), new EmployeeId(c.employeeId), baseDate);
-        // どの枠の目安金額使うか分からん
-        boolean over = criterionAmount.getYearly().getList().stream()
-                .allMatch(ca -> paidAmount > ca.getAmount().v());
-
-        return over
-                ? Optional.of(c.alarm("（予定時間＋総労働時間）×基準単価と目安金額の比較", c.period.getDateInfo(), message))
-                : Optional.empty();
+        return CriterionAmountChecker.check(c.require, c, baseDate, amountValue.intValue(), message);
     }),
     ;
 
@@ -72,21 +62,10 @@ public enum FixedLogicProspectYearlyByEmployee {
     }
 
     @Value
-    public static class Context {
+    public static class Context implements ConditionValueContext {
         RequireCheck require;
         String employeeId;
         CheckingPeriodYearly period;
-
-        public AlarmRecordByEmployee alarm(String name, DateInfo dateInfo, AlarmListAlarmMessage message) {
-            return new AlarmRecordByEmployee(
-                    employeeId,
-                    dateInfo,
-                    AlarmListCategoryByEmployee.PROSPECT_YEARLY,
-                    name,
-                    "",
-                    null,
-                    message);
-        }
 
         public AggregateIntegrationOfMonthly getClosedAggregator() {
             // TODO: 当月より前のものだけにする
@@ -100,10 +79,20 @@ public enum FixedLogicProspectYearlyByEmployee {
             return prospectMonths.stream().map(month -> new AggregateIntegrationOfDaily(this.employeeId, month))
                     .collect(Collectors.toList());
         }
+
+        @Override
+        public AlarmListCategoryByEmployee getCategory() {
+            return AlarmListCategoryByEmployee.PROSPECT_YEARLY;
+        }
+
+        @Override
+        public DateInfo getDateInfo() {
+            return period.getDateInfo();
+        }
     }
 
     public interface RequireCheck extends
             AggregateIntegrationOfMonthly.AggregationRequire,
-            CriterionAmountForEmployeeGettingService.Require {
+            CriterionAmountChecker.Require {
     }
 }
