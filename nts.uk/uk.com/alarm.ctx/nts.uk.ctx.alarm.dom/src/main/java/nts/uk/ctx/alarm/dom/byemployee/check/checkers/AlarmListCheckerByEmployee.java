@@ -8,6 +8,7 @@ import nts.uk.ctx.alarm.dom.byemployee.check.checkers.schedule.daily.single.Sche
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.vacation.VacationCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agree36.monthly.Agree36MontlyCheckerByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agree36.multimonth.Agree36MultiMonthCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agree36.yearly.Agree36YearlyCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.appapproval.AppApprovalCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.master.MasterCheckerByEmployee;
@@ -39,7 +40,8 @@ public interface AlarmListCheckerByEmployee {
             AppApprovalCheckerByEmployee.RequireCheck,
             VacationCheckerByEmployee.RequireCheck,
             Agree36MontlyCheckerByEmployee.RequireCheck,
-            Agree36YearlyCheckerByEmployee.RequireCheck
+            Agree36YearlyCheckerByEmployee.RequireCheck,
+            Agree36MultiMonthCheckerByEmployee.RequireCheck
             {
     }
 }
