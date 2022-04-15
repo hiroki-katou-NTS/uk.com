@@ -1,5 +1,6 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers.vacation;
 
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -14,22 +15,11 @@ import java.util.Optional;
 import java.util.function.Function;
 
 /**
- * 条件値チェック(社員別・年休付与)
+ * 条件値チェック(社員別・年休使用)
  */
 @RequiredArgsConstructor
-public enum ConditionValueAnnualleaveByEmployee implements ConditionValueLogic<ConditionValueAnnualleaveByEmployee.Context> {
+public enum ConditionValueUseAnnualleaveByEmployee implements ConditionValueLogic<ConditionValueUseAnnualleaveByEmployee.Context> {
 
-	出勤率(1, "年休付与用出勤率", c -> {
-		return c.require.getDaysPerYear(c.employeeId)
-				.map(ar -> ar.getAttendanceRate().v().doubleValue())
-				.orElse(null);
-	}),
-
-	年休消化率_繰越含む(2, "年休消化率（繰越含む）", c -> {
-		return c.require.getDaysPerYear(c.employeeId)
-				.map(ar -> ar.getAttendanceRate().v().doubleValue())
-				.orElse(null);
-	}),
 
 	;
 
@@ -50,6 +40,8 @@ public enum ConditionValueAnnualleaveByEmployee implements ConditionValueLogic<C
 	public static class Context implements ConditionValueContext {
 		Require require;
 		String employeeId;
+		// 1年未満の場合に期間按分する
+		boolean proportionalDistribution;
 
 		@Override
 		public AlarmListCategoryByEmployee getCategory() {
@@ -68,6 +60,6 @@ public enum ConditionValueAnnualleaveByEmployee implements ConditionValueLogic<C
 	}
 
 	public interface Require{
-		Optional<AttendRateAtNextHoliday> getDaysPerYear(String employeeId);
+
 	}
 }

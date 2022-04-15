@@ -12,7 +12,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-
+/**
+ * 年休付与のチェック条件
+ */
 public class CheckAnnualleave {
 
 	/** 当月の付与対象者のみチェックする */
@@ -41,7 +43,7 @@ public class CheckAnnualleave {
 			}
 		}
 		return IteratorUtil.iterableFilter(conditionValues, cv -> {
-			return cv.checkIfEnabled(new ConditionValueAnnualleaveByEmployee.Context(require, employeeId, onlyCurrentGrantTarget));
+			return cv.checkIfEnabled(new ConditionValueAnnualleaveByEmployee.Context(require, employeeId));
 		});
 	}
 
@@ -50,5 +52,4 @@ public class CheckAnnualleave {
 			CalcNextAnnualLeaveGrantDate.RequireM2 {
 
 	}
-
 }
