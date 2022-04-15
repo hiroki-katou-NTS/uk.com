@@ -48,13 +48,13 @@ public enum ConditionValueAgree36MonthlyCheckerByEmployee implements ConditionVa
     }
 
     private static double getTargetValue(Context context, Function<AgreementTimeOfManagePeriod, AttendanceTimeMonth> function) {
-        return (double) context.require.getAgeementTime(context.employeeId, context.yearMonth)
+        return (double) context.require.getAgreementTimeOfManagePeriod(context.employeeId, context.yearMonth)
                 .map(agreementTime -> function.apply(agreementTime).v()).orElse(0);
     }
 
     public interface Require {
 
-        Optional<AgreementTimeOfManagePeriod> getAgeementTime(String employeeId, YearMonth yearMonth);
+        Optional<AgreementTimeOfManagePeriod> getAgreementTimeOfManagePeriod(String employeeId, YearMonth yearMonth);
     }
 
     @Value

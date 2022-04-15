@@ -1,12 +1,9 @@
 package nts.uk.ctx.alarm.byemployee.execute;
 
-import java.util.*;
 import java.util.ArrayList;
 
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -32,7 +29,6 @@ import nts.uk.ctx.at.record.app.find.dailyperform.ConvertFactory;
 import nts.uk.ctx.at.record.app.find.monthly.MonthlyRecordToAttendanceItemConverterImpl;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
-import nts.uk.ctx.at.record.dom.daily.export.AggregateSpecifiedDailys;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriodRepository;
@@ -170,11 +166,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeOfManagePeriod;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.Year;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.WorkDaysNumberOnLeaveCount;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSettingForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -1013,7 +1012,7 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
-        public Optional<AgreementTimeOfManagePeriod> getAgeementTime(String employeeId, YearMonth yearMonth) {
+        public Optional<AgreementTimeOfManagePeriod> getAgreementTimeOfManagePeriod(String employeeId, YearMonth yearMonth) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
@@ -1028,12 +1027,17 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
-        public Optional<nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(String sid, YearMonth ym) {
+        public Optional<AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(String sid, YearMonth ym) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
-        public List<nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(List<String> sids, List<nts.arc.time.YearMonth> yearMonths) {
+        public List<AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(List<String> sids, List<YearMonth> yearMonths) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public BasicAgreementSetting basicAgreementSetting(String cid, String sid, GeneralDate baseDate) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }

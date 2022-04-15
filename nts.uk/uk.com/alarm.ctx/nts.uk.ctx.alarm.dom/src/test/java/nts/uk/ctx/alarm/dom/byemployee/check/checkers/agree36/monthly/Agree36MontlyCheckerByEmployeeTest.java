@@ -60,7 +60,7 @@ public class Agree36MontlyCheckerByEmployeeTest {
     public void test_管理期間の３６協定時間が取れなかったらアラームは出ない() {
         new Expectations() {
             {
-                require.getAgeementTime(anyString, (YearMonth) any);
+                require.getAgreementTimeOfManagePeriod(anyString, (YearMonth) any);
                 returns(Optional.empty());
             }
         };
@@ -92,7 +92,7 @@ public class Agree36MontlyCheckerByEmployeeTest {
         new Expectations() {
             {
                 //３月だけ取得できる
-                require.getAgeementTime(anyString, YearMonth.of(2022, 3));
+                require.getAgreementTimeOfManagePeriod(anyString, YearMonth.of(2022, 3));
                 returns(Optional.of(agreementTimes));
             }
             {
@@ -136,7 +136,7 @@ public class Agree36MontlyCheckerByEmployeeTest {
         new Expectations() {
             {
                 //３月だけ取得できる
-                require.getAgeementTime(anyString, YearMonth.of(2022, 3));
+                require.getAgreementTimeOfManagePeriod(anyString, YearMonth.of(2022, 3));
                 returns(Optional.of(agreementTimes));
             }
             {
@@ -187,7 +187,7 @@ public class Agree36MontlyCheckerByEmployeeTest {
         new Expectations() {
             {
                 //３月だけ取得できる
-                require.getAgeementTime(anyString, YearMonth.of(2022, 3));
+                require.getAgreementTimeOfManagePeriod(anyString, YearMonth.of(2022, 3));
                 returns(Optional.of(agreementTimes));
             }
             {
@@ -230,7 +230,7 @@ public class Agree36MontlyCheckerByEmployeeTest {
         new Expectations() {
             {
                 //３月だけ取得できる
-                require.getAgeementTime(anyString, YearMonth.of(2022, 3));
+                require.getAgreementTimeOfManagePeriod(anyString, YearMonth.of(2022, 3));
                 returns(Optional.of(agreementTimes));
             }
             {
