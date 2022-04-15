@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantNumber;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KRcmtAnnLeaRemain;
 import nts.uk.shr.com.context.AppContexts;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -205,6 +206,14 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 		String sql = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId AND a.grantDate = :grantDate";
 		return this.queryProxy().query(sql, KRcmtAnnLeaRemain.class)
 				.setParameter("employeeId", employeeId).setParameter("grantDate", grantDate)
+				.getList(e -> toDomain(e));
+	}
+
+	@Override
+	public List<AnnualLeaveGrantRemainingData> findMoreThan(String employeeId, LeaveGrantNumber grantDays) {
+		String sql = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId AND a.grantDays >= :grantDays";
+		return this.queryProxy().query(sql, KRcmtAnnLeaRemain.class)
+				.setParameter("employeeId", employeeId).setParameter("grantDays", grantDays)
 				.getList(e -> toDomain(e));
 	}
 
