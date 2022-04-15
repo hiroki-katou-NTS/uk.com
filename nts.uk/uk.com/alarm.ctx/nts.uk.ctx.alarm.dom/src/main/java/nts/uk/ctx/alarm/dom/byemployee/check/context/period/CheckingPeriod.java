@@ -13,7 +13,7 @@ public class CheckingPeriod {
     CheckingPeriodMonthly prospectMonthly;
     
     /** 見込み年次 */
-    CheckingPeriodMonthly prospectYearly;
+    CheckingPeriodYearly prospectYearly;
 
     /** 日次 */
     CheckingPeriodDaily daily;

@@ -20,6 +20,7 @@ import nts.uk.ctx.at.aggregation.dom.adapter.dailyrecord.DailyRecordAdapter;
 import nts.uk.ctx.at.aggregation.dom.adapter.workschedule.WorkScheduleAdapter;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.*;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.AlarmListExtractResult;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeErAlData;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeInfo;
@@ -123,6 +124,7 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageSetting;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
@@ -135,6 +137,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.*;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -359,6 +362,13 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private TaskingRepository taskingRepo;
+
+    @Inject
+    private CriterionAmountUsageSettingRepository criterionAmountUsageSettingRepo;
+    @Inject
+    private CriterionAmountForCompanyRepository criterionAmountForCompanyRepo;
+    @Inject
+    private CriterionAmountForEmploymentRepository criterionAmountForEmploymentRepo;
 
     @Inject
     private TaskFrameUsageSettingRepository taskFrameUsageSettingRepo;
@@ -603,32 +613,42 @@ public class ExecuteAlarmListByEmployeeRequire {
             ).get(ScheRecGettingAtr.SCHEDULE_WITH_RECORD);
         }
 
+        @Override
+        public Optional<CriterionAmountUsageSetting> getUsageSetting() {
+            return criterionAmountUsageSettingRepo.get(companyId);
+        }
+
+        @Override
+        public Optional<CriterionAmountForCompany> getCriterionAmountForCompany() {
+            return criterionAmountForCompanyRepo.get(companyId);
+        }
+
+        @Override
+        public Optional<CriterionAmountForEmployment> getCriterionAmountForEmployment(EmploymentCode employmentCode) {
+            return criterionAmountForEmploymentRepo.get(companyId, employmentCode);
+        }
+
+        @Override
+        public Optional<EmploymentPeriodImported> getEmploymentHistory(EmployeeId employeeId, GeneralDate generalDate) {
+            return employmentHistory(new CacheCarrier(), companyId, employeeId.v(), generalDate).map(history ->
+                    new EmploymentPeriodImported(
+                        history.getEmployeeId(),
+                        history.getPeriod(),
+                        history.getEmploymentCode(),
+                        Optional.empty())
+            );
+        }
+
         //--- 見込み年次 ---//
         @Override
         public List<IntegrationOfMonthly> getIntegrationOfMonthlyProspect(String employeeId, List<ClosureMonth> closureMonths) {
-            List<IntegrationOfMonthly> result = new ArrayList<>();
-            closureMonths.sort(Comparator.comparing(cm -> cm.defaultPeriod().start()));
-            for (ClosureMonth closureMonth : closureMonths) {
-                // TODO: 過去月か？
-                if (closureMonth.defaultPeriod().end().before(GeneralDate.today())) {
-                    val im = integrationOfMonthlyGetter.get(
-                            employeeId, closureMonth.yearMonth(), ClosureId.valueOf(closureMonth.closureId()), closureMonth.closureDate());
-                    result.add(im);
-                    continue;
-                }
-
-                val require = requireService.createRequire();
-                val cacheCarrier = new CacheCarrier();
-
-                List<IntegrationOfDaily> dailies = this.getIntegrationOfDailyProspect(employeeId, closureMonth.defaultPeriod());
-                val im = AggregateSpecifiedDailys.algorithm(
-                        require, cacheCarrier, companyId, employeeId,
-                        closureMonth.getYearMonth(), EnumAdaptor.valueOf(closureMonth.getClosureId(), ClosureId.class),
-                        closureMonth.getClosureDate(), closureMonth.defaultPeriod(), null, dailies, null
-                );
-                im.ifPresent(data -> result.add(data));
-            }
-            return result;
+            return closureMonths.stream()
+                .map(closureMonth -> integrationOfMonthlyGetter.get(
+                        employeeId,
+                        closureMonth.yearMonth(),
+                        ClosureId.valueOf(closureMonth.closureId()),
+                        closureMonth.closureDate()))
+                .collect(Collectors.toList());
         }
 
         @Override
