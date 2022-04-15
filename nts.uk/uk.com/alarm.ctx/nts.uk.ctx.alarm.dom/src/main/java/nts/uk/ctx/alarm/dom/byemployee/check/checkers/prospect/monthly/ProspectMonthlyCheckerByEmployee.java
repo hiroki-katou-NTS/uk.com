@@ -51,15 +51,13 @@ public class ProspectMonthlyCheckerByEmployee implements DomainAggregate, AlarmL
 
             val conditionValueContext = new ConditionValueProspectMonthlyByEmployee.Context(require, companyId, aggregate, closureMonth);
 
-            List<Iterable<AlarmRecordByEmployee>> alarms = Arrays.asList(
-                    IteratorUtil.iterableFilter(conditionValues, cv -> cv.checkIfEnabled(conditionValueContext))
-            );
+            Iterable<AlarmRecordByEmployee> alarms =
+                    IteratorUtil.iterableFilter(conditionValues, cv -> cv.checkIfEnabled(conditionValueContext));
 
             val checkFixedLogicsContext = new FixedLogicProspectMonthlyByEmployee.Context(require, employeeId, closureMonth, aggregate);
-            List<Iterable<AlarmRecordByEmployee>> fixedlogicAlarms = checkFixedLogics(checkFixedLogicsContext);
-            alarms.addAll(fixedlogicAlarms);
+            Iterable<AlarmRecordByEmployee> fixedlogicAlarms = checkFixedLogics(checkFixedLogicsContext);
 
-            return IteratorUtil.flatten(alarms);
+            return IteratorUtil.merge(alarms, fixedlogicAlarms);
         });
     }
 
@@ -68,12 +66,10 @@ public class ProspectMonthlyCheckerByEmployee implements DomainAggregate, AlarmL
      * 固定チェック条件
      * @return
      */
-    private List<Iterable<AlarmRecordByEmployee>> checkFixedLogics(FixedLogicProspectMonthlyByEmployee.Context context) {
-        return Arrays.asList(
-                IteratorUtil.iterableFilter(fixedLogics, fls -> fls.checkIfEnabledOpt(
+    private Iterable<AlarmRecordByEmployee> checkFixedLogics(FixedLogicProspectMonthlyByEmployee.Context context) {
+        return IteratorUtil.iterableFilter(fixedLogics, fls -> fls.checkIfEnabledOpt(
                         (logic, message) -> logic.check(context, message)
-                ))
-        );
+                ));
     }
 
     public interface RequireCheck extends
