@@ -65,7 +65,7 @@ public class CheckUseAnnualleave {
 	 * @param employeeId
 	 * @return
 	 */
-	public Optional<AlarmRecordByEmployee> check(RequireCheck require, String employeeId) {
+	public Optional<AlarmRecordByEmployee> checkIfEnabled(RequireCheck require, String employeeId) {
 		// 次回の年休付与日が指定した月以内にある人のみチェックする
 		if(onlyWithinNextGrantDate &&
 				require.checkExistHolidayGrantAdapter(employeeId, GeneralDate.today(), new Period(GeneralDate.today(),GeneralDate.today().addMonths(months.get())))){
