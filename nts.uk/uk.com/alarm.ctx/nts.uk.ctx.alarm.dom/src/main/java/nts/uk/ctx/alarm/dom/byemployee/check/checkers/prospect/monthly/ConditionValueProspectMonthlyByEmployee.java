@@ -22,13 +22,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.AbsenceDaysProspector;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.AttendanceDaysProspector;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.HolidayWorkDaysProspector;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.HolidaysProspector;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.SpecialVacationDaysProspector;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.WorkDaysProspector;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.WorkDaysProspectorBase;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.AbsenceDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.AttendanceDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.HolidayWorkDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.HolidaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.SpecialVacationDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.WorkDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.WorkTypeCountProspectorBase;
 
 
 /**
@@ -229,7 +229,7 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
 
     public interface Require extends
             AggregateIntegrationOfDaily.AggregationRequire,
-            WorkDaysProspectorBase.RequireOfCreate,
+            WorkTypeCountProspectorBase.RequireOfCreate,
             AttendanceDaysProspector.Require,
             HolidayWorkDaysProspector.Require, 
             HolidaysProspector.Require,

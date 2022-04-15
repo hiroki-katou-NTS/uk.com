@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfDaily;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.AbsenceDaysProspector;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.AttendanceDaysProspector;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.HolidayWorkDaysProspector;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.HolidaysProspector;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.SpecialVacationDaysProspector;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.WorkDaysProspector;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.WorkDaysProspectorBase;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.AbsenceDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.AttendanceDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.HolidayWorkDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.HolidaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.SpecialVacationDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.WorkDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.WorkTypeCountProspectorBase;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
 import nts.uk.shr.com.time.closure.ClosureMonth;
@@ -157,7 +157,7 @@ public enum ConditionValueProspectYearlyByEmployee implements ConditionValueLogi
     public interface Require extends
             AggregateIntegrationOfMonthly.AggregationRequire,
             AggregateIntegrationOfDaily.AggregationRequire,
-            WorkDaysProspectorBase.RequireOfCreate,
+            WorkTypeCountProspectorBase.RequireOfCreate,
             AttendanceDaysProspector.Require,
             HolidaysProspector.Require,
             HolidayWorkDaysProspector.Require,
