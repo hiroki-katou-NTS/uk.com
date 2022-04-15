@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nts.uk.ctx.alarm.dom.byemployee.check.checkers.agreement.yearly;
+package nts.uk.ctx.alarm.dom.byemployee.check.checkers.agree36.yearly;
 
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agree36.yearly.Agree36YearlyCheckerByEmployee;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Optional;
@@ -15,7 +16,7 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agreement.TargetOfAlarm;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agree36.TargetOfAlarm;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodYearlyAgreement;
@@ -121,10 +122,7 @@ public class YearlyAgreementCheckerByEmployeeTest {
                 }
             };
 
-            YearlyAgreementCheckerByEmployee checker = YearlyAgreementCheckerByEmployee.getBuilder(TargetOfAlarm.AGREEMENT_36_TIME)
-                    .put(ExcessState.ALARM_OVER, "アラーム")
-                    .put(ExcessState.ERROR_OVER, "エラー")
-                    .put(ExcessState.UPPER_LIMIT_OVER, "法定上限").build();
+            Agree36YearlyCheckerByEmployee checker = null;
 
             CheckingContextByEmployee context = new CheckingContextByEmployee("employee_id", period);
 
@@ -151,10 +149,7 @@ public class YearlyAgreementCheckerByEmployeeTest {
                 }
             };
 
-            YearlyAgreementCheckerByEmployee checker = YearlyAgreementCheckerByEmployee.getBuilder(TargetOfAlarm.AGREEMENT_36_TIME)
-                    .put(ExcessState.ALARM_OVER, "アラーム")
-                    .put(ExcessState.ERROR_OVER, "エラー")
-                    .put(ExcessState.UPPER_LIMIT_OVER, "法定上限").build();
+            Agree36YearlyCheckerByEmployee checker = null;
 
             CheckingContextByEmployee context = new CheckingContextByEmployee("employee_id", period);
 
@@ -187,10 +182,7 @@ public class YearlyAgreementCheckerByEmployeeTest {
             };
 
             //それぞれ - 100時間する
-            YearlyAgreementCheckerByEmployee checker = YearlyAgreementCheckerByEmployee.getBuilder(TargetOfAlarm.LEGAL_MAX_TIME)
-                    .put(ExcessState.ALARM_OVER, new AgreementOneYearTime(6000), "アラーム")
-                    .put(ExcessState.ERROR_OVER, new AgreementOneYearTime(6000), "エラー")
-                    .put(ExcessState.UPPER_LIMIT_OVER, new AgreementOneYearTime(6000), "法定上限").build();
+            Agree36YearlyCheckerByEmployee checker = null;
 
             CheckingContextByEmployee context = new CheckingContextByEmployee("employee_id", period);
 
@@ -294,7 +286,7 @@ public class YearlyAgreementCheckerByEmployeeTest {
             };
             
             //閾値は５回以上
-            YearlyAgreementCheckerByEmployee checker = YearlyAgreementCheckerByEmployee.create(5, "超過している回数が多いです");
+            Agree36YearlyCheckerByEmployee checker = null;
             
             CheckingContextByEmployee context = new CheckingContextByEmployee("employee_id", period);
             
@@ -349,7 +341,7 @@ public class YearlyAgreementCheckerByEmployeeTest {
             };
             
             //閾値は５回以上
-            YearlyAgreementCheckerByEmployee checker = YearlyAgreementCheckerByEmployee.create(5, "超過している回数が多いです");
+            Agree36YearlyCheckerByEmployee checker = null;
             
             CheckingContextByEmployee context = new CheckingContextByEmployee("employee_id", period);
             

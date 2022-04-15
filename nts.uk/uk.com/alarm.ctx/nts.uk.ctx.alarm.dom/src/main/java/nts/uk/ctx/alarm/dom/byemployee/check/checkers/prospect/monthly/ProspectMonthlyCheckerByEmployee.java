@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import nts.uk.shr.com.context.AppContexts;
-import sun.awt.AppContext;
 
 /**
  * アラームリストのチェック条件(見込み月次)
