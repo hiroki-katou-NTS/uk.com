@@ -628,29 +628,13 @@ public class ExecuteAlarmListByEmployeeRequire {
         //--- 見込み年次 ---//
         @Override
         public List<IntegrationOfMonthly> getIntegrationOfMonthlyProspect(String employeeId, List<ClosureMonth> closureMonths) {
-            List<IntegrationOfMonthly> result = new ArrayList<>();
-            closureMonths.sort(Comparator.comparing(cm -> cm.defaultPeriod().start()));
-            for (ClosureMonth closureMonth : closureMonths) {
-                // TODO: 過去月か？
-                if (closureMonth.defaultPeriod().end().before(GeneralDate.today())) {
-                    val im = integrationOfMonthlyGetter.get(
-                            employeeId, closureMonth.yearMonth(), ClosureId.valueOf(closureMonth.closureId()), closureMonth.closureDate());
-                    result.add(im);
-                    continue;
-                }
-
-                val require = requireService.createRequire();
-                val cacheCarrier = new CacheCarrier();
-
-                List<IntegrationOfDaily> dailies = this.getIntegrationOfDailyProspect(employeeId, closureMonth.defaultPeriod());
-                val im = AggregateSpecifiedDailys.algorithm(
-                        require, cacheCarrier, companyId, employeeId,
-                        closureMonth.getYearMonth(), EnumAdaptor.valueOf(closureMonth.getClosureId(), ClosureId.class),
-                        closureMonth.getClosureDate(), closureMonth.defaultPeriod(), null, dailies, null
-                );
-                im.ifPresent(data -> result.add(data));
-            }
-            return result;
+            return closureMonths.stream()
+                .map(closureMonth -> integrationOfMonthlyGetter.get(
+                        employeeId,
+                        closureMonth.yearMonth(),
+                        ClosureId.valueOf(closureMonth.closureId()),
+                        closureMonth.closureDate()))
+                .collect(Collectors.toList());
         }
 
         @Override
