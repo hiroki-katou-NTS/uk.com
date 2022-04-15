@@ -53,6 +53,9 @@ public enum AlarmListCategoryByEmployee {
 
     /** 36協定年次 */
     AGREE36_YEARLY(22),
+    
+    /** 36協定複数月 */
+    AGREE36_MULT_MONTH(23),
 
     /** 申請承認 */
     APPLICATION_APPROVAL(30),

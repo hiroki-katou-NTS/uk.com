@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfDaily;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.AbsenceDaysProspector;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.AttendanceDaysProspector;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.HolidayWorkDaysProspector;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.HolidaysProspector;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.SpecialVacationDaysProspector;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.WorkDaysProspector;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.WorkDaysProspectorBase;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.AbsenceDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.AttendanceDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.HolidayWorkDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.HolidaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.SpecialVacationDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.WorkDaysProspector;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.WorkTypeCountProspectorBase;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
 import nts.uk.shr.com.time.closure.ClosureMonth;
@@ -31,37 +31,71 @@ import nts.uk.shr.com.time.closure.ClosureMonth;
  */
 @RequiredArgsConstructor
 public enum ConditionValueProspectYearlyByEmployee implements ConditionValueLogic<ConditionValueProspectYearlyByEmployee.Context> {
-    支給額(1, "（予定時間＋総労働時間）×基準単価", c -> c.getClosedAggregator().aggregate(c.require, data -> {
+    支給額(1, "（予定時間＋総労働時間）×基準単価", c -> {
+        return aggregate(c,
+            data -> {
+                // 就業時間金額
+                double withinWorkTimeAmount = data.getAttendanceTime()
+                        .get()
+                        .getVerticalTotal()
+                        .getWorkAmount()
+                        .getWorkTimeAmount()
+                        .v();
+                // 割増時間金額
+                double totalAmount = data.getAttendanceTime()
+                        .get()
+                        .getVerticalTotal()
+                        .getWorkTime()
+                        .getPremiumTime()
+                        .getPremiumAmountTotal()
+                        .v();
+                return withinWorkTimeAmount + totalAmount;
+            },
+            aggregator -> {
+                return aggregator.aggregate(c.require, data -> {
+                    // 就業時間金額
+                    double withinWorkTimeAmount = data.getAttendanceTimeOfDailyPerformance()
+                            .get()
+                            .getActualWorkingTimeOfDaily()
+                            .getTotalWorkingTime()
+                            .getWithinStatutoryTimeOfDaily()
+                            .getWithinWorkTimeAmount()
+                            .v();
+                    // 割増時間金額
+                    double totalAmount = data.getAttendanceTimeOfDailyPerformance()
+                            .get()
+                            .getActualWorkingTimeOfDaily()
+                            .getPremiumTimeOfDailyPerformance()
+                            .getTotalAmount()
+                            .v();
 
-        // 就業時間金額＋割増時間金額を求める
-        // 就業時間金額
-        double withinWorkTimeAmount = data.getAttendanceTime()
-                .get()
-                .getVerticalTotal()
-                .getWorkAmount()
-                .getWorkTimeAmount()
-                .v();
-        // 割増時間金額
-        double totalAmount = data.getAttendanceTime()
-                .get()
-                .getVerticalTotal()
-                .getWorkTime()
-                .getPremiumTime()
-                .getPremiumAmountTotal()
-                .v();
-
-        return withinWorkTimeAmount + totalAmount;
-    })),
+                    return withinWorkTimeAmount + totalAmount;
+                });
+            }
+        );
+    }),
     
-    総労働時間(1, "予定時間＋総労働時間", c -> c.getClosedAggregator().aggregate(c.require, data -> {
-        // 総労働時間
-        return data.getAttendanceTime()
-                .get()
-                .getVerticalTotal()
-                .getWorkAmount()
-                .getWorkTimeAmount()
-                .v().doubleValue();
-    })),
+    総労働時間(1, "予定時間＋総労働時間", c -> {
+        return aggregate(c,
+            (data) ->
+                // 総労働時間
+                 data.getAttendanceTime()
+                        .get()
+                        .getVerticalTotal()
+                        .getWorkAmount()
+                        .getWorkTimeAmount()
+                        .v().doubleValue()
+            ,
+            (aggregator) ->
+                aggregator.aggregate(c.require, data ->
+                    data.getAttendanceTimeOfDailyPerformance()
+                            .get()
+                            .getActualWorkingTimeOfDaily()
+                            .getTotalWorkingTime()
+                            .getTotalTime()
+                            .v().doubleValue())
+        );
+    }),
     
     出勤日数(2, "日数：出勤日数", c -> {
         return aggregate(c,
@@ -157,7 +191,7 @@ public enum ConditionValueProspectYearlyByEmployee implements ConditionValueLogi
     public interface Require extends
             AggregateIntegrationOfMonthly.AggregationRequire,
             AggregateIntegrationOfDaily.AggregationRequire,
-            WorkDaysProspectorBase.RequireOfCreate,
+            WorkTypeCountProspectorBase.RequireOfCreate,
             AttendanceDaysProspector.Require,
             HolidaysProspector.Require,
             HolidayWorkDaysProspector.Require,

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect;
+package nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays;
 
 import java.util.Optional;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfDaily;
@@ -12,10 +12,10 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
- * 休日日数プロスペクター
+ * 休日日数プロスペクタ
  * @author raiki_asada
  */
-public class HolidaysProspector extends WorkDaysProspectorBase {
+public class HolidaysProspector extends WorkTypeCountProspectorBase {
     
     public HolidaysProspector(RequireOfCreate require, String companyId, AggregateIntegrationOfDaily aggregateIntegrationOfDaily) {
         super(require, companyId, aggregateIntegrationOfDaily);

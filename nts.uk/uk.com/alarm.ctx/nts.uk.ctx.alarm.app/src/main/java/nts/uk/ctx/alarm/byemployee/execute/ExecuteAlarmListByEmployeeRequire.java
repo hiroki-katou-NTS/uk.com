@@ -21,6 +21,7 @@ import nts.uk.ctx.at.aggregation.dom.adapter.workschedule.WorkScheduleAdapter;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
 import nts.uk.ctx.at.function.dom.adapter.remainnumber.yearholiday.checkexistholidaygrant.CheckExistHolidayGrantAdapter;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.*;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.AlarmListExtractResult;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeErAlData;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeInfo;
@@ -127,6 +128,7 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageSetting;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
@@ -139,6 +141,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.*;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -172,9 +175,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.WorkDaysNumberOnLeaveCount;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSettingForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 
@@ -368,8 +374,21 @@ public class ExecuteAlarmListByEmployeeRequire {
     @Inject
     private CheckExistHolidayGrantAdapter checkExistHolidayGrantAdapter;
 
+	@Inject
+    private CriterionAmountUsageSettingRepository criterionAmountUsageSettingRepo;
+
+    @Inject
+    private CriterionAmountForCompanyRepository criterionAmountForCompanyRepo;
+
+    @Inject
+    private CriterionAmountForEmploymentRepository criterionAmountForEmploymentRepo;
+
+    @Inject
+    private HandlingOfCriterionAmountRepository handlingOfCriterionAmountRepo;
+
     @Inject
     private TaskFrameUsageSettingRepository taskFrameUsageSettingRepo;
+
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
                 AppContexts.user().contractCode(),
@@ -611,37 +630,53 @@ public class ExecuteAlarmListByEmployeeRequire {
             ).get(ScheRecGettingAtr.SCHEDULE_WITH_RECORD);
         }
 
-        //--- 見込み年次 ---//
-        @Override
-        public List<IntegrationOfMonthly> getIntegrationOfMonthlyProspect(String employeeId, List<ClosureMonth> closureMonths) {
-            List<IntegrationOfMonthly> result = new ArrayList<>();
-            closureMonths.sort(Comparator.comparing(cm -> cm.defaultPeriod().start()));
-            for (ClosureMonth closureMonth : closureMonths) {
-                // TODO: 過去月か？
-                if (closureMonth.defaultPeriod().end().before(GeneralDate.today())) {
-                    val im = integrationOfMonthlyGetter.get(
-                            employeeId, closureMonth.yearMonth(), ClosureId.valueOf(closureMonth.closureId()), closureMonth.closureDate());
-                    result.add(im);
-                    continue;
-                }
-
-                val require = requireService.createRequire();
-                val cacheCarrier = new CacheCarrier();
-
-                List<IntegrationOfDaily> dailies = this.getIntegrationOfDailyProspect(employeeId, closureMonth.defaultPeriod());
-                val im = AggregateSpecifiedDailys.algorithm(
-                        require, cacheCarrier, companyId, employeeId,
-                        closureMonth.getYearMonth(), EnumAdaptor.valueOf(closureMonth.getClosureId(), ClosureId.class),
-                        closureMonth.getClosureDate(), closureMonth.defaultPeriod(), null, dailies, null
-                );
-                im.ifPresent(data -> result.add(data));
-            }
-            return result;
-        }
-
         @Override
         public RecordDomRequireService requireService() {
             return requireService;
+        }
+
+        //--- 見込み年次 ---//
+        @Override
+        public List<IntegrationOfMonthly> getIntegrationOfMonthlyProspect(String employeeId, List<ClosureMonth> closureMonths) {
+            return closureMonths.stream()
+                .map(closureMonth -> integrationOfMonthlyGetter.get(
+                        employeeId,
+                        closureMonth.yearMonth(),
+                        ClosureId.valueOf(closureMonth.closureId()),
+                        closureMonth.closureDate()))
+                .collect(Collectors.toList());
+        }
+
+        //--- 見込み共通 ---//
+        @Override
+        public Optional<CriterionAmountUsageSetting> getUsageSetting() {
+            return criterionAmountUsageSettingRepo.get(companyId);
+        }
+
+        @Override
+        public Optional<CriterionAmountForCompany> getCriterionAmountForCompany() {
+            return criterionAmountForCompanyRepo.get(companyId);
+        }
+
+        @Override
+        public Optional<CriterionAmountForEmployment> getCriterionAmountForEmployment(EmploymentCode employmentCode) {
+            return criterionAmountForEmploymentRepo.get(companyId, employmentCode);
+        }
+
+        @Override
+        public Optional<EmploymentPeriodImported> getEmploymentHistory(EmployeeId employeeId, GeneralDate generalDate) {
+            return employmentHistory(new CacheCarrier(), companyId, employeeId.v(), generalDate).map(history ->
+                    new EmploymentPeriodImported(
+                            history.getEmployeeId(),
+                            history.getPeriod(),
+                            history.getEmploymentCode(),
+                            Optional.empty())
+            );
+        }
+
+        @Override
+        public Optional<HandlingOfCriterionAmount> getHandling() {
+            return handlingOfCriterionAmountRepo.get(companyId);
         }
 
         //--- 月別実績 ---//
@@ -1007,6 +1042,31 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public Optional<HolidayAddtionSet> holidayAddtionSet(String cid) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public Optional<AgreementTimeOfManagePeriod> getAgeementTime(String employeeId, YearMonth yearMonth) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public Optional<AgreementOperationSetting> agreementOperationSetting(String cid) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public BasicAgreementSettingForCalc basicAgreementSetting(String cid, String sid, GeneralDate baseDate, Year year) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public Optional<nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(String sid, YearMonth ym) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public List<nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(List<String> sids, List<nts.arc.time.YearMonth> yearMonths) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }

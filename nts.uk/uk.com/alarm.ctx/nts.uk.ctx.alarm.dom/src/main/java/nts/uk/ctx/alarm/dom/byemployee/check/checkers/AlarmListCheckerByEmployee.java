@@ -7,6 +7,9 @@ import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.weekly.CheckErrorAl
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.schedule.daily.single.ScheduleDailyCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.vacation.VacationCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agree36.monthly.Agree36MontlyCheckerByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agree36.multimonth.Agree36MultiMonthCheckerByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.agree36.yearly.Agree36YearlyCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.appapproval.AppApprovalCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.master.MasterCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.anyperiod.AnyPeriodCheckerByEmployee;
@@ -35,6 +38,10 @@ public interface AlarmListCheckerByEmployee {
             AnyPeriodCheckerByEmployee.RequireCheck,
             MasterCheckerByEmployee.RequireCheck,
             AppApprovalCheckerByEmployee.RequireCheck,
-            VacationCheckerByEmployee.RequireCheck {
+            VacationCheckerByEmployee.RequireCheck,
+            Agree36MontlyCheckerByEmployee.RequireCheck,
+            Agree36YearlyCheckerByEmployee.RequireCheck,
+            Agree36MultiMonthCheckerByEmployee.RequireCheck
+            {
     }
 }

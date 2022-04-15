@@ -13,7 +13,7 @@ public class CheckingPeriod {
     CheckingPeriodMonthly prospectMonthly;
     
     /** 見込み年次 */
-    CheckingPeriodMonthly prospectYearly;
+    CheckingPeriodYearly prospectYearly;
 
     /** 日次 */
     CheckingPeriodDaily daily;
@@ -29,4 +29,10 @@ public class CheckingPeriod {
 
     /** 休暇 */
     CheckingPeriodVacation vacation;
+    
+    /** ３６協定月次 */
+    CheckingPeriodMonthlyAgreement monthlyAgreement;
+    
+    /** ３６協定年次 */
+    CheckingPeriodYearlyAgreement yearlyAgreement;
 }
