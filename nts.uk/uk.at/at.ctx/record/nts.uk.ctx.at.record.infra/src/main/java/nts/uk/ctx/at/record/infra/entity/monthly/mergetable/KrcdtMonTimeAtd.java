@@ -960,10 +960,6 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 	@Column(name = "IRG_LEGAL_OVER_TIME")
 	public int irregularLegalOverTime;
 
-	/** 計算変形法定内残業時間 */
-	@Column(name = "CALC_IRG_LGL_OVER_TIME")
-	public int calcIrregularLegalOverTime;
-
 	/** 変形法定内残業時間 */
 	@Column(name = "IRG_LEGAL_VACATION_ADD_TIME")
 	public int irregularLegalVacationAddTime;
@@ -1866,7 +1862,6 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 		this.irregularPeriodCarryforwardTime = 0;
 		this.irregularWorkingShortageTime = 0;
 		this.irregularLegalOverTime = 0;
-		this.calcIrregularLegalOverTime = 0;
 		this.irregularLegalVacationAddTime = 0;
 		this.irregularIllegalVacationAddTime = 0;
 		this.flexTime = 0;
@@ -2108,8 +2103,7 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 		this.multiMonthIrregularMiddleTime = irregularWorkingTime.getMultiMonthIrregularMiddleTime().v();
 		this.irregularPeriodCarryforwardTime = irregularWorkingTime.getIrregularPeriodCarryforwardTime().v();
 		this.irregularWorkingShortageTime = irregularWorkingTime.getIrregularWorkingShortageTime().v();
-		this.irregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().getTime().v();
-		this.calcIrregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().getCalcTime().v();
+		this.irregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().v();
 		this.irregularLegalVacationAddTime = irregularWorkingTime.getLegalVacationAddTime().valueAsMinutes();
 		this.irregularIllegalVacationAddTime = irregularWorkingTime.getIllegalVacationAddTime().valueAsMinutes();
 	}
@@ -3103,9 +3097,7 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				new AttendanceTimeMonthWithMinus(this.multiMonthIrregularMiddleTime),
 				new AttendanceTimeMonthWithMinus(this.irregularPeriodCarryforwardTime),
 				new AttendanceTimeMonth(this.irregularWorkingShortageTime),
-				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(this.irregularLegalOverTime),
-						new AttendanceTimeMonth(this.calcIrregularLegalOverTime)),
+				new AttendanceTimeMonth(this.irregularLegalOverTime),
 				new AttendanceTimeMonth(this.irregularIllegalVacationAddTime),
 				new AttendanceTimeMonth(this.irregularLegalVacationAddTime));
 		

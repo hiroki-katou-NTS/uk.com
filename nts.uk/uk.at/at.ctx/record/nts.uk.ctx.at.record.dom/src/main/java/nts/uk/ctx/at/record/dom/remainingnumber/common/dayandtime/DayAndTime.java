@@ -5,10 +5,11 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 
 /**
   * 日と時間
@@ -84,16 +85,24 @@ public class DayAndTime {
 	 * @return dayAndTime 計算結果の日と時間
 	 *
 	 */
-	public static DayAndTime subDayAndTime(DayAndTime beSubtracted, DayAndTime subtract,  String companyId, String employeeId, GeneralDate criteriaDate, RequireM3 require){
+	public static DayAndTime subDayAndTime(DayAndTime beSubtracted, DayAndTime subtract, 
+			String companyId, String employeeId, GeneralDate criteriaDate, RequireM3 require){
 		// 日数の減算を行う
 		// ===計算結果の日と時間．日　=　減算される日と時間．日 ー 減算する日と時間．日
 		// ===計算結果の日と時間．時間 = 　減算される日と時間．時間
 		DayNumberOfUse resultDay = new DayNumberOfUse(beSubtracted.day.v() - subtract.day.v());
 		TimeOfUse resultTime = beSubtracted.time;
 
+		/** 年休設定を取得する */
+		AnnualPaidLeaveSetting annualPaidLeave = require.annualPaidLeaveSetting(companyId);
+		
 		// 積み崩しが必要か
 		// １日に相当する契約時間を取得する
-		Optional<LaborContractTime> contractTime = LeaveRemainingNumber.getContractTime(require, companyId, employeeId, criteriaDate);
+		Optional<LaborContractTime> contractTime = Optional.empty();
+		if(annualPaidLeave != null){
+			contractTime = annualPaidLeave.getTimeSetting().getTimeAnnualLeaveTimeDay()
+					.getContractTime(require, employeeId, criteriaDate);
+		}
 
 		if(!contractTime.isPresent()){
 			contractTime = Optional.of(new LaborContractTime(0));

@@ -163,6 +163,15 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 	}
 	
 	@Override
+	public List<AttItemName> getNameOfAttendanceItem(String cid, List<Integer> attendanceItemIds, TypeOfItem type) {
+		List<AttItemName> attendanceItems = this.getAttendanceItemName(cid, attendanceItemIds, type);
+		// 対応するドメインモデル 「勤怠項目と枠の紐付け」 を取得する
+		List<AttendanceItemLinking> attendanceItemAndFrameNos = this.attendanceItemLinkingRepository
+				.getFullDataByAttdIdAndType(attendanceItemIds, type);
+		return this.getNameOfAttendanceItem(attendanceItems, attendanceItemAndFrameNos);
+	}
+	
+	@Override
 	public List<AttItemName> getNameOfAttendanceItem(TypeOfItem type) {
 		List<AttItemName> attendanceItems = this.getAttendanceItemName(type);
 		// 対応するドメインモデル 「勤怠項目と枠の紐付け」 を取得する
@@ -475,8 +484,12 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 				outsideOTBRDItem.getProductNumber().value, outsideOTBRDItem.getAttendanceItemIds());
 	}
 
-	private List<AttItemName> getAttendanceItemName(List<Integer> attendanceItemIds, TypeOfItem type) {
+	private List<AttItemName> getAttendanceItemName(List<Integer> attendanceItemIds, TypeOfItem type){
 		String companyId = AppContexts.user().companyId();
+		return getAttendanceItemName(companyId, attendanceItemIds, type);
+	}
+	private List<AttItemName> getAttendanceItemName(String companyId, List<Integer> attendanceItemIds, TypeOfItem type) {
+		
 		List<AttItemName> attendanceItemList = new ArrayList<>();
 
 		switch (type) {

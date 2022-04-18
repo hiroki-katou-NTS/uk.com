@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform;
 
 import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -44,6 +45,12 @@ public class DailyRecordShareFinderImpl implements DailyRecordShareFinder {
 	public List<IntegrationOfDaily> find(Map<String, List<GeneralDate>> param) {
 		List<DailyRecordDto> listDailyResult = finder.find(param);
 		return listDailyResult.stream().map(x -> x.toDomain(x.getEmployeeId(), x.getDate())).collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<IntegrationOfDaily> find(String employeeId, DatePeriod date) {
+		List<DailyRecordDto> lstData = finder.find(Arrays.asList(employeeId), date);
+		return lstData.stream().map(x -> x.toDomain(employeeId, x.getDate())).collect(Collectors.toList());
 	}
 
 }

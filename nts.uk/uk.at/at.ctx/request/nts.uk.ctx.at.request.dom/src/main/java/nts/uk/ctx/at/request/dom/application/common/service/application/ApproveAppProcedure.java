@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import lombok.extern.log4j.Log4j;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.AsyncTask;
@@ -44,6 +45,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.ApprovalMailSendCheck;
 
 @Stateless
+@Log4j
 public class ApproveAppProcedure {
 	
 	@Inject
@@ -152,6 +154,14 @@ public class ApproveAppProcedure {
 	 * @param companyID
 	 */
 	public void procedureAfterApprove(List<Application> appCompleteApproveLst, String companyID) {
+		// đối ứng tạm, đợi 3s chớ xử lý update trạng thái đơn xin hoàn thành, **** sau
+		// sẽ xóa
+		try {
+			log.info("\n wait 3s");
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		// 承認完了フラグがtrueになっている申請をグループする
 		Map<String, List<Application>> empAppMap = appCompleteApproveLst.stream().collect(Collectors.groupingBy(x -> x.getEmployeeID()));
 		for(Entry<String, List<Application>> empApp : empAppMap.entrySet()) {

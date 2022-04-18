@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
@@ -58,16 +59,18 @@ public class RegularAndIrregularTimeOfMonthlyDto implements ItemConst, Attendanc
 	public static RegularAndIrregularTimeOfMonthlyDto from(RegAndIrgTimeOfWeekly domain) {
 		RegularAndIrregularTimeOfMonthlyDto dto = new RegularAndIrregularTimeOfMonthlyDto();
 		if(domain != null) {
-//			dto.setIrregularWorkingTime(new IrregularWorkingTimeOfMonthlyDto(0, 0, 0, 
-//											new TimeMonthWithCalculationDto(domain., calcTime)));
-			dto.setWeeklyTotalPremiumTime(domain.getWeeklyTotalPremiumTime() == null 
-					? 0 : domain.getWeeklyTotalPremiumTime().valueAsMinutes());
+			dto.setIrregularWorkingTime(new IrregularWorkingTimeOfMonthlyDto(0, 0, 0, 
+											domain.getIrregularLegalOverTime().v(), 0, 0));
+			dto.setWeeklyTotalPremiumTime(domain.getWeeklyTotalPremiumTime().valueAsMinutes());
 		}
 		return dto;
 	}
 
 	public RegAndIrgTimeOfWeekly toDomainWeekly() {
-		return RegAndIrgTimeOfWeekly.of(new AttendanceTimeMonth(weeklyTotalPremiumTime));
+		
+		val irgLegalOt = this.irregularWorkingTime == null ? 0 : this.irregularWorkingTime.getIrregularLegalOverTime();
+		
+		return RegAndIrgTimeOfWeekly.of(new AttendanceTimeMonth(weeklyTotalPremiumTime), new AttendanceTimeMonth(irgLegalOt));
 	}
 	
 	@Override

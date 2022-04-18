@@ -26,10 +26,10 @@ public interface PerformDataRecoveryRepository {
 
 	Optional<TableList> getByInternal(String internalFileName, String dataRecoveryProcessId);
 
-	Integer countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
+	Long countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent, String dataRecoveryProcessId,String employeeCode);
 	
-	Integer countDataTransactionExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
+	Long countDataTransactionExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent, String dataRecoveryProcessId,String employeeCode);
 
 	void deleteDataExitTableByVkey(List<Map<String, String>> lsiFiledWhere2, String tableName, String namePhysicalCid,

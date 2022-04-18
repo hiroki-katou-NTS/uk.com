@@ -16,4 +16,6 @@ public class InitialDisplayEmployeeDto {
 	
 	// 日別実績の修正の状態
 	private DPCorrectionStateParam param;
+	
+	private boolean isAddSidLogin;
 }

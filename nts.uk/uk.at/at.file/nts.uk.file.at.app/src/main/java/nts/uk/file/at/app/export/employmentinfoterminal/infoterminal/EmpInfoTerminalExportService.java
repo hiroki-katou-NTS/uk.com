@@ -1,6 +1,5 @@
 package nts.uk.file.at.app.export.employmentinfoterminal.infoterminal;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,6 +15,12 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.EmpInfo
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSetRepository;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -38,12 +43,29 @@ public class EmpInfoTerminalExportService extends ExportService<List<EmpInfoTerm
 	
 	@Inject
 	private WorkplacePub workplacePub;
+	
+	@Inject
+	private DeclareSetRepository declareSetRepository;
+	
+	@Inject
+	private OvertimeWorkFrameRepository overtimeWorkFrameRepository;
+
+	@Inject
+	private WorkdayoffFrameRepository workdayoffFrameRepository;
 
 	@Override
 	protected void handle(ExportServiceContext<List<EmpInfoTerminalExportDataSource>> context) {
+		String companyId = AppContexts.user().companyId();
 		List<EmpInfoTerminalExportDataSource> dataSource = context.getQuery();
 		
-		empInfoTerminalExport.export(context.getGeneratorContext(), dataSource);
+		// get 残業枠枠 with 会社ID、使用区分＝する
+		List<OvertimeWorkFrame> overtimeWorkFrames = overtimeWorkFrameRepository
+						.getOvertimeWorkFrameByFrameByCom(companyId, 1);
+
+		// get 休出枠 with ログイン会社ID、使用区分＝する
+		List<WorkdayoffFrame> workdayoffFrames = workdayoffFrameRepository.getAllWorkdayoffFrame(companyId);
+		
+		empInfoTerminalExport.export(context.getGeneratorContext(), dataSource, this.getDeclareSet(), overtimeWorkFrames, workdayoffFrames);
 	}
 
 	//	就業情報端末のマスタリストを作成する
@@ -91,5 +113,15 @@ public class EmpInfoTerminalExportService extends ExportService<List<EmpInfoTerm
 		}).collect(Collectors.toList());
 		
 		return dataSource;
+	}
+	
+	// Get Declaset()
+	public DeclareSet getDeclareSet() {
+		String companyId = AppContexts.user().companyId();
+		Optional<DeclareSet> optionalDeclareSet = declareSetRepository.find(companyId);
+		if(optionalDeclareSet.isPresent()) {
+			return optionalDeclareSet.get();
+		}
+		return new DeclareSet(companyId);
 	}
 }

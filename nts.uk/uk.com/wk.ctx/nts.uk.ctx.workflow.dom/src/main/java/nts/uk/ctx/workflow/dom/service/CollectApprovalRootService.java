@@ -8,6 +8,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterapproval.ErrorContent;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApproverFromGroupOuput;
 import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
@@ -172,4 +173,7 @@ public interface CollectApprovalRootService {
 	 * @return
 	 */
 	public List<LevelApproverInfo> checkApproverStatusAndAuthor(List<LevelApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID);
+
+	// 承認ルート順次異常チェック
+	List<ErrorContent> checkApprovalRootSequentially(LevelOutput levelOutput);
 }

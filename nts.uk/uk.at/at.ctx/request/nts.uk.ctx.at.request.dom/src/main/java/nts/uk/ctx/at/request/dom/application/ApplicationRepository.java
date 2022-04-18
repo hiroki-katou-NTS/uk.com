@@ -7,6 +7,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 
@@ -182,5 +183,15 @@ public interface ApplicationRepository {
 	 * @return
 	 */
 	public List<Application> getAllApplicationByAppTypeAndPrePostAtr(String employeeID, int appType, GeneralDate appDate, int prePostAtr);
+	
+	// 申請者 と申請日から申請を取得する
+	public List<Application> findAppWithSidDate(String companyId, String sid, GeneralDate date, int appType);
+
+	// 申請を取得する
+	public List<Application> findAppWithSidDateApptype(String companyId, String sid, GeneralDate date,
+			GeneralDateTime inputDate, PrePostAtr prePostAtr, int appType);
+
+	// 申請者 と期間から申請を取得する
+	public List<Application> findAppWithSidDatePeriod(String companyId, String sid, DatePeriod period, int appType);
 		
 }

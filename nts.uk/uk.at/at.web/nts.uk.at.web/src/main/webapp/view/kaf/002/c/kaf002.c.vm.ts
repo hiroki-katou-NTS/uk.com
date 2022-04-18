@@ -1084,7 +1084,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     applicationDto: applicationDto
             }
             
-            return self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inputTimeKAF002')
+            return self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-b-component7-comboReason', '#inputTimeKAF002')
             .then(isValid => {
                 if ( isValid ) {
                     return true;

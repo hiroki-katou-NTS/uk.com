@@ -140,12 +140,12 @@ public class OtWorkAppReflectTest {
 	}
 
 	private OtWorkAppReflect createOtWorkRfl(NotUseAtr reflectWork) {
-		return new OtWorkAppReflect(BeforeOtWorkAppReflect.create(reflectWork.value, 0, 0),
+		return new OtWorkAppReflect(BeforeOtWorkAppReflect.create(0, 0),
 				AfterOtWorkAppReflect.create(1, 1, 1, 1), reflectWork);
 	}
 
 	private OtWorkAppReflect otWorkRflBeforeAfter(NotUseAtr reflectWork) {
-		return new OtWorkAppReflect(BeforeOtWorkAppReflect.create(reflectWork.value, 0, 0),
+		return new OtWorkAppReflect(BeforeOtWorkAppReflect.create(0, 0),
 				AfterOtWorkAppReflect.create(1, 1, 1, 1), NotUseAtr.NOT_USE);
 	}
 }

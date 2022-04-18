@@ -448,11 +448,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
       overflow: hidden;
     }
 
-    #ccg005-status-popup table tr,
-    #ccg005-content i, #ccg005-content img {
-      cursor: pointer;
-    }
-
     #ccg005-status-popup table tr td {
       padding-right: 5px;
     }

@@ -3,12 +3,8 @@ package nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -40,7 +36,7 @@ public class WwfmtApprovalPhase extends ContractUkJpaEntity implements Serializa
 	@Column(name = "APPROVAL_ATR")
 	public int approvalAtr;
 	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="wwfmtApprovalPhase", orphanRemoval = true)
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="wwfmtApprovalPhase", orphanRemoval = true, fetch = FetchType.LAZY)
 	public List<WwfmtAppover> wwfmtAppovers;
 	
 	@Override

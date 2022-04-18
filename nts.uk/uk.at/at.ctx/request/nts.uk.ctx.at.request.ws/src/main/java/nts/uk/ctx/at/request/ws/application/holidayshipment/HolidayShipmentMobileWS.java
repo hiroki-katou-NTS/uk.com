@@ -45,6 +45,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/request/application/holidayshipment/mobile")
@@ -116,6 +117,10 @@ public class HolidayShipmentMobileWS extends WebService {
 		DisplayInforWhenStarting displayInforWhenStarting = command.getDisplayInforWhenStarting();
 		AppDispInfoStartupOutput appDispInfoStartup = displayInforWhenStarting.appDispInfoStartup.toDomain();
 		//登録前エラーチェック（新規）(Check error trước khi đăng ký (New)
+		List<WorkType> workTypeLst = new ArrayList<>();
+		if(command.getDisplayInforWhenStarting().getApplicationForHoliday()!=null) {
+			workTypeLst = command.getDisplayInforWhenStarting().getApplicationForHoliday().getWorkTypeList().stream().map(x -> x.toDomain()).collect(Collectors.toList());
+		}
 		preRegistrationErrorCheck.errorCheck(
 				companyId, 
 				abs, 
@@ -128,7 +133,7 @@ public class HolidayShipmentMobileWS extends WebService {
 				command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 				command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 				command.isCheckFlag(), 
-				command.getDisplayInforWhenStarting().getApplicationForHoliday().getWorkTypeList().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				workTypeLst, 
 				EnumAdaptor.valueOf(command.getDisplayInforWhenStarting().getSubstituteManagement(), ManageDistinct.class));
 		//振休残数不足チェック (Check số nghỉ bù thiếu)
 //		errorCheckProcessingBeforeRegistrationKAF011.checkForInsufficientNumberOfHolidays(
@@ -188,6 +193,10 @@ public class HolidayShipmentMobileWS extends WebService {
 			rec = Optional.of(command.rec.toDomainUpdateRec(command.rec.application));
 		}
 		DisplayInforWhenStarting displayInforWhenStarting = command.getDisplayInforWhenStarting();
+		List<WorkType> workTypeLst = new ArrayList<>();
+		if(command.getDisplayInforWhenStarting().getApplicationForHoliday()!=null) {
+			workTypeLst = command.getDisplayInforWhenStarting().getApplicationForHoliday().getWorkTypeList().stream().map(x -> x.toDomain()).collect(Collectors.toList());
+		}
 		preUpdateErrorCheck.errorCheck(
 		        companyID, 
 		        abs, 
@@ -196,7 +205,7 @@ public class HolidayShipmentMobileWS extends WebService {
 		        abs.isPresent() ? command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
 		        abs.isPresent() ? command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
 		        command.isCheckFlag(), 
-		        command.getDisplayInforWhenStarting().getApplicationForHoliday().getWorkTypeList().stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+		        workTypeLst);
 		return Collections.emptyList();
 	}
 	

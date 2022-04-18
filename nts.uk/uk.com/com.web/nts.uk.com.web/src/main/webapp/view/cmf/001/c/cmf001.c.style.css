@@ -45,6 +45,18 @@ body.ko-cloak {
 	line-height: 32px;
 }
 
+#select-mapping #csv-fetch {
+	margin-top: 12px;
+}
+
+#select-mapping #csv-fetch input {
+	width: 58px;
+}
+
+#select-mapping #csv-fetch .remarks {
+	margin-left: 100px;
+}
+
 #revising {
 	margin-top: 20px;
 	margin-left: 30px;

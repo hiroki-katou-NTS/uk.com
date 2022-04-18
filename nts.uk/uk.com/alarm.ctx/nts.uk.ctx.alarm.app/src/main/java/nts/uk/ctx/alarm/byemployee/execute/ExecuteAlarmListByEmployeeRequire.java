@@ -57,6 +57,12 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.Ident
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.annualholiday.ReNumAnnLeaReferenceDateExport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaveImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.ReserveLeaveManagerApdater;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaCriterialDate;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
@@ -75,11 +81,15 @@ import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDate
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
@@ -95,6 +105,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.child
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagementRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.CareManagementDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.*;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.*;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.anyperiod.attendancetime.converter.AnyPeriodRecordToAttendanceItemConverter;
@@ -126,6 +139,10 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageS
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
@@ -424,6 +441,33 @@ public class ExecuteAlarmListByEmployeeRequire {
     
     @Inject
     private ErrorAlarmAnyPeriodRepository errorAlarmAnyPeriodRepo;
+
+    @Inject
+    private AnnLeaveRemainNumberAdapter annLeaveRemainNumberAdapter;
+
+    @Inject
+    private ReserveLeaveManagerApdater reserveLeaveManagerApdater;
+
+    @Inject
+    private PayoutSubofHDManaRepository payoutSubofHDManaRepo;
+
+    @Inject
+    private InterimRecAbasMngRepository interimRecAbasMngRepo;
+
+    @Inject
+    private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepo;
+
+    @Inject
+    private PayoutManagementDataRepository payoutManagementDataRepo;
+
+    @Inject
+    private LeaveComDayOffManaRepository leaveComDayOffManaRepo;
+
+    @Inject
+    private EmpSubstVacationRepository empSubstVacationRepo;
+
+    @Inject
+    private ComSubstVacationRepository comSubstVacationRepo;
 
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
@@ -886,6 +930,80 @@ public class ExecuteAlarmListByEmployeeRequire {
             }else {
                 return annLeaGrantRemDataRepo.find(employeeId);
             }
+        }
+
+        //--- 年休残数 ---//
+        @Override
+        public ReNumAnnLeaveImport getAnnualLeaveRemain(String employeeId, GeneralDate date) {
+            return annLeaveRemainNumberAdapter.getReferDateAnnualLeaveRemain(employeeId, date);
+        }
+
+        //--- 積立年休残数 ---//
+        @Override
+        public Optional<RsvLeaCriterialDate> getReserveLeaveRemain(String employeeId, GeneralDate date) {
+            return reserveLeaveManagerApdater.getRsvLeaveManagerData(employeeId, date);
+        }
+
+        //--- 振休残数 ---//
+
+        @Override
+        public List<PayoutSubofHDManagement> getOccDigetByListSid(String employeeId, DatePeriod datePeriod) {
+            return payoutSubofHDManaRepo.getOccDigetByListSid(employeeId, datePeriod);
+        }
+
+        @Override
+        public List<InterimAbsMng> getAbsBySidDatePeriod(String employeeId, DatePeriod datePeriod) {
+            return interimRecAbasMngRepo.getAbsBySidDatePeriod(employeeId, datePeriod);
+        }
+
+        @Override
+        public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String employeeId) {
+            return substitutionOfHDManaDataRepo.getBysiD(this.companyId, employeeId);
+        }
+
+        @Override
+        public List<InterimRecMng> getRecBySidDatePeriod(String employeeId, DatePeriod datePeriod) {
+            return interimRecAbasMngRepo.getRecBySidDatePeriod(employeeId, datePeriod);
+        }
+
+        @Override
+        public List<PayoutManagementData> getPayoutMana(String employeeId) {
+            return payoutManagementDataRepo.getSid(this.companyId, employeeId);
+        }
+
+        @Override
+        public List<PayoutSubofHDManagement> getPayoutSubWithDateUse(String employeeId, GeneralDate dateOfUse, GeneralDate baseDate) {
+            return payoutSubofHDManaRepo.getWithDateUse(employeeId, dateOfUse, baseDate);
+        }
+
+        @Override
+        public List<PayoutSubofHDManagement> getPayoutSubWithOutbreakDay(String employeeId, GeneralDate outbreakDay, GeneralDate baseDate) {
+            return payoutSubofHDManaRepo.getWithOutbreakDay(employeeId, outbreakDay, baseDate);
+        }
+
+        @Override
+        public List<LeaveComDayOffManagement> getLeaveComWithDateUse(String employeeId, GeneralDate dateOfUse, GeneralDate baseDate) {
+            return leaveComDayOffManaRepo.getLeaveComWithDateUse(employeeId, dateOfUse, baseDate);
+        }
+
+        @Override
+        public List<LeaveComDayOffManagement> getLeaveComWithOutbreakDay(String employeeId, GeneralDate outbreakDay, GeneralDate baseDate) {
+            return leaveComDayOffManaRepo.getLeaveComWithOutbreakDay(employeeId, outbreakDay, baseDate);
+        }
+
+        @Override
+        public List<EmploymentHistShareImport> findByEmployeeIdOrderByStartDate(String employeeId) {
+            return this.findByEmployeeIdOrderByStartDate(employeeId);
+        }
+
+        @Override
+        public Optional<EmpSubstVacation> findEmpById(String companyId, String contractTypeCode) {
+            return empSubstVacationRepo.findById(companyId, contractTypeCode);
+        }
+
+        @Override
+        public Optional<ComSubstVacation> findComById(String companyId) {
+            return comSubstVacationRepo.findById(companyId);
         }
 
         //--- 子の看護介護休暇 ---//

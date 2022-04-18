@@ -4129,7 +4129,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         dataEvent.alt(false);
                     }
 
-                    if (evt.keyCode === 46 && !ko.unwrap(dataEvent.delete)) {
+                    if (evt.keyCode === 46 && !ko.unwrap(dataEvent.delete) && vm.$view() != "edit") {
                         if (vm.calendar) {
                             let selecteds = _.filter(vm.calendar.getEvents(), (e: EventApi) => e.groupId === SELECTED);
 

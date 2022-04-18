@@ -2,7 +2,7 @@
 .control-group.valign-top > * { vertical-align: top; }
 .control-group.valign-bottom > * { vertical-align: bottom; }
 
-#functions-area > button { width: 80px; }
+/* #functions-area > button { width: 80px; } */
 .myLinkButton { display: inline-block; }
 .myLinkButtonIcon { float: left; }
 .myLinkButtonText {

@@ -42,4 +42,6 @@ public interface ApplyForLeaveRepository {
      * @return
      */
     public List<ApplyForLeave> getAbsenceByIds(String companyID, List<String> appId);
+    
+    public void insert(String cid, String contractCode, ApplyForLeave domain);
 }

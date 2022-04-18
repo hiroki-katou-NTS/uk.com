@@ -9,17 +9,17 @@ module nts.uk.at.view.kaf000.a.component2.viewmodel {
 						<div class="cell valign-center" data-bind="ntsFormLabel:{}, text: $i18n('KAF000_44')"></div>
 					</div>
 					<div class="valign-center" data-bind="if: employeeLst().length <= 1">
-						<div style="display: inline-block; max-width: calc(100% - 26px);">
+						<div style="display: inline-block; max-width: calc(100% - 80px);">
 							<div style="min-width: 150px; vertical-align: bottom; padding-right: 10px; font-size: 1.3rem" class="limited-label" data-bind="text: employeeName"></div>
 						</div>
 					</div>
 					<div class="valign-center" data-bind="if: employeeLst().length > 1">
-						<div style="display: inline-block; max-width: calc(100% - 26px);">
+						<div style="display: inline-block; max-width: calc(100% - 80px);">
 							<div style="min-width: 150px; vertical-align: bottom; padding-right: 10px; font-size: 1.3rem" class="limited-label" data-bind="text: employeeName"></div>
 						</div>
 						<div style="display: inline-block;">
-							<button class="popup-btn" style="width: 20px; height: 20px; padding: 0 2px;">
-							    <i data-bind="ntsIcon: { no: 11 }"></i>
+							<button class="popup-btn" style="min-width: 20px; height: 20px; padding: 0 2px; background-color: #fff;">
+							    <i data-bind="ntsIcon: { no: 230 }"></i>
 							</button>
 						</div>
 						<div class="popup-area">

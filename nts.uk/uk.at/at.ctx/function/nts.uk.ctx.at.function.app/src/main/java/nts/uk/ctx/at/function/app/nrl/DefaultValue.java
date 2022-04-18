@@ -20,6 +20,7 @@ public class DefaultValue {
 	public static final String ZERO_PADDING = "00000000";
 	public static final String INIT_BCC = "0000";
 	public static final String PRELIMINARY = "000000000000";
+	public static final String PRELIMINARY_YOYAKU = "0000000000000";
 	public static final String SPACE4 = "    ";
 	public static final String SPACE5 = "     ";
 	public static final String SPACE6 = "      ";

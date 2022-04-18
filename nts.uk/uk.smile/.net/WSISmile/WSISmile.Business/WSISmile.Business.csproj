@@ -76,6 +76,7 @@
     <Compile Include="Link\Parameter\Closure\MonthlyClosureParam.cs" />
     <Compile Include="Link\Parameter\Cookie\CookieInfo.cs" />
     <Compile Include="Link\Parameter\Login\LoginParam.cs" />
+    <Compile Include="Link\Parameter\Output\Monthly\ApprovalPhaseStateInfo.cs" />
     <Compile Include="Link\Parameter\Output\Monthly\ApproveStatusCheckParam.cs" />
     <Compile Include="Link\Parameter\Output\Monthly\OutputEmployeeInfo.cs" />
     <Compile Include="Link\Parameter\Output\Monthly\SelectEmployeesByEmpParam.cs" />

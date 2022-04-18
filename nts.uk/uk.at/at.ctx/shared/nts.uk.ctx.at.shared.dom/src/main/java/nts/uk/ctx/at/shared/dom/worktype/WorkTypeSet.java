@@ -62,7 +62,7 @@ public class WorkTypeSet implements Cloneable, Serializable{
 	/**
 	 * 特別休暇枠
 	 */
-	private int sumSpHodidayNo;
+	private Integer sumSpHodidayNo;
 	
 	/**
 	 * 退勤時刻を直帰とする
@@ -102,7 +102,7 @@ public class WorkTypeSet implements Cloneable, Serializable{
 	 */
 	public WorkTypeSet(String companyId, WorkTypeCode workTypeCd, WorkAtr workAtr, WorkTypeSetCheck digestPublicHd,
 			HolidayAtr holidayAtr, WorkTypeSetCheck countHodiday, CloseAtr closeAtr, int sumAbsenseNo,
-			int sumSpHodidayNo, WorkTypeSetCheck timeLeaveWork, WorkTypeSetCheck attendanceTime,
+			Integer sumSpHodidayNo, WorkTypeSetCheck timeLeaveWork, WorkTypeSetCheck attendanceTime,
 			WorkTypeSetCheck genSubHodiday, WorkTypeSetCheck dayNightTimeAsk) {
 		super();
 		this.companyId = companyId;
@@ -146,7 +146,7 @@ public class WorkTypeSet implements Cloneable, Serializable{
 	 */
 	public static WorkTypeSet createSimpleFromJavaType(String companyId, String workTypeCd, int workAtr, int digestPublicHd,
 			int holidayAtr, int countHodiday, Integer closeAtr, int sumAbsenseNo,
-			int sumSpHodidayNo, int timeLeaveWork, int attendanceTime,
+			Integer sumSpHodidayNo, int timeLeaveWork, int attendanceTime,
 			int genSubHodiday, int dayNightTimeAsk) {
 		return new WorkTypeSet(companyId, 
 				new WorkTypeCode(workTypeCd), 

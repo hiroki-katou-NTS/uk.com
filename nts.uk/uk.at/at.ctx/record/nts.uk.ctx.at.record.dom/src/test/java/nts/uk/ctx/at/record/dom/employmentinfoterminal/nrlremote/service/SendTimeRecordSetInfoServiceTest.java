@@ -14,14 +14,9 @@ import org.junit.runner.RunWith;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSerialNo;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal.EmpInfoTerminalBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.FullIpAddress;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.PartialIpAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.MajorNameClassification;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.NRRomVersion;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.NrlRemoteInputRange;
@@ -35,7 +30,6 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetUp
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.VariableName;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.dto.TimeRecordSettingInfoDto;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
-import nts.uk.shr.com.net.Ipv4Address;
 
 @RunWith(JMockit.class)
 public class SendTimeRecordSetInfoServiceTest {
@@ -55,7 +49,7 @@ public class SendTimeRecordSetInfoServiceTest {
 	public void testNotFoundEmpTer() {
 
 		Optional<TimeRecordSettingInfoDto> actualResult = SendTimeRecordSetInfoService.send(require,
-				new MacAddress("00-14-22-01-23-45"), new ContractCode("0000000000000"));
+				new ContractCode(""), new EmpInfoTerminalCode(""));
 
 		assertThat(actualResult).isEqualTo(Optional.empty());
 
@@ -64,19 +58,8 @@ public class SendTimeRecordSetInfoServiceTest {
 	@Test
 	public void testNotFoundDataMaster() {
 
-		new Expectations() {
-			{
-				require.getEmpInfoTerWithMac(new MacAddress("00-14-22-01-23-45"), (ContractCode) any);
-				result = Optional.of(
-						new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")), new MacAddress("00-14-22-01-23-45"),
-								new EmpInfoTerminalCode("1234"), Optional.of(new EmpInfoTerSerialNo("1111")),
-								new EmpInfoTerminalName("AT"), new ContractCode("0000000000000"))
-										.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).build());
-			}
-		};
-
 		Optional<TimeRecordSettingInfoDto> actualResult = SendTimeRecordSetInfoService.send(require,
-				new MacAddress("00-14-22-01-23-45"), new ContractCode("0000000000000"));
+				new ContractCode(""), new EmpInfoTerminalCode(""));
 
 		assertThat(actualResult).isEqualTo(Optional.empty());
 
@@ -87,13 +70,6 @@ public class SendTimeRecordSetInfoServiceTest {
 
 		new Expectations() {
 			{
-				require.getEmpInfoTerWithMac(new MacAddress("00-14-22-01-23-45"), (ContractCode) any);
-				result = Optional.of(
-						new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")), new MacAddress("00-14-22-01-23-45"),
-								new EmpInfoTerminalCode("1234"), Optional.of(new EmpInfoTerSerialNo("1111")),
-								new EmpInfoTerminalName("AT"), new ContractCode("0000000000000"))
-										.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).build());
-
 				require.findSettingUpdate((EmpInfoTerminalCode) any, (ContractCode) any);
 				result = Optional.of(new TimeRecordSetUpdateList(new EmpInfoTerminalCode("1234"),
 						new EmpInfoTerminalName("AT"), new NRRomVersion("111"), ModelEmpInfoTer.NRL_1,
@@ -102,7 +78,7 @@ public class SendTimeRecordSetInfoServiceTest {
 		};
 
 		Optional<TimeRecordSettingInfoDto> actualResult = SendTimeRecordSetInfoService.send(require,
-				new MacAddress("00-14-22-01-23-45"), new ContractCode("0000000000000"));
+				new ContractCode(""), new EmpInfoTerminalCode(""));
 
 		assertThat(actualResult).isEqualTo(Optional.empty());
 
@@ -113,13 +89,6 @@ public class SendTimeRecordSetInfoServiceTest {
 
 		new Expectations() {
 			{
-				require.getEmpInfoTerWithMac(new MacAddress("00-14-22-01-23-45"), (ContractCode) any);
-				result = Optional.of(
-						new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")), new MacAddress("00-14-22-01-23-45"),
-								new EmpInfoTerminalCode("1234"), Optional.of(new EmpInfoTerSerialNo("1111")),
-								new EmpInfoTerminalName("AT"), new ContractCode("0000000000000"))
-										.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).build());
-
 				require.findSettingUpdate((EmpInfoTerminalCode) any, (ContractCode) any);
 				result = Optional.of(new TimeRecordSetUpdateList(new EmpInfoTerminalCode("1234"),
 						new EmpInfoTerminalName("AT"), new NRRomVersion("111"), ModelEmpInfoTer.NRL_1,
@@ -149,7 +118,7 @@ public class SendTimeRecordSetInfoServiceTest {
 		};
 
 		Optional<TimeRecordSettingInfoDto> actualResult = SendTimeRecordSetInfoService.send(require,
-				new MacAddress("00-14-22-01-23-45"), new ContractCode("0000000000000"));
+				new ContractCode(""), new EmpInfoTerminalCode(""));
 
 		assertThat(actualResult.get().getLstReceptFormat())
 				.extracting(x -> x.getMajorClassification(), x -> x.getSmallClassification(), x -> x.getVariableName(),

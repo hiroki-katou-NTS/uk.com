@@ -102,8 +102,7 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			Element.BCC);
 
 	public static final List<String> TR_REMOTE = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
-			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
-			Element.PAYLOAD, Element.BCC);
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING, Element.BCC);
 	
 	public static final List<String> APP_REASON_REQ_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
 			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
@@ -118,6 +117,22 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 	public static final List<String> UK_SWITCH_MODE_RES = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
 			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.YEAR, Element.MONTH, Element.DAY, Element.HOUR, Element.MINITE, Element.SECOND, Element.WEEK,
+			Element.BCC);
+	
+	public static final List<String> TR_REMOTE_SEND_SETTING = Arrays.asList(Element.SOH, Element.HDR, Element.PADDING1, Element.LENGTH,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING2,
+			Element.PAYLOAD, Element.BCC);
+	
+	public static final List<String> MESSAGE_REQ =  Arrays.asList(Element.SOH, Element.HDR, Element.PADDING1, Element.LENGTH,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING2,
+			Element.PAYLOAD, Element.BCC);
+	
+	public static final List<String> MESSAGE_RES =  Arrays.asList(Element.SOH, Element.HDR, Element.PADDING1, Element.LENGTH,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING2,
+			Element.PAYLOAD, Element.BCC);
+	
+	public static final List<String> REBOOT_REQ_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.BCC);
 	
 	/**
@@ -188,7 +203,7 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			break;
 			
 		case TR_REMOTE:
-			orders = TR_REMOTE;
+			orders =  request ?TR_REMOTE : TR_REMOTE_SEND_SETTING;
 			break;
 			
 		case APPLICATION_INFO:
@@ -197,6 +212,18 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			
 		case UK_SWITCH_MODE:
 			 orders = request ? UK_SWITCH_MODE_REQ : UK_SWITCH_MODE_RES;
+			 break;
+			 
+		case TR_REMOTE_SEND_SETTING:
+			 orders = request ? TR_REMOTE_SEND_SETTING : ACCEPT_ORDER;
+			 break;
+			 
+		case MESSAGE:
+			 orders = request ? MESSAGE_REQ : MESSAGE_RES;
+			 break;
+			 
+		case REBOOT:
+			 orders = request ? REBOOT_REQ_ORDER :  ACCEPT_ORDER;
 			 break;
 		default:
 			return Optional.empty();
