@@ -57,9 +57,7 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.Ident
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
-import nts.uk.ctx.at.request.dom.application.annualholiday.ReNumAnnLeaReferenceDateExport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaveImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.ReserveLeaveManagerApdater;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaCriterialDate;
@@ -197,17 +195,25 @@ import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementDomainService;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementUnitSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.VerticalTotalMethodOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.WorkDaysNumberOnLeaveCount;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.WorkDaysNumberOnLeaveCountRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Classification36AgreementTimeRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Company36AgreedHoursRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Employment36HoursRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Workplace36AgreedHoursRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
@@ -215,6 +221,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.sett
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSettingForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 
 
@@ -408,7 +415,7 @@ public class ExecuteAlarmListByEmployeeRequire {
     @Inject
     private CheckExistHolidayGrantAdapter checkExistHolidayGrantAdapter;
 
-	@Inject
+    @Inject
     private CriterionAmountUsageSettingRepository criterionAmountUsageSettingRepo;
 
     @Inject
@@ -469,6 +476,34 @@ public class ExecuteAlarmListByEmployeeRequire {
     @Inject
     private ComSubstVacationRepository comSubstVacationRepo;
 
+    @Inject
+    private AgreementOperationSettingRepository agreementOperationSettingRepository;
+    
+    @Inject
+    private Classification36AgreementTimeRepository classification36AgreementTimeRepository;
+    
+    @Inject
+    private Workplace36AgreedHoursRepository workplace36AgreedHoursRepository;
+    
+    @Inject
+    private Employment36HoursRepository employment36HoursRepository;
+
+    @Inject
+    private Company36AgreedHoursRepository company36AgreedHoursRepository;
+    
+    @Inject
+    private VerticalTotalMethodOfMonthlyRepository verticalTotalMethodOfMonthlyRepository;
+    
+    @Inject
+    private RetentionYearlySettingRepository retentionYearlySettingRepository;
+    
+    @Inject
+    private WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepository;
+    
+    @Inject
+    private HolidayAddtionRepository holidayAddtionRepository;
+    
+    
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
                 AppContexts.user().contractCode(),
@@ -552,7 +587,7 @@ public class ExecuteAlarmListByEmployeeRequire {
         //--- 労働条件 ---//
         @Override
         public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
-            return Optional.empty();
+            return workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
         }
         
         @Override
@@ -567,12 +602,12 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return workingConditionItemRepo.getByHistoryId(historyId);
         }
 
         @Override
         public List<WorkingConditionItem> workingConditionItemClones(List<String> employeeId, GeneralDate baseDate) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return workingConditionItemRepo.getByListSidAndStandardDate(employeeId, baseDate);
         }
         
         @Override
@@ -1204,22 +1239,22 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public Optional<AggregateMethodOfMonthly> getAggregateMethodOfMonthly(String cid) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return verticalTotalMethodOfMonthlyRepository.findByCid(cid);
         }
 
         @Override
         public Optional<RetentionYearlySetting> retentionYearlySetting(String companyId) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return retentionYearlySettingRepository.findByCompanyId(companyId);
         }
 
         @Override
         public WorkDaysNumberOnLeaveCount workDaysNumberOnLeaveCount(String cid) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return workDaysNumberOnLeaveCountRepository.findByCid(cid);
         }
 
         @Override
         public Optional<HolidayAddtionSet> holidayAddtionSet(String cid) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return holidayAddtionRepository.findByCId(cid);
         }
 
         @Override
@@ -1229,7 +1264,7 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public Optional<AgreementOperationSetting> agreementOperationSetting(String cid) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return agreementOperationSettingRepository.find(cid);
         }
 
         @Override
@@ -1249,7 +1284,7 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public BasicAgreementSetting basicAgreementSetting(String cid, String sid, GeneralDate baseDate) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return AgreementDomainService.getBasicSet(this, cid, sid, baseDate);
         }
 
         @Override
@@ -1265,26 +1300,23 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public Optional<AgreementTimeOfClassification> agreementTimeOfClassification(String companyId, LaborSystemtAtr laborSystemAtr, String classificationCode) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return classification36AgreementTimeRepository.getByCidAndClassificationCode(companyId, classificationCode, laborSystemAtr);
         }
-
-
 
         @Override
         public Optional<AgreementTimeOfWorkPlace> agreementTimeOfWorkPlace(String workplaceId, LaborSystemtAtr laborSystemAtr) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return workplace36AgreedHoursRepository.getByWorkplaceId(workplaceId, laborSystemAtr);
         }
-
 
 
         @Override
         public Optional<AgreementTimeOfEmployment> agreementTimeOfEmployment(String companyId, String employmentCategoryCode, LaborSystemtAtr laborSystemAtr) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return employment36HoursRepository.getByCidAndCd(companyId, employmentCategoryCode, laborSystemAtr);
         }
 
         @Override
         public Optional<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId, LaborSystemtAtr laborSystemAtr) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return company36AgreedHoursRepository.getByCid(companyId, laborSystemAtr);
         }
     }
 }
