@@ -28,11 +28,11 @@ public enum ConditionValueVacationByEmployee implements ConditionValueLogic<Cond
 	}),
 
 	積立年休残数(2, "積立年休残数", c -> {
-		return AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(c.require, new CacheCarrier(), c.employeeId, c.period.end()).v();
+		return c.require.getReserveLeaveRemain(c.employeeId, c.period.end()).map(r -> r.getRemainingDays()).orElse(null);
 	}),
 
 	振休残数(3, "振休残数", c -> {
-		return c.require.getAnnualLeaveRemain(c.employeeId, c.period.end()).getRemainingDays();
+		return AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(c.require, new CacheCarrier(), c.employeeId, c.period.end()).v();
 	}),
 
 	;
