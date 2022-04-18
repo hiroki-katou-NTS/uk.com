@@ -17,6 +17,7 @@ import nts.uk.ctx.at.aggregation.dom.adapter.dailyrecord.DailyRecordAdapter;
 import nts.uk.ctx.at.aggregation.dom.adapter.workschedule.WorkScheduleAdapter;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
+import nts.uk.ctx.at.function.dom.adapter.remainnumber.yearholiday.checkexistholidaygrant.CheckExistHolidayGrantAdapter;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.*;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.AlarmListExtractResult;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeErAlData;
@@ -80,6 +81,9 @@ import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
@@ -151,6 +155,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.*;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.service.ApprovalRootStateStatusService;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
@@ -359,6 +364,9 @@ public class ExecuteAlarmListByEmployeeRequire {
     private GrantYearHolidayRepository grantYearHolidayRepo;
 
     @Inject
+    private AnnLeaGrantRemDataRepository annLeaGrantRemDataRepo;
+
+    @Inject
     private LengthServiceRepository lengthServiceRepo;
 
     @Inject
@@ -380,11 +388,17 @@ public class ExecuteAlarmListByEmployeeRequire {
     private TaskingRepository taskingRepo;
 
     @Inject
+    private CheckExistHolidayGrantAdapter checkExistHolidayGrantAdapter;
+
+	@Inject
     private CriterionAmountUsageSettingRepository criterionAmountUsageSettingRepo;
+
     @Inject
     private CriterionAmountForCompanyRepository criterionAmountForCompanyRepo;
+
     @Inject
     private CriterionAmountForEmploymentRepository criterionAmountForEmploymentRepo;
+
     @Inject
     private HandlingOfCriterionAmountRepository handlingOfCriterionAmountRepo;
 
@@ -406,6 +420,7 @@ public class ExecuteAlarmListByEmployeeRequire {
     
     @Inject
     private TaskFrameUsageSettingRepository taskFrameUsageSettingRepo;
+
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
                 AppContexts.user().contractCode(),
@@ -850,6 +865,24 @@ public class ExecuteAlarmListByEmployeeRequire {
             return annualHolidayManagement.getDaysPerYear(new CompanyId(this.companyId), new EmployeeId(employeeId));
         }
 
+        @Override
+        public Optional<AnnualLeaveGrantRemainingData> getLast(String employeeId){
+            return annLeaGrantRemDataRepo.getLast(employeeId);
+        }
+
+        @Override
+        public boolean checkExistHolidayGrantAdapter(String employeeId, GeneralDate date, Period period) {
+            return checkExistHolidayGrantAdapter.checkExistHolidayGrantAdapter(employeeId, date, period);
+        }
+
+        @Override
+        public List<AnnualLeaveGrantRemainingData> findAnnualLeaveGrantRemain(String employeeId, Optional<LeaveGrantNumber> grantDays) {
+            if(grantDays.isPresent()){
+                return annLeaGrantRemDataRepo.findMoreThan(employeeId, grantDays.get());
+            }else {
+                return annLeaGrantRemDataRepo.find(employeeId);
+            }
+        }
 
         //--- 子の看護介護休暇 ---//
         @Override

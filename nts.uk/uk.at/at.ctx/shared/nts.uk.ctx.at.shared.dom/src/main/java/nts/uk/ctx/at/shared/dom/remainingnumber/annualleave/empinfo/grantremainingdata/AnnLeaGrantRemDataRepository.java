@@ -7,6 +7,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantNumber;
 
 public interface AnnLeaGrantRemDataRepository {
 	
@@ -17,6 +18,8 @@ public interface AnnLeaGrantRemDataRepository {
 	Optional<AnnualLeaveGrantRemainingData> findByID(String id);
 	
 	List<AnnualLeaveGrantRemainingData> find(String employeeId, GeneralDate grantDate);
+
+	List<AnnualLeaveGrantRemainingData> findMoreThan(String employeeId, LeaveGrantNumber grantDays);
 	
 	List<AnnualLeaveGrantRemainingData> findByPeriod(String employeeId, GeneralDate startDate, GeneralDate endDate);
 	

@@ -30,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.vacation.obligannleause.AnnLeaUsedDaysOutput;
 import nts.uk.ctx.at.shared.dom.vacation.obligannleause.ObligedAnnLeaUseService;
 import nts.uk.ctx.at.shared.dom.vacation.obligannleause.ObligedAnnualLeaveUse;
+import nts.uk.ctx.at.shared.dom.vacation.obligannleause.ObligedUseDays;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -93,33 +94,28 @@ public class TotalProcessAnnualHoliday {
 					.collect(Collectors.toList());
 			// create obligedAnnualLeaveUse
 			ObligedAnnualLeaveUse obligedAnnualLeaveUse = ObligedAnnualLeaveUse.create(
-					employee.getId(), 
+					employee.getId(),
+					annualHolidayAlarmCondition.getAlarmCheckConAgr().isDistByPeriod(),
+					ReferenceAtr.APP_AND_SCHE,
 					new AnnualLeaveUsedDayNumber(Double.valueOf(yearlyUsageObDay.v())), 
-					listAnnualLeaveGrantRemainingDataSort); 
+					listAnnualLeaveGrantRemainingDataSort);
 			//使用義務日数の取得(JAPAN)
-			Optional<AnnualLeaveUsedDayNumber> ligedUseDays = obligedAnnLeaUseService.getObligedUseDays(
-					companyId, 
-					annualHolidayAlarmCondition.getAlarmCheckConAgr().isDistByPeriod(), 
+			Optional<ObligedUseDays> ligedUseDays = obligedAnnLeaUseService.getObligedUseDays(
 					GeneralDate.today(),
-					obligedAnnualLeaveUse); 
+					obligedAnnualLeaveUse);
 			if(!ligedUseDays.isPresent())
 				continue;
 			//義務日数計算期間内の年休使用数を取得(JAPAN)
 			AnnLeaUsedDaysOutput ligedUseOutput = obligedAnnLeaUseService.getAnnualLeaveUsedDays(
-					companyId, 
-					employee.getId(),
 					GeneralDate.today(),
-					ReferenceAtr.APP_AND_SCHE,
-					annualHolidayAlarmCondition.getAlarmCheckConAgr().isDistByPeriod(), 
-					obligedAnnualLeaveUse); 
+					obligedAnnualLeaveUse);
 			if(!ligedUseOutput.getDays().isPresent())
 				continue;
 			if(!ligedUseOutput.getPeriod().isPresent())
 				continue;
-			
-			//エラーアラームチェック
-			boolean checkErrorAlarm = errorAlarmCheck.checkErrorAlarmCheck(ligedUseDays.get(), ligedUseOutput.getDays().get());
-			if(!checkErrorAlarm)
+
+			// 年休使用日数が使用義務日数を満たしているかチェックする
+			if(obligedAnnLeaUseService.checkObligedUseDays(ligedUseDays.get(), ligedUseOutput))
 				continue;
 			ValueExtractAlarm resultCheckRemain = new ValueExtractAlarm(
 					employee.getWorkplaceId(),
@@ -131,7 +127,7 @@ public class TotalProcessAnnualHoliday {
 					TextResource.localize("KAL010_401"),
 					TextResource.localize("KAL010_402",
 							ligedUseOutput.getDays().get().v().toString(),
-							ligedUseDays.get().v().toString()),	
+							ligedUseDays.get().getObligedUseDays().v().toString()),
 					annualHolidayAlarmCondition.getAlarmCheckConAgr().getDisplayMessage().get().v(),
 					null
 					);
@@ -182,33 +178,28 @@ public class TotalProcessAnnualHoliday {
 						.collect(Collectors.toList());
 				// create obligedAnnualLeaveUse
 				ObligedAnnualLeaveUse obligedAnnualLeaveUse = ObligedAnnualLeaveUse.create(
-						employee.getId(), 
+						employee.getId(),
+						annualHolidayAlarmCondition.getAlarmCheckConAgr().isDistByPeriod(),
+						ReferenceAtr.APP_AND_SCHE,
 						new AnnualLeaveUsedDayNumber(Double.valueOf(yearlyUsageObDay.v())), 
-						listAnnualLeaveGrantRemainingDataSort); 
+						listAnnualLeaveGrantRemainingDataSort);
 				//使用義務日数の取得(JAPAN)
-				Optional<AnnualLeaveUsedDayNumber> ligedUseDays = obligedAnnLeaUseService.getObligedUseDays(
-						companyID, 
-						annualHolidayAlarmCondition.getAlarmCheckConAgr().isDistByPeriod(), 
+				Optional<ObligedUseDays> ligedUseDays = obligedAnnLeaUseService.getObligedUseDays(
 						GeneralDate.today(),
-						obligedAnnualLeaveUse); 
+						obligedAnnualLeaveUse);
 				if(!ligedUseDays.isPresent())
 					continue;
 				//義務日数計算期間内の年休使用数を取得(JAPAN)
 				AnnLeaUsedDaysOutput ligedUseOutput = obligedAnnLeaUseService.getAnnualLeaveUsedDays(
-						companyID, 
-						employee.getId(),
 						GeneralDate.today(),
-						ReferenceAtr.APP_AND_SCHE,
-						annualHolidayAlarmCondition.getAlarmCheckConAgr().isDistByPeriod(), 
-						obligedAnnualLeaveUse); 
+						obligedAnnualLeaveUse);
 				if(!ligedUseOutput.getDays().isPresent())
 					continue;
 				if(!ligedUseOutput.getPeriod().isPresent())
 					continue;
-				
-				//エラーアラームチェック
-				boolean checkErrorAlarm = errorAlarmCheck.checkErrorAlarmCheck(ligedUseDays.get(), ligedUseOutput.getDays().get());
-				if(!checkErrorAlarm)
+
+				// 年休使用日数が使用義務日数を満たしているかチェックする
+				if(obligedAnnLeaUseService.checkObligedUseDays(ligedUseDays.get(), ligedUseOutput))
 					continue;
 				ValueExtractAlarm resultCheckRemain = new ValueExtractAlarm(
 						employee.getWorkplaceId(),
@@ -220,7 +211,7 @@ public class TotalProcessAnnualHoliday {
 						TextResource.localize("KAL010_401"),
 						TextResource.localize("KAL010_402",
 								ligedUseOutput.getDays().get().v().toString(),
-								ligedUseDays.get().v().toString()),	
+								ligedUseDays.get().getObligedUseDays().v().toString()),
 						annualHolidayAlarmCondition.getAlarmCheckConAgr().getDisplayMessage().get().v(),
 						ligedUseOutput.getDays().get().v().toString()
 						);
@@ -235,7 +226,7 @@ public class TotalProcessAnnualHoliday {
 	/**
 	 * 年休の集計処理
 	 * @param companyID
-	 * @param alCheckConByCategories
+	 * @param annualHolidayCond
 	 * @param employees
 	 * @param counter
 	 * @param shouldStop
@@ -299,33 +290,28 @@ public class TotalProcessAnnualHoliday {
 					.collect(Collectors.toList());
 			// create obligedAnnualLeaveUse
 			ObligedAnnualLeaveUse obligedAnnualLeaveUse = ObligedAnnualLeaveUse.create(
-					sid, 
+					sid,
+					annualHolidayCond.getAlarmCheckConAgr().isDistByPeriod(),
+					ReferenceAtr.APP_AND_SCHE,
 					new AnnualLeaveUsedDayNumber(Double.valueOf(yearlyUsageObDay.v())), 
-					listAnnualLeaveGrantRemainingDataSort); 
+					listAnnualLeaveGrantRemainingDataSort);
 			//使用義務日数の取得(JAPAN)
-			Optional<AnnualLeaveUsedDayNumber> ligedUseDays = obligedAnnLeaUseService.getObligedUseDays(
-					companyID, 
-					annualHolidayCond.getAlarmCheckConAgr().isDistByPeriod(), 
+			Optional<ObligedUseDays> ligedUseDays = obligedAnnLeaUseService.getObligedUseDays(
 					GeneralDate.today(),
-					obligedAnnualLeaveUse); 
+					obligedAnnualLeaveUse);
 			if(!ligedUseDays.isPresent())
 				continue;
 			//義務日数計算期間内の年休使用数を取得(JAPAN)
 			AnnLeaUsedDaysOutput ligedUseOutput = obligedAnnLeaUseService.getAnnualLeaveUsedDays(
-					companyID, 
-					sid,
 					GeneralDate.today(),
-					ReferenceAtr.APP_AND_SCHE,
-					annualHolidayCond.getAlarmCheckConAgr().isDistByPeriod(), 
-					obligedAnnualLeaveUse); 
+					obligedAnnualLeaveUse);
 			if(!ligedUseOutput.getDays().isPresent())
 				continue;
 			if(!ligedUseOutput.getPeriod().isPresent())
 				continue;
-			
-			//エラーアラームチェック
-			boolean checkErrorAlarm = errorAlarmCheck.checkErrorAlarmCheck(ligedUseDays.get(), ligedUseOutput.getDays().get());
-			if(!checkErrorAlarm)
+
+			// 年休使用日数が使用義務日数を満たしているかチェックする
+			if(obligedAnnLeaUseService.checkObligedUseDays(ligedUseDays.get(), ligedUseOutput))
 				continue;
 			String workplaceId = "";
 			List<WorkPlaceHistImport> getWpl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).collect(Collectors.toList());
@@ -340,7 +326,7 @@ public class TotalProcessAnnualHoliday {
 					TextResource.localize("KAL010_401"),
 					TextResource.localize("KAL010_402",
 							ligedUseOutput.getDays().get().v().toString(),
-							ligedUseDays.get().v().toString()),
+							ligedUseDays.get().getObligedUseDays().v().toString()),
 					GeneralDateTime.now(),
 					Optional.ofNullable(workplaceId),
 					Optional.ofNullable(annualHolidayCond.getAlarmCheckConAgr().getDisplayMessage().get().v()),

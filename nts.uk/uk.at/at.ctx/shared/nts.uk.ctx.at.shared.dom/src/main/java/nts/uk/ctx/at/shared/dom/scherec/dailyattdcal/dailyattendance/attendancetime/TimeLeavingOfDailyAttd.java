@@ -168,6 +168,18 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	}
 	
 	/**
+	 * 最初の出勤時刻を取得する
+	 * @return 出勤時刻
+	 */
+	public Optional<TimeWithDayAttr> getFirstAttendanceTime() {
+		Optional<TimeLeavingWork> last = this.timeLeavingWorks.stream()
+				.filter(c->c.getAttendanceTime().isPresent())
+				.sorted((f, s) -> s.getWorkNo().compareTo(f.getWorkNo()))
+				.findFirst();
+		return last.flatMap(l -> l.getAttendanceTime());
+	}
+	
+	/**
 	 * ジャスト遅刻、ジャスト早退の計算区分を見て時刻調整
 	 * @param isJustTimeLateAttendance ジャスト遅刻を計算するか 
 	 * @param isJustEarlyLeave ジャスト早退を計算するか

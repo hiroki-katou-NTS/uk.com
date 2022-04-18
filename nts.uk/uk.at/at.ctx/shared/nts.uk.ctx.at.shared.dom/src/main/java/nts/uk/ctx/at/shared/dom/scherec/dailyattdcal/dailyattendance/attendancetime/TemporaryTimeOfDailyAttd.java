@@ -1,11 +1,15 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainObject;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 日別勤怠の臨時出退勤
@@ -36,5 +40,27 @@ public class TemporaryTimeOfDailyAttd implements DomainObject {
 			result.add(new StampLeakStateEachWork(timeLeavingWork.getWorkNo(), timeLeavingWork.checkStampLeakState()));
 		}
 		return result;
+	}
+	
+	/**
+	 *一番時刻が遅い退勤時刻を取得する 
+	 */
+	public Optional<TimeWithDayAttr> getLastLeaveStamp(){
+		val stamps = new ArrayList<TimeWithDayAttr>(); 
+		this.timeLeavingWorks.forEach(work ->{
+			work.getLeaveTime().ifPresent(s -> stamps.add(s));
+		});
+		return stamps.stream().max(Comparator.comparing(TimeWithDayAttr::v));
+	}
+	
+	/**
+	 *一番時刻が早い出勤時刻を取得する 
+	 */
+	public Optional<TimeWithDayAttr> getFirstAttendanceStamp(){
+		val stamps = new ArrayList<TimeWithDayAttr>(); 
+		this.timeLeavingWorks.forEach(work ->{
+			work.getAttendanceTime().ifPresent(s -> stamps.add(s));
+		});
+		return stamps.stream().min(Comparator.comparing(TimeWithDayAttr::v));
 	}
 }

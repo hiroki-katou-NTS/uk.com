@@ -14,14 +14,10 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaUsed
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetPeriodFromPreviousToNextGrantDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GrantPeriodDto;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ReferenceAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
-import nts.uk.ctx.at.shared.dom.vacation.obligannleause.AnnLeaGrantInfoOutput;
-import nts.uk.ctx.at.shared.dom.vacation.obligannleause.AnnLeaUsedDaysOutput;
-import nts.uk.ctx.at.shared.dom.vacation.obligannleause.ObligedAnnLeaUseService;
-import nts.uk.ctx.at.shared.dom.vacation.obligannleause.ObligedAnnualLeaveUse;
+import nts.uk.ctx.at.shared.dom.vacation.obligannleause.*;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -44,19 +40,27 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 	private AnnLeaGrantRemDataRepository annLeaGrantRemDataRepo;
 	@Inject 
 	private RecordDomRequireService requireService;
-	
+
+	/** 年休使用日数が使用義務日数を満たしているかチェックする */
+	@Override
+	public boolean checkObligedUseDays(ObligedUseDays obligedUseDays, AnnLeaUsedDaysOutput annualLeaveUsedDays) {
+		return annualLeaveUsedDays.getDays()
+				.map(alud -> obligedUseDays.enoughUseDays(alud))
+				// 使用日数が取得できない場合は0日とする
+				.orElse(false);
+	}
+
 	/** 使用義務日数の取得 */
 	@Override
-	public Optional<AnnualLeaveUsedDayNumber> getObligedUseDays(String companyId, boolean distributeAtr,
-			GeneralDate criteria, ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
+	public Optional<ObligedUseDays> getObligedUseDays(GeneralDate criteria, ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
 		
 		AnnualLeaveUsedDayNumber result = null;
 		
 		// 按分が必要かどうか判断
-		if (this.checkNeedForProportion(distributeAtr, criteria, obligedAnnualLeaveUse)) {
+		if (this.checkNeedForProportion(criteria, obligedAnnualLeaveUse)) {
 			
 			// 年休使用日数の期間按分
-			val resultOpt = this.distributePeriod(distributeAtr, obligedAnnualLeaveUse);
+			val resultOpt = this.distributePeriod(obligedAnnualLeaveUse);
 			if (resultOpt.isPresent()) result = resultOpt.get();
 		}
 		else {
@@ -66,20 +70,18 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		}
 
 		// 使用義務日数を返す
-		return Optional.ofNullable(result);
+		return Optional.ofNullable(new ObligedUseDays(result));
 	}
 	
 	/** 義務日数計算期間内の年休使用数を取得 */
 	@Override
-	public AnnLeaUsedDaysOutput getAnnualLeaveUsedDays(String companyId, String employeeId,
-			GeneralDate criteria, ReferenceAtr referenceAtr, boolean distributeAtr,
-			ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
+	public AnnLeaUsedDaysOutput getAnnualLeaveUsedDays(GeneralDate criteria, ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
 		
 		AnnLeaUsedDaysOutput result = new AnnLeaUsedDaysOutput();
 		
 		// 按分が必要かどうか判断
 		DatePeriod period = null;
-		if (this.checkNeedForProportion(distributeAtr, criteria, obligedAnnualLeaveUse) == false) {
+		if (this.checkNeedForProportion(criteria, obligedAnnualLeaveUse) == false) {
 			
 			// 年休使用義務日数の按分しない場合の期間を取得
 			val periodOpt = this.getPeriodForNotProportion(criteria, obligedAnnualLeaveUse);
@@ -88,14 +90,14 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		else {
 			
 			// 期間を計算
-			val periodOpt = this.calcPeriod(employeeId, distributeAtr, criteria, obligedAnnualLeaveUse);
+			val periodOpt = this.calcPeriod(obligedAnnualLeaveUse.getEmployeeId(), obligedAnnualLeaveUse.isDistributeAtr(), criteria, obligedAnnualLeaveUse);
 			if (periodOpt.isPresent()) period = periodOpt.get();
 		}
 		if (period == null) return result;
 		
 		// 指定した期間の年休使用数を取得する
 		Optional<AnnualLeaveUsedDayNumber> AnnLeaUsedDaysOpt =
-				this.getAnnLeaUsedDays.ofPeriod(employeeId, period, referenceAtr);
+				this.getAnnLeaUsedDays.ofPeriod(obligedAnnualLeaveUse.getEmployeeId(), period, obligedAnnualLeaveUse.getReferenceAtr());
 		
 		// 年休使用数を返す
 		result.setDays(AnnLeaUsedDaysOpt);
@@ -108,11 +110,10 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 	
 	/** 按分が必要かどうか判断 */
 	@Override
-	public boolean checkNeedForProportion(boolean distributeAtr, GeneralDate criteria,
-			ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
+	public boolean checkNeedForProportion(GeneralDate criteria,	ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
 		
 		// 期間按分使用区分を確認
-		if (distributeAtr == false) return false;
+		if (obligedAnnualLeaveUse.isDistributeAtr() == false) return false;
 		
 		// 付与期間と重複する付与期間を持つ残数履歴データを取得
 		val annLeaGrantInfoOutput = this.getRemainDatasAtDupGrantPeriod(criteria, obligedAnnualLeaveUse);
@@ -206,14 +207,13 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 	
 	/** 年休使用義務日数の期間按分 */
 	@Override
-	public Optional<AnnualLeaveUsedDayNumber> distributePeriod(boolean distributeAtr,
-			ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
+	public Optional<AnnualLeaveUsedDayNumber> distributePeriod(ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
 		
 		String employeeId = obligedAnnualLeaveUse.getEmployeeId();
 		AnnualLeaveUsedDayNumber result = null;
 		
 		// 期間を計算
-		val periodOpt = this.calcPeriod(employeeId, distributeAtr, GeneralDate.today(), obligedAnnualLeaveUse);
+		val periodOpt = this.calcPeriod(employeeId, obligedAnnualLeaveUse.isDistributeAtr(), GeneralDate.today(), obligedAnnualLeaveUse);
 		if (!periodOpt.isPresent()) return Optional.empty();
 		DatePeriod period = periodOpt.get();
 		

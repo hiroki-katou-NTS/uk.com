@@ -13,6 +13,8 @@ import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.fixedlogic.FixedLogicSetting;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -56,8 +58,11 @@ public class VacationCheckerByEmployee implements DomainAggregate, AlarmListChec
 		// 年休付与のチェック
 		alarmRecords.add(checkAnnualleaveLogic(require, employeeId));
 
-		// 年休使用のチェック
-		alarmRecords.add(useAnnualleaveLogic.checkIfEnabled(require, employeeId));
+		// 年休取得のチェック
+		val result = useAnnualleaveLogic.checkIfEnabled(require, employeeId);
+		if(result.isPresent()){
+			alarmRecords.add(Collections.singletonList(result.get()));
+		}
 
 		return IteratorUtil.flatten(alarmRecords);
 	}
