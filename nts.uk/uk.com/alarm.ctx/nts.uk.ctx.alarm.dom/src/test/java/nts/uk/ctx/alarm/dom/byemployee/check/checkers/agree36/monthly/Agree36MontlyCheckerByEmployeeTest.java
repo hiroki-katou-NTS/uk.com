@@ -17,7 +17,7 @@ import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriod;
-import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodMonthlyAgreement;
+import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodAgree36Monthly;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.conditionvalue.AlarmListConditionValue;
 import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueComparison;
@@ -39,7 +39,7 @@ public class Agree36MontlyCheckerByEmployeeTest {
     @Mocked
     private CheckingPeriod period;
     @Mocked
-    private CheckingPeriodMonthlyAgreement periodMonthlyAgreement;
+    private CheckingPeriodAgree36Monthly periodMonthlyAgreement;
 
     @Before
     public void setUp() {
