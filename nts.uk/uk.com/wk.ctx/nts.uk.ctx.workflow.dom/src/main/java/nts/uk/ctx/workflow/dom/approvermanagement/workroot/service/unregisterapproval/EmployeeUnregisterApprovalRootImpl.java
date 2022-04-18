@@ -1,26 +1,22 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterapproval;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
-import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApproverRegisterSet;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.UseClassification;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
@@ -40,8 +36,8 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.Employ
 import nts.uk.ctx.workflow.dom.service.ApprovalSettingService;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApprovalRoot {
-	
 	@Inject
 	private EmployeeOfApprovalRoot employeeOfApprovalRoot;
 	@Inject
@@ -51,20 +47,18 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 	@Inject
 	private PersonApprovalRootRepository psRootRepository;
 	@Inject
-	private PersonAdapter psInfor;
-	@Inject
 	private EmployeeAdapter empInfor;
 	@Inject
-	private WorkplaceApproverAdapter wpNameInfor;
-	@Inject
 	private ApprovalPhaseRepository repoAppPhase;
-	
 	@Inject
 	private ApprovalSettingService approvalSettingService;
+	@Inject
+	private ManagedParallelWithContext parallel;
 	
 	@Override
 	public List<EmployeeUnregisterOutput> lstEmployeeUnregister(String companyId, GeneralDate baseDate, int sysAtr,
 			List<Integer> lstNotice, List<String> lstEvent, List<AppTypeName> lstName) {
+		// Imported(就業)「社員」を取得する
 		List<EmployeeImport> lstEmps = empInfor.getEmployeesAtWorkByBaseDate(companyId, baseDate);
 		// 承認ルート未登録出力対象としてリスト
 		List<EmployeeUnregisterOutput> lstUnRegister = new ArrayList<>();
@@ -72,144 +66,138 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 		if (CollectionUtil.isEmpty(lstEmps)) {
 			return lstUnRegister;
 		}
+
+		// 承認単位の利用設定を取得する
 		ApproverRegisterSet approverRegisterSet = approvalSettingService.getSettingUseUnit(companyId, sysAtr);
-		//MODE jiji
-		if(sysAtr == SystemAtr.HUMAN_RESOURCES.value) {
-			// ドメインモデル「会社別就業承認ルート」を取得する(lấy thông tin domain「会社別就業承認ルート」)
-			List<CompanyApprovalRoot> lstComs = Collections.emptyList();
-			if (approverRegisterSet.getCompanyUnit() == UseClassification.DO_USE) {
-				lstComs = comRootRepository.findByBaseDateJinji(companyId, 
-						baseDate, lstNotice, lstEvent);
-			}
-					
-			
-			List<CompanyApprovalRoot> comInfoCommon = lstComs.stream()
-					.filter(x -> x.getApprRoot().getEmploymentRootAtr().value == EmploymentRootAtr.COMMON.value)
-					.collect(Collectors.toList());
-			if (!CollectionUtil.isEmpty(comInfoCommon)) {
-				for (CompanyApprovalRoot companyApprovalRoot : comInfoCommon) {
-					List<ApprovalPhase> lstAppPhase = repoAppPhase.getAllApprovalPhasebyCode(companyApprovalRoot.getApprovalId());
-					if(!lstAppPhase.isEmpty()){
-						return lstUnRegister;
-					}
-				}
-			}
-			// ドメインモデル「職場別就業承認ルート」を取得する(lấy thông tin domain 「職場別就業承認ルート」)
-			List<WorkplaceApprovalRoot> lstWps = Collections.emptyList();
-			if (approverRegisterSet.getWorkplaceUnit() == UseClassification.DO_USE) {
-				lstWps = wpRootRepository.findByBaseDateJinji(companyId,
-						baseDate, lstNotice, lstEvent);
-			}
-			// ドメインモデル「個人別就業承認ルート」を取得する(lấy thông tin domain 「個人別就業承認ルート」)
-			List<PersonApprovalRoot> lstPss = Collections.emptyList();
-			if (approverRegisterSet.getEmployeeUnit() == UseClassification.DO_USE) {
-				lstPss = psRootRepository.findByBaseDateJinji(companyId,
-						baseDate, lstNotice, lstEvent);
-			}
-			for (EmployeeImport empImport : lstEmps) {
-				List<String> appTypesN = new ArrayList<>();
-				//NOTICE
-				for (Integer notice : lstNotice) {
-					// 社員の対象申請の承認ルートを取得する(lấy dữ liệu approve route của đối tượng đơn xin của nhân viên)
-					boolean isEmpRoot =false;
-					isEmpRoot = employeeOfApprovalRoot.lstEmpApprovalRoot(companyId, lstComs, lstWps, lstPss, empImport,
-							notice.toString(), baseDate, 4, sysAtr);
-					// 承認ルート未登録出力対象として追加する(thêm vào đối tượng chưa cài đặt approve route để output)
-					if (!isEmpRoot) {
-						appTypesN.add(this.findName(lstName, notice, null, EmploymentRootAtr.NOTICE.value));
-					}
-				}
-				//EVENT
-				for (String event : lstEvent) {
-					// 社員の対象申請の承認ルートを取得する(lấy dữ liệu approve route của đối tượng đơn xin của nhân viên)
-					boolean isEmpRoot =false;
-					isEmpRoot = employeeOfApprovalRoot.lstEmpApprovalRoot(companyId, lstComs, lstWps, lstPss, empImport,
-							event, baseDate, 5, sysAtr);
-					// 承認ルート未登録出力対象として追加する(thêm vào đối tượng chưa cài đặt approve route để output)
-					if (!isEmpRoot) {
-						appTypesN.add(this.findName(lstName, null, event, EmploymentRootAtr.BUS_EVENT.value));
-					}
-				}
-				//Dep info
-				String id = Strings.EMPTY;
-				Optional<WkpDepInfo> wkpDepO = Optional.empty();
-				id = wpNameInfor.getDepartmentIDByEmpDate(empImport.getSId(), baseDate);
-				wkpDepO = wpNameInfor.findByDepIdNEW(companyId, id, baseDate);
-				if(!wkpDepO.isPresent()) {
-					wkpDepO = Optional.of(new WkpDepInfo("","コード削除済", "コード削除済"));
-				}
-				WkpDepInfo wkpDep = wkpDepO.get();
-				empImport.setWpCode(wkpDep.getCode());
-				empImport.setWpName(wkpDep.getName());
-				if (!CollectionUtil.isEmpty(appTypesN)) {
-					empImport.setPName(psInfor.getPersonInfo(empImport.getSId()).getEmployeeName());
-					EmployeeUnregisterOutput dataOuput = new EmployeeUnregisterOutput(empImport, appTypesN);
-					lstUnRegister.add(dataOuput);
-				}
-			}
-			
-		}else {//MODE SHUUGYOU
-			// ドメインモデル「会社別就業承認ルート」を取得する(lấy thông tin domain「会社別就業承認ルート」)
-			List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDate(companyId, baseDate, sysAtr);
-			
-			List<CompanyApprovalRoot> comInfoCommon = lstComs.stream()
-					.filter(x -> x.getApprRoot().getEmploymentRootAtr().value == EmploymentRootAtr.COMMON.value)
-					.collect(Collectors.toList());
-			if (!CollectionUtil.isEmpty(comInfoCommon)) {
-				for (CompanyApprovalRoot companyApprovalRoot : comInfoCommon) {
-					List<ApprovalPhase> lstAppPhase = repoAppPhase.getAllApprovalPhasebyCode(companyApprovalRoot.getApprovalId());
-					if(!lstAppPhase.isEmpty()){
-						return lstUnRegister;
-					}
-				}
-			}
-			// 就業ルート区分が共通の「会社別就業承認ルート」がない場合(không có thông tin 「会社別就業承認ルート」 của 就業ルート区分là common)
-			// ドメインモデル「職場別就業承認ルート」を取得する(lấy thông tin domain 「職場別就業承認ルート」)
-			List<WorkplaceApprovalRoot> lstWps = wpRootRepository.findAllByBaseDate(companyId, baseDate, sysAtr);
-			// ドメインモデル「個人別就業承認ルート」を取得する(lấy thông tin domain 「個人別就業承認ルート」)
-			List<PersonApprovalRoot> lstPss = psRootRepository.findAllByBaseDate(companyId, baseDate, sysAtr);
-			for (EmployeeImport empImport : lstEmps) {
-				List<String> appTypes = new ArrayList<>();
-				//APPLICATION
-				for (ApplicationType appType : ApplicationType.values()) {
-					// 社員の対象申請の承認ルートを取得する(lấy dữ liệu approve route của đối tượng đơn xin của nhân viên)
-					boolean isEmpRoot =false;
-					isEmpRoot = employeeOfApprovalRoot.lstEmpApprovalRoot(companyId, lstComs, lstWps, lstPss, empImport,
-							appType.value.toString(), baseDate, 1, sysAtr);
-					// 承認ルート未登録出力対象として追加する(thêm vào đối tượng chưa cài đặt approve route để output)
-					if (!isEmpRoot) {
-						appTypes.add(appType.nameId);
-					}
-				}
-				//CONFIRM
-				for (ConfirmationRootType conf : ConfirmationRootType.values()) {
-					// 社員の対象申請の承認ルートを取得する(lấy dữ liệu approve route của đối tượng đơn xin của nhân viên)
-					boolean isEmpRoot =false;
-					isEmpRoot = employeeOfApprovalRoot.lstEmpApprovalRoot(companyId, lstComs, lstWps, lstPss, empImport,
-							conf.value.toString(), baseDate, 2, sysAtr);
-					// 承認ルート未登録出力対象として追加する(thêm vào đối tượng chưa cài đặt approve route để output)
-					if (!isEmpRoot) {
-						appTypes.add(conf.nameId);
-					}
-				}
-				//wkp info
-				String id = Strings.EMPTY;
-				Optional<WkpDepInfo> wkpDepO = Optional.empty();
-				id = wpNameInfor.getWorkplaceIDByEmpDate(empImport.getSId(), baseDate);
-				wkpDepO = wpNameInfor.findByWkpIdNEW(companyId, id, baseDate);
-				if(!wkpDepO.isPresent()) {
-					wkpDepO = Optional.of(new WkpDepInfo("","コード削除済", "コード削除済"));
-				}
-				WkpDepInfo wkpDep = wkpDepO.get();
-				empImport.setWpCode(wkpDep.getCode());
-				empImport.setWpName(wkpDep.getName());
-				if (!CollectionUtil.isEmpty(appTypes)) {
-					empImport.setPName(psInfor.getPersonInfo(empImport.getSId()).getEmployeeName());
-					EmployeeUnregisterOutput dataOuput = new EmployeeUnregisterOutput(empImport, appTypes);
-					lstUnRegister.add(dataOuput);
-				}
-			}
+
+		// 会社単位が利用するかチェックする
+		List<CompanyApprovalRoot> lstComs = new ArrayList<>();
+		if (approverRegisterSet.getCompanyUnit() == UseClassification.DO_USE) {
+			lstComs.addAll(comRootRepository.findByBaseDate(companyId, baseDate, sysAtr)
+					.stream().filter(i -> sysAtr == SystemAtr.WORK.value
+							|| (i.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.COMMON
+							|| i.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION))
+					.collect(Collectors.toList()));
 		}
+
+		// 職場部門単位が利用するかチェックする
+		List<WorkplaceApprovalRoot> lstWps = new ArrayList<>();
+		if (approverRegisterSet.getWorkplaceUnit() == UseClassification.DO_USE) {
+			lstWps.addAll(wpRootRepository.findAllByBaseDate(companyId, baseDate, sysAtr)
+					.stream().filter(i -> sysAtr == SystemAtr.WORK.value
+							|| (i.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.COMMON
+							|| i.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION))
+					.collect(Collectors.toList()));
+		}
+
+		// 社員単位が利用するかチェックする
+		List<PersonApprovalRoot> lstPss = new ArrayList<>();
+		if (approverRegisterSet.getEmployeeUnit() == UseClassification.DO_USE) {
+			lstPss.addAll(psRootRepository.findAllByBaseDate(companyId, baseDate, sysAtr)
+					.stream().filter(i -> sysAtr == SystemAtr.WORK.value
+							|| (i.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.COMMON
+							|| i.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION))
+					.collect(Collectors.toList()));
+		}
+
+		parallel.forEach(lstEmps, employee -> {
+			if(sysAtr == SystemAtr.WORK.value) { // システム区分　＝　就業
+				// <<Enum>>申請種類　　　　　でループする
+				for (ApplicationType appType : ApplicationType.values()) {
+					UnregisteredApprovalCheckResult result = employeeOfApprovalRoot.lstEmpApprovalRoot(
+							companyId,
+							lstComs, lstWps, lstPss,
+							employee,
+							baseDate,
+							sysAtr,
+							EmploymentRootAtr.APPLICATION,
+							appType.value.toString()
+					);
+					if (result != null) {
+						lstUnRegister.add(new EmployeeUnregisterOutput(
+								employee.getSId(),
+								appType.nameId,
+								result.getRoute() == null ? 0 : 1,
+								result.getRoute(),
+								result.getCommon(),
+								result.getWorkplaceId(),
+								result.getErrorContents()
+						));
+					}
+				}
+				// <<Enum>>確認ルート種類　　でループする
+				for (ConfirmationRootType conf : ConfirmationRootType.values()) {
+					UnregisteredApprovalCheckResult result = employeeOfApprovalRoot.lstEmpApprovalRoot(
+							companyId,
+							lstComs, lstWps, lstPss,
+							employee,
+							baseDate,
+							sysAtr,
+							EmploymentRootAtr.CONFIRMATION,
+							conf.value.toString()
+					);
+					if (result != null) {
+						lstUnRegister.add(new EmployeeUnregisterOutput(
+								employee.getSId(),
+								conf.nameId,
+								result.getRoute() == null ? 0 : 1,
+								result.getRoute(),
+								result.getCommon(),
+								result.getWorkplaceId(),
+								result.getErrorContents()
+						));
+					}
+				}
+			} else { // システム区分　＝　人事
+				// List＜届出ID＞　　　　　　　　でループする
+				for (Integer notice : lstNotice) {
+					UnregisteredApprovalCheckResult result = employeeOfApprovalRoot.lstEmpApprovalRoot(
+							companyId,
+							lstComs, lstWps, lstPss,
+							employee,
+							baseDate,
+							sysAtr,
+							EmploymentRootAtr.NOTICE,
+							notice.toString()
+					);
+					if (result != null) {
+						lstUnRegister.add(new EmployeeUnregisterOutput(
+								employee.getSId(),
+								findName(lstName, notice, null, EmploymentRootAtr.NOTICE.value),
+								result.getRoute() == null ? 0 : 1,
+								result.getRoute(),
+								result.getCommon(),
+								result.getWorkplaceId(),
+								result.getErrorContents()
+						));
+					}
+				}
+				// List＜各業務エベントID＞　　　でループする
+				for (String event : lstEvent) {
+					UnregisteredApprovalCheckResult result = employeeOfApprovalRoot.lstEmpApprovalRoot(
+							companyId,
+							lstComs, lstWps, lstPss,
+							employee,
+							baseDate,
+							sysAtr,
+							EmploymentRootAtr.BUS_EVENT,
+							event
+					);
+					if (result != null) {
+						lstUnRegister.add(new EmployeeUnregisterOutput(
+								employee.getSId(),
+								findName(lstName, null, event, EmploymentRootAtr.BUS_EVENT.value),
+								result.getRoute() == null ? 0 : 1,
+								result.getRoute(),
+								result.getCommon(),
+								result.getWorkplaceId(),
+								result.getErrorContents()
+						));
+					}
+				}
+			}
+		});
+
 		return lstUnRegister;
 	}
 
@@ -286,11 +274,16 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 				//APPLICATION
 				for (ApplicationType appType : ApplicationType.values()) {
 					// 社員の対象申請の承認ルートを取得する(lấy dữ liệu approve route của đối tượng đơn xin của nhân viên)
-					boolean isEmpRoot =false;
-					isEmpRoot = employeeOfApprovalRoot.lstEmpApprovalRoot(cid, lstComsDate, lstWpsDate, lstPssDate, empInfor,
-							appType.value.toString(), date, 1, SystemAtr.WORK.value);
+					UnregisteredApprovalCheckResult result = employeeOfApprovalRoot.lstEmpApprovalRoot(
+							cid,
+							lstComsDate, lstWpsDate, lstPssDate,
+							empInfor,
+							date, SystemAtr.WORK.value,
+							EmploymentRootAtr.APPLICATION,
+							appType.value.toString()
+					);
 					// 承認ルート未登録出力対象として追加する(thêm vào đối tượng chưa cài đặt approve route để output)
-					if (!isEmpRoot) {
+					if (result != null && result.getRoute() == null) {
 						appTypes.add(appType.nameId);
 					}
 				}

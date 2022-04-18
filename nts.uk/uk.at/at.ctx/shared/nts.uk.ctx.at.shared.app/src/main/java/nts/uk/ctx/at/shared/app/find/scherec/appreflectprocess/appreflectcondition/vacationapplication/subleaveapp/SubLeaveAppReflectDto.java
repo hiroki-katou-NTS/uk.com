@@ -10,13 +10,11 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.va
 @Data
 public class SubLeaveAppReflectDto {
     private int reflectWorkHour;
-    private int reflectAttendance;
     private int oneDayLeaveDeleteAttendance;
 
     public static SubLeaveAppReflectDto fromDomain(SubstituteLeaveAppReflect domain) {
         return new SubLeaveAppReflectDto(
                 domain.getWorkInfoAttendanceReflect().getReflectWorkHour().value,
-                domain.getWorkInfoAttendanceReflect().getReflectAttendance().value,
                 domain.getWorkInfoAttendanceReflect().getOneDayLeaveDeleteAttendance().value
         );
     }

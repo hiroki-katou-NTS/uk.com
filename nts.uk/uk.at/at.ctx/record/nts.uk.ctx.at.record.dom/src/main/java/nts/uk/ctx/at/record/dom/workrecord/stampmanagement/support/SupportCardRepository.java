@@ -23,6 +23,8 @@ public interface SupportCardRepository {
 	
 	public List<SupportCard> getAll();
 	
+	public List<SupportCard> getByContractCode(String contractCode);
+	
 	public Optional<SupportCard> getBySupportCardNo(String supportCardNo);
 	
 	public void delete(String cid, String supportCardNo);

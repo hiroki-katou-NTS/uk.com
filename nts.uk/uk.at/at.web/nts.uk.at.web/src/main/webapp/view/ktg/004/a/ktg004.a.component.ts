@@ -213,8 +213,8 @@ module nts.uk.ui.ktg004.a {
         itemsDisplay: KnockoutObservableArray<ItemDisplay> = ko.observableArray([]);
 
         param: KTG004DisplayYearMonthParam;
-        isDisplayA15_1: KnockoutObservable<boolean> = ko.observable(false);
-        isDisplayA17_1: KnockoutObservable<boolean> = ko.observable(false);
+        isDisplayA15_1: KnockoutObservable<boolean> = ko.observable(true);
+        isDisplayA17_1: KnockoutObservable<boolean> = ko.observable(true);
         periodText: KnockoutComputed<string>;
         processStartDate: KnockoutObservable<string> = ko.observable("");
         processEndDate: KnockoutObservable<string> = ko.observable("");
@@ -246,7 +246,10 @@ module nts.uk.ui.ktg004.a {
                 .then(() => vm.getAttendanceInfor(value))
                 .then(() => vm.buildData(vm.responseData))
                 .then(() => vm.isUpdating(false))
-                .always(() => vm.$blockui("clearView"));
+                .always(() => {
+                    vm.$blockui("clearView");
+                    vm.isUpdating(false);
+                });
             });
         }
 

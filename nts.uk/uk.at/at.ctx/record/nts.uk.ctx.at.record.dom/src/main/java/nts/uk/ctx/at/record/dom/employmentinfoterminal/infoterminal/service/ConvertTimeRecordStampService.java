@@ -56,14 +56,8 @@ public class ConvertTimeRecordStampService {
 			return Optional.empty();
 		}
 		
-		//	$社員データ 
-		Optional<EmpDataImport> employeeData = getEmployeeData(require, contractCode, stamp.get().getCardNumber());
-		
-		if (!employeeData.isPresent())
-			return Optional
-					.of(new StampDataReflectResult(Optional.empty(), stampReflectResult.orElse(AtomTask.none())));
 		//＄終了状態
-		boolean loginSuccess = login(require, contractCode.v(), employeeData.get());
+		boolean loginSuccess = login(require, contractCode.v(), stamp.get().getCardNumber());
 		if(!loginSuccess)
 			return Optional
 					.of(new StampDataReflectResult(Optional.empty(), stampReflectResult.orElse(AtomTask.none())));
@@ -80,15 +74,21 @@ public class ConvertTimeRecordStampService {
 	}
 
 	//社員IDを取得する
-	private static Optional<String> getEmployeeId(Require require, ContractCode contractCode, StampNumber stampNumber) {
+	private static Optional<String> getEmployeeId(RequireLogin require, ContractCode contractCode, StampNumber stampNumber) {
 		Optional<StampCard> stampCard = require.getByCardNoAndContractCode(contractCode,
 				new StampNumber(stampNumber.v()));
 		return stampCard.map(x -> x.getEmployeeId());
 	}
 	
 	// ログイン
-	private static boolean login(Require require, String contractCode, EmpDataImport empData) {
+	public static boolean login(RequireLogin require, String contractCode, StampNumber stampNumber) {
+		// $社員データ
+		Optional<EmpDataImport> employeeDataOpt = getEmployeeData(require, new ContractCode(contractCode), stampNumber);
 
+		if (!employeeDataOpt.isPresent()) {
+			return false;
+		}
+		EmpDataImport empData = employeeDataOpt.get();
 		// $UserID
 		Optional<String> userId = require.getUserIdFromLoginId(empData.getPersonId());
 		if (!userId.isPresent()) {
@@ -135,7 +135,7 @@ public class ConvertTimeRecordStampService {
 	}
 	
 	// 社員データを取得
-	private static Optional<EmpDataImport> getEmployeeData(Require require, ContractCode contractCode, StampNumber stampNumber){
+	private static Optional<EmpDataImport> getEmployeeData(RequireLogin require, ContractCode contractCode, StampNumber stampNumber){
 
 		//$社員ID
 		Optional<String> employeeId = getEmployeeId(require, contractCode, stampNumber);
@@ -153,7 +153,7 @@ public class ConvertTimeRecordStampService {
 	}
 	
 	public static interface Require extends RegisterStampData.Require, ReflectStampInDailyRecord.Require,
-			ReflectDataStampDailyService.Require, ClosureService.RequireM3 {
+			ReflectDataStampDailyService.Require, ClosureService.RequireM3, RequireLogin {
 
 		// [R-1]就業情報端末を取得する
 		public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode,
@@ -163,39 +163,38 @@ public class ConvertTimeRecordStampService {
 //		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
 //				GeneralDateTime dateTime);
 
-		// [R-3]打刻カードを取得する
-		public Optional<StampCard> getByCardNoAndContractCode(ContractCode contractCode, StampNumber stampNumber);
-
 //		// [R-4]タイムレコードのﾘｸｴｽﾄ設定を取得する
 //		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode,
 //				ContractCode contractCode);
 
+	}
+	
+	public static interface RequireLogin {
+		
+		// [R-3]打刻カードを取得する
+		public Optional<StampCard> getByCardNoAndContractCode(ContractCode contractCode, StampNumber stampNumber);
+		
 		// [R-6] 就業担当者の社員ID（List）を取得する
 		public List<String> getListEmpID(String companyID, GeneralDate referenceDate);
-		
+
 		// [R-8] 社員IDListから管理情報を取得する
-		//GetMngInfoFromEmpIDListAdapter
-		List<EmpDataImport> getEmpData(List<String> empIDList); 
-		//[R-8]会社IDを取得する
-		//CompanyAdapter
+		// GetMngInfoFromEmpIDListAdapter
+		List<EmpDataImport> getEmpData(List<String> empIDList);
+
+		// [R-8]会社IDを取得する
+		// CompanyAdapter
 		CompanyInfo getCompanyInfoById(String companyId);
-		//UserIDを取得する
-		//	IGetInfoForLogin
+
+		// UserIDを取得する
+		// IGetInfoForLogin
 		public Optional<String> getUserIdFromLoginId(String perId);
-		
+
 		// 紐従業員の役割でログインする
-		//LoginUserContextManager
-		void loggedInAsEmployee(
-				String userId,
-				String personId,
-				String contractCode,
-				String companyId,
-				String companyCode,
-				String employeeId,
-				String employeeCode);
-		
-		//ログアウト
+		// LoginUserContextManager
+		void loggedInAsEmployee(String userId, String personId, String contractCode, String companyId,
+				String companyCode, String employeeId, String employeeCode);
+
+		// ログアウト
 		void loggedOut();
-		
 	}
 }

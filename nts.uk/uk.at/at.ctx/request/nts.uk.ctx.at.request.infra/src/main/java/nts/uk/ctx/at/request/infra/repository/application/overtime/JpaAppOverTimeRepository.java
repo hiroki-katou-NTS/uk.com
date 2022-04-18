@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.infra.repository.application.overtime;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,56 +9,34 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.infra.entity.application.overtime.*;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import nts.arc.enums.EnumAdaptor;
+import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
-import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeShiftNight;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
-import nts.uk.ctx.at.request.dom.application.overtime.ReasonDivergence;
-import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReason;
-import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36Agree;
-import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeAnnual;
-import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeMonth;
-import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimit;
-import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitAverage;
-import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitMonth;
-import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitPerMonth;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
-import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOverTime;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeInput;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeMultiTimes;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimePK;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInputPK;
+import nts.uk.ctx.at.request.infra.repository.application.FindAppCommonForNR;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTimeRepository{
+public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTimeRepository, FindAppCommonForNR<AppOverTime> {
 	public static final String FIND_BY_ID = "SELECT *  "
 			+ "FROM KRQDT_APP_OVERTIME as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID"
 			+ " WHERE a.APP_ID = @appID AND a.CID = @companyId";
@@ -68,6 +44,9 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 	public static final String SELECT_ALL_BY_JPA = "SELECT a FROM KrqdtAppOverTime as a WHERE a.krqdtAppOvertimePK.cid = :cid and a.krqdtAppOvertimePK.appId = :appId";
 	
 	public static final String SELECT_ALL_BY_APP_IDs = "SELECT a FROM KrqdtAppOverTime a WHERE a.krqdtAppOvertimePK.cid = :cid and a.krqdtAppOvertimePK.appId IN :appIds";
+	
+	@Inject 
+	private ApplicationRepository applicationRepo;
 	
 	@Override
 	public Optional<AppOverTime> find(String companyId, String appId) {
@@ -740,5 +719,36 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		});
 		
 		return result;
+	}
+	
+	@Override
+	public List<AppOverTime> findWithSidDate(String companyId, String sid, GeneralDate date) {
+		List<Application> lstApp = applicationRepo.findAppWithSidDate(companyId, sid, date, ApplicationType.OVER_TIME_APPLICATION.value);
+		return mapToDom(companyId, lstApp);
+	}
+
+	@Override
+	public List<AppOverTime> findWithSidDateApptype(String companyId, String sid, GeneralDate date,
+			GeneralDateTime inputDate, PrePostAtr prePostAtr) {
+		List<Application> lstApp = applicationRepo.findAppWithSidDateApptype(companyId, sid, date, inputDate, prePostAtr, ApplicationType.OVER_TIME_APPLICATION.value);
+		return mapToDom(companyId, lstApp);
+	}
+
+	@Override
+	public List<AppOverTime> findWithSidDatePeriod(String companyId, String sid, DatePeriod period) {
+		List<Application> lstApp = applicationRepo.findAppWithSidDatePeriod(companyId, sid, period, ApplicationType.OVER_TIME_APPLICATION.value);
+		return mapToDom(companyId, lstApp);
+	}
+	
+	private List<AppOverTime> mapToDom(String companyId, List<Application> lstApp) {
+		if (lstApp.isEmpty())
+			return new ArrayList<>();
+		return this.queryProxy().query(SELECT_ALL_BY_APP_IDs, KrqdtAppOverTime.class).setParameter("cid", companyId)
+				.setParameter("appIds", lstApp.stream().map(x -> x.getAppID()).collect(Collectors.toList()))
+				.getList(x -> {
+					val dom = x.toDomain();
+					dom.setApplication(this.findAppId(lstApp, x.krqdtAppOvertimePK.appId).orElse(null));
+					return dom;
+				});
 	}
 }

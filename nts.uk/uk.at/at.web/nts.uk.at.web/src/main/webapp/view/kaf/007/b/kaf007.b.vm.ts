@@ -226,7 +226,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
             command.applicationDto.opReversionReason = vm.application().opReversionReason();
 
             vm.$blockui("show");
-            return vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+            return vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-b-component7-comboReason', '#kaf000-b-component7-textReason')
                 .then(isValid => {
                     if (isValid) {
                         if (vm.isEdit && vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.model().setupType() === 0) {

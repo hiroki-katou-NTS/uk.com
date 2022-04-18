@@ -75,7 +75,7 @@ public class ResourceContext<T extends MeanCarryable> extends RequestContext<T> 
 	@SuppressWarnings("unchecked")
 	public void collect(List<MapItem> items, String payload) {
 		T f = (T) sequence.plot(items, command);
-		response = NRLResponse.ok().entity(f).command(command).build().addPayload(getType(), payload);
+		response = NRLResponse.ok().entity(f).command(command).build().addPayloadBByte(getType(), payload);
 	}
 	
 	/**

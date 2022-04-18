@@ -88,10 +88,11 @@ module nts.uk.at.view.kmk005.k {
                 block();
                 self.workTimeList.removeAll();
                 $.when(workTime, workPaySet).done((w: Array<any>, p: Array<any>) => {
-                    _.each(w, (item) => {
-                        item.flagSet = !!_.find(p, x => item.code == x.workingTimesheetCode);
-                        self.workTimeList.push(new WorkTime(item));
-                    });
+                    self.workTimeList(_.chain(w).map(item => {
+                      item.flagSet = !!_.find(p, x => item.code == x.workingTimesheetCode);
+                      return new WorkTime(item);
+                    }).orderBy("code", "asc").value());
+                    self.workTimeList.valueHasMutated();
                     model.wtc(w[0].code);
                     model.wtc.valueHasMutated();
                     model.bpsc.valueHasMutated();

@@ -655,20 +655,23 @@ export class KafS05Step2Component extends Vue {
     public getReasonDivergence() {
         const self = this;
         let list = [] as Array<ReasonDivergence>;
-
-        {
+        if (self.$appContext.c12) {
             let item = {} as ReasonDivergence;
-            item.diviationTime = 1;
             item.reasonCode = self.reason1.selectedValue;
             item.reason = self.reason1.reason;
-            list.push(item);
+            if (item.reasonCode || item.reason) {
+                item.diviationTime = 1;
+                list.push(item);
+            }
         }
-        {
+        if (self.$appContext.c19) {
             let item = {} as ReasonDivergence;
-            item.diviationTime = 2;
             item.reasonCode = self.reason2.selectedValue;
             item.reason = self.reason2.reason;
-            list.push(item);
+            if (item.reasonCode || item.reason) {
+                item.diviationTime = 2;
+                list.push(item);
+            }
         }
 
         return list;

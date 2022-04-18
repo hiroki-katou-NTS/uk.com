@@ -100,7 +100,7 @@ public class SendPerInfoNameServiceTest {
 				);
 
 				require.getByListSID((List<String>) any);
-				result = Arrays.asList(new EmployeeDto("1", "AAAA", "AAAAAAAAAA01234567892C"),
+				result = Arrays.asList(new EmployeeDto("1", "AAAA", "AAAAAAAAAA0123456789"),
 						new EmployeeDto("2", "BBBB", "BBBB"), new EmployeeDto("2", "BBBB", "BBBB"));
 
 			}
@@ -141,7 +141,7 @@ public class SendPerInfoNameServiceTest {
 						new StampCard(new ContractCode("1"), new StampNumber("2"), "2",  GeneralDate.today(), "2"));
 
 				require.getByListSID((List<String>) any);
-				result = Arrays.asList(new EmployeeDto("1", "AAAA", "AAAAAAAAAA01234567892C"),
+				result = Arrays.asList(new EmployeeDto("1", "AAAA", "AAAAAAAAAA0123456789"),
 						new EmployeeDto("3", "BBBB", "BBBB"));
 
 			}

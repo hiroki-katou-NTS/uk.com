@@ -7,18 +7,21 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetUpdateList;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 
-
 public interface TimeRecordSetUpdateListRepository {
 
 	// タイムレコード設定更新リストを取得する
 	Optional<TimeRecordSetUpdateList> findSettingUpdate(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode);
-	
+
 	// [2]取得する
 	List<TimeRecordSetUpdateList> get(ContractCode contractCode, List<EmpInfoTerminalCode> listEmpInfoTerCode);
-	
-	// [3]Insert(List<タイムレコード設定更新リスト>) 
+
+	// [3]Insert(List<タイムレコード設定更新リスト>)
 	void insert(List<TimeRecordSetUpdateList> listTimeRecordSetUpdateList);
-	
-	// 	[4]delete(List<タイムレコード設定更新リスト>)
+
+	// [4]delete(List<タイムレコード設定更新リスト>)
 	void delete(List<TimeRecordSetUpdateList> listTimeRecordSetUpdateList);
+
+	// [5]delete(契約コード, 就業情報端末コード)
+	void delete(String empInfoTerCode, String contractCode);
+
 }

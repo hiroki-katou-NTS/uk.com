@@ -22,7 +22,6 @@ import nts.uk.ctx.exio.infra.entity.input.setting.XimmtDomainImportSettingPK;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtImportSetting;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtImportSettingPK;
 import nts.uk.ctx.exio.infra.entity.input.setting.assembly.XimmtItemMapping;
-import nts.uk.ctx.exio.infra.entity.input.setting.assembly.XimmtItemMappingPK;
 
 @Stateless
 public class JpaExternalImportSettingRepository extends JpaRepository implements ExternalImportSettingRepository {
@@ -157,17 +156,15 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 	}
 
 	private XimmtDomainImportSetting toEntitiy(String cid, String settingCode, DomainImportSetting domain) {
+		
+		val domainSettingPk = new XimmtDomainImportSettingPK(cid, settingCode, domain.getDomainId().value);
+		
 		List<XimmtItemMapping> mappings = domain.getAssembly().getMapping().getMappings().stream()
-		.map(m -> new XimmtItemMapping(
-				new XimmtItemMappingPK(cid, settingCode, domain.getDomainId().value, m.getItemNo()),
-				m.isFixedValue(),
-				m.getCsvColumnNo().orElse(null),
-				m.getFixedValue().map(fv -> fv.getValue()).orElse(null)
-		))
-		.collect(Collectors.toList());
+				.map(m -> XimmtItemMapping.toEntity(domainSettingPk, m))
+				.collect(Collectors.toList());
 		
 		return new XimmtDomainImportSetting(
-				new XimmtDomainImportSettingPK(cid, settingCode, domain.getDomainId().value),
+				domainSettingPk,
 				domain.getImportingMode().value,
 				mappings
 			);

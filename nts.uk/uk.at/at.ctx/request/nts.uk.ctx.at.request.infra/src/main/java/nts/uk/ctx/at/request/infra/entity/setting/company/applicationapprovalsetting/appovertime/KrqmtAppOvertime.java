@@ -80,9 +80,6 @@ public class KrqmtAppOvertime extends ContractUkJpaEntity implements Serializabl
     @Column(name = "ATD_WORK_REFLECT_ATR")
     private int atdWorkReflectAtr;
 
-    @Column(name = "PRE_WORK_REFLECT_ATR")
-    private int preWorkReflectAtr;
-
     @Column(name = "PRE_INPUT_TIME_REFLECT_ATR")
     private int preInputTimeReflectAtr;
 
@@ -137,7 +134,7 @@ public class KrqmtAppOvertime extends ContractUkJpaEntity implements Serializabl
 
     public OtWorkAppReflect toOvertimeWorkAppReflect() {
         return new OtWorkAppReflect(
-                BeforeOtWorkAppReflect.create(preWorkReflectAtr, preInputTimeReflectAtr, preBreakTimeReflectAtr),
+                BeforeOtWorkAppReflect.create(preInputTimeReflectAtr, preBreakTimeReflectAtr),
                 AfterOtWorkAppReflect.create(
                         postWorkTimeReflectAtr,
                         postBpTimeReflectAtr,
@@ -166,7 +163,6 @@ public class KrqmtAppOvertime extends ContractUkJpaEntity implements Serializabl
                 overtimeAppSet.getApplicationDetailSetting().getAtworkTimeBeginDisp().value,
                 BooleanUtils.toInteger(overtimeAppSet.getApplicationDetailSetting().isDispSystemTimeWhenNoWorkTime()),
                 overtimeWorkAppReflect.getReflectActualWorkAtr().value,
-                overtimeWorkAppReflect.getBefore().getReflectWorkInfoAtr().value,
                 overtimeWorkAppReflect.getBefore().getReflectActualOvertimeHourAtr().value,
                 overtimeWorkAppReflect.getBefore().getBreakLeaveApplication().getBreakReflectAtr().value,
                 overtimeWorkAppReflect.getAfter().getWorkReflect().value,

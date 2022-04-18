@@ -27,11 +27,11 @@ public class EmployeeCESetting extends AggregateRoot {
 		case ZEROBEFORE:
 			return StringUtils.leftPad(employeeCode, this.digitNumb.v(), "0");
 		case ZEROAFTER:
-			employeeCode = StringUtils.rightPad(employeeCode, this.digitNumb.v(), "0");
+			return StringUtils.rightPad(employeeCode, this.digitNumb.v(), "0");
 		case SPACEBEFORE:
-			employeeCode = StringUtils.leftPad(employeeCode, this.digitNumb.v());
+			return StringUtils.leftPad(employeeCode, this.digitNumb.v());
 		case SPACEAFTER:
-			employeeCode = StringUtils.rightPad(employeeCode, this.digitNumb.v());
+			return StringUtils.rightPad(employeeCode, this.digitNumb.v());
 		default:
 			throw new RuntimeException("unknown enum value:" + this.ceMethodAtr);
 		}

@@ -36,12 +36,6 @@ public class VacationAppReflectOption extends DomainObject {
      * 1日休暇の場合は出退勤を削除
      */
     private NotUseAtr oneDayLeaveDeleteAttendance;
-    
-
-    /**
-     * 出退勤を反映する
-     */
-    private NotUseAtr reflectAttendance;
 
     /**
      * 就業時間帯を反映する

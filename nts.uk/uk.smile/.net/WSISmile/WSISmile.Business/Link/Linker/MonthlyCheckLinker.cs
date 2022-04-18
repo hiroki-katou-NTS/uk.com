@@ -61,11 +61,18 @@ namespace WSISmile.Business.Link.Linker
             if (response != null)
             {
                 JObject jobject = response as JObject;
-                bool result = jobject.GetValue("commandResult").ToObject<bool>();
-                if (result)
+
+                if (jobject["listApprovalPhaseState"] != null)
                 {
-                    // TODO
-                    string test = jobject.GetValue("value").ToObject<string>();
+                    JArray listApprovalPhaseState = jobject.GetValue("listApprovalPhaseState").ToObject<JArray>();
+                    foreach (JObject _state in listApprovalPhaseState)
+                    {
+                        ApprovalPhaseStateInfo approvalPhaseState = new ApprovalPhaseStateInfo(_state);
+                        if (!approvalPhaseState.ApprovalAtr)
+                        {
+                            return false;
+                        }
+                    }
                     return true;
                 }
             }

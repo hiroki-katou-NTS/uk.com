@@ -202,4 +202,7 @@ public interface EmployeeDataMngInfoRepository {
 	 */
 	List<EmployeeDataMngInfo> getByPersonIdList(List<String> personIdList);
 	
+	//社員IDから会社IDを取得
+	Optional<String> getCompanyId(String employeeId);
+	
 }
