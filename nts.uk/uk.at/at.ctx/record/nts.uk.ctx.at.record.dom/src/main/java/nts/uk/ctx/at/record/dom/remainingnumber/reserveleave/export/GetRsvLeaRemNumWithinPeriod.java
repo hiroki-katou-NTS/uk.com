@@ -43,6 +43,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyReten
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.export.GetUpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 
 /**
@@ -417,7 +418,14 @@ public class GetRsvLeaRemNumWithinPeriod {
 		// 半日年休管理の場合、積立年休の付与数を取得する
 		days = new LeaveGrantDayNumber(annualLeaveSet.getAnnualLeavGrant(days.v()).v());
 
-		val contractTime = LeaveRemainingNumber.getContractTime(require, companyID, employeeId, baseDate);
+		AnnualPaidLeaveSetting annualPaidLeave = require.annualPaidLeaveSetting(companyID);
+
+		Optional<LaborContractTime> contractTime = Optional.empty();
+
+		if(annualPaidLeave != null){
+			contractTime = annualPaidLeave.getTimeSetting().getTimeAnnualLeaveTimeDay()
+					.getContractTime(require, employeeId, baseDate);
+		}
 		// 時間年休管理の場合、積立年休の付与数を取得する
 		if (grantDays.getMinutes().isPresent() && contractTime.isPresent()) {
 			return new LeaveGrantDayNumber(days.v()

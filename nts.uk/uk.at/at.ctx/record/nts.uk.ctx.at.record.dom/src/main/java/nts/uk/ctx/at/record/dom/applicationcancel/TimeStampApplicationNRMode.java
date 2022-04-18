@@ -82,7 +82,7 @@ public class TimeStampApplicationNRMode {
 				return lstItemId;
 			
 			// 申請反映状態にする
-			if (ReflectTimeStamp.groupAtt(appNr.getAppStampCombinationAtr())) {
+			if (appNr.getAppStampCombinationAtr() == EngraveShareAtr.GO_OUT) {
 				lstItemId.add(START_OUT.get(stampResult.getWorkNoReflect().v()));
 			} else {
 				lstItemId.add(END_OUT.get(stampResult.getWorkNoReflect().v()));

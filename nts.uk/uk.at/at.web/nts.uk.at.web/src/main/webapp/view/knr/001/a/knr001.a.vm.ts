@@ -119,7 +119,7 @@ module nts.uk.at.view.knr001.a {
                     if(workLocCode !== ""){
                         service.getworkLocationName(self.empInfoTerminalModel().workLocationCode()).done(function(res: any){
                             if(res){
-                                self.empInfoTerminalModel().workLocationName(res.workLocationName.substring(0, 20));              
+                                self.empInfoTerminalModel().workLocationName(res.workLocationName.substring(0, 20));
                             }
                         });
                     }
@@ -130,7 +130,7 @@ module nts.uk.at.view.knr001.a {
              * 起動する
              */
             public startPage(): JQueryPromise<void>{
-                var self = this;										
+                var self = this;
                 var dfd = $.Deferred<void>();
                 blockUI.invisible();
                 let today = new Date();
@@ -146,9 +146,9 @@ module nts.uk.at.view.knr001.a {
                         self.loadEmpInfoTerminal(self.selectedCode());
                     }
                 });
-                blockUI.clear();   																			
-                dfd.resolve();											
-                return dfd.promise();											
+                blockUI.clear();
+                dfd.resolve();
+                return dfd.promise();
             }
         /**
          * fill '0' character to datetime
@@ -174,16 +174,16 @@ module nts.uk.at.view.knr001.a {
                             self.empInfoTerminalModel().lstMSConversion()
                                 .forEach((item: MSConversionDto) => {
                                     switch (item.stampClassifi) {
-                                        case 0: 
+                                        case 0:
                                             self.selectedIndex1(item.stampDestination);
                                             break;
-                                        case 1: 
+                                        case 1:
                                             self.selectedIndex2(item.stampDestination);
                                             break;
-                                        case 2: 
+                                        case 2:
                                             self.selectedIndex3(item.stampDestination);
                                             break;
-                                        case 3: 
+                                        case 3:
                                             self.selectedIndex4(item.stampDestination);
                                             break;
                                     }
@@ -205,7 +205,7 @@ module nts.uk.at.view.knr001.a {
                                 }
                             }
                         }
-                        self.empInfoTerminalModel().isEnableCode(false);              
+                        self.empInfoTerminalModel().isEnableCode(false);
                     }else{
                         self.createNewMode();
                         self.isUpdateMode(false);
@@ -234,20 +234,20 @@ module nts.uk.at.view.knr001.a {
             }
 
             /**
-             * regist Employment information terminal 
+             * regist Employment information terminal
              */
             private registEmpInfoTerminal(): void{
                 let self = this;
                 if(self.hasError()){
                     return;
                 }
-                
+
                 let command: any = {};
                 command.empInfoTerCode = self.empInfoTerminalModel().empInfoTerCode();
                 command.empInfoTerName = self.empInfoTerminalModel().empInfoTerName();
-                command.modelEmpInfoTer = self.empInfoTerminalModel().modelEmpInfoTer();               
+                command.modelEmpInfoTer = self.empInfoTerminalModel().modelEmpInfoTer();
                 command.macAddress = self.empInfoTerminalModel().macAddress();
-                
+
                 if(    !self.checkIpAddress(self.empInfoTerminalModel().ipAddress1())
                     || !self.checkIpAddress(self.empInfoTerminalModel().ipAddress2())
                     || !self.checkIpAddress(self.empInfoTerminalModel().ipAddress3())
@@ -275,16 +275,16 @@ module nts.uk.at.view.knr001.a {
                     for (let i = 0; i < 4; i++) {
                         let stampDestination;
                         switch (i) {
-                            case 0: 
+                            case 0:
                                 stampDestination = self.selectedIndex1();
                                 break;
-                            case 1: 
+                            case 1:
                                 stampDestination = self.selectedIndex2();
                                 break;
-                            case 2: 
+                            case 2:
                                 stampDestination = self.selectedIndex3();
                                 break;
-                            case 3: 
+                            case 3:
                                 stampDestination = self.selectedIndex4();
                                 break;
                         }
@@ -326,20 +326,20 @@ module nts.uk.at.view.knr001.a {
                                     self.loadEmpInfoTerminal(self.selectedCode());
                                     self.empInfoTerminalModel().isEnableCode(false);
                                     $('#A3_4').focus();
-                            });   
+                            });
                         });
                     }).fail(error => {
                         if (error.messageId === "Msg_1895") {
-                            $('#A3_2').ntsError('set', {messageId: error.messageId});                       
+                            $('#A3_2').ntsError('set', {messageId: error.messageId});
                         } else if (error.messageId === "Msg_1931") {
-                            $('#A3_8').ntsError('set', {messageId: error.messageId});                     
+                            $('#A3_8').ntsError('set', {messageId: error.messageId});
                         } else {
                             dialog.error({messageId: error.messageId});
                         }
                     }).always(()=>{
-                        blockUI.clear();    
+                        blockUI.clear();
                     });
-                    
+
                 } else {
                     //登録ボタン押下（更新モード）
                     service.update(command).done(() => {
@@ -352,16 +352,16 @@ module nts.uk.at.view.knr001.a {
                                     self.loadEmpInfoTerminal(self.selectedCode());
                                     self.empInfoTerminalModel().isEnableCode(false);
                                     $('#A3_4').focus();
-                            });   
+                            });
                         });
                     }).fail(error => {
                         if (error.messageId === "Msg_1931") {
-                            $('#A3_8').ntsError('set', {messageId: error.messageId});                       
+                            $('#A3_8').ntsError('set', {messageId: error.messageId});
                         } else {
                             dialog.error({messageId: error.messageId});
                         }
                     }).always(()=>{
-                        blockUI.clear();    
+                        blockUI.clear();
                     });
                 }
                 self.enableBtnNew(true);
@@ -372,19 +372,19 @@ module nts.uk.at.view.knr001.a {
              */
             private removeEmpInfoTerminal(): void{
                 let self = this;
-                
+
                 var delCode = self.empInfoTerminalModel().empInfoTerCode();
                 if(self.hasError()){
                     return;
                 }
-                
+
                 dialog.confirm({messageId:"Msg_18"})
                     .ifYes(() => {
                         var index = _.indexOf(self.empInfoTerminalList().map(e => e.empInfoTerCode), delCode);
                         let command = {
                             empInfoTerCode: delCode
                         };
-                        
+
                         blockUI.invisible();
                         service.removeEmpInfoTer(command).done(()=>{
                             dialog.info({messageId:"Msg_16"}).then(() => {
@@ -397,7 +397,7 @@ module nts.uk.at.view.knr001.a {
                         });
                     }).ifNo(function(){
                         blockUI.clear();
-                        $('#A3_4').focus();      
+                        $('#A3_4').focus();
                     });
             }
 
@@ -424,7 +424,7 @@ module nts.uk.at.view.knr001.a {
                     }
 
                     blockUI.clear();
-                }); 
+                });
             }
              /**
              * export Excel
@@ -437,8 +437,14 @@ module nts.uk.at.view.knr001.a {
                 }).fail((errExcel) =>{
                     alertError(errExcel);
                 }).always(()=>{
-                    blockUI.clear();    
+                    blockUI.clear();
                 });
+            }
+            /**
+                * Screen B - openDeclarationSettingDialog
+            */
+            public openDeclarationSettingDialog() {
+                nts.uk.ui.windows.sub.modal('/view/knr/001/b/index.xhtml').onClosed(() => { });
             }
             /**
              * Check Input Errors
@@ -447,7 +453,7 @@ module nts.uk.at.view.knr001.a {
                 var self = this;
                 let checkIP = true;
                 self.clearErrors();
-                
+
                 //code
                 $('#A3_2').ntsEditor("validate");
                 //name
@@ -462,7 +468,7 @@ module nts.uk.at.view.knr001.a {
                 $('#A5_7').ntsEditor("validate");
                 //Memo
                 $('#A6_8').ntsEditor("validate");
-                
+
                 //  ipAddress
                 if (!self.checkIpAddress(self.empInfoTerminalModel().ipAddress1())
                     && !self.checkIpAddress(self.empInfoTerminalModel().ipAddress2())
@@ -494,14 +500,14 @@ module nts.uk.at.view.knr001.a {
              */
             private checkIpAddress(ipAddress: number): boolean{
                 if(_.isNil(ipAddress) || ipAddress.toString().length == 0){
-                    return false;    
+                    return false;
                 }
                 return true;
             }
             /**
              * clear Errors
              */
-            private clearErrors(): void{     
+            private clearErrors(): void{
                 $('#A3_2').ntsError('clear');
                 $('#A3_4').ntsError('clear');
                 $('#A3_8').ntsError('clear');
@@ -520,7 +526,7 @@ module nts.uk.at.view.knr001.a {
          class ItemModel1 {
             index: number;
             name: string;
-        
+
             constructor(index: number, name: string) {
                 this.index = index;
                 this.name = name;
@@ -549,7 +555,7 @@ module nts.uk.at.view.knr001.a {
             empInfoTerName: KnockoutObservable<string>;
             //  機種: combobox
             empInfoTerminalModelList: KnockoutObservableArray<ItemModel>;
-            
+
             //  機種
             modelEmpInfoTer: KnockoutObservable<number>;
             //  MACアドレス
@@ -578,7 +584,7 @@ module nts.uk.at.view.knr001.a {
             lstMSConversion: KnockoutObservableArray<MSConversionDto>;
             nRConvertInfo: KnockoutObservable<NRConvertInfoDto>;
             workplaceId: KnockoutObservable<string>;
-            workplaceName: KnockoutObservable<string>;  
+            workplaceName: KnockoutObservable<string>;
             isEnableCode: KnockoutObservable<boolean>;
             date: KnockoutObservable<string> = ko.observable('');
             useAtr: boolean = false;
@@ -586,27 +592,27 @@ module nts.uk.at.view.knr001.a {
             constructor(){
                 this.empInfoTerCode =  ko.observable(null);
                 this.empInfoTerName =  ko.observable('');
-                this.empInfoTerminalModelList = ko.observableArray([	
-                                                new ItemModel(null, '未選択'),		
-                                                new ItemModel(7, 'NRL-1'),			
-                                                new ItemModel(8, 'NRL-2'),			
-                                                new ItemModel(9, 'NRL-m/ms')				
+                this.empInfoTerminalModelList = ko.observableArray([
+                                                new ItemModel(null, '未選択'),
+                                                new ItemModel(7, 'NRL-1'),
+                                                new ItemModel(8, 'NRL-2'),
+                                                new ItemModel(9, 'NRL-m/ms')
                                             ]); 
-                
+
                 this.lstMSConversion =  ko.observableArray([]);
                 this.nRConvertInfo = ko.observable(null);
                 this.workplaceId = ko.observable('');
                 this.workplaceName = ko.observable('')
 
                 this.modelEmpInfoTer =  ko.observable(null);
-                
+
                 this.macAddress =  ko.observable('');
-                
+
                 this.ipAddress1 =  ko.observable(null);
                 this.ipAddress2 =  ko.observable(null);
                 this.ipAddress3 =  ko.observable(null);
                 this.ipAddress4 =  ko.observable(null);
-                
+
                 this.terSerialNo =  ko.observable(null);
                 this.workLocationCode =  ko.observable('');
                 this.workLocationName =  ko.observable('');
@@ -614,14 +620,14 @@ module nts.uk.at.view.knr001.a {
                 this.enableOutingClass = ko.observable(true);
                 this.checkedOutingClass = ko.observable(false);
 
-                this.outingClassList = ko.observableArray([			
-                                                new ItemModel(10, getText('KNR001_53')),			
-                                                new ItemModel(0, getText('KNR001_54')),			
-                                                new ItemModel(1, getText('KNR001_55')),	
-                                                new ItemModel(2, getText('KNR001_56')),	
+                this.outingClassList = ko.observableArray([
+                                                new ItemModel(10, getText('KNR001_53')),
+                                                new ItemModel(0, getText('KNR001_54')),
+                                                new ItemModel(1, getText('KNR001_55')),
+                                                new ItemModel(2, getText('KNR001_56')),
                                                 new ItemModel(3, getText('KNR001_57'))
                                             ]); 
-                this.memo =  ko.observable('');  
+                this.memo =  ko.observable('');
                
                 this.isEnableCode =  ko.observable(true);    
                 let today = new Date();
@@ -651,7 +657,7 @@ module nts.uk.at.view.knr001.a {
                 this.workLocationCode('');
                 this.workLocationName('');
                 this.intervalTime(null);
-                this.memo('');  
+                this.memo('');
                 this.isEnableCode(true);
                 this.enableOutingClass(true);
                 this.checkedOutingClass(false);
@@ -669,7 +675,7 @@ module nts.uk.at.view.knr001.a {
                 this.empInfoTerName(dto.empInfoTerName);
                 this.modelEmpInfoTer(dto.modelEmpInfoTer);
                 this.macAddress(dto.macAddress);
-                this.ipAddress1(dto.ipAddress1);               
+                this.ipAddress1(dto.ipAddress1);
                 this.ipAddress2(dto.ipAddress2);
                 this.ipAddress3(dto.ipAddress3);
                 this.ipAddress4(dto.ipAddress4);
@@ -727,14 +733,14 @@ module nts.uk.at.view.knr001.a {
                     let workplaceInfor = getShared('workplaceInfor')[0];
                     self.workplaceId(output);
                     self.workplaceName(workplaceInfor.displayName);
-                    
+
                     blockUI.clear();
                 });
             }
 
             displayButtonHandle() {
                 const self = this;
-                moment.locale('en'); 
+                moment.locale('en');
                 let input = {
                     listWorkPlaceId: [self.workplaceId()],
                     baseDate: moment(self.date()).format("YYYY/MM/DD")
@@ -777,7 +783,7 @@ module nts.uk.at.view.knr001.a {
             name: string;
             constructor(code: number, name: string){
                 this.code = code;
-                this.name = name;   
+                this.name = name;
             }
         }
     }

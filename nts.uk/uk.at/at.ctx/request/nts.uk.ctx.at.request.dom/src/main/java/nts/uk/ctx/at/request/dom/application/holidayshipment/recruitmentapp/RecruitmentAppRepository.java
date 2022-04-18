@@ -17,4 +17,5 @@ public interface RecruitmentAppRepository {
 	 * @return
 	 */
 	public Optional<RecruitmentApp> findByAppId(String appId);
+
 }

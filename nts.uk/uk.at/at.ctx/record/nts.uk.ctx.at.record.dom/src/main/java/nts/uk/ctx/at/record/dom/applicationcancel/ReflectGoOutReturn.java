@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.applicationcancel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,8 +32,10 @@ public class ReflectGoOutReturn {
 		DailyRecordToAttendanceItemConverter converter = require.createDailyConverter();
 
 		// 反映前の日別勤怠(work）.外出時間帯を保持する
+		if(!dailyRecordApp.getOutingTime().isPresent()) {
+			dailyRecordApp.setOutingTime(Optional.of(new OutingTimeOfDailyAttd(new ArrayList<>())));
+		}
 		Optional<OutingTimeOfDailyAttd> outingTimeBefore = dailyRecordApp.getOutingTime();
-
 		converter = require.createDailyConverter();
 		Optional<OutingTimeOfDailyAttd> outingTimeCopyFromBefore = converter
 				.withOutingTime(outingTimeBefore.orElseGet(null))
@@ -58,6 +61,7 @@ public class ReflectGoOutReturn {
 		// 反映した外出枠NOを取得する
 		val result = GetReflectOutGoFrameNumber.process(outingTimeCopyAfter.get().getOutingTimeSheets(),
 				outingTimeBefore.get().getOutingTimeSheets());
+		dailyRecordApp.getDomain().setOutingTime(outingTimeCopyAfter);
 		return new ReflectTimeStampResult(dailyRecordApp.getDomain(), result.isReflect(), new WorkNo(result.getNo()));
 	}
 

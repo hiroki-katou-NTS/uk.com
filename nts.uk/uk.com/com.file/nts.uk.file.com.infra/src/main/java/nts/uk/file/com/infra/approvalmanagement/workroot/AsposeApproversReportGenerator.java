@@ -30,6 +30,7 @@ import com.aspose.cells.WorksheetCollection;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
 import nts.uk.ctx.bs.employee.pub.employee.ResultRequest600Export;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
@@ -39,6 +40,8 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.Ope
 import nts.uk.file.com.app.approvalmanagement.workroot.ApproversExportDataSource;
 import nts.uk.file.com.app.approvalmanagement.workroot.ApproversExportGenerator;
 import nts.uk.query.pub.employee.EmployeeInformationExport;
+import nts.uk.query.pub.employement.EmploymentExport;
+import nts.uk.query.pub.position.PositionExport;
 import nts.uk.query.pub.workflow.workroot.approvalmanagement.ApprovalPhaseExport;
 import nts.uk.query.pub.workflow.workroot.approvalmanagement.ApprovalSettingInformationExport;
 import nts.uk.query.pub.workflow.workroot.approvalmanagement.ApproverExport;
@@ -144,7 +147,7 @@ public class AsposeApproversReportGenerator extends AsposeCellsReportGenerator i
 			List<EmployeeInformationExport> employees) {
 		List<ApprovalSettingInformationExport> approvalSettingInformations = dataSource.getSettingInfos();
 		// Print workplace name (A3_1)
-		this.printCell(cells.get(currentRow.get(), COL_WORKPLACE_NAME), workplace.getWorkplaceName());
+		this.printCell(cells.get(currentRow.get(), COL_WORKPLACE_NAME), this.getMasterInfo(workplace.getWorkplaceName()));
 
 		// Map data
 		Map<EmployeeInformationExport, List<ApprovalSettingInformationExport>> dataMap = employees.stream()
@@ -177,10 +180,12 @@ public class AsposeApproversReportGenerator extends AsposeCellsReportGenerator i
 			ApproversExportDataSource dataSource, EmployeeInformationExport employeeInfo,
 			List<ApprovalSettingInformationExport> approvalSettingInformations) {
 		// Print employee info (A3_2~A3_5)
-		this.printCell(cells.get(currentRow.get(), COL_EMP_CODE), employeeInfo.getEmployeeCode());
-		this.printCell(cells.get(currentRow.get(), COL_EMP_NAME), employeeInfo.getBusinessName());
-		this.printCell(cells.get(currentRow.get(), COL_JOB_TITLE), employeeInfo.getPosition().getPositionName());
-		this.printCell(cells.get(currentRow.get(), COL_EMPLOYMENT), employeeInfo.getEmployment().getEmploymentName());
+		this.printCell(cells.get(currentRow.get(), COL_EMP_CODE), this.getMasterInfo(employeeInfo.getEmployeeCode()));
+		this.printCell(cells.get(currentRow.get(), COL_EMP_NAME), this.getMasterInfo(employeeInfo.getBusinessName()));
+		this.printCell(cells.get(currentRow.get(), COL_JOB_TITLE), Optional.ofNullable(employeeInfo.getPosition())
+				.map(PositionExport::getPositionName).orElse(TextResource.localize("CMM030_109")));
+		this.printCell(cells.get(currentRow.get(), COL_EMPLOYMENT), Optional.ofNullable(employeeInfo.getEmployment())
+				.map(EmploymentExport::getEmploymentName).orElse(TextResource.localize("CMM030_109")));
 
 		// In case no setting for this employee
 		if (approvalSettingInformations.isEmpty()) {
@@ -293,5 +298,9 @@ public class AsposeApproversReportGenerator extends AsposeCellsReportGenerator i
 		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
 		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 		range.setStyle(style);
+	}
+	
+	private String getMasterInfo(String s) {
+		return StringUtil.isNullOrEmpty(s, true) ? TextResource.localize("CMM030_109") : s;
 	}
 }

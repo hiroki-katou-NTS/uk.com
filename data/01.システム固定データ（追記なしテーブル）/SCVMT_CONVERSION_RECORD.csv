@@ -46,6 +46,7 @@ CATEGORY_NAME,TARGET_TBL_NAME,RECORD_NO,SOURCE_ID,EXPLANATION,WHERE_CONDITION,RE
 "打刻データ","KRCDT_STAMP",1,"da03c02b-3bf1-4067-94fe-b905f52a6431","","",true
 "振休管理データ","KRCDT_HD_SUB_MNG",1,"8ce1c670-6766-4ae0-8401-d73fe1d2f041","",,false
 "振出管理データ","KRCDT_PAYOUT_MNG",1,"40db3534-47bb-4cc9-a7e8-3bbb2c68ab83","","",true
+"業務連絡先","BSYMT_CONTACT",1,"11670f01-453c-4fbb-8b99-920071cbcc5b","","",true
 "特別休暇付与残数データ","KRCDT_HD_SP_REMAIN",1,"997d14ef-4489-4f8c-9350-182d84778c2f","",,false
 "短時間勤務","KSHMT_SHORTTIME_HIST",1,"d5c3b896-6fa1-44d5-9045-cba334fecd54","",,false
 "短時間勤務","KSHMT_SHORTTIME_HIST_ITEM",1,"d5c3b896-6fa1-44d5-9045-cba334fecd54","",,false

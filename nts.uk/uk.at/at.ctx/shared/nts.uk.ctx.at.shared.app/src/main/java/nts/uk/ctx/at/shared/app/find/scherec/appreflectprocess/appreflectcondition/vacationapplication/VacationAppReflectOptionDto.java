@@ -18,23 +18,17 @@ public class VacationAppReflectOptionDto {
     private int oneDayLeaveDeleteAttendance;
 
     /**
-     * 出退勤を反映する
-     */
-    private int reflectAttendance;
-
-    /**
      * 就業時間帯を反映する
      */
     private int reflectWorkHour;
     
     public static VacationAppReflectOptionDto fromDomain(VacationAppReflectOption domain) {
-    	return new VacationAppReflectOptionDto(domain.getOneDayLeaveDeleteAttendance().value, domain.getReflectAttendance().value, domain.getReflectWorkHour().value);
+    	return new VacationAppReflectOptionDto(domain.getOneDayLeaveDeleteAttendance().value, domain.getReflectWorkHour().value);
     }
     
     public VacationAppReflectOption toDomain() {
         return new VacationAppReflectOption(
                 EnumAdaptor.valueOf(oneDayLeaveDeleteAttendance, NotUseAtr.class), 
-                EnumAdaptor.valueOf(reflectAttendance, NotUseAtr.class), 
                 EnumAdaptor.valueOf(reflectWorkHour, ReflectWorkHourCondition.class));
     }
 }

@@ -50,7 +50,7 @@ public class BeforeOtWorkAppReflectTest {
 																											// = 120
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
 				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);// 勤務情報 = ("001", "001")
-		val reflectOvertimeBeforeSet = BeforeOtWorkAppReflect.create(0, NotUseAtr.USE.value, 0);
+		val reflectOvertimeBeforeSet = BeforeOtWorkAppReflect.create(NotUseAtr.USE.value, 0);
 		reflectOvertimeBeforeSet.processRC(require, "", overTimeApp, dailyApp);
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
@@ -81,7 +81,7 @@ public class BeforeOtWorkAppReflectTest {
 		dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 				.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime().get(0)
 				.getOverTimeWork().setTime(new AttendanceTime(113));
-		val reflectOvertimeBeforeSet = BeforeOtWorkAppReflect.create(0, NotUseAtr.NOT_USE.value, 0);
+		val reflectOvertimeBeforeSet = BeforeOtWorkAppReflect.create(NotUseAtr.NOT_USE.value, 0);
 		reflectOvertimeBeforeSet.processRC(require, "", overTimeApp, dailyApp);
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
@@ -113,7 +113,7 @@ public class BeforeOtWorkAppReflectTest {
 		dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 		.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().setOnlyFlexTime(new AttendanceTimeOfExistMinus(123));
 		
-		BeforeOtWorkAppReflect reflectOvertimeBeforeSet = BeforeOtWorkAppReflect.create(0, NotUseAtr.NOT_USE.value, 0);
+		BeforeOtWorkAppReflect reflectOvertimeBeforeSet = BeforeOtWorkAppReflect.create(NotUseAtr.NOT_USE.value, 0);
 		reflectOvertimeBeforeSet.processRC(require, "", overTimeApp, dailyApp);
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
@@ -135,7 +135,7 @@ public class BeforeOtWorkAppReflectTest {
 		dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 		.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().setOnlyFlexTime(new AttendanceTimeOfExistMinus(123));
 		
-		reflectOvertimeBeforeSet = BeforeOtWorkAppReflect.create(0, NotUseAtr.NOT_USE.value, 0);
+		reflectOvertimeBeforeSet = BeforeOtWorkAppReflect.create(NotUseAtr.NOT_USE.value, 0);
 		reflectOvertimeBeforeSet.processRC(require, "", overTimeApp, dailyApp);
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()

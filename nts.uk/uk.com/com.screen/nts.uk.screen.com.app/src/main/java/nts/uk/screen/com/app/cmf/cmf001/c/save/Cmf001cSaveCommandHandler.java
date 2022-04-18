@@ -53,7 +53,7 @@ public class Cmf001cSaveCommandHandler extends CommandHandler<Cmf001cSaveCommand
 		if (command.isFixedValue()) {
 			mapping.setFixedValue(itemNo, StringifiedValue.of(command.getFixedValue()), withReset);
 		} else if (command.isCsvMapping()) {
-			mapping.setCsvMapping(itemNo, withReset);
+			mapping.setCsvMapping(itemNo, command.toSubstringFetch(), withReset);
 		} else {
 			mapping.setNoSetting(itemNo, withReset);
 		}

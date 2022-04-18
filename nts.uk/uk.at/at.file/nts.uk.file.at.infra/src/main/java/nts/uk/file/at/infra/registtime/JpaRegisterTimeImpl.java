@@ -721,7 +721,7 @@ public class JpaRegisterTimeImpl extends JpaRepository implements RegistTimeRepo
 		try {
 			Object[] data = (Object[]) query.getSingleResult();
 			for (int i = 0; i <= 3; i++) {
-				int islastDay = ((BigDecimal)data[4]).intValue();
+				int islastDay = data[4] instanceof Boolean ? ((Boolean)data[4] ? 1 : 0) : ((BigDecimal)data[4]).intValue();
 				datas.add(toDataSheet1(data[i],i,islastDay));
 			}
 		} catch (Exception e) {
@@ -755,7 +755,7 @@ public class JpaRegisterTimeImpl extends JpaRepository implements RegistTimeRepo
 		return MasterData.builder().rowData(data).build();
 	}
 
-	private MasterData toDataSheet1(Object object,int check,int islastDay) {
+	private MasterData toDataSheet1(Object object, int check, int islastDay) {
 		Map<String,MasterCellData> data = new HashMap<>();
 		data.put(RegistTimeColumn.S1KMK008_80, MasterCellData.builder()
                 .columnId(RegistTimeColumn.S1KMK008_80)
@@ -773,8 +773,8 @@ public class JpaRegisterTimeImpl extends JpaRepository implements RegistTimeRepo
                 .columnId(RegistTimeColumn.S1KMK008_81)
                 .value(check == 0 ? EnumAdaptor.convertToValueName(EnumAdaptor.valueOf(((BigDecimal)object).intValue(), StartingMonthType.class)).getLocalizedName() :
 						check == 1 ? EnumAdaptor.convertToValueName(EnumAdaptor.valueOf(( islastDay == 0 ? (BigDecimal)object : 31).intValue(), ClosingDateType.class)).getLocalizedName() :
-						check == 2 ? ((BigDecimal)object).intValue() == 1 ? I18NText.getText("KMK008_177") : I18NText.getText("KMK008_178") :
-						check == 3 ? ((BigDecimal)object).intValue() == 1 ? I18NText.getText("KMK008_182") : I18NText.getText("KMK008_181") : "")
+						check == 2 ? (object instanceof Boolean ? (Boolean)object : ((BigDecimal)object).intValue() == 1) ? I18NText.getText("KMK008_177") : I18NText.getText("KMK008_178") :
+						check == 3 ? (object instanceof Boolean ? (Boolean)object : ((BigDecimal)object).intValue() == 1) ? I18NText.getText("KMK008_182") : I18NText.getText("KMK008_181") : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		return MasterData.builder().rowData(data).build();

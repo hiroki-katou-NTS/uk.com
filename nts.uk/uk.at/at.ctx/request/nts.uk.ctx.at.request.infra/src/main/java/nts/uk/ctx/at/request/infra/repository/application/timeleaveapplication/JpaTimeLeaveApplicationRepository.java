@@ -1,27 +1,40 @@
 package nts.uk.ctx.at.request.infra.repository.application.timeleaveapplication;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.request.dom.application.*;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.*;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationRepository;
 import nts.uk.ctx.at.request.infra.entity.application.timeleaveapplication.KrqdtAppTimeHd;
 import nts.uk.ctx.at.request.infra.entity.application.timeleaveapplication.KrqdtAppTimeHdInput;
 import nts.uk.ctx.at.request.infra.entity.application.timeleaveapplication.KrqdtAppTimeHdInputPK;
 import nts.uk.ctx.at.request.infra.entity.application.timeleaveapplication.KrqdtAppTimeHdPK;
+import nts.uk.ctx.at.request.infra.repository.application.FindAppCommonForNR;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 import nts.uk.shr.com.context.AppContexts;
 
-import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.*;
-import java.util.stream.Collectors;
-
 @Stateless
-public class JpaTimeLeaveApplicationRepository extends JpaRepository implements TimeLeaveApplicationRepository {
+public class JpaTimeLeaveApplicationRepository extends JpaRepository implements TimeLeaveApplicationRepository, FindAppCommonForNR<TimeLeaveApplication>  {
 
     @Inject
     private ApplicationRepository applicationRepo;
@@ -31,16 +44,23 @@ public class JpaTimeLeaveApplicationRepository extends JpaRepository implements 
 
     @Override
     public Optional<TimeLeaveApplication> findById(String companyId, String appId) {
-        Optional<Application> application = applicationRepo.findByID(companyId, appId);
-        if (!application.isPresent()) return Optional.empty();
+    	   Optional<Application> application = applicationRepo.findByID(companyId, appId);
+           if (!application.isPresent()) return Optional.empty();
 
-        List<KrqdtAppTimeHd> timeZoneEntities = this.queryProxy().query(SELECT_APP_TIME_HD, KrqdtAppTimeHd.class)
-                .setParameter("companyId", companyId)
-                .setParameter("appId", appId).getList();
-        List<KrqdtAppTimeHdInput> appTimeEntities = this.queryProxy().query(SELECT_APP_TIME_HD_INPUT, KrqdtAppTimeHdInput.class)
-                .setParameter("companyId", companyId)
-                .setParameter("appId", appId).getList();
-
+           List<KrqdtAppTimeHd> timeZoneEntities = this.queryProxy().query(SELECT_APP_TIME_HD, KrqdtAppTimeHd.class)
+                   .setParameter("companyId", companyId)
+                   .setParameter("appId", appId).getList();
+           List<KrqdtAppTimeHdInput> appTimeEntities = this.queryProxy().query(SELECT_APP_TIME_HD_INPUT, KrqdtAppTimeHdInput.class)
+                   .setParameter("companyId", companyId)
+                   .setParameter("appId", appId).getList();
+           return toDom(application, timeZoneEntities, appTimeEntities);
+    }
+    
+	public Optional<TimeLeaveApplication> toDom(Optional<Application> application,
+			List<KrqdtAppTimeHd> timeZoneEntities, List<KrqdtAppTimeHdInput> appTimeEntities) {
+		if(!application.isPresent()) {
+			return Optional.empty();
+		}
         List<TimeLeaveApplicationDetail> details = new ArrayList<>();
         Map<Integer, List<KrqdtAppTimeHd>> mapTimeZone = timeZoneEntities.stream().collect(Collectors.groupingBy(i -> i.pk.timeHdType));
         Map<Integer, List<KrqdtAppTimeHdInput>> mapAppTime = appTimeEntities.stream().collect(Collectors.groupingBy(i -> i.pk.timeHdType));
@@ -221,4 +241,47 @@ public class JpaTimeLeaveApplicationRepository extends JpaRepository implements 
         return result;
     }
 
+    @Override
+	public List<TimeLeaveApplication> findWithSidDate(String companyId, String sid, GeneralDate date) {
+		List<Application> lstApp = applicationRepo.findAppWithSidDate(companyId, sid, date, ApplicationType.ANNUAL_HOLIDAY_APPLICATION.value);
+		return mapToDom(companyId, lstApp);
+	}
+
+	@Override
+	public List<TimeLeaveApplication> findWithSidDateApptype(String companyId, String sid, GeneralDate date,
+			GeneralDateTime inputDate, PrePostAtr prePostAtr) {
+		List<Application> lstApp = applicationRepo.findAppWithSidDateApptype(companyId, sid, date, inputDate,
+				prePostAtr, ApplicationType.ANNUAL_HOLIDAY_APPLICATION.value);
+		return mapToDom(companyId, lstApp);
+	}
+
+	@Override
+	public List<TimeLeaveApplication> findWithSidDatePeriod(String companyId, String sid, DatePeriod period) {
+		List<Application> lstApp = applicationRepo.findAppWithSidDatePeriod(companyId, sid, period, ApplicationType.ANNUAL_HOLIDAY_APPLICATION.value);
+		return mapToDom(companyId, lstApp);
+	}
+	
+	private static final String SELECT_APP_TIME_HD_IDS = "SELECT a FROM KrqdtAppTimeHd a WHERE a.pk.companyID = :companyId AND a.pk.appID IN :appId";
+    private static final String SELECT_APP_TIME_HD_INPUT_IDS = "SELECT b FROM KrqdtAppTimeHdInput b WHERE b.pk.companyID = :companyId AND b.pk.appID IN :appId";
+
+	private List<TimeLeaveApplication> mapToDom(String companyId, List<Application> lstApp) {
+
+		if (lstApp.isEmpty())
+			return new ArrayList<TimeLeaveApplication>();
+
+		List<KrqdtAppTimeHd> timeZoneEntities = this.queryProxy().query(SELECT_APP_TIME_HD_IDS, KrqdtAppTimeHd.class)
+				.setParameter("companyId", companyId)
+				.setParameter("appId", lstApp.stream().map(x -> x.getAppID()).collect(Collectors.toList())).getList();
+		List<KrqdtAppTimeHdInput> appTimeEntities = this.queryProxy()
+				.query(SELECT_APP_TIME_HD_INPUT_IDS, KrqdtAppTimeHdInput.class).setParameter("companyId", companyId)
+				.setParameter("appId", lstApp.stream().map(x -> x.getAppID()).collect(Collectors.toList())).getList();
+
+		return lstApp.stream().map(x -> {
+			return toDom(Optional.of(x),
+					timeZoneEntities.stream().filter(y -> y.pk.getAppID().equals(x.getAppID()))
+							.collect(Collectors.toList()),
+					appTimeEntities.stream().filter(y -> y.pk.getAppID().equals(x.getAppID()))
+							.collect(Collectors.toList())).orElse(null);
+		}).filter(x -> x != null).collect(Collectors.toList());
+	}
 }

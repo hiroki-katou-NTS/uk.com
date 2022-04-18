@@ -16,6 +16,7 @@ import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrorsRequire;
 import nts.uk.ctx.exio.dom.input.errors.ItemError;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
+import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.fetch.SubstringFetch;
 
 /**
  * 受入マッピング
@@ -154,17 +155,21 @@ public class ImportingMapping {
 	/**
 	 * 指定した項目をCSVマッピングに変更する
 	 */
-	public void setCsvMapping(int itemNo, boolean withReset) {
+	public void setCsvMapping(int itemNo, Optional<SubstringFetch> substringFetch, boolean withReset) {
+		
+		ImportingItemMapping item = getByItemNo(itemNo).get();
+		
 		if(withReset) {
 			// 一旦ダミーの値を入れてCSVマッピングに切り替えた状態で順番リセット
-			getByItemNo(itemNo).get().setCsvColumnNo(-1);
+			item.setCsvColumnNo(-1, substringFetch);
 			resetCsvColumnNoByOrder();
 		}
 		else {
-			getByItemNo(itemNo).get().setFixedValue(null);
-			if(!getByItemNo(itemNo).get().getCsvColumnNo().isPresent()){
-				getByItemNo(itemNo).get().setCsvColumnNo(1); // CSV項目NOが未指定の場合いったん先頭列を入れておく
-			}
+			item.setFixedValue(null);
+
+			// CSV項目NOが未指定の場合いったん先頭列を入れておく
+			int csvColumnNo = item.getCsvColumnNo().orElse(1);
+			item.setCsvColumnNo(csvColumnNo, substringFetch);
 		}
 	}
 
@@ -185,7 +190,7 @@ public class ImportingMapping {
 
 		for (val mapping : mappings) {
 			if (mapping.isCsvMapping()) {
-				mapping.setCsvColumnNo(columnNo);
+				mapping.setCsvColumnNo(columnNo, mapping.getSubstringFetch());
 				columnNo++;
 			}
 		}

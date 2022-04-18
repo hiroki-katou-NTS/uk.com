@@ -3973,8 +3973,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                     }
                 } else if (self.userInfor.disPlayFormat == ViewMode.TIME) {
-                    let workStyle = data.workHolidayCls;
                     if (!_.isNil(data)) {
+                        let workStyle = data.workHolidayCls;
                         // case coppy từ cell là ngày lễ, ngày nghỉ nên phải disable cell starttime, endtime đi.
                         if (workStyle == WorkStyle.ONE_DAY_REST) {
                             self.diseableCellStartEndTime(rowIdx + '', key);
@@ -4764,34 +4764,46 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_435' });
                         dfd.resolve(false);
                     } else if ((workType.workTimeSetting == 0 && workTime.code == ' ')) {
-                        self.stickValDeferred(rowIdx, key, data, userInfor, cellDisableTime).done((data) => {
-                            dfd.resolve(true);
-                        }).fail(function() {
+                        if (!self.isEqual(userInfor.disPlayFormat, data, rowIdx, key)) {
+                            self.stickValDeferred(rowIdx, key, data, userInfor, cellDisableTime).done((data) => {
+                                dfd.resolve(true);
+                            }).fail(function() {
+                                dfd.reject();
+                            }).always((data) => {
+                                dfd.reject();
+                            });
+                        } else {
                             dfd.reject();
-                        }).always((data) => {
-                            dfd.reject();
-                        });
+                        }
 
                     } else if ((userInfor.disPlayFormat == ViewMode.TIME) && (data.workHolidayCls == 1 || data.workHolidayCls == 2)) {
                         // trương hơp là đi làm nửa ngày
-                        self.stickValHalfDaySelected(rowIdx, key, data, userInfor, cellDisableTime).done((data) => {
-                            dfd.resolve(true);
-                        }).fail(function() {
+                        if (!self.isEqual(userInfor.disPlayFormat, data, rowIdx, key)) {
+                            self.stickValHalfDaySelected(rowIdx, key, data, userInfor, cellDisableTime).done((data) => {
+                                dfd.resolve(true);
+                            }).fail(function() {
+                                dfd.reject();
+                            }).always((data) => {
+                                dfd.reject();
+                            });
+                        } else {
                             dfd.reject();
-                        }).always((data) => {
-                            dfd.reject();
-                        });
+                        }
 
                     } else {
                         // enable | disable cell startTime,endtime
-                        if (userInfor.disPlayFormat == ViewMode.TIME) {
-                            if (data.workHolidayCls == 0) {
-                                self.diseableCellStartEndTime(rowIdx+'', key);
-                            } else {
-                                self.enableCellStartEndTime(rowIdx+'', key);
+                        if (!self.isEqual(userInfor.disPlayFormat, data, rowIdx, key)) {
+                            if (userInfor.disPlayFormat == ViewMode.TIME) {
+                                if (data.workHolidayCls == 0) {
+                                    self.diseableCellStartEndTime(rowIdx + '', key);
+                                } else {
+                                    self.enableCellStartEndTime(rowIdx + '', key);
+                                }
                             }
+                            dfd.resolve(true);
+                        } else {
+                            dfd.reject();
                         }
-                        dfd.resolve(true);
                     }
 
                 } else if (userInfor.disPlayFormat == ViewMode.SHIFT) {
@@ -4807,6 +4819,29 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 return dfd.promise();
             });
             nts.uk.ui.block.clear();
+        }
+        
+        // compare dataStick and dataGrid
+        isEqual(viewMode, dataStick, rowIdx, key) {
+            let dataSource = $("#extable").exTable('dataSource', 'detail').body;
+            let cellData = dataSource[rowIdx][key];
+            if (viewMode == ViewMode.TIME) {
+                if (dataStick.workTypeCode == cellData.workTypeCode &&
+                    dataStick.workTimeCode == cellData.workTimeCode &&
+                    dataStick.startTime == cellData.startTime &&
+                    dataStick.endTime == cellData.endTime) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if (viewMode == ViewMode.SHORTNAME) {
+                if (dataStick.workTypeCode == cellData.workTypeCode &&
+                    dataStick.workTimeCode == cellData.workTimeCode) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         }
         
         // valid data trong mode shift khi stick

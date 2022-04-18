@@ -33,6 +33,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthResult;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthResult;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
 /**
@@ -236,8 +237,10 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 				 lstCellDisByLock.add(new DPHideControlCell("_" + data.getId(), header.getKey()));
 			}
 		} else {
-			this.mapCellState.put("_" + data.getId()+ "|" + header.getKey(), new DPCellStateDto("_" + data.getId(), header.getKey(), toList("mgrid-disable")));
-			lstCellDisByLock.add(new DPHideControlCell("_" + data.getId(), header.getKey()));
+			if(!isLoginUser(data.getEmployeeId())) {
+				this.mapCellState.put("_" + data.getId()+ "|" + header.getKey(), new DPCellStateDto("_" + data.getId(), header.getKey(), toList("mgrid-disable")));
+				lstCellDisByLock.add(new DPHideControlCell("_" + data.getId(), header.getKey()));
+			}
 		}
 //		}
 	}

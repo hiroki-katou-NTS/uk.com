@@ -21,4 +21,5 @@ public interface GoBackDirectlyRepository {
 	void delete(String companyId, String appId);
 	
 	Optional<GoBackDirectly> find(String companyId, String appId, Application app);
+	
 }

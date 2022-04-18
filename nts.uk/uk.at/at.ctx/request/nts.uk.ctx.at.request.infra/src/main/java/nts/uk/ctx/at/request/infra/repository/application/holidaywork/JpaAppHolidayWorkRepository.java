@@ -9,9 +9,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
@@ -20,6 +29,7 @@ import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHdWork
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHdWorkTime;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWorkPK;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtHolidayWorkInputPK;
+import nts.uk.ctx.at.request.infra.repository.application.FindAppCommonForNR;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.shr.com.context.AppContexts;
@@ -30,11 +40,14 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHolidayWorkRepository{
+public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHolidayWorkRepository, FindAppCommonForNR<AppHolidayWork>{
 	
 	public static final String FIND_BY_APPID = "SELECT a FROM KrqdtAppHdWork as a WHERE a.krqdtAppHolidayWorkPK.cid = :companyId and a.krqdtAppHolidayWorkPK.appId = :appId";
 	public static final String FIND_BY_APPID_IN = "SELECT a FROM KrqdtAppHdWork as a WHERE a.krqdtAppHolidayWorkPK.cid = :companyId and a.krqdtAppHolidayWorkPK.appId in :appIds";
 
+	@Inject 
+	private ApplicationRepository applicationRepo;
+	
 	@Override
 	public Optional<AppHolidayWork> find(String companyId, String applicationId) {
 		return this.queryProxy().query(FIND_BY_APPID, KrqdtAppHdWork.class)
@@ -246,5 +259,35 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 				.setParameter("appIds", lstAppId)
 				.getList(x -> result.put(x.getKrqdtAppHolidayWorkPK().getAppId(), x.toDomain()));
 		return result;
+	}
+	
+	@Override
+	public List<AppHolidayWork> findWithSidDate(String companyId, String sid, GeneralDate date) {
+		List<Application> lstApp = applicationRepo.findAppWithSidDate(companyId, sid, date, ApplicationType.HOLIDAY_WORK_APPLICATION.value);
+		return mapToDom(companyId, lstApp);
+	}
+
+	@Override
+	public List<AppHolidayWork> findWithSidDateApptype(String companyId, String sid, GeneralDate date,
+			GeneralDateTime inputDate, PrePostAtr prePostAtr) {
+		List<Application> lstApp = applicationRepo.findAppWithSidDateApptype(companyId, sid, date, inputDate, prePostAtr, ApplicationType.HOLIDAY_WORK_APPLICATION.value);
+		return mapToDom(companyId, lstApp);
+	}
+
+	@Override
+	public List<AppHolidayWork> findWithSidDatePeriod(String companyId, String sid, DatePeriod period) {
+		List<Application> lstApp = applicationRepo.findAppWithSidDatePeriod(companyId, sid, period, ApplicationType.HOLIDAY_WORK_APPLICATION.value);
+		return mapToDom(companyId, lstApp);
+	}
+	
+	private List<AppHolidayWork> mapToDom(String companyId, List<Application> lstApp) {
+		if (lstApp.isEmpty())
+			return new ArrayList<>();
+		return this.queryProxy().query(FIND_BY_APPID_IN, KrqdtAppHdWork.class).setParameter("companyId", companyId)
+				.setParameter("appIds", lstApp.stream().map(x -> x.getAppID()).collect(Collectors.toList())).getList(x -> {
+					val dom = x.toDomain();
+					dom.setApplication(this.findAppId(lstApp, x.getKrqdtAppHolidayWorkPK().getAppId()).orElse(null));
+					return dom;
+				});
 	}
 }

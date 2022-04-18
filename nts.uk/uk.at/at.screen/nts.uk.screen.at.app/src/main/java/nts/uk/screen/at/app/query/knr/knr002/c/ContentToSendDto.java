@@ -53,11 +53,16 @@ public class ContentToSendDto {
 						timeRecordSetFormat.getSmallClassification().v(),
 						timeRecordSetFormat.getVariableName().v(),
 						timeRecordSetFormat.getInputRange().v(),
-						timeRecordSetUpdateList.getLstTRecordSetUpdate().get(i).getUpdateValue().v());
+						getUpdateValueFormat(timeRecordSetUpdateList.getLstTRecordSetUpdate().get(i).getUpdateValue().v()));
 				
 				listDto.add(dto);
 			}
 		}
 		return listDto;
+	}
+	
+	public static String getUpdateValueFormat(String updateValue) {
+		String str = updateValue.replaceAll("^0+(?!$)", "");
+		return str;
 	}
 }

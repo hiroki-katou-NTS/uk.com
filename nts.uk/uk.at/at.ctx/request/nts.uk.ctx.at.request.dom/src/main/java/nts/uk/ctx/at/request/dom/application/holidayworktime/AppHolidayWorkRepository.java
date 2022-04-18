@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime;
 
-import nts.arc.time.GeneralDate;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,4 +20,5 @@ public interface AppHolidayWorkRepository {
 	void delete(String companyId, String applicationId);
 
 	Map<String, AppHolidayWork> getListAppHdWorkFrame(String companyId, List<String> lstAppId);
+
 }

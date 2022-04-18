@@ -376,7 +376,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
             arrivedLateLeaveEarlyInfo.arrivedLateLeaveEarly = arrivedLateLeaveEarly;
 
             vm.$blockui("show");
-            return vm.$validate()
+            return vm.$validate('#kaf000-b-component7-comboReason', '#kaf000-b-component7-textReason')
                 .then((isValid) => {
                     if (isValid) {
                         const command = {

@@ -29,21 +29,15 @@ public class BeforeOtWorkAppReflect {
 	 * 休憩・外出を申請反映する
 	 */
 	private BreakApplication breakLeaveApplication;
-	/**
-	 * 【削除予定】始業終業を反映する
-	 */
-	private NotUseAtr reflectWorkInfoAtr;
 
 	/**
 	 * 残業時間を実績項目へ反映する
 	 */
 	private NotUseAtr reflectActualOvertimeHourAtr;
 
-	public static BeforeOtWorkAppReflect create(int reflectWorkInfo, int reflectActualOvertimeHour,
-			int reflectBeforeBreak) {
+	public static BeforeOtWorkAppReflect create(int reflectActualOvertimeHour, int reflectBeforeBreak) {
 		return new BeforeOtWorkAppReflect(
 				new BreakApplication(EnumAdaptor.valueOf(reflectBeforeBreak, NotUseAtr.class)),
-				EnumAdaptor.valueOf(reflectWorkInfo, NotUseAtr.class),
 				EnumAdaptor.valueOf(reflectActualOvertimeHour, NotUseAtr.class));
 	}
 

@@ -17,6 +17,7 @@ import nts.uk.ctx.exio.dom.input.setting.ImportSettingBaseType;
 import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingItemMapping;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingMapping;
+import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.fetch.SubstringFetch;
 
 @Value
 public class Cmf001fSaveCommand {
@@ -92,22 +93,24 @@ public class Cmf001fSaveCommand {
 		Integer csvColumnNo;
 		
 		public ImportingItemMapping createNew() {
-			return toDomain(Optional.empty());
+			return toDomain(Optional.empty(), Optional.empty());
 		}
 		
 		public ImportingItemMapping update(Optional<ImportingItemMapping> old) {
 			return old
-					.map(o -> toDomain(o.getFixedValue()))
+					.map(o -> toDomain(o.getSubstringFetch(), o.getFixedValue()))
 					.orElseGet(() -> createNew());
 		}
 		
-		private ImportingItemMapping toDomain(Optional<StringifiedValue> fixedValue) {
+		private ImportingItemMapping toDomain(Optional<SubstringFetch> substring, Optional<StringifiedValue> fixedValue) {
 			return new ImportingItemMapping(
 					itemNo,
 					this.isFixedValue(),
 					Optional.ofNullable(csvColumnNo),
+					substring,
 					fixedValue);
 		}
+		
 	}
 	
 }

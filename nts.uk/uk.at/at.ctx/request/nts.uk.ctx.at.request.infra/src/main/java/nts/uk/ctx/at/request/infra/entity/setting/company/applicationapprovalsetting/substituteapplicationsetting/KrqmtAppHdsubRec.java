@@ -1,5 +1,12 @@
 package nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.substituteapplicationsetting;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,10 +14,10 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppCommentSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.Comment;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteWorkAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteHolidayAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteHdWorkAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteHolidayAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteSimultaneousAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteWorkAppSet;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOption;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.ReflectWorkHourCondition;
@@ -18,12 +25,6 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.va
 import nts.uk.shr.com.color.ColorCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-import org.apache.commons.lang3.BooleanUtils;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "KRQMT_APP_HDSUB_REC")
@@ -63,9 +64,6 @@ public class KrqmtAppHdsubRec extends ContractUkJpaEntity {
     @Column(name = "REC_WORK_TIME_REFLECT_ATR")
     private int recWorkTimeReflectAtr;
 
-    @Column(name = "SUB_WORK_TIME_REFLECT_ATR")
-    private int subWorkTimeReflectAtr;
-
     @Column(name = "SUB_WORK_TIME_DELETE_ATR")
     private int subWorkTimeDeleteAtr;
 
@@ -82,7 +80,6 @@ public class KrqmtAppHdsubRec extends ContractUkJpaEntity {
         		companyId,
                 new VacationAppReflectOption(
                         EnumAdaptor.valueOf(subWorkTimeDeleteAtr, NotUseAtr.class),
-                        EnumAdaptor.valueOf(subWorkTimeReflectAtr, NotUseAtr.class),
                         EnumAdaptor.valueOf(subWorkTimeConditionReflectAtr, ReflectWorkHourCondition.class)
                 )
         );
@@ -128,7 +125,6 @@ public class KrqmtAppHdsubRec extends ContractUkJpaEntity {
                 setting.getSubstituteWorkSetting().getComment().getComment().v(),
                 BooleanUtils.toInteger(setting.getSubstituteWorkSetting().getComment().isBold()),
                 drawOutReflect.getReflectAttendanceAtr().value,
-                suspenseReflect.getWorkInfoAttendanceReflect().getReflectAttendance().value,
                 suspenseReflect.getWorkInfoAttendanceReflect().getOneDayLeaveDeleteAttendance().value,
                 suspenseReflect.getWorkInfoAttendanceReflect().getReflectWorkHour().value
         );
@@ -146,7 +142,6 @@ public class KrqmtAppHdsubRec extends ContractUkJpaEntity {
     }
 
     public void updateSubLeaveReflect(SubstituteLeaveAppReflect reflect) {
-        this.subWorkTimeReflectAtr = reflect.getWorkInfoAttendanceReflect().getReflectAttendance().value;
         this.subWorkTimeDeleteAtr = reflect.getWorkInfoAttendanceReflect().getOneDayLeaveDeleteAttendance().value;
         this.subWorkTimeConditionReflectAtr = reflect.getWorkInfoAttendanceReflect().getReflectWorkHour().value;
     }

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.employmentinfoterminal.infoterminal.remote;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,6 +29,8 @@ public class JpaTimeRecordSetUpdateListRepository extends JpaRepository implemen
 	private static final String FIND = "select t from KrcdtTrRemoteUpdate t where t.pk.contractCode = :contractCode and t.pk.timeRecordCode = :trCode ";
 	
 	private static final String FIND_CONTRACTCD_LISTCD = "SELECT t FROM KrcdtTrRemoteUpdate t WHERE t.pk.contractCode = :contractCode and t.pk.timeRecordCode IN :listCode"; 
+	
+	private static final String DEL_CONTRACTCD_TER = "DELETE FROM KrcdtTrRemoteUpdate t WHERE t.pk.contractCode = :contractCode and t.pk.timeRecordCode = :timeRecordCode";
 
 	// [1] タイムレコード設定更新リストを取得する
 	@Override
@@ -89,5 +90,13 @@ public class JpaTimeRecordSetUpdateListRepository extends JpaRepository implemen
 	public void delete(List<TimeRecordSetUpdateList> listTimeRecordSetUpdateList) {
 		listTimeRecordSetUpdateList.stream().forEach(x -> this.commandProxy().removeAll(KrcdtTrRemoteUpdate.class, toEntity(x).stream().map(e -> e.pk).collect(Collectors.toList())));
 		this.getEntityManager().flush();
+	}
+
+	@Override
+	public void delete(String empInfoTerCode, String contractCode) {
+		this.queryProxy().query(DEL_CONTRACTCD_TER, KrcdtTrRemoteUpdate.class)
+				.setParameter("contractCode", contractCode).setParameter("timeRecordCode", empInfoTerCode)
+				.getQuery().executeUpdate();
+		
 	}
 }
