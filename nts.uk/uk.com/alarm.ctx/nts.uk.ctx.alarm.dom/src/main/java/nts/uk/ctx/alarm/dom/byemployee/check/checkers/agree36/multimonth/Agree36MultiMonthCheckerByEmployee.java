@@ -42,7 +42,10 @@ public class Agree36MultiMonthCheckerByEmployee implements DomainAggregate, Alar
     }
 
     /**
-     * アラームリストのチェック条件（社員別・36協定複数月）の詳細 ・閾値 ・使用区分 ・メッセージ を登録出来るようにするために使う
+     * アラームリストのチェック条件（社員別・36協定複数月）の詳細 
+     * ・閾値 
+     * ・使用区分 
+     * ・メッセージ を登録出来るようにするために使う
      *
      * @author raiki_asada
      */
@@ -72,16 +75,16 @@ public class Agree36MultiMonthCheckerByEmployee implements DomainAggregate, Alar
 
             return actualValues.stream()
                     .filter(value -> !this.expression.matches(value.getValue()))
-                    .map(value -> this.createRecord(context.getEmployeeId(), logic.getName(), value))
+                    .map(value -> this.createRecord(context.getEmployeeId(), value))
                     .collect(Collectors.toList());
         }
 
-        private AlarmRecordByEmployee createRecord(String employeeId, String itemName, ConditionValueAgree36MultiMonthCheckerByEmployee.ValueEachMonth value) {
+        private AlarmRecordByEmployee createRecord(String employeeId, ConditionValueAgree36MultiMonthCheckerByEmployee.ValueEachMonth value) {
             return new AlarmRecordByEmployee(
                     employeeId,
                     new DateInfo(value.getPeriod()),
                     AlarmListCategoryByEmployee.AGREE36_MULT_MONTH,
-                    itemName,
+                    this.logic.getName(),
                     expression.toText(),
                     String.format("実績: %.2f", value.getValue()),
                     message);
