@@ -43,6 +43,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionReposit
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.anyperiod.ErrorAlarmAnyPeriod;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.anyperiod.ErrorAlarmAnyPeriodRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.ExtraResultMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.ExtraResultMonthlyRepository;
@@ -420,6 +421,9 @@ public class ExecuteAlarmListByEmployeeRequire {
     
     @Inject
     private TaskFrameUsageSettingRepository taskFrameUsageSettingRepo;
+    
+    @Inject
+    private ErrorAlarmAnyPeriodRepository errorAlarmAnyPeriodRepo;
 
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
@@ -986,7 +990,10 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public List<ErrorAlarmAnyPeriod> getErrorAlarmAnyPeriod(List<ErrorAlarmWorkRecordCode> code) {
-            return null;
+            return errorAlarmAnyPeriodRepo.gets(
+            		this.companyId, 
+            		ErAlCategory.ANY_PERIOD.value, 
+            		code.stream().map(c -> c.v()).collect(Collectors.toList()));
         }
 
         @Override
