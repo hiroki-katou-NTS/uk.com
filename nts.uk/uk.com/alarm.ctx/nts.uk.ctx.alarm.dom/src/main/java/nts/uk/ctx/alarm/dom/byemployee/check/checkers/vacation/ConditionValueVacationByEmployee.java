@@ -28,7 +28,7 @@ public enum ConditionValueVacationByEmployee implements ConditionValueLogic<Cond
 	}),
 
 	積立年休残数(1, "積立年休残数", c -> {
-		return c.require.getRsvLeaveRemain(c.employeeId, c.period.end())
+		return c.require.getReserveLeaveRemain(c.employeeId, c.period.end())
 				.map(r -> r.getRemainingDays())
 				.orElse(null);
 	}),
