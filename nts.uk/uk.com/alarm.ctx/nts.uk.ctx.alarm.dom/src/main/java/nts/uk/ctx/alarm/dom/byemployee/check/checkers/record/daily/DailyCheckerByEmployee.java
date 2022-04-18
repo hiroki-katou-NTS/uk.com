@@ -11,6 +11,7 @@ import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodDaily;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
+import nts.uk.ctx.alarm.dom.conditionvalue.AlarmListConditionValue;
 import nts.uk.ctx.alarm.dom.fixedlogic.FixedLogicSetting;
 
 import java.util.Arrays;
@@ -34,6 +35,11 @@ public class DailyCheckerByEmployee implements DomainAggregate, AlarmListChecker
 
     /** 固定のチェック条件 */
     private List<FixedLogicSetting<FixedLogicDailyByEmployee>> fixedLogics;
+    
+	/** 条件値のチェック条件*/
+    private List<AlarmListConditionValue<
+    		ConditionValueDailyByEmployee, 
+    		ConditionValueDailyByEmployee.Context>> conditionValues;
 
     /**
      * チェックする
@@ -71,7 +77,8 @@ public class DailyCheckerByEmployee implements DomainAggregate, AlarmListChecker
     public interface RequireCheck extends
             CheckingPeriodDaily.Require,
             CheckErrorAlarmDaily.RequireCheck,
-            FixedLogicDailyByEmployee.RequireCheck {
+            FixedLogicDailyByEmployee.RequireCheck,
+            ConditionValueDailyByEmployee.Require{
 
     }
 }
