@@ -13,6 +13,7 @@ import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.multi.errorcount.ErrorAlarmCounter;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.multi.multiday.ExecuteCheckErrorAlarmDaily;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodDaily;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.alarm.dom.fixedlogic.FixedLogicSetting;
@@ -48,13 +49,16 @@ public class ScheduleMultiDailyCheckerByEmployee implements DomainAggregate, Ala
 	 */
 	@Override
 	public Iterable<AlarmRecordByEmployee> check(Require require, CheckingContextByEmployee context) {
+		return check(require, context);
+	}
+	public Iterable<AlarmRecordByEmployee> check(RequireCheck require, CheckingContextByEmployee context) {
 		String employeeId = context.getTargetEmployeeId();
 		val period = context.getCheckingPeriod().getDaily().calculatePeriod(require, employeeId);
 
 		return checkErrorAlarmCount(require, employeeId, period);
 	}
 
-	private Iterable<AlarmRecordByEmployee> checkErrorAlarmCount(Require require, String employeeId, DatePeriod period) {
+	private Iterable<AlarmRecordByEmployee> checkErrorAlarmCount(RequireCheck require, String employeeId, DatePeriod period) {
 
 		BiFunction<GeneralDate, GeneralDate, DateInfo> periodToDateInfo = (start, end) -> {
 			return new DateInfo(new DatePeriod(start, end));
@@ -80,6 +84,7 @@ public class ScheduleMultiDailyCheckerByEmployee implements DomainAggregate, Ala
 	}
 
 	public interface RequireCheck extends
-			ConditionValueScheduleMultiDailyByEmployee.Require{
+			ConditionValueScheduleMultiDailyByEmployee.Require,
+			CheckingPeriodDaily.Require{
 	}
 }

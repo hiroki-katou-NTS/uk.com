@@ -78,7 +78,7 @@ public enum ConditionValueScheduleMultiDailyByEmployee implements ConditionValue
         }
     }
 
-    public interface Require{
+    public interface Require {
         Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date);
     }
 }
