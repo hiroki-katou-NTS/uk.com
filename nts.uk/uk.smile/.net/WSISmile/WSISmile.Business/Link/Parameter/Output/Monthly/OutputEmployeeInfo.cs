@@ -60,7 +60,10 @@ namespace WSISmile.Business.Link.Parameter.Output
             }
 
             OutputEmployeeInfo employee = (OutputEmployeeInfo)obj;
-            return (this._employeeCd == employee._employeeCd && this._processMonth == employee._processMonth);
+            return (
+                //this._employeeCd == employee._employeeCd &&
+                this._employeeCd.Contains(employee._employeeCd) && 
+                this._processMonth == employee._processMonth);
         }
 
         /// <summary>

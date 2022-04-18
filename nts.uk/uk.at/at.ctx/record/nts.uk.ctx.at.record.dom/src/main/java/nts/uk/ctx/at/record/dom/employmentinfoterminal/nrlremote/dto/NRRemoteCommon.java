@@ -10,5 +10,7 @@ public class NRRemoteCommon {
 	public static String ROW_ELM_NOW = "@@@@@";
 	
 	public static Integer LENGTH = 2;
+	
+	public static String ELEMENT_VALUE = "=";
 
 }

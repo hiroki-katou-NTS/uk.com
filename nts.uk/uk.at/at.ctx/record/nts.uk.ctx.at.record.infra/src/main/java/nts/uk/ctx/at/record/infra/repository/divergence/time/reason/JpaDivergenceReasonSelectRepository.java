@@ -19,6 +19,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelect;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectRepository;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrweb.master.AllMasterAttItem.MasterAttItemDetail;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcmtDvgcReason;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReasonPK;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReasonPK_;
@@ -185,6 +186,15 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 				.setParameter("companyID", companyId)
 				.setParameter("lstReasonCode", lstReasonCode)
 				.getList().stream().collect(Collectors.toMap(s -> Pair.of(String.valueOf(s[0]), String.valueOf(s[1])), s-> String.valueOf(s[2])));
+	}
+
+    private static final String SELECT_ALL_COM= "SELECT c.id.reasonCd, c.id.no, c.reason FROM KrcstDvgcReason c"
+			+ " WHERE c.id.cid = :companyID";
+
+	@Override
+	public List<MasterAttItemDetail> getAllWithCompany(String companyId) {
+		return this.queryProxy().query(SELECT_ALL_COM, Object[].class).setParameter("companyID", companyId).getList(
+				s -> new MasterAttItemDetail(String.valueOf(s[1]), String.valueOf(s[0]), String.valueOf(s[2])));
 	}
 
 }

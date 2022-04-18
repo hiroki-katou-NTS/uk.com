@@ -17,6 +17,6 @@ public interface EmpInfoTerminalAdapter {
 	 * @param contractCode
 	 * @return
 	 */
-	public Optional<EmpInfoTerminal> getEmpInfoTerminal(String empInfoTerCode, String contractCode);
+	public Optional<EmpInfoTerminal> getEmpInfoTerminal(String empInfoTerCode, String contractCode, Optional<String>leavCategory);
 	
 }

@@ -37,6 +37,8 @@
 				<!-- A1_3 deleteBtn-->
 				<button id="A1_3" class="danger"
 					data-bind="click: removeEmpInfoTerminal, enable: enableBtnDelete">#{i18n.getText('KNR001_12')}</button>
+				<!-- A9_1 declarationSettingBtn-->
+				<button id="A9_1" data-bind="click: openDeclarationSettingDialog">#{i18n.getText('KNR001_59')}</button>
 				<!-- A1_4 expExcelBtn-->
 				<button id="A1_4" data-bind="click: knrExport">#{i18n.getText('KNR001_13')}</button>
 			</div>
@@ -49,13 +51,13 @@
 						<div class="div_line">
 							<div style="width: 270px"
 								data-bind="ntsSearchBox: {
-									searchMode :'filter', 
+									searchMode :'filter',
 									mode: 'igGrid',
 									comId: 'multi-list',
 									placeHolder: '端末No名称で検索・・・',
-									items: empInfoTerminalList, 
+									items: empInfoTerminalList,
 									selected: 'selectedCode',
-									selectedKey: 'empInfoTerName', 
+									selectedKey: 'empInfoTerName',
 									fields: ['empInfoTerName', 'empInfoTerCode'] }" />
 							<table id="multi-list"
 								data-bind="ntsGridList: {
@@ -93,7 +95,7 @@
 										option: { textalign: 'left' }}" />
 						</div>
 					</div>
-					
+
 					<!-- row2: A3_3 + A3_4 -->
 					<div class="div_line">
 						<div class="ilb w_label" style=""
@@ -198,7 +200,7 @@
 															enable: true }" />
 						</div>
 					</div>
-					
+
 					<!-- A7_1 A7_2 A7_3 -->
 					<div class="div_line" data-bind="visible: $parent.isUsedSupportOperationSetting()">
 						<div class="w_label" id="A7_1"
@@ -243,11 +245,11 @@
 				<!-- memo -->
 				<div class="column-3">
 					 
-					<!-- A6_7 + A6_8 -->					
+					<!-- A6_7 + A6_8 -->
 						<div data-bind="ntsFormLabel: {constraint: 'EmpInfoTerMemo'}">
 							<label>#{i18n.getText('KNR001_51')}</label>
-						</div>					
-					
+						</div>
+
 						<div class="" style="margin-top: 5px;margin-left: 9px">
 							<textarea style="overflow-y: auto; width: 400px; height: 145px;"
 								id="A6_8"
@@ -257,7 +259,7 @@
 														constraint: 'EmpInfoTerMemo'}" />
 						</div>
 
-						<div style="margin-left: 8px"> 
+						<div style="margin-left: 8px">
 							<div id="A8_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KNR001_152')}</div>
 							<div class="row">
 								<div id="A8_2">#{i18n.getText('KNR001_153')}</div>

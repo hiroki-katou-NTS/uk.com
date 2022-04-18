@@ -1,12 +1,9 @@
 package nts.uk.ctx.alarm.byemployee.execute;
 
-import java.util.*;
 import java.util.ArrayList;
 
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -33,7 +30,6 @@ import nts.uk.ctx.at.record.app.find.dailyperform.ConvertFactory;
 import nts.uk.ctx.at.record.app.find.monthly.MonthlyRecordToAttendanceItemConverterImpl;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
-import nts.uk.ctx.at.record.dom.daily.export.AggregateSpecifiedDailys;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriodRepository;
@@ -175,14 +171,34 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeOfManagePeriod;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.Year;
+import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationAdapter;
+import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationSidImport;
+import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
+import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
+import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementDomainService;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementUnitSettingRepository;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.WorkDaysNumberOnLeaveCount;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriodRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementUnitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSettingForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
+
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -387,6 +403,22 @@ public class ExecuteAlarmListByEmployeeRequire {
     private HandlingOfCriterionAmountRepository handlingOfCriterionAmountRepo;
 
     @Inject
+    private AgreementTimeOfManagePeriodRepository agreementTimeOfManagePeriodRepository;
+    @Inject
+    private AgreementYearSettingRepository agreementYearSettingRepository;
+    @Inject
+    private AgreementUnitSettingRepository agreementUnitSetRepo;
+    
+    @Inject
+    private SyEmploymentAdapter syEmploymentAdapter;
+    
+    @Inject
+    private AffWorkplaceAdapter affWorkplaceAdapter;
+    
+    @Inject
+    private AffClassificationAdapter affClassficationAdapter;
+    
+    @Inject
     private TaskFrameUsageSettingRepository taskFrameUsageSettingRepo;
 
     public Require create() {
@@ -404,7 +436,7 @@ public class ExecuteAlarmListByEmployeeRequire {
     }
 
     @RequiredArgsConstructor
-    public class RequireImpl implements Require {
+    public class RequireImpl implements Require, AgreementDomainService.RequireM5 {
 
         private final String companyId;
         private final String contractCode;
@@ -450,29 +482,39 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         //--- 個人情報系 ---//
         @Override
-        public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate generalDate) {
-            return workingConditionRepo.getWorkingConditionItemByEmpIDAndDate(this.companyId, generalDate, employeeId);
+        public Optional<SyEmploymentImport> employment(String companyId, String employeeId, GeneralDate baseDate) {
+            return syEmploymentAdapter.findByEmployeeId(companyId, employeeId, baseDate);
         }
-
-        @Override
-        public List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, GeneralDate baseDate) {
-            return workingConditionRepo.getWorkingConditionItemWithPeriod(this.companyId, Arrays.asList(employeeId), new DatePeriod(baseDate, baseDate));
-        }
-
+        
         @Override
         public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyID, String employeeId, GeneralDate baseDate) {
             return Optional.empty();
         }
-
+        
+        @Override
+        public List<String> getCanUseWorkplaceForEmp(String companyId, String employeeId, GeneralDate baseDate) {
+            return affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRoot(companyId, employeeId, baseDate);
+        }
+        
+        @Override
+        public Optional<AffClassificationSidImport> affEmployeeClassification(String companyId, String employeeId, GeneralDate baseDate) {
+            return affClassficationAdapter.findByEmployeeId(companyId, employeeId, baseDate);
+        }
+        
         //--- 労働条件 ---//
         @Override
-        public Optional<WorkingConditionItem> getWorkingConditionItem(String employeeId, GeneralDate date) {
-            return workingConditionItemRepo.getBySidAndStandardDate(employeeId, date);
-        }
-
-        @Override
         public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return Optional.empty();
+        }
+        
+        @Override
+        public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate generalDate) {
+            return workingConditionRepo.getWorkingConditionItemByEmpIDAndDate(this.companyId, generalDate, employeeId);
+        }
+        
+        @Override
+        public Optional<WorkingConditionItem> getWorkingConditionItem(String employeeId, GeneralDate date) {
+            return this.workingConditionItem(employeeId, date);
         }
 
         @Override
@@ -480,12 +522,22 @@ public class ExecuteAlarmListByEmployeeRequire {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
-        //--- 勤務種類 ---//
+        @Override
+        public List<WorkingConditionItem> workingConditionItemClones(List<String> employeeId, GeneralDate baseDate) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        
         @Override
         public List<WorkingConditionItemWithPeriod> getWorkingConditions(String s, DatePeriod datePeriod) {
-            return null;
+            return workingConditionRepo.getWorkingConditionItemWithPeriod(this.companyId, Arrays.asList(s), datePeriod);
         }
-
+        
+        @Override
+        public List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, GeneralDate baseDate) {
+            return this.getWorkingConditions(companyId, new DatePeriod(baseDate, baseDate));
+        }
+        
+        //--- 勤務種類 ---//
         @Override
         public Optional<WorkType> getWorkType(String workTypeCode) {
             return this.workType(companyId, new WorkTypeCode(workTypeCode));
@@ -1046,8 +1098,8 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
-        public Optional<AgreementTimeOfManagePeriod> getAgeementTime(String employeeId, YearMonth yearMonth) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        public Optional<AgreementTimeOfManagePeriod> getAgreementTimeOfManagePeriod(String employeeId, YearMonth yearMonth) {
+            return agreementTimeOfManagePeriodRepository.find(employeeId, yearMonth);
         }
 
         @Override
@@ -1057,16 +1109,56 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public BasicAgreementSettingForCalc basicAgreementSetting(String cid, String sid, GeneralDate baseDate, Year year) {
+            return AgreementDomainService.getBasicSet(this, cid, sid, baseDate, year);
+        }
+
+        @Override
+        public Optional<AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(String sid, YearMonth ym) {
+            return this.getAgreementTimeOfManagePeriod(sid, ym);
+        }
+
+        @Override
+        public List<AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(List<String> sids, List<YearMonth> yearMonths) {
+            return agreementTimeOfManagePeriodRepository.findBySidsAndYearMonths(sids, yearMonths);
+        }
+
+        @Override
+        public BasicAgreementSetting basicAgreementSetting(String cid, String sid, GeneralDate baseDate) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
-        public Optional<nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(String sid, YearMonth ym) {
+        public Optional<AgreementYearSetting> agreementYearSetting(String sid, int year) {
+            return agreementYearSettingRepository.findBySidAndYear(loginEmployeeId, year);
+        }
+
+        @Override
+        public Optional<AgreementUnitSetting> agreementUnitSetting(String companyId) {
+            return agreementUnitSetRepo.find(companyId);
+        }
+
+
+        @Override
+        public Optional<AgreementTimeOfClassification> agreementTimeOfClassification(String companyId, LaborSystemtAtr laborSystemAtr, String classificationCode) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+
+
+        @Override
+        public Optional<AgreementTimeOfWorkPlace> agreementTimeOfWorkPlace(String workplaceId, LaborSystemtAtr laborSystemAtr) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+
+
+        @Override
+        public Optional<AgreementTimeOfEmployment> agreementTimeOfEmployment(String companyId, String employmentCategoryCode, LaborSystemtAtr laborSystemAtr) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
-        public List<nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(List<String> sids, List<nts.arc.time.YearMonth> yearMonths) {
+        public Optional<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId, LaborSystemtAtr laborSystemAtr) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }

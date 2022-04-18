@@ -15,6 +15,9 @@ public interface ApprovalPhaseRepository {
 	 * @return
 	 */
 	List<ApprovalPhase> getAllApprovalPhasebyCode(String approvalId);
+
+	List<ApprovalPhase> getAllApprovalPhaseByListId(List<String> approvalIds);
+
 	/**
 	 * get Approval Phase by Code
 	 * @param companyId

@@ -36,6 +36,11 @@ public class TargetPremiumTimeGetter {
 		// 週割増時間に休出時間を加算する
 		premiumTime = premiumTime.addMinutes(legalHolidayWorkTime.v());
 		
+		/** 変形法定内残業時間を求める*/
+		val irregularLegalOverTime = aggregateTotalWorkingTime.getOverTime().getIrregularLegalOverTime(period);
+		/** 変形法定内残業時間を集計対象時間に加算する*/
+		premiumTime = premiumTime.addMinutes(irregularLegalOverTime.valueAsMinutes());
+		
 		// 休暇加算を確認する
 		if (isAddVacation){
 			

@@ -14,6 +14,7 @@
 		<com:ValidatorScript>
 			nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.PaddingLength
 			nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.real.DecimalDigitNumber
+			nts.uk.ctx.exio.dom.input.setting.assembly.mapping.fetch.ExternalImportFetchPosition
 		</com:ValidatorScript>
 		
 		<com:EnumScript>
@@ -86,7 +87,21 @@
 								<input class="check-target" data-bind="ntsTimeWithDayEditor: {value: fixedMapping, name: def.name, required: selectedMappingType() == '固定値' }" />
 							</div>
 						</div>
+						
+						<div id="csv-fetch" data-bind="if: selectedMappingType() == 'CSV'">
+							<div class="label inline"></div>
+							<div class="inline">
+								<div class="inline">
+									読み取り位置　開始 <input data-bind="ntsNumberEditor: {value: csvFetchStart, name: '開始位置', constraint: 'ExternalImportFetchPosition' }"
+									/>　～　終了 <input data-bind="ntsNumberEditor: {value: csvFetchEnd, name: '終了位置', constraint: 'ExternalImportFetchPosition' }" />
+								</div>
+								<div class="remarks">※末尾からの文字数で位置を指定する場合は、マイナスの値を入力してください</div>
+							</div>
+							
+						</div>
 					</div>
+
+					
 					
 					<div id="csv-mapping" data-bind="if: selectedMappingType() == 'CSV'">
 						<div data-bind="with: csvMapping">

@@ -199,7 +199,7 @@ namespace WSISmile.Business.Category.Output
                 List<string> employeeList = EmployeeLinker.SelectEmployeesByEmployment(TI, paramEmployeesByEmp, ref errMsg);
                 if (errMsg != "")
                 {
-                    TI.ErrorMsgList.Add("該当雇用の社員取得処理に失敗しました。。" + errMsg);
+                    TI.ErrorMsgList.Add("該当雇用の社員取得処理に失敗しました。" + errMsg);
                     return;
                 }
 
@@ -240,7 +240,7 @@ namespace WSISmile.Business.Category.Output
                                 TI.ErrorMsgList.Add("月別実績の承認状態のチェック処理に失敗しました。" + Environment.NewLine + errMsg);
                                 return;
                             }
-                            if (!monthlyApprove)
+                            if (!monthlyApprove && unApprovedEmployees.Count < 5) // 未承認社員表示が5名まで
                             {
                                 unApprovedEmployees.Add(employeeCd);
                             }
@@ -250,7 +250,7 @@ namespace WSISmile.Business.Category.Output
                         {
                             foreach (string unApprovedEmployeeCd in unApprovedEmployees)
                             {
-                                TI.ErrorMsgList.Add("月別実績に未確認のデータが存在します。勤次郎にてご確認ください。※対象社員CD：" + unApprovedEmployeeCd);
+                                TI.ErrorMsgList.Add("月別実績に未確認のデータが存在します。勤次郎にてご確認ください。" + Environment.NewLine + "※対象社員CD：" + unApprovedEmployeeCd);
                             }
                             return;
                         }
@@ -289,11 +289,12 @@ namespace WSISmile.Business.Category.Output
         public void ReadyforSmileData(TaskInfo TI, DataTable dtSmile)
         {
             #region Smile側のデータフォーマットに合わせて、出力データを調整する
+            // カラムを昇順に並び替え
+
+
+            // 出力項目の調整
             foreach (DataRow drSmile in dtSmile.Rows)
             {
-                // *** 社員CD 6桁へ調整 ***
-                // drSmile[SmileRequiredItem.EMPLOYEE_CD] = drSmile[SmileRequiredItem.EMPLOYEE_CD].ToString().Substring(2, 6);
-
                 // 年
                 drSmile[SmileRequiredItem.YEAR] = TI.Output.SmileYear;
 

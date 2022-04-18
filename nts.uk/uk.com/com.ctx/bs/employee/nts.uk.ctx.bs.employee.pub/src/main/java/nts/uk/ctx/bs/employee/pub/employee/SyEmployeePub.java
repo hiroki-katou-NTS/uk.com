@@ -277,4 +277,7 @@ public interface SyEmployeePub {
 	 */
 	List<PersonalEmployeeInfoExport> getPersonEmployeeInfosByPersonId(List<String> personIds);
 	
+	//RequestList706
+	//社員IDから会社IDを取得
+	Optional<String> getCompanyId(String employeeId);
 }

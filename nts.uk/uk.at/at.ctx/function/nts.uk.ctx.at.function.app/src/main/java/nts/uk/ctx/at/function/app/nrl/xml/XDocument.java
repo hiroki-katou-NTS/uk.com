@@ -81,7 +81,7 @@ public abstract class XDocument<T> {
 		} finally {
 			if (Objects.nonNull(tmpFile)) {
 				tmpFile.closeInputStream();
-				tmpFile.closeOutputStream();;
+				tmpFile.closeOutputStream();
 			}
 		}
 	}
@@ -116,7 +116,7 @@ public abstract class XDocument<T> {
 	 * @param result
 	 * @return byte array
 	 */
-	public byte[] decryptPayload(InputStream input, int pktLength, Command cmd, MarshalResult result) {
+	public byte[] decryptPayload(InputStream input, int pktLength, Command cmd, MarshalResult result, String payload) {
 		try {
 			int start, length;
 			switch (cmd) {
@@ -130,7 +130,7 @@ public abstract class XDocument<T> {
 					length = DefaultValue.ALL_PETITIONS_PKT_LEN_XPL;
 					break;
 				default:
-					return null;
+					return Codryptofy.decode(payload);
 			}
 			byte[] inputBytes = IOUtils.toByteArray(input);
 			length = pktLength - length;

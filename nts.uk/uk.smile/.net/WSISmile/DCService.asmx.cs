@@ -390,8 +390,6 @@ namespace KinErp.WSISmile
                 }
                 #endregion 各種チェック
 
-                // 起動ログ TODO
-
                 #region Smile側からもらった連携データで受入ファイル生成
                 // *** 必要な項目編集 ***
                 EmployeeBase.SmileDataEditing(ds.Tables[0]);
@@ -484,8 +482,6 @@ namespace KinErp.WSISmile
                     return false;
                 }
                 #endregion 各種チェック
-
-                // 起動ログ TODO
 
                 #region Smile側からもらった連携データで受入ファイル生成
                 // Smile組織情報を 階層再構築 ＆ 編集 ＆ List.へ変換
@@ -602,8 +598,6 @@ namespace KinErp.WSISmile
                 }
                 */
                 #endregion 各種チェック TODO
-
-                // 起動ログ TODO
 
                 #region 受入前準備 TODO
                 /*
@@ -896,8 +890,6 @@ namespace KinErp.WSISmile
                 }
                 #endregion 各種チェック
 
-                // 起動ログ TODO
-
                 // 社員コード＆発令年月日でソート
                 ds.Tables[0].DefaultView.Sort = EmployeeInfoItem.EMPLOYEE_CD + ", " + EmployeeInfoItem.ANNOUNCE_DAY;
 
@@ -924,10 +916,14 @@ namespace KinErp.WSISmile
                 #endregion Smile側からもらった連携データで受入ファイル生成
 
                 // *** 外部受入実行 ***
-                this.AcceptBegin();
+                blnRet = this.AcceptBegin();
+                if (!blnRet)
+                {
+                    return false;
+                }
 
                 // *** 外部受入成功件数 ***
-                this.GetAcceptCount(ref intCnt);
+                blnRet = this.GetAcceptCount(ref intCnt);
             }
             catch (Exception ex)
             {
@@ -995,8 +991,6 @@ namespace KinErp.WSISmile
                 }
                 #endregion 各種チェック
 
-                // 起動ログ TODO
-
                 // 社員コード＆休職開始日でソート
                 ds.Tables[0].DefaultView.Sort = EmployeeSuspensionItem.EMPLOYEE_CD + ", " + EmployeeSuspensionItem.START_DAY;
 
@@ -1023,10 +1017,14 @@ namespace KinErp.WSISmile
                 #endregion Smile側からもらった連携データで受入ファイル生成
 
                 // *** 外部受入実行 ***
-                this.AcceptBegin();
+                blnRet = this.AcceptBegin();
+                if (!blnRet)
+                {
+                    return false;
+                }
 
                 // *** 外部受入成功件数 ***
-                this.GetAcceptCount(ref intCnt);
+                blnRet = this.GetAcceptCount(ref intCnt);
             }
             catch (Exception ex)
             {
@@ -1130,8 +1128,6 @@ namespace KinErp.WSISmile
                 }
                 */
                 #endregion 各種チェック TODO
-
-                // 起動ログ TODO
 
                 #region レコード受取 TODO
                 /*
@@ -1398,8 +1394,6 @@ namespace KinErp.WSISmile
 
             try
             {
-                // 起動ログ TODO
-
                 // 外部出力期間(年月)、支払日区分
                 TI.Output.SmileYear  = intYear;
                 TI.Output.SmileMonth = intMonth;
@@ -1635,7 +1629,6 @@ namespace KinErp.WSISmile
                     TI.ErrorMsgList.Add(msg);
                     TI.ErrorMsgList.AddRange(errorsExecute);
                     TI.Save();
-                    Logger.WriteLog(msg, TI.GetProcessWording(), TI);
                     //return false;
                 }
 

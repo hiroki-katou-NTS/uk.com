@@ -15,11 +15,6 @@ public class VacationAppReflectOptionCommand {
     private int oneDayLeaveDeleteAttendance;
 
     /**
-     * 出退勤を反映する
-     */
-    private int reflectAttendance;
-
-    /**
      * 就業時間帯を反映する
      */
     private int reflectWorkHour;
@@ -27,7 +22,6 @@ public class VacationAppReflectOptionCommand {
     public static VacationAppReflectOptionCommand fromDomain(VacationAppReflectOption vacationAppReflectOption) {
         return new VacationAppReflectOptionCommand(
                 vacationAppReflectOption.getOneDayLeaveDeleteAttendance().value, 
-                vacationAppReflectOption.getReflectAttendance().value,
                 vacationAppReflectOption.getReflectWorkHour().value);
     }
 }

@@ -144,8 +144,9 @@ public class SupportWorkReflection {
 
 		/** 工数入力の利用設定を取得する */
 		val manHrInputUsageSet = require.getManHrInputUsageSetting(cid);
+		
 		/** 作業実績の補正処理を行っても良いか判断する */
-		if (!manHrInputUsageSet.map(c -> c.decideCanCorrectTaskRecord(require)).orElse(false))
+		if (!manHrInputUsageSet.map(c -> c.decideCanCorrectTaskRecord(require)).orElse(true))
 			/** 反映状態＝反映失敗を返す */
 			return false;
 

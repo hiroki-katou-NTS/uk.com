@@ -23,7 +23,6 @@ public class SubLeaveAppReflectCommand {
         		AppContexts.user().companyId(),
                 new VacationAppReflectOption(
                         EnumAdaptor.valueOf(oneDayLeaveDeleteAttendance, NotUseAtr.class),
-                        EnumAdaptor.valueOf(reflectAttendance, NotUseAtr.class),
                         EnumAdaptor.valueOf(reflectWorkHour, ReflectWorkHourCondition.class)
                 )
         );

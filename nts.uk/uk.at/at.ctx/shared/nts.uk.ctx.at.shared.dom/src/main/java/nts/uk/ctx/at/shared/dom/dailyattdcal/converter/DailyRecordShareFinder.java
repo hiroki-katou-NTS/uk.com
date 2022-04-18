@@ -18,4 +18,6 @@ public interface DailyRecordShareFinder {
 	public List<IntegrationOfDaily> find(String employeeId, List<GeneralDate> lstDate);
 	
 	public List<IntegrationOfDaily> find(Map<String, List<GeneralDate>> param);
+	
+	public List<IntegrationOfDaily> find(String employeeId, DatePeriod date);
 }

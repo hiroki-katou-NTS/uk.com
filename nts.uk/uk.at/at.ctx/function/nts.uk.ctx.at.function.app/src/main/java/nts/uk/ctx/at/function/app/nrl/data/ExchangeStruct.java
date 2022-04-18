@@ -150,5 +150,14 @@ public class ExchangeStruct {
 			if (i == null) throw new RuntimeException("Column doesn't exist.");
 			return data.get(i);
 		}
+		
+		/**
+		 * Get trim
+		 * @param f
+		 * @return text
+		 */
+		public String getTrim(String f) {
+			return get(f).trim();
+		}
 	}
 }

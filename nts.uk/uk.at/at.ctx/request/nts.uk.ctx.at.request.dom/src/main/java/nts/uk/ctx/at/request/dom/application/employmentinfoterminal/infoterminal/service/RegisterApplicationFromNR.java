@@ -2,112 +2,133 @@ package nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infotermina
 
 import java.util.List;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootServiceImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 
 /**
  * @author thanh_nx
  *
- *
+ *         申請を登録する
  */
 public class RegisterApplicationFromNR {
 
-	//申請を登録する
-	//[R-８] 申請を登録する
-	public static void register(Require require, String companyId, Application application) {
+	// 申請を登録する
+	// [R-８] 申請を登録する
+	public static void register(Require require, String companyId, String contractCode, Application application) {
 
-		ApprovalRootContentImport_New appRoot = require.getApprovalRoot(companyId, application.getEmployeeID(),
-				EmploymentRootAtr.APPLICATION, application.getAppType(), application.getAppDate().getApplicationDate());
-
-		if (appRoot.getErrorFlag() != ErrorFlagImport.NO_ERROR) {
+		//  承認ルートを取得する
+		val appRootRegister = require.createDefaultApprovalRootApp(companyId, application.getEmployeeID(),
+				String.valueOf(application.getAppType().value), application.getAppDate().getApplicationDate(), application.getAppID(),
+				 application.getAppDate().getApplicationDate());
+		if (appRootRegister.getErrorFlagExport() != ErrorFlagImport.NO_ERROR) {
 			return;
 		}
-
-		require.insertApp(application, appRoot.getApprovalRootState().getListApprovalPhaseState());
-
+		
+		// 申請を登録する
+		require.insert(application);
 		switch (application.getAppType()) {
 		case STAMP_APPLICATION:
-             require.insert((AppRecordImage) application);
+			require.insert((AppRecordImage) application);
 			break;
 
 		case OVER_TIME_APPLICATION:
-			//TODO:
+			require.insert((AppOverTime) application);
 			break;
 
 		case ABSENCE_APPLICATION:
-			//TODO:
+			require.insert(companyId, contractCode, (ApplyForLeave) application);
 			break;
 
 		case WORK_CHANGE_APPLICATION:
-			 require.insert((AppWorkChange) application);
+			require.insert((AppWorkChange) application);
 			break;
 
 		case HOLIDAY_WORK_APPLICATION:
-			//TODO:
+			require.insert((AppHolidayWork) application);
 			break;
 
 		case EARLY_LEAVE_CANCEL_APPLICATION:
-			 require.insert(companyId, (ArrivedLateLeaveEarly) application);
+			require.insert(companyId, (ArrivedLateLeaveEarly) application);
 			break;
 
 		case ANNUAL_HOLIDAY_APPLICATION:
-			//TODO:
+			require.insert((TimeLeaveApplication) application);
 			break;
 
 		default:
 			break;
 		}
+
+		DatePeriod period = createPeriod(application);
+		
+		// 承認ルートを登録する
+		appRootRegister.getTask().ifPresent(x -> {
+			x.run();
+		});
+
+		// アルゴリズム.暫定データの登録
+		require.registerDateChange(companyId, application.getEmployeeID(), period.datesBetween());
+
+	}
+
+	// [pvt-1] 期間を作成
+	private static DatePeriod createPeriod(Application app) {
+		if (app.getOpAppEndDate().isPresent() && app.getOpAppStartDate().isPresent()) {
+			return new DatePeriod(app.getOpAppStartDate().get().getApplicationDate(),
+					app.getOpAppEndDate().get().getApplicationDate());
+		}
+		return new DatePeriod(app.getAppDate().getApplicationDate(), app.getAppDate().getApplicationDate());
 	}
 
 	public static interface Require {
 
-		/**
-		 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.申請表示情報(基準日関係あり)を取得する.12_承認ルートを取得.12_承認ルートを取得
-		 * CommonAlgorithm
-		 * 
-		 * @param companyID  会社ID
-		 * @param employeeID 申請者ID
-		 * @param rootAtr    就業ルート区分
-		 * @param appType    申請種類
-		 * @param appDate    基準日
-		 * @return
-		 */
-		public ApprovalRootContentImport_New getApprovalRoot(String companyId, String employeeID, EmploymentRootAtr rootAtr,
-				ApplicationType appType, GeneralDate appDate);
+		// [R-0] 新規画面登録時承認反映情報の整理
+		//RegisterAtApproveReflectionInfoService
+		public String newScreenRegisterAtApproveInfoReflect(String empID, Application application);
 
-		// ApplicationApprovalService
-		public void insertApp(Application application, List<ApprovalPhaseStateImport_New> listApprovalPhaseState);
-
-		// [R-8] 打刻申請を作る
+		// [R-1] 打刻申請を作る
 		public void insert(AppRecordImage appStamp);
 
-		// [R-9] 残業申請を作る
+		// [R-2] 残業申請を作る
 		public void insert(AppOverTime appOverTime);
 
-		// [R-10] 休暇申請を作る
-		public void insert(ApplyForLeave appAbsence);
+		// [R-3] 休暇申請を作る
+		public void insert(String companyId, String contractCode, ApplyForLeave appAbsence);
 
-		// [R-11] 勤務変更申請を作る
+		// [R-4] 勤務変更申請を作る
 		public void insert(AppWorkChange appWorkChange);
 
-		// [R-12] 休日出勤時間申請を作る
+		// [R-5] 休日出勤時間申請を作る
 		public void insert(AppHolidayWork appHolidayWork);
 
-		// [R-13] 遅刻早退取消申請を作る
+		// [R-6] 遅刻早退取消申請を作る
 		public void insert(String cid, ArrivedLateLeaveEarly lateOrLeaveEarly);
 
-		// [R-14] 時間年休申請を作る
-		public void insert();
+		// [R-7] 時間年休申請を作る
+		public void insert(TimeLeaveApplication timeLeav);
+		
+		// [R-8] 申請を作る
+		public void insert(Application application);
+
+		//[R-9] 暫定データの登録
+		// InterimRemainDataMngRegisterDateChange
+		public void registerDateChange(String cid, String sid, List<GeneralDate> lstDate);
+
+		// [R-10] 承認ルートを登録する
+		// CollectApprovalRootServiceAdapter
+		public ApprovalRootServiceImport createDefaultApprovalRootApp(String companyID, String employeeID,
+				String targetType, GeneralDate standardDate, String appId, GeneralDate appDate);
+		
 	}
 }

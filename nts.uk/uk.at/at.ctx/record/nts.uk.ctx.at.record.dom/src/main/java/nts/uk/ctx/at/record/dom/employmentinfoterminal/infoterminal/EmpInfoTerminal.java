@@ -7,8 +7,8 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.task.tran.AtomTask;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.ReservationReceptionData;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.ConvertTimeRecordReservationService;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReserveService;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
@@ -101,21 +101,20 @@ public class EmpInfoTerminal implements DomainAggregate {
 
 
 	// [２] 予約
-	public AtomTask createReservRecord(ConvertTimeRecordReservationService.Require require,
+	public AtomTask createReservRecord(Require require,
 			ReservationReceptionData reservReceptData, String companyID) {
 		return createReserv(require, reservReceptData, companyID);
 	}
 
-	// [pvt-2] 予約の打刻記録を作成
-//	private StampRecord createStampRecord(ReservationReceptionData reservReceptData) {
-//		ButtonType bt = new ButtonType(ReservationArt.RESERVATION, Optional.empty());
-//		return new StampRecord(new ContractCode(contractCode.v()), new StampNumber(reservReceptData.getIdNumber()),
-//				reservReceptData.getDateTime(), new StampTypeDisplay(bt.getStampTypeDisplay()));
-//	}
-
 	// [pvt-3] 弁当予約を作成
-	private AtomTask createReserv(ConvertTimeRecordReservationService.Require require,
+	private AtomTask createReserv(Require require,
 			ReservationReceptionData reserv, String companyID) {
+		if(reserv.getMenu().trim().equals("X")) {
+			//予約を削除する
+			return AtomTask.of(() ->{
+				require.removeBentoReserve(reserv.getIdNumber(), reserv.getDateTime().toDate());
+			});
+		}
 		Map<Integer, BentoReservationCount> bentoDetails = new HashMap<>();
 		bentoDetails.put(reserv.getBentoFrame(), new BentoReservationCount(Integer.parseInt(reserv.getQuantity())));
 		return BentoReserveService.reserve(require, new ReservationRegisterInfo(reserv.getIdNumber()),
@@ -123,6 +122,10 @@ public class EmpInfoTerminal implements DomainAggregate {
 				reserv.getDateTime(), bentoDetails, companyID, Optional.empty());
 	}
 
+	public static interface Require extends BentoReserveService.Require{
+		public void removeBentoReserve(String reservationCardNo, GeneralDate date);
+	}
+	
 	public static class EmpInfoTerminalBuilder {
 		/**
 		 * IPアドレス

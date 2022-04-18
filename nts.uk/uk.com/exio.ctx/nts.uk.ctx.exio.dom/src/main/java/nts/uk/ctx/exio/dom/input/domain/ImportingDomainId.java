@@ -41,6 +41,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.task.TaskAssignWkpC
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.WorkLocationCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.WorkLocationIpCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.shift.businesscalendar.PublicHolidayCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeContactCanonicalization;
 
 /**
  * 受入グループID
@@ -99,6 +100,9 @@ public enum ImportingDomainId {
 
 	/** 所属分類履歴 */
 	CLASSIFICATION_HISTORY(105, AffClassHistoryCanonicalization::new),
+
+	/** 業務連絡先 */
+	EMPLOYEE_CONTACT(106, EmployeeContactCanonicalization::new),
 
 	/** 休職休業履歴 */
 	TEMP_ABSENCE_HISTORY(107, TempAbsenceHistoryCanonicalization::new),

@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.function.app.nrl.crypt.Codryptofy;
 import nts.uk.ctx.at.function.app.nrl.exceptions.FrameParsingException;
 import nts.uk.ctx.at.function.app.nrl.exceptions.InvalidFrameException;
 import nts.uk.ctx.at.function.app.nrl.response.MeanCarryable;
@@ -168,7 +169,7 @@ public class Frame implements MeanCarryable {
 		byte[] byteDatas = new byte[(int)len];
 		int i = 0;
 		for (String item : items) {
-			byte[] bytes = bodyBytes != null && Element.PAYLOAD.equals(item) ? bodyBytes : 
+			byte[] bytes =  bodyBytes != null && Element.PAYLOAD.equals(item) ? bodyBytes :
 							((Element.NRL_NO.equals(item) || Element.MAC_ADDR.equals(item) ||  Element.CONTRACT_CODE.equals(item)) ?
 									asciiCharToBytes(pickItem(item)) : hexStringToBytes(pickItem(item)));
 			int arrLen = bytes.length;
@@ -215,8 +216,13 @@ public class Frame implements MeanCarryable {
 	        	if(lineNumber != 0) {
 	        	String row = line.trim();
 	        	if(row.length() >=2 && row.substring(row.length()-2, row.length()).endsWith("/>")) {
-	        		String endChar = row.substring(0, row.length()-2) + " />";
-	        		 result.append(endChar);
+	        		if(row.startsWith("<subitem")) {
+	        			String endChar = row.substring(0, row.length()-2) + " />";
+		        		 result.append(endChar);
+	        		}else {
+	        			String endChar = line.substring(0, line.length()-2) + " />";
+		        		result.append(endChar);
+	        		}
 	        	}else {
 	            result.append(row);
 	        	}
@@ -227,7 +233,7 @@ public class Frame implements MeanCarryable {
 	        		lineNumber++;
 	        	}
 	        }
-	        return result.toString().trim();
+            return Codryptofy.convertToShiftJIS(result.toString().trim());
 	    } catch (IOException e) {
 	        throw new RuntimeException(e);
 	    }

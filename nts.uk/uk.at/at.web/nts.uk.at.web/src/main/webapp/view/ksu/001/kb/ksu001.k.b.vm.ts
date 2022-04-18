@@ -1,13 +1,14 @@
 module nts.uk.at.view.ksu001.k.b {
     import getText = nts.uk.resource.getText;
-    import setShare = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
+
     const Paths = {
         GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID:"ctx/at/schedule/scheduletable/getall",
         GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CODE:"ctx/at/schedule/scheduletable/getone", 
         REGISTER_SCHEDULE_TABLE_OUTPUT_SETTING:"ctx/at/schedule/scheduletable/register",
         UPDATE_SCHEDULE_TABLE_OUTPUT_SETTING:"ctx/at/schedule/scheduletable/update",
         DELETE_SCHEDULE_TABLE_OUTPUT_SETTING:"ctx/at/schedule/scheduletable/delete",
+        GET_PERSONAL_COUNTER_SETTINGS: "ctx/at/schedule/budget/personalCounter/getById",
+        GET_WORKPLACE_COUNTER_SETTINGS: "ctx/at/schedule/budget/workplaceCounter/getById"
     };
     let checkbox : KnockoutObservable<boolean>= ko.observable(false);
     let isCheckAll: boolean = false;
@@ -448,27 +449,38 @@ module nts.uk.at.view.ksu001.k.b {
             const self = this;
             let dataList: Array<ItemModel> = [];
             self.$blockui("invisible");
-            self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID).done((data: Array<IScheduleTableOutputSetting>) => {
-                if(data && data.length > 0){
-                    _.each(data, item =>{
-                        if(item.code){
-                            dataList.push(new ItemModel(item.code, item.name));
-                        }                        
-                    });            
-                    self.items(_.sortBy(dataList, item => item.code));
-                    if (code) {
-                        self.selectedCode(code);
+            $.when(self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID),
+                self.$ajax(Paths.GET_PERSONAL_COUNTER_SETTINGS),
+                self.$ajax(Paths.GET_WORKPLACE_COUNTER_SETTINGS))
+                .done((data: Array<IScheduleTableOutputSetting>, personalSettings: Array<any>, workplaceSettings: Array<any>) => {
+                    self.workplaceCounterCategories(self.workplaceCounterCategories().filter(i => {
+                        const tmp = _.find(workplaceSettings, s => s.value == i.value);
+                        return tmp && tmp.use;
+                    }));
+                    self.personalCounterCategory(self.personalCounterCategory().filter(i => {
+                        if (i.value == -1) return true;
+                        const tmp = _.find(personalSettings, s => s.value == i.value);
+                        return tmp && tmp.use;
+                    }));
+                    if (data && data.length > 0) {
+                        _.each(data, item => {
+                            if (item.code) {
+                                dataList.push(new ItemModel(item.code, item.name));
+                            }
+                        });
+                        self.items(_.sortBy(dataList, item => item.code));
+                        if (code) {
+                            self.selectedCode(code);
+                        } else {
+                            if (self.items().length > 0) self.selectedCode(self.items()[0].code);
+                            else self.clearData();
+                        }
                     } else {
-                        if (self.items().length > 0) self.selectedCode(self.items()[0].code);
-                        else self.clearData();
+                        self.clearData();
                     }
-                } else {
-					self.clearData();
-                }
-                
-            }).always(() => {
-                self.$blockui("hide");
-            });
+                }).always(() => {
+                    self.$blockui("hide");
+                });
         }
 
         reloadData(code: string): void {
