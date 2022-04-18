@@ -17,7 +17,7 @@ import nts.arc.time.calendar.Year;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriod;
-import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodYearlyAgreement;
+import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodAgree36Yearly;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeBreakdown;
@@ -59,7 +59,7 @@ public class YearlyAgreementCheckerByEmployeeTest {
         @Mocked
         private CheckingPeriod period;
         @Mocked
-        private CheckingPeriodYearlyAgreement periodYearlyAgreement;
+        private CheckingPeriodAgree36Yearly periodYearlyAgreement;
         @Mocked
         private AppContexts appContexts;
         
@@ -208,7 +208,7 @@ public class YearlyAgreementCheckerByEmployeeTest {
         @Mocked
         private CheckingPeriod period;
         @Mocked
-        private CheckingPeriodYearlyAgreement periodYearlyAgreement;
+        private CheckingPeriodAgree36Yearly periodYearlyAgreement;
         @Mocked
         private AppContexts appContexts;
         

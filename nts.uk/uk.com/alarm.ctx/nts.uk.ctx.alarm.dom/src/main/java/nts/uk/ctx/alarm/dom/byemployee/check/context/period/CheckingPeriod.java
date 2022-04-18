@@ -31,8 +31,8 @@ public class CheckingPeriod {
     CheckingPeriodVacation vacation;
     
     /** ３６協定月次 */
-    CheckingPeriodMonthlyAgreement monthlyAgreement;
+    CheckingPeriodAgree36Monthly monthlyAgreement;
     
     /** ３６協定年次 */
-    CheckingPeriodYearlyAgreement yearlyAgreement;
+    CheckingPeriodAgree36Yearly yearlyAgreement;
 }
