@@ -3,16 +3,16 @@ package nts.uk.ctx.alarm.dom.byemployee.check.checkers.vacation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueContext;
 import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueLogic;
-import nts.uk.ctx.at.request.dom.application.annualholiday.ReNumAnnLeaReferenceDateExport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaveImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaCriterialDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -27,10 +27,12 @@ public enum ConditionValueVacationByEmployee implements ConditionValueLogic<Cond
 		return c.require.getAnnualLeaveRemain(c.employeeId, c.period.end()).getRemainingDays();
 	}),
 
-	積立年休残数(1, "積立年休残数", c -> {
-		return c.require.getReserveLeaveRemain(c.employeeId, c.period.end())
-				.map(r -> r.getRemainingDays())
-				.orElse(null);
+	積立年休残数(2, "積立年休残数", c -> {
+		return AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(c.require, new CacheCarrier(), c.employeeId, c.period.end()).v();
+	}),
+
+	振休残数(3, "振休残数", c -> {
+		return c.require.getAnnualLeaveRemain(c.employeeId, c.period.end()).getRemainingDays();
 	}),
 
 	;
@@ -70,7 +72,7 @@ public enum ConditionValueVacationByEmployee implements ConditionValueLogic<Cond
 		}
 	}
 
-	public interface Require{
+	public interface Require extends AbsenceReruitmentMngInPeriodQuery.RequireM11 {
 		ReNumAnnLeaveImport getAnnualLeaveRemain(String employeeId, GeneralDate date);
 
 		Optional<RsvLeaCriterialDate> getReserveLeaveRemain(String employeeId, GeneralDate date);
