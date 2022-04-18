@@ -56,6 +56,10 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.Ident
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.annualholiday.ReNumAnnLeaReferenceDateExport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaveImport;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
@@ -420,6 +424,9 @@ public class ExecuteAlarmListByEmployeeRequire {
     
     @Inject
     private TaskFrameUsageSettingRepository taskFrameUsageSettingRepo;
+
+    @Inject
+    private AnnLeaveRemainNumberAdapter annLeaveRemainNumberAdapter;
 
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
@@ -822,6 +829,13 @@ public class ExecuteAlarmListByEmployeeRequire {
         @Override
         public Optional<ErrorAlarmCondition> getErrorAlarmConditionById(String id) {
             return errorAlarmConditionRepo.findConditionByErrorAlamCheckId(id);
+        }
+
+
+        //--- 休暇残数 ---//
+        @Override
+        public ReNumAnnLeaveImport getAnnualLeaveRemain(String employeeId, GeneralDate date) {
+            return annLeaveRemainNumberAdapter.getReferDateAnnualLeaveRemain(employeeId, date);
         }
 
         //--- 年休 ---//

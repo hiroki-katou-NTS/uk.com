@@ -7,9 +7,11 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.AlarmListCheckerCode;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.schedule.daily.single.ConditionValueScheduleDailyByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodVacation;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
+import nts.uk.ctx.alarm.dom.conditionvalue.AlarmListConditionValue;
 import nts.uk.ctx.alarm.dom.fixedlogic.FixedLogicSetting;
 
 import java.util.ArrayList;
@@ -31,6 +33,11 @@ public class VacationCheckerByEmployee implements DomainAggregate, AlarmListChec
 
 	/** 固定ロジックのチェック条件 */
 	private List<FixedLogicSetting<FixedLogicVacationByEmployee>> fixedLogics;
+
+	/** 条件値のチェック条件*/
+	private List<AlarmListConditionValue<
+			ConditionValueVacationByEmployee,
+			ConditionValueVacationByEmployee.Context>> conditionValues;
 
 	/** 年休付与のチェック条件*/
 	private List<CheckAnnualleave> annualleaveLogics;
@@ -54,6 +61,9 @@ public class VacationCheckerByEmployee implements DomainAggregate, AlarmListChec
 
 		// 固定ロジックのチェック
 		alarmRecords.add(checkFixedLogics(require, employeeId, period));
+
+		// 条件値のチェック
+		alarmRecords.add(checkConditionValues(require, employeeId, period));
 
 		// 年休付与のチェック
 		alarmRecords.add(checkAnnualleaveLogic(require, employeeId));
@@ -85,6 +95,19 @@ public class VacationCheckerByEmployee implements DomainAggregate, AlarmListChec
 	}
 
 	/**
+	 * 条件値のチェック
+	 * @param require
+	 * @param employeeId
+	 * @param period
+	 * @return
+	 */
+	private Iterable<AlarmRecordByEmployee> checkConditionValues(Require require, String employeeId, DatePeriod period) {
+		return IteratorUtil.iterableFilter(conditionValues, cv -> {
+			return cv.checkIfEnabled(new ConditionValueVacationByEmployee.Context(require, employeeId, period));
+		});
+	}
+
+	/**
 	 * 年休付与のチェック
 	 * @param require
 	 * @param employeeId
@@ -98,6 +121,7 @@ public class VacationCheckerByEmployee implements DomainAggregate, AlarmListChec
 	public interface RequireCheck extends
 			CheckingPeriodVacation.Require,
 			FixedLogicVacationByEmployee.RequireCheck,
+			ConditionValueVacationByEmployee.Require,
 			CheckAnnualleave.RequireCheck,
 			CheckUseAnnualleave.RequireCheck{
 	}
