@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.Mess
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.NameAlarmExtractionCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtEralstCndexpiptchk;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -35,6 +36,9 @@ public class KrcmtExtraResultMonthly extends ContractUkJpaEntity implements Seri
 	@Column(name = "ERAL_CHECK_ID")
 	public String errorAlarmCheckID;
 
+	@Column(name = "ERAL_CODE")
+	public String errorAlarmCode;
+	
 	@Column(name = "SORT_BY")
 	public int sortBy;
 
@@ -87,11 +91,12 @@ public class KrcmtExtraResultMonthly extends ContractUkJpaEntity implements Seri
 	}
 	
 	public KrcmtExtraResultMonthly(
-			String errorAlarmCheckID, int sortBy, String extraResultMonName, int useAtr, int typeCheckItem, int messageBold, String messageColor, String messageDisplay, 
+			String errorAlarmCheckID, String code, int sortBy, String extraResultMonName, int useAtr, int typeCheckItem, int messageBold, String messageColor, String messageDisplay, 
 			Integer operatorBetweenGroups,
 			Integer group2UseAtr, String atdItemConditionGroup1, KrcmtEralstCndexpiptchk krcstErAlConGroup1, String atdItemConditionGroup2, KrcmtEralstCndexpiptchk krcstErAlConGroup2) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
+		this.errorAlarmCode = code;
 		this.sortBy = sortBy;
 		this.extraResultMonName = extraResultMonName;
 		this.useAtr = useAtr;
@@ -111,6 +116,7 @@ public class KrcmtExtraResultMonthly extends ContractUkJpaEntity implements Seri
 		boolean isCheckConMonthly = domain.getCheckConMonthly().isPresent();
 		return new KrcmtExtraResultMonthly(
 				domain.getErrorAlarmCheckID(),
+				domain.getCode().v(),
 				domain.getSortBy(),
 				domain.getNameAlarmExtraCon().v(),
 				domain.isUseAtr()?1:0,
@@ -141,6 +147,7 @@ public class KrcmtExtraResultMonthly extends ContractUkJpaEntity implements Seri
 		
 		return new ExtraResultMonthly(
 			this.errorAlarmCheckID,
+			new ErrorAlarmWorkRecordCode(this.errorAlarmCode),
 			this.sortBy,
 			new NameAlarmExtractionCondition(this.extraResultMonName),
 			this.useAtr==1?true:false,

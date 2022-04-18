@@ -51,6 +51,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTime
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValueDay;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -333,6 +334,7 @@ public class MonAlarmCheckConEventPubSubscriber implements DomainEventSubscriber
 			}
 		}
 		return new ExtraResultMonthly(toDto.getErrorAlarmCheckID(), 
+				new ErrorAlarmWorkRecordCode("XXXXXXXXX"),
 				toDto.getSortBy(), 
 				new NameAlarmExtractionCondition(toDto.getNameAlarmExtraCon()), 
 				toDto.isUseAtr(), 

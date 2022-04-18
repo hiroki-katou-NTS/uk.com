@@ -57,6 +57,7 @@ public class JpaExtraResultMonthlyRepository extends JpaRepository implements Ex
 		KrcmtExtraResultMonthly updateEntity = this.queryProxy().find(extraResultMonthly.getErrorAlarmCheckID(), KrcmtExtraResultMonthly.class).get();
 		KrcmtExtraResultMonthly newEntity = KrcmtExtraResultMonthly.toEntity(extraResultMonthly);
 		updateEntity.sortBy = newEntity.sortBy;
+		updateEntity.errorAlarmCode = newEntity.errorAlarmCode;
 		updateEntity.extraResultMonName = newEntity.extraResultMonName;
 		updateEntity.useAtr = newEntity.useAtr;
 		updateEntity.typeCheckItem = newEntity.typeCheckItem;
