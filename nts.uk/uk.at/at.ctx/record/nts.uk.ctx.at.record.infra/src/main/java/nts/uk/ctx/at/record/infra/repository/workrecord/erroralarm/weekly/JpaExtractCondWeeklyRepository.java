@@ -101,7 +101,7 @@ public class JpaExtractCondWeeklyRepository extends JpaRepository implements Ext
 				pk,
 				domain.getName().v(),
 				domain.getMessage(),
-				domain.getAtdItemCondition().isUseGroup2() ? 1 : 0,
+				domain.getAtdItemCondition().isUseGroup2(),
 				domain.getAtdItemCondition().getGroup1().getAtdItemConGroupId(),
 				domain.getAtdItemCondition().getGroup2().getAtdItemConGroupId(),
 				domain.getAtdItemCondition().getOperatorBetweenGroups().value,
