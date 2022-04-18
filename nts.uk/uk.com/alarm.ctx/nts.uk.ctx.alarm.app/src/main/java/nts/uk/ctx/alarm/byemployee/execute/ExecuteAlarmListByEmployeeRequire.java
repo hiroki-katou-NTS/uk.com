@@ -60,6 +60,8 @@ import nts.uk.ctx.at.request.dom.application.annualholiday.ReNumAnnLeaReferenceD
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaveImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.ReserveLeaveManagerApdater;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaCriterialDate;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
@@ -427,6 +429,9 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private AnnLeaveRemainNumberAdapter annLeaveRemainNumberAdapter;
+
+    @Inject
+    private ReserveLeaveManagerApdater reserveLeaveManagerApdater;
 
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
@@ -836,6 +841,11 @@ public class ExecuteAlarmListByEmployeeRequire {
         @Override
         public ReNumAnnLeaveImport getAnnualLeaveRemain(String employeeId, GeneralDate date) {
             return annLeaveRemainNumberAdapter.getReferDateAnnualLeaveRemain(employeeId, date);
+        }
+
+        @Override
+        public Optional<RsvLeaCriterialDate> getReserveLeaveRemain(String employeeId, GeneralDate date) {
+            return reserveLeaveManagerApdater.getRsvLeaveManagerData(employeeId, date);
         }
 
         //--- 年休 ---//
