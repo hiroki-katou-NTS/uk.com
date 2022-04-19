@@ -217,7 +217,7 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
     
     年休使用数(3, "日数：年休使用数", c-> {
         val aggrResult = GetAnnLeaRemNumWithinPeriodProc.algorithm(
-                c.require, new CacheCarrier(), c.companyId, c.getEmployeeId(), null/*期間*/, InterimRemainMngMode.OTHER,
+                c.require, new CacheCarrier(), c.getCompanyId(), c.getEmployeeId(), null/*期間*/, InterimRemainMngMode.OTHER,
                 null/*基準日*/, false/*未使用*/, Optional.empty()/*上書きフラグ*/, Optional.empty()/*上書き用の暫定年休管理データ*/, Optional.empty()/*前回の年休の集計結果*/,
                 Optional.empty()/*過去月集計モード*/, Optional.empty()/*年月※過去月集計モード  = true の場合は必須*/, Optional.empty()/*上書き対象期間*/);
         return aggrResult.flatMap(r -> r.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo().getUsedNumber().getUsedDays().map(day -> day.v())).orElse(null);
@@ -225,7 +225,7 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
     
     積立年休使用数(3, "日数：積立年休使用数", c-> {
         val aggrResult = GetAnnAndRsvRemNumWithinPeriod.algorithm(
-                c.require, new CacheCarrier(), c.companyId, c.getEmployeeId(), null/*期間*/, InterimRemainMngMode.OTHER, 
+                c.require, new CacheCarrier(), c.getCompanyId(), c.getEmployeeId(), null/*期間*/, InterimRemainMngMode.OTHER, 
                 null/*基準日*/, true/*未使用*/, true/*未使用*/, null/*上書きフラグ*/, null/*上書き用の暫定年休管理データ*/, null/*上書き用の暫定積休管理データ*/, 
                 null/*不足分付与残数データ出力区分*/, null/*集計開始日を締め開始日とする　（締め開始日を確認しない）*/, null/*前回の年休の集計結果*/, null/*前回の積立年休の集計結果*/, null/*上書き対象期間*/);
         return 0.0;
