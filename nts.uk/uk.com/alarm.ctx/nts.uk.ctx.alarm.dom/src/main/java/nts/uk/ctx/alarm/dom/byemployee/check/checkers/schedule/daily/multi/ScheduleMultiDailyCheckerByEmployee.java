@@ -84,7 +84,7 @@ public class ScheduleMultiDailyCheckerByEmployee implements DomainAggregate, Ala
 	}
 
 	public interface RequireCheck extends
-			ConditionValueScheduleMultiDailyByEmployee.Require,
+			CheckScheduleMultiDaily.Require,
 			CheckingPeriodDaily.Require{
 	}
 }
