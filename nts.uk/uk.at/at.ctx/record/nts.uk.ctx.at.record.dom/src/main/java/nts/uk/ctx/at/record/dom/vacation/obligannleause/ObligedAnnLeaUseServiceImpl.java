@@ -109,8 +109,7 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 	}
 	
 	/** 按分が必要かどうか判断 */
-	@Override
-	public boolean checkNeedForProportion(GeneralDate criteria,	ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
+	private boolean checkNeedForProportion(GeneralDate criteria,	ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
 		
 		// 期間按分使用区分を確認
 		if (obligedAnnualLeaveUse.isDistributeAtr() == false) return false;
@@ -123,8 +122,7 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 	}
 	
 	/** 年休使用義務日数の按分しない場合の期間を取得 */
-	@Override
-	public Optional<DatePeriod> getPeriodForNotProportion(GeneralDate criteria,
+	private Optional<DatePeriod> getPeriodForNotProportion(GeneralDate criteria,
 			ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
 
 		// 年休使用義務日数の按分しない期間の付与日数を取得
@@ -139,8 +137,7 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 	}
 	
 	/** 年休使用義務日数の按分しない期間の付与日数を取得 */
-	@Override
-	public Optional<AnnualLeaveGrantRemainingData> getGrantInfoForNotProportion(GeneralDate criteria,
+	private Optional<AnnualLeaveGrantRemainingData> getGrantInfoForNotProportion(GeneralDate criteria,
 			ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
 
 		// 付与期間と重複する付与期間を持つ残数履歴データを取得
@@ -151,8 +148,7 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 	}
 	
 	/** 付与期間と重複する付与期間を持つ残数履歴データを取得 */
-	@Override
-	public AnnLeaGrantInfoOutput getRemainDatasAtDupGrantPeriod(GeneralDate criteria,
+	private AnnLeaGrantInfoOutput getRemainDatasAtDupGrantPeriod(GeneralDate criteria,
 			ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
@@ -206,8 +202,7 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 	}
 	
 	/** 年休使用義務日数の期間按分 */
-	@Override
-	public Optional<AnnualLeaveUsedDayNumber> distributePeriod(ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
+	private Optional<AnnualLeaveUsedDayNumber> distributePeriod(ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
 		
 		String employeeId = obligedAnnualLeaveUse.getEmployeeId();
 		AnnualLeaveUsedDayNumber result = null;

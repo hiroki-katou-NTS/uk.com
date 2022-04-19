@@ -32,26 +32,11 @@ public class CheckUseAnnualleave {
 	/** 次回の年休付与日までの月数 */
 	private Optional<Integer> months;
 
-	/** 前回の年休付与日数が指定した日数以上の人のみチェックする */
-	private boolean onlyPreviousGrantDaysOver;
-
-	/** 前回の年休付与日数 */
-	private Optional<Integer> previousGrantDays;
-
-	/** 前回付与までの期間が１年未満の場合、期間按分する */
-	private boolean proportionalDistributionLessThanOneYear;
-
-	/** 年休取得義務日数 */
-	private AnnualLeaveUsedDayNumber obligedDays;
+	/** 年休取得義務 */
+	private ObligedUseAnnualLeave obligedUseAnnualLeave;
 
 	/** メッセージ */
 	private AlarmListAlarmMessage message;
-
-	@Inject
-	private ObligedAnnLeaUseService obligedAnnLeaUseService;
-
-	@Inject
-	private RCAnnualHolidayManagement rcAnnualHolidayManagement;
 
 	/**
 	 * 条件に該当するか
@@ -65,31 +50,7 @@ public class CheckUseAnnualleave {
 			return Optional.empty();
 		}
 
-		// 年休付与残数データの取得
-		val annualLeaveGrantRemain = new ArrayList<AnnualLeaveGrantRemainingData>();
-		if(onlyPreviousGrantDaysOver){
-			// 指定した付与日数の付与残数データを取得する
-			annualLeaveGrantRemain.addAll(require.findAnnualLeaveGrantRemain(employeeId,
-					Optional.of(LeaveGrantNumber.of(new LeaveGrantDayNumber(previousGrantDays.get().doubleValue()), Optional.empty()))));
-		}else{
-			// すべての付与残数データを取得する
-			annualLeaveGrantRemain.addAll(require.findAnnualLeaveGrantRemain(employeeId, Optional.empty()));
-		}
-
-		// 年休使用義務を生成
-		val obligedAnnualLeaveUse = ObligedAnnualLeaveUse.create(employeeId, proportionalDistributionLessThanOneYear, ReferenceAtr.APP_AND_SCHE, obligedDays, annualLeaveGrantRemain);
-
-		// 年休使用義務日数の取得
-		val optObligedUseDays = obligedAnnLeaUseService.getObligedUseDays(GeneralDate.today(), obligedAnnualLeaveUse);
-		if(!optObligedUseDays.isPresent()){
-			// 年休使用義務日数が取得できなかった場合はチェックしない
-			return Optional.empty();
-		}
-
-		// 義務日数計算期間内の年休使用数を取得
-		val annualLeaveUsedDays = obligedAnnLeaUseService.getAnnualLeaveUsedDays(GeneralDate.today(), obligedAnnualLeaveUse);
-		// 年休使用日数が使用義務日数を満たしているかチェックする
-		if(!obligedAnnLeaUseService.checkObligedUseDays(optObligedUseDays.get(), annualLeaveUsedDays)){
+		if(!obligedUseAnnualLeave.check(require, employeeId)) {
 			return Optional.of(alarm(employeeId));
 		}
 		return Optional.empty();
@@ -106,10 +67,8 @@ public class CheckUseAnnualleave {
 				message);
 	}
 
-	public interface RequireCheck {
+	public interface RequireCheck extends ObligedUseAnnualLeave.Require {
 		boolean checkExistHolidayGrantAdapter(String employeeId, GeneralDate date, Period period);
-
-		List<AnnualLeaveGrantRemainingData> findAnnualLeaveGrantRemain(String employeeId, Optional<LeaveGrantNumber> grantDays);
 
 	}
 }

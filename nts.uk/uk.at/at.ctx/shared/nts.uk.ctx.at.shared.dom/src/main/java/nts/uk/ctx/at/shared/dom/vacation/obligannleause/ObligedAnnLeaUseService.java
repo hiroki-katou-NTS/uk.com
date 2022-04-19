@@ -43,7 +43,7 @@ public interface ObligedAnnLeaUseService {
 	 * @param obligedAnnualLeaveUse 年休使用義務日数
 	 * @return　true:必要、false:不要
 	 */
-	boolean checkNeedForProportion(GeneralDate criteria, ObligedAnnualLeaveUse obligedAnnualLeaveUse);
+//	boolean checkNeedForProportion(GeneralDate criteria, ObligedAnnualLeaveUse obligedAnnualLeaveUse);
 
 	/**
 	 * 年休使用義務日数の按分しない場合の期間を取得
@@ -51,7 +51,7 @@ public interface ObligedAnnLeaUseService {
 	 * @param obligedAnnualLeaveUse 年休使用義務日数
 	 * @return 期間
 	 */
-	Optional<DatePeriod> getPeriodForNotProportion(GeneralDate criteria, ObligedAnnualLeaveUse obligedAnnualLeaveUse);
+//	Optional<DatePeriod> getPeriodForNotProportion(GeneralDate criteria, ObligedAnnualLeaveUse obligedAnnualLeaveUse);
 	
 	/**
 	 * 年休使用義務日数の按分しない期間の付与日数を取得
@@ -59,7 +59,7 @@ public interface ObligedAnnLeaUseService {
 	 * @param obligedAnnualLeaveUse 年休使用義務日数
 	 * @return 年休付与残数データ
 	 */
-	Optional<AnnualLeaveGrantRemainingData> getGrantInfoForNotProportion(GeneralDate criteria, ObligedAnnualLeaveUse obligedAnnualLeaveUse);
+//	Optional<AnnualLeaveGrantRemainingData> getGrantInfoForNotProportion(GeneralDate criteria, ObligedAnnualLeaveUse obligedAnnualLeaveUse);
 	
 	/**
 	 * 付与期間と重複する付与期間を持つ残数履歴データを取得
@@ -67,12 +67,12 @@ public interface ObligedAnnLeaUseService {
 	 * @param obligedAnnualLeaveUse 年休使用義務日数
 	 * @return 年休付与情報Output
 	 */
-	AnnLeaGrantInfoOutput getRemainDatasAtDupGrantPeriod(GeneralDate criteria, ObligedAnnualLeaveUse obligedAnnualLeaveUse);
+//	AnnLeaGrantInfoOutput getRemainDatasAtDupGrantPeriod(GeneralDate criteria, ObligedAnnualLeaveUse obligedAnnualLeaveUse);
 	
 	/**
 	 * 年休使用義務日数の期間按分
 	 * @param obligedAnnualLeaveUse 年休使用義務日数
 	 * @return 年休使用義務日数
 	 */
-	Optional<AnnualLeaveUsedDayNumber> distributePeriod(ObligedAnnualLeaveUse obligedAnnualLeaveUse);
+//	Optional<AnnualLeaveUsedDayNumber> distributePeriod(ObligedAnnualLeaveUse obligedAnnualLeaveUse);
 }
