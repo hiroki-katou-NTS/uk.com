@@ -40,6 +40,10 @@ public class PublicHolidayDigestionInformation {
 		this.carryForwardNumber = carryForwardNumber;
 		this.numberOfAcquisitions = numberOfAcquisitions;
 	}
+
+	public LeaveRemainingDayNumber getRemainingDayNumber(){
+		return new LeaveRemainingDayNumber(publicHolidayday.v() + carryForwardNumber.v() - numberOfAcquisitions.v());
+	}
 	
 	
 }

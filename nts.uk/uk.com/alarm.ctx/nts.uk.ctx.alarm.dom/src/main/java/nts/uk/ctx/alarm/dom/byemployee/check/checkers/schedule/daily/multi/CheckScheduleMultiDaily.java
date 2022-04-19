@@ -1,68 +1,82 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers.schedule.daily.multi;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
-import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
-import nts.uk.ctx.alarm.dom.conditionvalue.AlarmListConditionValue;
-import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueContext;
 import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueExpression;
-import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueLogic;
-import nts.uk.ctx.alarm.dom.fixedlogic.FixedLogicSetting;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * スケジュール複数日のチェック条件
  */
+@AllArgsConstructor
 public class CheckScheduleMultiDaily {
 
+    CheckScheduleMultiDailyType type;
+
+    /** 使用するか */
+    boolean enabled;
+
+    /** 勤務種類 */
     private List<String> workTypeCodes;
 
+    /** 就業時間帯 */
     private List<String> workTimeCodes;
 
-    private AlarmListConditionValue<
-            ConditionValueScheduleMultiDailyByEmployee,
-            ConditionValueScheduleMultiDailyByEmployee.Context> valueChecker;
+    /** 条件式 */
+    private Optional<ConditionValueExpression> expression;
 
-    public Iterable<GeneralDate> check(AlarmListCheckerByEmployee.Require require, String employeeId, DatePeriod period) {
-        return IteratorUtil.iterableFilter(period.iterate(),
-            date -> {
-                val c = new ConditionValueScheduleMultiDailyByEmployee.Context(
-                        require, employeeId, date, workTypeCodes, workTimeCodes);
-                return valueChecker.checkIfEnabled(c).map(result -> date);
-            });
+    /** アラームメッセージ */
+    AlarmListAlarmMessage alarmMessage;
+
+    public Iterable<GeneralDate> check(Require require,
+                                        String employeeId, DatePeriod period) {
+
+        return IteratorUtil.iterableFilter(
+                period.iterate(),
+                date -> {
+                    val ws = require.getWorkSchedule(employeeId, date);
+                    if (!ws.isPresent()) return Optional.empty();
+
+                    // 指定勤務種類以外はチェックしない
+                    if (!workTypeCodes.isEmpty()
+                            && !workTypeCodes.contains(ws.get().getWorkInfo().getRecordInfo().getWorkTypeCode())) {
+                        return Optional.empty();
+                    }
+
+                    // 指定就業時間帯以外はチェックしない
+                    if (!workTimeCodes.isEmpty()
+                            && !workTimeCodes.contains(ws.get().getWorkInfo().getRecordInfo().getWorkTimeCode())) {
+                        return Optional.empty();
+                    }
+
+                    // 総労働時間（予定）の条件値チェック
+                    if (expression.isPresent()){
+                        Double actualValue = ws.get().getOptAttendanceTime().get()
+                                .getActualWorkingTimeOfDaily()
+                                .getTotalWorkingTime()
+                                .getTotalTime()
+                                .v().doubleValue();
+                        if(!expression.get().matches(actualValue)){
+                            return Optional.empty();
+                        }
+                    }
+
+                    return Optional.of(date);
+                });
     }
 
     public String name() {
-        return valueChecker.getLogic().getName();
+        return type.getName();
     }
 
-    @Value
-    public static class Context implements ConditionValueContext {
-        ConditionValueScheduleMultiDailyByEmployee.Require require;
-        String employeeId;
-        GeneralDate date;
-
-        @Override
-        public AlarmListCategoryByEmployee getCategory() {
-            return AlarmListCategoryByEmployee.SCHEDULE_MULTI_DAY;
-        }
-
-        @Override
-        public String getEmployeeId() {
-            return employeeId;
-        }
-
-        @Override
-        public DateInfo getDateInfo() {
-            // 連続の場合ってどうなる？
-            return new DateInfo(date);
-        }
+    public interface Require {
+        Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date);
     }
 }

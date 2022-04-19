@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.gul.collection.IteratorUtil;
-import nts.uk.ctx.alarm.dom.byemployee.check.TargetEmployeesFilter;
+import nts.uk.ctx.alarm.dom.AlarmListCheckerCode;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfDaily;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee.Require;
@@ -23,7 +23,11 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 public class ProspectMonthlyCheckerByEmployee implements DomainAggregate, AlarmListCheckerByEmployee {
 
-    private TargetEmployeesFilter employeesFilter;
+    /** 会社ID */
+    private final String companyId;
+
+    /** コード */
+    private final AlarmListCheckerCode code;
 
     private List<AlarmListConditionValue<
             ConditionValueProspectMonthlyByEmployee,
@@ -33,6 +37,9 @@ public class ProspectMonthlyCheckerByEmployee implements DomainAggregate, AlarmL
 
     @Override
     public Iterable<AlarmRecordByEmployee> check(Require require, CheckingContextByEmployee context) {
+        return this.check(require, context);
+    }
+    public Iterable<AlarmRecordByEmployee> check(RequireCheck require, CheckingContextByEmployee context) {
 
         String employeeId = context.getTargetEmployeeId();
         val closureMonths = context.getCheckingPeriod().getMonthly().calculatePeriod(require, employeeId);
@@ -41,9 +48,8 @@ public class ProspectMonthlyCheckerByEmployee implements DomainAggregate, AlarmL
         return IteratorUtil.iterableFlatten(closureMonths, closureMonth -> {
 
             AggregateIntegrationOfDaily aggregate = new AggregateIntegrationOfDaily(employeeId, closureMonth);
-            String companyId = AppContexts.user().companyId();
 
-            val conditionValueContext = new ConditionValueProspectMonthlyByEmployee.Context(require, companyId, aggregate, closureMonth);
+            val conditionValueContext = new ConditionValueProspectMonthlyByEmployee.Context(require, aggregate, closureMonth);
 
             Iterable<AlarmRecordByEmployee> alarms =
                     IteratorUtil.iterableFilter(conditionValues, cv -> cv.checkIfEnabled(conditionValueContext));
