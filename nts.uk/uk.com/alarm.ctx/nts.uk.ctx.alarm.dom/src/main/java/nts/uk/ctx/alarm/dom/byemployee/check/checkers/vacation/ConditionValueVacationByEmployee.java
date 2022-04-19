@@ -10,11 +10,14 @@ import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmploye
 import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueContext;
 import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueLogic;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaveImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaCriterialDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -29,7 +32,23 @@ import java.util.function.Function;
 public enum ConditionValueVacationByEmployee implements ConditionValueLogic<ConditionValueVacationByEmployee.Context> {
 
 	年休残数(1, "年休残数", c -> {
-		return c.require.getAnnualLeaveRemain(c.employeeId, c.period.end()).getRemainingDays();
+		return GetAnnLeaRemNumWithinPeriodProc.algorithm(
+				c.require,
+				new CacheCarrier(),
+				AppContexts.user().companyId(),
+				c.employeeId,
+				c.period,
+				InterimRemainMngMode.OTHER,
+				c.period.end(),
+				false,// 使ってないらしい、ゴミ
+				Optional.empty(),
+				Optional.empty(),
+				Optional.empty(),
+				Optional.empty(),
+				Optional.empty(),
+				Optional.empty()
+		).map(r -> r.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays().v())
+				.orElse(null);
 	}),
 
 	積立年休残数(2, "積立年休残数", c -> {
@@ -41,24 +60,11 @@ public enum ConditionValueVacationByEmployee implements ConditionValueLogic<Cond
 	}),
 
 	代休残数(4, "代休残数", c -> {
-		return NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(
-				c.require,
-				new BreakDayOffRemainMngRefactParam(
-						AppContexts.user().companyId(),
-						c.employeeId,
-						c.period,
-						false,
-						c.period.end(),
-						false,
-						Collections.emptyList(),
-						Optional.empty(),
-						Optional.empty(),
-						Optional.empty(),
-						new FixedManagementDataMonth(
-								Collections.emptyList(),
-								Collections.emptyList()
-						)
-				)).getRemainDay().v();
+		return getSubHoliday(c).getRemainDay().v();
+	}),
+
+	時間代休残数(5, "時間代休残数", c -> {
+		return getSubHoliday(c).getRemainTime().v().doubleValue();
 	}),
 
 	;
@@ -74,6 +80,28 @@ public enum ConditionValueVacationByEmployee implements ConditionValueLogic<Cond
 	@Override
 	public Double getValue(Context context) {
 		return getValue.apply(context);
+	}
+
+	// 代休残数を取得する
+	private static SubstituteHolidayAggrResult getSubHoliday(Context context){
+		return NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(
+			context.require,
+			new BreakDayOffRemainMngRefactParam(
+					AppContexts.user().companyId(),
+					context.employeeId,
+					context.period,
+					false,
+					context.period.end(),
+					false,
+					Collections.emptyList(),
+					Optional.empty(),
+					Optional.empty(),
+					Optional.empty(),
+					new FixedManagementDataMonth(
+							Collections.emptyList(),
+							Collections.emptyList()
+					)
+			));
 	}
 
 	@Value
@@ -99,9 +127,9 @@ public enum ConditionValueVacationByEmployee implements ConditionValueLogic<Cond
 	}
 
 	public interface Require extends
+			GetAnnLeaRemNumWithinPeriodProc.RequireM3,
 			AbsenceReruitmentMngInPeriodQuery.RequireM11,
 			NumberRemainVacationLeaveRangeQuery.Require {
-		ReNumAnnLeaveImport getAnnualLeaveRemain(String employeeId, GeneralDate date);
 
 		Optional<RsvLeaCriterialDate> getReserveLeaveRemain(String employeeId, GeneralDate date);
 	}
