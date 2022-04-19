@@ -1,14 +1,11 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers.schedule.daily.multi;
 
 import lombok.val;
-import mockit.Capturing;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.AlarmListCheckerCode;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.multi.errorcount.ErrorAlarmCounter;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.multi.errorcount.ErrorAlarmCounterComparison;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.multi.errorcount.ErrorAlarmCounterCondition;
@@ -16,21 +13,17 @@ import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.multi.errorcount.Er
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodDaily;
-import nts.uk.ctx.alarm.dom.conditionvalue.AlarmListConditionValue;
 import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueComparison;
 import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueExpression;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.shr.com.context.AppContexts;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -193,13 +186,9 @@ public class ScheduleMultiDailyCheckerByEmployeeTest {
                 List<String> workTypes, List<String> workTimes,
                 ConditionValueComparison cmp, int threshold, int count ){
             val condition = new ConditionValueExpression(cmp, threshold, Optional.empty());
-            val conditionValue = new AlarmListConditionValue<>(
-                    ConditionValueScheduleMultiDailyByEmployee.連続時間_予定時間,
-                    true,
-                    condition,
-                    new AlarmListAlarmMessage("")
-            );
-            val checker = new CheckScheduleMultiDaily(workTypes, workTimes,Optional.of(conditionValue));
+            val checker = new CheckScheduleMultiDaily(
+                    CheckScheduleMultiDailyType.連続時間_予定時間,true,
+                    workTypes, workTimes, Optional.of(condition), new AlarmListAlarmMessage(""));
             val conter = new ErrorAlarmCounter<CheckScheduleMultiDaily, GeneralDate>(
                     checker,
                     new ErrorAlarmCounterCondition(
