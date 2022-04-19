@@ -29,6 +29,9 @@ import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.Holiday
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.SpecialVacationDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.WorkDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.WorkTypeCountProspectorBase;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 
 
 /**
@@ -197,6 +200,11 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
         return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
     }),
     
+    公休日数(3, "日数：公休日数", c-> {
+        
+        return 0.0;
+    }),
+    
     特休日数合計(3, "日数：特休日数合計", c-> {
         SpecialVacationDaysProspector prospector = new SpecialVacationDaysProspector(c.require, c.companyId, c.aggregate);
         return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
@@ -205,6 +213,22 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
     欠勤日数合計(3, "日数：欠勤日数合計", c-> {
         AbsenceDaysProspector prospector = new AbsenceDaysProspector(c.require, c.companyId, c.aggregate);
         return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+    }),
+    
+    年休使用数(3, "日数：年休使用数", c-> {
+        val aggrResult = GetAnnLeaRemNumWithinPeriodProc.algorithm(
+                c.require, new CacheCarrier(), c.companyId, c.getEmployeeId(), null/*期間*/, InterimRemainMngMode.OTHER,
+                null/*基準日*/, false/*未使用*/, Optional.empty()/*上書きフラグ*/, Optional.empty()/*上書き用の暫定年休管理データ*/, Optional.empty()/*前回の年休の集計結果*/,
+                Optional.empty()/*過去月集計モード*/, Optional.empty()/*年月※過去月集計モード  = true の場合は必須*/, Optional.empty()/*上書き対象期間*/);
+        return aggrResult.flatMap(r -> r.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo().getUsedNumber().getUsedDays().map(day -> day.v())).orElse(null);
+    }),
+    
+    積立年休使用数(3, "日数：積立年休使用数", c-> {
+        val aggrResult = GetAnnAndRsvRemNumWithinPeriod.algorithm(
+                c.require, new CacheCarrier(), c.companyId, c.getEmployeeId(), null/*期間*/, InterimRemainMngMode.OTHER, 
+                null/*基準日*/, true/*未使用*/, true/*未使用*/, null/*上書きフラグ*/, null/*上書き用の暫定年休管理データ*/, null/*上書き用の暫定積休管理データ*/, 
+                null/*不足分付与残数データ出力区分*/, null/*集計開始日を締め開始日とする　（締め開始日を確認しない）*/, null/*前回の年休の集計結果*/, null/*前回の積立年休の集計結果*/, null/*上書き対象期間*/);
+        return 0.0;
     }),
     
     勤務日数(3, "日数：予定勤務日数＋勤務日数", c-> {
@@ -235,7 +259,9 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
             HolidaysProspector.Require,
             SpecialVacationDaysProspector.Require, 
             AbsenceDaysProspector.Require,
-            WorkDaysProspector.Require {
+            WorkDaysProspector.Require,
+            GetAnnLeaRemNumWithinPeriodProc.RequireM3,
+            GetAnnAndRsvRemNumWithinPeriod.RequireM2 {
 
         List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, GeneralDate baseDate);
         Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyID, String employeeId, GeneralDate baseDate);
