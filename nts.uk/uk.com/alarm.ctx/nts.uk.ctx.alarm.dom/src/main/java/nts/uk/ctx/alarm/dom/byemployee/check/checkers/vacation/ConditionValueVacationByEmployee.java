@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -59,24 +60,11 @@ public enum ConditionValueVacationByEmployee implements ConditionValueLogic<Cond
 	}),
 
 	代休残数(4, "代休残数", c -> {
-		return NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(
-				c.require,
-				new BreakDayOffRemainMngRefactParam(
-						AppContexts.user().companyId(),
-						c.employeeId,
-						c.period,
-						false,
-						c.period.end(),
-						false,
-						Collections.emptyList(),
-						Optional.empty(),
-						Optional.empty(),
-						Optional.empty(),
-						new FixedManagementDataMonth(
-								Collections.emptyList(),
-								Collections.emptyList()
-						)
-				)).getRemainDay().v();
+		return getSubHoliday(c).getRemainDay().v();
+	}),
+
+	時間代休残数(5, "時間代休残数", c -> {
+		return getSubHoliday(c).getRemainTime().v().doubleValue();
 	}),
 
 	;
@@ -92,6 +80,28 @@ public enum ConditionValueVacationByEmployee implements ConditionValueLogic<Cond
 	@Override
 	public Double getValue(Context context) {
 		return getValue.apply(context);
+	}
+
+	// 代休残数を取得する
+	private static SubstituteHolidayAggrResult getSubHoliday(Context context){
+		return NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(
+			context.require,
+			new BreakDayOffRemainMngRefactParam(
+					AppContexts.user().companyId(),
+					context.employeeId,
+					context.period,
+					false,
+					context.period.end(),
+					false,
+					Collections.emptyList(),
+					Optional.empty(),
+					Optional.empty(),
+					Optional.empty(),
+					new FixedManagementDataMonth(
+							Collections.emptyList(),
+							Collections.emptyList()
+					)
+			));
 	}
 
 	@Value
