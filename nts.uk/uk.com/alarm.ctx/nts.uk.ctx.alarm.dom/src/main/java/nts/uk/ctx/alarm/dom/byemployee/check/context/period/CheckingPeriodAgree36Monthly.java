@@ -24,7 +24,7 @@ public class CheckingPeriodAgree36Monthly {
      * @return List<YearMonth>
      */
     public List<YearMonth> calculatePeriod() {
-        // あとは nか月前 / nか月先の分だけ、startとendを制御する
+        // TODO: あとは nか月前 / nか月先の分だけ、startとendを制御する
         YearMonth start = GeneralDate.today().yearMonth();
         YearMonth end = GeneralDate.today().yearMonth();
         
