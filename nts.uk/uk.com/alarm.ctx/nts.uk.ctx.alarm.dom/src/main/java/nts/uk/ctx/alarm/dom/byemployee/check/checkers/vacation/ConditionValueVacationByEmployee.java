@@ -11,7 +11,6 @@ import nts.uk.ctx.alarm.dom.byemployee.result.DateInfo;
 import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueContext;
 import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueLogic;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaveImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaCriterialDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
@@ -129,7 +128,7 @@ public enum ConditionValueVacationByEmployee implements ConditionValueLogic<Cond
 	public interface Require extends
 			GetAnnLeaRemNumWithinPeriodProc.RequireM3,
 			AbsenceReruitmentMngInPeriodQuery.RequireM11,
-			NumberRemainVacationLeaveRangeQuery.Require {
+			NumberRemainVacationLeaveRangeQuery.Require{
 
 		Optional<RsvLeaCriterialDate> getReserveLeaveRemain(String employeeId, GeneralDate date);
 	}
