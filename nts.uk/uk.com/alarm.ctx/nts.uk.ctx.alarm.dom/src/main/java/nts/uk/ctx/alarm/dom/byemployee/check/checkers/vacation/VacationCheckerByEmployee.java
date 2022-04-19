@@ -7,7 +7,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.IteratorUtil;
 import nts.uk.ctx.alarm.dom.AlarmListCheckerCode;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.schedule.daily.single.ConditionValueScheduleDailyByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodVacation;
 import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
@@ -15,7 +14,6 @@ import nts.uk.ctx.alarm.dom.conditionvalue.AlarmListConditionValue;
 import nts.uk.ctx.alarm.dom.fixedlogic.FixedLogicSetting;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,13 +35,18 @@ public class VacationCheckerByEmployee implements DomainAggregate, AlarmListChec
 	/** 条件値のチェック条件*/
 	private List<AlarmListConditionValue<
 			ConditionValueVacationByEmployee,
-			ConditionValueVacationByEmployee.Context>> conditionValues;
+			ConditionValueVacationByEmployee.Context>> conditionValueLogics;
 
 	/** 年休付与のチェック条件*/
 	private List<CheckAnnualleave> annualleaveLogics;
 
 	/** 年休使用のチェック条件*/
 	private CheckUseAnnualleave useAnnualleaveLogic;
+
+	/** 年休優先使用のチェック条件*/
+	private CheckPriorityUseAnnualleave priorityUseAnnualleaveLogic;
+
+
 
 	/**
 	 * チェックする
@@ -63,16 +66,17 @@ public class VacationCheckerByEmployee implements DomainAggregate, AlarmListChec
 		alarmRecords.add(checkFixedLogics(require, employeeId, period));
 
 		// 条件値のチェック
-		alarmRecords.add(checkConditionValues(require, employeeId, period));
+		alarmRecords.add(checkConditionValueLogics(require, employeeId, period));
 
 		// 年休付与のチェック
-		alarmRecords.add(checkAnnualleaveLogic(require, employeeId));
+		alarmRecords.add(checkAnnualleaveLogics(require, employeeId));
 
 		// 年休取得のチェック
-		val result = useAnnualleaveLogic.checkIfEnabled(require, employeeId);
-		if(result.isPresent()){
-			alarmRecords.add(Collections.singletonList(result.get()));
-		}
+		useAnnualleaveLogic.checkIfEnabled(require, employeeId)
+				.ifPresent(r -> alarmRecords.add(Collections.singletonList(r)));
+
+		// 年休優先使用のチェック
+		alarmRecords.add(priorityUseAnnualleaveLogic.checkIfEnabled(require, employeeId, period));
 
 		return IteratorUtil.flatten(alarmRecords);
 	}
@@ -101,8 +105,8 @@ public class VacationCheckerByEmployee implements DomainAggregate, AlarmListChec
 	 * @param period
 	 * @return
 	 */
-	private Iterable<AlarmRecordByEmployee> checkConditionValues(Require require, String employeeId, DatePeriod period) {
-		return IteratorUtil.iterableFilter(conditionValues, cv -> {
+	private Iterable<AlarmRecordByEmployee> checkConditionValueLogics(Require require, String employeeId, DatePeriod period) {
+		return IteratorUtil.iterableFilter(conditionValueLogics, cv -> {
 			return cv.checkIfEnabled(new ConditionValueVacationByEmployee.Context(require, employeeId, period));
 		});
 	}
@@ -113,7 +117,7 @@ public class VacationCheckerByEmployee implements DomainAggregate, AlarmListChec
 	 * @param employeeId
 	 * @return
 	 */
-	private Iterable<AlarmRecordByEmployee> checkAnnualleaveLogic(Require require, String employeeId) {
+	private Iterable<AlarmRecordByEmployee> checkAnnualleaveLogics(Require require, String employeeId) {
 		return IteratorUtil.iterableFlatten(annualleaveLogics, a -> a.checkIfEnabled(require, employeeId));
 
 	}
@@ -123,6 +127,7 @@ public class VacationCheckerByEmployee implements DomainAggregate, AlarmListChec
 			FixedLogicVacationByEmployee.RequireCheck,
 			ConditionValueVacationByEmployee.Require,
 			CheckAnnualleave.RequireCheck,
-			CheckUseAnnualleave.RequireCheck{
+			CheckUseAnnualleave.RequireCheck,
+			CheckPriorityUseAnnualleave.RequireCheck{
 	}
 }
