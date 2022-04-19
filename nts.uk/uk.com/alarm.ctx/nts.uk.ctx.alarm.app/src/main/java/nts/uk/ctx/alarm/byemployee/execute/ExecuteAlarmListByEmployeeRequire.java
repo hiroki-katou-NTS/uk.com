@@ -1,6 +1,6 @@
 package nts.uk.ctx.alarm.byemployee.execute;
 
-import java.util.ArrayList;
+import java.util.*;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
@@ -92,6 +92,14 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.An
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainHistRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainingHistory;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnLeaMaxDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxHistRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxHistoryData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
@@ -124,9 +132,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthlyGetter;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.converter.WeeklyRecordToAttendanceItemConverter;
@@ -138,6 +151,8 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageSetting;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.*;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
@@ -179,15 +194,13 @@ import nts.uk.ctx.workflow.dom.service.ApprovalRootStateStatusService;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.license.option.OptionLicense;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.closure.ClosureMonth;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
@@ -484,6 +497,27 @@ public class ExecuteAlarmListByEmployeeRequire {
     @Inject
     private CompensLeaveComSetRepository compensLeaveComSetRepo;
 
+    @Inject
+    private AnnualLeaveRemainHistRepository annualLeaveRemainHistRepo;
+
+    @Inject
+    private AnnualLeaveMaxHistRepository annualLeaveMaxHistRepo;
+
+    @Inject
+    private AnnLeaMaxDataRepository annLeaMaxDataRepo;
+
+    @Inject
+    private OperationStartSetDailyPerformRepository operationStartSetDailyPerformRepo;
+
+    @Inject
+    private TmpAnnualHolidayMngRepository tmpAnnualHolidayMngRepo;
+
+    @Inject
+    private AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo;
+
+    @Inject
+    private AnnLeaRemNumEachMonthRepository annLeaRemNumEachMonthRepo;
+
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
                 AppContexts.user().contractCode(),
@@ -553,7 +587,12 @@ public class ExecuteAlarmListByEmployeeRequire {
         public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyID, String employeeId, GeneralDate baseDate) {
             return Optional.empty();
         }
-        
+
+        @Override
+        public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String s, List<String> list, GeneralDate generalDate) {
+            return null;
+        }
+
         @Override
         public List<String> getCanUseWorkplaceForEmp(String companyId, String employeeId, GeneralDate baseDate) {
             return affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRoot(companyId, employeeId, baseDate);
@@ -617,6 +656,11 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
+        public Map<GeneralDate, WorkInfoOfDailyAttendance> dailyWorkInfos(String s, DatePeriod datePeriod) {
+            return null;
+        }
+
+        @Override
         public Optional<WorkType> workType(String cid, String workTypeCode) {
             return workTypeRepo.findByPK(cid, workTypeCode);
         }
@@ -676,6 +720,11 @@ public class ExecuteAlarmListByEmployeeRequire {
         @Override
         public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
             return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
+        }
+
+        @Override
+        public List<ClosureEmployment> employmentClosureClones(String s, List<String> list) {
+            return null;
         }
 
         //--- 勤怠項目 ---//
@@ -948,9 +997,65 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         //--- 年休残数 ---//
+
         @Override
-        public ReNumAnnLeaveImport getAnnualLeaveRemain(String employeeId, GeneralDate date) {
-            return annLeaveRemainNumberAdapter.getReferDateAnnualLeaveRemain(employeeId, date);
+        public List<AnnualLeaveRemainingHistory> annualLeaveRemainingHistory(String employeeId, YearMonth yearMonth) {
+            return annualLeaveRemainHistRepo.getInfoBySidAndYM(employeeId, yearMonth);
+        }
+
+        @Override
+        public Optional<AnnualLeaveMaxHistoryData> AnnualLeaveMaxHistoryData(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
+            return annualLeaveMaxHistRepo.find(employeeId, yearMonth, closureId, closureDate);
+        }
+
+        @Override
+        public Optional<AnnualLeaveMaxData> annualLeaveMaxData(String employeeId) {
+            return annLeaMaxDataRepo.get(employeeId);
+        }
+
+        @Override
+        public List<AnnualLeaveGrantRemainingData> annualLeaveGrantRemainingData(String employeeId) {
+            return annLeaGrantRemDataRepo.find(employeeId);
+        }
+
+        @Override
+        public Optional<OperationStartSetDailyPerform> dailyOperationStartSet(CompanyId companyId) {
+            return operationStartSetDailyPerformRepo.findByCid(companyId);
+        }
+
+        @Override
+        public List<TempAnnualLeaveMngs> tmpAnnualHolidayMng(String employeeId, DatePeriod datePeriod) {
+            return tmpAnnualHolidayMngRepo.getBySidPeriod(employeeId, datePeriod);
+        }
+
+        @Override
+        public List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, DatePeriod datePeriod) {
+            return attendanceTimeOfMonthlyRepo.findByPeriodIntoEndYmd(employeeId, datePeriod);
+        }
+
+        @Override
+        public List<AnnLeaRemNumEachMonth> annLeaRemNumEachMonth(String employeeId, DatePeriod closurePeriod) {
+            return annLeaRemNumEachMonthRepo.findByClosurePeriod(employeeId, closurePeriod);
+        }
+
+        @Override
+        public Optional<Closure> closure(String companyId, int closureId) {
+            return closureRepo.findById(companyId, closureId);
+        }
+
+        @Override
+        public List<Closure> closureClones(String companyId, List<Integer> closureIds) {
+            return closureRepo.findByListId(companyId, closureIds);
+        }
+
+        @Override
+        public List<SharedSidPeriodDateEmploymentImport> employmentHistories(CacheCarrier cacheCarrier, List<String> employeeIds, DatePeriod datePeriod) {
+            return shareEmploymentAdapter.getEmpHistBySidAndPeriodRequire(cacheCarrier, employeeIds, datePeriod);
+        }
+
+        @Override
+        public List<ClosureEmployment> employmentClosure(String companyId, List<String> employmentCDs) {
+            return closureEmploymentRepo.findListEmployment(companyId, employmentCDs);
         }
 
         //--- 積立年休残数 ---//
@@ -1140,7 +1245,7 @@ public class ExecuteAlarmListByEmployeeRequire {
 
         @Override
         public List<SharedSidPeriodDateEmploymentImport> employmentHistory(CacheCarrier cacheCarrier, List<String> employeeIds, DatePeriod datePeriod) {
-            return shareEmploymentAdapter.getEmpHistBySidAndPeriodRequire(cacheCarrier, employeeIds, datePeriod);
+            return this.employmentHistories(cacheCarrier, employeeIds, datePeriod);
         }
 
         @Override
