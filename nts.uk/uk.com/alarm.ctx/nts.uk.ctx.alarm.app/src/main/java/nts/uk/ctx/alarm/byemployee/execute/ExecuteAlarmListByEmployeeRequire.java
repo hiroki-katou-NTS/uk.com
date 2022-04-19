@@ -7,6 +7,7 @@ import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.alarm.dom.AlarmListCheckerCode;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCheckerByEmployee;
@@ -82,11 +83,31 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.company.CompanyMonthDaySetting;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.company.CompanyMonthDaySettingRepository;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayManagementUsageUnit;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayManagementUsageUnitRepository;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySetting;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingRepository;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.EmployeeMonthDaySetting;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.EmployeeMonthDaySettingRepository;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardData;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardDataRepository;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employment.EmploymentMonthDaySetting;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employment.EmploymentMonthDaySettingRepository;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHolidayManagement;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHolidayManagementRepository;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySetting;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySettingRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
@@ -104,6 +125,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBr
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
@@ -553,6 +575,36 @@ public class ExecuteAlarmListByEmployeeRequire {
 
     @Inject
     private AnnLeaRemNumEachMonthRepository annLeaRemNumEachMonthRepo;
+
+    @Inject
+    private PublicHolidaySettingRepository publicHolidaySettingRepo;
+
+    @Inject
+    private CompanyAdapter companyAdapter;
+
+    @Inject
+    private PublicHolidayManagementUsageUnitRepository publicHolidayManagementUsageUnitRepo;
+
+    @Inject
+    private SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
+
+    @Inject
+    private CompanyMonthDaySettingRepository companyMonthDaySettingRepo;
+
+    @Inject
+    private EmployeeMonthDaySettingRepository employeeMonthDaySettingRepo;
+
+    @Inject
+    private EmploymentMonthDaySettingRepository employmentMonthDaySettingRepo;
+
+    @Inject
+    private PublicHolidayCarryForwardDataRepository publicHolidayCarryForwardDataRepo;
+
+    @Inject
+    private TempPublicHolidayManagementRepository tempPublicHolidayManagementRepo;
+
+    @Inject
+    private WorkplaceMonthDaySettingRepository workplaceMonthDaySettingRepo;
 
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
@@ -1202,6 +1254,73 @@ public class ExecuteAlarmListByEmployeeRequire {
         @Override
         public CompensatoryLeaveComSetting findComLeavComSet(String companyId) {
             return compensLeaveComSetRepo.find(companyId);
+        }
+
+        //--- 公休残数 ---//
+
+        @Override
+        public Optional<PublicHolidaySetting> publicHolidaySetting(String companyId) {
+            return publicHolidaySettingRepo.get(companyId);
+        }
+
+        @Override
+        public Optional<YearMonthPeriod> getYearMonthPeriodByCalendarYearmonth(String companyId, YearMonth yearMonth) {
+            return companyAdapter.getYearMonthPeriodByCalendarYearmonth(companyId, yearMonth);
+        }
+
+        @Override
+        public Optional<PublicHolidayManagementUsageUnit> publicHolidayManagementUsageUnit(String companyId) {
+            return publicHolidayManagementUsageUnitRepo.get(companyId);
+        }
+
+        @Override
+        public Optional<SharedAffWorkPlaceHisImport> getAffWorkPlaceHis(String employeeId, GeneralDate processingDate) {
+            return sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, processingDate);
+        }
+
+        @Override
+        public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId) {
+            return affWorkplaceAdapter.getWorkplaceIdAndUpper(companyId, baseDate, workplaceId);
+        }
+
+        @Override
+        public List<SharedSidPeriodDateEmploymentImport> getEmpHistBySidAndPeriod(List<String> employeeIds, DatePeriod datePeriod) {
+            return shareEmploymentAdapter.getEmpHistBySidAndPeriod(employeeIds, datePeriod);
+        }
+
+        @Override
+        public List<CompanyMonthDaySetting> getCompanyMonthDaySetting(String companyId, List<nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year> yearList) {
+            return companyMonthDaySettingRepo.findByYears(new CompanyId(companyId), yearList);
+        }
+
+        @Override
+        public List<EmployeeMonthDaySetting> getEmployeeMonthDaySetting(String companyId, String employeeId, List<nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year> yearList) {
+            return employeeMonthDaySettingRepo.findByYears(new CompanyId(companyId), employeeId, yearList);
+        }
+
+        @Override
+        public List<EmploymentMonthDaySetting> getEmploymentMonthDaySetting(String companyId, String employmentCode, List<nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year> yearList) {
+            return employmentMonthDaySettingRepo.findByYears(new CompanyId(companyId), employmentCode, yearList);
+        }
+
+        @Override
+        public Optional<PublicHolidayCarryForwardData> publicHolidayCarryForwardData(String employeeId) {
+            return publicHolidayCarryForwardDataRepo.get(employeeId);
+        }
+
+        @Override
+        public List<TempPublicHolidayManagement> tempPublicHolidayManagement(String employeeId, DatePeriod datePeriod) {
+            return tempPublicHolidayManagementRepo.findByPeriodOrderByYmd(employeeId, datePeriod);
+        }
+
+        @Override
+        public List<WorkplaceMonthDaySetting> getWorkplaceMonthDaySetting(String companyId, String workplaceId, List<nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year> yearList) {
+            return workplaceMonthDaySettingRepo.findByYears(new CompanyId(companyId), workplaceId, yearList);
+        }
+
+        @Override
+        public List<InterimRecAbsMng> interimRecAbsMng(String interimId, boolean isRec, DataManagementAtr mngAtr) {
+            return interimRecAbasMngRepo.getRecOrAbsMng(interimId, isRec, mngAtr);
         }
 
         //--- 子の看護介護休暇 ---//

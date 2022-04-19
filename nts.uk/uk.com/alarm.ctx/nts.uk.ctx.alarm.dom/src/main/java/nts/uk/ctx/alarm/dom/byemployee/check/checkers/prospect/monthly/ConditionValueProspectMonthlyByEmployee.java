@@ -98,13 +98,13 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
         Double MonStatutoryTime;
         val cacheCarrier = new CacheCarrier();
         // 雇用を取得
-        Optional<BsEmploymentHistoryImport> empHist = c.require.employmentHistory(cacheCarrier, c.companyId, c.getEmployeeId(), baseDate);
+        Optional<BsEmploymentHistoryImport> empHist = c.require.employmentHistory(cacheCarrier, c.getCompanyId(), c.getEmployeeId(), baseDate);
         val employmentCd = empHist.get().getEmploymentCode();
 
         MonthlyStatutoryWorkingHours.RequireM4 requireImpl = c.require.requireService().createRequire();
         val monthlyFlexStatutoryLaborTime = MonthlyStatutoryWorkingHours.monAndWeekStatutoryTime(
                 requireImpl, cacheCarrier,
-                c.companyId, employmentCd, c.getEmployeeId(), baseDate, c.closureMonth.getYearMonth(), workingSystem
+                c.getCompanyId(), employmentCd, c.getEmployeeId(), baseDate, c.closureMonth.getYearMonth(), workingSystem
         );
         MonStatutoryTime = monthlyFlexStatutoryLaborTime.get().getMonthlyEstimateTime().v().doubleValue();
 
@@ -131,13 +131,13 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
         Double MonStatutoryTime;
         val cacheCarrier = new CacheCarrier();
         // 雇用を取得
-        Optional<BsEmploymentHistoryImport> empHist = c.require.employmentHistory(cacheCarrier, c.companyId, c.getEmployeeId(), baseDate);
+        Optional<BsEmploymentHistoryImport> empHist = c.require.employmentHistory(cacheCarrier, c.getCompanyId(), c.getEmployeeId(), baseDate);
         val employmentCd = empHist.get().getEmploymentCode();
 
         MonthlyStatutoryWorkingHours.RequireM4 requireImpl = c.require.requireService().createRequire();
         val monthlyFlexStatutoryLaborTime = MonthlyStatutoryWorkingHours.monAndWeekStatutoryTime(
                 requireImpl, cacheCarrier,
-                c.companyId, employmentCd, c.getEmployeeId(), baseDate, c.closureMonth.getYearMonth(), workingSystem
+                c.getCompanyId(), employmentCd, c.getEmployeeId(), baseDate, c.closureMonth.getYearMonth(), workingSystem
         );
         MonStatutoryTime = monthlyFlexStatutoryLaborTime.get().getMonthlyEstimateTime().v().doubleValue();
 
@@ -164,12 +164,12 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
         Double MonStatutoryTime;
         val cacheCarrier = new CacheCarrier();
         // 雇用を取得
-        Optional<BsEmploymentHistoryImport> empHist = c.require.employmentHistory(cacheCarrier, c.companyId, c.getEmployeeId(), baseDate);
+        Optional<BsEmploymentHistoryImport> empHist = c.require.employmentHistory(cacheCarrier, c.getCompanyId(), c.getEmployeeId(), baseDate);
         val employmentCd = empHist.get().getEmploymentCode();
         MonthlyStatutoryWorkingHours.RequireM1 requireImpl = c.require.requireService().createRequire();
         val monthlyFlexStatutoryLaborTime = MonthlyStatutoryWorkingHours.flexMonAndWeekStatutoryTime(
                 requireImpl, cacheCarrier,
-                c.companyId, employmentCd, c.getEmployeeId(), baseDate, c.closureMonth.getYearMonth()
+                c.getCompanyId(), employmentCd, c.getEmployeeId(), baseDate, c.closureMonth.getYearMonth()
         );
         MonStatutoryTime = monthlyFlexStatutoryLaborTime.getStatutorySetting().v().doubleValue();
 
@@ -186,18 +186,18 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
     })),
 
     出勤日数(3, "日数：出勤日数", c ->  {
-        AttendanceDaysProspector prospector = new AttendanceDaysProspector(c.require, c.companyId, c.aggregate);
-        return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+        AttendanceDaysProspector prospector = new AttendanceDaysProspector(c.require, c.getCompanyId(), c.aggregate);
+        return prospector.prospect(c.require, c.getCompanyId(), c.getEmployeeId());
     }),
     
     休日日数(3, "日数：休日日数", c-> {
-        HolidaysProspector prospector = new HolidaysProspector(c.require, c.companyId, c.aggregate);
-        return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+        HolidaysProspector prospector = new HolidaysProspector(c.require, c.getCompanyId(), c.aggregate);
+        return prospector.prospect(c.require, c.getCompanyId(), c.getEmployeeId());
     }),
     
     休出日数(3, "日数：休出日数", c-> {
-        HolidayWorkDaysProspector prospector = new HolidayWorkDaysProspector(c.require, c.companyId, c.aggregate);
-        return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+        HolidayWorkDaysProspector prospector = new HolidayWorkDaysProspector(c.require, c.getCompanyId(), c.aggregate);
+        return prospector.prospect(c.require, c.getCompanyId(), c.getEmployeeId());
     }),
     
     公休日数(3, "日数：公休日数", c-> {
@@ -206,13 +206,13 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
     }),
     
     特休日数合計(3, "日数：特休日数合計", c-> {
-        SpecialVacationDaysProspector prospector = new SpecialVacationDaysProspector(c.require, c.companyId, c.aggregate);
-        return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+        SpecialVacationDaysProspector prospector = new SpecialVacationDaysProspector(c.require, c.getCompanyId(), c.aggregate);
+        return prospector.prospect(c.require, c.getCompanyId(), c.getEmployeeId());
     }),
     
     欠勤日数合計(3, "日数：欠勤日数合計", c-> {
-        AbsenceDaysProspector prospector = new AbsenceDaysProspector(c.require, c.companyId, c.aggregate);
-        return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+        AbsenceDaysProspector prospector = new AbsenceDaysProspector(c.require, c.getCompanyId(), c.aggregate);
+        return prospector.prospect(c.require, c.getCompanyId(), c.getEmployeeId());
     }),
     
     年休使用数(3, "日数：年休使用数", c-> {
@@ -232,8 +232,8 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
     }),
     
     勤務日数(3, "日数：予定勤務日数＋勤務日数", c-> {
-        WorkDaysProspector prospector = new WorkDaysProspector(c.require, c.companyId, c.aggregate);
-        return prospector.prospect(c.require, c.companyId, c.getEmployeeId());
+        WorkDaysProspector prospector = new WorkDaysProspector(c.require, c.getCompanyId(), c.aggregate);
+        return prospector.prospect(c.require, c.getCompanyId(), c.getEmployeeId());
     }),
     ;
 
@@ -266,12 +266,12 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
         List<WorkingConditionItemWithPeriod> getWorkingConditions(String employeeId, GeneralDate baseDate);
         Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyID, String employeeId, GeneralDate baseDate);
         RecordDomRequireService requireService();
+        String getCompanyId();
     }
 
     @Value
     public static class Context implements ConditionValueContext {
         Require require;
-        String companyId;
         AggregateIntegrationOfDaily aggregate;
         ClosureMonth closureMonth;
 
@@ -283,6 +283,10 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
         @Override
         public String getEmployeeId() {
             return aggregate.getEmployeeId();
+        }
+
+        public String getCompanyId(){
+            return require.getCompanyId();
         }
 
         @Override

@@ -39,53 +39,52 @@ import java.util.*;
 
 @RunWith(JMockit.class)
 public class ScheduleMultiDailyCheckerByEmployeeTest {
-    private ScheduleMultiDailyCheckerByEmployee target;
 
     public static class 予定時間 {
         @Test
         public void 対象データなし() {
             val require = Helper.createEmptyRequire();
-            val actual = Helper.createTarget(
+            val target = Helper.createTarget(
                     Collections.emptyList(),
                     Collections.emptyList(),
                     ConditionValueComparison.LESS_THAN,
                     480,
                     1);
             val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
-            val result = actual.check(require, context);
+            val actual = target.check(require, context);
 
-            Assert.assertTrue(result.iterator().hasNext());
+            Assert.assertTrue(actual.iterator().hasNext());
         }
 
         @Test
         public void 予定時間未満() {
             val require = Helper.createRequire(new AttendanceTime(479));
-            val actual = Helper.createTarget(
+            val target = Helper.createTarget(
                     Collections.emptyList(),
                     Collections.emptyList(),
                     ConditionValueComparison.GREATER_THAN_OR_EQUAL,
                     480,
                     1);
             val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
-            val result = actual.check(require, context);
+            val actual = target.check(require, context);
 
-            Assert.assertTrue(result.iterator().hasNext());
+            Assert.assertTrue(actual.iterator().hasNext());
         }
 
         @Test
         public void 予定時間該当() {
             val require = Helper.createRequire(new AttendanceTime(480));
-            val actual = Helper.createTarget(
+            val target = Helper.createTarget(
                     Collections.emptyList(),
                     Collections.emptyList(),
                     ConditionValueComparison.GREATER_THAN_OR_EQUAL,
                     480,
                     1);
             val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
-            val result = actual.check(require, context);
+            val actual = target.check(require, context);
 
-            Assert.assertFalse(result.iterator().hasNext());
-            val alarmRecord = result.iterator().next();
+            Assert.assertFalse(actual.iterator().hasNext());
+            val alarmRecord = actual.iterator().next();
             Assert.assertNotEquals(alarmRecord.getCategory(), AlarmListCategoryByEmployee.SCHEDULE_MULTI_DAY);
             Assert.assertNotEquals(alarmRecord.getEmployeeId(), Helper.employeeId);
         }
@@ -93,61 +92,61 @@ public class ScheduleMultiDailyCheckerByEmployeeTest {
         @Test
         public void 勤務種類一致() {
             val require = Helper.createRequire(new AttendanceTime(480));
-            val actual = Helper.createTarget(
+            val target = Helper.createTarget(
                     Arrays.asList("001"),
                     Collections.emptyList(),
                     ConditionValueComparison.GREATER_THAN_OR_EQUAL,
                     480,
                     1);
             val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
-            val result = actual.check(require, context);
+            val actual = target.check(require, context);
 
-            Assert.assertFalse(result.iterator().hasNext());
+            Assert.assertFalse(actual.iterator().hasNext());
         }
 
         @Test
         public void 勤務種類不一致() {
             val require = Helper.createRequire(new AttendanceTime(480));
-            val actual = Helper.createTarget(
+            val target = Helper.createTarget(
                     Arrays.asList("002"),
                     Collections.emptyList(),
                     ConditionValueComparison.GREATER_THAN_OR_EQUAL,
                     480,
                     1);
             val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
-            val result = actual.check(require, context);
+            val actual = target.check(require, context);
 
-            Assert.assertTrue(result.iterator().hasNext());
+            Assert.assertTrue(actual.iterator().hasNext());
         }
 
         @Test
         public void 就業時間帯一致() {
             val require = Helper.createRequire(new AttendanceTime(480));
-            val actual = Helper.createTarget(
+            val target = Helper.createTarget(
                     Arrays.asList("001"),
                     Arrays.asList("100"),
                     ConditionValueComparison.GREATER_THAN_OR_EQUAL,
                     480,
                     1);
             val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
-            val result = actual.check(require, context);
+            val actual = target.check(require, context);
 
-            Assert.assertFalse(result.iterator().hasNext());
+            Assert.assertFalse(actual.iterator().hasNext());
         }
 
         @Test
         public void 就業時間帯不一致() {
             val require = Helper.createRequire(new AttendanceTime(480));
-            val actual = Helper.createTarget(
+            val target = Helper.createTarget(
                     Arrays.asList("001"),
                     Arrays.asList("200"),
                     ConditionValueComparison.GREATER_THAN_OR_EQUAL,
                     480,
                     1);
             val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
-            val result = actual.check(require, context);
+            val actual = target.check(require, context);
 
-            Assert.assertTrue(result.iterator().hasNext());
+            Assert.assertTrue(actual.iterator().hasNext());
         }
     }
 
@@ -155,36 +154,36 @@ public class ScheduleMultiDailyCheckerByEmployeeTest {
         @Test
         public void 勤務種類連続() {
             val require = Helper.createRequire(new AttendanceTime(480));
-            val actual = Helper.createTarget(
+            val target = Helper.createTarget(
                     Arrays.asList("001"),
                     Collections.emptyList(),
                     ConditionValueComparison.GREATER_THAN_OR_EQUAL,
                     480,
                     3);
             val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
-            val result = actual.check(require, context);
+            val actual = target.check(require, context);
 
-            Assert.assertFalse(result.iterator().hasNext());
+            Assert.assertFalse(actual.iterator().hasNext());
         }
 
         @Test
         public void 勤務種類非連続() {
             val require = Helper.createRequire_UnContinue(new AttendanceTime(480));
-            val actual = Helper.createTarget(
+            val target = Helper.createTarget(
                     Arrays.asList("001"),
                     Collections.emptyList(),
                     ConditionValueComparison.GREATER_THAN_OR_EQUAL,
                     480,
                     3);
             val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
-            val result = actual.check(require, context);
+            val actual = target.check(require, context);
 
-            Assert.assertTrue(result.iterator().hasNext());
+            Assert.assertTrue(actual.iterator().hasNext());
         }
 
     }
 
-    public static class Helper {
+    private static class Helper {
         public static String companyId = "000000000001-0001";
         public static String employeeId = "12345";
         public static WorkTypeCode wktyp = new WorkTypeCode("001");
