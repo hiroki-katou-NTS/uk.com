@@ -1,8 +1,11 @@
 package nts.uk.ctx.alarm.dom.byemployee.check.checkers.schedule.daily.multi;
 
 import lombok.val;
+import mockit.Expectations;
+import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.alarm.dom.AlarmListAlarmMessage;
 import nts.uk.ctx.alarm.dom.AlarmListCheckerCode;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.AlarmListCategoryByEmployee;
@@ -13,6 +16,7 @@ import nts.uk.ctx.alarm.dom.byemployee.check.checkers.record.multi.errorcount.Er
 import nts.uk.ctx.alarm.dom.byemployee.check.context.CheckingContextByEmployee;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.context.period.CheckingPeriodDaily;
+import nts.uk.ctx.alarm.dom.byemployee.result.AlarmRecordByEmployee;
 import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueComparison;
 import nts.uk.ctx.alarm.dom.conditionvalue.ConditionValueExpression;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
@@ -30,10 +34,13 @@ import org.junit.runner.RunWith;
 
 import java.util.*;
 
-@RunWith(JMockit.class)
 public class ScheduleMultiDailyCheckerByEmployeeTest {
 
+    @RunWith(JMockit.class)
     public static class 予定時間 {
+        @Mocked
+        CheckingPeriodDaily cpd;
+
         @Test
         public void 対象データなし() {
             val require = Helper.createEmptyRequire();
@@ -44,9 +51,20 @@ public class ScheduleMultiDailyCheckerByEmployeeTest {
                     480,
                     1);
             val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
+
+            new Expectations() {{
+                cpd.calculatePeriod((CheckingPeriodDaily.Require)any, anyString);
+                result = new DatePeriod(GeneralDate.ymd(2022,4,1), GeneralDate.ymd(2022,4,30));
+            }};
+
             val actual = target.check(require, context);
 
-            Assert.assertTrue(actual.iterator().hasNext());
+            val hasNext = actual.iterator().hasNext();
+            AlarmRecordByEmployee record;
+            if(hasNext) {
+                record = actual.iterator().next();
+            }
+            Assert.assertFalse(hasNext);
         }
 
         @Test
@@ -59,9 +77,15 @@ public class ScheduleMultiDailyCheckerByEmployeeTest {
                     480,
                     1);
             val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
+
+            new Expectations() {{
+                cpd.calculatePeriod((CheckingPeriodDaily.Require)any, anyString);
+                result = new DatePeriod(GeneralDate.ymd(2022,4,1), GeneralDate.ymd(2022,4,30));
+            }};
+
             val actual = target.check(require, context);
 
-            Assert.assertTrue(actual.iterator().hasNext());
+            Assert.assertFalse(actual.iterator().hasNext());
         }
 
         @Test
@@ -74,9 +98,15 @@ public class ScheduleMultiDailyCheckerByEmployeeTest {
                     480,
                     1);
             val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
+
+            new Expectations() {{
+                cpd.calculatePeriod((CheckingPeriodDaily.Require)any, anyString);
+                result = new DatePeriod(GeneralDate.ymd(2022,4,1), GeneralDate.ymd(2022,4,30));
+            }};
+
             val actual = target.check(require, context);
 
-            Assert.assertFalse(actual.iterator().hasNext());
+            Assert.assertTrue(actual.iterator().hasNext());
             val alarmRecord = actual.iterator().next();
             Assert.assertNotEquals(alarmRecord.getCategory(), AlarmListCategoryByEmployee.SCHEDULE_MULTI_DAY);
             Assert.assertNotEquals(alarmRecord.getEmployeeId(), Helper.employeeId);
@@ -92,9 +122,15 @@ public class ScheduleMultiDailyCheckerByEmployeeTest {
                     480,
                     1);
             val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
+
+            new Expectations() {{
+                cpd.calculatePeriod((CheckingPeriodDaily.Require)any, anyString);
+                result = new DatePeriod(GeneralDate.ymd(2022,4,1), GeneralDate.ymd(2022,4,30));
+            }};
+
             val actual = target.check(require, context);
 
-            Assert.assertFalse(actual.iterator().hasNext());
+            Assert.assertTrue(actual.iterator().hasNext());
         }
 
         @Test
@@ -107,9 +143,15 @@ public class ScheduleMultiDailyCheckerByEmployeeTest {
                     480,
                     1);
             val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
+
+            new Expectations() {{
+                cpd.calculatePeriod((CheckingPeriodDaily.Require)any, anyString);
+                result = new DatePeriod(GeneralDate.ymd(2022,4,1), GeneralDate.ymd(2022,4,30));
+            }};
+
             val actual = target.check(require, context);
 
-            Assert.assertTrue(actual.iterator().hasNext());
+            Assert.assertFalse(actual.iterator().hasNext());
         }
 
         @Test
@@ -122,9 +164,15 @@ public class ScheduleMultiDailyCheckerByEmployeeTest {
                     480,
                     1);
             val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
+
+            new Expectations() {{
+                cpd.calculatePeriod((CheckingPeriodDaily.Require)any, anyString);
+                result = new DatePeriod(GeneralDate.ymd(2022,4,1), GeneralDate.ymd(2022,4,30));
+            }};
+
             val actual = target.check(require, context);
 
-            Assert.assertFalse(actual.iterator().hasNext());
+            Assert.assertTrue(actual.iterator().hasNext());
         }
 
         @Test
@@ -137,13 +185,23 @@ public class ScheduleMultiDailyCheckerByEmployeeTest {
                     480,
                     1);
             val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
+
+            new Expectations() {{
+                cpd.calculatePeriod((CheckingPeriodDaily.Require)any, anyString);
+                result = new DatePeriod(GeneralDate.ymd(2022,4,1), GeneralDate.ymd(2022,4,30));
+            }};
+
             val actual = target.check(require, context);
 
-            Assert.assertTrue(actual.iterator().hasNext());
+            Assert.assertFalse(actual.iterator().hasNext());
         }
     }
 
+    @RunWith(JMockit.class)
     public static class 勤務種類 {
+        @Mocked
+        CheckingPeriodDaily cpd;
+
         @Test
         public void 勤務種類連続() {
             val require = Helper.createRequire(new AttendanceTime(480));
@@ -154,14 +212,20 @@ public class ScheduleMultiDailyCheckerByEmployeeTest {
                     480,
                     3);
             val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
+
+            new Expectations() {{
+                cpd.calculatePeriod((CheckingPeriodDaily.Require)any, anyString);
+                result = new DatePeriod(GeneralDate.ymd(2022,4,1), GeneralDate.ymd(2022,4,30));
+            }};
+
             val actual = target.check(require, context);
 
-            Assert.assertFalse(actual.iterator().hasNext());
+            Assert.assertTrue(actual.iterator().hasNext());
         }
 
         @Test
         public void 勤務種類非連続() {
-            val require = Helper.createRequire_UnContinue(new AttendanceTime(480));
+            val require = Helper.createRequire_UnContinueWktyp(new AttendanceTime(480));
             val target = Helper.createTarget(
                     Arrays.asList("001"),
                     Collections.emptyList(),
@@ -169,9 +233,64 @@ public class ScheduleMultiDailyCheckerByEmployeeTest {
                     480,
                     3);
             val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
+
+            new Expectations() {{
+                cpd.calculatePeriod((CheckingPeriodDaily.Require)any, anyString);
+                result = new DatePeriod(GeneralDate.ymd(2022,4,1), GeneralDate.ymd(2022,4,30));
+            }};
+
+            val actual = target.check(require, context);
+
+            Assert.assertFalse(actual.iterator().hasNext());
+        }
+
+    }
+
+    @RunWith(JMockit.class)
+    public static class 勤務時間帯 {
+        @Mocked
+        CheckingPeriodDaily cpd;
+
+        @Test
+        public void 勤務時間帯連続() {
+            val require = Helper.createRequire(new AttendanceTime(480));
+            val target = Helper.createTarget(
+                    Arrays.asList("001"),
+                    Arrays.asList("100"),
+                    ConditionValueComparison.GREATER_THAN_OR_EQUAL,
+                    480,
+                    3);
+            val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
+
+            new Expectations() {{
+                cpd.calculatePeriod((CheckingPeriodDaily.Require)any, anyString);
+                result = new DatePeriod(GeneralDate.ymd(2022,4,1), GeneralDate.ymd(2022,4,30));
+            }};
+
             val actual = target.check(require, context);
 
             Assert.assertTrue(actual.iterator().hasNext());
+        }
+
+        @Test
+        public void 勤務時間帯非連続() {
+            val require = Helper.createRequire_UnContinueWkTm(new AttendanceTime(480));
+            val target = Helper.createTarget(
+                    Arrays.asList("001"),
+                    Arrays.asList("001"),
+                    ConditionValueComparison.GREATER_THAN_OR_EQUAL,
+                    480,
+                    3);
+            val context = new CheckingContextByEmployee(Helper.employeeId, Helper.checkingPeriod());
+
+            new Expectations() {{
+                cpd.calculatePeriod((CheckingPeriodDaily.Require)any, anyString);
+                result = new DatePeriod(GeneralDate.ymd(2022,4,1), GeneralDate.ymd(2022,4,30));
+            }};
+
+            val actual = target.check(require, context);
+
+            Assert.assertFalse(actual.iterator().hasNext());
         }
 
     }
@@ -211,28 +330,20 @@ public class ScheduleMultiDailyCheckerByEmployeeTest {
                 public Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date) {
                     return Optional.empty();
                 }
-
-//                @Override
-//                public DatePeriod getCheckingPeriodDaily(String employeeId) {
-//                    return new DatePeriod(
-//                            GeneralDate.today(),
-//                            GeneralDate.today().addMonths(1).addDays(-1));
-//                }
             };
         }
 
-        public static ScheduleMultiDailyCheckerByEmployee.RequireCheck createRequire_UnContinue(AttendanceTime at) {
+        public static ScheduleMultiDailyCheckerByEmployee.RequireCheck createRequire_UnContinueWktyp(AttendanceTime at) {
             return new ScheduleMultiDailyCheckerByEmployee.RequireCheck() {
                 @Override
                 public Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date) {
-                    WorkInformation recordInfo = null;
                     int i = date.differenceFrom(GeneralDate.today()).days();
-                    String code = String.format("%03d", i);
-                    new WorkInformation(code, code);
+                    String code = String.format("%03d", i % 3);
+                    WorkInformation recordInfo = new WorkInformation(code, code);
 
                     val awtd = new ActualWorkingTimeOfDaily();
                     val total = new TotalWorkingTime(at, null, null, null, null, null, null, null, null, null, null, null, null, null);
-                    awtd.inssertTotalWorkingTime(total);
+                    val actualWorkingTimeOfDaily = awtd.inssertTotalWorkingTime(total);
                     return Optional.of(new WorkSchedule(
                             employeeId, date, null,
                             new WorkInfoOfDailyAttendance(recordInfo,null,null,null, null, null, null),
@@ -240,7 +351,7 @@ public class ScheduleMultiDailyCheckerByEmployeeTest {
                             null, null,
                             Optional.of(new AttendanceTimeOfDailyAttendance(
                                     null,
-                                    awtd,
+                                    actualWorkingTimeOfDaily,
                                     null,
                                     null,
                                     null,
@@ -249,13 +360,35 @@ public class ScheduleMultiDailyCheckerByEmployeeTest {
                             null, null
                     ));
                 }
+            };
+        }
+        public static ScheduleMultiDailyCheckerByEmployee.RequireCheck createRequire_UnContinueWkTm(AttendanceTime at) {
+            return new ScheduleMultiDailyCheckerByEmployee.RequireCheck() {
+                @Override
+                public Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date) {
+                    int i = date.differenceFrom(GeneralDate.today()).days();
+                    String code = String.format("%03d", i);
+                    WorkInformation recordInfo = new WorkInformation(code, code);
 
-//                @Override
-//                public DatePeriod getCheckingPeriodDaily(String employeeId) {
-//                    return new DatePeriod(
-//                            GeneralDate.today(),
-//                            GeneralDate.today().addMonths(1).addDays(-1));
-//                }
+                    val awtd = new ActualWorkingTimeOfDaily();
+                    val total = new TotalWorkingTime(at, null, null, null, null, null, null, null, null, null, null, null, null, null);
+                    val actualWorkingTimeOfDaily = awtd.inssertTotalWorkingTime(total);
+                    return Optional.of(new WorkSchedule(
+                            employeeId, date, null,
+                            new WorkInfoOfDailyAttendance(recordInfo,null,null,null, null, null, null),
+                            null, null, null, null,
+                            null, null,
+                            Optional.of(new AttendanceTimeOfDailyAttendance(
+                                    null,
+                                    actualWorkingTimeOfDaily,
+                                    null,
+                                    null,
+                                    null,
+                                    null
+                            )),
+                            null, null
+                    ));
+                }
             };
         }
 
@@ -266,7 +399,7 @@ public class ScheduleMultiDailyCheckerByEmployeeTest {
                     val recordInfo = new WorkInformation(wktyp, wktm);
                     val awtd = new ActualWorkingTimeOfDaily();
                     val total = new TotalWorkingTime(at, null, null, null, null, null, null, null, null, null, null, null, null, null);
-                    awtd.inssertTotalWorkingTime(total);
+                    val actualWorkingTimeOfDaily = awtd.inssertTotalWorkingTime(total);
                     return Optional.of(new WorkSchedule(
                             employeeId, date, null,
                             new WorkInfoOfDailyAttendance(recordInfo,null,null,null, null, null, null),
@@ -274,7 +407,7 @@ public class ScheduleMultiDailyCheckerByEmployeeTest {
                             null, null,
                             Optional.of(new AttendanceTimeOfDailyAttendance(
                                     null,
-                                    awtd,
+                                    actualWorkingTimeOfDaily,
                                     null,
                                     null,
                                     null,
@@ -283,13 +416,6 @@ public class ScheduleMultiDailyCheckerByEmployeeTest {
                             null, null
                     ));
                 }
-
-//                @Override
-//                public DatePeriod getCheckingPeriodDaily(String employeeId) {
-//                    return new DatePeriod(
-//                            GeneralDate.today(),
-//                            GeneralDate.today().addMonths(1).addDays(-1));
-//                }
             };
         }
 
