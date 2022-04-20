@@ -59,7 +59,6 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaveImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.ReserveLeaveManagerApdater;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaCriterialDate;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
@@ -235,6 +234,10 @@ import nts.uk.ctx.at.record.dom.standardtime.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementUnitSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
@@ -257,6 +260,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.sett
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementUnitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSettingForCalc;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -606,6 +611,18 @@ public class ExecuteAlarmListByEmployeeRequire {
     @Inject
     private WorkplaceMonthDaySettingRepository workplaceMonthDaySettingRepo;
 
+    @Inject
+    private RervLeaGrantRemDataRepository rervLeaGrantRemDataRepository;
+    
+    @Inject
+    private EmploymentSettingRepository employmentSettingRepository;
+    
+    @Inject
+    private TmpResereLeaveMngRepository tmpResereLeaveMngRepository;
+    
+    @Inject
+    private SysEmploymentHisAdapter sysEmploymentHisAdapter;
+    
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
                 AppContexts.user().contractCode(),
@@ -1274,6 +1291,11 @@ public class ExecuteAlarmListByEmployeeRequire {
         }
 
         @Override
+        public Optional<PublicHolidayManagementUsageUnit> getPublicHolidayManagementUsageUnit(String companyId) {
+            return this.publicHolidayManagementUsageUnit(companyId);
+        }
+        
+        @Override
         public Optional<SharedAffWorkPlaceHisImport> getAffWorkPlaceHis(String employeeId, GeneralDate processingDate) {
             return sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, processingDate);
         }
@@ -1600,6 +1622,26 @@ public class ExecuteAlarmListByEmployeeRequire {
         @Override
         public Optional<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId, LaborSystemtAtr laborSystemAtr) {
             return company36AgreedHoursRepository.getByCid(companyId, laborSystemAtr);
+        }
+
+        @Override
+        public List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId) {
+            return rervLeaGrantRemDataRepository.find(employeeId);
+        }
+
+        @Override
+        public Optional<EmptYearlyRetentionSetting> employmentYearlyRetentionSetting(String companyId, String employmentCode) {
+            return employmentSettingRepository.find(companyId, employmentCode);
+        }
+
+        @Override
+        public Optional<SEmpHistoryImport> employeeEmploymentHis(CacheCarrier cacheCarrier, String companyId, String employeeId, GeneralDate baseDate) {
+            return sysEmploymentHisAdapter.findSEmpHistBySidRequire(cacheCarrier, companyId, employeeId, baseDate);
+        }
+
+        @Override
+        public List<TmpResereLeaveMng> tmpResereLeaveMng(String sid, DatePeriod datePeriod) {
+            return tmpResereLeaveMngRepository.findBySidPriod(sid, datePeriod);
         }
     }
 }
