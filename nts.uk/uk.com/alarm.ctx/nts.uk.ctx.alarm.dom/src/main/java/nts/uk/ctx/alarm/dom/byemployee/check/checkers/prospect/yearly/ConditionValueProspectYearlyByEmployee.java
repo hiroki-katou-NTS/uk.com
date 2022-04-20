@@ -17,6 +17,7 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfDaily;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.count.vacation.GetPublicHoldayForAlarmList;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.count.worktype.AbsenceDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.count.worktype.AttendanceDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.count.worktype.HolidayWorkDaysProspector;
@@ -140,7 +141,9 @@ public enum ConditionValueProspectYearlyByEmployee implements ConditionValueLogi
         return aggregate(c, (context) -> {
             return aggregateIntegrationOfMontly(context, (iom) -> iom.getPublicHolidayLeaveRemain().map(pubHoliday -> pubHoliday.getPublicHolidayday().v()).orElse(0.0));
         }, (context) -> {
-            return 0.0;
+            return context.getProspectMonth().stream()
+                    .mapToDouble(closureMonth -> GetPublicHoldayForAlarmList.get(c.require, c.getCompanyId(), c.getEmployeeId(), closureMonth))
+                    .sum();
         });
     }),
     
@@ -232,7 +235,8 @@ public enum ConditionValueProspectYearlyByEmployee implements ConditionValueLogi
             HolidayWorkDaysProspector.Require,
             SpecialVacationDaysProspector.Require,
             AbsenceDaysProspector.Require,
-            WorkDaysProspector.Require{
+            WorkDaysProspector.Require,
+            GetPublicHoldayForAlarmList.Require {
     }
 
     @Value

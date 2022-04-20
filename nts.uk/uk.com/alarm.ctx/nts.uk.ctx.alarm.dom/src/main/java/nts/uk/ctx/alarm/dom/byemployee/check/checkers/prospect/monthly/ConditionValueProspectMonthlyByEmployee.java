@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.count.vacation.GetPublicHoldayForAlarmList;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.count.worktype.AbsenceDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.count.worktype.AttendanceDaysProspector;
 import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.count.worktype.HolidayWorkDaysProspector;
@@ -69,7 +70,7 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
         return withinWorkTimeAmount + totalAmount;
     })),
     所定公休日数比(2, "対比：所定公休日数比", c -> {
-        Double numerator = getPublichHolidays(c);
+        Double numerator = GetPublicHoldayForAlarmList.get(c.require, c.getCompanyId(), c.getEmployeeId(), c.getClosureMonth());
         Optional<PublicHolidayManagementUsageUnit> unit = c.require.getPublicHolidayManagementUsageUnit(c.getCompanyId());
         AggregationPeriod period = new AggregationPeriod(c.closureMonth.getYearMonth(), c.closureMonth.defaultPeriod());
         
@@ -209,7 +210,7 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
         return prospector.prospect(c.require, c.getCompanyId(), c.getEmployeeId());
     }),
     
-    公休日数(3, "日数：公休日数", c-> getPublichHolidays(c)),
+    公休日数(3, "日数：公休日数", c-> GetPublicHoldayForAlarmList.get(c.require, c.getCompanyId(), c.getEmployeeId(), c.getClosureMonth())),
     
     特休日数合計(3, "日数：特休日数合計", c-> {
         val prospector = new SpecialVacationDaysProspector(c.require, c.getCompanyId(), c.aggregate);
@@ -258,19 +259,6 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
         return getValue.apply(context);
     }
 
-    /**
-     * 対比：所定公休日数比
-     * 日数：公休日数
-     * で使う　公休日数を取得する処
-     */
-    private static double getPublichHolidays(Context context) {
-        AggrResultOfPublicHoliday aggrResult = GetRemainingNumberPublicHolidayService.getPublicHolidayRemNumWithinPeriod(
-                context.getCompanyId(), context.getEmployeeId(), Arrays.asList(context.closureMonth.getYearMonth()), context.closureMonth.defaultPeriod().end(), InterimRemainMngMode.OTHER, 
-                Optional.empty(), new ArrayList<>(), Optional.empty(), Optional.empty(), new CacheCarrier(), context.require);
-        return aggrResult.createPublicHolidayRemainData(context.getEmployeeId(), context.closureMonth.getYearMonth(), ClosureId.valueOf(context.closureMonth.closureId()), context.closureMonth.closureDate())
-                .getPublicHolidayday().v();
-    }
-
     public interface Require extends
             AggregateIntegrationOfDaily.AggregationRequire,
             WorkTypeCountProspectorBase.RequireOfCreate,
@@ -280,7 +268,7 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
             SpecialVacationDaysProspector.Require, 
             AbsenceDaysProspector.Require,
             WorkDaysProspector.Require,
-            GetRemainingNumberPublicHolidayService.RequireM1,
+            GetPublicHoldayForAlarmList.Require,
             GetAnnLeaRemNumWithinPeriodProc.RequireM3,
             GetAnnAndRsvRemNumWithinPeriod.RequireM2,
             PublicHolidayManagementUsageUnit.RequireM1{
