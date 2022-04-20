@@ -70,9 +70,15 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
     })),
     所定公休日数比(2, "対比：所定公休日数比", c -> {
         Double numerator = getPublichHolidays(c);
-        PublicHolidayManagementUsageUnit unit = c.require.getPublicHolidayManagementUsageUnit(c.getCompanyId());
+        Optional<PublicHolidayManagementUsageUnit> unit = c.require.getPublicHolidayManagementUsageUnit(c.getCompanyId());
         AggregationPeriod period = new AggregationPeriod(c.closureMonth.getYearMonth(), c.closureMonth.defaultPeriod());
-        Double denominator = unit.GetNumberofPublicHoliday(c.require, c.getCompanyId(), c.getCompanyId(), Arrays.asList(period), period.getPeriod().end())
+        
+        //公休管理の設定が無い場合、アラートしない
+        if(!unit.isPresent()) {
+            return null;
+        }
+        
+        Double denominator = unit.get().GetNumberofPublicHoliday(c.require, c.getCompanyId(), c.getCompanyId(), Arrays.asList(period), period.getPeriod().end())
                 .stream().filter(numberOfPublic -> numberOfPublic.createYearMonth().equals(c.closureMonth.getYearMonth()))
                 .findFirst().map(numberOfPublic -> numberOfPublic.getInLegalHoliday().v()).orElse(0.0);
         // 所定公休日数の設定が無い場合、0が返ってくるので、その場合はアラームチェックをしない
@@ -283,7 +289,7 @@ public enum ConditionValueProspectMonthlyByEmployee implements ConditionValueLog
         Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyID, String employeeId, GeneralDate baseDate);
         RecordDomRequireService requireService();
         String getCompanyId();
-        PublicHolidayManagementUsageUnit getPublicHolidayManagementUsageUnit(String companyId);
+        Optional<PublicHolidayManagementUsageUnit> getPublicHolidayManagementUsageUnit(String companyId);
     }
 
     @Value
