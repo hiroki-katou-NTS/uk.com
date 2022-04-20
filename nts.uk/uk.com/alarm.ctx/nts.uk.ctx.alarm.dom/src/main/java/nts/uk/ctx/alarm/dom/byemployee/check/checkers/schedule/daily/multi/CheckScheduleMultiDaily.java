@@ -35,7 +35,8 @@ public class CheckScheduleMultiDaily {
     /** アラームメッセージ */
     AlarmListAlarmMessage alarmMessage;
 
-    public Iterable<GeneralDate> check(Require require,
+    /** カウントすべき日付を取得 */
+    public Iterable<GeneralDate> getDateForCounter(Require require,
                                         String employeeId, DatePeriod period) {
 
         return IteratorUtil.iterableFilter(

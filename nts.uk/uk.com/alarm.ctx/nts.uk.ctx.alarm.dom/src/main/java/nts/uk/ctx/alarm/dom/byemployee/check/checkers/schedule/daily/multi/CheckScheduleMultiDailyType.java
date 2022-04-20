@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 /**
- * 条件値チェック（社員別・スケジュール複数日）
+ * スケジュール複数日チェック種類
  */
 @RequiredArgsConstructor
 public enum CheckScheduleMultiDailyType {

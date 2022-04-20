@@ -205,7 +205,8 @@ public class ProspectMonthlyCheckerByEmployeeTest {
                             null, null, null, null, null),
                     0, 0, 0, 0);
             val at = new AttendanceTimeOfDailyAttendance(null, workingTime, null, null, null, null);
-            val integrationOfDaily = closureMonth.defaultPeriod().datesBetween().stream().map(date -> {
+            List<IntegrationOfDaily> integrationOfDaily = closureMonth.defaultPeriod().datesBetween().stream()
+                    .map(date -> {
                             val ret = new IntegrationOfDaily();
                             ret.setAttendanceTimeOfDailyPerformance(Optional.of(at));
                             return ret;

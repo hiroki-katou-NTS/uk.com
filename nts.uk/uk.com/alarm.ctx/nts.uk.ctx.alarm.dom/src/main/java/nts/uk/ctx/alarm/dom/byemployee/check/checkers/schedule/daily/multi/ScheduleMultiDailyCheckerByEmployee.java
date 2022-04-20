@@ -69,7 +69,7 @@ public class ScheduleMultiDailyCheckerByEmployee implements DomainAggregate, Ala
 		};
 
 		Function<CheckScheduleMultiDaily, Iterable<GeneralDate>> errorAlarmChecker = c -> {
-			return c.check(require, employeeId, period);
+			return c.getDateForCounter(require, employeeId, period);
 		};
 
 		return IteratorUtil.iterableFlatten(
