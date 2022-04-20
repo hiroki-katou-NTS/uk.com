@@ -3,23 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays;
+package nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.count.worktype;
 
 import java.util.Optional;
 import nts.uk.ctx.alarm.dom.byemployee.check.aggregate.AggregateIntegrationOfDaily;
-import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.attendance.CheckAttendanceForIntegrationOfDaily;
+import nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.count.worktype.attendance.CheckAttendanceForIntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.WorkTypeDaysCountTable;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.AbsenceDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.SpcVacationDaysOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
- * 欠勤日数プロスペクタ
+ * 特休日数プロスペクター
  * @author raiki_asada
  */
-public class AbsenceDaysProspector extends WorkTypeCountProspectorBase {
+public class SpecialVacationDaysProspector extends WorkTypeCountProspectorBase {
     
-    public AbsenceDaysProspector(RequireOfCreate require, String companyId, AggregateIntegrationOfDaily aggregateIntegrationOfDaily) {
+    public SpecialVacationDaysProspector(RequireOfCreate require, String companyId, AggregateIntegrationOfDaily aggregateIntegrationOfDaily) {
         super(require, companyId, aggregateIntegrationOfDaily);
     }
     
@@ -31,16 +31,16 @@ public class AbsenceDaysProspector extends WorkTypeCountProspectorBase {
                     WorkTypeDaysCountTable table = super.countTableGenerator.generate(workType);
 
                     boolean isAttendanceDay = CheckAttendanceForIntegrationOfDaily.check(iod);
-                    AbsenceDaysOfMonthly result = new AbsenceDaysOfMonthly();
                     
-                    result.aggregate(require, cid, employeeId, iod.getYmd(), iod.getWorkInformation().getRecordInfo(), item.getLaborSystem(), workType, table, isAttendanceDay);
-                    return result.getTotalAbsenceDays().v();
-                }).orElse(0.0);
-            }).orElse(0.0);
+                    SpcVacationDaysOfMonthly result = new SpcVacationDaysOfMonthly();
+                    result.aggregate(require, cid, employeeId, iod.getYmd(), item.getLaborSystem(), workType, iod.getWorkInformation().getRecordInfo(), iod.getAttendanceTimeOfDailyPerformance(), table, isAttendanceDay);
+                    return result.getTotalSpcVacationDays().v();
+                }).orElse((double)0);
+            }).orElse((double)0);
         });
     }
     
-    public interface Require extends WorkingConditionService.RequireM1, AggregateIntegrationOfDaily.AggregationRequire, AbsenceDaysOfMonthly.Require {
+    public interface Require extends WorkingConditionService.RequireM1, AggregateIntegrationOfDaily.AggregationRequire, SpcVacationDaysOfMonthly.Require {
         Optional<WorkType> getWorkType(String workTypeCode);
     }
 }
