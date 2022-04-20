@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.countdays.attendance;
+package nts.uk.ctx.alarm.dom.byemployee.check.checkers.prospect.count.worktype.attendance;
 
 import java.util.HashMap;
 import java.util.Map;
