@@ -58,6 +58,8 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.Ident
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.annualholiday.AnnLeaveRemainAdapter;
+import nts.uk.ctx.at.request.dom.application.annualholiday.ReNumAnnLeaReferenceDateExport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.ReserveLeaveManagerApdater;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaCriterialDate;
@@ -623,6 +625,9 @@ public class ExecuteAlarmListByEmployeeRequire {
     @Inject
     private SysEmploymentHisAdapter sysEmploymentHisAdapter;
     
+    @Inject
+    private AnnLeaveRemainAdapter annLeaveRemainAdapter;
+
     public Require create() {
         return EmbedStopwatch.embed(new RequireImpl(
                 AppContexts.user().contractCode(),
@@ -1161,6 +1166,11 @@ public class ExecuteAlarmListByEmployeeRequire {
         @Override
         public List<ClosureEmployment> employmentClosure(String companyId, List<String> employmentCDs) {
             return closureEmploymentRepo.findListEmployment(companyId, employmentCDs);
+        }
+
+        @Override
+        public ReNumAnnLeaReferenceDateExport getReferDateAnnualLeaveRemain(String employeeId, GeneralDate date) {
+            return annLeaveRemainAdapter.getReferDateAnnualLeaveRemainNumber(employeeId, date);
         }
 
         //--- 積立年休残数 ---//

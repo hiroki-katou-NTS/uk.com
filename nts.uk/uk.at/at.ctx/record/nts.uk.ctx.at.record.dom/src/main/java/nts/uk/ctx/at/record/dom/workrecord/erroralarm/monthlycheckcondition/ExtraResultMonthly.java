@@ -5,8 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AttendanceItemCondition;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckRemainNumberMon;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycondition.TimeItemCheckMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 
 /**
  * 月別実績の抽出条件
@@ -17,6 +16,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycondition.TimeItemC
 public class ExtraResultMonthly extends AggregateRoot {
 	/**ID*/
 	private String errorAlarmCheckID;
+	/** コード */
+	private ErrorAlarmWorkRecordCode code;
 	/**並び順*/
 	private int sortBy;
 	/**名称*/
@@ -33,10 +34,13 @@ public class ExtraResultMonthly extends AggregateRoot {
 	private Optional<AttendanceItemCondition> checkConMonthly;
 
 	
-	public ExtraResultMonthly(String errorAlarmCheckID, int sortBy, NameAlarmExtractionCondition nameAlarmExtraCon, boolean useAtr, TypeMonCheckItem typeCheckItem, HowDisplayMessage howDisplayMessage,
+	public ExtraResultMonthly(String errorAlarmCheckID, ErrorAlarmWorkRecordCode code, 
+			int sortBy, NameAlarmExtractionCondition nameAlarmExtraCon, boolean useAtr, 
+			TypeMonCheckItem typeCheckItem, HowDisplayMessage howDisplayMessage,
 			MessageDisplay displayMessage, AttendanceItemCondition checkConMonthly) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
+		this.code = code;
 		this.sortBy = sortBy;
 		this.nameAlarmExtraCon = nameAlarmExtraCon;
 		this.useAtr = useAtr;
